@@ -13,6 +13,58 @@ import html_reports
 import institutions_service
 
 
+def confirm_missing_items(missing_xref_items, xref_parent_nodes):
+    missing_numbers = [int(rid[1:]) for rid in missing_xref_items]
+    #print(missing_numbers)
+    not_missing = []
+    for node, xref_list in xref_parent_nodes:
+        # node = elemento que contem xref
+        numbers = [int(item.strip()[1:]) for item in xref_list]
+        p = xml_utils.tostring(node)
+        parts = p.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+        #print(parts)
+
+        i = 0
+        while i < len(numbers)-1:
+            n = numbers[i]
+            following = numbers[i+1]
+            if following - n > 1:
+                if n + 1 in missing_numbers:
+                    # testar xml
+                    #print('missing: ' + str(n + 1))
+                    k = i + 1
+                    text = ''
+                    if '</xref>' in parts[k]:
+                        text = parts[k][parts[k].find('</xref>')+len('</xref>'):]
+                    elif '/>' in parts[k]:
+                        text = parts[k][parts[k].find('/>')+len('/>'):]
+                    #print(text)
+                    xref_text = parts[k].split('>')
+                    following_xref_text = parts[k+1].split('>')
+                    #print(xref_text[0])
+                    #print(following_xref_text[0])
+                    #print(n)
+                    #print(following)
+                    if str(n) + '"' in xref_text[0] and str(following) + '"' in following_xref_text[0] and '-' in text:
+                        not_missing.append(n + 1)
+            i += 1
+    confirmed_missing = []
+    #print(missing_xref_items)
+    for item in missing_xref_items:
+        suggested_location = []
+        #print(item)
+        n = int(item[1:])
+        if not n in not_missing:
+            #print(n)
+            for node, xref_list in xref_parent_nodes:
+                numbers = [int(xref.strip()[1:]) for xref in xref_list]
+                p = xml_utils.tostring(node)
+                if n + 1 in numbers or n - 1 in numbers or str(n) in p:
+                    suggested_location.append(p)
+            confirmed_missing.append((item, suggested_location))
+    return confirmed_missing
+
+
 def evaluate_missing_bibr_xref(total, missing):
     total = total * 100
     missing = missing * 100
@@ -976,13 +1028,43 @@ class ArticleContentValidation(object):
         message = []
         if len(invalid_reftype) > 0:
             message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
+
+        if len(missing) > 0:
+            confirmed_missing = confirm_missing_items(missing, self.article.xref_parent_nodes)
+            missing = [item for item, ign in confirmed_missing]
+            is_valid = evaluate_missing_bibr_xref(len(self.article.references), len(missing))
+            if is_valid:
+                message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
+            else:
+                message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', _('To many missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
+            if len(confirmed_missing) > 0:
+                for missing, paragraphs in confirmed_missing:
+                    for p in paragraphs:
+                        message.append((_('Try to find ') + missing, 'INFO', p))
+        return message
+
+    @property
+    def old_missing_bibr_xref(self):
+        missing = []
+        invalid_reftype = []
+        for ref in self.article.references:
+            found = [item for item in self.article.xref_nodes if item['rid'] == ref.id]
+            for item in found:
+                if item['ref-type'] != 'bibr':
+                    invalid_reftype.append(item)
+            if len(found) == 0:
+                missing.append(ref.id)
+        message = []
+        if len(invalid_reftype) > 0:
+            message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
         if len(missing) > 0:
             is_valid = evaluate_missing_bibr_xref(len(self.article.references), len(missing))
             if is_valid:
                 message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
             else:
                 message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', _('To many missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
-
+            for item, xref_list in self.article.xref_parent_nodes:
+                message.append(('INFO', ', '.join(xref_list), xml_utils.tostring(item)))
         return message
 
     def old_href_list(self, path):

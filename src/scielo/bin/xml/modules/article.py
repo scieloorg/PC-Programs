@@ -217,6 +217,17 @@ class ArticleXML(object):
         return r
 
     @property
+    def xref_parent_nodes(self):
+        parents = []
+        if self.tree is not None:
+            for node in self.tree.findall('.//*[xref]'):
+                bibr_xref = node.findall('xref[@ref-type="bibr"]')
+                if len(bibr_xref) > 0:
+                    l = [item.attrib.get('rid') for item in bibr_xref]
+                    parents.append((node, l))
+        return parents
+
+    @property
     def xref_nodes(self):
         _xref_list = []
         if self.tree is not None:

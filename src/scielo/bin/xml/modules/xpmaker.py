@@ -670,7 +670,6 @@ def normalize_xml_content(doc_files_info, content, version):
         content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
     xml = xml_utils.is_xml_well_formed(content)
-    print(xml)
     if xml is not None:
         content = normalize_mixed_citations(content)
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
