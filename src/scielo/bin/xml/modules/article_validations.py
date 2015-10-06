@@ -13,6 +13,13 @@ import html_reports
 import institutions_service
 
 
+def evaluate_missing_bibr_xref(total, missing):
+    total = total * 100
+    missing = missing * 100
+    perc = missing / total
+    return (perc <= 30)
+
+
 def check_lang(elem_name, lang):
     label, status, msg = required(elem_name + '/@xml:lang', lang, 'FATAL ERROR')
     if status == 'OK':
@@ -147,7 +154,7 @@ def validate_surname(label, value):
         suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
 
         parts = value.split(' ')
-        if len(parts) > 0:
+        if len(parts) > 1:
             rejected = [item for item in parts if item in suffix_list]
             suffix = ' '.join(rejected)
 
@@ -321,7 +328,7 @@ class ArticleContentValidation(object):
         sch2 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level2])
         total = sum(self.article.refstats.values())
         nonsch = total - sch1 - sch2
-        msg = '; '.join([str(k) + ': ' + str(t) for k, t in self.article.refstats.items()])
+        msg = '; '.join([k + ': ' + str(t) for k, t in self.article.refstats.items()])
         status = 'INFO'
         if total > 0:
             if (nonsch >= sch1 + sch2) or (sch1 < sch2):
@@ -642,14 +649,17 @@ class ArticleContentValidation(object):
         return display_value('clinical trial text', self.article.clinical_trial_text)
 
     def _total(self, total, count, label_total, label_count):
-        if count is not None:
-            if count.isdigit():
-                count = int(count)
+        if count is None:
+            count = 0
+        elif count.isdigit():
+            count = int(count)
+        else:
+            count = 0
 
-            if total == count:
-                r = (label_total, 'OK', str(total))
-            else:
-                r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', _('They must have the same value'))
+        if total == count:
+            r = (label_total, 'OK', str(total))
+        else:
+            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', _('They must have the same value'))
         return r
 
     @property
@@ -930,7 +940,7 @@ class ArticleContentValidation(object):
 
     @property
     def missing_xref_list(self):
-        alert_tags = ['fig', 'table-wrap', 'ref', ]
+        alert_tags = ['fig', 'table-wrap', ]
         rid_list = [node['rid'] for node in self.article.xref_nodes]
         message = []
         missing = {}
@@ -949,6 +959,29 @@ class ArticleContentValidation(object):
             msg = ', '.join(['xref[@rid="' + _id + '"]' for _id in sorted(not_found)])
             message.append((tag, 'ERROR', _('Missing') + ': ' + msg))
 
+        return message
+
+    @property
+    def missing_bibr_xref(self):
+        missing = []
+        invalid_reftype = []
+        for ref in self.article.references:
+            found = [item for item in self.xref_nodes if item['rid'] == ref.id]
+            for item in found:
+                if item['ref-type'] != 'bibr':
+                    invalid_reftype.append(item)
+            if len(found) == 0:
+                missing.append(ref.id)
+        message = []
+        if len(invalid_reftype) > 0:
+            message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
+        if len(missing) > 0:
+            is_valid = evaluate_missing_bibr_xref(len(self.article.references), len(missing))
+            if is_valid:
+                message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]'))
+            else:
+                message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', _('To many missing') + ' xref[@ref-type=bibr]'))
+            message.append(', '.join(missing))
         return message
 
     def old_href_list(self, path):
