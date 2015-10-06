@@ -1058,10 +1058,10 @@ Referência Cruzada
 Referências no sistema autor-data serão identificados automaticamente no corpo do texto somente se o sobrenome do autor e a data estiverem com a identificação correta em Referências Bibliográficas e, apenas se o sobrenome do autor estiver identificado no corpo do texto exatamente igual ao que foi marcado em Refs.
 Há alguns casos que o programa Markup não irá fazer a marcação automática de [xref] do documento. Ex.:
 
-**Referências Bibliográficas**
+**Citações de autor**
 
 
-*Sobre nome do autor + informação "in press" ou derivados:*
+*Sobrenome do autor + informação "in press" ou derivados:*
 
 .. image:: img/doc-mkp-xref-noprelo.jpg
    :height: 200px
@@ -1378,8 +1378,8 @@ O programa identificará cada linha como [verseline]. Caso o poema apresente tí
 
 .. _citação:
 
-Citações
---------
+Citações Diretas
+----------------
 
 As citações são identificadas automaticamente no corpo do texto, ao fazer a marcação de [xmlbody]. Para isso, as citações devem ser alinhadas à direita com 4cm de recuo.
 

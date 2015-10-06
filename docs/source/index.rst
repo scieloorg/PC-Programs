@@ -25,6 +25,8 @@ Welcome to SciELO PC Programs' documentation!
     concepts.rst
 
     support.rst
+
+    faq-scielo-xml.rst
  
 
 
