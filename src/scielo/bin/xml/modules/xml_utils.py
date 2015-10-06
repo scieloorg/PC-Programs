@@ -200,6 +200,10 @@ def node_xml(node):
     return text
 
 
+def tostring(node):
+    return etree.tostring(node)
+
+
 def preserve_xml_entities(content):
     if '&' in content:
         content = content.replace('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>')
