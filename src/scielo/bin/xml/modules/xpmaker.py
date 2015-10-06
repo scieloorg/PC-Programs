@@ -633,6 +633,29 @@ def message_file_list(label, file_list):
     return '\n' + label + ': ' + str(len(file_list)) + '\n' + '\n'.join(sorted(file_list))
 
 
+def normalize_mixed_citations(content):
+    tree, e = xml_utils.load_xml(content)
+    if tree is not None:
+        root = tree.getroot()
+        doc = root.find('.')
+        refs = doc.findall('.//ref')
+        if refs is not None:
+            for ref in refs:
+                mixed_node = ref.find('mixed-citation')
+                if mixed_node is not None:
+                    mixed_node.text = ' '.join(mixed_node.text.strip().split())
+                    label = ref.findtext('label')
+                    if label is not None:
+                        label = label.strip()
+
+                        if not mixed_node.text.startswith(label):
+                            sep = '. ' if not mixed_node.text.startswith('.') and not label.endswith('.') else ''
+                            mixed_node.text = label + sep + mixed_node.text
+
+            content = xml_utils.tostring(root)
+    return content
+
+
 def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
 
@@ -647,7 +670,9 @@ def normalize_xml_content(doc_files_info, content, version):
         content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
     xml = xml_utils.is_xml_well_formed(content)
+    print(xml)
     if xml is not None:
+        content = normalize_mixed_citations(content)
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
         content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
         content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
