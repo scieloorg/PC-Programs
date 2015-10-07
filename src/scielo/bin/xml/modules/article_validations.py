@@ -973,8 +973,8 @@ class ArticleContentValidation(object):
                         missing[node.tag].append(_id)
 
         for tag, not_found in missing.items():
-            msg = ', '.join(['xref[@rid="' + _id + '"]' for _id in sorted(not_found)])
-            message.append((tag, 'ERROR', _('Missing') + ': ' + msg))
+            for xref_rid in not_found:
+                message.append((tag, 'ERROR', _('Missing') + ': ' + 'xref[@rid="' + xref_rid + '"]'))
 
         return message
 
@@ -998,7 +998,8 @@ class ArticleContentValidation(object):
                 missing = confirm_missing_items(missing, self.article.bibr_xref_ranges)
 
             if len(missing) > 0:
-                message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
+                for xref in missing:
+                    message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]: ' + xref))
 
         if self.article.is_bibr_xref_number:
             for start, end in self.article.bibr_xref_ranges:
