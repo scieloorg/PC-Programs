@@ -161,6 +161,7 @@ class ArticleXML(object):
         self._bibr_xref_ranges = None
         self._bibr_xref_parent_nodes = None
         self._is_bibr_xref_number = None
+        self._bibr_xref_nodes = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
@@ -220,39 +221,40 @@ class ArticleXML(object):
         return r
 
     @property
-    def xref_ranges(self):
+    def bibr_xref_ranges(self):
         if self._bibr_xref_ranges is None:
             self._bibr_xref_ranges = []
             for xref_parent_node, bibr_xref_node_items in self.bibr_xref_parent_nodes:
                 xref_parent_xml = xml_utils.tostring(xref_parent_node)
                 parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+                if len(bibr_xref_node_items) != len(parts) - 1:
+                    parts = xref_parent_xml.replace('<xref ref-type="bibr', '~BREAK~<xref ref-type="bibr').split('~BREAK~')
 
-                for k in range(1, len(parts)):
-                    text = ''
-                    delimiter = ''
-                    if '</xref>' in parts[k]:
-                        delimiter = '</xref>'
-                    elif '/>' in parts[k]:
-                        delimiter = '/>'
-                    if len(delimiter) > 0:
-                        text = parts[k][parts[k].find(delimiter)+len(delimiter):]
-                    if '-' in text:
-                        self._bibr_xref_ranges.append([bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
+                if len(bibr_xref_node_items) == len(parts) - 1:
+                    if len(bibr_xref_node_items) > 1:
+                        for k in range(1, len(bibr_xref_node_items)):
+                            text = ''
+                            delimiter = ''
+                            if '</xref>' in parts[k]:
+                                delimiter = '</xref>'
+                            elif '/>' in parts[k]:
+                                delimiter = '/>'
+                            if len(delimiter) > 0:
+                                text = parts[k][parts[k].find(delimiter)+len(delimiter):]
+                            if '-' in text:
+                                self._bibr_xref_ranges.append([bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
         return self._bibr_xref_ranges
 
     @property
     def is_bibr_xref_number(self):
         if self._is_bibr_xref_number is None:
-            if self.bibr_xref_parent_nodes is not None:
-                for node, bibr_xref_items in self.bibr_xref_parent_nodes:
-                    for bibr_xref in bibr_xref_items:
-                        if bibr_xref.text is not None:
-                            if bibr_xref.text.replace('(', '')[0].isdigit():
-                                self._is_bibr_xref_number = True
-                            else:
-                                self._is_bibr_xref_number = False
-                            break
-                    if self._is_bibr_xref_number is not None:
+            if self.bibr_xref_nodes is not None:
+                for bibr_xref in self.bibr_xref_nodes:
+                    if bibr_xref.text is not None:
+                        if bibr_xref.text.replace('(', '')[0].isdigit():
+                            self._is_bibr_xref_number = True
+                        else:
+                            self._is_bibr_xref_number = False
                         break
         return self._is_bibr_xref_number
 
@@ -266,6 +268,13 @@ class ArticleXML(object):
                     if len(bibr_xref) > 0:
                         self._bibr_xref_parent_nodes.append((node, bibr_xref))
         return self._bibr_xref_parent_nodes
+
+    @property
+    def bibr_xref_nodes(self):
+        if self._bibr_xref_nodes is None:
+            if self.tree is not None:
+                self._bibr_xref_nodes = self.tree.findall('.//xref[@ref-type="bibr"]')
+        return self._bibr_xref_nodes
 
     @property
     def xref_nodes(self):
@@ -895,8 +904,11 @@ class ArticleXML(object):
         _refstats = {}
         for ref in self.references:
             if not ref.publication_type in _refstats.keys():
-                _refstats[ref.publication_type] = 0
-            _refstats[ref.publication_type] += 1
+                pubtype = ref.publication_type
+                if ref.publication_type is None:
+                    pubtype = 'None'
+                _refstats[pubtype] = 0
+            _refstats[pubtype] += 1
         return _refstats
 
     @property

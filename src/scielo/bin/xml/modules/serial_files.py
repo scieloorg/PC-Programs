@@ -223,10 +223,11 @@ class IssueFiles(object):
             if not os.path.isdir(self.base_source_path):
                 os.makedirs(self.base_source_path)
             for f in os.listdir(xml_path):
-                try:
-                    shutil.copy(xml_path + '/' + f, self.base_source_path)
-                except:
-                    pass
+                if f.endswith('.xml'):
+                    try:
+                        shutil.copy(xml_path + '/' + f, self.base_source_path)
+                    except:
+                        pass
 
 
 def create_path(path):

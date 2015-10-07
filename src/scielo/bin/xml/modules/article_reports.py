@@ -303,13 +303,14 @@ class ArticleValidationReport(object):
             #items = [(label, status, msg) for label, status, msg in items if status != 'OK']
             new_items = []
             for item in items:
-                if len(item) != 3:
-                    utils.display_message('article_reports.validations()')
-                    utils.display_message(item)
-                else:
-                    label, status, msg = item
-                    if status != 'OK':
-                        new_items.append((label, status, msg))
+                if item is not None:
+                    if len(item) != 3:
+                        utils.debugging('article_reports.validations()')
+                        utils.debugging(item)
+                    else:
+                        label, status, msg = item
+                        if status != 'OK':
+                            new_items.append((label, status, msg))
             items = new_items
 
         r = html_reports.validations_table(items)
