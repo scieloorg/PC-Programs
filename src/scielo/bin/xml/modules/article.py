@@ -1613,3 +1613,78 @@ class Issue(object):
     @property
     def issue_label(self):
         return article_utils.format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)
+
+
+class InstitutionNormalizer(object):
+
+    def __init__(self, org_manager):
+        self.org_manager = org_manager
+
+    def find_institution(self, aff):
+        if aff.norgname is not None or aff.orgname is not None:
+            return institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+
+    def validate_institution(self, aff, found_institutions):
+        r = []
+        if found_institutions is not None:
+            if len(found_institutions) == 1:
+                orgname, city, state, country_code, country_name = found_institutions[0]
+                if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
+                    status = 'INFO'
+                    r.append(('normalized aff', status, _('Normalized institution name is valid: ') + '; '.join([', '.join(list(item)) for item in found_institutions])))
+                else:
+                    status = 'ERROR'
+                    r.append(('normalized aff', status, _('Similar normalized institution names: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
+            else:
+                msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in list(set([aff.orgname, aff.norgname])) if item is not None)
+                if len(found_institutions) == 0:
+                    r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution name by email: scielo-xml@googlegroups.com')))
+                else:
+                    r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in found_institutions])))
+        return r
+
+    def normalized_institution(self, aff_id, found_institutions):
+        aff = None
+        if found_institutions is not None:
+            if len(found_institutions) > 1:
+                found_institutions = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions]))
+            if len(found_institutions) == 1:
+                norm_city = None
+                norm_state = None
+                if len(found_institutions[0]) > 2:
+                    norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = found_institutions[0]
+                else:
+                    norm_orgname, norm_country_code = found_institutions[0]
+
+                aff = Affiliation()
+                aff.id = aff_id
+                aff.norgname = norm_orgname
+                aff.city = norm_city
+                aff.state = norm_state
+                aff.i_country = norm_country_code
+                aff.country = norm_country_name
+
+        return aff
+
+    def find_institution_items(self, affs):
+        found_institutions = {}
+        for aff in affs:
+            if aff.id is not None:
+                found_institutions[aff.id] = self.find_institution(aff)
+        return found_institutions
+
+    def normalized_institution_items(self, found_institutions):
+        normalized = []
+        for aff_id, found in found_institutions.items():
+            norm_aff = self.normalized_institution(aff_id, found)
+            if norm_aff is not None:
+                normalized.append(norm_aff)
+        return normalized
+
+    def validations(self, affiliations, found_institutions):
+        results = {}
+        for aff_id, found in found_institutions.items():
+            validation = self.validate_institution([aff for aff in affiliations if aff.id == aff_id][0], found)
+            if validation is not None:
+                results[aff_id] = validation
+        return results
