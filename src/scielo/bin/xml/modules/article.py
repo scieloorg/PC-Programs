@@ -158,6 +158,9 @@ class ArticleXML(object):
         self._epub_ppub_date = None
         self._received_date = None
         self._accepted_date = None
+        self._bibr_xref_ranges = None
+        self._bibr_xref_parent_nodes = None
+        self._is_bibr_xref_number = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
@@ -217,15 +220,52 @@ class ArticleXML(object):
         return r
 
     @property
-    def xref_parent_nodes(self):
-        parents = []
-        if self.tree is not None:
-            for node in self.tree.findall('.//*[xref]'):
-                bibr_xref = node.findall('xref[@ref-type="bibr"]')
-                if len(bibr_xref) > 0:
-                    l = [item.attrib.get('rid') for item in bibr_xref]
-                    parents.append((node, l))
-        return parents
+    def xref_ranges(self):
+        if self._bibr_xref_ranges is None:
+            self._bibr_xref_ranges = []
+            for xref_parent_node, bibr_xref_node_items in self.bibr_xref_parent_nodes:
+                xref_parent_xml = xml_utils.tostring(xref_parent_node)
+                parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+
+                for k in range(1, len(parts)):
+                    text = ''
+                    delimiter = ''
+                    if '</xref>' in parts[k]:
+                        delimiter = '</xref>'
+                    elif '/>' in parts[k]:
+                        delimiter = '/>'
+                    if len(delimiter) > 0:
+                        text = parts[k][parts[k].find(delimiter)+len(delimiter):]
+                    if '-' in text:
+                        self._bibr_xref_ranges.append([bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
+        return self._bibr_xref_ranges
+
+    @property
+    def is_bibr_xref_number(self):
+        if self._is_bibr_xref_number is None:
+            if self.bibr_xref_parent_nodes is not None:
+                for node, bibr_xref_items in self.bibr_xref_parent_nodes:
+                    for bibr_xref in bibr_xref_items:
+                        if bibr_xref.text is not None:
+                            if bibr_xref.text.replace('(', '')[0].isdigit():
+                                self._is_bibr_xref_number = True
+                            else:
+                                self._is_bibr_xref_number = False
+                            break
+                    if self._is_bibr_xref_number is not None:
+                        break
+        return self._is_bibr_xref_number
+
+    @property
+    def bibr_xref_parent_nodes(self):
+        if self._bibr_xref_parent_nodes is None:
+            self._bibr_xref_parent_nodes = []
+            if self.tree is not None:
+                for node in self.tree.findall('.//*[xref]'):
+                    bibr_xref = node.findall('xref[@ref-type="bibr"]')
+                    if len(bibr_xref) > 0:
+                        self._bibr_xref_parent_nodes.append((node, bibr_xref))
+        return self._bibr_xref_parent_nodes
 
     @property
     def xref_nodes(self):

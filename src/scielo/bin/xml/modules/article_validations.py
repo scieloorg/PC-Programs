@@ -13,7 +13,59 @@ import html_reports
 import institutions_service
 
 
-def confirm_missing_items(missing_xref_items, xref_parent_nodes):
+def confirm_missing_items(missing_xref_items, xref_ranges_items):
+    missing_numbers = [int(rid[1:]) for rid in missing_xref_items]
+    #print(missing_numbers)
+    not_missing = []
+    for node, xref_list in xref_parent_nodes:
+        # node = elemento que contem xref
+        numbers = [int(item.strip()[1:]) for item in xref_list]
+        p = xml_utils.tostring(node)
+        parts = p.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+        #print(parts)
+
+        i = 0
+        while i < len(numbers)-1:
+            n = numbers[i]
+            following = numbers[i+1]
+            if following - n > 1:
+                if n + 1 in missing_numbers:
+                    # testar xml
+                    #print('missing: ' + str(n + 1))
+                    k = i + 1
+                    text = ''
+                    if '</xref>' in parts[k]:
+                        text = parts[k][parts[k].find('</xref>')+len('</xref>'):]
+                    elif '/>' in parts[k]:
+                        text = parts[k][parts[k].find('/>')+len('/>'):]
+                    #print(text)
+                    xref_text = parts[k].split('>')
+                    following_xref_text = parts[k+1].split('>')
+                    #print(xref_text[0])
+                    #print(following_xref_text[0])
+                    #print(n)
+                    #print(following)
+                    if str(n) + '"' in xref_text[0] and str(following) + '"' in following_xref_text[0] and '-' in text:
+                        not_missing.append(n + 1)
+            i += 1
+    confirmed_missing = []
+    #print(missing_xref_items)
+    for item in missing_xref_items:
+        suggested_location = []
+        #print(item)
+        n = int(item[1:])
+        if not n in not_missing:
+            #print(n)
+            for node, xref_list in xref_parent_nodes:
+                numbers = [int(xref.strip()[1:]) for xref in xref_list]
+                p = xml_utils.tostring(node)
+                if n + 1 in numbers or n - 1 in numbers or str(n) in p:
+                    suggested_location.append(p)
+            confirmed_missing.append((item, suggested_location))
+    return confirmed_missing
+
+
+def old_confirm_missing_items(missing_xref_items, xref_parent_nodes):
     missing_numbers = [int(rid[1:]) for rid in missing_xref_items]
     #print(missing_numbers)
     not_missing = []
@@ -1030,7 +1082,8 @@ class ArticleContentValidation(object):
             message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
 
         if len(missing) > 0:
-            confirmed_missing = confirm_missing_items(missing, self.article.xref_parent_nodes)
+            if self.article.is_bibr_xref_number:
+                confirmed_missing = confirm_missing_items(missing, self.article.bibr_xref_parent_nodes)
             missing = [item for item, ign in confirmed_missing]
             is_valid = evaluate_missing_bibr_xref(len(self.article.references), len(missing))
             if is_valid:
