@@ -13,11 +13,27 @@ import html_reports
 import institutions_service
 
 
-def evaluate_missing_bibr_xref(total, missing):
-    total = total * 100
-    missing = missing * 100
-    perc = missing / total
-    return (perc <= 30)
+def confirm_missing_items(missing_xref_items, bibr_xref_ranges_items):
+    confirmed_missing = missing_xref_items
+    if len(bibr_xref_ranges_items) > 0:
+        missing_numbers = [int(rid[1:]) for rid in missing_xref_items]
+        not_missing = []
+        xref_range_numbers = []
+        for xref_range in bibr_xref_ranges_items:
+            # node = elemento que contem xref
+            xref_range_numbers.append([int(xref.attrib.get('rid', '').strip()[1:]) for xref in xref_range])
+
+        i = 0
+        for missing_number in missing_numbers:
+            for start, end in xref_range_numbers:
+                if start < missing_number < end:
+                    not_missing.append(missing_xref_items[i])
+            i += 1
+        confirmed_missing = []
+        for missing_xref in missing_xref_items:
+            if not missing_xref in not_missing:
+                confirmed_missing.append(missing_xref)
+    return confirmed_missing
 
 
 def check_lang(elem_name, lang):
@@ -942,8 +958,8 @@ class ArticleContentValidation(object):
                         missing[node.tag].append(_id)
 
         for tag, not_found in missing.items():
-            msg = ', '.join(['xref[@rid="' + _id + '"]' for _id in sorted(not_found)])
-            message.append((tag, 'ERROR', _('Missing') + ': ' + msg))
+            for xref_rid in not_found:
+                message.append((tag, 'ERROR', _('Missing') + ': ' + 'xref[@rid="' + xref_rid + '"]'))
 
         return message
 
@@ -961,36 +977,25 @@ class ArticleContentValidation(object):
         message = []
         if len(invalid_reftype) > 0:
             message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
+
         if len(missing) > 0:
-            is_valid = evaluate_missing_bibr_xref(len(self.article.references), len(missing))
-            if is_valid:
-                message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
-            else:
-                message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', _('To many missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
+            if self.article.is_bibr_xref_number:
+                missing = confirm_missing_items(missing, self.article.bibr_xref_ranges)
 
-        return message
+            if len(missing) > 0:
+                for xref in missing:
+                    message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]: ' + xref))
 
-    def old_href_list(self, path):
-        href_items = {'ok': [], 'warning': [], 'error': [], 'fatal error': []}
-        for hrefitem in self.article.hrefs:
-            if hrefitem.is_internal_file:
-                file_location = hrefitem.file_location(path)
-                if os.path.isfile(file_location):
-                    if not '.' in hrefitem.src:
-                        href_items['warning'].append(hrefitem)
-                    else:
-                        href_items['ok'].append(hrefitem)
-                else:
-                    href_items['fatal error'].append(hrefitem)
-            else:
-                if self.check_url:
-                    if article_utils.url_check(hrefitem.src, 1):
-                        href_items['ok'].append(hrefitem)
-                    else:
-                        href_items['warning'].append(hrefitem)
-                #else:
-                #    href_items['ok'].append(hrefitem)
-        return href_items
+        if self.article.is_bibr_xref_number:
+            for start, end in self.article.bibr_xref_ranges:
+                if start.attrib.get('rid') is not None and end.attrib.get('rid') is not None:
+                    if int(start.attrib.get('rid')[1:]) > int(end.attrib.get('rid')[1:]):
+                        message.append(('xref', 'ERROR', _('Invalid values for @rid={rid} or xref={xref} or @rid={rid2} or xref={xref2}').format(rid=start.attrib.get('rid'), xref=start.text, rid2=end.attrib.get('rid'), xref2=end.text)))
+            for bibr_xref in self.article.bibr_xref_nodes:
+                rid = bibr_xref.attrib.get('rid')
+                if rid is not None and bibr_xref.text is not None:
+                    if not rid[1:] in bibr_xref.text and not bibr_xref.text.replace('(', '').replace(')', '') in rid:
+                        message.append(('xref/@rid', 'ERROR', _('Invalid values for @rid={rid} or xref={xref}').format(rid=rid, xref=bibr_xref.text)))
 
     def href_list(self, path):
         href_items = {}

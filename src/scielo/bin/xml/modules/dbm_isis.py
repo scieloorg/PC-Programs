@@ -45,7 +45,7 @@ def format_value(content):
         utils.debbuging(e)
         utils.debbuging(content)
 
-    return content
+    return content.strip()
 
 
 class IDFile(object):

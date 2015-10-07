@@ -200,6 +200,10 @@ def node_xml(node):
     return text
 
 
+def tostring(node):
+    return etree.tostring(node)
+
+
 def preserve_xml_entities(content):
     if '&' in content:
         content = content.replace('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>')
@@ -498,13 +502,15 @@ def is_valid_xml_path(xml_path):
 
 
 def remove_tags(content):
-    content = content.replace('<', '~BREAK~<')
-    content = content.replace('>', '>~BREAK~')
-    parts = content.split('~BREAK~')
-    new = []
-    for item in parts:
-        if item.startswith('<') and item.endswith('>'):
-            pass
-        else:
-            new.append(item)
-    return ''.join(new)
+    if content is not None:
+        content = content.replace('<', '~BREAK~<')
+        content = content.replace('>', '>~BREAK~')
+        parts = content.split('~BREAK~')
+        new = []
+        for item in parts:
+            if item.startswith('<') and item.endswith('>'):
+                pass
+            else:
+                new.append(item)
+        content = ''.join(new)
+    return content
