@@ -953,9 +953,10 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         if toc_f == 0:
             org_manager = institutions_service.OrgManager()
             org_manager.load()
+            institution_normalizer = article.InstitutionNormalizer(org_manager)
 
             #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, xml_generation)
-            articles_pkg.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, from_converter, xml_generation)
+            articles_pkg.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, from_converter, xml_generation)
 
             if not xml_generation:
                 report_components['detail-report'] = articles_pkg_reports.detail_report()

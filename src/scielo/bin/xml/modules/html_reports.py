@@ -252,8 +252,8 @@ def format_html_data(value, width=30):
         r = value
     elif '<' in value and '>' in value:
         r = display_xml(value, width)
-    elif len(value) > (width * 1.2):
-        r = display_xml(value, width)
+    #elif len(value) > (width * 1.2):
+    #    r = display_xml(value, width)
     else:
         r = value
     return r

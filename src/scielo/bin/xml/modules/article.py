@@ -6,6 +6,7 @@ import article_utils
 import xml_utils
 import attributes
 import utils
+import institutions_service
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
@@ -709,7 +710,9 @@ class ArticleXML(object):
 
                 a.xml = xml_utils.node_xml(aff)
                 a.id = aff.get('id')
-                a.label = aff.findtext('label')
+                if aff.find('label') is not None:
+                    a.label = ' '.join(aff.find('label').itertext())
+                    print(a.label)
                 country = aff.findall('country')
                 a.country = nodetext(country)
                 if not country is None:
@@ -980,14 +983,7 @@ class ArticleXML(object):
                 _illustrative_materials.append('TAB')
             figs = len(self.tree.findall('.//fig'))
             if figs > 0:
-                maps = len(self.tree.findall('.//fig[@fig-type="map"]'))
-                gras = len(self.tree.findall('.//fig[@fig-type="graphic"]'))
-                if maps > 0:
-                    _illustrative_materials.append('MAP')
-                if gras > 0:
-                    _illustrative_materials.append('GRA')
-                if figs - gras - maps > 0:
-                    _illustrative_materials.append('ILUS')
+                _illustrative_materials.append('GRA')
 
         if len(_illustrative_materials) > 0:
             return _illustrative_materials
@@ -1093,6 +1089,7 @@ class Article(ArticleXML):
         self._queried_doi_pid = None
         self.registered_aop_pid = None
         self._previous_pid = None
+        self.normalized_affiliations = None
 
     @property
     def clinical_trial_url(self):
@@ -1613,3 +1610,45 @@ class Issue(object):
     @property
     def issue_label(self):
         return article_utils.format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)
+
+
+class InstitutionNormalizer(object):
+
+    def __init__(self, org_manager):
+        self.org_manager = org_manager
+
+    def normalized_institution(self, aff):
+        norm_aff = None
+        found_institutions = None
+        orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
+        if aff.norgname is not None or aff.orgname is not None:
+            found_institutions = institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+
+        if found_institutions is not None:
+            if len(found_institutions) == 1:
+                valid = found_institutions
+            else:
+                valid = []
+                if aff.i_country is None:
+                    for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
+                        if norm_orgname.upper() in orgnames:
+                            valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+                else:
+                    for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
+                        if norm_orgname.upper() in orgnames and aff.i_country == norm_country_code:
+                            valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+                if len(valid) > 1:
+                    valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
+            if len(valid) == 1:
+                norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = valid[0]
+
+                if norm_orgname is not None and norm_country_code is not None:
+                    norm_aff = Affiliation()
+                    norm_aff.id = aff.id
+                    norm_aff.norgname = norm_orgname
+                    norm_aff.city = norm_city
+                    norm_aff.state = norm_state
+                    norm_aff.i_country = norm_country_code
+                    norm_aff.country = norm_country_name
+
+        return (norm_aff, found_institutions)

@@ -10,7 +10,6 @@ import fs_utils
 import utils
 import html_reports
 import dbm_isis
-
 import xc_models
 import pkg_reports
 import xml_utils
@@ -18,7 +17,6 @@ import xml_versions
 import xpmaker
 import xc
 import xc_config
-
 import attributes
 
 
@@ -514,7 +512,7 @@ def convert_package(src_path):
             #utils.debugging('pkg_reports.ArticlesPkgReport')
             selected_articles_pkg_reports = pkg_reports.ArticlesPkgReport(selected_articles_pkg)
             #utils.debugging('validate_articles_pkg_xml_and_data')
-            selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, False, xml_doc_actions)
+            selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, validate_order, False, xml_doc_actions)
             pkg_quality_fatal_errors = selected_articles_pkg.pkg_xml_structure_validations.fatal_errors + selected_articles_pkg.pkg_xml_content_validations.fatal_errors
 
             pkg_manager.pkg_xml_structure_validations = selected_articles_pkg.pkg_xml_structure_validations
@@ -729,6 +727,9 @@ def convert_articles(issue_files, pkg_manager, xml_doc_actions, registered_artic
                 creation_date = None if not xml_name in registered_articles.keys() else registered_articles[xml_name].creation_date
 
                 #utils.debugging('convert_articles: create_id_file')
+
+                normalize_affiliations(article)
+
                 saved = converter_env.db_article.create_id_file(pkg_manager.issue_models.record, article, article_files, creation_date)
                 if saved:
                     #utils.debugging('convert_articles: unmatched_orders')
@@ -1117,7 +1118,8 @@ def execute_converter(package_paths, collection_name=None):
                 utils.display_message(package_path)
                 utils.display_message(e)
                 utils.display_message('-'*10)
-                #raise
+                #if len(package_path) == 1:
+                #    raise
                 bad_pkg_files.append(package_path)
                 bad_pkg_files.append(str(e))
                 report_location, report_path, scilista_item = [None, None, None]
@@ -1153,6 +1155,14 @@ def execute_converter(package_paths, collection_name=None):
     utils.display_message(_('finished'))
 
 
+def normalize_affiliations(article):
+    article.normalized_affiliations = {}
+    for aff in article.affiliations:
+        norm_aff, ign = converter_env.institution_normalizer.normalized_institution(aff)
+        if norm_aff is not None:
+            article.normalized_affiliations[aff.id] = norm_aff
+
+
 def prepare_env(config):
     global converter_env
 
@@ -1174,7 +1184,10 @@ def prepare_env(config):
     org_manager = institutions_service.OrgManager()
     org_manager.load()
 
-    converter_env.db_article = xc_models.ArticleDAO(converter_env.db_isis, org_manager)
+    from article import InstitutionNormalizer
+    converter_env.institution_normalizer = InstitutionNormalizer(org_manager)
+
+    converter_env.db_article = xc_models.ArticleDAO(converter_env.db_isis)
 
     converter_env.local_web_app_path = config.local_web_app_path
     converter_env.serial_path = config.serial_path
