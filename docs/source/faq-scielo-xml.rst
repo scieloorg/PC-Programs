@@ -104,7 +104,9 @@ Verifique no link [2] o manual de uso do validador.
 StyleChecker: é uma ferramenta web que fornece relatório detalhado sobre a conformidade de um dado XML em relação à especificação SciELO PS [3].
 
 [1] <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/installation.html#installation>
+
 [2] <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/xml_package_maker.html>
+
 [3] <http://manager.scielo.org/tools/validators/stylechecker/>
 
 
