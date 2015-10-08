@@ -296,8 +296,9 @@ def validate_organization(org_manager, orgname, norgname, country_name, country_
         fixed = []
         for orgname, city, state, country_code, country_name in _results:
             fixed.append((orgname, '', '', country_code, country_name))
+        fixed = list(set(fixed))
         if len(fixed) == 1:
-            _results = list(set(fixed))
+            _results = fixed
     return _results
 
 

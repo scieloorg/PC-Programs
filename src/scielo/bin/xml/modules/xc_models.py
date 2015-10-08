@@ -221,8 +221,7 @@ class RegisteredArticle(object):
 
 class ArticleRecords(object):
 
-    def __init__(self, org_manager, article, i_record, article_files, creation_date=None):
-        self.org_manager = org_manager
+    def __init__(self, article, i_record, article_files, creation_date=None):
         self.article = article
         self.article_files = article_files
         self.i_record = i_record
@@ -361,7 +360,7 @@ class ArticleRecords(object):
         self._metadata['14']['e'] = self.article.elocation_id
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
-        self._metadata['240'] = normalized_affiliations(self.org_manager, self.article.affiliations)
+        self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -381,7 +380,7 @@ class ArticleRecords(object):
         records_c = []
         for item in self.article.references:
             rec_c = {}
-            rec_c['865'] = self.i_record.get('65')
+            rec_c['865'] = self._metadata.get('65')
             rec_c['71'] = item.publication_type
 
             if item.article_title is not None or item.chapter_title is not None:
@@ -425,9 +424,13 @@ class ArticleRecords(object):
             rec_c['63'] = item.edition
             rec_c['64'] = item.year
             if item.formatted_year is not None:
-                y = item.formatted_year[0:4]
-                if y.isdigit():
-                    rec_c['65'] = y + '0000'
+                y = item.formatted_year
+                if y.isdigit() and len(y) == 8:
+                    rec_c['65'] = y
+                else:
+                    y = y[0:4]
+                    if y.isdigit():
+                        rec_c['65'] = y + '0000'
             rec_c['66'] = item.publisher_loc
             rec_c['62'] = item.publisher_name
             rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range, 'e': item.elocation_id}
@@ -738,8 +741,7 @@ class IssueDAO(object):
 
 class ArticleDAO(object):
 
-    def __init__(self, dao, org_manager):
-        self.org_manager = org_manager
+    def __init__(self, dao):
         self.dao = dao
 
     def create_id_file(self, i_record, article, article_files, creation_date=None):
@@ -751,7 +753,7 @@ class ArticleDAO(object):
             os.makedirs(os.path.dirname(article_files.issue_files.base))
 
         if article.order != '00000':
-            article_records = ArticleRecords(self.org_manager, article, i_record, article_files, creation_date)
+            article_records = ArticleRecords(article, i_record, article_files, creation_date)
             if os.path.isfile(article_files.id_filename):
                 try:
                     os.unlink(article_files.id_filename)
@@ -1089,8 +1091,7 @@ def format_affiliations(affiliations):
         a['3'] = item.orgdiv3
         a['2'] = item.orgdiv2
         a['1'] = item.orgdiv1
-        a['p'] = item.country if item.i_country is None else item.i_country
-        a['q'] = item.country if item.i_country is not None else None
+        a['p'] = item.country
         a['c'] = item.city
         a['s'] = item.state
         a['_'] = item.orgname
@@ -1098,26 +1099,15 @@ def format_affiliations(affiliations):
     return affs
 
 
-def normalized_affiliations(org_manager, affiliations):
+def format_normalized_affiliations(affiliations):
     affs = []
-    for item in affiliations:
-        if item.id is not None and (item.orgname is not None or item.norgname is not None):
-            result_items = institutions_service.validate_organization(org_manager, item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
-            if len(result_items) > 1:
-                result_items = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in result_items]))
-            if len(result_items) == 1:
-                norm_city = None
-                norm_state = None
-                if len(result_items[0]) > 2:
-                    norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = result_items[0]
-                else:
-                    norm_orgname, norm_country_code = result_items[0]
-                a = {}
-                a['i'] = item.id
-                a['p'] = norm_country_code
-                a['_'] = norm_orgname
-                a['c'] = norm_city
-                a['s'] = norm_state
-                affs.append(a)
-
+    for aff in affiliations.values():
+        if aff.id is not None and aff.i_country is not None and aff.norgname is not None:
+            a = {}
+            a['i'] = aff.id
+            a['p'] = aff.i_country
+            a['_'] = aff.norgname
+            a['c'] = aff.city
+            a['s'] = aff.state
+            affs.append(a)
     return affs
