@@ -1105,9 +1105,6 @@ class Article(ArticleXML):
                 _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
                 r.append(_table)
         return r
-=======
-        self.normalized_affiliations = None
->>>>>>> 6481d910af9131ca65ac891b0d46be73b8bed71e
 
     @property
     def clinical_trial_url(self):
