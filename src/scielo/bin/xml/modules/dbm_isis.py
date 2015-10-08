@@ -104,7 +104,9 @@ class IDFile(object):
         try:
             first = u''
             value = u''
-            for k, v in subf_and_value_list.items():
+            #for k, v in subf_and_value_list.items():
+            for k in sorted(subf_and_value_list.keys()):
+                v = subf_and_value_list[k]
                 if v is not None and v != '' and len(k) == 1:
                     v = format_value(v)
                     v = change_circ(v)
@@ -128,7 +130,7 @@ class IDFile(object):
                     tag = '000' + tag
                     tag = tag[-3:]
                     value = format_value(value)
-                    value = change_circ(value)
+                    #value = change_circ(value)
                     r = '!v' + tag + '!' + value + '\n'
                 except Exception as e:
                     utils.debbuging('tag_content: ')

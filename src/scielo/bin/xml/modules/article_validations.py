@@ -614,6 +614,7 @@ class ArticleContentValidation(object):
         labels.append('country')
         labels.append('country/@country')
 
+        self.article.normalized_affiliations = {}
         for aff in self.article.affiliations:
             text = aff.original if aff.original is not None else aff.xml
             r.append(('aff xml', 'INFO', aff.xml))
@@ -628,9 +629,20 @@ class ArticleContentValidation(object):
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
 
-            if self.article.affiliations_validations.get(aff.id) is not None:
-                for result in self.article.affiliations_validations.get(aff.id):
-                    r.append(result)
+            norm_aff, found_institutions = self.org_manager.normalized_institution(aff)
+            r.append(('aff', 'INFO', ', '.join([item for item in [aff.orgname, aff.city, aff.state, aff.country] if item is not None])))
+            r.append(('normalized aff', 'INFO', ', '.join([item for item in [aff.norgname, aff.i_country] if item is not None])))
+
+            if norm_aff is None:
+                msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in list(set([aff.orgname, aff.norgname])) if item is not None)
+                if found_institutions is not None:
+                    if len(found_institutions) > 0:
+                        msg += _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in found_institutions])
+                r.append(('normalized aff checked', 'ERROR', msg))
+            else:
+                status = 'INFO'
+                r.append(('normalized aff checked', 'INFO', _('Valid: ') + ', '.join([item for item in [norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country] if item is not None])))
+                self.article.normalized_affiliations[aff.id] = norm_aff
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
             i = 0

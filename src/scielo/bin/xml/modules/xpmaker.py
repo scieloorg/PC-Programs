@@ -672,6 +672,7 @@ def normalize_xml_content(doc_files_info, content, version):
     xml = xml_utils.is_xml_well_formed(content)
     if xml is not None:
         content = normalize_mixed_citations(content)
+        content = content.replace('&amp;amp;', '&amp;')
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
         content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
         content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
@@ -681,9 +682,9 @@ def normalize_xml_content(doc_files_info, content, version):
 
         for style in ['sup', 'sub', 'bold', 'italic']:
             content = content.replace('<' + style + '/>', '')
-            content = content.replace('<' + style + '> </' + style + '>', '')
+            content = content.replace('<' + style + '> </' + style + '>', ' ')
             content = content.replace('<' + style + '></' + style + '>', '')
-            content = content.replace('</' + style + '> <' + style + '>', '')
+            content = content.replace('</' + style + '> <' + style + '>', ' ')
             content = content.replace('</' + style + '><' + style + '>', '')
 
         content = xml_utils.pretty_print(content)

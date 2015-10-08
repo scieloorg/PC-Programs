@@ -271,7 +271,6 @@ class ArticleRecords(object):
         self._metadata['14']['e'] = self.article.elocation_id
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
-
         self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
@@ -292,7 +291,7 @@ class ArticleRecords(object):
         records_c = []
         for item in self.article.references:
             rec_c = {}
-            rec_c['865'] = self.i_record.get('65')
+            rec_c['865'] = self._metadata.get('65')
             rec_c['71'] = item.publication_type
 
             if item.article_title is not None or item.chapter_title is not None:
@@ -336,9 +335,13 @@ class ArticleRecords(object):
             rec_c['63'] = item.edition
             rec_c['64'] = item.year
             if item.formatted_year is not None:
-                y = item.formatted_year[0:4]
-                if y.isdigit():
-                    rec_c['65'] = y + '0000'
+                y = item.formatted_year
+                if y.isdigit() and len(y) == 8:
+                    rec_c['65'] = y
+                else:
+                    y = y[0:4]
+                    if y.isdigit():
+                        rec_c['65'] = y + '0000'
             rec_c['66'] = item.publisher_loc
             rec_c['62'] = item.publisher_name
             rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range, 'e': item.elocation_id}
@@ -1099,8 +1102,7 @@ def format_affiliations(affiliations):
         a['3'] = item.orgdiv3
         a['2'] = item.orgdiv2
         a['1'] = item.orgdiv1
-        a['p'] = item.country if item.i_country is None else item.i_country
-        a['q'] = item.country if item.i_country is not None else None
+        a['p'] = item.country
         a['c'] = item.city
         a['s'] = item.state
         a['_'] = item.orgname
@@ -1110,7 +1112,7 @@ def format_affiliations(affiliations):
 
 def format_normalized_affiliations(affiliations):
     affs = []
-    for aff in affiliations:
+    for aff in affiliations.values():
         if aff.id is not None and aff.i_country is not None and aff.norgname is not None:
             a = {}
             a['i'] = aff.id
