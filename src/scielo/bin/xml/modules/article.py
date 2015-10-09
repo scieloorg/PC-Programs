@@ -509,6 +509,8 @@ class ArticleXML(object):
         authors = self.contrib_names
         if len(authors) > 0:
             surname = authors[0].surname
+            if authors[0].suffix is not None:
+                surname += ' ' + authors[0].suffix
         return surname
 
     @property
@@ -712,7 +714,6 @@ class ArticleXML(object):
                 a.id = aff.get('id')
                 if aff.find('label') is not None:
                     a.label = ' '.join(aff.find('label').itertext())
-                    print(a.label)
                 country = aff.findall('country')
                 a.country = nodetext(country)
                 if not country is None:
