@@ -1,7 +1,7 @@
 .. _faq-scielo:
 
-FAQ SciELO
-==========
+Perguntas Frequentes
+====================
 
 Processo de Adoção da publicação em XML
 ---------------------------------------
@@ -72,7 +72,7 @@ A diagramação do impresso poderá continuar da mesma forma como é realizada a
 7. O SciELO oferece algum software que auxilie os editores a produzir os artigos em XML?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-O SciELO desenvolveu algumas ferramentas para validação do XML segundo SciELO Publishing Schema. Caso o editor não possua nenhuma ferramenta para a geração de XML, poderá usar os programas de marcação e produção do XML, bem como, ferramentas de validação utilizadas no processo de produção e publicação segundo SciELO PS (ver item 9: :ref:`ferramentas-scielo`). 
+O SciELO desenvolveu algumas ferramentas para validação do XML segundo SciELO Publishing Schema. Caso o editor não possua nenhuma ferramenta para a geração de XML, poderá usar os programas de marcação e produção do XML, bem como, ferramentas de validação utilizadas no processo de produção e publicação segundo SciELO PS (ver item :ref:`ferramentas-scielo`). 
 O programa de Marcação, desenvolvido por SciELO, funciona apenas em Windows, ou seja, não há a possibilidade de utilizar o programa com diferentes sistemas operacionais como Linux, por exemplo. 
 Ele é um pug-in do word, o qual encontra-se disponível em:
 
@@ -99,13 +99,15 @@ Sim, verifique a documentação online de instrução de uso do programa Markup 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sim. O SciELO desenvolveu duas ferramentas que ajudam na validação do arquivo .xml. Veja abaixo os programas disponíveis:
-Package Maker: este programa está disponível no FTP SciELO produtos (xpm-4.0.090.EXE). Para instalar o programa consultar o link `a link`_[1]. Este programa apresenta um relatório de erros informando possíveis problemas no XML, renomeia arquivos de acordo com o padrão SciELO PS e separa em pacotes.
-Verifique no link `a link`_[2] o manual de uso do validador.
-StyleChecker: é uma ferramenta web que fornece relatório detalhado sobre a conformidade de um dado XML em relação à especificação SciELO PS  `a link`_[3].
+Package Maker: este programa está disponível no FTP SciELO produtos (xpm-4.0.090.EXE). Para instalar o programa consultar o link [1]. Este programa apresenta um relatório de erros informando possíveis problemas no XML, renomeia arquivos de acordo com o padrão SciELO PS e separa em pacotes.
+Verifique no link [2] o manual de uso do validador.
+StyleChecker: é uma ferramenta web que fornece relatório detalhado sobre a conformidade de um dado XML em relação à especificação SciELO PS [3].
 
-.. _a link: [1] <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/installation.html#installation>
-.. _a link: [2] <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/xml_package_maker.html>
-.. _a link: [3] <http://manager.scielo.org/tools/validators/stylechecker/>
+[1] <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/installation.html#installation>
+
+[2] <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/xml_package_maker.html>
+
+[3] <http://manager.scielo.org/tools/validators/stylechecker/>
 
 
 .. _exemplos-xml:
@@ -131,7 +133,7 @@ O guia de uso dos elementos e atributos do SciELO Publishing Schema descreve o e
 12 .  Produzi meu arquivo XML, posso enviar para SciELO verificar?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Utilize primeiramente as ferramentas de validação (ver item 9).
+Utilize primeiramente as ferramentas de validação (ver item :ref:`ferramentas-scielo`).
 Caso não consiga identificar e/ou corrigir os problemas apresentados, você deve consultar ou enviar suas dúvidas a lista de discussão scielo-xml@googlegroups.com, a qual será respondida em até 72 horas.
 
 
