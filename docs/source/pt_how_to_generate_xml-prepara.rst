@@ -21,6 +21,70 @@ Veja abaixo os requisitos para a marcação do documento.
          Exemplo: ACB_2345.doc
 
 
+Arquivos de entrada para o Markup
+=================================
+
+Periódicos do www.scielo.org
+............................
+
+Somente se é um periódico do www.scielo.org, use o menú para atualizar a lista de periódicos.
+
+   .. image:: img/scielo_menu_download_journals.png
+
+
+Se você trabalha com apenas 1 coleção ou periódico, a melhor opção é abrir uma sessão de DOS e escrever os dois seguintes comandos, onde está <collection_name>, coloque o nome da coleção correspondente.
+
+  .. code::
+
+     cd \scielo\bin\xml
+     python download_markup_journals.py "<collection_name>"
+
+  
+Exemplos:
+
+  .. code::
+
+    python download_markup_journals.py "Brazil"
+    python download_markup_journals.py "Public Health"
+
+
+Coleções:
+
+  * Argentina
+  * Bolivia
+  * Brazil
+  * Chile
+  * Colombia
+  * Costa Rica
+  * Cuba
+  * Mexico
+  * Peru
+  * Portugal
+  * Public Health
+  * Social Sciences
+  * South Africa
+  * Spain
+  * Uruguay
+
+
+Outros periódicos
+.................
+
+Não deve existir o arquivo /scielo/bin/markup/markup_journals_list.csv. Se existe, apague-o.
+
+No lugar, deve existir:
+
+- ??_issue.mds: atualizado/criado assim que qualquer dado de fascículo é criado ou atualizado
+- journal-standard.txt: atualizado/criado assim que qualquer dado de periódico é criado ou atualizado
+
+Estes arquivos são gerado pelo programa `Title Manager <titlemanager.html>`_ ou `SciELO Manager <http://docs.scielo.org/projects/scielo-manager/en/latest/>`_.
+
+
+.. note::
+   Title Manager gera estes arquivos em /scielo/bin/markup no computador onde Title Manager é executado.
+   Então, se o Markup é usado em outro computador, é necessário copiar estes arquivos para o computadr onde o Markup é executado.
+
+
 .. _estrutura-de-pastas:
 
 Estrutura de pastas
