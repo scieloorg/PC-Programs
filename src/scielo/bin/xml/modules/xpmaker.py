@@ -29,7 +29,7 @@ log_items = []
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-EXPECTED_SIZE = 800
+EXPECTED_SIZE = 400
 
 
 def xpm_version():
@@ -365,7 +365,7 @@ def fix_sgml_xml(content):
     return content
 
 
-def hdimages_to_jpeg(source_path, jpg_path, replace=False):
+def notjpg_to_jpg(source_path, jpg_path, replace=False):
     try:
         from PIL import Image
         IMG_CONVERTER = True
@@ -384,20 +384,49 @@ def hdimages_to_jpeg(source_path, jpg_path, replace=False):
                         doit = True
                 else:
                     doit = True
-            elif item.endswith('.jpg'):
-                im = Image.open(image_filename)
-                if im.size[0] > EXPECTED_SIZE:
-                    doit = True
             if doit:
                 try:
                     im = Image.open(image_filename)
                     im.thumbnail(im.size)
-                    #im.resize((im.size[0]*r, im.size[1]*r), Image.ANTIALIAS)
                     im.save(jpg_filename, "JPEG")
                     utils.display_message(jpg_filename)
                 except Exception as inst:
                     utils.display_message('Unable to generate ' + jpg_filename)
                     utils.display_message(inst)
+
+
+def package_resize_large_jpg(source_path, jpg_path):
+    if source_path == jpg_path:
+        for item in os.listdir(source_path):
+            if item.endswith('.jpg') and item.startswith('bkp-'):
+                shutil.copyfile(source_path + '/' + item, jpg_path + '/bkp-' + item)
+                resize_jpg(source_path + '/' + item, jpg_path + '/' + item)
+    else:
+        for item in os.listdir(source_path):
+            if item.endswith('.jpg'):
+                resize_jpg(source_path + '/' + item, jpg_path + '/' + item)
+
+
+def resize_jpg(large_jpg_filename, jpg_filename):
+    try:
+        from PIL import Image
+        IMG_CONVERTER = True
+    except Exception as e:
+        IMG_CONVERTER = False
+        utils.display_message(e)
+
+    if IMG_CONVERTER:
+        basewidth = 300
+        img = Image.open(large_jpg_filename)
+        if basewidth < img.size[0]:
+            print('--')
+            print(img.size)
+            wpercent = (basewidth/float(img.size[0]))
+            hsize = int((float(img.size[1])*float(wpercent)))
+            img = img.resize((basewidth, hsize), Image.ANTIALIAS)
+            print(img.size)
+            img.save(jpg_filename)
+            print(jpg_filename)
 
 
 def generate_new_name(doc, param_acron='', original_xml_name=''):
@@ -873,7 +902,8 @@ def zip_package(pkg_path, zip_name):
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron):
     if len(xml_files) > 0:
         path = os.path.dirname(xml_files[0])
-        hdimages_to_jpeg(path, path, False)
+        notjpg_to_jpg(path, path, False)
+        #package_resize_large_jpg(path, path)
 
     utils.display_message('\n')
     utils.display_message(_('Make packages for ') + str(len(xml_files)) + _(' files.'))
