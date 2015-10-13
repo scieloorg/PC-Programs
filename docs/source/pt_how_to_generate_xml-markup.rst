@@ -880,14 +880,16 @@ Exemplo, selecione a figura com seu respectivo label e caption e identifique com
 .. note:: Assegure-se de que o id da figura de apêndice é único no documento.
 
 
-Para apêndices que apresentam parágrafos, selecione o dado apresentado e identifique com o elemento [sec]:
+Para apêndices que apresentam parágrafos, selecione o título do apêndice e identifique com o elemento [sectitle]
 
-.. image:: img/doc-mkp-app-sec-select.jpg
+.. image:: img/doc-mkp-sectitle-app-paragrafo1.jpg
    :height: 300px
    :align: center
 
 
-.. image:: img/doc-mkp-app-sec.jpg
+Em seguida, selecione o parágrafo e marque com a tag [p]
+
+.. image:: img/doc-mkp-sectitle-app-paragrafo2.jpg
    :height: 300px
    :align: center
 
@@ -1531,8 +1533,10 @@ Material Suplementar
 A identificação de materiais suplementares deve ser feita pela tag [supplmat]. A indicação de Material suplementar pode estar em linha, como um parágrafo "solto" no documento ou como apêndice.
 
 
-Material Suplementar
-^^^^^^^^^^^^^^^^^^^^
+.. _suplemento-em-paragrafo:
+
+Objeto Suplementar em [xmlbody]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Selecione toda a informação de material suplementar, incluindo label e caption - se existir - e identifique com o elemento [supplmat]:
 
@@ -1548,12 +1552,14 @@ Na janela aberta pelo programa,  preencha o campo de "id", o qual deverá ser ú
    :height: 200px
    :align: center
 
-Na sequência, faça a identificação do label do material suplementar e em seguida selecione toda a informação de figura e marque com p botão [figgrp]. A marcação deverá ser conforme segue o exemplo abaixo:
+Na sequência, faça a identificação do label do material suplementar e em seguida selecione toda a informação de figura e marque com o botão [figgrp]. A marcação deverá ser conforme segue o exemplo abaixo:
 
 .. image:: img/doc-mkp-suppl2.jpg
    :height: 300px
    :align: center
 
+
+.. _suplemento-em-linha:
 
 Material Suplementar em Linha
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1580,6 +1586,7 @@ A marcação deverá ser conforme segue abaixo:
           pasta "src" comentado em `Estrutura de Pastas <pt_how_to_generate_xml-prepara.html#estrutura-de-pastas>`_.
 
 
+.. _suplemento-em-apendice:
 
 Material Suplementar em Apêndice
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -234,6 +234,17 @@ class ArticleDisplayReport(object):
         return r
 
     @property
+    def table_tables(self):
+        r = html_reports.tag('p', 'Tables:', 'label')
+        for t in self.article.tables:
+            if t.table:
+                table_data = ''
+                table_data += html_reports.display_labeled_value('label', t.label, 'label')
+                table_data += html_reports.tag('div', t.table, 'element-table')
+                r += html_reports.tag('div', table_data, 'block')
+        return r
+
+    @property
     def affiliations(self):
         r = html_reports.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
@@ -511,6 +522,7 @@ def article_data_and_validations_report(article, new_name, package_path, is_db_g
             content.append(article_display_report.article_front)
 
         content.append(article_validation_report.validations(is_sgml_generation))
+        content.append(article_display_report.table_tables)
         content.append(article_display_report.files_and_href)
 
         if is_sgml_generation:
