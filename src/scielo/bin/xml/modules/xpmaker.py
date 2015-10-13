@@ -29,7 +29,6 @@ log_items = []
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-EXPECTED_SIZE = 400
 
 
 def xpm_version():
@@ -365,7 +364,7 @@ def fix_sgml_xml(content):
     return content
 
 
-def notjpg_to_jpg(source_path, jpg_path, replace=False):
+def hdimages_to_jpeg(source_path, jpg_path, replace=False):
     try:
         from PIL import Image
         IMG_CONVERTER = True
@@ -377,22 +376,22 @@ def notjpg_to_jpg(source_path, jpg_path, replace=False):
         for item in os.listdir(source_path):
             image_filename = source_path + '/' + item
             jpg_filename = source_path + '/' + item[0:item.rfind('.')] + '.jpg'
-            doit = False
             if item.endswith('.tiff') or item.endswith('.eps') or item.endswith('.tif'):
+                doit = False
                 if os.path.isfile(jpg_filename):
                     if replace:
                         doit = True
                 else:
                     doit = True
-            if doit:
-                try:
-                    im = Image.open(image_filename)
-                    im.thumbnail(im.size)
-                    im.save(jpg_filename, "JPEG")
-                    utils.display_message(jpg_filename)
-                except Exception as inst:
-                    utils.display_message('Unable to generate ' + jpg_filename)
-                    utils.display_message(inst)
+                if doit:
+                    try:
+                        im = Image.open(image_filename)
+                        im.thumbnail(im.size)
+                        im.save(jpg_filename, "JPEG")
+                        utils.display_message(jpg_filename)
+                    except Exception as inst:
+                        utils.display_message('Unable to generate ' + jpg_filename)
+                        utils.display_message(inst)
 
 
 def package_resize_large_jpg(source_path, jpg_path):
@@ -669,10 +668,9 @@ def message_file_list(label, file_list):
 
 
 def normalize_mixed_citations(content):
-    replacement = {}
     tree, e = xml_utils.load_xml(content)
     if tree is not None:
-
+        replacement = {}
         root = tree.getroot()
         doc = root.find('.')
         refs = doc.findall('.//ref')
@@ -689,6 +687,8 @@ def normalize_mixed_citations(content):
                             replacement[mixed] = label + sep + ' '.join(mixed.split())
         for this, that in replacement.items():
             content = content.replace(this, that)
+            print(this)
+            print(that)
     return content
 
 
@@ -702,12 +702,11 @@ def xml_status(content, label):
 def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
 
-    print('normalize_xml_content')
-    xml_status(content, 'original')
+    #xml_status(content, 'original')
 
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
-    xml_status(content, 'entidades para char')
+    #xml_status(content, 'entidades para char')
 
     replaced_entities_report = ''
     if len(replaced_named_ent) > 0:
@@ -715,14 +714,14 @@ def normalize_xml_content(doc_files_info, content, version):
 
     if doc_files_info.is_sgmxml:
         content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
-        xml_status(content, 'sgml normalized')
+        #xml_status(content, 'sgml normalized')
 
     xml, e = xml_utils.load_xml(content)
     if xml is None:
         print(e)
     else:
         content = normalize_mixed_citations(content)
-        xml_status(content, 'normalize_mixed_citations')
+        #xml_status(content, 'normalize_mixed_citations')
 
         content = content.replace('&amp;amp;', '&amp;')
         content = content.replace('&mldr;', u"\u2026")
@@ -733,7 +732,7 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
 
-        xml_status(content, 'outros ajustes')
+        #xml_status(content, 'outros ajustes')
 
         for style in ['sup', 'sub', 'bold', 'italic']:
             content = content.replace('<' + style + '/>', '')
@@ -742,10 +741,10 @@ def normalize_xml_content(doc_files_info, content, version):
             content = content.replace('</' + style + '> <' + style + '>', ' ')
             content = content.replace('</' + style + '><' + style + '>', '')
 
-        xml_status(content, 'estilos')
+        #xml_status(content, 'estilos')
 
         content = xml_utils.pretty_print(content)
-        xml_status(content, 'pretty_print')
+        #xml_status(content, 'pretty_print')
 
     return (content, replaced_entities_report)
 
@@ -902,7 +901,7 @@ def zip_package(pkg_path, zip_name):
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron):
     if len(xml_files) > 0:
         path = os.path.dirname(xml_files[0])
-        notjpg_to_jpg(path, path, False)
+        hdimages_to_jpeg(path, path, False)
         #package_resize_large_jpg(path, path)
 
     utils.display_message('\n')
@@ -925,8 +924,6 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         doc, doc_files_info = make_article_package(doc_files_info, scielo_pkg_path, version, acron)
 
         doc_items[doc_files_info.xml_name] = doc
-        if doc.tree is None:
-            print(xml_filename)
         doc_files_info_items[doc_files_info.xml_name] = doc_files_info
 
     return (doc_items, doc_files_info_items)

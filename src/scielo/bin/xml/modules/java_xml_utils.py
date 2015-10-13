@@ -68,11 +68,6 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     os.system(cmd)
 
     if not os.path.exists(temp_result_filename):
-        fs_utils.write_file(temp_result_filename, 'ERROR: transformation error.\n' + cmd)
-        print(result_filename + '.errr')
-        print(xsl_filename)
-
-        shutil.copy(xml_filename, result_filename + '.errr')
         error = True
     shutil.move(temp_result_filename, result_filename)
 
