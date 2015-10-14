@@ -964,7 +964,7 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
 
 
 def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
-    is_sgml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
+    is_xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
 
     scielo_pkg_path = results_path + '/scielo_package'
     pmc_pkg_path = results_path + '/pmc_package'
@@ -995,7 +995,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         report_components['pkg_overview'] += articles_pkg_reports.references_overview_report()
         report_components['references'] = articles_pkg_reports.sources_overview_report()
 
-        if not is_sgml_generation:
+        if not is_xml_generation:
             critical, toc_validations = articles_pkg_reports.validate_consistency(from_converter)
             report_components['issue-report'] = toc_validations.message
             toc_f = toc_validations.fatal_errors
@@ -1005,29 +1005,29 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             org_manager.load()
             institution_normalizer = article.InstitutionNormalizer(org_manager)
 
-            #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, is_sgml_generation)
-            articles_pkg.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, from_converter, is_sgml_generation)
+            #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, is_xml_generation)
+            articles_pkg.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, from_converter, is_xml_generation)
 
-            if not is_sgml_generation:
+            if not is_xml_generation:
                 report_components['detail-report'] = articles_pkg_reports.detail_report()
                 report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
-            #if not is_sgml_generation:
+            #if not is_xml_generation:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
             #    texts.append(pkg_reports.get_lists_report_text(articles_sheets))
 
-        if not is_sgml_generation:
+        if not is_xml_generation:
             xpm_validations = pkg_reports.format_complete_report(report_components)
             filename = report_path + '/xml_package_maker.html'
             pkg_reports.save_report(filename, _('XML Package Maker Report'), xpm_validations.message, xpm_version())
             pkg_reports.display_report(filename)
 
         if not from_converter:
-            if is_sgml_generation:
+            if is_xml_generation:
                 make_pmc_report(articles, doc_files_info_items)
             if is_pmc_journal(articles):
                 make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
             make_pkg_zip(scielo_pkg_path)
-            if not is_sgml_generation:
+            if not is_xml_generation:
                 make_pkg_items_zip(scielo_pkg_path)
 
         utils.display_message(_('Result of the processing:'))
