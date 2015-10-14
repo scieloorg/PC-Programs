@@ -5,6 +5,7 @@ import shutil
 import urllib
 from datetime import datetime
 from mimetypes import MimeTypes
+import zipfile
 
 from __init__ import _
 import utils
@@ -888,15 +889,6 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     return r
 
 
-def zip_package(pkg_path, zip_name):
-    import zipfile
-    zipf = zipfile.ZipFile(zip_name, 'w')
-    for root, dirs, files in os.walk(pkg_path):
-        for file in files:
-            zipf.write(os.path.join(root, file), arcname=os.path.basename(file))
-    zipf.close()
-
-
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron):
     if len(xml_files) > 0:
         path = os.path.dirname(xml_files[0])
@@ -968,11 +960,11 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
-        zip_packages(pmc_pkg_path)
+        make_pkg_zip(pmc_pkg_path)
 
 
 def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
-    xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
+    is_sgml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
 
     scielo_pkg_path = results_path + '/scielo_package'
     pmc_pkg_path = results_path + '/pmc_package'
@@ -1003,7 +995,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         report_components['pkg_overview'] += articles_pkg_reports.references_overview_report()
         report_components['references'] = articles_pkg_reports.sources_overview_report()
 
-        if not xml_generation:
+        if not is_sgml_generation:
             critical, toc_validations = articles_pkg_reports.validate_consistency(from_converter)
             report_components['issue-report'] = toc_validations.message
             toc_f = toc_validations.fatal_errors
@@ -1013,28 +1005,30 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             org_manager.load()
             institution_normalizer = article.InstitutionNormalizer(org_manager)
 
-            #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, xml_generation)
-            articles_pkg.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, from_converter, xml_generation)
+            #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, is_sgml_generation)
+            articles_pkg.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, from_converter, is_sgml_generation)
 
-            if not xml_generation:
+            if not is_sgml_generation:
                 report_components['detail-report'] = articles_pkg_reports.detail_report()
                 report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
-            #if not xml_generation:
+            #if not is_sgml_generation:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
             #    texts.append(pkg_reports.get_lists_report_text(articles_sheets))
 
-        if not xml_generation:
+        if not is_sgml_generation:
             xpm_validations = pkg_reports.format_complete_report(report_components)
             filename = report_path + '/xml_package_maker.html'
             pkg_reports.save_report(filename, _('XML Package Maker Report'), xpm_validations.message, xpm_version())
             pkg_reports.display_report(filename)
 
         if not from_converter:
-            if xml_generation:
+            if is_sgml_generation:
                 make_pmc_report(articles, doc_files_info_items)
             if is_pmc_journal(articles):
                 make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
-            zip_packages(scielo_pkg_path)
+            make_pkg_zip(scielo_pkg_path)
+            if not is_sgml_generation:
+                make_pkg_items_zip(scielo_pkg_path)
 
         utils.display_message(_('Result of the processing:'))
         utils.display_message(results_path)
@@ -1048,25 +1042,6 @@ def is_pmc_journal(articles):
             r = True
             break
     return r
-
-
-def zip_packages(src_pkg_path):
-    names = [item[0:item.rfind('-')] for item in os.listdir(src_pkg_path) if item.endswith('.xml') and '-' in item]
-    names = list(set(names))
-    path = src_pkg_path + '_zips'
-    for name in names:
-        new_pkg_path = path + '/' + name
-        if not os.path.isdir(new_pkg_path):
-            os.makedirs(new_pkg_path)
-        for item in os.listdir(new_pkg_path):
-            os.unlink(new_pkg_path + '/' + item)
-        for item in os.listdir(src_pkg_path):
-            if item.startswith(name):
-                shutil.copyfile(src_pkg_path + '/' + item, new_pkg_path + '/' + item)
-        zip_package(new_pkg_path, new_pkg_path + '.zip')
-        for item in os.listdir(new_pkg_path):
-            os.unlink(new_pkg_path + '/' + item)
-        shutil.rmtree(new_pkg_path)
 
 
 def get_xml_package_folders_info(input_pkg_path):
@@ -1263,3 +1238,48 @@ def replace_fontsymbols(content, html_content):
             content = content.replace(item, html_fontsymbol_items[i])
             i += 1
     return content
+
+
+def make_zip(files, zip_name):
+    zipf = zipfile.ZipFile(zip_name, 'w')
+    for f in files:
+        zipf.write(f, arcname=os.path.basename(f))
+    zipf.close()
+
+
+def make_pkg_zip(src_pkg_path):
+    pkg_name = None
+    for item in os.listdir(src_pkg_path):
+        if item.endswith('.xml'):
+            if '-' in item:
+                pkg_name = item[0:item.rfind('-')]
+
+    if pkg_name is not None:
+        dest_path = src_pkg_path + '_zips'
+        if not os.path.isdir(dest_path):
+            os.makedirs(dest_path)
+        zip_name = dest_path + '/' + pkg_name + '.zip'
+        make_zip([src_pkg_path + '/' + f for f in os.listdir(src_pkg_path)], zip_name)
+
+
+def make_pkg_items_zip(src_pkg_path):
+    dest_path = src_pkg_path + '_zips'
+    if not os.path.isdir(dest_path):
+        os.makedirs(dest_path)
+    xml_files = [src_pkg_path + '/' + f for f in os.listdir(src_pkg_path) if f.endswith('.xml')]
+    for xml_filename in xml_files:
+        make_pkg_item_zip(xml_filename, dest_path)
+
+
+def make_pkg_item_zip(xml_filename, dest_path):
+    if not os.path.isdir(dest_path):
+        os.makedirs(dest_path)
+
+    src_path = os.path.dirname(xml_filename)
+    xml_name = os.path.basename(xml_filename)
+    name = xml_name[0:-4]
+    zipf = zipfile.ZipFile(dest_path + '/' + name + '.zip', 'w')
+    for item in os.listdir(src_path):
+        if item.startswith(name + '.') or item.startswith(name + '-'):
+            zipf.write(src_path + '/' + item, arcname=item)
+    zipf.close()
