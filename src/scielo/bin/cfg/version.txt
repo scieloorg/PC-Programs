@@ -1,12 +1,26 @@
-﻿4.0.090 trial - 28/09/2015
+﻿4.0.090 trial - 14/10/2015
 ==========================
 - XC
   - (bug) Do not use any api to find previous PID
   - (bug) Fix the transference of articles files (it was using the collection scilista instead of gerapadrao scilista)
   - (bug) Include order validation in journal/issue report, and considere it as a critical error
   - (bug) Solve how to save large records (Chinese, Russian, Arabic abstracts)
+  - (bug) Solve character ^ in field content
 - XPM
   - (improvement) Present the "translation" of code languages
+  - (improvement) Improve identification of normalized institutions
+  - (improvement) Do not consider missing bibr xref if it is in a xref range. Ex.: 2, 3, 4 are in (1-5), so they are not missing
+  - (new) Validation of fig-group/@ref-type and table-wrap-group/@ref-type
+  - (new) Presentation of table
+  - (new) Normalize mixed-citation, including label
+  - (new) Fix &amp;amp; e &amp;#
+  - (new) Fix validations according to SPS 1.3
+  - (new) Generate one zip for each document
+  - (bug) Fix received and accepted
+- Markup
+  - (bug) Fix identification of *deflist
+  - (improvement) Do not complete by default the sps version
+  - (improvement) Remove ref/@status=valid
 
 4.0.090 trial - 16/09/2015
 ==========================
