@@ -684,12 +684,12 @@ def normalize_mixed_citations(content):
                         label = label.strip()
                         mixed = xml_utils.node_text(mixed_node).strip()
                         if not mixed.startswith(label):
+                            if mixed.startswith('.') and not mixed.startswith('. '):
+                                mixed = '. ' + mixed[1:]
                             sep = '. ' if not mixed.startswith('.') and not label.endswith('.') else ''
                             replacement[mixed] = label + sep + ' '.join(mixed.split())
         for this, that in replacement.items():
             content = content.replace(this, that)
-            print(this)
-            print(that)
     return content
 
 
@@ -801,15 +801,6 @@ def normalize_package_name(doc_files_info, acron, content):
 
     doc_files_info.new_xml_filename = doc_files_info.new_xml_path + '/' + doc_files_info.new_name + '.xml'
     return (doc, doc_files_info, curr_and_new_href_list, content)
-
-
-def get_normalized_package_name(doc, doc_files_info, acron):
-    new_name = doc_files_info.xml_name
-
-    if not doc.tree is None:
-        new_name = get_new_name(doc_files_info, doc, acron)
-
-    return new_name
 
 
 def apply_normalized_package_name(doc, doc_files_info, content):
@@ -1148,6 +1139,8 @@ def get_inputs(args):
     acron = None
     if len(args) == 3:
         script, path, acron = args
+    elif len(args) == 2:
+        script, path = args
     return (script, path, acron)
 
 
@@ -1166,7 +1159,7 @@ def call_make_packages(args, version):
             messages.append('\n===== ATTENTION =====\n')
             messages.append('ERROR: ' + _('Incorrect parameters'))
             messages.append('\n' + _('Usage') + ':')
-            messages.append('python ' + script + ' <xml_src> <acron>')
+            messages.append('python ' + script + ' <xml_src> [<acron>]')
             messages.append(_('where') + ':')
             messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
             messages.append('  <acron> = ' + _('journal acronym'))

@@ -33,8 +33,8 @@ class XMLAppGUI(object):
         self.tkFrame.folder_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.folder_labelframe.pack(fill="both", expand="yes")
 
-        self.tkFrame.acron_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        self.tkFrame.acron_labelframe.pack(fill="both", expand="yes")
+        #self.tkFrame.acron_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        #self.tkFrame.acron_labelframe.pack(fill="both", expand="yes")
 
         self.tkFrame.msg_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.msg_labelframe.pack(fill="both", expand="yes")
@@ -55,10 +55,10 @@ class XMLAppGUI(object):
         self.tkFrame.button_choose = Tkinter.Button(self.tkFrame.folder_labelframe, text='choose folder', command=self.open_file_explorer)
         self.tkFrame.button_choose.pack()
 
-        self.tkFrame.label_acron = Tkinter.Label(self.tkFrame.acron_labelframe, text='Journal acronym:', font="Verdana 12 bold")
-        self.tkFrame.label_acron.pack(side='left')
-        self.tkFrame.input_acron = Tkinter.Entry(self.tkFrame.acron_labelframe)
-        self.tkFrame.input_acron.pack(side='left')
+        #self.tkFrame.label_acron = Tkinter.Label(self.tkFrame.acron_labelframe, text='Journal acronym:', font="Verdana 12 bold")
+        #self.tkFrame.label_acron.pack(side='left')
+        #self.tkFrame.input_acron = Tkinter.Entry(self.tkFrame.acron_labelframe)
+        #self.tkFrame.input_acron.pack(side='left')
 
         self.tkFrame.label_msg = Tkinter.Label(self.tkFrame.msg_labelframe)
         self.tkFrame.label_msg.pack()
@@ -69,9 +69,9 @@ class XMLAppGUI(object):
         if self.is_converter_enabled:
             self.tkFrame.button_xml_converter = Tkinter.Button(self.tkFrame.buttons_labelframe, text='XML Converter', command=self.run_xml_converter)
             self.tkFrame.button_xml_converter.pack(side='right')
-
-        self.tkFrame.button_xml_package_maker = Tkinter.Button(self.tkFrame.buttons_labelframe, text='XML Package Maker', command=self.run_xml_package_maker)
-        self.tkFrame.button_xml_package_maker.pack(side='right')
+        else:
+            self.tkFrame.button_xml_package_maker = Tkinter.Button(self.tkFrame.buttons_labelframe, text='XML Package Maker', command=self.run_xml_package_maker)
+            self.tkFrame.button_xml_package_maker.pack(side='right')
 
         self.selected_folder = None
         #self.collection_name = None
@@ -83,12 +83,12 @@ class XMLAppGUI(object):
         self.selected_folder = askdirectory(parent=self.tkFrame, initialdir=self.default_xml_path, title='Select a SPS XML package folder')
         self.tkFrame.input_folder.config(text=self.selected_folder)
         self.read_inputs()
-        self.display_message(self.acron + '\n' + self.selected_folder, 'green')
+        self.display_message(self.selected_folder, 'green')
 
     def read_inputs(self):
         if self.selected_folder is None:
             self.selected_folder = ''
-        self.acron = self.tkFrame.input_acron.get()
+        #self.acron = self.tkFrame.input_acron.get()
         #if self.is_converter_enabled:
         #    self.collection_name = self.tkFrame.input_collection_name.current()
 
@@ -109,17 +109,15 @@ class XMLAppGUI(object):
 
     def run_xml_package_maker(self):
         self.read_inputs()
-        color = 'green' if self.is_valid_folder() and self.acron != '' else 'red'
+        color = 'green' if self.is_valid_folder() else 'red'
         msg = ''
-        if self.acron == '':
-            msg += _('Inform the acronym.') + '\n'
         if self.selected_folder == '':
             msg += _('Select a folder which contains the SPS XML Files.') + '\n'
         if len(msg) == 0:
             msg = _('Executing XML Package Maker for ') + self.selected_folder + '\n'
         self.display_message(msg, color)
         if color == 'green':
-            xml_package_maker(self.selected_folder, self.acron)
+            xml_package_maker(self.selected_folder)
 
     def run_xml_converter(self):
         self.read_inputs()
@@ -138,7 +136,7 @@ def open_main_window(is_converter_enabled, configurations):
     if configurations is None:
         t = 'SPS XML Package Maker'
         if is_converter_enabled:
-            t += _(' and ') + 'XML Converter'
+            t = 'SPS XML Converter'
         configurations = {'title': t}
 
     tk_root = Tkinter.Tk()
@@ -153,10 +151,10 @@ def open_main_window(is_converter_enabled, configurations):
     tk_root.focus_set()
 
 
-def xml_package_maker(path, acron):
+def xml_package_maker(path):
     import xpmaker
 
-    xpmaker.make_packages(path, acron)
+    xpmaker.make_packages(path, None)
 
 
 #def xml_converter(path, collection_name):
