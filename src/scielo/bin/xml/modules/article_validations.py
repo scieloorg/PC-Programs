@@ -541,41 +541,32 @@ class ArticleContentValidation(object):
     @property
     def funding(self):
         def has_number(content):
-            found = False
-            r = ''
-            if content is None:
-                content = ''
-
-            s = content
-            if '<' in s:
-                content = ''
-                s = s.replace('<', 'BREAK<').replace('>', '>BREAK')
-                for item in s.split('BREAK'):
-                    if '<' in item and '>' in item:
+            numbers = 0
+            if content is not None:
+                content = content.replace('<', '=BREADK=<')
+                content = content.replace('>', '>=BREADK=')
+                content = content.replace('&#', '=BREADK=&#')
+                content = content.replace('&#', ';=BREADK=')
+                parts = content.split('=BREADK=')
+                for part in parts:
+                    if part.startswith('<') and part.endswith('>'):
+                        pass
+                    elif part.startswith('&#') and part.endswith(';'):
                         pass
                     else:
-                        content += item
-
-            if '&#' in content:
-                content = content.replace('&#', '_BREAK_AMPNUM').replace(';', '_BREAK_PONT-VIRG')
-                s = content.split('_BREAK_')
-                content = ''.join([a for a in s if not 'AMPNUM' in a])
-
-            for c in '0123456789':
-                if c in content:
-                    found = True
-                    r = c
-                    break
-            return (found, r)
+                        for c in part:
+                            if c.isdigit():
+                                numbers += 1
+            return numbers
 
         r = []
         if len(self.article.award_id) == 0:
-            found, c = has_number(self.article.ack_xml)
-            if found is True:
-                r.append(('award-id', 'ERROR', _('Found') + ' "' + c + '" ' + _('in') + ' ack. ' + self.article.ack_xml))
-            found, c = has_number(self.article.financial_disclosure)
-            if found is True:
-                r.append(('award-id', 'ERROR', _('Found') + ' "' + c + '" ' + _('in') + ' fn[@fn-type="financial-disclosure"]. ' + self.article.fn_financial_disclosure))
+            found = has_number(self.article.ack_xml)
+            if found > 4:
+                r.append(('award-id', 'ERROR', _('Found numbers in') + ' ack. ' + self.article.ack_xml))
+            found = has_number(self.article.financial_disclosure)
+            if found > 4:
+                r.append(('award-id', 'ERROR', _('Found numbers in') + ' fn[@fn-type="financial-disclosure"]. ' + self.article.fn_financial_disclosure))
         else:
             for item in self.article.award_id:
                 r.append(('award-id', 'OK', item))
@@ -920,7 +911,6 @@ class ArticleContentValidation(object):
     @property
     def validate_xref_reftype(self):
         message = []
-        reftypes_and_tag = {'aff': 'aff', 'app': 'app', 'author-notes': 'fn', 'bibr': 'ref', 'boxed-text': 'boxed-text', 'contrib': 'fn', 'corresp': 'corresp', 'disp-formula': 'disp-formula', 'fig': 'fig', 'fn': 'fn', 'list': 'list', 'other': '?', 'supplementary-material': 'supplementary-material', 'table': 'table-wrap'}
 
         id_and_elem_name = {node.attrib.get('id'): node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
 
@@ -930,26 +920,27 @@ class ArticleContentValidation(object):
             if xref['ref-type'] is None:
                 message.append(('xref/@ref-type', 'ERROR', _('Missing') + ' @ref-type in ' + xref['xml']))
             if xref['rid'] is not None and xref['ref-type'] is not None:
+                elements = attributes.REFTYPE_AND_TAG_ITEMS.get(xref['ref-type'])
                 tag = id_and_elem_name.get(xref['rid'])
                 if tag is None:
                     message.append(('xref/@rid', 'FATAL ERROR', _('Missing') + ' element[@id=' + xref['rid'] + _(' and ') + '@ref-type=' + xref['ref-type'] + ']'))
-                elif reftypes_and_tag.get(xref['ref-type']) is None:
+                elif elements is None:
                     # no need to validate
                     valid = True
-                elif tag == reftypes_and_tag.get(xref['ref-type']):
+                elif tag in elements:
                     valid = True
-                elif tag != reftypes_and_tag.get(xref['ref-type']):
-                    reftypes = [reftype for reftype, _tag in reftypes_and_tag.items() if _tag == tag]
+                elif not tag in elements:
+                    reftypes = [reftype for reftype, _elements in attributes.REFTYPE_AND_TAG_ITEMS.items() if tag in _elements]
                     _msg = _('Unmatched')
                     _msg += ' @ref-type (' + xref['ref-type'] + ')'
                     _msg += _(' and ') + tag + ': '
                     _msg += 'xref[@ref-type="' + xref['ref-type'] + '"] '
-                    _msg += _('is for') + ' ' + reftypes_and_tag.get(xref['ref-type'])
+                    _msg += _('is for') + ' ' + ' | '.join(elements)
                     _msg += _(' and ') + _('valid values of') + ' @ref-type ' + _('of') + ' '
                     _msg += tag + ' ' + _('are') + ' '
                     _msg += '|'.join(reftypes)
 
-                    #_msg = _('Unmatched @ref-type (%s), and %s: xref[@ref-type="%s"] is for %s and valid values of  @ref-type of %s are %s') % (xref['ref-type'], tag, xref['ref-type'], reftypes_and_tag.get(xref['ref-type']), tag, '|'.join(reftypes))
+                    #_msg = _('Unmatched @ref-type (%s), and %s: xref[@ref-type="%s"] is for %s and valid values of  @ref-type of %s are %s') % (xref['ref-type'], tag, xref['ref-type'], attributes.REFTYPE_AND_TAG_ITEMS.get(xref['ref-type']), tag, '|'.join(reftypes))
 
                     message.append(('xref/@rid', 'FATAL ERROR', _msg))
         return message
@@ -1056,7 +1047,8 @@ class ReferenceContentValidation(object):
         r.append(self.xml)
         r.append(self.mixed_citation)
         r.append(self.publication_type)
-
+        if self.publication_type_other is not None:
+            r.append(self.publication_type_other)
         for item in self.publication_type_dependence:
             r.append(item)
         for item in self.authors_list:
@@ -1091,6 +1083,20 @@ class ReferenceContentValidation(object):
             else:
                 if not value is None and value != '':
                     return (label, 'OK', value)
+
+    @property
+    def is_look_like_thesis(self):
+        looks_like = None
+        if self.reference.publication_type != 'thesis':
+            _mixed = self.reference.mixed_citation.lower() if self.reference.mixed_citation is not None else ''
+            _mixed = _mixed.replace('[', ' ').replace(']', ' ').replace(',', ' ').replace(';', ' ').replace('.', ' ')
+            _mixed = _mixed.split()
+            for item in _mixed:
+                for word in ['thesis', 'dissert', 'master', 'doctor', 'mestrado', 'doutorado', 'maestr', 'tese']:
+                    if item.startswith(word):
+                        looks_like = 'thesis'
+                        break
+        return looks_like
 
     @property
     def publication_type_dependence(self):
@@ -1130,12 +1136,10 @@ class ReferenceContentValidation(object):
                         looks_like = 'journal'
             if self.reference.issue is None and self.reference.volume is None:
                 if self.reference.fpage is None:
-                    if 'thesis' in _mixed or 'dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed or 'tese' in _mixed:
-                        if self.reference.publication_type != 'thesis':
-                            looks_like = 'thesis'
+                    looks_like = self.is_look_like_thesis
                 if not 'legal' in self.reference.publication_type:
                     if self.reference.source is not None:
-                        if 'Lei' in self.reference.source or ('Di' in self.reference.source and 'Oficial' in self.reference.source):
+                        if 'Lei ' in self.reference.source or ('Di' in self.reference.source and 'Oficial' in self.reference.source):
                             looks_like = 'legal-doc'
                         if 'portaria' in _source:
                             looks_like = 'legal-doc'
@@ -1183,9 +1187,8 @@ class ReferenceContentValidation(object):
             if 'conference' in _mixed or 'proceeding' in _mixed:
                 if self.reference.publication_type != 'confproc':
                     r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' confproc.'))
-            if ' dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
-                if self.reference.publication_type != 'thesis':
-                    r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' thesis.'))
+            if self.is_look_like_thesis == 'thesis':
+                r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' thesis.'))
 
         for item in items:
             if item is not None:
@@ -1221,6 +1224,11 @@ class ReferenceContentValidation(object):
     @property
     def publication_type(self):
         return expected_values('@publication-type', self.reference.publication_type, attributes.PUBLICATION_TYPE, 'FATAL ')
+
+    @property
+    def publication_type_other(self):
+        if self.reference.publication_type == 'other':
+            return ('@publication-type', 'WARNING', _('Be sure that ') + self.reference.mixed_citation + _(' is not ') + _(' or ').join([v for v in attributes.PUBLICATION_TYPE if v != 'other']))
 
     @property
     def xml(self):

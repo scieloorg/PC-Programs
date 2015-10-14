@@ -3,6 +3,12 @@
 from __init__ import _
 
 
+REFTYPE_AND_TAG_ITEMS = {'aff': ['aff'], 'app': ['app'], 'author-notes': ['fn'], 'bibr': ['ref'], 'boxed-text': ['boxed-text'], 'contrib': ['fn'], 'corresp': ['corresp'], 'disp-formula': ['disp-formula'], 
+            'fig': ['fig', 'fig-group'], 
+            'fn': ['fn'], 'list': ['list'], 'other': ['?'], 'supplementary-material': ['supplementary-material'], 
+            'table': ['table-wrap', 'table-wrap-group']
+            }
+
 DOCTOPIC = {
                 'research-article': 'oa',
                 'editorial': 'ed',
