@@ -720,10 +720,9 @@ def normalize_xml_content(doc_files_info, content, version):
     if xml is None:
         print(e)
     else:
-        content = normalize_mixed_citations(content)
         #xml_status(content, 'normalize_mixed_citations')
-
         content = content.replace('&amp;amp;', '&amp;')
+        content = content.replace('&amp;#', '&#')
         content = content.replace('&mldr;', u"\u2026")
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
         content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
@@ -731,7 +730,7 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('publication-type="web"', 'publication-type="webpage"')
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
-
+        content = normalize_mixed_citations(content)
         #xml_status(content, 'outros ajustes')
 
         for style in ['sup', 'sub', 'bold', 'italic']:
