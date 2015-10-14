@@ -6,10 +6,12 @@
   - (bug) Include order validation in journal/issue report, and considere it as a critical error
   - (bug) Solve how to save large records (Chinese, Russian, Arabic abstracts)
   - (bug) Solve character ^ in field content
+  - (improvement) Do not display XPM button 
 - XPM
   - (improvement) Present the "translation" of code languages
   - (improvement) Improve identification of normalized institutions
   - (improvement) Do not consider missing bibr xref if it is in a xref range. Ex.: 2, 3, 4 are in (1-5), so they are not missing
+  - (improvement) Do not require acronym
   - (new) Validation of fig-group/@ref-type and table-wrap-group/@ref-type
   - (new) Presentation of table
   - (new) Normalize mixed-citation, including label
