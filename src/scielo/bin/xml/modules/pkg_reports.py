@@ -429,8 +429,8 @@ class ArticlePackage(object):
                 for rep_file in [doc_files_info.err_filename, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename]:
                     if os.path.isfile(rep_file):
                         report_content += extract_report_core(fs_utils.read_file(rep_file))
-                        if xml_generation is False:
-                            fs_utils.delete_file_or_folder(rep_file)
+                        #if xml_generation is False:
+                        #    fs_utils.delete_file_or_folder(rep_file)
                 data_validations = ValidationsResults(report_content)
                 data_validations.fatal_errors = xml_f
                 data_validations.errors = xml_e
@@ -444,7 +444,10 @@ class ArticlePackage(object):
                 if xml_generation:
                     stats = html_reports.statistics_display(data_validations, False)
                     title = [_('Data Quality Control'), new_name]
-                    html_reports.save(doc_files_info.data_report_filename, title, stats + report_content)
+                else:
+                    stats = ''
+                    title = ''
+                html_reports.save(doc_files_info.data_report_filename, title, stats + report_content)
 
                 #self.pkg_fatal_errors += xml_f + data_f
                 #self.pkg_stats[xml_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
