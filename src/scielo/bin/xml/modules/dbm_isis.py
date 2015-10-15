@@ -271,13 +271,14 @@ class CISIS(object):
         temp_file = mkdtemp().replace('\\', '/') + '/f'
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "proc=' + proc + '" append=' + temp_file + ' now -all'
         os.system(cmd)
-        try:
-            shutil.copy_file(temp_file + '.mst', mst_filename + '.mst')
-            shutil.copy_file(temp_file + '.xrf', mst_filename + '.xrf')
-            os.unlink(temp_file + '.mst')
-            os.unlink(temp_file + '.xrf')
-        except:
-            pass
+        if os.path.isfile(temp_file + '.mst') and os.path.isfile(temp_file + '.xrf'):
+            try:
+                shutil.copy_file(temp_file + '.mst', mst_filename + '.mst')
+                shutil.copy_file(temp_file + '.xrf', mst_filename + '.xrf')
+                os.unlink(temp_file + '.mst')
+                os.unlink(temp_file + '.xrf')
+            except:
+                pass
 
     def find_record(self, mst_filename, expression):
         r = mst_filename + expression
