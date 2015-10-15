@@ -189,6 +189,7 @@ As empresas que decidem prestar serviços de marcação de textos em XML segundo
           Entretanto, antes de enviar o pacote para o SciELO envie um e-mail para scielo@scielo.org e para producao@scielo.org com cópia para conversao@scielo.org informando que foi produzido o primeiro pacote .xml e que ainda não possuem certificação.
 
 
+
 .. _processo-validacao:
 
 15 .  Produzi meu arquivo XML, posso enviar para SciELO verificar?
