@@ -304,7 +304,7 @@ class CISIS(object):
     def is_readable(self, mst_filename):
         s = ''
         if os.path.isfile(mst_filename + '.mst'):
-            temp = self.temp_dir + '/readable'
+            temp = mkdtemp().replace('\\', '/') + '/readable'
             cmd = self.cisis_path + '/mx ' + mst_filename + ' +control now > ' + temp
             os.system(cmd)
             if os.path.isfile(temp):
