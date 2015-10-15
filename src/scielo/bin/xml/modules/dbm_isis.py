@@ -2,6 +2,7 @@
 
 
 import os
+import shutil
 from tempfile import mkdtemp, NamedTemporaryFile
 
 from article_utils import u_encode
@@ -215,7 +216,7 @@ class CISIS(object):
 
     def __init__(self, cisis_path):
         cisis_path = cisis_path.replace('\\', '/')
-        self.temp_dir = mkdtemp().replace('\\', '/')
+        #self.temp_dir = mkdtemp().replace('\\', '/')
         if os.path.exists(cisis_path):
             self.cisis_path = cisis_path
         else:
@@ -267,10 +268,16 @@ class CISIS(object):
         os.system(cmd)
 
     def modify_records(self, mst_filename, proc):
-        temp = self.temp_dir + '/f'
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' "proc=' + proc + '" append=' + temp + ' now -all'
+        temp_file = mkdtemp().replace('\\', '/') + '/f'
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' "proc=' + proc + '" append=' + temp_file + ' now -all'
         os.system(cmd)
-        self.create(temp, mst_filename)
+        try:
+            shutil.copy_file(temp_file + '.mst', mst_filename + '.mst')
+            shutil.copy_file(temp_file + '.xrf', mst_filename + '.xrf')
+            os.unlink(temp_file + '.mst')
+            os.unlink(temp_file + '.xrf')
+        except:
+            pass
 
     def find_record(self, mst_filename, expression):
         r = mst_filename + expression
@@ -309,7 +316,6 @@ class UCISIS(object):
     def __init__(self, cisis1030, cisis1660):
         self.cisis1030 = cisis1030
         self.cisis1660 = cisis1660
-        self.temp_dir = mkdtemp().replace('\\', '/')
 
     def cisis(self, mst_filename):
         if os.path.isfile(mst_filename + '.mst'):
@@ -328,9 +334,10 @@ class UCISIS(object):
 
     def convert1660to1030(self, mst_filename):
         if os.path.isfile(mst_filename + '.mst'):
-            name = self.temp_dir + '/' + os.path.basename(mst_filename)
+            name = mkdtemp().replace('\\', '/') + '/' + os.path.basename(mst_filename)
             self.cisis1660.mst2iso(mst_filename, name)
             self.cisis1030.iso2mst(name, mst_filename)
+            os.unlink(name)
 
     def crunchmf(self, mst_filename, wmst_filename):
         self.cisis(mst_filename).crunchmf(mst_filename, wmst_filename)
@@ -342,7 +349,7 @@ class UCISIS(object):
         self.cisis(src).append(src, dest)
 
     def create(self, src, dest):
-        self.cisis(src).append(src, dest)
+        self.cisis(src).create(src, dest)
 
     def append_id_to_master(self, id_filename, mst_filename, reset):
         self.cisis(mst_filename).append_id_to_master(id_filename, mst_filename, reset)
