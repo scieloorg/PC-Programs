@@ -5,6 +5,7 @@ import shutil
 import urllib
 from datetime import datetime
 from mimetypes import MimeTypes
+import zipfile
 
 from __init__ import _
 import utils
@@ -683,12 +684,12 @@ def normalize_mixed_citations(content):
                         label = label.strip()
                         mixed = xml_utils.node_text(mixed_node).strip()
                         if not mixed.startswith(label):
+                            if mixed.startswith('.') and not mixed.startswith('. '):
+                                mixed = '. ' + mixed[1:]
                             sep = '. ' if not mixed.startswith('.') and not label.endswith('.') else ''
                             replacement[mixed] = label + sep + ' '.join(mixed.split())
         for this, that in replacement.items():
             content = content.replace(this, that)
-            print(this)
-            print(that)
     return content
 
 
@@ -720,10 +721,9 @@ def normalize_xml_content(doc_files_info, content, version):
     if xml is None:
         print(e)
     else:
-        content = normalize_mixed_citations(content)
         #xml_status(content, 'normalize_mixed_citations')
-
         content = content.replace('&amp;amp;', '&amp;')
+        content = content.replace('&amp;#', '&#')
         content = content.replace('&mldr;', u"\u2026")
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
         content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
@@ -731,7 +731,7 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('publication-type="web"', 'publication-type="webpage"')
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
-
+        content = normalize_mixed_citations(content)
         #xml_status(content, 'outros ajustes')
 
         for style in ['sup', 'sub', 'bold', 'italic']:
@@ -801,15 +801,6 @@ def normalize_package_name(doc_files_info, acron, content):
 
     doc_files_info.new_xml_filename = doc_files_info.new_xml_path + '/' + doc_files_info.new_name + '.xml'
     return (doc, doc_files_info, curr_and_new_href_list, content)
-
-
-def get_normalized_package_name(doc, doc_files_info, acron):
-    new_name = doc_files_info.xml_name
-
-    if not doc.tree is None:
-        new_name = get_new_name(doc_files_info, doc, acron)
-
-    return new_name
 
 
 def apply_normalized_package_name(doc, doc_files_info, content):
@@ -889,15 +880,6 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     return r
 
 
-def zip_package(pkg_path, zip_name):
-    import zipfile
-    zipf = zipfile.ZipFile(zip_name, 'w')
-    for root, dirs, files in os.walk(pkg_path):
-        for file in files:
-            zipf.write(os.path.join(root, file), arcname=os.path.basename(file))
-    zipf.close()
-
-
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron):
     if len(xml_files) > 0:
         path = os.path.dirname(xml_files[0])
@@ -969,7 +951,7 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
-        zip_packages(pmc_pkg_path)
+        make_pkg_zip(pmc_pkg_path)
 
 
 def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=False):
@@ -1008,7 +990,6 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         if not is_xml_generation:
             report_components['issue-report'] = pkg_validator.issue_report
             toc_f = pkg_validator.blocking_errors
-
         if toc_f == 0:
             org_manager = institutions_service.OrgManager()
             org_manager.load()
@@ -1035,7 +1016,9 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
                 make_pmc_report(articles, doc_files_info_items)
             if is_pmc_journal(articles):
                 make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
-            zip_packages(scielo_pkg_path)
+            make_pkg_zip(scielo_pkg_path)
+            if not is_xml_generation:
+                make_pkg_items_zip(scielo_pkg_path)
 
         utils.display_message(_('Result of the processing:'))
         utils.display_message(results_path)
@@ -1049,25 +1032,6 @@ def is_pmc_journal(articles):
             r = True
             break
     return r
-
-
-def zip_packages(src_pkg_path):
-    names = [item[0:item.rfind('-')] for item in os.listdir(src_pkg_path) if item.endswith('.xml') and '-' in item]
-    names = list(set(names))
-    path = src_pkg_path + '_zips'
-    for name in names:
-        new_pkg_path = path + '/' + name
-        if not os.path.isdir(new_pkg_path):
-            os.makedirs(new_pkg_path)
-        for item in os.listdir(new_pkg_path):
-            os.unlink(new_pkg_path + '/' + item)
-        for item in os.listdir(src_pkg_path):
-            if item.startswith(name):
-                shutil.copyfile(src_pkg_path + '/' + item, new_pkg_path + '/' + item)
-        zip_package(new_pkg_path, new_pkg_path + '.zip')
-        for item in os.listdir(new_pkg_path):
-            os.unlink(new_pkg_path + '/' + item)
-        shutil.rmtree(new_pkg_path)
 
 
 def get_xml_package_folders_info(input_pkg_path):
@@ -1150,6 +1114,8 @@ def get_inputs(args):
     acron = None
     if len(args) == 3:
         script, path, acron = args
+    elif len(args) == 2:
+        script, path = args
     return (script, path, acron)
 
 
@@ -1168,7 +1134,7 @@ def call_make_packages(args, version):
             messages.append('\n===== ATTENTION =====\n')
             messages.append('ERROR: ' + _('Incorrect parameters'))
             messages.append('\n' + _('Usage') + ':')
-            messages.append('python ' + script + ' <xml_src> <acron>')
+            messages.append('python ' + script + ' <xml_src> [<acron>]')
             messages.append(_('where') + ':')
             messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
             messages.append('  <acron> = ' + _('journal acronym'))
@@ -1240,3 +1206,48 @@ def replace_fontsymbols(content, html_content):
             content = content.replace(item, html_fontsymbol_items[i])
             i += 1
     return content
+
+
+def make_zip(files, zip_name):
+    zipf = zipfile.ZipFile(zip_name, 'w')
+    for f in files:
+        zipf.write(f, arcname=os.path.basename(f))
+    zipf.close()
+
+
+def make_pkg_zip(src_pkg_path):
+    pkg_name = None
+    for item in os.listdir(src_pkg_path):
+        if item.endswith('.xml'):
+            if '-' in item:
+                pkg_name = item[0:item.rfind('-')]
+
+    if pkg_name is not None:
+        dest_path = src_pkg_path + '_zips'
+        if not os.path.isdir(dest_path):
+            os.makedirs(dest_path)
+        zip_name = dest_path + '/' + pkg_name + '.zip'
+        make_zip([src_pkg_path + '/' + f for f in os.listdir(src_pkg_path)], zip_name)
+
+
+def make_pkg_items_zip(src_pkg_path):
+    dest_path = src_pkg_path + '_zips'
+    if not os.path.isdir(dest_path):
+        os.makedirs(dest_path)
+    xml_files = [src_pkg_path + '/' + f for f in os.listdir(src_pkg_path) if f.endswith('.xml')]
+    for xml_filename in xml_files:
+        make_pkg_item_zip(xml_filename, dest_path)
+
+
+def make_pkg_item_zip(xml_filename, dest_path):
+    if not os.path.isdir(dest_path):
+        os.makedirs(dest_path)
+
+    src_path = os.path.dirname(xml_filename)
+    xml_name = os.path.basename(xml_filename)
+    name = xml_name[0:-4]
+    zipf = zipfile.ZipFile(dest_path + '/' + name + '.zip', 'w')
+    for item in os.listdir(src_path):
+        if item.startswith(name + '.') or item.startswith(name + '-'):
+            zipf.write(src_path + '/' + item, arcname=item)
+    zipf.close()
