@@ -997,7 +997,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             institution_normalizer = article.InstitutionNormalizer(org_manager)
 
             #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, is_xml_generation)
-            articles_pkg.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, from_converter, is_xml_generation)
+            articles_pkg.validate_articles_pkg_xml_and_data(report_path, institution_normalizer, doc_files_info_items, scielo_dtd_files, from_converter, is_xml_generation)
 
             if not is_xml_generation:
                 report_components['detail-report'] = articles_pkg_reports.detail_report()
@@ -1170,10 +1170,7 @@ def call_make_packages(args, version):
 
 
 def validate_inputs(xml_path, acron):
-    errors = xml_utils.is_valid_xml_path(xml_path)
-    if acron is None:
-        errors.append(_('Missing acronym.'))
-    return errors
+    return xml_utils.is_valid_xml_path(xml_path)
 
 
 def get_fontsymbols_in_html(html_content):

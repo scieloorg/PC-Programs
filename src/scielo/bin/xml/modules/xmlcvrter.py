@@ -61,9 +61,10 @@ class ConverterEnv(object):
 
 class PkgManager(object):
 
-    def __init__(self, issue_models, pkg_articles):
+    def __init__(self, issue_models, pkg_articles, issue_files):
         self.pkg_articles = pkg_articles
         self.issue_models = issue_models
+        self.issue_files = issue_files
         self._pkg_issue_data_validations = None
         self._blocking_errors = None
         self.pkg_conversion_results = None
@@ -78,10 +79,11 @@ class PkgManager(object):
     @property
     def pkg_issue_data_validations(self):
         if self._pkg_issue_data_validations is None:
-            self._pkg_issue_data_validations = pkg_reports.PackageValidationsResults()
+            self._pkg_issue_data_validations = pkg_reports.PackageValidationsResults(self.issue_files.base_reports_path, 'issue-', '')
             for xml_name, article in self.pkg_articles.items():
                 self.pkg_articles[xml_name].section_code, issue_validations_msg = self.validate_article_issue_data(article)
                 self._pkg_issue_data_validations.add(xml_name, pkg_reports.ValidationsResults(issue_validations_msg))
+            self._pkg_issue_data_validations.save_reports()
         return self._pkg_issue_data_validations
 
     def validate_article_issue_data(self, article):
@@ -465,16 +467,17 @@ def convert_package(src_path):
         #utils.debugging('acron_issue_label')
         #utils.debugging(acron_issue_label)
         #utils.debugging('get_registered_articles')
-        pkg_manager = PkgManager(issue_models, pkg_articles)
-
-        if pkg_manager.pkg_issue_data_validations is not None:
-            if pkg_manager.pkg_issue_data_validations.fatal_errors > 0:
-                report_components['issue-report'] = html_reports.tag('h2', 'Comparision of issue and articles data') + pkg_manager.pkg_issue_data_validations.report(errors_only=True)
 
         previous_registered_articles = get_registered_articles(issue_files)
 
         #utils.debugging('get_complete_issue_items')
         complete_issue_items, xml_doc_actions, unmatched_orders = get_complete_issue_items(issue_files, pkg_path, previous_registered_articles, pkg_articles)
+
+        pkg_manager = PkgManager(issue_models, pkg_articles, issue_files)
+
+        if pkg_manager.pkg_issue_data_validations is not None:
+            if pkg_manager.pkg_issue_data_validations.fatal_errors > 0:
+                report_components['issue-report'] = html_reports.tag('h2', 'Comparision of issue and articles data') + pkg_manager.pkg_issue_data_validations.report(errors_only=True)
 
         #utils.debugging('display_status_before_xc')
         before_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - before conversion'))
@@ -512,7 +515,7 @@ def convert_package(src_path):
             #utils.debugging('pkg_reports.ArticlesPkgReport')
             selected_articles_pkg_reports = pkg_reports.ArticlesPkgReport(selected_articles_pkg)
             #utils.debugging('validate_articles_pkg_xml_and_data')
-            selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, validate_order, False, xml_doc_actions)
+            selected_articles_pkg.validate_articles_pkg_xml_and_data(issue_files.base_reports_path, converter_env.institution_normalizer, doc_file_info_items, dtd_files, validate_order, False, xml_doc_actions)
             pkg_quality_fatal_errors = selected_articles_pkg.pkg_xml_structure_validations.fatal_errors + selected_articles_pkg.pkg_xml_content_validations.fatal_errors
 
             pkg_manager.pkg_xml_structure_validations = selected_articles_pkg.pkg_xml_structure_validations
@@ -552,11 +555,6 @@ def convert_package(src_path):
             if not aop_status is None:
                 aop_results_report = report_status(aop_status, 'aop-block')
             aop_results_report = html_reports.tag('h3', _('AOP status')) + aop_results_report
-
-            #sheets = pkg_reports.get_lists_report_text(articles_sheets)
-
-            #utils.debugging('save_reports')
-            issue_files.save_reports(report_path)
 
             report_path = issue_files.base_reports_path
             result_path = issue_files.issue_path
@@ -672,7 +670,7 @@ def is_conversion_allowed(pub_year, ref_count, pkg_manager):
 
 def convert_articles(issue_files, pkg_manager, xml_doc_actions, registered_articles, unmatched_orders, pkg_path):
     index = 0
-    pkg_conversion_results = pkg_reports.PackageValidationsResults()
+    pkg_conversion_results = pkg_reports.PackageValidationsResults(issue_files.base_reports_path, 'xc-', '')
     conversion_status = {}
 
     for k in ['converted', 'rejected', 'not converted', 'skipped', 'deleted incorrect order']:
@@ -783,6 +781,8 @@ def convert_articles(issue_files, pkg_manager, xml_doc_actions, registered_artic
             scilista_item = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
             if not converter_env.is_windows:
                 converter_env.db_article.generate_windows_version(issue_files)
+
+    pkg_conversion_results.save_reports()
     #utils.debugging('convert_articles: fim')
     return (scilista_item, pkg_conversion_results, conversion_status, aop_status)
 
@@ -1118,8 +1118,8 @@ def execute_converter(package_paths, collection_name=None):
                 utils.display_message(package_path)
                 utils.display_message(e)
                 utils.display_message('-'*10)
-                #if len(package_path) == 1:
-                #    raise
+                if len(package_paths) == 1:
+                    raise
                 bad_pkg_files.append(package_path)
                 bad_pkg_files.append(str(e))
                 report_location, report_path, scilista_item = [None, None, None]
@@ -1145,10 +1145,11 @@ def execute_converter(package_paths, collection_name=None):
                 if config.email_subject_package_evaluation is not None:
                     send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
 
-        if len(invalid_pkg_files) > 0:
-            send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
-        if len(bad_pkg_files) > 0:
-            send_message(mailer, config.email_to_adm, 'x ' + config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(bad_pkg_files))
+        if mailer is not None:
+            if len(invalid_pkg_files) > 0:
+                send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
+            if len(bad_pkg_files) > 0:
+                send_message(mailer, config.email_to_adm, 'x ' + config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(bad_pkg_files))
 
         if len(scilista) > 0 and config.collection_scilista is not None:
             open(config.collection_scilista, 'a+').write('\n'.join(scilista) + '\n')
