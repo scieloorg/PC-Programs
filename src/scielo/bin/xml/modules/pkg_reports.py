@@ -19,11 +19,16 @@ log_items = []
 
 class PackageValidationsResults(object):
 
-    def __init__(self, validations_results_items=None):
-        if validations_results_items is None:
-            self.validations_results_items = {}
-        else:
-            self.validations_results_items = validations_results_items
+    def __init__(self, report_path, prefix, suffix):
+        self.validations_results_items = {}
+        self.report_path = report_path
+        self.prefix = prefix
+        self.suffix = suffix
+        self.read_reports()
+        print('-- PackageValidationsResults --')
+        print(report_path)
+        print(prefix)
+        print(self.validations_results_items.keys())
 
     def item(self, name):
         if self.validations_results_items is not None:
@@ -43,18 +48,47 @@ class PackageValidationsResults(object):
     def report(self, errors_only=False):
         _reports = ''
         if self.validations_results_items is not None:
-            for xml_name, results in self.validations_results_items.items():
+            print('report()')
+            print(self.report_path)
+            print(self.prefix)
+            for xml_name in sorted(self.validations_results_items.keys()):
+                results = self.validations_results_items[xml_name]
                 if results.total > 0 or errors_only is False:
                     _reports += html_reports.tag('h4', xml_name)
                     _reports += results.message
         return _reports
 
+    def save_reports(self):
+        for xml_name, validations in self.validations_results_items.items():
+            if validations.message is not None:
+                if len(validations.message) > 0:
+                    fs_utils.write_file(self.report_path + '/' + self.prefix + xml_name + self.suffix, validations.message)
+
+    def read_reports(self, read_all=True):
+        for item in os.listdir(self.report_path):
+            valid = False
+            xml_name = item
+            if len(self.prefix) > 0:
+                if item.startswith(self.prefix):
+                    xml_name = xml_name[len(self.prefix):]
+                    valid = True
+            if len(self.suffix) > 0:
+                if item.endswith(self.suffix):
+                    xml_name = xml_name[0:-len(self.suffix)]
+                    valid = True
+            if valid is True:
+                if os.path.isfile(self.report_path + '/' + item):
+                    message = fs_utils.read_file(self.report_path + '/' + item)
+                    if len(message) > 0:
+                        if read_all is True or self.validations_results_items.get(xml_name) is None:
+                            self.validations_results_items[xml_name] = ValidationsResults(message)
+
 
 class ValidationsResults(object):
 
     def __init__(self, message):
-        self.fatal_errors, self.errors, self.warnings = html_reports.statistics_numbers(message)
         self.message = message
+        self.fatal_errors, self.errors, self.warnings = html_reports.statistics_numbers(message)
 
     @property
     def total(self):
@@ -388,16 +422,21 @@ class ArticlePackage(object):
             results.append({'label': xml_name, 'status': status, 'message': self.articles[xml_name].pages + msg})
         return results
 
-    def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, validate_order, xml_generation, xc_actions=None):
-        #FIXME
-        self.pkg_xml_structure_validations = PackageValidationsResults()
-        self.pkg_xml_content_validations = PackageValidationsResults()
+    def validate_articles_pkg_xml_and_data(self, report_path, org_manager, doc_files_info_items, dtd_files, validate_order, xml_generation, xc_actions=None):
+        pkg_path = os.path.dirname(doc_files_info_items.values()[0].new_xml_filename)
 
-        for xml_name, doc_files_info in doc_files_info_items.items():
-            for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
-                if os.path.isfile(f):
-                    os.unlink(f)
+        self.pkg_xml_structure_validations = PackageValidationsResults(report_path, 'xmlstr-', '')
+        self.pkg_xml_content_validations = PackageValidationsResults(report_path, 'xmlcon-', '')
 
+        self.validate_articles_pkg_xml_structure(doc_files_info_items, dtd_files, xc_actions)
+        self.validate_articles_pkg_xml_content(pkg_path, {k: v.new_name for k, v in doc_files_info_items.items()}, org_manager, validate_order, xml_generation, xc_actions)
+
+        if validate_order:
+            self.pkg_xml_structure_validations.save_reports()
+            self.pkg_xml_content_validations.save_reports()
+        print(os.listdir(report_path))
+
+    def validate_articles_pkg_xml_structure(self, doc_files_info_items, dtd_files, xc_actions=None):
         n = '/' + str(len(self.articles))
         index = 0
 
@@ -407,7 +446,9 @@ class ArticlePackage(object):
         for xml_name in self.xml_name_sorted_by_order:
             doc = self.articles[xml_name]
             doc_files_info = doc_files_info_items[xml_name]
-
+            for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
+                if os.path.isfile(f):
+                    os.unlink(f)
             new_name = doc_files_info.new_name
 
             index += 1
@@ -437,9 +478,32 @@ class ArticlePackage(object):
                 data_validations.warnings = xml_w
                 self.pkg_xml_structure_validations.add(xml_name, data_validations)
 
-                # XML Content validations
-                report_content = article_reports.article_data_and_validations_report(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, xml_generation)
+    def validate_articles_pkg_xml_content(self, pkg_path, new_names, org_manager, validate_order, xml_generation, xc_actions=None):
+        #FIXME
+        n = '/' + str(len(self.articles))
+        index = 0
+
+        utils.display_message('\n')
+        utils.display_message(_('Validating XML files'))
+        #utils.debugging('Validating package: inicio')
+        for xml_name in self.xml_name_sorted_by_order:
+            doc = self.articles[xml_name]
+            new_name = new_names.get(xml_name)
+            index += 1
+            item_label = str(index) + n + ': ' + new_name
+            utils.display_message(item_label)
+
+            skip = False
+            if xc_actions is not None:
+                skip = (xc_actions[xml_name] == 'skip-update')
+
+            if skip:
+                utils.display_message(' -- skept')
+            else:
+                report_content = article_reports.article_data_and_validations_report(org_manager, doc, new_name, pkg_path, validate_order, xml_generation)
                 data_validations = ValidationsResults(report_content)
+                print('add()')
+                print(xml_name)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
                 if xml_generation:
                     stats = html_reports.statistics_display(data_validations, False)
@@ -447,13 +511,6 @@ class ArticlePackage(object):
                 else:
                     stats = ''
                     title = ''
-                html_reports.save(doc_files_info.data_report_filename, title, stats + report_content)
-
-                #self.pkg_fatal_errors += xml_f + data_f
-                #self.pkg_stats[xml_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
-                #self.pkg_reports[xml_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
-
-        #utils.debugging('Validating package: fim')
 
 
 class ArticlesPkgReport(object):

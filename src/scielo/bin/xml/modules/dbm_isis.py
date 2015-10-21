@@ -295,11 +295,18 @@ class CISIS(object):
         s = ''
         if os.path.isfile(mst_filename + '.mst'):
             temp_file = NamedTemporaryFile(delete=False)
-            cmd = self.cisis_path + '/mx ' + mst_filename + ' +control now > ' + temp_file.name
+            temp_file.close()
+
+            cmd = self.cisis_path + '/mx ' + mst_filename + ' +control now > ' + temp_file.name.replace('\\', '/')
             os.system(cmd)
+            #print(cmd)
             if os.path.isfile(temp_file.name):
                 s = open(temp_file.name, 'r').read()
-                os.unlink(temp_file.name)
+                #print(s)
+                try:
+                    os.unlink(temp_file.name)
+                except:
+                    print(os.path.isfile(temp_file.name))
         return len(s) > 0
 
 
@@ -327,6 +334,7 @@ class UCISIS(object):
     def convert1660to1030(self, mst_filename):
         if os.path.isfile(mst_filename + '.mst'):
             temp_file = NamedTemporaryFile(delete=False)
+            temp_file.close()
             self.cisis1660.mst2iso(mst_filename, temp_file.name)
             self.cisis1030.iso2mst(temp_file.name, mst_filename)
             os.unlink(temp_file.name)
@@ -381,6 +389,7 @@ class IsisDAO(object):
 
     def save_records(self, records, db_filename, fst_filename=None):
         temp_file = NamedTemporaryFile(delete=False)
+        temp_file.close()
         IDFile().save(temp_file.name, records)
         self.cisis.id2i(temp_file.name, db_filename)
         os.unlink(temp_file.name)
@@ -395,6 +404,7 @@ class IsisDAO(object):
         if not os.path.isdir(path):
             os.makedirs(path)
         temp_file = NamedTemporaryFile(delete=False)
+        temp_file.close()
         IDFile().save(temp_file.name, records)
         self.cisis.append_id_to_master(temp_file.name, db_filename, False)
         os.unlink(temp_file.name)
