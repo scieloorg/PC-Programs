@@ -342,6 +342,7 @@ class Conversion(object):
                     if xml_name in self.changed_orders.keys():
                         incorrect_order, curr_order = self.changed_orders[xml_name]
 
+                    normalize_affiliations(self.pkg.articles[xml_name])
                     self.db.evaluate(self.pkg.issue_models.record, self.pkg.articles[xml_name], valid_aop, incorrect_order)
                 else:
                     xc_result = 'rejected'
@@ -360,9 +361,10 @@ class Conversion(object):
 
     @property
     def pkg_xc_validations(self):
-        validations = pkg_reports.PackageValidationsResults()
+        validations = pkg_reports.PackageValidationsResults(self.pkg.issue_files.base_reports_path, 'xc-', '')
         for xml_name, messages in self.db.registration_reports.items():
             validations.add(xml_name, pkg_reports.ValidationsResults(''.join(messages)))
+        validations.save_reports()
         return validations
 
     def conclusion(self, xc_status, acron_issue_label):
@@ -371,7 +373,7 @@ class Conversion(object):
         converted = 0 if converted is None else len(converted)
         not_converted = self.conversion_status.get('not converted', [])
         not_converted = 0 if not_converted is None else len(not_converted)
-        
+
         app_site = converter_env.web_app_site if converter_env.web_app_site is not None else _('scielo web site')
 
         status = ''
@@ -425,6 +427,7 @@ def convert_package(src_path):
     report_components = {}
     scilista_items = []
     xc_status = 'not processed'
+    is_db_generation = True
 
     dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
 
@@ -440,37 +443,41 @@ def convert_package(src_path):
     fs_utils.append_file(log_package, 'normalized_package')
     pkg_articles, doc_file_info_items = normalized_package(src_path, tmp_report_path, wrk_path, pkg_path, converter_env.version)
 
-    pkg = pkg_reports.ArticlesPkg(pkg_articles, pkg_path)
-    pkg_validator = pkg_reports.PkgValidator(pkg, is_db_generation=True)
-
-    fs_utils.append_file(log_package, 'pkg.xml_list()')
-    report_components['xml-files'] = pkg.xml_list()
-
-    fs_utils.append_file(log_package, 'pkg_validator.overview_report()')
-    report_components['pkg_overview'] = pkg_validator.overview_report()
-
-    fs_utils.append_file(log_package, 'pkg_validator.references_overview_report()')
-    report_components['pkg_overview'] += pkg_validator.references_overview_report()
-
-    fs_utils.append_file(log_package, 'pkg_validator.sources_overview_report()')
-    report_components['references'] = pkg_validator.sources_overview_report()
+    pkg = pkg_reports.PkgArticles(pkg_articles, pkg_path)
 
     fs_utils.append_file(log_package, 'identify_issue')
     issue_error_msg = pkg.identify_issue(converter_env.db_manager, pkg_name)
 
+    fs_utils.append_file(log_package, 'pkg.xml_list()')
+    report_components['xml-files'] = pkg.xml_list()
+
     if issue_error_msg is not None:
         report_components['issue-report'] = issue_error_msg
     else:
-        fs_utils.append_file(log_package, 'pkg_validator.issue_report')
-        report_components['issue-report'] = pkg_validator.issue_report
 
         fs_utils.append_file(log_package, 'db_article')
         db_article = xc_models.ArticleDB(converter_env.db_manager.db_isis, pkg.issue_files, xc_models.AopManager(converter_env.db_manager.db_isis, pkg.issue_files.journal_files))
 
         conversion = Conversion(pkg, db_article)
-        conversion.blocking_errors = pkg_validator.blocking_errors
+
         fs_utils.append_file(log_package, 'conversion.evaluate_pkg_and_registered_items')
         conversion.evaluate_pkg_and_registered_items(converter_env.skip_identical_xml)
+
+        pkg_validator = pkg_reports.ArticlesPkgReport(tmp_report_path, pkg, conversion.previous_registered_articles, is_db_generation)
+
+        fs_utils.append_file(log_package, 'pkg_validator.overview_report()')
+        report_components['pkg_overview'] = pkg_validator.overview_report()
+
+        fs_utils.append_file(log_package, 'pkg_validator.references_overview_report()')
+        report_components['pkg_overview'] += pkg_validator.references_overview_report()
+
+        fs_utils.append_file(log_package, 'pkg_validator.sources_overview_report()')
+        report_components['references'] = pkg_validator.sources_overview_report()
+
+        fs_utils.append_file(log_package, 'pkg_validator.issue_report')
+        report_components['issue-report'] = pkg_validator.issue_report
+
+        conversion.blocking_errors = pkg_validator.blocking_errors
 
         fs_utils.append_file(log_package, 'conversion.initial_status_report')
         before_conversion_report = conversion.initial_status_report()
@@ -478,7 +485,9 @@ def convert_package(src_path):
         if conversion.blocking_errors == 0:
 
             fs_utils.append_file(log_package, 'pkg_validator.validate_articles_pkg_xml_and_data')
+
             pkg_validator.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, False, conversion.selected_articles.keys())
+
             pkg_xml_fatal_errors = pkg_validator.pkg_xml_structure_validations.fatal_errors + pkg_validator.pkg_xml_content_validations.fatal_errors
 
             fs_utils.append_file(log_package, 'pkg_validator.detail_report')
@@ -500,8 +509,6 @@ def convert_package(src_path):
             if len(aop_results_report) == 0:
                 aop_results_report = _('this journal has no aop.')
 
-            fs_utils.append_file(log_package, 'pkg.issue_files.save_reports(tmp_report_path)')
-            pkg.issue_files.save_reports(tmp_report_path)
             final_report_path = pkg.issue_files.base_reports_path
             final_result_path = pkg.issue_files.issue_path
 
@@ -525,6 +532,7 @@ def convert_package(src_path):
     report_components['summary-report'] = xc_conclusion_msg + xc_results_report + aop_results_report
 
     fs_utils.append_file(log_package, 'pkg_reports.format_complete_report')
+
     xc_validations = pkg_reports.format_complete_report(report_components)
     content = xc_validations.message
     if tmp_report_path in content:

@@ -604,7 +604,8 @@ class IssueModels(object):
             _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
             for item in article_utils.validate_article_type_and_section(article.article_type, _sectitle):
                 results.append(item)
-        return (section_code, html_reports.tag('div', html_reports.validations_table(results)))
+            article.section_code = section_code
+        return (html_reports.tag('div', html_reports.validations_table(results)))
 
 
 class IssueArticlesRecords(object):
@@ -873,10 +874,9 @@ class ArticleDB(object):
             # todos validos serem adicionados aa base
             self.create_issue_id_file(i_record)
             self.create_db()
+            self.issue_files.save_source_files(pkg_path)
             self.check_registration()
-
             if len(self.is_not_converted) == 0:
-                self.issue_files.save_source_files(pkg_path)
                 if self.aop_manager.journal_publishes_aop():
                     self.aop_manager.update_all_aop_db()
                     self.aop_manager.still_aop_items()

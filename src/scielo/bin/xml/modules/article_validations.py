@@ -199,9 +199,10 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, _article, validate_order, check_url):
+    def __init__(self, org_manager, _article, is_db_generation, check_url):
+        self.org_manager = org_manager
         self.article = _article
-        self.validate_order = validate_order
+        self.is_db_generation = is_db_generation
         self.check_url = check_url
 
     def normalize_validations(self, validations_result_list):
@@ -486,7 +487,7 @@ class ArticleContentValidation(object):
                 else:
                     r = (status, order + ': ' + _('Invalid format of order. Expected number 1 to 99999.'))
             return r
-        if self.validate_order:
+        if self.is_db_generation:
             status = 'FATAL ERROR'
         else:
             status = 'ERROR'

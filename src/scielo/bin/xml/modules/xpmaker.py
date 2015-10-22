@@ -976,9 +976,9 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     else:
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
-        pkg = pkg_reports.ArticlesPkg(articles, scielo_pkg_path)
+        pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path)
 
-        pkg_validator = pkg_reports.PkgValidator(pkg, is_db_generation)
+        pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, None, is_db_generation)
 
         report_components['xml-files'] = pkg.xml_list()
 
@@ -995,15 +995,11 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             org_manager.load()
             institution_normalizer = article.InstitutionNormalizer(org_manager)
 
-            #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, is_db_generation, is_xml_generation)
             pkg_validator.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, is_xml_generation)
 
             if not is_xml_generation:
                 report_components['detail-report'] = pkg_validator.detail_report()
                 report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
-            #if not is_xml_generation:
-            #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
-            #    texts.append(pkg_reports.get_lists_report_text(articles_sheets))
 
         if not is_xml_generation:
             xpm_validations = pkg_reports.format_complete_report(report_components)
@@ -1145,10 +1141,7 @@ def call_make_packages(args, version):
 
 
 def validate_inputs(xml_path, acron):
-    errors = xml_utils.is_valid_xml_path(xml_path)
-    if acron is None:
-        errors.append(_('Missing acronym.'))
-    return errors
+    return xml_utils.is_valid_xml_path(xml_path)
 
 
 def get_fontsymbols_in_html(html_content):
