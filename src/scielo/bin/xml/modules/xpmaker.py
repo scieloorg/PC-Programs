@@ -954,7 +954,7 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
         make_pkg_zip(pmc_pkg_path)
 
 
-def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
+def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=False):
     is_xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
 
     scielo_pkg_path = results_path + '/scielo_package'
@@ -976,35 +976,30 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
     else:
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
-        articles_pkg = pkg_reports.ArticlePackage(articles)
-        articles_pkg_reports = pkg_reports.ArticlesPkgReport(articles_pkg)
+        pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path)
 
-        report_components['xml-files'] = pkg_reports.xml_list(scielo_pkg_path)
+        pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, None, is_db_generation)
+
+        report_components['xml-files'] = pkg.xml_list()
 
         toc_f = 0
-        report_components['pkg_overview'] = articles_pkg_reports.overview_report()
-        report_components['pkg_overview'] += articles_pkg_reports.references_overview_report()
-        report_components['references'] = articles_pkg_reports.sources_overview_report()
+        report_components['pkg_overview'] = pkg_validator.overview_report()
+        report_components['pkg_overview'] += pkg_validator.references_overview_report()
+        report_components['references'] = pkg_validator.sources_overview_report()
 
         if not is_xml_generation:
-            critical, toc_validations = articles_pkg_reports.validate_consistency(from_converter)
-            report_components['issue-report'] = toc_validations.message
-            toc_f = toc_validations.fatal_errors
-
+            report_components['issue-report'] = pkg_validator.issue_report
+            toc_f = pkg_validator.blocking_errors
         if toc_f == 0:
             org_manager = institutions_service.OrgManager()
             org_manager.load()
             institution_normalizer = article.InstitutionNormalizer(org_manager)
 
-            #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, is_xml_generation)
-            articles_pkg.validate_articles_pkg_xml_and_data(report_path, institution_normalizer, doc_files_info_items, scielo_dtd_files, from_converter, is_xml_generation)
+            pkg_validator.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, is_xml_generation)
 
             if not is_xml_generation:
-                report_components['detail-report'] = articles_pkg_reports.detail_report()
+                report_components['detail-report'] = pkg_validator.detail_report()
                 report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
-            #if not is_xml_generation:
-            #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
-            #    texts.append(pkg_reports.get_lists_report_text(articles_sheets))
 
         if not is_xml_generation:
             xpm_validations = pkg_reports.format_complete_report(report_components)
@@ -1012,7 +1007,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             pkg_reports.save_report(filename, _('XML Package Maker Report'), xpm_validations.message, xpm_version())
             pkg_reports.display_report(filename)
 
-        if not from_converter:
+        if not is_db_generation:
             if is_xml_generation:
                 make_pmc_report(articles, doc_files_info_items)
             if is_pmc_journal(articles):
@@ -1098,30 +1093,6 @@ def get_pkg_items(xml_filenames, report_path):
         doc_files_info.new_xml_path = os.path.dirname(xml_filename)
         r.append((get_article(doc_files_info.new_xml_filename), doc_files_info))
     return r
-
-
-def package_journal_and_issue_data(articles):
-    issue_label = []
-    e_issn = []
-    print_issn = []
-    journal_title = None
-    for doc in articles.values():
-        if doc.tree is not None:
-            if journal_title is None:
-                journal_title = doc.journal_title
-            issue_label.append(doc.issue_label)
-            if doc.e_issn is not None:
-                e_issn.append(doc.e_issn)
-            if doc.print_issn is not None:
-                print_issn.append(doc.print_issn)
-    issue_label = list(set(issue_label))
-    e_issn = list(set(e_issn))
-    print_issn = list(set(print_issn))
-
-    issue_label = issue_label[0] if len(issue_label) == 1 else None
-    e_issn = e_issn[0] if len(e_issn) > 0 else None
-    print_issn = print_issn[0] if len(print_issn) > 0 else None
-    return (journal_title, issue_label, e_issn, print_issn)
 
 
 def make_packages(path, acron, version='1.0'):

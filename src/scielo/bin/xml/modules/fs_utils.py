@@ -22,7 +22,7 @@ def write_file(filename, content, encode='utf-8'):
 def append_file(filename, content, encode='utf-8'):
     if isinstance(content, unicode):
         content = content.encode(encode)
-    open(filename, 'a+').write(content)
+    open(filename, 'a+').write(content + '\n')
 
 
 def delete_file_or_folder(path):
@@ -32,6 +32,24 @@ def delete_file_or_folder(path):
         shutil.rmtree(path)
     elif os.path.isfile(path):
         os.unlink(path)
+
+
+def move_file(src, dest):
+    errors = []
+    if os.path.isfile(src):
+        src_folder = os.path.dirname(dest)
+        if not os.path.isdir(src_folder):
+            os.makedirs(src_folder)
+        if os.path.isfile(dest):
+            try:
+                os.unlink(dest)
+            except:
+                errors.append(dest + ' is already exists.')
+        try:
+            shutil.move(src, src_folder)
+        except:
+            errors.append('Unable to move ' + src + ' to ' + src_folder + '.')
+    return errors
 
 
 def extract_package(pkg_file, pkg_work_path):

@@ -503,33 +503,32 @@ def package_files(path, xml_name):
     return r
 
 
-def article_data_and_validations_report(org_manager, article, new_name, package_path, validate_order, xml_generation):
+def article_data_and_validations_report(org_manager, article, new_name, package_path, is_db_generation, is_sgml_generation):
     if article.tree is None:
         sheet_data = None
         article_display_report = None
         article_validation_report = None
         content = 'FATAL ERROR: ' + _('Unable to get data of ') + new_name + '.'
     else:
-        article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, False)
+        article_validation = article_validations.ArticleContentValidation(org_manager, article, is_db_generation, False)
         sheet_data = ArticleSheetData(article, article_validation)
         article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
         article_validation_report = ArticleValidationReport(article_validation)
 
         content = []
 
-        if xml_generation:
+        if is_sgml_generation:
             content.append(article_display_report.issue_header)
             content.append(article_display_report.article_front)
 
-        content.append(article_validation_report.validations(xml_generation))
+        content.append(article_validation_report.validations(is_sgml_generation))
         content.append(article_display_report.table_tables)
         content.append(article_display_report.files_and_href)
 
-        if xml_generation:
+        if is_sgml_generation:
             content.append(article_display_report.article_body)
             content.append(article_display_report.article_back)
-            content.append(article_display_report.authors_sheet)
-            content.append(article_display_report.sources_sheet)
+
         content = html_reports.join_texts(content)
 
     return content

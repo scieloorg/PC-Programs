@@ -427,19 +427,22 @@ class IsisDAO(object):
             base = temp_dir + '/' + os.path.basename(db_filename)
             self.cisis.search(db_filename, expr, base)
 
+        r = []
         id_filename = base + '.id'
+        if os.path.isfile(base + '.mst'):
+            self.cisis.i2id(base, id_filename)
+            r = IDFile().read(id_filename)
 
-        self.cisis.i2id(base, id_filename)
-        r = IDFile().read(id_filename)
         if temp_dir is not None:
             try:
                 fs_utils.delete_file_or_folder(temp_dir)
             except:
                 pass
-        try:
-            os.unlink(id_filename)
-        except:
-            pass
+        if os.path.isfile(id_filename):
+            try:
+                os.unlink(id_filename)
+            except:
+                pass
         return r
 
     def get_id_records(self, id_filename):

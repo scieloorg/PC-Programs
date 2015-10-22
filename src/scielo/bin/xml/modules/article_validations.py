@@ -199,12 +199,11 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, org_manager, article, validate_order, check_url):
+    def __init__(self, org_manager, _article, is_db_generation, check_url):
         self.org_manager = org_manager
-        self.article = article
-        self.validate_order = validate_order
+        self.article = _article
+        self.is_db_generation = is_db_generation
         self.check_url = check_url
-        #self.check_url = validate_order
 
     def normalize_validations(self, validations_result_list):
         r = []
@@ -488,7 +487,7 @@ class ArticleContentValidation(object):
                 else:
                     r = (status, order + ': ' + _('Invalid format of order. Expected number 1 to 99999.'))
             return r
-        if self.validate_order:
+        if self.is_db_generation:
             status = 'FATAL ERROR'
         else:
             status = 'ERROR'
@@ -1141,7 +1140,7 @@ class ReferenceContentValidation(object):
                     if self.reference.source is not None:
                         if 'Lei ' in self.reference.source or ('Di' in self.reference.source and 'Oficial' in self.reference.source):
                             looks_like = 'legal-doc'
-                        if 'portaria' in _source:
+                        if 'portaria ' in _source:
                             looks_like = 'legal-doc'
                 if 'conference' in _mixed or 'proceeding' in _mixed or 'meeting' in _mixed:
                     if self.reference.publication_type != 'confproc':

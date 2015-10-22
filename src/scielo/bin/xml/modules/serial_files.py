@@ -68,8 +68,12 @@ class ArticleFiles(object):
     def __init__(self, issue_files, order, xml_name):
         self.issue_files = issue_files
         self.order = order
-        self.filename = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
-        self.xml_name = xml_name.replace('.xml', '')
+        if xml_name is None:
+            self.filename = None
+            self.xml_name = None
+        else:
+            self.filename = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
+            self.xml_name = xml_name.replace('.xml', '')
 
     @property
     def id_filename(self):
@@ -89,6 +93,17 @@ class IssueFiles(object):
         self.web_path = web_path
         self.create_folders()
         self.move_old_id_folder()
+        self._articles_files = None
+
+    @property
+    def articles_files(self):
+        if self._articles_files is None:
+            self._articles_files = {}
+            for item in os.listdir(self.id_path):
+                if os.path.isfile(self.id_path + '/' + item) and item.endswith('.id'):
+                    order = item.replace('.id', '')
+                    self._articles_files[order] = ArticlesFiles(self, order, None)
+        return self._articles_files
 
     def create_folders(self):
         for path in [self.id_path, self.base_path, self.base_reports_path, self.base_source_path]:
@@ -130,6 +145,14 @@ class IssueFiles(object):
     @property
     def base_path(self):
         return self.issue_path + '/base'
+
+    @property
+    def markup_path(self):
+        return self.issue_path + '/markup'
+
+    @property
+    def body_path(self):
+        return self.issue_path + '/body'
 
     @property
     def windows_base_path(self):
@@ -243,86 +266,65 @@ class JournalFiles(object):
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
         self._issues_files = None
-        self.setup()
-
-    def setup(self):
-        self.years = [str(int(datetime.now().isoformat()[0:4])+1 - y) for y in range(0, 5)]
-        for y in self.years:
-            self.move_ahead_old_id_folder(y)
+        self._aop_issues_files = None
+        self._ex_aop_issues_files = None
+        self._regular_issues_files = None
+        self._pr_issues_files = None
 
     @property
     def issues_files(self):
         if self._issues_files is None:
             self._issues_files = {}
-            for item in os.listdir(self.journal_path):
-                if os.path.isdir(self.journal_path + '/' + item):
-                    self._issues_files[item] = IssueFiles(self, item, None, None)
+            for issue_id in os.listdir(self.journal_path):
+                if os.path.isdir(self.journal_path + '/' + issue_id):
+                    if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
+                        self._issues_files[issue_id] = IssueFiles(self, issue_id, None, None)
         return self._issues_files
 
     def publishes_aop(self):
         return len(self.aop_issue_files) > 0
 
     @property
-    def aop_issue_files(self):
-        if self.issues_files is not None:
-            return {k:v for k, v in self.issues_files.items() if 'ahead' in k and not 'ex-' in k}
-
-    def ahead_base(self, year):
-        path = self.journal_path + '/' + year + 'nahead/base/' + year + 'nahead'
-        #create_path(os.path.dirname(path))
-        return path
-
-    def ahead_xml_markup_body(self, year, filename):
-        m = self.journal_path + '/' + year + 'nahead/markup'
-        b = self.journal_path + '/' + year + 'nahead/body'
-        x = self.journal_path + '/' + year + 'nahead/base_xml/base_source'
-        #create_path(m)
-        #create_path(b)
-        #create_path(x)
-        return (x + '/' + filename, m + '/' + filename, b + '/' + filename)
-
-    def ahead_id_filename(self, year, order):
-        order = '00000' + order
-        order = order[-5:]
-        return self.ahead_id_path(year) + '/' + order + '.id'
-
-    def ahead_i_id_filename(self, year):
-        return self.ahead_id_path(year) + '/i.id'
-
-    def ahead_id_path(self, year):
-        path = self.journal_path + '/' + year + 'nahead/base_xml/id'
-        #create_path(path)
-        return path
-
-    def ahead_old_id_path(self, year):
-        path = self.journal_path + '/' + year + 'nahead/id'
-        #create_path(path)
-        return path
-
-    def ex_ahead_paths(self, year):
-        path = self.journal_path + '/ex-' + year + 'nahead'
-        m = path + '/markup/'
-        b = path + '/body/'
-        base = path + '/base/'
-        return (m, b, base)
+    def pr_issues_files(self):
+        if self._pr_issues_files is None:
+            if self.issue_files is not None:
+                self._pr_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('pr') and not k.startswith('ex-')}
+        return self._pr_issues_files
 
     @property
-    def ahead_bases(self):
-        bases = []
-        for y in self.years:
-            if os.path.isfile(self.ahead_base(y) + '.mst'):
-                bases.append(self.ahead_base(y))
-        return bases
+    def regular_issues_files(self):
+        if self._regular_issues_files is None:
+            if self.issue_files is not None:
+                self._regular_issues_files = {k:v for k, v in self.issues_files.items() if k is not self.aop_issue_files.keys() and k is not self.ex_aop_issues_files.keys() and k is not self.pr_issue_files.keys()}
+        return self._regular_issues_files
 
-    def move_ahead_old_id_folder(self, year):
-        if os.path.isdir(self.ahead_old_id_path(year)):
-            if not os.path.isdir(self.ahead_id_path(year)):
-                os.makedirs(self.ahead_id_path(year))
-            for item in os.listdir(self.ahead_old_id_path(year)):
+    @property
+    def aop_issue_files(self):
+        if self._aop_issues_files is None:
+            if self.issues_files is not None:
+                self._aop_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and not k.startswith('ex-')}
+        return self._aop_issues_files
 
-                if not os.path.isfile(self.ahead_id_path(year) + '/' + item):
-                    shutil.copyfile(self.ahead_old_id_path(year) + '/' + item, self.ahead_id_path(year) + '/' + item)
-            try:
-                fs_utils.delete_file_or_folder(self.ahead_old_id_path(year))
-            except:
-                pass
+    @property
+    def ex_aop_issues_files(self):
+        if self._ex_aop_issues_files is None:
+            if self.issues_files is not None:
+                self._ex_aop_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and k.startswith('ex-')}
+        return self._ex_aop_issues_files
+
+    def archive_ex_aop_files(self, aop, db_name):
+        aop_issue_files = None
+        ex_aop_issues_files = None
+        done = False
+        msg = None
+        if self.ex_aop_issues_files is not None:
+            ex_aop_issues_files = self.ex_aop_issues_files.get(db_name)
+        if self.aop_issue_files is not None:
+            aop_issue_files = self.aop_issue_files.get('ex-' + db_name)
+        if aop_issue_files is not None and ex_aop_issues_files is not None:
+            fs_utils.move_file(aop_issue_files.markup_path + '/' + aop.filename, ex_aop_issues_files.markup_path + '/' + aop.filename)
+            fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
+            fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
+            msg = fs_utils.move_file(aop_issue_files.id_path + '/' + aop.filename, ex_aop_issues_files.id_path + '/' + aop.filename)
+            done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.filename))
+        return (done, msg)

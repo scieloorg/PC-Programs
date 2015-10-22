@@ -25,10 +25,6 @@ class PackageValidationsResults(object):
         self.prefix = prefix
         self.suffix = suffix
         self.read_reports()
-        print('-- PackageValidationsResults --')
-        print(report_path)
-        print(prefix)
-        print(self.validations_results_items.keys())
 
     def item(self, name):
         if self.validations_results_items is not None:
@@ -45,18 +41,25 @@ class PackageValidationsResults(object):
     def fatal_errors(self):
         return sum([item.fatal_errors for item in self.validations_results_items.values()])
 
+    @property
+    def errors(self):
+        return sum([item.errors for item in self.validations_results_items.values()])
+
+    @property
+    def warnings(self):
+        return sum([item.warnings for item in self.validations_results_items.values()])
+
     def report(self, errors_only=False):
         _reports = ''
         if self.validations_results_items is not None:
-            print('report()')
-            print(self.report_path)
-            print(self.prefix)
-            for xml_name in sorted(self.validations_results_items.keys()):
-                results = self.validations_results_items[xml_name]
+            for xml_name, results in self.validations_results_items.items():
                 if results.total > 0 or errors_only is False:
                     _reports += html_reports.tag('h4', xml_name)
                     _reports += results.message
         return _reports
+
+    def statistics_message(self):
+        return '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(self.fatal_errors)), ('errors', str(self.errors)), ('warnings', str(self.warnings))]]) + ']'
 
     def save_reports(self):
         for xml_name, validations in self.validations_results_items.items():
@@ -87,21 +90,42 @@ class PackageValidationsResults(object):
 class ValidationsResults(object):
 
     def __init__(self, message):
-        self.message = message
         self.fatal_errors, self.errors, self.warnings = html_reports.statistics_numbers(message)
+        self.message = message
 
     @property
     def total(self):
         return sum([self.fatal_errors, self.errors, self.warnings])
 
+    def statistics_message(self):
+        return '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(self.fatal_errors)), ('errors', str(self.errors)), ('warnings', str(self.warnings))]]) + ']'
 
-class ArticlePackage(object):
 
-    def __init__(self, articles):
+class PkgArticles(object):
+
+    def __init__(self, articles, pkg_path):
         self.articles = articles
-        self.compile_references()
+        self.pkg_path = pkg_path
         self._xml_name_sorted_by_order = None
-        self._indexed_by_order = None
+        self._compiled_pkg_metadata = None
+        self.reftype_and_sources = None
+        self.issue_files = None
+        self.issue_models = None
+
+        self.expected_equal_values = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        self.expected_unique_value = ['order', 'doi', 'elocation id', ]
+        self.required_journal_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        if not self.is_processed_in_batches:
+            self.expected_unique_value += ['fpage-lpage-seq']
+
+    def xml_list(self, xml_filenames=None):
+        r = ''
+        r += '<p>' + _('XML path') + ': ' + self.pkg_path + '</p>'
+        if xml_filenames is None:
+            xml_filenames = [self.pkg_path + '/' + name for name in os.listdir(self.pkg_path) if name.endswith('.xml')]
+        r += '<p>' + _('Total of XML files') + ': ' + str(len(xml_filenames)) + '</p>'
+        r += html_reports.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames])
+        return '<div class="xmllist">' + r + '</div>'
 
     @property
     def xml_name_sorted_by_order(self):
@@ -124,19 +148,188 @@ class ArticlePackage(object):
         return sorted_items
 
     @property
-    def indexed_by_order(self):
-        if self._indexed_by_order is None:
-            self._indexed_by_order = self.index_by_order()
-        return self._indexed_by_order
+    def is_processed_in_batches(self):
+        return any([self.is_aop_issue, self.is_rolling_pass])
 
-    def index_by_order(self):
-        indexed = {}
+    @property
+    def is_aop_issue(self):
+        return any([a.is_ahead for a in self.articles.values()])
+
+    @property
+    def is_rolling_pass(self):
+        _is_rolling_pass = False
+        if not self.is_aop_issue:
+            epub_dates = list(set([a.epub_dateiso for a in self.articles.values() if a.epub_dateiso is not None]))
+            epub_ppub_dates = [a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]
+            collection_dates = [a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]
+            other_dates = list(set(epub_ppub_dates + collection_dates))
+            if len(epub_dates) > 0:
+                if len(other_dates) == 0:
+                    _is_rolling_pass = True
+                elif len(other_dates) > 1:
+                    _is_rolling_pass = True
+                elif len([None for a in self.articles.values() if a.collection_dateiso is None]) > 0:
+                    _is_rolling_pass = True
+        return _is_rolling_pass
+
+    @property
+    def compiled_pkg_metadata(self):
+        if self._compiled_pkg_metadata is None:
+            self.compile_pkg_metadata()
+        return self._compiled_pkg_metadata
+
+    def compile_pkg_metadata(self):
+        self.invalid_xml_name_items = []
+        self._compiled_pkg_metadata = {label: {} for label in self.expected_equal_values + self.expected_unique_value}
+        self.pkg_missing_items = {}
+        labels = self.expected_equal_values + self.expected_unique_value
         for xml_name, article in self.articles.items():
-            _order = str(article.order)
-            if not _order in indexed.keys():
-                indexed[_order] = []
-            indexed[_order].append(article)
-        return indexed
+            if article.tree is None:
+                self.invalid_xml_name_items.append(xml_name)
+            else:
+                art_data = article.summary()
+                for label in labels:
+                    if art_data[label] is None:
+                        if label in self.required_journal_data:
+                            if not label in self.pkg_missing_items.keys():
+                                self.pkg_missing_items[label] = []
+                            self.pkg_missing_items[label].append(xml_name)
+                    else:
+                        self._compiled_pkg_metadata[label] = article_utils.add_new_value_to_index(self._compiled_pkg_metadata[label], art_data[label], xml_name)
+
+    @property
+    def pkg_journal_title(self):
+        if self._compiled_pkg_metadata is None:
+            self.compile_pkg_metadata()
+        return more_frequent(self._compiled_pkg_metadata['journal-title'])
+
+    @property
+    def pkg_issue_label(self):
+        if self._compiled_pkg_metadata is None:
+            self.compile_pkg_metadata()
+        return more_frequent(self._compiled_pkg_metadata.get('issue label'))
+
+    @property
+    def pkg_e_issn(self):
+        if self._compiled_pkg_metadata is None:
+            self.compile_pkg_metadata()
+        return more_frequent(self._compiled_pkg_metadata['e-ISSN'])
+
+    @property
+    def pkg_p_issn(self):
+        if self._compiled_pkg_metadata is None:
+            self.compile_pkg_metadata()
+        return more_frequent(self._compiled_pkg_metadata['print ISSN'])
+
+    def identify_issue(self, db_manager, pkg_name):
+        self.acron_issue_label, self.issue_models, issue_error_msg = db_manager.get_issue_models(self.pkg_journal_title, self.pkg_issue_label, self.pkg_p_issn, self.pkg_e_issn)
+        self.acron_issue_label = self.acron_issue_label.replace('issue', pkg_name)
+        self.issue_files = db_manager.get_issue_files(self.issue_models, self.pkg_path)
+        return issue_error_msg
+
+
+class ArticlesPkgReport(object):
+
+    def __init__(self, report_path, pkg_articles, previous_registered_articles, is_db_generation):
+        self.pkg_articles = pkg_articles
+        self.report_path = report_path
+        if self.pkg_articles.issue_files is not None:
+            self.report_path = self.pkg_articles.issue_files.base_reports_path
+        if previous_registered_articles is None:
+            self.complete_issue_articles = self.pkg_articles
+        else:
+            complete = {}
+            for k, item in pkg_articles.articles.items():
+                complete[k] = item
+            for k, item in previous_registered_articles.items():
+                if not k in complete.keys():
+                    complete[k] = item
+            self.complete_issue_articles = PkgArticles(complete, self.pkg_articles.issue_files.base_source_path)
+            self.complete_issue_articles.issue_files = self.pkg_articles.issue_files
+            self.complete_issue_articles.issue_models = self.pkg_articles.issue_models
+        self.reftype_and_sources = None
+        self.is_db_generation = is_db_generation
+        self._blocking_errors = None
+        self._registered_issue_data_validations = None
+        self.consistence_blocking_errors = None
+        self.changed_orders_validations = None
+
+        self.complete_issue_articles.error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
+
+        if not self.is_db_generation:
+            self.complete_issue_articles.error_level_for_unique['order'] = 'WARNING'
+        if self.complete_issue_articles.is_processed_in_batches:
+            self.complete_issue_articles.error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
+
+    def overview_report(self):
+        r = ''
+        r += html_reports.tag('h4', _('Languages overview'))
+        labels, items = self.tabulate_elements_by_languages()
+        r += html_reports.sheet(labels, items, 'dbstatus')
+
+        r += html_reports.tag('h4', _('Dates overview'))
+        labels, items = self.tabulate_dates()
+        r += html_reports.sheet(labels, items, 'dbstatus')
+
+        r += html_reports.tag('h4', _('Affiliations overview'))
+        items = []
+        affs_compiled = self.compile_affiliations()
+        for label, q in affs_compiled.items():
+            items.append({'label': label, 'quantity': str(q)})
+
+        r += html_reports.sheet(['label', 'quantity'], items, 'dbstatus')
+        return r
+
+    def references_overview_report(self):
+
+        if self.reftype_and_sources is None:
+            self.compile_references()
+
+        labels = ['label', 'status', 'message']
+        items = []
+
+        values = []
+        values.append(_('references by type'))
+        values.append('INFO')
+        values.append({reftype: str(sum(sources.values())) for reftype, sources in self.reftype_and_sources.items()})
+        items.append(label_values(labels, values))
+
+        #message = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}}
+        if len(self.bad_sources_and_reftypes) > 0:
+            values = []
+            values.append(_('same sources as different types'))
+            values.append('ERROR')
+            values.append(self.bad_sources_and_reftypes)
+            items.append(label_values(labels, values))
+            values = []
+            values.append(_('same sources as different types references'))
+            values.append('INFO')
+            values.append({source: self.sources_at.get(source) for source in self.bad_sources_and_reftypes.keys()})
+            items.append(label_values(labels, values))
+
+        if len(self.missing_source) > 0:
+            items.append({'label': _('references missing source'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.missing_source]})
+        if len(self.missing_year) > 0:
+            items.append({'label': _('references missing year'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.missing_year]})
+        if len(self.unusual_sources) > 0:
+            items.append({'label': _('references with unusual value for source'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.unusual_sources]})
+        if len(self.unusual_years) > 0:
+            items.append({'label': _('references with unusual value for year'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.unusual_years]})
+
+        return html_reports.tag('h4', _('Package references overview')) + html_reports.sheet(labels, items, table_style='dbstatus')
+
+    def sources_overview_report(self):
+        labels = ['source', 'total']
+        h = None
+        if len(self.reftype_and_sources) > 0:
+            h = ''
+            for reftype, sources in self.reftype_and_sources.items():
+                items = []
+                h += html_reports.tag('h4', reftype)
+                for source in sorted(sources.keys()):
+                    items.append({'source': source, 'total': str(sources[source])})
+                h += html_reports.sheet(labels, items, 'dbstatus')
+        return h
 
     @property
     def compiled_affiliations(self):
@@ -153,7 +346,7 @@ class ArticlePackage(object):
         for k in keys:
             evaluation[k] = 0
 
-        for xml_name, doc in self.articles.items():
+        for xml_name, doc in self.complete_issue_articles.articles.items():
             aff_ids = [aff.id for aff in doc.affiliations]
             for contrib in doc.contrib_names:
                 if len(contrib.xref) == 0:
@@ -179,7 +372,7 @@ class ArticlePackage(object):
         self.missing_year = []
         self.unusual_sources = []
         self.unusual_years = []
-        for xml_name, doc in self.articles.items():
+        for xml_name, doc in self.complete_issue_articles.articles.items():
             for ref in doc.references:
                 if not ref.source in self.sources_and_reftypes.keys():
                     self.sources_and_reftypes[ref.source] = {}
@@ -220,8 +413,8 @@ class ArticlePackage(object):
             'abstracts', 'key words', '@xml:lang', 'versions']
 
         items = []
-        for xml_name in self.xml_name_sorted_by_order:
-            doc = self.articles[xml_name]
+        for xml_name in self.complete_issue_articles.xml_name_sorted_by_order:
+            doc = self.complete_issue_articles.articles[xml_name]
             values = []
             values.append(xml_name)
             values.append(doc.toc_section)
@@ -242,8 +435,8 @@ class ArticlePackage(object):
     def tabulate_elements_by_languages(self):
         labels = ['name', 'toc section', '@article-type', 'article titles, abstracts, key words', '@xml:lang', 'sub-article/@xml:lang']
         items = []
-        for xml_name in self.xml_name_sorted_by_order:
-            doc = self.articles[xml_name]
+        for xml_name in self.complete_issue_articles.xml_name_sorted_by_order:
+            doc = self.complete_issue_articles.articles[xml_name]
             lang_dep = {}
             for lang in doc.title_abstract_kwd_languages:
 
@@ -275,9 +468,9 @@ class ArticlePackage(object):
         'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
 
         items = []
-        for xml_name in self.xml_name_sorted_by_order:
+        for xml_name in self.complete_issue_articles.xml_name_sorted_by_order:
             #utils.debugging(xml_name)
-            doc = self.articles[xml_name]
+            doc = self.complete_issue_articles.articles[xml_name]
             #utils.debugging(doc)
             values = []
             values.append(xml_name)
@@ -320,88 +513,32 @@ class ArticlePackage(object):
 
         return (labels, items)
 
-    def journal_and_issue_metadata(self, labels, required_data):
-        invalid_xml_name_items = []
-        pkg_metadata = {label: {} for label in labels}
-        missing_data = {}
-
-        n = '/' + str(len(self.articles))
-        index = 0
-
-        utils.display_message('\n')
-        utils.display_message('Package report')
-        for xml_name, article in self.articles.items():
-            index += 1
-            item_label = str(index) + n + ': ' + xml_name
-            utils.display_message(item_label)
-
-            if article.tree is None:
-                invalid_xml_name_items.append(xml_name)
-            else:
-                art_data = article.summary()
-                for label in labels:
-                    if art_data[label] is None:
-                        if label in required_data:
-                            if not label in missing_data.keys():
-                                missing_data[label] = []
-                            missing_data[label].append(xml_name)
-                    else:
-                        pkg_metadata[label] = article_utils.add_new_value_to_index(pkg_metadata[label], art_data[label], xml_name)
-
-        return (invalid_xml_name_items, pkg_metadata, missing_data)
-
-    @property
-    def is_processed_in_batches(self):
-        return any([self.is_aop_issue, self.is_rolling_pass])
-
-    @property
-    def is_aop_issue(self):
-        return any([a.is_ahead for a in self.articles.values()])
-
-    @property
-    def is_rolling_pass(self):
-        _is_rolling_pass = False
-        if not self.is_aop_issue:
-            epub_dates = list(set([a.epub_dateiso for a in self.articles.values() if a.epub_dateiso is not None]))
-
-            epub_ppub_dates = [a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]
-            collection_dates = [a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]
-            other_dates = list(set(epub_ppub_dates + collection_dates))
-            if len(epub_dates) > 0:
-                if len(other_dates) == 0:
-                    _is_rolling_pass = True
-                elif len(other_dates) > 1:
-                    _is_rolling_pass = True
-                elif len([None for a in self.articles.values() if a.collection_dateiso is None]) > 0:
-                    _is_rolling_pass = True
-        return _is_rolling_pass
-
     def pages(self):
         results = []
         previous_lpage = None
         previous_xmlname = None
         int_previous_lpage = None
 
-        for xml_name in self.xml_name_sorted_by_order:
-            #if self.articles[xml_name].is_rolling_pass or self.articles[xml_name].is_ahead:
+        for xml_name in self.complete_issue_articles.xml_name_sorted_by_order:
+            #if self.complete_issue_articles.articles[xml_name].is_rolling_pass or self.complete_issue_articles.articles[xml_name].is_ahead:
             #else:
-            fpage = self.articles[xml_name].fpage
-            lpage = self.articles[xml_name].lpage
+            fpage = self.complete_issue_articles.articles[xml_name].fpage
+            lpage = self.complete_issue_articles.articles[xml_name].lpage
             msg = []
             status = ''
-            if self.articles[xml_name].pages == '':
+            if self.complete_issue_articles.articles[xml_name].pages == '':
                 msg.append(_('no pagination was found'))
-                if not self.articles[xml_name].is_ahead:
+                if not self.complete_issue_articles.articles[xml_name].is_ahead:
                     status = 'ERROR'
             if fpage is not None and lpage is not None:
                 if fpage.isdigit() and lpage.isdigit():
                     int_fpage = int(fpage)
                     int_lpage = int(lpage)
 
-                    #if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead:
+                    #if not self.complete_issue_articles.articles[xml_name].is_rolling_pass and not self.complete_issue_articles.articles[xml_name].is_ahead:
                     if int_previous_lpage is not None:
                         if int_previous_lpage > int_fpage:
-                            status = 'FATAL ERROR' if not self.articles[xml_name].is_epub_only else 'WARNING'
+                            status = 'FATAL ERROR' if not self.complete_issue_articles.articles[xml_name].is_epub_only else 'WARNING'
                             msg.append(_('Invalid pages') + ': ' + _('check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage == int_fpage:
                             status = 'WARNING'
@@ -415,53 +552,137 @@ class ArticlePackage(object):
                     int_previous_lpage = int_lpage
                     previous_lpage = lpage
                     previous_xmlname = xml_name
-            #dates = '|'.join([item if item is not None else 'none' for item in [self.articles[xml_name].epub_ppub_dateiso, self.articles[xml_name].collection_dateiso, self.articles[xml_name].epub_dateiso]])
+            #dates = '|'.join([item if item is not None else 'none' for item in [self.complete_issue_articles.articles[xml_name].epub_ppub_dateiso, self.complete_issue_articles.articles[xml_name].collection_dateiso, self.complete_issue_articles.articles[xml_name].epub_dateiso]])
             msg = '; '.join(msg)
             if len(msg) > 0:
                 msg = '. ' + msg
-            results.append({'label': xml_name, 'status': status, 'message': self.articles[xml_name].pages + msg})
+            results.append({'label': xml_name, 'status': status, 'message': self.complete_issue_articles.articles[xml_name].pages + msg})
         return results
 
-    def validate_articles_pkg_xml_and_data(self, report_path, org_manager, doc_files_info_items, dtd_files, validate_order, xml_generation, xc_actions=None):
+    @property
+    def blocking_errors(self):
+        if self._blocking_errors is None:
+            if self.registered_issue_data_validations is not None:
+                self._blocking_errors = self.registered_issue_data_validations.fatal_errors
+            if self.registered_issue_data_validations is None:
+                self._blocking_errors = 0
+        return self._blocking_errors + self.consistence_blocking_errors
+
+    @property
+    def registered_issue_data_validations(self):
+        if self._registered_issue_data_validations is None:
+            if self.complete_issue_articles.issue_models is not None:
+                self._registered_issue_data_validations = PackageValidationsResults(self.complete_issue_articles.issue_files.base_reports_path, 'issue-', '')
+                for xml_name, article in self.complete_issue_articles.articles.items():
+                    issue_validations_msg = self.complete_issue_articles.issue_models.validate_article_issue_data(self.complete_issue_articles.articles[xml_name])
+                    self._registered_issue_data_validations.add(xml_name, ValidationsResults(issue_validations_msg))
+        return self._registered_issue_data_validations
+
+    @property
+    def issue_report(self):
+        report = []
+        if self.is_db_generation:
+            if self.registered_issue_data_validations is not None:
+                if self.registered_issue_data_validations.total > 0:
+                    report.append(html_reports.tag('h2', 'Comparision of issue and articles data') + self.registered_issue_data_validations.report(True))
+        self.evaluate_pkg_journal_and_issue_data_consistence()
+        for item in [self.changed_orders_validations, self.pkg_data_consistence_validations]:
+            if item is not None:
+                if item.total > 0:
+                    report.append(item.message)
+        return ''.join(report) if len(report) > 0 else None
+
+    def evaluate_pkg_journal_and_issue_data_consistence(self):
+        if self.complete_issue_articles._compiled_pkg_metadata is None:
+            self.complete_issue_articles.compile_pkg_metadata()
+        self.consistence_blocking_errors = 0
+
+        r = ''
+        if len(self.complete_issue_articles.invalid_xml_name_items) > 0:
+            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', self.complete_issue_articles.invalid_xml_name_items, 'issue-problem'))
+        for label, items in self.complete_issue_articles.pkg_missing_items.items():
+            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
+
+        for label in self.complete_issue_articles.expected_equal_values:
+            if len(self.complete_issue_articles._compiled_pkg_metadata[label]) > 1:
+                _status = 'FATAL ERROR'
+                if label == 'issue pub date':
+                    if self.complete_issue_articles.is_rolling_pass:
+                        _status = 'WARNING'
+                _m = _('same value for %s is required for all the documents in the package') % (label)
+                part = html_reports.p_message(_status + ': ' + _m + '.')
+                for found_value, xml_files in self.complete_issue_articles._compiled_pkg_metadata[label].items():
+                    part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
+                r += part
+
+        for label in self.complete_issue_articles.expected_unique_value:
+            if len(self.complete_issue_articles._compiled_pkg_metadata[label]) > 0 and len(self.complete_issue_articles._compiled_pkg_metadata[label]) != len(self.complete_issue_articles.articles):
+                duplicated = {}
+                for found_value, xml_files in self.complete_issue_articles._compiled_pkg_metadata[label].items():
+                    if len(xml_files) > 1:
+                        duplicated[found_value] = xml_files
+
+                if len(duplicated) > 0:
+                    _m = _(': unique value of %s is required for all the documents in the package') % (label)
+                    part = html_reports.p_message(self.complete_issue_articles.error_level_for_unique[label] + _m)
+                    if self.complete_issue_articles.error_level_for_unique[label] == 'FATAL ERROR':
+                        self.consistence_blocking_errors += 1
+                    for found_value, xml_files in duplicated.items():
+                        part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
+                    r += part
+
+        issue_common_data = ''
+
+        for label in self.complete_issue_articles.expected_equal_values:
+            message = ''
+            if len(self.complete_issue_articles._compiled_pkg_metadata[label].items()) == 1:
+                issue_common_data += html_reports.display_labeled_value(label, self.complete_issue_articles._compiled_pkg_metadata[label].keys()[0])
+            else:
+                issue_common_data += html_reports.format_list(label, 'ol', self.complete_issue_articles._compiled_pkg_metadata[label].keys())
+                #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
+
+        pages = html_reports.tag('h2', 'Pages Report') + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.pages(), table_style='validation', row_style='status'))
+
+        toc_report = html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages') + pages
+        self.pkg_data_consistence_validations = ValidationsResults(toc_report)
+
+    def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, is_xml_generation, selected_names=None):
         pkg_path = os.path.dirname(doc_files_info_items.values()[0].new_xml_filename)
 
-        self.pkg_xml_structure_validations = PackageValidationsResults(report_path, 'xmlstr-', '')
-        self.pkg_xml_content_validations = PackageValidationsResults(report_path, 'xmlcon-', '')
+        self.pkg_xml_structure_validations = PackageValidationsResults(self.report_path, 'xmlstr-', '')
+        self.pkg_xml_content_validations = PackageValidationsResults(self.report_path, 'xmlcon-', '')
 
-        self.validate_articles_pkg_xml_structure(doc_files_info_items, dtd_files, xc_actions)
-        self.validate_articles_pkg_xml_content(pkg_path, {k: v.new_name for k, v in doc_files_info_items.items()}, org_manager, validate_order, xml_generation, xc_actions)
+        self.validate_articles_pkg_xml_structure(doc_files_info_items, dtd_files, selected_names)
+        self.validate_articles_pkg_xml_content(pkg_path, {k: v.new_name for k, v in doc_files_info_items.items()}, org_manager, is_xml_generation, selected_names)
 
-        if validate_order:
+        if self.is_db_generation:
             self.pkg_xml_structure_validations.save_reports()
             self.pkg_xml_content_validations.save_reports()
-        print(os.listdir(report_path))
 
-    def validate_articles_pkg_xml_structure(self, doc_files_info_items, dtd_files, xc_actions=None):
-        n = '/' + str(len(self.articles))
+    def validate_articles_pkg_xml_structure(self, doc_files_info_items, dtd_files, selected_names=None):
+        if selected_names is None:
+            selected_names = self.pkg_articles.articles.keys()
+        n = '/' + str(len(self.pkg_articles.articles))
         index = 0
 
         utils.display_message('\n')
         utils.display_message(_('Validating XML files'))
         #utils.debugging('Validating package: inicio')
-        for xml_name in self.xml_name_sorted_by_order:
-            doc = self.articles[xml_name]
+        for xml_name in self.pkg_articles.xml_name_sorted_by_order:
+            doc = self.pkg_articles.articles[xml_name]
             doc_files_info = doc_files_info_items[xml_name]
-            for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
-                if os.path.isfile(f):
-                    os.unlink(f)
             new_name = doc_files_info.new_name
 
             index += 1
             item_label = str(index) + n + ': ' + new_name
             utils.display_message(item_label)
 
-            skip = False
-            if xc_actions is not None:
-                skip = (xc_actions[xml_name] == 'skip-update')
-
-            if skip:
-                utils.display_message(' -- skept')
-            else:
+            if xml_name in selected_names:
+                for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
+                    if os.path.isfile(f):
+                        os.unlink(f)
                 xml_filename = doc_files_info.new_xml_filename
 
                 # XML structure validations
@@ -470,212 +691,59 @@ class ArticlePackage(object):
                 for rep_file in [doc_files_info.err_filename, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename]:
                     if os.path.isfile(rep_file):
                         report_content += extract_report_core(fs_utils.read_file(rep_file))
-                        #if xml_generation is False:
+                        #if is_xml_generation is False:
                         #    fs_utils.delete_file_or_folder(rep_file)
                 data_validations = ValidationsResults(report_content)
                 data_validations.fatal_errors = xml_f
                 data_validations.errors = xml_e
                 data_validations.warnings = xml_w
                 self.pkg_xml_structure_validations.add(xml_name, data_validations)
+            else:
+                utils.display_message(' -- not selected')
 
-    def validate_articles_pkg_xml_content(self, pkg_path, new_names, org_manager, validate_order, xml_generation, xc_actions=None):
-        #FIXME
-        n = '/' + str(len(self.articles))
+    def validate_articles_pkg_xml_content(self, pkg_path, new_names, org_manager, is_xml_generation, selected_names=None):
+        if selected_names is None:
+            selected_names = self.pkg_articles.articles.keys()
+        n = '/' + str(len(self.pkg_articles.articles))
         index = 0
 
         utils.display_message('\n')
         utils.display_message(_('Validating XML files'))
         #utils.debugging('Validating package: inicio')
-        for xml_name in self.xml_name_sorted_by_order:
-            doc = self.articles[xml_name]
+        for xml_name in self.pkg_articles.xml_name_sorted_by_order:
+            doc = self.pkg_articles.articles[xml_name]
             new_name = new_names.get(xml_name)
             index += 1
             item_label = str(index) + n + ': ' + new_name
             utils.display_message(item_label)
 
-            skip = False
-            if xc_actions is not None:
-                skip = (xc_actions[xml_name] == 'skip-update')
-
-            if skip:
-                utils.display_message(' -- skept')
-            else:
-                report_content = article_reports.article_data_and_validations_report(org_manager, doc, new_name, pkg_path, validate_order, xml_generation)
+            if xml_name in selected_names:
+                report_content = article_reports.article_data_and_validations_report(org_manager, doc, new_name, pkg_path, self.is_db_generation, is_xml_generation)
                 data_validations = ValidationsResults(report_content)
-                print('add()')
-                print(xml_name)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
-                if xml_generation:
+                if is_xml_generation:
                     stats = html_reports.statistics_display(data_validations, False)
                     title = [_('Data Quality Control'), new_name]
                 else:
                     stats = ''
                     title = ''
-
-
-class ArticlesPkgReport(object):
-
-    def __init__(self, package):
-        self.package = package
-
-    def validate_consistency(self, validate_order):
-        critical, toc_report = self.consistency_report(validate_order)
-        toc_validations = ValidationsResults(toc_report)
-        return (critical, toc_validations)
-
-    def consistency_report(self, validate_order):
-        critical = 0
-        equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        unique_data = ['order', 'doi', 'elocation id', ]
-
-        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
-        required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-
-        if not validate_order:
-            error_level_for_unique['order'] = 'WARNING'
-
-        if self.package.is_processed_in_batches:
-            error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
-        else:
-            unique_data += ['fpage-lpage-seq']
-
-        invalid_xml_name_items, pkg_metadata, missing_data = self.package.journal_and_issue_metadata(equal_data + unique_data, required_data)
-
-        r = ''
-
-        if len(invalid_xml_name_items) > 0:
-            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
-            r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
-        for label, items in missing_data.items():
-            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
-            r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
-
-        for label in equal_data:
-            if len(pkg_metadata[label]) > 1:
-                _status = 'FATAL ERROR'
-                if label == 'issue pub date':
-                    if self.package.is_rolling_pass:
-                        _status = 'WARNING'
-                _m = _('same value for %s is required for all the documents in the package') % (label)
-                part = html_reports.p_message(_status + ': ' + _m + '.')
-                for found_value, xml_files in pkg_metadata[label].items():
-                    part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
-                r += part
-
-        for label in unique_data:
-            if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(self.package.articles):
-                duplicated = {}
-                for found_value, xml_files in pkg_metadata[label].items():
-                    if len(xml_files) > 1:
-                        duplicated[found_value] = xml_files
-
-                if len(duplicated) > 0:
-                    _m = _(': unique value of %s is required for all the documents in the package') % (label)
-                    part = html_reports.p_message(error_level_for_unique[label] + _m)
-                    if error_level_for_unique[label] == 'FATAL ERROR':
-                        critical += 1
-                    for found_value, xml_files in duplicated.items():
-                        part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
-                    r += part
-
-        if validate_order:
-            invalid_order = []
-            for order, xml_files in pkg_metadata['order'].items():
-                if order.isdigit():
-                    if 0 < int(order) <= 99999:
-                        pass
-                    else:
-                        critical += 1
-                        invalid_order.append(xml_files)
-                else:
-                    critical += 1
-                    invalid_order.append(xml_files)
-            if len(invalid_order) > 0:
-                r += html_reports.p_message('FATAL ERROR: ' + _('Invalid format of order. Expected number 1 to 99999.'))
-                r += html_reports.format_list('order (article-id)', 'ol', invalid_order)
-
-        issue_common_data = ''
-
-        for label in equal_data:
-            message = ''
-            if len(pkg_metadata[label].items()) == 1:
-                issue_common_data += html_reports.display_labeled_value(label, pkg_metadata[label].keys()[0])
             else:
-                issue_common_data += html_reports.format_list(label, 'ol', pkg_metadata[label].keys())
-                #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
+                utils.display_message(' -- not selected')
 
-        pages = html_reports.tag('h2', 'Pages Report') + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.package.pages(), table_style='validation', row_style='status'))
-
-        return (critical, html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages') + pages)
-
-    def overview_report(self):
-        r = ''
-
-        r += html_reports.tag('h4', _('Languages overview'))
-        labels, items = self.package.tabulate_elements_by_languages()
-        r += html_reports.sheet(labels, items, 'dbstatus')
-
-        r += html_reports.tag('h4', _('Dates overview'))
-        labels, items = self.package.tabulate_dates()
-        r += html_reports.sheet(labels, items, 'dbstatus')
-
-        r += html_reports.tag('h4', _('Affiliations overview'))
-        items = []
-        affs_compiled = self.package.compile_affiliations()
-        for label, q in affs_compiled.items():
-            items.append({'label': label, 'quantity': str(q)})
-
-        r += html_reports.sheet(['label', 'quantity'], items, 'dbstatus')
-        return r
-
-    def references_overview_report(self):
-        labels = ['label', 'status', 'message']
-        items = []
-
-        values = []
-        values.append(_('references by type'))
-        values.append('INFO')
-        values.append({reftype: str(sum(sources.values())) for reftype, sources in self.package.reftype_and_sources.items()})
-        items.append(label_values(labels, values))
-
-        #message = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}}
-        if len(self.package.bad_sources_and_reftypes) > 0:
-            values = []
-            values.append(_('same sources as different types'))
-            values.append('ERROR')
-            values.append(self.package.bad_sources_and_reftypes)
-            items.append(label_values(labels, values))
-            values = []
-            values.append(_('same sources as different types references'))
-            values.append('INFO')
-            values.append({source: self.package.sources_at.get(source) for source in self.package.bad_sources_and_reftypes.keys()})
-            items.append(label_values(labels, values))
-
-        if len(self.package.missing_source) > 0:
-            items.append({'label': _('references missing source'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.package.missing_source]})
-        if len(self.package.missing_year) > 0:
-            items.append({'label': _('references missing year'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.package.missing_year]})
-        if len(self.package.unusual_sources) > 0:
-            items.append({'label': _('references with unusual value for source'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.package.unusual_sources]})
-        if len(self.package.unusual_years) > 0:
-            items.append({'label': _('references with unusual value for year'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.package.unusual_years]})
-
-        return html_reports.tag('h4', _('Package references overview')) + html_reports.sheet(labels, items, table_style='dbstatus')
-
-    def detail_report(self, pkg_conversion_validations=None):
+    def detail_report(self):
         labels = ['name', 'order', 'fpage', 'pagination', 'doi', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
         items = []
 
-        n = '/' + str(len(self.package.articles))
+        n = '/' + str(len(self.complete_issue_articles.articles))
         index = 0
 
         validations_text = ''
 
-        #utils.debugging(self.package.pkg_stats)
-        #utils.debugging(self.package.xml_name_sorted_by_order)
+        #utils.debugging(self.pkg_stats)
+        #utils.debugging(self.complete_issue_articles.xml_name_sorted_by_order)
         utils.display_message('\n')
         utils.display_message(_('Generating Detail report'))
-        for new_name in self.package.xml_name_sorted_by_order:
+        for new_name in self.complete_issue_articles.xml_name_sorted_by_order:
             index += 1
             item_label = str(index) + n + ': ' + new_name
             utils.display_message(item_label)
@@ -685,57 +753,47 @@ class ArticlesPkgReport(object):
             status = ''
             block = ''
 
-            if self.package.pkg_xml_structure_validations.item(new_name).total > 0:
-                status = html_reports.statistics_display(self.package.pkg_xml_structure_validations.item(new_name))
-                links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('Structure Validations') + ' ]', 'xmlrep', a_name)
-                links += html_reports.tag('span', status, 'smaller')
-                block += html_reports.report_block('xmlrep' + new_name, self.package.pkg_xml_structure_validations.item(new_name).message, 'xmlrep', a_name)
+            if self.pkg_xml_structure_validations.item(new_name) is not None:
+                if self.pkg_xml_structure_validations.item(new_name).total > 0:
+                    status = html_reports.statistics_display(self.pkg_xml_structure_validations.item(new_name))
+                    links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('Structure Validations') + ' ]', 'xmlrep', a_name)
+                    links += html_reports.tag('span', status, 'smaller')
+                    block += html_reports.report_block('xmlrep' + new_name, self.pkg_xml_structure_validations.item(new_name).message, 'xmlrep', a_name)
 
-            if self.package.pkg_xml_content_validations.item(new_name).total > 0:
-                status = html_reports.statistics_display(self.package.pkg_xml_content_validations.item(new_name))
-                links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
-                links += html_reports.tag('span', status, 'smaller')
-                block += html_reports.report_block('datarep' + new_name, self.package.pkg_xml_content_validations.item(new_name).message, 'datarep', a_name)
+            if self.pkg_xml_content_validations.item(new_name) is not None:
+                if self.pkg_xml_content_validations.item(new_name).total > 0:
+                    status = html_reports.statistics_display(self.pkg_xml_content_validations.item(new_name))
+                    links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
+                    links += html_reports.tag('span', status, 'smaller')
+                    block += html_reports.report_block('datarep' + new_name, self.pkg_xml_content_validations.item(new_name).message, 'datarep', a_name)
 
-            if pkg_conversion_validations is not None:
-                conversion_validations = pkg_conversion_validations.item(new_name)
-                if conversion_validations is not None:
-                    if conversion_validations.total > 0:
-                        status = html_reports.statistics_display(conversion_validations)
-                        links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter Validations') + ' ]', 'xcrep', a_name)
-                        links += html_reports.tag('span', status, 'smaller')
-                        block += html_reports.report_block('xcrep' + new_name, conversion_validations.message, 'xcrep', a_name)
+            if self.is_db_generation:
+                if self.registered_issue_data_validations is not None:
+                    issue_validations = self.registered_issue_data_validations.item(new_name)
+                    if issue_validations is not None:
+                        if issue_validations.total > 0:
+                            status = html_reports.statistics_display(issue_validations)
+                            links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter Validations') + ' ]', 'xcrep', a_name)
+                            links += html_reports.tag('span', status, 'smaller')
+                            block += html_reports.report_block('xcrep' + new_name, issue_validations.message, 'xcrep', a_name)
 
             values = []
             values.append(new_name)
-            values.append(self.package.articles[new_name].order)
-            values.append(self.package.articles[new_name].fpage)
-            values.append(self.package.articles[new_name].pages)
+            values.append(self.complete_issue_articles.articles[new_name].order)
+            values.append(self.complete_issue_articles.articles[new_name].fpage)
+            values.append(self.complete_issue_articles.articles[new_name].pages)
 
-            values.append(self.package.articles[new_name].doi)
-            values.append(self.package.articles[new_name].previous_pid)
-            values.append(self.package.articles[new_name].toc_section)
-            values.append(self.package.articles[new_name].article_type)
-            values.append(self.package.articles[new_name].title)
+            values.append(self.complete_issue_articles.articles[new_name].doi)
+            values.append(self.complete_issue_articles.articles[new_name].previous_pid)
+            values.append(self.complete_issue_articles.articles[new_name].toc_section)
+            values.append(self.complete_issue_articles.articles[new_name].article_type)
+            values.append(self.complete_issue_articles.articles[new_name].title)
             values.append(links)
 
             items.append(label_values(labels, values))
             items.append({'reports': block})
 
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=['reports'])
-
-    def sources_overview_report(self):
-        labels = ['source', 'total']
-        h = None
-        if len(self.package.reftype_and_sources) > 0:
-            h = ''
-            for reftype, sources in self.package.reftype_and_sources.items():
-                items = []
-                h += html_reports.tag('h4', reftype)
-                for source in sorted(sources.keys()):
-                    items.append({'source': source, 'total': str(sources[source])})
-                h += html_reports.sheet(labels, items, 'dbstatus')
-        return h
 
 
 def register_log(text):
@@ -811,16 +869,6 @@ def sum_stats(stats_items):
     return (f, e, w)
 
 
-def xml_list(pkg_path, xml_filenames=None):
-    r = ''
-    r += '<p>' + _('XML path') + ': ' + pkg_path + '</p>'
-    if xml_filenames is None:
-        xml_filenames = [pkg_path + '/' + name for name in os.listdir(pkg_path) if name.endswith('.xml')]
-    r += '<p>' + _('Total of XML files') + ': ' + str(len(xml_filenames)) + '</p>'
-    r += html_reports.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames])
-    return '<div class="xmllist">' + r + '</div>'
-
-
 def error_msg_subtitle():
     msg = html_reports.tag('p', _('Fatal error - indicates errors which impact on the quality of the bibliometric indicators and other services'))
     msg += html_reports.tag('p', _('Error - indicates the other kinds of errors'))
@@ -846,24 +894,6 @@ def articles_sorted_by_order(articles):
             sorted_by_order[_order] = []
         sorted_by_order[_order].append(article)
     return sorted_by_order
-
-
-def sorted_xml_name_by_order(articles):
-    order_and_xml_name_items = {}
-    for xml_name, article in articles.items():
-        if article.tree is None:
-            _order = 'None'
-        else:
-            _order = article.order
-        if not _order in order_and_xml_name_items.keys():
-            order_and_xml_name_items[_order] = []
-        order_and_xml_name_items[_order].append(xml_name)
-
-    sorted_items = []
-    for order in sorted(order_and_xml_name_items.keys()):
-        for item in order_and_xml_name_items[order]:
-            sorted_items.append(item)
-    return sorted_items
 
 
 def processing_result_location(result_path):
@@ -942,3 +972,18 @@ def join_reports(reports, errors_only=False):
                 _reports += html_reports.tag('h4', xml_name)
                 _reports += results.message
     return _reports
+
+
+def more_frequent(data):
+    if data is not None:
+        items = data.keys()
+        if len(items) == 1:
+            return items[0]
+        elif len(items) > 1:
+            more = 0
+            value = None
+            for item in items:
+                if len(data[item]) > more:
+                    more = len(data[item])
+                    value = item
+            return value

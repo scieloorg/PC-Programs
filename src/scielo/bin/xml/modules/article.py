@@ -2,11 +2,14 @@
 import os
 from datetime import datetime
 
+import institutions_service
 import article_utils
 import xml_utils
 import attributes
 import utils
 import institutions_service
+
+from __init__ import _
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
@@ -137,9 +140,7 @@ class Text(object):
 
 class ArticleXML(object):
 
-    def __init__(self, tree, xml_name):
-        self.xml_name = xml_name
-        self.prefix = xml_name.replace('.xml', '')
+    def __init__(self, tree):
         self.tree = tree
         self.journal_meta = None
         self.article_meta = None
@@ -522,6 +523,17 @@ class ArticleXML(object):
                 collab.collab = contrib.text
                 k.append(collab)
         return k
+
+    def short_article_title(self, size=None):
+        if size is None:
+            return self.title
+        elif not size.isdigit():
+            return self.title
+        elif self.title is not None:
+            if len(self.title) > size:
+                return self.title[0:size] + '...'
+            else:
+                return self.title
 
     @property
     def title(self):
@@ -1035,17 +1047,6 @@ class ArticleXML(object):
         return r
 
     @property
-    def hrefs(self):
-        r = []
-        if self.tree is not None:
-            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
-                for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
-                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
-                    r.append(_href)
-        return r
-
-    @property
     def elements_which_has_id_attribute(self):
         if self.tree is not None:
             return self.tree.findall('.//*[@id]')
@@ -1054,27 +1055,14 @@ class ArticleXML(object):
     def href_files(self):
         return [href for href in self.hrefs if href.is_internal_file] if self.hrefs is not None else []
 
-    @property
-    def tables(self):
-        r = []
-        if self.tree is not None:
-            for t in self.tree.findall('.//*[table]'):
-                graphic = t.find('./graphic')
-                _href = None
-                if graphic is not None:
-                    src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    xml = xml_utils.node_xml(graphic)
-
-                    _href = HRef(src, graphic, t, xml, self.prefix)
-                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
-                r.append(_table)
-        return r
-
 
 class Article(ArticleXML):
 
     def __init__(self, tree, xml_name):
-        ArticleXML.__init__(self, tree, xml_name)
+        ArticleXML.__init__(self, tree)
+        self.xml_name = xml_name
+        self.prefix = xml_name.replace('.xml', '')
+        self.filename = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
         self.number = None
         self.number_suppl = None
         self.volume_suppl = None
@@ -1091,6 +1079,33 @@ class Article(ArticleXML):
         self.registered_aop_pid = None
         self._previous_pid = None
         self.normalized_affiliations = None
+
+    @property
+    def hrefs(self):
+        r = []
+        if self.tree is not None:
+            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+                for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
+                    r.append(_href)
+        return r
+
+    @property
+    def tables(self):
+        r = []
+        if self.tree is not None:
+            for t in self.tree.findall('.//*[table]'):
+                graphic = t.find('./graphic')
+                _href = None
+                if graphic is not None:
+                    src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    xml = xml_utils.node_xml(graphic)
+
+                    _href = HRef(src, graphic, t, xml, self.prefix)
+                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
+                r.append(_table)
+        return r
 
     @property
     def clinical_trial_url(self):
