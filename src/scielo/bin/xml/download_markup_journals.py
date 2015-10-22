@@ -1,10 +1,92 @@
-# coding=cp1252
-import sys
+# coding=utf-8
 import os
 import urllib2
 import csv
 import codecs
 import shutil
+
+
+import Tkinter
+
+
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+
+
+class MkpDownloadJournalListGUI(object):
+
+    def __init__(self, tkFrame, collections, filename, temp_filename, updated):
+
+        self.tkFrame = tkFrame
+        self.collections = collections
+        self.filename = filename
+        self.temp_filename = temp_filename
+
+        self.tkFrame.folder_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.folder_labelframe.pack(fill="both", expand="yes")
+
+        self.tkFrame.options_frame = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.options_frame.pack(fill="both", expand="yes")
+
+        self.tkFrame.msg_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.msg_labelframe.pack(fill="both", expand="yes")
+
+        self.tkFrame.buttons_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.buttons_labelframe.pack(fill="both", expand="yes")
+
+        self.tkFrame.label_folder = Tkinter.Label(self.tkFrame.folder_labelframe, text='Download journals data for Markup', font="Verdana 12 bold")
+        self.tkFrame.label_folder.pack(side='left')
+
+        #options = collections.keys()
+        #self.choice = Tkinter.StringVar(self.tkFrame)
+        #self.choice.set(options[0])
+        #self.tkFrame.option_menu = apply(Tkinter.OptionMenu, (self.tkFrame.options_frame, self.choice) + tuple(options))
+        #self.tkFrame.option_menu.pack()
+
+        options = collections.keys()
+        options.append('All')
+
+        self.choice = Tkinter.StringVar(self.tkFrame)
+        self.choice.set(options[0])
+        self.tkFrame.option_menu = apply(Tkinter.OptionMenu, (self.tkFrame.options_frame, self.choice) + tuple(options))
+        self.tkFrame.option_menu.pack()
+
+        self.tkFrame.label_msg = Tkinter.Label(self.tkFrame.msg_labelframe)
+        self.tkFrame.label_msg.pack()
+
+        self.tkFrame.button_close = Tkinter.Button(self.tkFrame.buttons_labelframe, text='close', command=lambda: self.tkFrame.quit())
+        self.tkFrame.button_close.pack(side='right')
+
+        self.tkFrame.button_execute = Tkinter.Button(self.tkFrame.buttons_labelframe, text='download', command=self.download)
+        self.tkFrame.button_execute.pack(side='right')
+
+    def download(self):
+        choice = self.choice.get()
+        if choice == 'All':
+            choice = None
+        journals = get_journals_list(self.collections, choice)
+        if os.path.isfile(self.temp_filename):
+            os.unlink(self.temp_filename)
+        generate_input_for_markup(journals, self.temp_filename)
+        while not os.path.isfile(self.temp_filename):
+            pass
+
+        if os.path.isfile(self.temp_filename):
+            shutil.copyfile(self.temp_filename, self.filename)
+
+        self.tkFrame.label_msg.config(text='updated: ' + self.filename, bg='dark green')
+        self.tkFrame.label_msg.update_idletasks()
+
+
+def open_main_window(collections, destination_filename, temp_filename, updated):
+    tk_root = Tkinter.Tk()
+
+    tkFrame = Tkinter.Frame(tk_root)
+
+    main = MkpDownloadJournalListGUI(tkFrame, collections, destination_filename, temp_filename, updated)
+    main.tkFrame.pack(side="top", fill="both", expand=True)
+
+    tk_root.mainloop()
+    tk_root.focus_set()
 
 
 def journals_by_collection(filename):
@@ -86,63 +168,30 @@ def get_all_journals_list(collections):
     return journals
 
 
-def generate_input_for_markup(journals, filename, downloaded_file_encoding):
+def generate_input_for_markup(journals, filename):
     new_items = []
     for item in journals:
         if not isinstance(item, unicode):
-            item = item.decode(downloaded_file_encoding)
+            item = item.decode('utf-8')
         new_items.append(item.encode('cp1252'))
     codecs.open(filename, mode='w+').write('\n\r'.join(new_items))
-    print(filename)
-    print('fim')
 
 
 def download_content(url):
     try:
         new = urllib2.urlopen(url).read()
-
     except:
         new = ''
+    if not isinstance(new, unicode):
+        new = new.decode('utf-8')
     return new
 
 
-def generate_csv(downloaded_filename, dest_filename, collection_name=None, downloaded_file_encoding='utf-8'):
-    journals_collections = journals_by_collection(downloaded_filename)
-    codecs.open(dest_filename.replace('.csv', '_collections.csv'), mode='w+').write('\n'.join(sorted(journals_collections.keys())))
-    journals = get_journals_list(journals_collections, collection_name)
-    generate_input_for_markup(journals, dest_filename, downloaded_file_encoding)
-
-
-collection_name = None
-ctrl_file = None
-
-if len(sys.argv) > 1:
-    collection_name_or_ctrl_file = sys.argv[1]
-    if not '/' in collection_name_or_ctrl_file:
-        collection_name = collection_name_or_ctrl_file
-    elif os.path.isdir(os.path.dirname(collection_name_or_ctrl_file)):
-        ctrl_file = collection_name_or_ctrl_file
-    if collection_name == 'None':
-        collection_name = None
-if len(sys.argv) > 2:
-    ctrl_file = sys.argv[2]
-    if os.path.isfile(ctrl_file):
-        os.unlink(ctrl_file)
-
-print('ctrl_file')
-print(ctrl_file)
-
-
-CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-downloaded_filename = CURRENT_PATH + '/markup/downloaded_markup_journals.csv'
 markup_journals_filename = CURRENT_PATH + '/../markup/markup_journals.csv'
-temp_markup_journals_filename = CURRENT_PATH + '/markup/_markup_journals.csv'
+temp_markup_journals_filename = CURRENT_PATH + '/../markup/temp_markup_journals.csv'
+downloaded_journals_filename = CURRENT_PATH + '/../markup/downloaded_markup_journals.csv'
 
 temp_path = os.path.dirname(temp_markup_journals_filename)
-if not os.path.isdir(temp_path):
-    os.makedirs(temp_path)
-
-temp_path = os.path.dirname(downloaded_filename)
 if not os.path.isdir(temp_path):
     os.makedirs(temp_path)
 
@@ -150,31 +199,41 @@ temp_path = os.path.dirname(markup_journals_filename)
 if not os.path.isdir(temp_path):
     os.makedirs(temp_path)
 
-if os.path.isfile(temp_markup_journals_filename):
-    try:
-        os.unlink(temp_markup_journals_filename)
-    except:
-        pass
+temp_path = os.path.dirname(downloaded_journals_filename)
+if not os.path.isdir(temp_path):
+    os.makedirs(temp_path)
 
 url = 'http://static.scielo.org/sps/markup_journals.csv'
 url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
 alt_url = 'http://static.scielo.org/sps/titles-tab-utf-8.csv'
 
-if url is not None:
-    new = download_content(url)
-if new == '':
-    new = download_content(alt_url)
-if new != '':
-    codecs.open(downloaded_filename, mode='w+').write(new)
+current_content = open(downloaded_journals_filename, 'r').read()
+if not isinstance(current_content, unicode):
+    current_content = current_content.decode('utf-8')
+current_items = current_content.split('\n')
 
-generate_csv(downloaded_filename, temp_markup_journals_filename, collection_name)
+print('local')
+print(len(current_items))
 
-while not os.path.isfile(temp_markup_journals_filename):
-    pass
+content = download_content(url)
+content_items = content.split('\n')
+print(url)
+print(len(content_items))
 
-if os.path.isfile(temp_markup_journals_filename):
-    shutil.copyfile(temp_markup_journals_filename, markup_journals_filename)
+alt_content = download_content(alt_url)
+alt_content_items = alt_content.split('\n')
+print(alt_url)
+print(len(alt_content_items))
 
-if ctrl_file is not None:
-    open(ctrl_file, 'w').write('end')
-    print('end')
+new = current_content
+if len(content_items) > len(current_items):
+    new = content
+if len(alt_content_items) > len(content_items):
+    new = alt_content
+updated = False
+if new != current_content:
+    open(downloaded_journals_filename, 'w').write(new.encode('utf-8'))
+    updated = True
+
+journals_collections = journals_by_collection(downloaded_journals_filename)
+open_main_window(journals_collections, markup_journals_filename, temp_markup_journals_filename, updated)
