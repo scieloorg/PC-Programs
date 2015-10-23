@@ -210,6 +210,8 @@ class ArticleContentValidation(object):
         if isinstance(validations_result_list, list):
             for item in validations_result_list:
                 r += self.normalize_validations(item)
+        elif validations_result_list is None:
+            pass
         else:
             r.append(validations_result_list)
         return r
@@ -220,6 +222,8 @@ class ArticleContentValidation(object):
         #utils.debugging(datetime.now().isoformat() + ' validations 1')
         items = []
         items.append(self.sps)
+        if self.expiration_sps is not None:
+            items.append(self.expiration_sps)
         items.append(self.language)
         items.append(self.languages)
         #utils.debugging(datetime.now().isoformat() + ' validations')
@@ -300,11 +304,32 @@ class ArticleContentValidation(object):
 
     @property
     def sps(self):
-        label, status, msg = required('article/@specific-use', self.article.sps, 'ERROR')
-        if status == 'OK':
-            if not 'sps-' in self.article.sps:
-                label, status, msg = (label, 'FATAL ERROR', _('Invalid value for ') + ' ' + label + ': ' + self.article.sps + '.')
-        return (label, status, msg)
+        label = 'article/@specific-use'
+        status = 'INFO'
+        msg = str(self.article.sps)
+
+        r = []
+
+        article_dateiso = self.article.article_pub_dateiso
+        if article_dateiso is None:
+            article_dateiso = self.article.issue_pub_dateiso
+
+        if article_dateiso is not None:
+            if not str(self.article.sps) in attributes.sps_current_versions():
+                expected_values = attributes.expected_sps_versions(article_dateiso)
+                if not str(self.article.sps) in expected_values:
+                    status = 'FATAL ERROR'
+                    msg = _('Invalid value for ') + ' ' + label + ': ' + str(self.article.sps) + '. ' + _('Expected values') + ': ' + _(' or ').join(expected_values)
+            if int(article_dateiso) < attributes.SPS_MIN_DATEISO:
+                r.append(('sps version', 'INFO', _('For documents which publication date is previous to ') + str(attributes.SPS_MIN_DATE.year) + _(', use the most recent SPS version.')))
+        r.append((label, status, msg))
+        return r
+
+    @property
+    def expiration_sps(self):
+        days = attributes.sps_version_expiration_days(self.article.sps)
+        if days > 0 and days < (365/2):
+            return [('sps version', 'INFO', self.article.sps + _(' expires in ') + str(days) + _(' days.'))]
 
     @property
     def language(self):

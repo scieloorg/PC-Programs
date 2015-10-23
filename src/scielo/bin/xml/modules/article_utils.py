@@ -23,14 +23,19 @@ def display_date(dateiso):
 
 
 def dateiso2datetime(dateiso):
-    y = int(dateiso[0:4])
-    m = int(dateiso[4:6])
-    d = int(dateiso[6:8])
-    if d == 0:
-        d = 1
-    if m == 0:
-        m = 1
-    return datetime(y, m, d)
+    r = None
+    if dateiso is not None:
+        dateiso = dateiso + '0'*8
+        dateiso = dateiso[0:8]
+        y = int(dateiso[0:4])
+        m = int(dateiso[4:6])
+        d = int(dateiso[6:8])
+        if d == 0:
+            d = 1
+        if m == 0:
+            m = 1
+        r = datetime(y, m, d)
+    return r
 
 
 def normalize_number(number):
