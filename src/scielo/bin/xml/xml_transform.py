@@ -18,7 +18,7 @@ if os.path.exists(ctrl_filename):
 if os.path.exists(err_filename):
     os.unlink(err_filename)
 
-if not java_xml_utils.xml_transform(False, xml_filename, xsl_filename, result_filename):
+if not java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename):
     shutil.copyfile(result_filename, err_filename)
 f = open(ctrl_filename, 'w')
 f.write('done')
