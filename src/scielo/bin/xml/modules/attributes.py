@@ -1,7 +1,29 @@
 # coding=utf-8
 
-from __init__ import _
+from datetime import datetime
 
+from __init__ import _
+import article_utils
+
+
+SPS_MIN_DATE = datetime(2012, 06, 01)
+SPS_MIN_DATEISO = 20120601
+
+SPS_versions_expiration_dates = {'sps-1.3': '20160901',
+                'sps-1.2': '20160301',
+                'sps-1.1': '20150901',
+                'sps-1.0': '20150301',
+                'pre-sps': '20140901',
+}
+
+# pre-sps: 2012-06 a 2014-09
+# sps-1.0: 2014-03 a 2015-03
+# sps-1.1: 2014-09 a 2015-09
+# sps-1.2: 2015-03 a 2016-03
+# sps-1.3: 2015-09 a 2016-09
+
+
+SPS_expiration_dates_versions = {v: k for k, v in SPS_versions_expiration_dates.items()}
 
 REFTYPE_AND_TAG_ITEMS = {'aff': ['aff'], 'app': ['app'], 'author-notes': ['fn'], 'bibr': ['ref'], 'boxed-text': ['boxed-text'], 'contrib': ['fn'], 'corresp': ['corresp'], 'disp-formula': ['disp-formula'], 
             'fig': ['fig', 'fig-group'], 
@@ -279,3 +301,53 @@ def check_lang(lang):
         return (True, LANGUAGES.get(lang))
     else:
         return (False, lang + ': ' + _('Invalid value for ') + '@xml:lang. ' + _('Expected values') + ': ' + ', '.join(sorted(LANGUAGES.keys())) + '. ' + '|'.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()])))
+
+
+def expected_sps_versions(article_dateiso):
+    sps_dateiso_items = sorted(SPS_expiration_dates_versions.keys())
+    sps_datetime_items = [article_utils.dateiso2datetime(item) for item in sps_dateiso_items]
+    article_datetime = article_utils.dateiso2datetime(article_dateiso)
+    min_version = str(None)
+    max_version = SPS_expiration_dates_versions.get(sps_dateiso_items[len(sps_dateiso_items)-1])
+    valid_versions = [min_version, max_version]
+
+    print(article_dateiso)
+    if article_datetime is not None:
+        diff = SPS_MIN_DATE - article_datetime
+        if diff.days > 0:
+            # data do artigo é antiga, anterior a 2012
+            # deve usar a versao mais atual
+            article_datetime = datetime.now()
+        i = 0
+        k = 0
+        for sps_datetime in sps_datetime_items:
+            diff = article_datetime - sps_datetime
+            if diff.days < 0:
+                valid_versions = []
+                for k in range(i, len(sps_dateiso_items)):
+                    valid_versions.append(SPS_expiration_dates_versions.get(sps_dateiso_items[k]))
+                break
+            i += 1
+    return list(set(sorted(valid_versions)))
+
+
+def sps_current_versions():
+    sps_dateiso_items = sorted(SPS_expiration_dates_versions.keys())
+    sps_dateiso_items.reverse()
+    currents = []
+    for item in sps_dateiso_items[:2]:
+        currents.append(SPS_expiration_dates_versions.get(item))
+    return list(set(sorted(currents)))
+
+
+def sps_version_expiration_days(sps_version):
+    days = None
+    if sps_version is None:
+        sps_version = 'pre-sps'
+    sps_version_datetime = SPS_versions_expiration_dates.get(sps_version)
+    if sps_version_datetime is not None:
+        sps_version_datetime = article_utils.dateiso2datetime(sps_version_datetime)
+        now = datetime.now()
+        diff = sps_version_datetime - now
+        days = diff.days
+    return days
