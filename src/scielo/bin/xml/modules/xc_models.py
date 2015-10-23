@@ -695,7 +695,6 @@ class ArticleDB(object):
                     xml, e = xml_utils.load_xml(f)
                 else:
                     xml = None
-                    print('not found ' + f)
                 doc = Article(xml, xml_name)
                 doc.pid = registered_article.pid
                 doc.creation_date_display = registered_article.creation_date_display

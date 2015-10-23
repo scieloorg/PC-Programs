@@ -214,18 +214,11 @@ if not isinstance(current_content, unicode):
     current_content = current_content.decode('utf-8')
 current_items = current_content.split('\n')
 
-print('local')
-print(len(current_items))
-
 content = download_content(url)
 content_items = content.split('\n')
-print(url)
-print(len(content_items))
 
 alt_content = download_content(alt_url)
 alt_content_items = alt_content.split('\n')
-print(alt_url)
-print(len(alt_content_items))
 
 new = current_content
 if len(content_items) > len(current_items):
