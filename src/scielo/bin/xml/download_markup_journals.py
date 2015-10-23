@@ -207,7 +207,9 @@ url = 'http://static.scielo.org/sps/markup_journals.csv'
 url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
 alt_url = 'http://static.scielo.org/sps/titles-tab-utf-8.csv'
 
-current_content = open(downloaded_journals_filename, 'r').read()
+current_content = u''
+if os.path.isfile(downloaded_journals_filename):
+    current_content = open(downloaded_journals_filename, 'r').read()
 if not isinstance(current_content, unicode):
     current_content = current_content.decode('utf-8')
 current_items = current_content.split('\n')
