@@ -167,6 +167,10 @@ class Conversion(object):
         self.db = db
         self.actions = None
         self.changed_orders = None
+        self.conversion_status = {}
+
+        for k in ['converted', 'not converted', 'rejected', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']:
+            self.conversion_status[k] = []
 
     def evaluate_pkg_and_registered_items(self, skip_identical_xml):
         #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
@@ -313,10 +317,6 @@ class Conversion(object):
 
     def convert_articles(self, pkg_validator):
         index = 0
-        self.conversion_status = {}
-
-        for k in ['converted', 'not converted', 'rejected', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']:
-            self.conversion_status[k] = []
 
         n = '/' + str(len(self.pkg.articles))
 
