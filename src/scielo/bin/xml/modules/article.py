@@ -37,7 +37,7 @@ def format_author(author):
     r += author.fname
     if author.role:
         r += '(role: ' + author.role + ')'
-    r += '(xref: ' + ','.join(author.xref) + ')'
+    r += '(xref: ' + ','.join([xref for xref in author.xref if xref is not None]) + ')'
     return r
 
 
@@ -619,7 +619,7 @@ class ArticleXML(object):
             return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
 
     @property
-    def xml_previous_id(self):
+    def previous_article_pid(self):
         if self.article_meta is not None:
             return self.article_meta.findtext('article-id[@specific-use="previous-pid"]')
 
@@ -1245,9 +1245,9 @@ class Article(ArticleXML):
         if not self.is_ahead:
             if self._previous_pid is None:
                 d = None
-                if self.xml_previous_id is not None:
-                    if is_valid(self.xml_previous_id):
-                        d = self.xml_previous_id
+                if self.previous_article_pid is not None:
+                    if is_valid(self.previous_article_pid):
+                        d = self.previous_article_pid
                 if d is None:
                     if self.registered_aop_pid is not None:
                         if is_valid(self.registered_aop_pid):
