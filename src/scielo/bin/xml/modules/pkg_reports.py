@@ -655,7 +655,7 @@ class ArticlesPkgReport(object):
         self.pkg_xml_content_validations = PackageValidationsResults(self.report_path, 'xmlcon-', '')
 
         self.validate_articles_pkg_xml_structure(doc_files_info_items, dtd_files, selected_names)
-        self.validate_articles_pkg_xml_content(pkg_path, {k: v.new_name for k, v in doc_files_info_items.items()}, org_manager, is_xml_generation, selected_names)
+        self.validate_articles_pkg_xml_content(doc_files_info_items, pkg_path, {k: v.new_name for k, v in doc_files_info_items.items()}, org_manager, is_xml_generation, selected_names)
 
         if self.is_db_generation:
             self.pkg_xml_structure_validations.save_reports()
@@ -701,7 +701,7 @@ class ArticlesPkgReport(object):
             else:
                 utils.display_message(' -- not selected')
 
-    def validate_articles_pkg_xml_content(self, pkg_path, new_names, org_manager, is_xml_generation, selected_names=None):
+    def validate_articles_pkg_xml_content(self, doc_files_info_items, pkg_path, new_names, org_manager, is_xml_generation, selected_names=None):
         if selected_names is None:
             selected_names = self.pkg_articles.articles.keys()
         n = '/' + str(len(self.pkg_articles.articles))
@@ -712,6 +712,7 @@ class ArticlesPkgReport(object):
         #utils.debugging('Validating package: inicio')
         for xml_name in self.pkg_articles.xml_name_sorted_by_order:
             doc = self.pkg_articles.articles[xml_name]
+            doc_files_info = doc_files_info_items[xml_name]
             new_name = new_names.get(xml_name)
             index += 1
             item_label = str(index) + n + ': ' + new_name
@@ -724,9 +725,7 @@ class ArticlesPkgReport(object):
                 if is_xml_generation:
                     stats = html_reports.statistics_display(data_validations, False)
                     title = [_('Data Quality Control'), new_name]
-                else:
-                    stats = ''
-                    title = ''
+                    fs_utils.write_file(doc_files_info.data_report_filename, html_reports.html(title, stats + report_content))
             else:
                 utils.display_message(' -- not selected')
 

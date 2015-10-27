@@ -496,8 +496,8 @@ class ArticleContentValidation(object):
         return r
 
     @property
-    def article_previous_id(self):
-        return display_value('article-id[@specific-use="previous-pid"]', self.article.article_previous_id)
+    def previous_article_pid(self):
+        return display_value('article-id[@specific-use="previous-pid"]', self.article.previous_article_pid)
 
     @property
     def order(self):
