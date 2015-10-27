@@ -997,12 +997,13 @@ class ArticleContentValidation(object):
         missing = []
         invalid_reftype = []
         for ref in self.article.references:
-            found = [item for item in self.article.xref_nodes if item['rid'] == ref.id]
-            for item in found:
-                if item['ref-type'] != 'bibr':
-                    invalid_reftype.append(item)
-            if len(found) == 0:
-                missing.append(ref.id)
+            if ref.id is not None:
+                found = [item for item in self.article.xref_nodes if item['rid'] == ref.id]
+                for item in found:
+                    if item['ref-type'] != 'bibr':
+                        invalid_reftype.append(item)
+                if len(found) == 0:
+                    missing.append(ref.id)
         message = []
         if len(invalid_reftype) > 0:
             message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))

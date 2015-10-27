@@ -172,7 +172,8 @@ class ArticleRecords(object):
         return self._metadata
 
     def add_article_data(self):
-        self._metadata['120'] = 'XML_' + self.article.dtd_version
+        if self.article.dtd_version is not None:
+            self._metadata['120'] = 'XML_' + self.article.dtd_version
         self._metadata['71'] = normalize_doctopic(self.article.article_type)
         self._metadata['40'] = self.article.language
         self._metadata['38'] = self.article.illustrative_materials

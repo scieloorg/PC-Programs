@@ -382,7 +382,7 @@ class ArticlesPkgReport(object):
                 if not ref.source in self.sources_at.keys():
                     self.sources_at[ref.source] = []
                 if not xml_name in self.sources_at[ref.source]:
-                    self.sources_at[ref.source].append(ref.id + ' - ' + xml_name)
+                    self.sources_at[ref.source].append(str(ref.id) + ' - ' + xml_name)
                 if not ref.publication_type in self.reftype_and_sources.keys():
                     self.reftype_and_sources[ref.publication_type] = {}
                 if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
