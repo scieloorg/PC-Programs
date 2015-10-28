@@ -587,7 +587,7 @@ class IssueModels(object):
             if self.issue.license is None:
                 results.append(('license', 'ERROR', _('Unable to identify issue license')))
             elif article.license_url is not None:
-                if not '/' + self.issue.license.lower() in article.license_url.lower():
+                if not '/' + self.issue.license.lower() + '/' in article.license_url.lower() + '/':
                     results.append(('license', 'ERROR', _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
                 else:
                     results.append(('license', 'INFO', _('In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))

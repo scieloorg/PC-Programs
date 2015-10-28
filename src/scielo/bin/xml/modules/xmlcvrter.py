@@ -856,15 +856,15 @@ def execute_converter(package_paths, collection_name=None):
 
                 try:
                     acron, issue_id = scilista_items[0].split(' ')
-                    if config.is_enabled_transference:
-                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
-                    elif config.email_subject_package_evaluation is not None:
+                    if config.email_subject_package_evaluation is not None:
                         results = ' '.join(XC_STATUS.get(xc_status, [])) + ' ' + stats_msg
                         link = converter_env.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
                         report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 
                         transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
                         send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
+                    if config.is_enabled_transference:
+                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
 
                 except Exception as e:
                     if config.email_subject_invalid_packages is not None:

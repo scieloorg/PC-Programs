@@ -316,11 +316,11 @@ def validate_article_type_and_section(article_type, article_section):
         rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
 
         if rate < 0.6 and rate2 < 0.6:
-            results.append(('@article-type', 'WARNING', _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. (section title=' + _sectitle + ')'))
+            results.append(('@article-type', 'WARNING', _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. (' + _('section title') + '=' + article_section + ')'))
         else:
             if rate2 > rate:
                 if not article_type in similars:
-                    results.append(('@article-type', 'ERROR', _('Check @article-type. Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '.'))
+                    results.append(('@article-type', 'ERROR', _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. ' + _('Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '. (' + _('section title') + '=' + article_section + ')'))
     return results
 
 

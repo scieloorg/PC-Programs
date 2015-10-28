@@ -233,6 +233,7 @@ class PkgArticles(object):
         e_issn_items = []
         p_issn_items = []
         publisher_name_items = []
+        license_items = []
         found = False
         for issn in [self.pkg_p_issn, self.pkg_e_issn]:
             if issn is not None:
@@ -241,15 +242,21 @@ class PkgArticles(object):
                     j_items = j_titles.get(self.pkg_journal_title)
                     if j_items is not None:
                         for item in j_items:
-                            nlm_title_items.append(item.nlm_title)
-                            e_issn_items.append(item.e_issn)
-                            p_issn_items.append(item.p_issn)
-                            publisher_name_items.append(item.publisher_name)
+                            if len(item.nlm_title) > 0:
+                                nlm_title_items.append(item.nlm_title)
+                            if len(item.e_issn) > 0:
+                                e_issn_items.append(item.e_issn)
+                            if len(item.p_issn) > 0:
+                                p_issn_items.append(item.p_issn)
+                            if len(item.publisher_name) > 0:
+                                publisher_name_items.append(item.publisher_name)
+                            if len(item.license) > 0:
+                                license_items.append(item.license)
                             found = True
         r = None
         if found:
             r = []
-            for item in [nlm_title_items, p_issn_items, e_issn_items, publisher_name_items]:
+            for item in [nlm_title_items, p_issn_items, e_issn_items, publisher_name_items, license_items]:
                 r.append(list(set(item)))
         return r
 
@@ -602,7 +609,7 @@ class ArticlesPkgReport(object):
             journal_data = self.pkg_articles.find_journal_data()
 
             if journal_data is not None:
-                nlm_title_items, p_issn_items, e_issn_items, publisher_name_items = journal_data
+                nlm_title_items, p_issn_items, e_issn_items, publisher_name_items, license_items = journal_data
                 for xml_name, article in self.pkg_articles.articles.items():
                     self._registered_journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
 
@@ -611,18 +618,24 @@ class ArticlesPkgReport(object):
                     items.append([_('e-ISSN'), article.e_issn, e_issn_items])
                     items.append([_('print ISSN'), article.print_issn, p_issn_items])
                     items.append([_('publisher name'), article.publisher_name, publisher_name_items])
+                    #items.append([_('license'), article.license, license_items])
 
                     validations_result = ''
                     for label, value, expected_values in items:
-                        _values = '|'.join(expected_values)
-                        if len(_values) > 0:
+                        if len(expected_values) > 0:
                             if not value in expected_values:
                                 if value is None:
                                     value = str(value)
-                                validations_result += html_reports.p_message(u'FATAL ERROR: ' + label + '=' + value + '. ' + _('Expected values') + ': ' + _values)
+                                validations_result += html_reports.p_message(u'FATAL ERROR: ' + label + '=' + value + '. ' + _('Expected values') + ': ' + _(' or ').join(expected_values))
                         else:
                             if value is not None:
                                 validations_result += html_reports.p_message(u'ERROR: ' + label + '=' + value + '. ' + _('No value for {label} is registered.').format(label=label))
+                    is_valid = False
+                    for lic in license_items:
+                        if '/' + lic.lower() + '/' in article.license_url:
+                            is_valid = True
+                    if is_valid is False:
+                        validations_result += html_reports.p_message(u'WARNING: ' + _('license') + '=' + value + '. ' + _('Expected values') + ': ' + _(' or ').join(license_items))
 
                     self._registered_journal_data_validations.add(xml_name, ValidationsResults(validations_result))
         return self._registered_journal_data_validations

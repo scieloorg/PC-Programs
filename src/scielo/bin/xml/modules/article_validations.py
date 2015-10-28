@@ -314,8 +314,6 @@ class ArticleContentValidation(object):
                 if not str(self.article.sps) in expected_values:
                     status = 'FATAL ERROR'
                     msg = _('Invalid value for ') + ' ' + label + ': ' + str(self.article.sps) + '. ' + _('Expected values') + ': ' + _(' or ').join(expected_values)
-            if int(article_dateiso) < attributes.SPS_MIN_DATEISO:
-                r.append(('sps version', 'INFO', _('For documents which publication date is previous to ') + str(attributes.SPS_MIN_DATE.year) + _(', use the most recent SPS version.')))
         r.append((label, status, msg))
         return r
 
@@ -1088,9 +1086,13 @@ class ReferenceContentValidation(object):
             _test_number = warn_unexpected_numbers('source', self.reference.source, 4)
             if _test_number is not None:
                 r.append(_test_number)
-            if self.reference.source is not None:
-                if self.reference.source[0:1] != self.reference.source[0:1].upper():
-                    r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source' + '. '))
+            if self.reference.source[0:1] != self.reference.source[0:1].upper():
+                r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source' + '. '))
+            _source = self.reference.source.strip()
+            if self.reference.source != _source:
+                r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source, ' + _('it starts or ends with space characters.')))
+            if _source.startswith('<') and _source.endswith('>'):
+                r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source, ' + _('it must not have styles elements (italic, bold).')))
         return r
 
     def validate_element(self, label, value, error_level='FATAL ERROR'):

@@ -311,23 +311,23 @@ def expected_sps_versions(article_dateiso):
     max_version = SPS_expiration_dates_versions.get(sps_dateiso_items[len(sps_dateiso_items)-1])
     valid_versions = [min_version, max_version]
 
-    print(article_dateiso)
     if article_datetime is not None:
         diff = SPS_MIN_DATE - article_datetime
         if diff.days > 0:
             # data do artigo é antiga, anterior a 2012
-            # deve usar a versao mais atual
-            article_datetime = datetime.now()
-        i = 0
-        k = 0
-        for sps_datetime in sps_datetime_items:
-            diff = article_datetime - sps_datetime
-            if diff.days < 0:
-                valid_versions = []
-                for k in range(i, len(sps_dateiso_items)):
-                    valid_versions.append(SPS_expiration_dates_versions.get(sps_dateiso_items[k]))
-                break
-            i += 1
+            # permitido qualquer versão
+            valid_versions = [item for item in SPS_expiration_dates_versions.values() if item != 'pre-sps']
+        else:
+            i = 0
+            k = 0
+            for sps_datetime in sps_datetime_items:
+                diff = article_datetime - sps_datetime
+                if diff.days < 0:
+                    valid_versions = []
+                    for k in range(i, len(sps_dateiso_items)):
+                        valid_versions.append(SPS_expiration_dates_versions.get(sps_dateiso_items[k]))
+                    break
+                i += 1
     return list(set(sorted(valid_versions)))
 
 
