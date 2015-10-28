@@ -41,7 +41,7 @@ class ArticleDisplayReport(object):
             r += self.display_titles()
             r += self.doi
             r += self.article_id_other
-            r += self.article_previous_id
+            r += self.previous_article_pid
             r += self.order
             r += self.fpage
             r += self.fpage_seq
@@ -180,8 +180,8 @@ class ArticleDisplayReport(object):
         return self.display_labeled_value('article-id[@pub-id-type="other"]', self.article.article_id_other)
 
     @property
-    def article_previous_id(self):
-        return self.display_labeled_value('previous article id', self.article.article_previous_id)
+    def previous_article_pid(self):
+        return self.display_labeled_value('previous article id', self.article.previous_article_pid)
 
     @property
     def sections(self):

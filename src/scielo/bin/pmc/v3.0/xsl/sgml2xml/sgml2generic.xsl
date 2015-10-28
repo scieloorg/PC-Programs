@@ -136,11 +136,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="sub | bold | italic">
 		<xsl:param name="id"/>
-		<xsl:element name="{name()}">
-			<xsl:apply-templates select="@* | * | text()">
-				<xsl:with-param name="id" select="$id"/>
-			</xsl:apply-templates>
-		</xsl:element>
+		<xsl:choose>
+			<xsl:when test="normalize-space(.)=''">
+				<xsl:value-of select="concat(' ','')"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{name()}">
+					<xsl:apply-templates select="@* | * | text()">
+						<xsl:with-param name="id" select="$id"/>
+					</xsl:apply-templates>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="ref//sup | ref//sub | ref//bold | ref//italic">
 		<xsl:param name="id"/>

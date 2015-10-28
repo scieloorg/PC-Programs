@@ -37,7 +37,7 @@ def format_author(author):
     r += author.fname
     if author.role:
         r += '(role: ' + author.role + ')'
-    r += '(xref: ' + ','.join(author.xref) + ')'
+    r += '(xref: ' + ','.join([xref for xref in author.xref if xref is not None]) + ')'
     return r
 
 
@@ -244,7 +244,20 @@ class ArticleXML(object):
                             if len(delimiter) > 0:
                                 text = parts[k][parts[k].find(delimiter)+len(delimiter):]
                             if '-' in text:
-                                self._bibr_xref_ranges.append([bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
+                                start = None
+                                end = None
+                                n = bibr_xref_node_items[k-1].attrib.get('rid')
+                                if n is not None:
+                                    n = n[1:]
+                                    if n.isdigit():
+                                        start = int(n)
+                                n = bibr_xref_node_items[k].attrib.get('rid')
+                                if n is not None:
+                                    n = n[1:]
+                                    if n.isdigit():
+                                        end = int(n)
+                                if not None in [start, end]:
+                                    self._bibr_xref_ranges.append([start, end, bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
         return self._bibr_xref_ranges
 
     @property
@@ -619,7 +632,7 @@ class ArticleXML(object):
             return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
 
     @property
-    def xml_previous_id(self):
+    def previous_article_pid(self):
         if self.article_meta is not None:
             return self.article_meta.findtext('article-id[@specific-use="previous-pid"]')
 
@@ -1245,9 +1258,9 @@ class Article(ArticleXML):
         if not self.is_ahead:
             if self._previous_pid is None:
                 d = None
-                if self.xml_previous_id is not None:
-                    if is_valid(self.xml_previous_id):
-                        d = self.xml_previous_id
+                if self.previous_article_pid is not None:
+                    if is_valid(self.previous_article_pid):
+                        d = self.previous_article_pid
                 if d is None:
                     if self.registered_aop_pid is not None:
                         if is_valid(self.registered_aop_pid):
@@ -1668,3 +1681,20 @@ class InstitutionNormalizer(object):
                     norm_aff.country = norm_country_name
 
         return (norm_aff, found_institutions)
+
+
+class Journal(object):
+
+    def __init__(self):
+        self.collection_acron = None
+        self.collection_name = None
+        self.journal_title = None
+        self.issn_id = None
+        self.p_issn = None
+        self.e_issn = None
+        self.acron = None
+        self.abbrev_title = None
+        self.journal_title = None
+        self.nlm_title = None
+        self.publisher_name = None
+        self.license = None

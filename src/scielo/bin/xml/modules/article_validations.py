@@ -16,16 +16,11 @@ import institutions_service
 def confirm_missing_items(missing_xref_items, bibr_xref_ranges_items):
     confirmed_missing = missing_xref_items
     if len(bibr_xref_ranges_items) > 0:
-        missing_numbers = [int(rid[1:]) for rid in missing_xref_items]
+        missing_numbers = [int(rid[1:]) for rid in missing_xref_items if rid[1:].isdigit()]
         not_missing = []
-        xref_range_numbers = []
-        for xref_range in bibr_xref_ranges_items:
-            # node = elemento que contem xref
-            xref_range_numbers.append([int(xref.attrib.get('rid', '').strip()[1:]) for xref in xref_range])
-
         i = 0
         for missing_number in missing_numbers:
-            for start, end in xref_range_numbers:
+            for start, end, start_node, end_node in bibr_xref_ranges_items:
                 if start < missing_number < end:
                     not_missing.append(missing_xref_items[i])
             i += 1
@@ -233,7 +228,6 @@ class ArticleContentValidation(object):
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_id)
         #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.journal_id_nlm_ta)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_issns)
         #utils.debugging(datetime.now().isoformat() + ' validations')
@@ -496,8 +490,8 @@ class ArticleContentValidation(object):
         return r
 
     @property
-    def article_previous_id(self):
-        return display_value('article-id[@specific-use="previous-pid"]', self.article.article_previous_id)
+    def previous_article_pid(self):
+        return display_value('article-id[@specific-use="previous-pid"]', self.article.previous_article_pid)
 
     @property
     def order(self):
@@ -1017,10 +1011,9 @@ class ArticleContentValidation(object):
                     message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]: ' + xref))
 
         if self.article.is_bibr_xref_number:
-            for start, end in self.article.bibr_xref_ranges:
-                if start.attrib.get('rid') is not None and end.attrib.get('rid') is not None:
-                    if int(start.attrib.get('rid')[1:]) > int(end.attrib.get('rid')[1:]):
-                        message.append(('xref', 'ERROR', _('Invalid values for @rid={rid} or xref={xref} or @rid={rid2} or xref={xref2}').format(rid=start.attrib.get('rid'), xref=start.text, rid2=end.attrib.get('rid'), xref2=end.text)))
+            for start, end, start_node, end_node in self.article.bibr_xref_ranges:
+                if start > end:
+                    message.append(('xref', 'ERROR', _('Invalid values for @rid={rid} or xref={xref} or @rid={rid2} or xref={xref2}').format(rid=start_node.attrib.get('rid'), xref=start_node.text, rid2=end_node.attrib.get('rid'), xref2=end_node.text)))
             for bibr_xref in self.article.bibr_xref_nodes:
                 rid = bibr_xref.attrib.get('rid')
                 if rid is not None and bibr_xref.text is not None:
