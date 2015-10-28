@@ -227,10 +227,37 @@ class PkgArticles(object):
         self.issue_files = db_manager.get_issue_files(self.issue_models, self.pkg_path)
         return issue_error_msg
 
+    def find_journal_data(self):
+        journals = get_journals()
+        nlm_title_items = []
+        e_issn_items = []
+        p_issn_items = []
+        publisher_name_items = []
+        found = False
+        for issn in [self.pkg_p_issn, self.pkg_e_issn]:
+            if issn is not None:
+                j_titles = journals.get(issn)
+                if j_titles is not None:
+                    j_items = j_titles.get(self.pkg_journal_title)
+                    if j_items is not None:
+                        for item in j_items:
+                            nlm_title_items.append(item.nlm_title)
+                            e_issn_items.append(item.e_issn)
+                            p_issn_items.append(item.p_issn)
+                            publisher_name_items.append(item.publisher_name)
+                            found = True
+        r = None
+        if found:
+            r = []
+            for item in [nlm_title_items, p_issn_items, e_issn_items, publisher_name_items]:
+                r.append(list(set(item)))
+        return r
+
 
 class ArticlesPkgReport(object):
 
     def __init__(self, report_path, pkg_articles, previous_registered_articles, is_db_generation):
+
         self.pkg_articles = pkg_articles
         self.report_path = report_path
         if self.pkg_articles.issue_files is not None:
@@ -251,6 +278,7 @@ class ArticlesPkgReport(object):
         self.is_db_generation = is_db_generation
         self._blocking_errors = None
         self._registered_issue_data_validations = None
+        self._registered_journal_data_validations = None
         self.consistence_blocking_errors = None
         self.changed_orders_validations = None
 
@@ -569,6 +597,37 @@ class ArticlesPkgReport(object):
         return self._blocking_errors + self.consistence_blocking_errors
 
     @property
+    def registered_journal_data_validations(self):
+        if self._registered_journal_data_validations is None:
+            journal_data = self.pkg_articles.find_journal_data()
+
+            if journal_data is not None:
+                nlm_title_items, p_issn_items, e_issn_items, publisher_name_items = journal_data
+                for xml_name, article in self.pkg_articles.articles.items():
+                    self._registered_journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
+
+                    items = []
+                    items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items])
+                    items.append([_('e-ISSN'), article.e_issn, e_issn_items])
+                    items.append([_('print ISSN'), article.print_issn, p_issn_items])
+                    items.append([_('publisher name'), article.publisher_name, publisher_name_items])
+
+                    validations_result = ''
+                    for label, value, expected_values in items:
+                        _values = '|'.join(expected_values)
+                        if len(_values) > 0:
+                            if not value in expected_values:
+                                if value is None:
+                                    value = str(value)
+                                validations_result += html_reports.p_message(u'FATAL ERROR: ' + label + '=' + value + '. ' + _('Expected values') + ': ' + _values)
+                        else:
+                            if value is not None:
+                                validations_result += html_reports.p_message(u'ERROR: ' + label + '=' + value + '. ' + _('No value for {label} is registered.').format(label=label))
+
+                    self._registered_journal_data_validations.add(xml_name, ValidationsResults(validations_result))
+        return self._registered_journal_data_validations
+
+    @property
     def registered_issue_data_validations(self):
         if self._registered_issue_data_validations is None:
             if self.complete_issue_articles.issue_models is not None:
@@ -581,10 +640,16 @@ class ArticlesPkgReport(object):
     @property
     def issue_report(self):
         report = []
+        report.append(self.journal_issue_header_report)
+        if self.registered_journal_data_validations is not None:
+            if self.registered_journal_data_validations.total > 0:
+                report.append(html_reports.tag('h2', _('Checking journal data: XML files and registered data')) + self.registered_journal_data_validations.report(True))
+
         if self.is_db_generation:
             if self.registered_issue_data_validations is not None:
                 if self.registered_issue_data_validations.total > 0:
-                    report.append(html_reports.tag('h2', 'Comparision of issue and articles data') + self.registered_issue_data_validations.report(True))
+                    report.append(html_reports.tag('h2', _('Checking issue data: XML files and registered data')) + self.registered_issue_data_validations.report(True))
+
         self.evaluate_pkg_journal_and_issue_data_consistence()
         for item in [self.changed_orders_validations, self.pkg_data_consistence_validations]:
             if item is not None:
@@ -633,20 +698,23 @@ class ArticlesPkgReport(object):
                         part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                     r += part
 
-        issue_common_data = ''
+        pages = html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.pages(), table_style='validation', row_style='status'))
 
+        toc_report = html_reports.tag('div', r, 'issue-messages') + pages
+        self.pkg_data_consistence_validations = ValidationsResults(toc_report)
+
+    @property
+    def journal_issue_header_report(self):
+        if self.complete_issue_articles.compiled_pkg_metadata is None:
+            self.complete_issue_articles.compile_pkg_metadata()
+        issue_common_data = ''
         for label in self.complete_issue_articles.expected_equal_values:
             message = ''
             if len(self.complete_issue_articles._compiled_pkg_metadata[label].items()) == 1:
-                issue_common_data += html_reports.display_labeled_value(label, self.complete_issue_articles._compiled_pkg_metadata[label].keys()[0])
+                issue_common_data += html_reports.tag('p', html_reports.display_label_value(label, self.complete_issue_articles._compiled_pkg_metadata[label].keys()[0]))
             else:
-                issue_common_data += html_reports.format_list(label, 'ol', self.complete_issue_articles._compiled_pkg_metadata[label].keys())
-                #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
-
-        pages = html_reports.tag('h2', 'Pages Report') + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.pages(), table_style='validation', row_style='status'))
-
-        toc_report = html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages') + pages
-        self.pkg_data_consistence_validations = ValidationsResults(toc_report)
+                issue_common_data += html_reports.format_list(label + ':', 'ol', self.complete_issue_articles._compiled_pkg_metadata[label].keys())
+        return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', issue_common_data, 'issue-data')
 
     def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, is_xml_generation, selected_names=None):
         pkg_path = os.path.dirname(doc_files_info_items.values()[0].new_xml_filename)
@@ -986,3 +1054,43 @@ def more_frequent(data):
                     more = len(data[item])
                     value = item
             return value
+
+
+def get_journals():
+    url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
+    CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+    downloaded_filename = CURRENT_PATH + '/../../markup/downloaded_markup_journals.csv'
+    if not os.path.isdir(CURRENT_PATH + '/../../markup'):
+        os.makedirs(CURRENT_PATH + '/../../markup')
+    fs_utils.get_downloaded_data(url, downloaded_filename)
+
+    import csv
+    from article import Journal
+    journals = {}
+    with open(downloaded_filename, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter='\t')
+        for item in spamreader:
+            if len(item) >= 10:
+                item = [elem.decode('utf-8') for elem in item]
+                if item[1] != 'ISSN':
+                    j = Journal()
+                    j.collection_acron = item[0]
+                    j.collection_name = item[4]
+                    j.issn_id = item[1]
+                    j.p_issn = item[2]
+                    j.e_issn = item[3]
+                    j.acron = item[5]
+                    j.abbrev_title = item[6]
+                    j.journal_title = item[7]
+                    j.nlm_title = item[8]
+                    j.publisher_name = item[9]
+                    if len(item) == 12:
+                        j.license = item[11]
+
+                    for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
+                        if not issn in journals.keys():
+                            journals[issn] = {}
+                        if not j.journal_title in journals[issn].keys():
+                            journals[issn][j.journal_title] = []
+                        journals[issn][j.journal_title].append(j)
+    return journals

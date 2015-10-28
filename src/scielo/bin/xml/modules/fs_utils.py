@@ -101,3 +101,27 @@ def zip_report(report_filename):
     myZipFile.write(report_filename, os.path.basename(report_filename), zipfile.ZIP_DEFLATED)
     return zip_path
 
+
+def get_downloaded_data(url, downloaded_filename):
+    import urllib2
+
+    current_content = u''
+    if os.path.isfile(downloaded_filename):
+        current_content = open(downloaded_filename, 'r').read()
+    if not isinstance(current_content, unicode):
+        current_content = current_content.decode('utf-8')
+    current_items = current_content.split('\n')
+    try:
+        new = urllib2.urlopen(url).read()
+    except:
+        new = u''
+    if not isinstance(new, unicode):
+        new = new.decode('utf-8')
+    new_items = new.split('\n')
+
+    content = current_content
+    if len(new_items) > len(current_items):
+        write_file(downloaded_filename, new)
+        content = new
+
+    return content
