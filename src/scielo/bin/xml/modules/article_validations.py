@@ -850,7 +850,10 @@ class ArticleContentValidation(object):
 
     @property
     def license_url(self):
-        return required('license/@href', self.article.license_url, 'FATAL ERROR', False)
+        if self.article.license_url is None:
+            return ('license/@href', 'FATAL ERROR', _('Required'))
+        elif not article_utils.url_check(self.article.license_url):
+            return ('license/@href', 'FATAL ERROR', _('Invalid value for ') + 'license/@href. ' + self.article.license_url + _(' is not working.'))
 
     @property
     def license_type(self):

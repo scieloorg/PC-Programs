@@ -605,6 +605,7 @@ class ArticlesPkgReport(object):
 
     @property
     def registered_journal_data_validations(self):
+        licenses = []
         if self._registered_journal_data_validations is None:
             journal_data = self.pkg_articles.find_journal_data()
 
@@ -632,10 +633,10 @@ class ArticlesPkgReport(object):
                                 validations_result += html_reports.p_message(u'ERROR: ' + label + '=' + value + '. ' + _('No value for {label} is registered.').format(label=label))
                     is_valid = False
                     for lic in license_items:
-                        if '/' + lic.lower() + '/' in article.license_url:
+                        if '/' + lic.lower() + '/' in article.license_url + '/':
                             is_valid = True
                     if is_valid is False:
-                        validations_result += html_reports.p_message(u'WARNING: ' + _('license') + '=' + value + '. ' + _('Expected values') + ': ' + _(' or ').join(license_items))
+                        validations_result += html_reports.p_message(u'WARNING: ' + _('license') + '=' + article.license_url + '. ' + _('Expected values') + ': ' + _(' or ').join(license_items))
 
                     self._registered_journal_data_validations.add(xml_name, ValidationsResults(validations_result))
         return self._registered_journal_data_validations

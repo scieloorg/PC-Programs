@@ -701,6 +701,7 @@ class ArticleDB(object):
                 doc.creation_date_display = registered_article.creation_date_display
                 doc.creation_date = registered_article.creation_date
                 doc.last_update = registered_article.last_update
+                doc.article_records = registered_article.article_records
 
                 self._registered_articles[xml_name] = doc
         return self._registered_articles
@@ -874,6 +875,8 @@ class ArticleDB(object):
             # todos validos serem adicionados aa base
             self.create_issue_id_file(i_record)
             self.create_db()
+            print('self.issue_files.save_source_files')
+            print(pkg_path)
             self.issue_files.save_source_files(pkg_path)
             self.check_registration()
             if len(self.is_not_converted) == 0:
@@ -942,7 +945,8 @@ class AopManager(object):
             for order in sorted(self.still_aop[dbname].keys()):
                 xml_name = self.still_aop[dbname][order]
                 aop = self.indexed_by_xml_name[xml_name]
-                self.aop_sorted_by_status['still aop'].append(dbname + '|' + order + '|' + aop.filename + '|' + aop.short_article_title())
+                parts = [dbname, order, aop.filename, aop.short_article_title()]
+                self.aop_sorted_by_status['still aop'].append(' | '.join([item for item in parts if item is not None]))
 
     def name(self, db_filename):
         return os.path.basename(db_filename)
@@ -1149,7 +1153,7 @@ class DBManager(object):
             shutil.copyfile(fst_file, isis_db_copy + '.fst')
         shutil.copyfile(isis_db + '.mst', isis_db_copy + '.mst')
         shutil.copyfile(isis_db + '.xrf', isis_db_copy + '.xrf')
-        self.db_isis.update_indexes(db_filename, db_filename + '.fst')
+        self.db_isis.update_indexes(isis_db_copy, isis_db_copy + '.fst')
 
     def search_journal_expr(self, pissn, eissn, journal_title):
         _expr = []

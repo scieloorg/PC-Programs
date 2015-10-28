@@ -353,11 +353,12 @@ class Conversion(object):
         self.conversion_status['converted'] = self.db.is_converted
         self.conversion_status['not converted'] = self.db.is_not_converted
 
+        registered_scilista_item = None
         if is_package_registered is True:
-            is_package_registered = self.pkg.acron_issue_label
+            registered_scilista_item = self.pkg.acron_issue_label
             if not converter_env.is_windows:
                 self.db.generate_windows_version()
-        return is_package_registered
+        return registered_scilista_item
 
     @property
     def pkg_xc_validations(self):
@@ -423,7 +424,7 @@ def convert_package(src_path):
     aop_results_report = ''
     before_conversion_report = ''
     after_conversion_report = ''
-    is_package_registered = False
+    registered_scilista_item = None
     report_components = {}
     scilista_items = []
     xc_status = 'not processed'
@@ -494,7 +495,7 @@ def convert_package(src_path):
             report_components['detail-report'] = pkg_validator.detail_report()
 
             fs_utils.append_file(log_package, 'conversion.convert_articles')
-            is_package_registered = conversion.convert_articles(pkg_validator)
+            registered_scilista_item = conversion.convert_articles(pkg_validator)
 
             fs_utils.append_file(log_package, 'conversion.pkg_xc_validations.report')
             report_components['conversion-report'] = conversion.pkg_xc_validations.report()
@@ -512,12 +513,12 @@ def convert_package(src_path):
             final_report_path = pkg.issue_files.base_reports_path
             final_result_path = pkg.issue_files.issue_path
 
-            if is_package_registered is True:
+            if registered_scilista_item is not None:
                 fs_utils.append_file(log_package, 'pkg.issue_files.copy_files_to_local_web_app()')
                 pkg.issue_files.copy_files_to_local_web_app()
 
         fs_utils.append_file(log_package, 'xc_status = get_xc_status()')
-        xc_status = get_xc_status(is_package_registered, conversion.pkg_xc_validations.fatal_errors, pkg_xml_fatal_errors, conversion.blocking_errors)
+        xc_status = get_xc_status(registered_scilista_item, conversion.pkg_xc_validations.fatal_errors, pkg_xml_fatal_errors, conversion.blocking_errors)
 
         fs_utils.append_file(log_package, 'conversion.conclusion(')
         xc_conclusion_msg = conversion.conclusion(xc_status, pkg.acron_issue_label)
@@ -549,8 +550,8 @@ def convert_package(src_path):
     if tmp_result_path != final_result_path:
         fs_utils.delete_file_or_folder(tmp_result_path)
 
-    if is_package_registered:
-        scilista_items.append(pkg.acron_issue_label)
+    if registered_scilista_item is not None:
+        scilista_items.append(registered_scilista_item)
         if conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update') is not None:
             for item in conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update'):
                 scilista_items.append(item)
@@ -560,8 +561,8 @@ def convert_package(src_path):
     return (scilista_items, xc_status, xc_validations.statistics_message(), report_location)
 
 
-def get_xc_status(is_package_registered, xc_errors, pkg_xml_fatal_errors, blocking_errors):
-    if is_package_registered is False:
+def get_xc_status(registered_scilista_item, xc_errors, pkg_xml_fatal_errors, blocking_errors):
+    if registered_scilista_item is None:
         result = 'rejected'
         if blocking_errors + pkg_xml_fatal_errors + xc_errors == 0:
             result = 'ignored'
@@ -856,6 +857,8 @@ def execute_converter(package_paths, collection_name=None):
 
                 try:
                     acron, issue_id = scilista_items[0].split(' ')
+                    if config.is_enabled_transference:
+                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
                     if config.email_subject_package_evaluation is not None:
                         results = ' '.join(XC_STATUS.get(xc_status, [])) + ' ' + stats_msg
                         link = converter_env.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
@@ -863,8 +866,6 @@ def execute_converter(package_paths, collection_name=None):
 
                         transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
                         send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
-                    if config.is_enabled_transference:
-                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
 
                 except Exception as e:
                     if config.email_subject_invalid_packages is not None:
