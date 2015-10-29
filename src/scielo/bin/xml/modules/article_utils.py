@@ -312,20 +312,21 @@ def api_crossref_doi_journal_and_article(doi_query_result):
 def validate_article_type_and_section(article_type, article_section):
     #DOCTOPIC_IN_USE
     results = []
-    _sectitle = attributes.normalize_section_title(article_section)
-    _article_type = attributes.normalize_section_title(article_type)
-    if not _article_type in _sectitle:
-        # article_type vs sectitle
-        rate = compare_article_type_and_section(_article_type, _sectitle)
-        # attributes.DOCTOPIC_IN_USE vs sectitle
-        rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
+    if article_section is not None:
+        _sectitle = attributes.normalize_section_title(article_section)
+        _article_type = attributes.normalize_section_title(article_type)
+        if not _article_type in _sectitle:
+            # article_type vs sectitle
+            rate = compare_article_type_and_section(_article_type, _sectitle)
+            # attributes.DOCTOPIC_IN_USE vs sectitle
+            rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
 
-        if rate < 0.6 and rate2 < 0.6:
-            results.append(('@article-type', 'WARNING', _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. (' + _('section title') + '=' + article_section + ')'))
-        else:
-            if rate2 > rate:
-                if not article_type in similars:
-                    results.append(('@article-type', 'ERROR', _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. ' + _('Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '. (' + _('section title') + '=' + article_section + ')'))
+            if rate < 0.6 and rate2 < 0.6:
+                results.append(('@article-type', 'WARNING', _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. (' + _('section title') + '=' + article_section + ')'))
+            else:
+                if rate2 > rate:
+                    if not article_type in similars:
+                        results.append(('@article-type', 'ERROR', _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. ' + _('Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '. (' + _('section title') + '=' + article_section + ')'))
     return results
 
 

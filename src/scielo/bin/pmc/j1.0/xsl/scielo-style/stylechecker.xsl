@@ -81,33 +81,6 @@
             </xsl:when>
         </xsl:choose>
     </xsl:variable>
-  
-	<xsl:template match="article-meta//aff">
-		<!-- overwrite stylecheck-match-templates.xsl -->
-		<xsl:call-template name="ms-stream-id-test"/>
-		<xsl:if test="not(institution)">
-			<xsl:call-template name="make-error">
-			 	<xsl:with-param name="error-type">aff institution check</xsl:with-param>
-			 	<xsl:with-param name="description">aff must have institution</xsl:with-param>
-
-			</xsl:call-template>
-         </xsl:if>
-         <xsl:if test="not(addr-line)">
-			<xsl:call-template name="make-error">
-                <xsl:with-param name="error-type">aff addr-line check</xsl:with-param>
-                <xsl:with-param name="description">aff should have addr-line, including city</xsl:with-param>
-			  <xsl:with-param name="class">warning</xsl:with-param>
-            </xsl:call-template>
-         </xsl:if>
-         <xsl:if test="not(country)">
-			<xsl:call-template name="make-error">
-                <xsl:with-param name="error-type">aff country check</xsl:with-param>
-                <xsl:with-param name="description">aff must have country</xsl:with-param>
-			  <xsl:with-param name="class">warning</xsl:with-param>
-            </xsl:call-template>
-         </xsl:if>
-        <xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
     
     <xsl:template match="counts">
         <xsl:call-template name="empty-element-check"/>
@@ -161,19 +134,7 @@
         </xsl:choose>
         <xsl:apply-templates select="." mode="output"/>
     </xsl:template>
-    <xsl:template match="ack">
-        <xsl:call-template name="empty-element-check"/>
-        <xsl:call-template name="back-element-check"/>
-        <xsl:call-template name="ms-stream-id-test"/>
-        <xsl:if test="$check_funding='maybe-has-funding-group'">
-            <xsl:call-template name="make-error">
-                <xsl:with-param name="error-type">funding group check</xsl:with-param>
-                <xsl:with-param name="description">It seems there is funding information (contract number) in acknowledgement. Create funding-group in article-meta</xsl:with-param>
-                <xsl:with-param name="class">warning</xsl:with-param>
-            </xsl:call-template>
-        </xsl:if>
-        <xsl:apply-templates select="." mode="output"/>
-    </xsl:template>
+
 	<xsl:template match="ref">
         <xsl:call-template name="ms-stream-id-test"/>
         <xsl:call-template name="empty-element-check"/>

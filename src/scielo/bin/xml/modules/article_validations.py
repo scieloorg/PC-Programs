@@ -257,6 +257,7 @@ class ArticleContentValidation(object):
         items.append(self.total_of_references)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.refstats)
+        items.append(self.refs_sources)
 
         items.append(self.ref_display_only_stats)
         #utils.debugging(datetime.now().isoformat() + ' validations')
@@ -361,14 +362,26 @@ class ArticleContentValidation(object):
         sch2 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level2])
         total = sum(self.article.refstats.values())
         nonsch = total - sch1 - sch2
-        msg = '; '.join([k + ': ' + str(t) for k, t in self.article.refstats.items()])
+        stats = self.article.refstats
+        msg = '; '.join([k + ': ' + str(stats[k]) for k in sorted(stats.keys())])
         status = 'INFO'
         if total > 0:
             if (nonsch >= sch1 + sch2) or (sch1 < sch2):
                 status = 'WARNING'
                 msg += '. ' + _('Check the value of') + ' element-citation/@publication-type.'
-        r.append(('quantity of reference types', status, msg))
+        r.append((_('quantity of reference types'), status, msg))
         return r
+
+    @property
+    def refs_sources(self):
+        refs = {}
+        for ref in self.article.references:
+            if not ref.publication_type in refs.keys():
+                refs[ref.publication_type] = {}
+            if not ref.source in refs[ref.publication_type].keys():
+                refs[ref.publication_type][ref.source] = 0
+            refs[ref.publication_type][ref.source] += 1
+        return [(_('sources'), 'INFO', refs)]
 
     @property
     def ref_display_only_stats(self):
@@ -1251,7 +1264,9 @@ class ReferenceContentValidation(object):
     @property
     def publication_type_other(self):
         if self.reference.publication_type == 'other':
-            return ('@publication-type', 'WARNING', _('Be sure that ') + self.reference.mixed_citation + _(' is not ') + _(' or ').join([v for v in attributes.PUBLICATION_TYPE if v != 'other']))
+            return ('@publication-type', 'WARNING', '@publication-type=' + self.reference.publication_type + '. ' + _('Be sure that ') + _('this reference is not ') + _(' or ').join([v for v in attributes.PUBLICATION_TYPE if v != 'other']))
+        elif not self.reference.publication_type in attributes.BIBLIOMETRICS_USE:
+            return ('@publication-type', 'WARNING', '@publication-type=' + self.reference.publication_type + '. ' + _('Be sure that ') + _('this reference is not ') + _(' or ').join(attributes.BIBLIOMETRICS_USE))
 
     @property
     def xml(self):

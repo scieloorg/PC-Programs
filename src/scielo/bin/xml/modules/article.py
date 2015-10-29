@@ -933,9 +933,9 @@ class ArticleXML(object):
     def refstats(self):
         _refstats = {}
         for ref in self.references:
+            pubtype = ref.publication_type
             if not ref.publication_type in _refstats.keys():
-                pubtype = ref.publication_type
-                if ref.publication_type is None:
+                if pubtype is None:
                     pubtype = 'None'
                 _refstats[pubtype] = 0
             _refstats[pubtype] += 1

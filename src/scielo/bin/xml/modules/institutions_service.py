@@ -89,6 +89,14 @@ class OrgDBManager(object):
             if not isinstance(country_name, unicode):
                 country_name = country_name.decode('utf-8')
 
+        items = []
+        for item in [orgname, city, state, country_code, country_name]:
+            if not item is None:
+                parts = item.split()
+                item = u' '.join(parts)
+                item = item.strip()
+            items.append(item)
+        orgname, city, state, country_code, country_name = items
         norm_country_name = self.normalized_country_name(country_code, country_name)
         if norm_country_name is not None and country_code is None:
             country_code = self.normalized_country_items.get(norm_country_name)
@@ -103,6 +111,7 @@ class OrgDBManager(object):
 
         if len(results) == 0:
             results += self.similar_institutions(orgname, city, state, country_code, country_name)
+
         return list(set(results))
 
     def get_countries_expr(self, country_names):

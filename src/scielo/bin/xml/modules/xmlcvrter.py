@@ -550,11 +550,14 @@ def convert_package(src_path):
     if tmp_result_path != final_result_path:
         fs_utils.delete_file_or_folder(tmp_result_path)
 
-    if registered_scilista_item is not None:
+    if registered_scilista_item is None:
+        scilista_items.append(pkg.acron_issue_label)
+    else:
         scilista_items.append(registered_scilista_item)
-        if conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update') is not None:
-            for item in conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update'):
-                scilista_items.append(item)
+
+    if conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update') is not None:
+        for item in conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update'):
+            scilista_items.append(item)
     fs_utils.append_file(log_package, 'antes de return - convert_package')
 
     os.unlink(log_package)
@@ -847,18 +850,20 @@ def execute_converter(package_paths, collection_name=None):
                 if len(package_paths) == 1:
                     raise
 
-            if report_location is not None:
-                if config.is_windows:
-                    pkg_reports.display_report(report_location)
+            try:
+                acron, issue_id = scilista_items[0].split(' ')
 
-            if len(scilista_items) > 0:
-                if config.collection_scilista is not None:
-                    open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
+                if xc_status in ['accepted', 'approved']:
+                    if config.collection_scilista is not None:
+                        open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
 
-                try:
-                    acron, issue_id = scilista_items[0].split(' ')
                     if config.is_enabled_transference:
                         transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
+
+                if report_location is not None:
+                    if config.is_windows:
+                        pkg_reports.display_report(report_location)
+
                     if config.email_subject_package_evaluation is not None:
                         results = ' '.join(XC_STATUS.get(xc_status, [])) + ' ' + stats_msg
                         link = converter_env.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
@@ -867,13 +872,13 @@ def execute_converter(package_paths, collection_name=None):
                         transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
                         send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
 
-                except Exception as e:
-                    if config.email_subject_invalid_packages is not None:
-                        send_message(mailer, config.email_to_adm, '[Step 2]' + config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
+            except Exception as e:
+                if config.email_subject_invalid_packages is not None:
+                    send_message(mailer, config.email_to_adm, '[Step 2]' + config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
 
-                    if len(package_paths) == 1:
-                        print('exception as finishing')
-                        raise
+                if len(package_paths) == 1:
+                    print('exception as finishing')
+                    raise
 
         if len(invalid_pkg_files) > 0:
             if config.email_subject_invalid_packages is not None:
