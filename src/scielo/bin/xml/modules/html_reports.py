@@ -219,7 +219,8 @@ def format_list(label, list_type, list_items, style=''):
 
 def format_html_data_dict(value, list_type='ul'):
     r = '<' + list_type + '>'
-    for k, v in value.items():
+    for k in sorted(value.keys()):
+        v = value[k]
         r += tag('li', display_label_value(k, v))
     r += '</' + list_type + '>'
     return r

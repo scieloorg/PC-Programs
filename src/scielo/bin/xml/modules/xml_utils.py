@@ -48,7 +48,8 @@ class XMLContent(object):
         self.content = content
 
     def fix(self):
-        self.content = self.content[self.content.find('<'):]
+        if '<' in self.content:
+            self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
 
         if is_xml_well_formed(self.content) is None:
@@ -149,9 +150,11 @@ def replace_doctype(content, new_doctype):
                 if find_text + '\n' in content:
                     content = content.replace(find_text + '\n', new_doctype)
     elif content.startswith('<?xml '):
-        xml_proc = content[0:content.find('?>')+2]
+        if '?>' in content:
+            xml_proc = content[0:content.find('?>')+2]
         xml = content[1:]
-        xml = xml[xml.find('<'):]
+        if '<' in xml:
+            xml = xml[xml.find('<'):]
         if len(new_doctype) > 0:
             content = xml_proc + '\n' + new_doctype + '\n' + xml
         else:
@@ -187,7 +190,8 @@ def node_text(node):
         text = text.strip()
         if text.startswith('<') and text.endswith('>'):
             text = text[text.find('>')+1:]
-            text = text[0:text.rfind('</')]
+            if '</' in text:
+                text = text[0:text.rfind('</')]
     return text
 
 

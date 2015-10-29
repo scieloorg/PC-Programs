@@ -49,6 +49,8 @@ def move_file(src, dest):
             shutil.move(src, src_folder)
         except:
             errors.append('Unable to move ' + src + ' to ' + src_folder + '.')
+    else:
+        errors.append('Source ' + src + ' does not exist.')
     return errors
 
 
@@ -125,3 +127,8 @@ def get_downloaded_data(url, downloaded_filename):
         content = new
 
     return content
+
+
+def last_modified_datetime(filename):
+    from datetime import datetime
+    return datetime.fromtimestamp(os.path.getmtime(filename))

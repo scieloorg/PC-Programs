@@ -1,8 +1,17 @@
-﻿4.0.090 trial - 13/10/2015
+﻿4.0.090 trial - 03/11/2015*
 ==========================
- - (improvement) Present the "translation" of code languages
- - (improvement) Ignore city/state to have a perfect match as normalizing the institution name 
- - (bug) Fix the message about history absence
+    - (improvement) Present the "translation" of code languages
+    - (improvement) Improve identification of normalized institutions
+    - (improvement) Do not consider missing bibr xref if it is in a xref range. Ex.: 2, 3, 4 are in (1-5), so they are not missing
+    - (improvement) Do not require acronym
+    - (improvement) Validation of article/@specific-use
+    - (new) Validation of fig-group/@ref-type and table-wrap-group/@ref-type
+    - (new) Presentation of table
+    - (new) Normalize mixed-citation, including label
+    - (new) Fix &amp;amp; e &amp;#
+    - (new) Fix validations according to SPS 1.3
+    - (new) Generate one zip for each document
+    - (bug) Fix received and accepted
 
 4.0.090 trial - 16/09/2015
 ==========================

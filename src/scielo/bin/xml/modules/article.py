@@ -242,7 +242,8 @@ class ArticleXML(object):
                             elif '/>' in parts[k]:
                                 delimiter = '/>'
                             if len(delimiter) > 0:
-                                text = parts[k][parts[k].find(delimiter)+len(delimiter):]
+                                if delimiter in parts[k]:
+                                    text = parts[k][parts[k].find(delimiter)+len(delimiter):]
                             if '-' in text:
                                 start = None
                                 end = None
@@ -932,9 +933,9 @@ class ArticleXML(object):
     def refstats(self):
         _refstats = {}
         for ref in self.references:
+            pubtype = ref.publication_type
             if not ref.publication_type in _refstats.keys():
-                pubtype = ref.publication_type
-                if ref.publication_type is None:
+                if pubtype is None:
                     pubtype = 'None'
                 _refstats[pubtype] = 0
             _refstats[pubtype] += 1
@@ -1044,8 +1045,8 @@ class ArticleXML(object):
             if node is not None:
                 r = node.attrib.get('{http://www.w3.org/1999/xlink}href')
                 if r is not None:
-                    if r.find('/deed.'):
-                        r = r[0:r.find('/deed.')]
+                    if '/deed.' in r:
+                        r = r[0:r.rfind('/deed.')]
                     if r.endswith('/'):
                         r = r[:-1]
         return r
@@ -1092,6 +1093,7 @@ class Article(ArticleXML):
         self.registered_aop_pid = None
         self._previous_pid = None
         self.normalized_affiliations = None
+        self.article_records = None
 
     @property
     def hrefs(self):

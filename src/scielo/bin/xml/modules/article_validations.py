@@ -257,6 +257,7 @@ class ArticleContentValidation(object):
         items.append(self.total_of_references)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.refstats)
+        items.append(self.refs_sources)
 
         items.append(self.ref_display_only_stats)
         #utils.debugging(datetime.now().isoformat() + ' validations')
@@ -314,8 +315,6 @@ class ArticleContentValidation(object):
                 if not str(self.article.sps) in expected_values:
                     status = 'FATAL ERROR'
                     msg = _('Invalid value for ') + ' ' + label + ': ' + str(self.article.sps) + '. ' + _('Expected values') + ': ' + _(' or ').join(expected_values)
-            if int(article_dateiso) < attributes.SPS_MIN_DATEISO:
-                r.append(('sps version', 'INFO', _('For documents which publication date is previous to ') + str(attributes.SPS_MIN_DATE.year) + _(', use the most recent SPS version.')))
         r.append((label, status, msg))
         return r
 
@@ -363,14 +362,26 @@ class ArticleContentValidation(object):
         sch2 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level2])
         total = sum(self.article.refstats.values())
         nonsch = total - sch1 - sch2
-        msg = '; '.join([k + ': ' + str(t) for k, t in self.article.refstats.items()])
+        stats = self.article.refstats
+        msg = '; '.join([k + ': ' + str(stats[k]) for k in sorted(stats.keys())])
         status = 'INFO'
         if total > 0:
             if (nonsch >= sch1 + sch2) or (sch1 < sch2):
                 status = 'WARNING'
                 msg += '. ' + _('Check the value of') + ' element-citation/@publication-type.'
-        r.append(('quantity of reference types', status, msg))
+        r.append((_('quantity of reference types'), status, msg))
         return r
+
+    @property
+    def refs_sources(self):
+        refs = {}
+        for ref in self.article.references:
+            if not ref.publication_type in refs.keys():
+                refs[ref.publication_type] = {}
+            if not ref.source in refs[ref.publication_type].keys():
+                refs[ref.publication_type][ref.source] = 0
+            refs[ref.publication_type][ref.source] += 1
+        return [(_('sources'), 'INFO', refs)]
 
     @property
     def ref_display_only_stats(self):
@@ -852,7 +863,10 @@ class ArticleContentValidation(object):
 
     @property
     def license_url(self):
-        return required('license/@href', self.article.license_url, 'FATAL ERROR', False)
+        if self.article.license_url is None:
+            return ('license/@href', 'FATAL ERROR', _('Required'))
+        elif not article_utils.url_check(self.article.license_url):
+            return ('license/@href', 'FATAL ERROR', _('Invalid value for ') + 'license/@href. ' + self.article.license_url + _(' is not working.'))
 
     @property
     def license_type(self):
@@ -991,12 +1005,13 @@ class ArticleContentValidation(object):
         missing = []
         invalid_reftype = []
         for ref in self.article.references:
-            found = [item for item in self.article.xref_nodes if item['rid'] == ref.id]
-            for item in found:
-                if item['ref-type'] != 'bibr':
-                    invalid_reftype.append(item)
-            if len(found) == 0:
-                missing.append(ref.id)
+            if ref.id is not None:
+                found = [item for item in self.article.xref_nodes if item['rid'] == ref.id]
+                for item in found:
+                    if item['ref-type'] != 'bibr':
+                        invalid_reftype.append(item)
+                if len(found) == 0:
+                    missing.append(ref.id)
         message = []
         if len(invalid_reftype) > 0:
             message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
@@ -1087,9 +1102,13 @@ class ReferenceContentValidation(object):
             _test_number = warn_unexpected_numbers('source', self.reference.source, 4)
             if _test_number is not None:
                 r.append(_test_number)
-            if self.reference.source is not None:
-                if self.reference.source[0:1] != self.reference.source[0:1].upper():
-                    r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source' + '. '))
+            if self.reference.source[0:1] != self.reference.source[0:1].upper():
+                r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source' + '. '))
+            _source = self.reference.source.strip()
+            if self.reference.source != _source:
+                r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source, ' + _('it starts or ends with space characters.')))
+            if _source.startswith('<') and _source.endswith('>'):
+                r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source, ' + _('it must not have styles elements (italic, bold).')))
         return r
 
     def validate_element(self, label, value, error_level='FATAL ERROR'):
@@ -1245,7 +1264,9 @@ class ReferenceContentValidation(object):
     @property
     def publication_type_other(self):
         if self.reference.publication_type == 'other':
-            return ('@publication-type', 'WARNING', _('Be sure that ') + self.reference.mixed_citation + _(' is not ') + _(' or ').join([v for v in attributes.PUBLICATION_TYPE if v != 'other']))
+            return ('@publication-type', 'WARNING', '@publication-type=' + self.reference.publication_type + '. ' + _('Be sure that ') + _('this reference is not ') + _(' or ').join([v for v in attributes.PUBLICATION_TYPE if v != 'other']))
+        elif not self.reference.publication_type in attributes.BIBLIOMETRICS_USE:
+            return ('@publication-type', 'WARNING', '@publication-type=' + self.reference.publication_type + '. ' + _('Be sure that ') + _('this reference is not ') + _(' or ').join(attributes.BIBLIOMETRICS_USE))
 
     @property
     def xml(self):

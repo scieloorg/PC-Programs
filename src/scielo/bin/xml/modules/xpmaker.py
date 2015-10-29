@@ -91,23 +91,26 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
         i = 0
         for item in _items:
             if item.startswith('<graphic href="?'):
-                continuation = item[item.find('?'):]
-                find_aspas = continuation.find('"')
-                find_quote = continuation.find('&quot;')
+                after_href_value = item[item.find('?'):]
+                find_aspas = after_href_value.find('"')
+                find_quote = after_href_value.find('&quot;')
                 chosen = sorted([e for e in [find_aspas, find_quote] if e > 0])
                 if len(chosen) > 0:
-                    continuation = continuation[chosen[0]:]
+                    after_href_value = after_href_value[chosen[0]:]
                 new_href_item = new_href_list[i]
                 if new_href_item == 'None':
-                    graphic_content = item[item.find('>')+1:]
-                    graphic_content = graphic_content[0:graphic_content.find('</graphic>')]
-                    new += graphic_content + continuation[continuation.find('</graphic>')+len('</graphic>'):]
+                    # remove <graphic *> e </graphic>, mantendo o restante de item
+                    item = item[item.find('>')+1:]
+                    if '</graphic>' in item:
+                        # isto é, not '/>' in item
+                        item = item[0:item.find('</graphic>')] + after_href_value[after_href_value.find('</graphic>')+len('</graphic>'):]
+                    new += item
                 else:
                     if new_href_item.startswith('image'):
                         utils.debugging(new_href_item)
                         new_href_item = new_href_item.replace('image', '')
                         utils.debugging(new_href_item)
-                    new += '<graphic href="' + xml_name + new_href_item + continuation
+                    new += '<graphic href="' + xml_name + new_href_item + after_href_value
                 i += 1
             else:
                 new += item
@@ -144,7 +147,7 @@ def get_embedded_images_in_html(html_content):
 
 def extract_embedded_images(xml_name, content, html_content, html_filename, dest_path):
     content = content.replace('href=&quot;?', 'href="?')
-    if content.find('href="?' + xml_name):
+    if content.find('href="?' + xml_name) > 0:
         embedded_img_files = get_embedded_images_in_html(html_content)
         embedded_img_path = None
 
@@ -183,17 +186,19 @@ def get_html_tables(html_content):
     html_content = html_content.replace('[/tabwrap]', '[/tabwrap]~BREAK~')
     for item in html_content.split('~BREAK~'):
         if item.startswith('[tabwrap') and item.endswith('[/tabwrap]'):
-            table_id = item[item.find('id="')+len('id="'):]
-            table_id = table_id[0:table_id.find('"')]
-            table = item[item.find('<table'):]
-            table = table[0:table.rfind('</table>')+len('</table>')]
+            if 'id="' in item:
+                table_id = item[item.find('id="')+len('id="'):]
+                table_id = table_id[0:table_id.find('"')]
+                if item.find('<table') > 0 and table.rfind('</table>') > 0:
+                    table = item[item.find('<table'):]
+                    table = table[0:table.rfind('</table>')+len('</table>')]
 
-            table = remove_sgml_tags(table)
-            table = ignore_html_tags_and_insert_quotes_to_attributes(table, ['table', 'a', 'img', 'tbody', 'thead', 'th', 'tr', 'td', 'b', 'i'])
-            utils.debugging(table_id)
-            utils.debugging(table)
-            x
-            tables[table_id] = table
+                    table = remove_sgml_tags(table)
+                    table = ignore_html_tags_and_insert_quotes_to_attributes(table, ['table', 'a', 'img', 'tbody', 'thead', 'th', 'tr', 'td', 'b', 'i'])
+                    utils.debugging(table_id)
+                    utils.debugging(table)
+                    x
+                    tables[table_id] = table
     return tables
 
 
@@ -247,7 +252,7 @@ def ignore_html_tags_and_insert_quotes_to_attributes(html_content, tags_to_keep,
             else:
                 if ' ' in tag:
                     tag = tag[0:tag.find(' ')]
-                else:
+                elif c2 in tag:
                     tag = tag[0:tag.find(c2)]
 
             if tag in tags_to_keep:
@@ -279,7 +284,7 @@ def fix_tabwrap_end(html_content):
         if part.startswith('[tabwrap'):
             p_table = part.find('</table>')
             p_tabwrap = part.find('[/tabwrap]')
-            if p_tabwrap < p_table:
+            if 0 < p_tabwrap < p_table:
                 part = part.replace('[/tabwrap]', '')
                 part = part.replace('</table>', '</table>[/tabwrap]')
         parts.append(part)
@@ -351,11 +356,11 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
 
 
 def fix_sgml_xml(content):
-    if '<doc ' in content:
+    if '<doc ' in content and '</doc>' in content:
         content = content[0:content.find('</doc>') + len('</doc>')]
-    elif '<article ' in content:
+    elif '<article ' in content and '</article>' in content:
         content = content[0:content.find('</article>') + len('</article>')]
-    elif '<text ' in content:
+    elif '<text ' in content and '</text>' in content:
         content = content[0:content.find('</text>') + len('</text>')]
 
     xml_fix = xml_utils.XMLContent(content)
@@ -1187,7 +1192,7 @@ def get_fontsymbols_in_html(html_content):
 
 
 def replace_fontsymbols(content, html_content):
-    if content.find('<fontsymbol>'):
+    if content.find('<fontsymbol>') > 0:
         html_fontsymbol_items = get_fontsymbols_in_html(html_content)
         c = content.replace('<fontsymbol>', '~BREAK~<fontsymbol>')
         c = c.replace('</fontsymbol>', '</fontsymbol>~BREAK~')

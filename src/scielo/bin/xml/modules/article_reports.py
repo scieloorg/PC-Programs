@@ -261,7 +261,8 @@ class ArticleDisplayReport(object):
             row = {}
             row['@id'] = item.attrib.get('id')
             row['xml'] = xml_utils.node_xml(item)
-            row['xml'] = row['xml'][0:row['xml'].find('>')+1]
+            if '>' in row['xml']:
+                row['xml'] = row['xml'][0:row['xml'].find('>')+1]
             sheet_data.append(row)
         r = html_reports.tag('h2', 'elements and @id:')
         r += html_reports.sheet(t_header, sheet_data)

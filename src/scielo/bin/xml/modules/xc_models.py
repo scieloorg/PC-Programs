@@ -172,7 +172,8 @@ class ArticleRecords(object):
         return self._metadata
 
     def add_article_data(self):
-        self._metadata['120'] = 'XML_' + self.article.dtd_version
+        if self.article.dtd_version is not None:
+            self._metadata['120'] = 'XML_' + self.article.dtd_version
         self._metadata['71'] = normalize_doctopic(self.article.article_type)
         self._metadata['40'] = self.article.language
         self._metadata['38'] = self.article.illustrative_materials
@@ -586,20 +587,24 @@ class IssueModels(object):
             if self.issue.license is None:
                 results.append(('license', 'ERROR', _('Unable to identify issue license')))
             elif article.license_url is not None:
-                if not '/' + self.issue.license.lower() in article.license_url.lower():
+                if not '/' + self.issue.license.lower() + '/' in article.license_url.lower() + '/':
                     results.append(('license', 'ERROR', _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
                 else:
                     results.append(('license', 'INFO', _('In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
 
             # section
-            section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article.toc_section)
-            if matched_rate != 1:
-                if not article.is_ahead:
-                    registered_sections = _('Registered sections') + ':\n' + '; '.join(self.section_titles)
-                    if section_code is None:
-                        results.append(('section', 'ERROR', article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
-                    else:
-                        results.append(('section', 'WARNING', _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
+            fixed_sectitle = None
+            if article.toc_section is None:
+                results.append(('section', 'FATAL ERROR', _('Required')))
+            else:
+                section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article.toc_section)
+                if matched_rate != 1:
+                    if not article.is_ahead:
+                        registered_sections = _('Registered sections') + ':\n' + u'; '.join(self.section_titles)
+                        if section_code is None:
+                            results.append(('section', 'ERROR', article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
+                        else:
+                            results.append(('section', 'WARNING', _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
             # @article-type
             _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
             for item in article_utils.validate_article_type_and_section(article.article_type, _sectitle):
@@ -700,6 +705,7 @@ class ArticleDB(object):
                 doc.creation_date_display = registered_article.creation_date_display
                 doc.creation_date = registered_article.creation_date
                 doc.last_update = registered_article.last_update
+                doc.article_records = registered_article.article_records
 
                 self._registered_articles[xml_name] = doc
         return self._registered_articles
@@ -873,6 +879,8 @@ class ArticleDB(object):
             # todos validos serem adicionados aa base
             self.create_issue_id_file(i_record)
             self.create_db()
+            print('self.issue_files.save_source_files')
+            print(pkg_path)
             self.issue_files.save_source_files(pkg_path)
             self.check_registration()
             if len(self.is_not_converted) == 0:
@@ -941,7 +949,8 @@ class AopManager(object):
             for order in sorted(self.still_aop[dbname].keys()):
                 xml_name = self.still_aop[dbname][order]
                 aop = self.indexed_by_xml_name[xml_name]
-                self.aop_sorted_by_status['still aop'].append(dbname + '|' + order + '|' + aop.filename + '|' + aop.short_article_title())
+                parts = [dbname, order, aop.filename, aop.short_article_title()]
+                self.aop_sorted_by_status['still aop'].append(' | '.join([item for item in parts if item is not None]))
 
     def name(self, db_filename):
         return os.path.basename(db_filename)
@@ -1031,9 +1040,9 @@ class AopManager(object):
             if status == 'new doc':
                 msg_list.append('WARNING: ' + _('Not found an "aop version" of this document.'))
             else:
-                msg_list.append('WARNING: ' + _('Found: "aop version"'))
+                msg_list.append('INFO: ' + _('Found: "aop version"'))
                 if status == 'partially matched aop':
-                    msg_list.append('WARNING: ' + _('the title/author of article and its "aop version" are similar.'))
+                    msg_list.append('INFO: ' + _('the title/author of article and its "aop version" are similar.'))
                 elif status == 'aop missing PID':
                     msg_list.append('ERROR: ' + _('the "aop version" has no PID'))
                 elif status == 'unmatched aop':
@@ -1076,6 +1085,7 @@ class AopManager(object):
                         self.mark_aop_as_deleted(aop)
             self.is_excluded_aop[aop.xml_name] = done
             self.is_excluded_aop_msg[aop.xml_name] = msg
+            print(msg)
             if done is True:
                 self.aop_sorted_by_status['excluded ex-aop'].append(aop.xml_name)
             else:
@@ -1148,7 +1158,7 @@ class DBManager(object):
             shutil.copyfile(fst_file, isis_db_copy + '.fst')
         shutil.copyfile(isis_db + '.mst', isis_db_copy + '.mst')
         shutil.copyfile(isis_db + '.xrf', isis_db_copy + '.xrf')
-        self.db_isis.update_indexes(db_filename, db_filename + '.fst')
+        self.db_isis.update_indexes(isis_db_copy, isis_db_copy + '.fst')
 
     def search_journal_expr(self, pissn, eissn, journal_title):
         _expr = []
@@ -1186,7 +1196,10 @@ class DBManager(object):
         result = []
         if expr is not None:
             result = self.db_isis.get_records(self.issue_db_filename, expr)
-            if len(result) == 0:
+            d_copy = fs_utils.last_modified_datetime(self.issue_db_filename + '.mst')
+            d_source = fs_utils.last_modified_datetime(self.src_issue_db_filename + '.mst')
+            diff = d_source - d_copy
+            if len(result) == 0 or diff.days > 0 or (diff.days == 0 and diff.seconds > 0):
                 self.update_db_copy(self.src_issue_db_filename, self.issue_db_filename, self.issue_fst_filename)
                 result = self.db_isis.get_records(self.issue_db_filename, expr)
         return result
