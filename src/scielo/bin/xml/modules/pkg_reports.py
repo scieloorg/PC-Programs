@@ -611,9 +611,8 @@ class ArticlesPkgReport(object):
 
             if journal_data is not None:
                 nlm_title_items, p_issn_items, e_issn_items, publisher_name_items, license_items = journal_data
+                self._registered_journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
                 for xml_name, article in self.pkg_articles.articles.items():
-                    self._registered_journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
-
                     items = []
                     items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items])
                     items.append([_('e-ISSN'), article.e_issn, e_issn_items])

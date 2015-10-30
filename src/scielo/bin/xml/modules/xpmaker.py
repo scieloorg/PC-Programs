@@ -736,6 +736,7 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('publication-type="web"', 'publication-type="webpage"')
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
+        
         content = normalize_mixed_citations(content)
         #xml_status(content, 'outros ajustes')
 
@@ -751,6 +752,20 @@ def normalize_xml_content(doc_files_info, content, version):
         content = xml_utils.pretty_print(content)
         #xml_status(content, 'pretty_print')
 
+        content = content.replace('<source>', '~BREAK~<source>')
+        content = content.replace('</source>', '</source>~BREAK~')
+        parts = content.split('~BREAK~')
+        content = []
+        for part in parts:
+            if part.startswith('<source>') and part.endswith('</source>'):
+                part = ' '.join(part.split()).strip()
+                part = part.replace('<source> ', '<source>').replace(' </source>', '</source>')
+                for style_tag in ['italic', 'bold', 'italic']:
+                    if part.startswith('<source><' + style_tag + '>') and part.endswith('</' + style_tag + '></source>'):
+                        part = part.replace('<' + style_tag + '>', '').replace('</' + style_tag + '>', '')
+
+            content.append(part)
+        content = ''.join(content)
     return (content, replaced_entities_report)
 
 
