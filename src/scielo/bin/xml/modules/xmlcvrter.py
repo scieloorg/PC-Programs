@@ -368,41 +368,38 @@ class Conversion(object):
         validations.save_reports()
         return validations
 
-    def conclusion(self, xc_status, acron_issue_label):
-        total = len(self.selected_articles) if self.selected_articles is not None else 0
-        converted = self.conversion_status.get('converted', [])
-        converted = 0 if converted is None else len(converted)
-        not_converted = self.conversion_status.get('not converted', [])
-        not_converted = 0 if not_converted is None else len(not_converted)
 
-        app_site = converter_env.web_app_site if converter_env.web_app_site is not None else _('scielo web site')
-
-        status = ''
-        action = ''
-        result = _('be updated/published on ') + app_site
-        reason = ''
-        if xc_status == 'rejected':
-            action = _(' not')
-            status = 'FATAL ERROR'
-            if total > 0:
-                if not_converted > 0:
-                    reason = _('because it is not complete (') + str(not_converted) + '/' + str(total) + _(' were not converted).')
-                else:
-                    reason = _('unknown')
+def conclusion_message(total, converted, not_converted, xc_status, acron_issue_label):
+    app_site = converter_env.web_app_site if converter_env.web_app_site is not None else _('scielo web site')
+    status = ''
+    action = ''
+    result = _('be updated/published on ') + app_site
+    reason = ''
+    if xc_status == 'rejected':
+        action = _(' not')
+        status = 'FATAL ERROR'
+        if total > 0:
+            if not_converted > 0:
+                reason = _('because it is not complete (') + str(not_converted) + '/' + str(total) + _(' were not converted).')
             else:
-                reason = _('because there are blocking errors in the package.')
-        elif xc_status == 'ignored':
-            action = _(' not')
-            reason = _('because no document was changed.')
-        elif xc_status == 'accepted':
-            status = 'WARNING'
-            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
-        elif xc_status == 'approved':
-            status = 'OK'
-            reason = ''
-        text = status + ': ' + acron_issue_label + _(' will') + action + ' ' + result + ' ' + reason
-        text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(converted) + '/' + str(total)) + html_reports.p_message(text)
-        return text
+                reason = _('unknown')
+        else:
+            reason = _('because there are blocking errors in the package.')
+    elif xc_status == 'ignored':
+        action = _(' not')
+        reason = _('because no document was changed.')
+    elif xc_status == 'accepted':
+        status = 'WARNING'
+        reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
+    elif xc_status == 'approved':
+        status = 'OK'
+        reason = ''
+    else:
+        status = 'FATAL ERROR'
+        reason = _('because there are blocking errors in the package.')
+    text = status + ': ' + acron_issue_label + _(' will') + action + ' ' + result + ' ' + reason
+    text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(converted) + '/' + str(total)) + html_reports.p_message(text)
+    return text
 
 
 def package_paths_preparation(src_path):
@@ -429,6 +426,9 @@ def convert_package(src_path):
     scilista_items = []
     xc_status = 'not processed'
     is_db_generation = True
+    converted = 0
+    not_converted = 0
+    total = 0
 
     dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
 
@@ -452,7 +452,9 @@ def convert_package(src_path):
     fs_utils.append_file(log_package, 'pkg.xml_list()')
     report_components['xml-files'] = pkg.xml_list()
 
+    scilista_items.append(pkg.acron_issue_label)
     if issue_error_msg is not None:
+        xc_status = 'rejected'
         report_components['issue-report'] = issue_error_msg
     else:
 
@@ -517,11 +519,19 @@ def convert_package(src_path):
                 fs_utils.append_file(log_package, 'pkg.issue_files.copy_files_to_local_web_app()')
                 pkg.issue_files.copy_files_to_local_web_app()
 
-        fs_utils.append_file(log_package, 'xc_status = get_xc_status()')
-        xc_status = get_xc_status(registered_scilista_item, conversion.pkg_xc_validations.fatal_errors, pkg_xml_fatal_errors, conversion.blocking_errors)
+            fs_utils.append_file(log_package, 'xc_status = get_xc_status()')
+            xc_status = get_xc_status(registered_scilista_item, conversion.pkg_xc_validations.fatal_errors, pkg_xml_fatal_errors, conversion.blocking_errors)
+
+            if conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update') is not None:
+                for item in conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update'):
+                    scilista_items.append(item)
+
+            total = len(conversion.selected_articles) if conversion.selected_articles is not None else 0
+            converted = len(conversion.conversion_status.get('converted', []))
+            not_converted = len(conversion.conversion_status.get('not converted', []))
 
         fs_utils.append_file(log_package, 'conversion.conclusion(')
-        xc_conclusion_msg = conversion.conclusion(xc_status, pkg.acron_issue_label)
+        xc_conclusion_msg = conclusion_message(total, converted, not_converted, xc_status, pkg.acron_issue_label)
         if len(after_conversion_report) == 0:
             after_conversion_report = xc_conclusion_msg
 
@@ -550,14 +560,6 @@ def convert_package(src_path):
     if tmp_result_path != final_result_path:
         fs_utils.delete_file_or_folder(tmp_result_path)
 
-    if registered_scilista_item is None:
-        scilista_items.append(pkg.acron_issue_label)
-    else:
-        scilista_items.append(registered_scilista_item)
-
-    if conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update') is not None:
-        for item in conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update'):
-            scilista_items.append(item)
     fs_utils.append_file(log_package, 'antes de return - convert_package')
 
     os.unlink(log_package)
