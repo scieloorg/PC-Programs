@@ -318,17 +318,25 @@ class JournalFiles(object):
         aop_issue_files = None
         ex_aop_issues_files = None
         done = False
-        msg = None
+        errors = []
         if self.ex_aop_issues_files is not None:
+            print('self.ex_aop_issues_files is not None')
             ex_aop_issues_files = self.ex_aop_issues_files.get('ex-' + db_name)
+            if ex_aop_issues_files is None:
+                self._issues_files['ex-' + db_name] = IssueFiles(self, 'ex-' + db_name, None, None)
+                self._ex_aop_issues_files['ex-' + db_name] = self._issues_files['ex-' + db_name]
+                ex_aop_issues_files = self._ex_aop_issues_files['ex-' + db_name]
         if self.aop_issue_files is not None:
             aop_issue_files = self.aop_issue_files.get(db_name)
         if aop_issue_files is not None and ex_aop_issues_files is not None:
-            errors = []
             errors += fs_utils.move_file(aop_issue_files.markup_path + '/' + aop.filename, ex_aop_issues_files.markup_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.id_path + '/' + aop.order + '.id', ex_aop_issues_files.id_path + '/' + aop.order + '.id')
             print(errors)
+        if aop_issue_files is not None:
+            print('aop_issue_files.id_path')
+            print(aop_issue_files.id_path + '/' + aop.order + '.id')
+            print(os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
             done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
         return (done, errors)

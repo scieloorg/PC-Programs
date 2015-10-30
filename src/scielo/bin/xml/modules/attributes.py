@@ -64,6 +64,7 @@ DOCTOPIC = {
                 'reprint': 'zz',
                 'retraction': 're',
                 'translation': 'zz',
+                'technical-report': 'tr',
                 'other': 'zz',
 }
 
@@ -149,6 +150,45 @@ ROLE = {
     'transed': 'transed',
     'translator': 'TR',    
 }
+
+DOCTOPIC_AND_SECTIONS_NAMES = {}
+
+DOCTOPIC_AND_SECTIONS_NAMES['case-report'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['clinical-trial'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['research-article'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['review-article'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['brief-report'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['technical-report'] = []
+
+DOCTOPIC_AND_SECTIONS_NAMES['article-commentary'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['editorial'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['editorial-material'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['correction'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['letter'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['in-brief'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['book-review'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['rapid-communication'] = []
+
+DOCTOPIC_AND_SECTIONS_NAMES['abstract'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['announcement'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['addendum'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['books-received'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['calendar'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['collection'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['discussion'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['dissertation'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['introduction'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['news'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['obituary'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['oration'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['product-review'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['reply'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['reprint'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['retraction'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['partial-retraction'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['translation'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['other'] = []
+DOCTOPIC_AND_SECTIONS_NAMES['meeting-report'] = []
 
 
 BIBLIOMETRICS_USE = ['journal', 'book', 'thesis', 'confproc']

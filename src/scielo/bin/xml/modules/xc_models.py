@@ -812,8 +812,10 @@ class ArticleDB(object):
                 validations.append(is_excluded_incorrect_order)
             if valid_aop is not None:
                 self.aop_manager.manage_ex_aop(valid_aop)
-                is_excluded_aop = self.aop_manager.is_excluded_aop.get(article.xml_name, False)
-                is_excluded_aop_msg = self.aop_manager.is_excluded_aop_msg.get(article.xml_name, [])
+                is_excluded_aop = self.aop_manager.is_excluded_aop.get(valid_aop.xml_name, False)
+                is_excluded_aop_msg = self.aop_manager.is_excluded_aop_msg.get(valid_aop.xml_name, [])
+                print('is_excluded_aop')
+                print(is_excluded_aop)
                 validations.append(is_excluded_aop)
         self.validations[article.xml_name] = all(validations)
 
@@ -1081,11 +1083,12 @@ class AopManager(object):
             if aop is not None:
                 if aop.pid is not None:
                     done, msg = self.journal_files.archive_ex_aop_files(aop, self.db_names.get(aop.xml_name))
+                    print('done')
+                    print(done)
                     if done:
                         self.mark_aop_as_deleted(aop)
             self.is_excluded_aop[aop.xml_name] = done
             self.is_excluded_aop_msg[aop.xml_name] = msg
-            print(msg)
             if done is True:
                 self.aop_sorted_by_status['excluded ex-aop'].append(aop.xml_name)
             else:
