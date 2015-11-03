@@ -2,6 +2,7 @@
 
 
 import os
+import sys
 from tempfile import mkdtemp, NamedTemporaryFile
 
 from article_utils import u_encode
@@ -223,19 +224,19 @@ class CISIS(object):
 
     def crunchmf(self, mst_filename, wmst_filename):
         cmd = self.cisis_path + '/crunchmf ' + mst_filename + ' ' + wmst_filename
-        os.system(cmd)
+        run_command(cmd)
 
     def id2i(self, id_filename, mst_filename):
         cmd = self.cisis_path + '/id2i ' + id_filename + ' create=' + mst_filename
-        os.system(cmd)
+        run_command(cmd)
 
     def append(self, src, dest):
         cmd = self.cisis_path + '/mx ' + src + '  append=' + dest + ' now -all'
-        os.system(cmd)
+        run_command(cmd)
 
     def create(self, src, dest):
         cmd = self.cisis_path + '/mx ' + src + ' create=' + dest + ' now -all'
-        os.system(cmd)
+        run_command(cmd)
 
     def append_id_to_master(self, id_filename, mst_filename, reset):
         if reset:
@@ -252,44 +253,44 @@ class CISIS(object):
 
     def i2id(self, mst_filename, id_filename):
         cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename
-        os.system(cmd)
+        run_command(cmd)
 
     def mst2iso(self, mst_filename, iso_filename):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' iso=' + iso_filename + ' now -all'
-        os.system(cmd)
+        run_command(cmd)
 
     def iso2mst(self, iso_filename, mst_filename):
         cmd = self.cisis_path + '/mx iso=' + iso_filename + ' create=' + mst_filename + ' now -all'
-        os.system(cmd)
+        run_command(cmd)
 
     def copy_record(self, src_mst_filename, mfn, dest_mst_filename):
         cmd = self.cisis_path + '/mx ' + src_mst_filename + ' from=' + mfn + ' count=1 ' + ' append=' + dest_mst_filename + ' now -all'
-        os.system(cmd)
+        run_command(cmd)
 
     def modify_records(self, mst_filename, proc):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "proc=' + proc + '" copy=' + mst_filename + ' now -all'
-        os.system(cmd)
+        run_command(cmd)
 
     def find_record(self, mst_filename, expression):
         r = mst_filename + expression
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 "pft=mfn/" now > ' + r
-        os.system(cmd)
+        run_command(cmd)
         return [l.strip().decode('utf-8') for l in open(r, 'r').readlines()]
 
     def new(self, mst_filename):
         cmd = self.cisis_path + '/mx null count=0 create="' + mst_filename + '" now -all'
-        os.system(cmd)
+        run_command(cmd)
 
     def search(self, mst_filename, expression, result_filename):
         if os.path.isfile(result_filename + '.mst'):
             os.unlink(result_filename + '.mst')
             os.unlink(result_filename + '.xrf')
         cmd = self.cisis_path + '/mx btell=0 ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
-        os.system(cmd)
+        run_command(cmd)
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + ' fullinv=' + inverted_filename
-        os.system(cmd)
+        run_command(cmd)
 
     def is_readable(self, mst_filename):
         s = ''
@@ -298,7 +299,7 @@ class CISIS(object):
             temp_file.close()
 
             cmd = self.cisis_path + '/mx ' + mst_filename + ' +control now > ' + temp_file.name.replace('\\', '/')
-            os.system(cmd)
+            run_command(cmd)
             #print(cmd)
             if os.path.isfile(temp_file.name):
                 s = open(temp_file.name, 'r').read()
@@ -450,3 +451,7 @@ class IsisDAO(object):
 
     def save_id(self, id_filename, records, content_formatter=None):
         IDFile(content_formatter).save(id_filename, records)
+
+
+def run_command(cmd):
+    os.system(cmd.encode(encoding=sys.getfilesystemencoding()))
