@@ -448,10 +448,46 @@ class RegisteredTitle(object):
 
     def __init__(self, record):
         self.record = record
+        self._issns = None
+        self._e_issn = None
+        self._print_issn = None
 
     def license(self):
         if self.record is not None:
             return self.record.get('541')
+
+    def find_issns(self):
+        print('find_issns')
+        print(self.record.get('435'))
+        issns = self.record.get('435')
+        issn_items = {}
+        if issns is None:
+            issn = self.record.get('935')
+            if issn is None:
+                issn = self.record.get('400')
+            issn_type = self.record.get('35')
+            if issn_type is None:
+                issn_type = 'unidentified'
+            issn_items[issn_type] = issn
+        else:
+            if not isinstance(issns, list):
+                issns = [issns]
+            if isinstance(issns, list):
+                for issn in issns:
+                    issn_items[issn.get('t')] = issn.get('_')
+        return issn_items
+
+    @property
+    def print_issn(self):
+        if self._issns is None:
+            self._issns = self.find_issns()
+        return self._issns.get('PRINT')
+
+    @property
+    def e_issn(self):
+        if self._issns is None:
+            self._issns = self.find_issns()
+        return self._issns.get('ONLIN')
 
 
 class IssueModels(object):
@@ -1171,7 +1207,7 @@ class DBManager(object):
             _expr.append(eissn)
         if journal_title is not None:
             _expr.append("'" + journal_title + "'")
-            utils.display_message(journal_title)
+            #utils.display_message(journal_title)
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
     def search_journal(self, pissn, eissn, journal_title):
@@ -1221,13 +1257,19 @@ class DBManager(object):
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
-                if issue_models.issue.license is None:
+                if issue_models.issue.license is None or issue_models.issue.print_issn is None or issue_models.issue.e_issn is None:
                     j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                     if j_record is None:
-                        msg = html_reports.p_message('ERROR: ' + _('Unable to get the license of') + ' ' + journal_title)
+                        msg = html_reports.p_message('ERROR: ' + _('Unable to get journals data') + ' ' + journal_title)
                     else:
                         t = RegisteredTitle(j_record)
-                        issue_models.issue.license = t.license()
+                        if issue_models.issue.license is None:
+                            issue_models.issue.license = t.license()
+                        if issue_models.issue.print_issn is None:
+                            issue_models.issue.print_issn = t.print_issn
+                        if issue_models.issue.e_issn is None:
+                            issue_models.issue.e_issn = t.e_issn
+
         return (acron_issue_label, issue_models, msg)
 
     def get_issue_files(self, issue_models, pkg_path):
