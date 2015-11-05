@@ -527,8 +527,8 @@ def convert_package(src_path):
                     scilista_items.append(item)
 
             total = len(conversion.selected_articles) if conversion.selected_articles is not None else 0
-            converted = len(conversion.conversion_status.get('converted', []))
-            not_converted = len(conversion.conversion_status.get('not converted', []))
+            converted = len(conversion.conversion_status.get('converted', [])) if conversion.conversion_status.get('converted', []) is not None else 0
+            not_converted = len(conversion.conversion_status.get('not converted', [])) if conversion.conversion_status.get('not converted', []) is not None else 0
 
         fs_utils.append_file(log_package, 'conversion.conclusion(')
         xc_conclusion_msg = conclusion_message(total, converted, not_converted, xc_status, pkg.acron_issue_label)
