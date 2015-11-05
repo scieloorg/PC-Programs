@@ -153,7 +153,7 @@ def warn_unexpected_numbers(label, value, max_number=0):
         q_numbers = len([c for c in value if c.isdigit()])
         q_others = len(value) - q_numbers
         if q_numbers > q_others:
-            r = (label, 'WARNING', _('Be sure that') + ' <' + label + '>' + value + '</' + label + '> ' + _('is correct') + '.')
+            r = (label, 'WARNING', _('Be sure that {item} is correct.').format(item='<' + label + '>' + value + '</' + label + '>'))
     return r
 
 
@@ -295,7 +295,8 @@ class ArticleContentValidation(object):
 
     @property
     def article_type(self):
-        return expected_values('@article-type', self.article.article_type, attributes.DOCTOPIC_IN_USE, 'FATAL ')
+        results = attributes.validate_article_type_and_section(self.article.article_type, self.article.toc_section, len(self.article.abstracts) > 0)
+        return results
 
     @property
     def sps(self):
@@ -497,7 +498,7 @@ class ArticleContentValidation(object):
                         if issn in self.article.doi:
                             found = True
                 if not found:
-                    r.append(('doi', 'ERROR', _('Be sure that this DOI') + ' "' + self.article.doi + '" ' + _('belongs to this journal.')))
+                    r.append(('doi', 'ERROR', _('Be sure that {item} belongs to this journal.').format(item='DOI=' + self.article.doi)))
         return r
 
     @property
@@ -648,7 +649,7 @@ class ArticleContentValidation(object):
                 if len(aff.i_country) != 2 or aff.i_country.upper() != aff.i_country:
                     r.append(('aff/country/@country', 'FATAL ERROR', aff.i_country + ': ' + _('Invalid value') + '. ' + _('It must be ISO code of ') + aff.country))
 
-            r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
+            r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'FATAL ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
 
             norm_aff, found_institutions = self.org_manager.normalized_institution(aff)
@@ -836,11 +837,20 @@ class ArticleContentValidation(object):
         accepted = self.article.accepted_dateiso
         r = []
         if received is not None and accepted is not None:
+            dates = []
             if not received < accepted:
-                r = 'received (' + received + '); accepted (' + accepted + '); pub-date (' + self.article.pub_date_year + ').'
-                r = [('history', 'ERROR', r)]
+                dates.append(('"' + received + '" (received)', '"' + accepted + '" (accepted)'))
+            if self.article.pub_date_year < received[0:4]:
+                dates.append(('"' + received + '" (received)', '"' + self.article.pub_date_year + '" (pub-date)'))
+            if self.article.pub_date_year < accepted[0:4]:
+                dates.append(('"' + accepted + '" (accepted)', '"' + self.article.pub_date_year + '" (pub-date)'))
+
+            if len(dates) > 0:
+                for date in dates:
+                    r.append(('history', 'FATAL ERROR', _('{date1} must be a previous date than {date2}').format(date1=date[0], date2=date[1])))
+
         elif received is None and accepted is None:
-            r = [('history', 'INFO', 'there is no history dates')]
+            r = [('history', 'INFO', _('there is no history dates'))]
         else:
             if received is None:
                 r.append(required('history: received', received, 'ERROR'))
@@ -1154,7 +1164,7 @@ class ReferenceContentValidation(object):
                     self.validate_element('publisher-loc', self.reference.publisher_loc), 
                     self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
                     self.validate_element('conf-name', self.reference.conference_name), 
-                    self.validate_element('date-in-citation[@content-type="access-date"] ' + _('or') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
+                    self.validate_element('date-in-citation[@content-type="access-date"] ' + _(' or ') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
                     self.validate_element('ext-link', self.reference.ext_link), 
                     self.validate_element('volume', self.reference.volume), 
                     self.validate_element('issue', self.reference.issue), 
@@ -1179,11 +1189,13 @@ class ReferenceContentValidation(object):
                             looks_like = 'legal-doc'
                         if 'portaria ' in _source:
                             looks_like = 'legal-doc'
+                        if 'decreto ' in _source:
+                            looks_like = 'legal-doc'
                 if 'conference' in _mixed or 'proceeding' in _mixed or 'meeting' in _mixed:
                     if self.reference.publication_type != 'confproc':
                         looks_like = 'confproc'
             if looks_like is not None:
-                r.append(('@publication-type', 'ERROR', _('Check if @publication-type is correct. This reference looks like') + ' ' + looks_like))
+                r.append(('@publication-type', 'ERROR', '@publication-type=' + str(self.reference.publication_type) + '. ' + _('Be sure that {item} is correct.').format(item='@publication-type') + _('This reference looks like {publication_type}').format(publication_type=looks_like)))
 
             for item in items:
                 if item is not None:
@@ -1209,7 +1221,7 @@ class ReferenceContentValidation(object):
                 self.validate_element('publisher-loc', self.reference.publisher_loc), 
                 self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
                 self.validate_element('conf-name', self.reference.conference_name), 
-                self.validate_element('date-in-citation[@content-type="access-date"] ' + _('or') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
+                self.validate_element('date-in-citation[@content-type="access-date"] ' + _(' or ') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
                 self.validate_element('ext-link', self.reference.ext_link), 
                 self.validate_element('volume', self.reference.volume), 
                 self.validate_element('issue', self.reference.issue), 
@@ -1222,9 +1234,9 @@ class ReferenceContentValidation(object):
             _mixed = self.reference.mixed_citation.lower()
             if 'conference' in _mixed or 'proceeding' in _mixed:
                 if self.reference.publication_type != 'confproc':
-                    r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' confproc.'))
+                    r.append(('@publication-type', 'WARNING', '@publication-type=' + self.reference.publication_type + '. ' + _('Be sure that {item} is correct.').format(item='@publication-type') + ' ' + _('This reference looks like {publication_type}.').format(publication_type='confproc')))
             if self.is_look_like_thesis == 'thesis':
-                r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' thesis.'))
+                r.append(('@publication-type', 'WARNING', '@publication-type=' + self.reference.publication_type + '. ' + _('Be sure that {item} is correct.').format(item='@publication-type') + ' ' + _('This reference looks like {publication_type}.').format(publication_type='thesis')))
 
         for item in items:
             if item is not None:
@@ -1265,8 +1277,6 @@ class ReferenceContentValidation(object):
     def publication_type_other(self):
         if self.reference.publication_type == 'other':
             return ('@publication-type', 'WARNING', '@publication-type=' + self.reference.publication_type + '. ' + _('Be sure that ') + _('this reference is not ') + _(' or ').join([v for v in attributes.PUBLICATION_TYPE if v != 'other']))
-        elif not self.reference.publication_type in attributes.BIBLIOMETRICS_USE:
-            return ('@publication-type', 'WARNING', '@publication-type=' + self.reference.publication_type + '. ' + _('Be sure that ') + _('this reference is not ') + _(' or ').join(attributes.BIBLIOMETRICS_USE))
 
     @property
     def xml(self):
@@ -1299,6 +1309,8 @@ class ReferenceContentValidation(object):
                 if int(_y) > article_year:
                     r.append(('year', 'FATAL ERROR', _y + _(' must not be greater than ') + datetime.now().isoformat()[0:4]))
             elif 's.d' in _y:
+                r.append(('year', 'INFO', _y))
+            elif 's/d' in _y:
                 r.append(('year', 'INFO', _y))
             elif 's/d' in _y:
                 r.append(('year', 'INFO', _y))

@@ -102,11 +102,9 @@ AUTHORS_REQUIRED_FOR_DOCTOPIC = [
     ]
 
 ABSTRACT_REQUIRED_FOR_DOCTOPIC = [
-    'article-commentary', 
     'brief-report', 
     'case-report', 
     'clinical-trial', 
-    'rapid-communication', 
     'research-article', 
     'review-article', 
     'technical-report', 
@@ -150,45 +148,6 @@ ROLE = {
     'transed': 'transed',
     'translator': 'TR',    
 }
-
-DOCTOPIC_AND_SECTIONS_NAMES = {}
-
-DOCTOPIC_AND_SECTIONS_NAMES['case-report'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['clinical-trial'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['research-article'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['review-article'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['brief-report'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['technical-report'] = []
-
-DOCTOPIC_AND_SECTIONS_NAMES['article-commentary'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['editorial'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['editorial-material'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['correction'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['letter'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['in-brief'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['book-review'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['rapid-communication'] = []
-
-DOCTOPIC_AND_SECTIONS_NAMES['abstract'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['announcement'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['addendum'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['books-received'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['calendar'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['collection'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['discussion'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['dissertation'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['introduction'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['news'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['obituary'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['oration'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['product-review'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['reply'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['reprint'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['retraction'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['partial-retraction'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['translation'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['other'] = []
-DOCTOPIC_AND_SECTIONS_NAMES['meeting-report'] = []
 
 
 BIBLIOMETRICS_USE = ['journal', 'book', 'thesis', 'confproc']
@@ -310,6 +269,53 @@ def doctopic_label(code):
     return label
 
 
+def suggestions_of_article_type_by_section_title(section_title):
+    suggestions = []
+    if section_title is not None:
+        lower_section_title = section_title.lower().strip()
+        if 'abstract' in lower_section_title or 'resum' in lower_section_title:
+            suggestions.append('abstract')
+        elif 'book' in lower_section_title or 'resenha' in lower_section_title or u'reseñ' in lower_section_title:
+            suggestions.append('book-review')
+        elif 'brief report' in lower_section_title or ('pesquisa' in lower_section_title and 'nota' in lower_section_title) or ('research' in lower_section_title and 'note' in lower_section_title):
+            suggestions.append('brief-report')
+        elif 'case' in lower_section_title or 'caso' in lower_section_title:
+            suggestions.append('case-report')
+        elif 'correction' in lower_section_title or 'errat' in lower_section_title:
+            suggestions.append('correction')
+        elif 'carta' in lower_section_title or 'letter' in lower_section_title or 'reply' in lower_section_title or 'correspond' in lower_section_title:
+            suggestions.append('letter')
+        elif 'editoria' in lower_section_title:
+            suggestions.append('editorial')
+        elif 'interview' in lower_section_title:
+            suggestions.append('editorial-material')
+        elif 'entrevista' in lower_section_title:
+            suggestions.append('editorial-material')
+        elif 'ponto' in lower_section_title and 'vista' in lower_section_title:
+            suggestions.append('editorial-material')
+        elif 'punto' in lower_section_title and 'vista' in lower_section_title:
+            suggestions.append('editorial-material')
+        elif 'opini' in lower_section_title and 'vista' in lower_section_title:
+            suggestions.append('editorial-material')
+        elif 'communication' in lower_section_title or 'comunica' in lower_section_title:
+            suggestions.append('rapid-communication')
+        elif 'atualiza' in lower_section_title or 'actualiza' in lower_section_title or 'updat' in lower_section_title:
+            suggestions.append('rapid-communication')
+        elif 'art' in lower_section_title and 'origin' in lower_section_title:
+            suggestions.append('research-article')
+        elif 'review' in lower_section_title and 'article' in lower_section_title:
+            suggestions.append('review-article')
+        elif 'review' in lower_section_title and 'article' in lower_section_title:
+            suggestions.append('review-article')
+        elif 'revis' in lower_section_title and ('artigo' in lower_section_title or u'artículo' in lower_section_title):
+            suggestions.append('review-article')
+        elif 'tech' in lower_section_title or u'técnico' in lower_section_title:
+            suggestions.append('technical-report')
+        elif 'article' in lower_section_title:
+            suggestions.append('research-article')
+    return suggestions
+
+
 def normalize_section_title(text):
     if text is None:
         text = ''
@@ -365,7 +371,10 @@ def expected_sps_versions(article_dateiso):
                 if diff.days < 0:
                     valid_versions = []
                     for k in range(i, len(sps_dateiso_items)):
-                        valid_versions.append(SPS_expiration_dates_versions.get(sps_dateiso_items[k]))
+                        _sps_value = SPS_expiration_dates_versions.get(sps_dateiso_items[k])
+                        if _sps_value == 'pre-sps':
+                            _sps_value = 'None'
+                        valid_versions.append(_sps_value)
                     break
                 i += 1
     return list(set(sorted(valid_versions)))
@@ -391,3 +400,26 @@ def sps_version_expiration_days(sps_version):
         diff = sps_version_datetime - now
         days = diff.days
     return days
+
+
+def validate_article_type_and_section(article_type, article_section, has_abstract):
+    results = []
+    if article_type is None:
+        article_type = 'None'
+
+    suggestions = suggestions_of_article_type_by_section_title(article_section)
+    if not article_type in suggestions:
+        suggestions_msg = ''
+        status = 'ERROR'
+        if len(suggestions) == 0:
+            status = 'WARNING'
+            if has_abstract is True:
+                suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
+            else:
+                suggestions = [item for item in DOCTOPIC_IN_USE if not item in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
+            if not article_type in suggestions:
+                status = 'FATAL ERROR'
+                suggestions_msg = '. ' + _('Expected values') + ': ' + _(' or ').join(suggestions) + ' ' + _('instead of') + ' ' + article_type + '.'
+        results.append(('@article-type', status, _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. (' + _('section title') + '=' + article_section + ')' + suggestions_msg))
+
+    return results

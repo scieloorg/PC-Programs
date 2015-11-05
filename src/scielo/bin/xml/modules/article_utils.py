@@ -279,17 +279,17 @@ def four_digits_year(year):
             if not 's/d' in year and not 's.d' in year:
                 year = year.replace('/', '-')
                 if '-' in year:
-                    year = year.split('-')
-                    year = [y for y in year if len(y) == 4]
-                    if len(year) == 1:
-                        year = year[0]
-                    else:
-                        year = ''
-                if len(year) > 4:
-                    if year[0:4].isdigit():
-                        year = year[0:4]
-                    elif year[1:5].isdigit():
-                        year = year[1:5]
+                    splited = year.split('-')
+                elif ' ' in year:
+                    splited = year.split(' ')
+                splited = [y for y in splited if len(y) == 4 and y.isdigit()]
+                if len(splited) > 0:
+                    year = splited[0]
+        if len(year) > 4:
+            if year[0:4].isdigit():
+                year = year[0:4]
+            elif year[1:5].isdigit():
+                year = year[1:5]
     return year
 
 
@@ -307,31 +307,6 @@ def api_crossref_doi_journal_and_article(doi_query_result):
             if not isinstance(article_titles, list):
                 article_titles = [article_titles]
     return (journal_titles, article_titles)
-
-
-def validate_article_type_and_section(article_type, article_section):
-    #DOCTOPIC_IN_USE
-    results = []
-    if article_section is not None:
-        _sectitle = attributes.normalize_section_title(article_section)
-        _article_type = attributes.normalize_section_title(article_type)
-        if not _article_type in _sectitle:
-            # article_type vs sectitle
-            rate = compare_article_type_and_section(_article_type, _sectitle)
-            # attributes.DOCTOPIC_IN_USE vs sectitle
-            rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
-
-            if rate < 0.6 and rate2 < 0.6:
-                results.append(('@article-type', 'WARNING', _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. (' + _('section title') + '=' + article_section + ')'))
-            else:
-                if rate2 > rate:
-                    if not article_type in similars:
-                        results.append(('@article-type', 'ERROR', _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. ' + _('Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '. (' + _('section title') + '=' + article_section + ')'))
-    return results
-
-
-def compare_article_type_and_section(article_type, article_section):
-    return utils.how_similar(article_section, article_type.replace('-', ' '))
 
 
 def api_crossref_doi_pid(doi_query_result):
