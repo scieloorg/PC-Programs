@@ -291,11 +291,13 @@ def suggestions_of_article_type_by_section_title(section_title):
             suggestions.append('editorial-material')
         elif 'entrevista' in lower_section_title:
             suggestions.append('editorial-material')
+        elif 'point' in lower_section_title and 'view' in lower_section_title:
+            suggestions.append('editorial-material')
         elif 'ponto' in lower_section_title and 'vista' in lower_section_title:
             suggestions.append('editorial-material')
         elif 'punto' in lower_section_title and 'vista' in lower_section_title:
             suggestions.append('editorial-material')
-        elif 'opini' in lower_section_title and 'vista' in lower_section_title:
+        elif 'opini' in lower_section_title:
             suggestions.append('editorial-material')
         elif 'communication' in lower_section_title or 'comunica' in lower_section_title:
             suggestions.append('rapid-communication')
