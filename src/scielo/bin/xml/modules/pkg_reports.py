@@ -293,7 +293,7 @@ class ArticlesPkgReport(object):
 
         if not self.is_db_generation:
             self.complete_issue_articles.error_level_for_unique['order'] = 'WARNING'
-        if not self.is_processed_in_batches:
+        if self.complete_issue_articles.is_processed_in_batches:
             self.complete_issue_articles.error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
 
     def overview_report(self):
