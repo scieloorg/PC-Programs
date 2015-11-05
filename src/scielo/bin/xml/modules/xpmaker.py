@@ -736,7 +736,7 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('publication-type="web"', 'publication-type="webpage"')
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
-        
+
         content = normalize_mixed_citations(content)
         #xml_status(content, 'outros ajustes')
 

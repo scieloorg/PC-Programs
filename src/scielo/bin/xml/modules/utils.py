@@ -52,8 +52,16 @@ def most_similar(similarity):
 
 def debugging(text):
     if IMDEBUGGING:
-        print(text)
+        display_message(text)
 
 
 def display_message(text):
-    print(text)
+    try:
+        print(text)
+    except Exception as e:
+        import sys
+        try:
+            print(text.encode(encoding=sys.getfilesystemencoding()))
+        except:
+            print('error in display_message')
+            print(sys.getfilesystemencoding())

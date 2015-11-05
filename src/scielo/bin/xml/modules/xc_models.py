@@ -643,7 +643,8 @@ class IssueModels(object):
                             results.append(('section', 'WARNING', _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
             # @article-type
             _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
-            for item in article_utils.validate_article_type_and_section(article.article_type, _sectitle):
+            import attributes
+            for item in attributes.validate_article_type_and_section(article.article_type, _sectitle, len(article.abstracts) > 0):
                 results.append(item)
             article.section_code = section_code
         return (html_reports.tag('div', html_reports.validations_table(results)))
@@ -1260,7 +1261,7 @@ class DBManager(object):
                 if issue_models.issue.license is None or issue_models.issue.print_issn is None or issue_models.issue.e_issn is None:
                     j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                     if j_record is None:
-                        msg = html_reports.p_message('ERROR: ' + _('Unable to get journals data') + ' ' + journal_title)
+                        msg = html_reports.p_message('ERROR: ' + _('Unable to get journal data') + ' ' + journal_title)
                     else:
                         t = RegisteredTitle(j_record)
                         if issue_models.issue.license is None:
