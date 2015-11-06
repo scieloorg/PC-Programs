@@ -113,10 +113,8 @@ class PkgArticles(object):
         self.issue_models = None
 
         self.expected_equal_values = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        self.expected_unique_value = ['order', 'doi', 'elocation id', ]
+        self.expected_unique_value = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
         self.required_journal_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        if not self.is_processed_in_batches:
-            self.expected_unique_value += ['fpage-lpage-seq']
 
     def xml_list(self, xml_filenames=None):
         r = ''
@@ -289,12 +287,10 @@ class ArticlesPkgReport(object):
         self.consistence_blocking_errors = None
         self.changed_orders_validations = None
 
-        self.complete_issue_articles.error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
+        self.complete_issue_articles.error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq-elocation-id': 'ERROR'}
 
         if not self.is_db_generation:
             self.complete_issue_articles.error_level_for_unique['order'] = 'WARNING'
-        if self.complete_issue_articles.is_processed_in_batches:
-            self.complete_issue_articles.error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
 
     def overview_report(self):
         r = ''

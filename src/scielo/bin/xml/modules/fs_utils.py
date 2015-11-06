@@ -113,6 +113,7 @@ def get_downloaded_data(url, downloaded_filename):
     if not isinstance(current_content, unicode):
         current_content = current_content.decode('utf-8')
     current_items = current_content.split('\n')
+    new = current_content
     try:
         new = urllib2.urlopen(url).read()
     except:
@@ -122,7 +123,7 @@ def get_downloaded_data(url, downloaded_filename):
     new_items = new.split('\n')
 
     content = current_content
-    if len(new_items) > len(current_items):
+    if len(new_items) > len(current_items) or (len(new_items) == len(current_items) and new != current_content):
         write_file(downloaded_filename, new)
         content = new
 
