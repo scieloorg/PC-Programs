@@ -556,7 +556,7 @@ class IssueModels(object):
         i.license = record.get('541')
         return i
 
-    def validate_article_issue_data(self, article):
+    def validate_article_issue_data(self, article, is_rolling_pass=False):
         results = []
         section_code = None
         if article.tree is not None:
@@ -598,7 +598,7 @@ class IssueModels(object):
                     if issue_data == 'None':
                         status = 'ERROR'
                     else:
-                        if label == 'issue pub-date':
+                        if label == _('issue pub-date'):
                             status = _status
                         else:
                             status = 'FATAL ERROR'

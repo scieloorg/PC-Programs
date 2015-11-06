@@ -1184,7 +1184,7 @@ class Article(ArticleXML):
         data['issue pub date'] = self.issue_pub_dateiso[0:4] if self.issue_pub_dateiso is not None else None
         data['order'] = self.order
         data['doi'] = self.doi
-        data['fpage-lpage-seq'] = '-'.join([str(item) for item in [self.fpage, self.lpage, self.fpage_seq]])
+        data['fpage-lpage-seq-elocation-id'] = '-'.join([str(item) for item in [self.fpage, self.lpage, self.fpage_seq, self.elocation_id]])
         data['lpage'] = self.lpage
         data['fpage'] = self.fpage
         data['elocation id'] = self.elocation_id

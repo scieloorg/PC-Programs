@@ -6,9 +6,6 @@ import urllib2
 import json
 
 import utils
-import attributes
-
-from __init__ import _
 
 
 URL_CHECKED = []
@@ -278,10 +275,13 @@ def four_digits_year(year):
         if not year.isdigit():
             if not 's/d' in year and not 's.d' in year:
                 year = year.replace('/', '-')
+                splited = None
                 if '-' in year:
                     splited = year.split('-')
                 elif ' ' in year:
                     splited = year.split(' ')
+                if splited is None:
+                    splited = [year]
                 splited = [y for y in splited if len(y) == 4 and y.isdigit()]
                 if len(splited) > 0:
                     year = splited[0]
