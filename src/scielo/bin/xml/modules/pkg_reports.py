@@ -608,34 +608,43 @@ class ArticlesPkgReport(object):
             if journal_data is not None:
                 nlm_title_items, p_issn_items, e_issn_items, publisher_name_items, license_items = journal_data
                 self._registered_journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
+
                 for xml_name, article in self.pkg_articles.articles.items():
+                    unmatched = []
                     items = []
                     items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items])
                     items.append([_('e-ISSN'), article.e_issn, e_issn_items])
                     items.append([_('print ISSN'), article.print_issn, p_issn_items])
                     items.append([_('publisher name'), article.publisher_name, publisher_name_items])
-                    #items.append([_('license'), article.license, license_items])
-
+                    items.append([_('license'), article.license_url, license_items])
+                    status = 'OK'
                     validations_result = ''
                     for label, value, expected_values in items:
-                        if len(expected_values) > 0:
+                        is_valid = True
+                        if label == _('license'):
+                            is_valid = False
+                            article_license_url = article.license_url
+                            if article_license_url is None:
+                                article_license_url = 'None'
+                            for lic in expected_values:
+                                if '/' + lic.lower() + '/' in article_license_url + '/':
+                                    is_valid = True
+                        elif len(expected_values) > 0:
                             if not value in expected_values:
                                 if value is None:
                                     value = str(value)
-                                validations_result += html_reports.p_message(u'FATAL ERROR: ' + label + '=' + value + '. ' + _('Expected values') + ': ' + _(' or ').join(expected_values))
+                                is_valid = False
+                                status = 'ERROR'
                         else:
                             if value is not None:
-                                validations_result += html_reports.p_message(u'ERROR: ' + label + '=' + value + '. ' + _('No value for {label} is registered.').format(label=label))
-                    is_valid = False
-                    for lic in license_items:
-                        article_license_url = article.license_url
-                        if article_license_url is None:
-                            article_license_url = 'None'
-                        if '/' + lic.lower() + '/' in article_license_url + '/':
-                            is_valid = True
-                    if is_valid is False:
-                        validations_result += html_reports.p_message(u'WARNING: ' + _('license') + '=' + article_license_url + '. ' + _('Expected values') + ': ' + _(' or ').join(license_items))
-
+                                is_valid = False
+                                status = 'WARNING'
+                        #if not is_valid:
+                        unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': _(' or ').join(expected_values)})
+                    if len(unmatched) > 0:
+                        validations_result = html_reports.sheet([_('data'), 'status', _('in XML'), _('registered journal data') + '*'], unmatched, table_style='dbstatus', row_style='status')
+                    else:
+                        validations_result = ''
                     self._registered_journal_data_validations.add(xml_name, ValidationsResults(validations_result))
         return self._registered_journal_data_validations
 
@@ -654,8 +663,7 @@ class ArticlesPkgReport(object):
         report = []
         report.append(self.journal_issue_header_report)
         if self.registered_journal_data_validations is not None:
-            if self.registered_journal_data_validations.total > 0:
-                report.append(html_reports.tag('h2', _('Checking journal data: XML files and registered data')) + self.registered_journal_data_validations.report(True))
+            report.append(html_reports.tag('h2', _('Checking journal data: XML files and registered data') + '<sup>*</sup>') + html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Registered data are supposed to be correct and updated, but if you identify they are not, ignore the error messages.'), 'note') + self.registered_journal_data_validations.report(False))
 
         if self.is_db_generation:
             if self.registered_issue_data_validations is not None:
@@ -1083,7 +1091,7 @@ def get_journals():
         spamreader = csv.reader(csvfile, delimiter='\t')
         for item in spamreader:
             if len(item) >= 10:
-                item = [elem.decode('utf-8') for elem in item]
+                item = [elem.decode('utf-8').strip() for elem in item]
                 if item[1] != 'ISSN':
                     j = Journal()
                     j.collection_acron = item[0]
