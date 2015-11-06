@@ -4,7 +4,7 @@ BODY {
 }
 /**/
 sub, sup{
-    background-color: #F18D05;
+    background-color: #E3A79F;
 }
 p {
     padding-left: 2px;
@@ -587,4 +587,14 @@ td img {
 
 .smaller {
   font-size: 65%
+}
+
+.note {
+  background-color: #E3A79F;
+  color: #FFFFFF;
+  font-family: Verdana;
+  font-size: 9pt;
+  padding: 10pt;
+  width: 30%;
+  float: right;
 }
