@@ -901,6 +901,7 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
 
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron):
+
     if len(xml_files) > 0:
         path = os.path.dirname(xml_files[0])
         hdimages_to_jpeg(path, path, False)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-06 15:22-0200\n"
+"POT-Creation-Date: 2015-11-12 12:48-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,6 +35,7 @@ msgstr ""
 #: modules/pkg_reports.py:928 modules/pkg_reports.py:984
 #: modules/pkg_reports.py:995 modules/pkg_reports.py:1008
 #: modules/pkg_reports.py:1011 modules/pkg_reports.py:1016
+#: modules/pkg_reports.py:1015
 msgid "Sources"
 msgstr ""
 
@@ -97,7 +98,7 @@ msgstr ""
 #: modules/pkg_reports.py:446 modules/pkg_reports.py:726
 #: modules/pkg_reports.py:784 modules/pkg_reports.py:795
 #: modules/pkg_reports.py:808 modules/pkg_reports.py:811
-#: modules/pkg_reports.py:816
+#: modules/pkg_reports.py:816 modules/pkg_reports.py:815
 msgid "Data Quality Control"
 msgstr ""
 
@@ -168,7 +169,7 @@ msgstr ""
 #: modules/article_validations.py:318 modules/article_validations.py:879
 #: modules/article_validations.py:1116 modules/article_validations.py:1119
 #: modules/article_validations.py:1121 modules/attributes.py:349
-#: modules/attributes.py:351
+#: modules/attributes.py:351 modules/attributes.py:355
 msgid "Invalid value for "
 msgstr ""
 
@@ -193,7 +194,8 @@ msgstr ""
 #: modules/article_validations.py:318 modules/article_validations.py:918
 #: modules/attributes.py:349 modules/attributes.py:422
 #: modules/pkg_reports.py:641 modules/attributes.py:351
-#: modules/attributes.py:424
+#: modules/attributes.py:424 modules/attributes.py:355
+#: modules/attributes.py:428
 msgid "Expected values"
 msgstr ""
 
@@ -237,7 +239,8 @@ msgstr ""
 #: modules/pkg_reports.py:695 modules/pkg_reports.py:711
 #: modules/pkg_reports.py:686 modules/pkg_reports.py:714
 #: modules/pkg_reports.py:691 modules/pkg_reports.py:703
-#: modules/pkg_reports.py:719
+#: modules/pkg_reports.py:719 modules/pkg_reports.py:702
+#: modules/pkg_reports.py:718
 msgid "in"
 msgstr ""
 
@@ -394,6 +397,7 @@ msgstr ""
 #: modules/article_validations.py:961 modules/article_validations.py:963
 #: modules/article_validations.py:968 modules/article_validations.py:1035
 #: modules/pkg_reports.py:686 modules/pkg_reports.py:691
+#: modules/pkg_reports.py:690
 msgid "Missing"
 msgstr ""
 
@@ -1072,7 +1076,7 @@ msgstr ""
 #: modules/article_validations.py:1279 modules/attributes.py:258
 #: modules/attributes.py:422 modules/pkg_reports.py:641
 #: modules/xc_models.py:1257 modules/attributes.py:424
-#: modules/pkg_reports.py:643
+#: modules/pkg_reports.py:643 modules/attributes.py:428
 msgid " or "
 msgstr ""
 
@@ -1144,7 +1148,7 @@ msgstr ""
 #: modules/pkg_reports.py:487 modules/pkg_reports.py:602
 #: modules/pkg_reports.py:659 modules/pkg_reports.py:667
 #: modules/pkg_reports.py:680 modules/pkg_reports.py:683
-#: modules/pkg_reports.py:688
+#: modules/pkg_reports.py:688 modules/pkg_reports.py:687
 msgid "Invalid XML files."
 msgstr ""
 
@@ -1155,7 +1159,7 @@ msgstr ""
 #: modules/pkg_reports.py:499 modules/pkg_reports.py:614
 #: modules/pkg_reports.py:671 modules/pkg_reports.py:679
 #: modules/pkg_reports.py:692 modules/pkg_reports.py:695
-#: modules/pkg_reports.py:700
+#: modules/pkg_reports.py:700 modules/pkg_reports.py:699
 #, python-format
 msgid "same value for %s is required for all the documents in the package"
 msgstr ""
@@ -1175,6 +1179,7 @@ msgstr ""
 #: modules/pkg_reports.py:698 modules/pkg_reports.py:695
 #: modules/pkg_reports.py:711 modules/pkg_reports.py:714
 #: modules/pkg_reports.py:703 modules/pkg_reports.py:719
+#: modules/pkg_reports.py:702 modules/pkg_reports.py:718
 msgid "found"
 msgstr ""
 
@@ -1186,6 +1191,7 @@ msgstr ""
 #: modules/pkg_reports.py:628 modules/pkg_reports.py:685
 #: modules/pkg_reports.py:693 modules/pkg_reports.py:706
 #: modules/pkg_reports.py:709 modules/pkg_reports.py:714
+#: modules/pkg_reports.py:713
 #, python-format
 msgid ": unique value of %s is required for all the documents in the package"
 msgstr ""
@@ -1366,6 +1372,7 @@ msgstr ""
 #: modules/pkg_reports.py:873 modules/pkg_reports.py:929
 #: modules/pkg_reports.py:940 modules/pkg_reports.py:953
 #: modules/pkg_reports.py:956 modules/pkg_reports.py:961
+#: modules/pkg_reports.py:960
 msgid ""
 "Fatal error - indicates errors which impact on the quality of the "
 "bibliometric indicators and other services"
@@ -1379,6 +1386,7 @@ msgstr ""
 #: modules/pkg_reports.py:874 modules/pkg_reports.py:930
 #: modules/pkg_reports.py:941 modules/pkg_reports.py:954
 #: modules/pkg_reports.py:957 modules/pkg_reports.py:962
+#: modules/pkg_reports.py:961
 msgid "Error - indicates the other kinds of errors"
 msgstr ""
 
@@ -1390,6 +1398,7 @@ msgstr ""
 #: modules/pkg_reports.py:875 modules/pkg_reports.py:931
 #: modules/pkg_reports.py:942 modules/pkg_reports.py:955
 #: modules/pkg_reports.py:958 modules/pkg_reports.py:963
+#: modules/pkg_reports.py:962
 msgid ""
 "Warning - indicates that something can be an error or something needs more "
 "attention"
@@ -1407,7 +1416,7 @@ msgstr ""
 #: modules/xpmaker.py:1019 modules/pkg_reports.py:956
 #: modules/pkg_reports.py:967 modules/pkg_reports.py:980
 #: modules/pkg_reports.py:983 modules/xpmaker.py:1039
-#: modules/pkg_reports.py:988
+#: modules/pkg_reports.py:988 modules/pkg_reports.py:987
 msgid "Result of the processing:"
 msgstr ""
 
@@ -1426,6 +1435,7 @@ msgstr ""
 #: modules/pkg_reports.py:978 modules/pkg_reports.py:989
 #: modules/pkg_reports.py:1002 modules/pkg_reports.py:1005
 #: modules/xmlcvrter.py:401 modules/pkg_reports.py:1010
+#: modules/pkg_reports.py:1009
 msgid "Summary report"
 msgstr ""
 
@@ -1444,6 +1454,7 @@ msgstr ""
 #: modules/pkg_reports.py:925 modules/pkg_reports.py:981
 #: modules/pkg_reports.py:992 modules/pkg_reports.py:1005
 #: modules/pkg_reports.py:1008 modules/pkg_reports.py:1013
+#: modules/pkg_reports.py:1012
 msgid "Files/Folders"
 msgstr ""
 
@@ -1462,6 +1473,7 @@ msgstr ""
 #: modules/pkg_reports.py:927 modules/pkg_reports.py:983
 #: modules/pkg_reports.py:994 modules/pkg_reports.py:1007
 #: modules/pkg_reports.py:1010 modules/pkg_reports.py:1015
+#: modules/pkg_reports.py:1014
 msgid "Package overview"
 msgstr ""
 
@@ -1481,6 +1493,7 @@ msgstr ""
 #: modules/pkg_reports.py:996 modules/pkg_reports.py:1007
 #: modules/pkg_reports.py:1020 modules/pkg_reports.py:1023
 #: modules/xmlcvrter.py:889 modules/pkg_reports.py:1028
+#: modules/pkg_reports.py:1027
 msgid "finished"
 msgstr ""
 
@@ -2070,7 +2083,7 @@ msgstr ""
 #: modules/xmlcvrter.py:925 modules/article_utils.py:318
 #: modules/xc_models.py:602 modules/article_utils.py:323
 #: modules/xc_models.py:603 modules/attributes.py:422 modules/xc_models.py:643
-#: modules/attributes.py:424
+#: modules/attributes.py:424 modules/attributes.py:428
 msgid "instead of"
 msgstr ""
 
@@ -2088,7 +2101,7 @@ msgstr ""
 #: modules/xmlcvrter.py:916 modules/xmlcvrter.py:921
 #: modules/article_utils.py:314 modules/article_utils.py:319
 #: modules/article_utils.py:323 modules/attributes.py:423
-#: modules/attributes.py:425
+#: modules/attributes.py:425 modules/attributes.py:429
 msgid " is a valid value for"
 msgstr ""
 
@@ -2380,6 +2393,7 @@ msgstr ""
 #: modules/pkg_reports.py:752 modules/pkg_reports.py:792
 #: modules/pkg_reports.py:755 modules/pkg_reports.py:795
 #: modules/pkg_reports.py:760 modules/pkg_reports.py:800
+#: modules/pkg_reports.py:759 modules/pkg_reports.py:799
 msgid "Validating XML files"
 msgstr ""
 
@@ -2390,7 +2404,7 @@ msgstr ""
 #: modules/pkg_reports.py:617 modules/pkg_reports.py:745
 #: modules/pkg_reports.py:801 modules/pkg_reports.py:812
 #: modules/pkg_reports.py:825 modules/pkg_reports.py:828
-#: modules/pkg_reports.py:833
+#: modules/pkg_reports.py:833 modules/pkg_reports.py:832
 msgid "Generating Detail report"
 msgstr ""
 
@@ -2533,7 +2547,7 @@ msgstr ""
 #: modules/pkg_reports.py:630 modules/pkg_reports.py:759
 #: modules/pkg_reports.py:815 modules/pkg_reports.py:826
 #: modules/pkg_reports.py:839 modules/pkg_reports.py:842
-#: modules/pkg_reports.py:847
+#: modules/pkg_reports.py:847 modules/pkg_reports.py:846
 msgid "Structure Validations"
 msgstr ""
 
@@ -2543,7 +2557,7 @@ msgstr ""
 #: modules/pkg_reports.py:636 modules/pkg_reports.py:766
 #: modules/pkg_reports.py:822 modules/pkg_reports.py:833
 #: modules/pkg_reports.py:846 modules/pkg_reports.py:849
-#: modules/pkg_reports.py:854
+#: modules/pkg_reports.py:854 modules/pkg_reports.py:853
 msgid "Contents Validations"
 msgstr ""
 
@@ -2554,6 +2568,7 @@ msgstr ""
 #: modules/pkg_reports.py:776 modules/pkg_reports.py:832
 #: modules/pkg_reports.py:843 modules/pkg_reports.py:856
 #: modules/pkg_reports.py:859 modules/pkg_reports.py:864
+#: modules/pkg_reports.py:863
 msgid "Converter Validations"
 msgstr ""
 
@@ -2563,7 +2578,7 @@ msgstr ""
 #: modules/pkg_reports.py:815 modules/pkg_reports.py:905
 #: modules/pkg_reports.py:961 modules/pkg_reports.py:972
 #: modules/pkg_reports.py:985 modules/pkg_reports.py:988
-#: modules/pkg_reports.py:993
+#: modules/pkg_reports.py:993 modules/pkg_reports.py:992
 msgid "report generated by XPM "
 msgstr ""
 
@@ -2617,6 +2632,7 @@ msgstr ""
 #: modules/pkg_reports.py:923 modules/pkg_reports.py:979
 #: modules/pkg_reports.py:990 modules/pkg_reports.py:1003
 #: modules/pkg_reports.py:1006 modules/pkg_reports.py:1011
+#: modules/pkg_reports.py:1010
 msgid "XML Validations report"
 msgstr ""
 
@@ -2626,6 +2642,7 @@ msgstr ""
 #: modules/pkg_reports.py:924 modules/pkg_reports.py:980
 #: modules/pkg_reports.py:991 modules/pkg_reports.py:1004
 #: modules/pkg_reports.py:1007 modules/pkg_reports.py:1012
+#: modules/pkg_reports.py:1011
 msgid "Conversion report"
 msgstr ""
 
@@ -2635,6 +2652,7 @@ msgstr ""
 #: modules/pkg_reports.py:926 modules/pkg_reports.py:982
 #: modules/pkg_reports.py:993 modules/pkg_reports.py:1006
 #: modules/pkg_reports.py:1009 modules/pkg_reports.py:1014
+#: modules/pkg_reports.py:1013
 msgid "Database"
 msgstr ""
 
@@ -2996,6 +3014,7 @@ msgstr ""
 #: modules/article_utils.py:319 modules/article_utils.py:323
 #: modules/article_validations.py:1251 modules/article_validations.py:1279
 #: modules/attributes.py:423 modules/attributes.py:425
+#: modules/attributes.py:429
 msgid "Be sure that "
 msgstr ""
 
@@ -3117,6 +3136,7 @@ msgstr ""
 
 #: modules/pkg_reports.py:646 modules/pkg_reports.py:659
 #: modules/pkg_reports.py:662 modules/pkg_reports.py:667
+#: modules/pkg_reports.py:666
 msgid "Checking journal data: XML files and registered data"
 msgstr ""
 
@@ -3127,16 +3147,19 @@ msgstr ""
 
 #: modules/pkg_reports.py:701 modules/pkg_reports.py:714
 #: modules/pkg_reports.py:717 modules/pkg_reports.py:722
+#: modules/pkg_reports.py:721
 msgid "Pages Report"
 msgstr ""
 
 #: modules/pkg_reports.py:717 modules/pkg_reports.py:730
 #: modules/pkg_reports.py:733 modules/pkg_reports.py:738
+#: modules/pkg_reports.py:737
 msgid "Data in the XML Files"
 msgstr ""
 
 #: modules/article_utils.py:319 modules/article_utils.py:323
 #: modules/attributes.py:423 modules/attributes.py:425
+#: modules/attributes.py:429
 msgid "section title"
 msgstr ""
 
@@ -3229,8 +3252,12 @@ msgid ""
 "they are not, please let us know."
 msgstr ""
 
-#: modules/pkg_reports.py:667
+#: modules/pkg_reports.py:667 modules/pkg_reports.py:666
 msgid ""
 "Registered data are supposed to be correct and updated, but if you identify "
 "they are not, ignore the error messages."
+msgstr ""
+
+#: modules/pkg_reports.py:723
+msgid "Checking issue data consistence"
 msgstr ""
