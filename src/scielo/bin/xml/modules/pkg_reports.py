@@ -663,18 +663,20 @@ class ArticlesPkgReport(object):
         report = []
         report.append(self.journal_issue_header_report)
         if self.registered_journal_data_validations is not None:
-            report.append(html_reports.tag('h2', _('Checking journal data: XML files and registered data') + '<sup>*</sup>') + html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Registered data are supposed to be correct and updated, but if you identify they are not, ignore the error messages.'), 'note') + self.registered_journal_data_validations.report(False))
-
-        if self.is_db_generation:
-            if self.registered_issue_data_validations is not None:
-                if self.registered_issue_data_validations.total > 0:
-                    report.append(html_reports.tag('h2', _('Checking issue data: XML files and registered data')) + self.registered_issue_data_validations.report(True))
+            if self.registered_journal_data_validations.total > 0:
+                report.append(html_reports.tag('h2', _('Checking journal data: XML files and registered data') + '<sup>*</sup>') + html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Registered data are supposed to be correct and updated, but if you identify they are not, ignore the error messages.'), 'note') + self.registered_journal_data_validations.report(True))
 
         self.evaluate_pkg_journal_and_issue_data_consistence()
         for item in [self.changed_orders_validations, self.pkg_data_consistence_validations]:
             if item is not None:
                 if item.total > 0:
                     report.append(item.message)
+
+        if self.is_db_generation:
+            if self.registered_issue_data_validations is not None:
+                if self.registered_issue_data_validations.total > 0:
+                    report.append(html_reports.tag('h2', _('Checking issue data: XML files and registered data')) + self.registered_issue_data_validations.report(True))
+
         return ''.join(report) if len(report) > 0 else None
 
     def evaluate_pkg_journal_and_issue_data_consistence(self):
@@ -720,7 +722,7 @@ class ArticlesPkgReport(object):
 
         pages = html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.pages(), table_style='validation', row_style='status'))
 
-        toc_report = html_reports.tag('div', r, 'issue-messages') + pages
+        toc_report = html_reports.tag('h2', _('Checking issue data consistence')) + html_reports.tag('div', r, 'issue-messages') + pages
         self.pkg_data_consistence_validations = ValidationsResults(toc_report)
 
     @property

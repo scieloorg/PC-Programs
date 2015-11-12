@@ -29,6 +29,8 @@ def dateiso2datetime(dateiso):
         y = int(dateiso[0:4])
         m = int(dateiso[4:6])
         d = int(dateiso[6:8])
+        if y == 0:
+            y = 1
         if d == 0:
             d = 1
         if m == 0:
