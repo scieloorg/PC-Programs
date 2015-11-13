@@ -315,7 +315,7 @@ def suggestions_of_article_type_by_section_title(section_title):
             suggestions.append('technical-report')
         elif 'comment' in lower_section_title or 'coment' in lower_section_title:
             suggestions.append('article-commentary')
-        elif 'article' in lower_section_title or 'artigo' in lower_section_title:
+        elif 'article' in lower_section_title or u'artículo' in lower_section_title or 'artigo' in lower_section_title:
             suggestions.append('research-article')
         elif 'original' in lower_section_title:
             suggestions.append('research-article')
@@ -423,9 +423,8 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
                 suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
             else:
                 suggestions = [item for item in DOCTOPIC_IN_USE if not item in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
-            if not article_type in suggestions:
-                status = 'ERROR'
-                suggestions_msg = '. ' + _('Expected values') + ': ' + _(' or ').join(suggestions) + ' ' + _('instead of') + ' ' + article_type + '.'
-        results.append(('@article-type', status, _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. (' + _('section title') + '=' + article_section + ')' + suggestions_msg))
+    if not article_type in suggestions:
+        suggestions_msg = _('Expected values') + ': ' + _(' or ').join(suggestions) + ' ' + _('instead of') + ' ' + article_type + '.'
+        results.append(('@article-type', status, '@article-type=' + article_type + _(' and ') + _('section title') + '=' + article_section + ': ' + _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. ' + suggestions_msg))
 
     return results

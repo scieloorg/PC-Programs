@@ -223,7 +223,7 @@ h5 {
     margin: 5px;
 }
 .article-title {
-    color: #748C83;
+    color: #004C75;
     font-size: 10pt;
     margin: 5px;
     font-weight: bold;
@@ -318,16 +318,16 @@ td img {
   background-color: white;
 }
 .add {
-  background-color: #91CEE8;
+  background-color: #E0F9F5;
 }
 .added {
-  background-color: #91CEE8;
+  background-color: #E0F9F5;
 }
 .update {
-  background-color: #91CEE8;
+  background-color: #CBF2FF;
 }
 .updated {
-  background-color: #91CEE8;
+  background-color: #CBF2FF;
 }
 .skip-update {
   background-color: #FDD186;

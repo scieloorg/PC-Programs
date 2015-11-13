@@ -3301,7 +3301,7 @@ msgstr "fontes de informação"
 #: modules/article_validations.py:501
 #, python-brace-format
 msgid "Be sure that {item} belongs to this journal."
-msgstr "Tenha certeza de que {item} pretença a este periódico."
+msgstr "Tenha certeza de que {item} pertença a este periódico."
 
 #: modules/article_validations.py:850
 #, python-brace-format
@@ -3351,7 +3351,7 @@ msgid ""
 "Registered data are supposed to be correct and updated, but if you identify "
 "they are not, ignore the error messages."
 msgstr ""
-"Se supõe que os dados registrados estão corretos e atualizados, mas se você "
+"É esperado que os dados registrados estejam corretos e atualizados, mas se você "
 "identificar que não, ignore as mensagens de erro."
 
 #: modules/pkg_reports.py:723
