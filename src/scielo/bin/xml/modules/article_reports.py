@@ -223,7 +223,7 @@ class ArticleDisplayReport(object):
             table_data += html_reports.display_labeled_value('label', t.label, 'label')
             table_data += html_reports.display_labeled_value('caption',  t.caption, 'label')
             table_data += html_reports.tag('p', 'table-wrap/table (xml)', 'label')
-            table_data += html_reports.tag('div', html_reports.format_html_data(t.table, html_reports.XML_WIDTH), 'xml')
+            table_data += html_reports.tag('div', html_reports.format_html_data(t.table), 'xml')
             if t.table:
                 table_data += html_reports.tag('p', 'table-wrap/table', 'label')
                 table_data += html_reports.tag('div', t.table, 'element-table')
@@ -248,7 +248,7 @@ class ArticleDisplayReport(object):
     def affiliations(self):
         r = html_reports.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
-            r += html_reports.tag('p', html_reports.format_html_data(item.xml, html_reports.XML_WIDTH))
+            r += html_reports.tag('p', html_reports.format_html_data(item.xml))
         th, w, data = self.sheet_data.affiliations_sheet_data()
         r += html_reports.sheet(th, data)
         return r
@@ -342,7 +342,6 @@ class ArticleValidationReport(object):
 
             if len(ref_result) > 0:
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
-                rows += html_reports.display_xml(ref.xml, html_reports.XML_WIDTH*0.9)
                 rows += html_reports.validations_table(ref_result)
         return rows
 

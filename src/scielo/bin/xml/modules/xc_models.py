@@ -1099,7 +1099,7 @@ class AopManager(object):
         msg = ''
         msg += html_reports.tag('h5', _('Checking existence of aop version'))
         msg += ''.join([html_reports.p_message(item) for item in msg_list])
-        msg += ''.join([html_reports.display_xml(item, html_reports.XML_WIDTH*0.9) for item in data])
+        msg += ''.join([html_reports.display_xml(item) for item in data])
         return msg
 
     def mark_aop_as_deleted(self, aop):

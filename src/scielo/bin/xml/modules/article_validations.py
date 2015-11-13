@@ -1280,11 +1280,14 @@ class ReferenceContentValidation(object):
 
     @property
     def xml(self):
-        return ('xml', 'OK', self.reference.xml)
+        return ('xml', 'INFO', self.reference.xml)
 
     @property
     def mixed_citation(self):
-        return required('mixed-citation', self.reference.mixed_citation, 'FATAL ERROR', False)
+        if self.reference.mixed_citation is not None:
+            return ('mixed-citation', 'INFO', self.reference.mixed_citation)
+        else:
+            return required('mixed-citation', self.reference.mixed_citation, 'FATAL ERROR', False)
 
     @property
     def authors_list(self):

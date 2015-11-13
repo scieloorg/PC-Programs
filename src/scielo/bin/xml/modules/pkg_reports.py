@@ -695,7 +695,7 @@ class ArticlesPkgReport(object):
                 _m = _('same value for %s is required for all the documents in the package') % (label)
                 part = html_reports.p_message(_status + ': ' + _m + '.')
                 for found_value, xml_files in self.complete_issue_articles._compiled_pkg_metadata[label].items():
-                    part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
+                    part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                 r += part
 
         for label in self.complete_issue_articles.expected_unique_value:
