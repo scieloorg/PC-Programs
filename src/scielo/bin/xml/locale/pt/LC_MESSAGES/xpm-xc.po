@@ -3301,7 +3301,7 @@ msgstr "fontes de informação"
 #: modules/article_validations.py:501
 #, python-brace-format
 msgid "Be sure that {item} belongs to this journal."
-msgstr "Tenha certeza de que {item} pretença a este periódico."
+msgstr "Tenha certeza de que {item} pertença a este periódico."
 
 #: modules/article_validations.py:850
 #, python-brace-format
