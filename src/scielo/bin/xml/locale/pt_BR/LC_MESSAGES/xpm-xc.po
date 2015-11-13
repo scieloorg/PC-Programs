@@ -3351,7 +3351,7 @@ msgid ""
 "Registered data are supposed to be correct and updated, but if you identify "
 "they are not, ignore the error messages."
 msgstr ""
-"Se supõe que os dados registrados estão corretos e atualizados, mas se você "
+"É esperado que os dados registrados estejam corretos e atualizados, mas se você "
 "identificar que não, ignore as mensagens de erro."
 
 #: modules/pkg_reports.py:723

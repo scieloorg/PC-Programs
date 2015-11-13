@@ -617,34 +617,28 @@ class ArticlesPkgReport(object):
                     items.append([_('print ISSN'), article.print_issn, p_issn_items])
                     items.append([_('publisher name'), article.publisher_name, publisher_name_items])
                     items.append([_('license'), article.license_url, license_items])
-                    status = 'OK'
-                    validations_result = ''
+
                     for label, value, expected_values in items:
                         is_valid = True
-                        if label == _('license'):
-                            is_valid = False
-                            article_license_url = article.license_url
-                            if article_license_url is None:
-                                article_license_url = 'None'
-                            for lic in expected_values:
-                                if '/' + lic.lower() + '/' in article_license_url + '/':
-                                    is_valid = True
-                        elif len(expected_values) > 0:
-                            if not value in expected_values:
-                                if value is None:
-                                    value = str(value)
+                        status = 'OK'
+                        if len(expected_values) > 0:
+                            if label == _('license'):
                                 is_valid = False
-                                status = 'ERROR'
-                        else:
-                            if value is not None:
-                                is_valid = False
-                                status = 'WARNING'
-                        #if not is_valid:
+                                for lic in expected_values:
+                                    if '/' + lic.lower() + '/' in str(article.license_url) + '/':
+                                        is_valid = True
+                                        break
+                            else:
+                                if not value in expected_values:
+                                    if value is None:
+                                        value = str(value)
+                                    is_valid = False
+                                    status = 'ERROR'
                         unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': _(' or ').join(expected_values)})
+
+                    validations_result = ''
                     if len(unmatched) > 0:
                         validations_result = html_reports.sheet([_('data'), 'status', _('in XML'), _('registered journal data') + '*'], unmatched, table_style='dbstatus', row_style='status')
-                    else:
-                        validations_result = ''
                     self._registered_journal_data_validations.add(xml_name, ValidationsResults(validations_result))
         return self._registered_journal_data_validations
 
