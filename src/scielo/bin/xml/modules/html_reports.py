@@ -8,9 +8,6 @@ from __init__ import _
 import xml_utils
 
 
-XML_WIDTH = 140
-
-
 def validations_table(results):
     r = ''
     if results is not None:
@@ -136,21 +133,9 @@ def statistics_display(validations_results, inline=True):
     return tag(tag_name, stats, get_stats_numbers_style(validations_results.fatal_errors, validations_results.errors, validations_results.warnings))
 
 
-def cell_width(table_header):
-    width = XML_WIDTH
-    if len(table_header) > 1:
-        width = XML_WIDTH / len(table_header)
-    if width < 30:
-        width = 30
-    if len(table_header) == 3:
-        width = XML_WIDTH / 2
-    return width
-
-
 def sheet(table_header, table_data, table_style='sheet', row_style=None, html_cell_content=[]):
     r = ''
     if not table_header is None:
-        width = cell_width(table_header)
 
         th = ''.join([tag('th', label, 'th') for label in table_header])
 
@@ -167,7 +152,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
                         # cell content
                         cell_content = row.get(label, '')
                         if not label in html_cell_content:
-                            cell_content = format_html_data(cell_content, width)
+                            cell_content = format_html_data(cell_content)
                         if table_style == 'sheet':
                             cell_content = color_text(cell_content)
 
@@ -190,15 +175,12 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
     return r
 
 
-def display_xml(value, width=30):
+def display_xml(value):
     value = xml_utils.pretty_print(value)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
 
-    rows_count = len(value) / width
-    if rows_count > 10:
-        rows_count = 10
-    return '<textarea cols="' + str(width) + '" rows="' + str(rows_count) + '" readonly>' + value + '</textarea>'
+    return '<code>' + value + '</code>'
 
 
 def p_message(value):
@@ -234,7 +216,7 @@ def format_html_data_list(value, list_type='ol'):
     return r
 
 
-def format_html_data(value, width=30):
+def format_html_data(value):
     r = '-'
     if isinstance(value, list):
         r = format_html_data_list(value)
@@ -252,9 +234,7 @@ def format_html_data(value, width=30):
     elif '<img' in value or '</a>' in value:
         r = value
     elif '<' in value and '>' in value:
-        r = display_xml(value, width)
-    #elif len(value) > (width * 1.2):
-    #    r = display_xml(value, width)
+        r = display_xml(value)
     else:
         r = value
     return r
@@ -303,7 +283,7 @@ def get_stats_numbers_style(f, e, w):
 def display_labeled_value(label, value, style=''):
     if label is None:
         label = 'None'
-    return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value, XML_WIDTH), style)
+    return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value), style)
 
 
 def display_label_value(label, value):
