@@ -336,11 +336,13 @@ class ArticleValidationReport(object):
 
     def references(self, display_all):
         rows = ''
+        found_errors = []
         for ref, ref_result in self.article_validation.references:
             if not display_all:
+                found_errors = [status for label, status, msg in ref_result if status in ['WARNING', 'ERROR', 'FATAL ERROR']]
                 ref_result = [(label, status, msg) for label, status, msg in ref_result if status != 'OK']
 
-            if len(ref_result) > 0:
+            if len(found_errors) > 0:
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
                 rows += html_reports.validations_table(ref_result)
         return rows

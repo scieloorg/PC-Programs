@@ -686,17 +686,17 @@ class ArticleContentValidation(object):
         return display_value('clinical trial text', self.article.clinical_trial_text)
 
     def _total(self, total, count, label_total, label_count):
-        if count is None:
-            count = 0
-        elif count.isdigit():
-            count = int(count)
-        else:
-            count = 0
-
-        if total == count:
+        if count is None and total == 0:
             r = (label_total, 'OK', str(total))
         else:
-            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', _('They must have the same value'))
+            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'WARNING', _('Unable to validate'))
+            if count is not None:
+                if count.isdigit():
+                    count = int(count)
+                    if total == count:
+                        r = (label_total, 'OK', str(total))
+                    else:
+                        r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', _('They must have the same value'))
         return r
 
     @property
@@ -875,6 +875,8 @@ class ArticleContentValidation(object):
     def license_url(self):
         if self.article.license_url is None:
             return ('license/@href', 'FATAL ERROR', _('Required'))
+        elif not '://creativecommons.org/licenses/' in self.article.license_url:
+            return ('license/@href', 'FATAL ERROR', _('Invalid value for ') + 'license/@href. ' + self.article.license_url)
         elif not article_utils.url_check(self.article.license_url):
             return ('license/@href', 'FATAL ERROR', _('Invalid value for ') + 'license/@href. ' + self.article.license_url + _(' is not working.'))
 
