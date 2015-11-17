@@ -247,7 +247,7 @@ class PkgArticles(object):
                             if len(item.p_issn) > 0:
                                 p_issn_items.append(item.p_issn)
                             if len(item.publisher_name) > 0:
-                                publisher_name_items.append(item.publisher_name)
+                                publisher_name_items.append(' '.join([name.strip() for name in item.publisher_name.split()]))
                             if len(item.license) > 0:
                                 license_items.append(item.license)
                             found = True
@@ -612,29 +612,32 @@ class ArticlesPkgReport(object):
                 for xml_name, article in self.pkg_articles.articles.items():
                     unmatched = []
                     items = []
-                    items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items])
-                    items.append([_('e-ISSN'), article.e_issn, e_issn_items])
-                    items.append([_('print ISSN'), article.print_issn, p_issn_items])
-                    items.append([_('publisher name'), article.publisher_name, publisher_name_items])
-                    items.append([_('license'), article.license_url, license_items])
+                    items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items, 'FATAL ERROR'])
+                    items.append([_('e-ISSN'), article.e_issn, e_issn_items, 'FATAL ERROR'])
+                    items.append([_('print ISSN'), article.print_issn, p_issn_items, 'FATAL ERROR'])
+                    items.append([_('publisher name'), article.publisher_name.strip(), publisher_name_items, 'ERROR'])
+                    items.append([_('license'), article.license_url, license_items, 'ERROR'])
 
-                    for label, value, expected_values in items:
-                        is_valid = True
-                        status = 'OK'
-                        if len(expected_values) > 0:
-                            if label == _('license'):
-                                is_valid = False
-                                for lic in expected_values:
-                                    if '/' + lic.lower() + '/' in str(article.license_url) + '/':
-                                        is_valid = True
-                                        break
-                            else:
-                                if not value in expected_values:
-                                    if value is None:
-                                        value = str(value)
-                                    is_valid = False
-                                    status = 'ERROR'
-                        unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': _(' or ').join(expected_values)})
+                    for label, value, expected_values, err_msg in items:
+                        expected_values_msg = _(' or ').join(expected_values)
+                        if value is None:
+                            value = 'None'
+                        if len(expected_values) == 0:
+                            expected_values_msg = 'None'
+                            status = 'WARNING' if value != expected_values_msg else 'OK'
+                        else:
+                            status = 'OK'
+                            if not value in expected_values:
+                                if label == _('license'):
+                                    status = err_msg
+                                    for expected_value in expected_values:
+                                        if '/' + expected_value.lower() + '/' in str(value) + '/':
+                                            status = 'OK'
+                                            break
+                                else:
+                                    status = err_msg
+                        if status != 'OK':
+                            unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': expected_values_msg})
 
                     validations_result = ''
                     if len(unmatched) > 0:
@@ -992,7 +995,7 @@ def save_report(filename, title, content, xpm_version=None):
 
 def display_report(report_filename):
     try:
-        os.system('python -mwebbrowser file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()))
+        os.system('python -mwebbrowser "file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()) + '"')
     except:
         pass
 

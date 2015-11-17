@@ -136,7 +136,9 @@ def statistics_display(validations_results, inline=True):
 def sheet(table_header, table_data, table_style='sheet', row_style=None, html_cell_content=[]):
     r = ''
     if not table_header is None:
-
+        width = 70
+        if len(table_header) > 3:
+            width = int(float(140) / len(table_header))
         th = ''.join([tag('th', label, 'th') for label in table_header])
 
         if len(table_data) == 0:
@@ -152,7 +154,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
                         # cell content
                         cell_content = row.get(label, '')
                         if not label in html_cell_content:
-                            cell_content = format_html_data(cell_content)
+                            cell_content = format_html_data(cell_content, width)
                         if table_style == 'sheet':
                             cell_content = color_text(cell_content)
 
@@ -175,10 +177,31 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
     return r
 
 
-def display_xml(value):
+def display_xml(value, width=70):
+    debug = False
+    if debug is True:
+        print('display_xml')
+        print(value)
     value = xml_utils.pretty_print(value)
+    if debug is True:
+        print(value)
+
+    parts = []
+    for line in value.split('\n'):
+        left = line
+        while len(left) > 0:
+            part = left[0:width]
+            parts.append(part)
+            left = left[len(part):]
+
+    value = '\n'.join(parts)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
+    value = value.replace('\t', '&nbsp;'*2)
+    value = value.replace(' ', '<font color="#F56991">&#183;</font>').replace('\n', '<br/>')
+
+    if debug is True:
+        print(value)
 
     return '<code>' + value + '</code>'
 
@@ -216,7 +239,7 @@ def format_html_data_list(value, list_type='ol'):
     return r
 
 
-def format_html_data(value):
+def format_html_data(value, width=70):
     r = '-'
     if isinstance(value, list):
         r = format_html_data_list(value)
@@ -234,7 +257,7 @@ def format_html_data(value):
     elif '<img' in value or '</a>' in value:
         r = value
     elif '<' in value and '>' in value:
-        r = display_xml(value)
+        r = display_xml(value, width)
     else:
         r = value
     return r

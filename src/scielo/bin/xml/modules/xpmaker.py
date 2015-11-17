@@ -740,12 +740,22 @@ def normalize_xml_content(doc_files_info, content, version):
         content = normalize_mixed_citations(content)
         #xml_status(content, 'outros ajustes')
 
+        content = content.replace('\n', '')
+        content = content.replace('\t', '')
+
         for style in ['sup', 'sub', 'bold', 'italic']:
             content = content.replace('<' + style + '/>', '')
-            content = content.replace('<' + style + '> </' + style + '>', ' ')
-            content = content.replace('<' + style + '></' + style + '>', '')
-            content = content.replace('</' + style + '> <' + style + '>', ' ')
+
+            content = content.replace('<' + style + '> ', ' <' + style + '>')
+            content = content.replace(' </' + style + '>', '</' + style + '> ')
+
             content = content.replace('</' + style + '><' + style + '>', '')
+            content = content.replace('<' + style + '></' + style + '>', '')
+            content = content.replace('<' + style + '> </' + style + '>', ' ')
+            content = content.replace('</' + style + '> <' + style + '>', ' ')
+
+            content = content.replace('<' + style + '> ', ' <' + style + '>')
+            content = content.replace(' </' + style + '>', '</' + style + '> ')
 
         #xml_status(content, 'estilos')
 
@@ -758,12 +768,20 @@ def normalize_xml_content(doc_files_info, content, version):
         content = []
         for part in parts:
             if part.startswith('<source>') and part.endswith('</source>'):
-                part = ' '.join(part.split()).strip()
-                part = part.replace('<source> ', '<source>').replace(' </source>', '</source>')
-                for style_tag in ['italic', 'bold', 'italic']:
-                    if part.startswith('<source><' + style_tag + '>') and part.endswith('</' + style_tag + '></source>'):
-                        part = part.replace('<' + style_tag + '>', '').replace('</' + style_tag + '>', '')
-
+                if 'Ideas' in part:
+                    print(part)
+                source = part[len('<source>'):]
+                source = source[0:-len('</source>')]
+                source = ' '.join([w.strip() for w in source.split()])
+                part = '<source>' + source + '</source>'
+                if 'Ideas' in part:
+                    print(part)
+                for style in ['italic', 'bold', 'italic']:
+                    if part.startswith('<source><' + style + '>') and part.endswith('</' + style + '></source>'):
+                        part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
+                if 'Ideas' in part:
+                    print(part)
+ 
             content.append(part)
         content = ''.join(content)
     return (content, replaced_entities_report)
