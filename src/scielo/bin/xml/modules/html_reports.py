@@ -178,14 +178,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
 
 
 def display_xml(value, width=70):
-    debug = False
-    if debug is True:
-        print('display_xml')
-        print(value)
     value = xml_utils.pretty_print(value)
-    if debug is True:
-        print(value)
-
     parts = []
     for line in value.split('\n'):
         left = line
@@ -193,15 +186,11 @@ def display_xml(value, width=70):
             part = left[0:width]
             parts.append(part)
             left = left[len(part):]
-
     value = '\n'.join(parts)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
     value = value.replace('\t', '&nbsp;'*2)
     value = value.replace(' ', '<font color="#F56991">&#183;</font>').replace('\n', '<br/>')
-
-    if debug is True:
-        print(value)
 
     return '<code>' + value + '</code>'
 

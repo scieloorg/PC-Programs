@@ -768,20 +768,13 @@ def normalize_xml_content(doc_files_info, content, version):
         content = []
         for part in parts:
             if part.startswith('<source>') and part.endswith('</source>'):
-                if 'Ideas' in part:
-                    print(part)
                 source = part[len('<source>'):]
                 source = source[0:-len('</source>')]
                 source = ' '.join([w.strip() for w in source.split()])
                 part = '<source>' + source + '</source>'
-                if 'Ideas' in part:
-                    print(part)
                 for style in ['italic', 'bold', 'italic']:
                     if part.startswith('<source><' + style + '>') and part.endswith('</' + style + '></source>'):
                         part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
-                if 'Ideas' in part:
-                    print(part)
- 
             content.append(part)
         content = ''.join(content)
     return (content, replaced_entities_report)
