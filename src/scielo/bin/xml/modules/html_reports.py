@@ -186,6 +186,7 @@ def display_xml(value, width=70):
             part = left[0:width]
             parts.append(part)
             left = left[len(part):]
+
     value = '\n'.join(parts)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
