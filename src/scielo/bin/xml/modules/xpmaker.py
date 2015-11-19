@@ -673,28 +673,34 @@ def message_file_list(label, file_list):
     return '\n' + label + ': ' + str(len(file_list)) + '\n' + '\n'.join(sorted(file_list))
 
 
+def normalize_mixed_citations_item(item):
+    if item.startswith('<ref') and item.endswith('</ref>'):
+        if '<label>' in item and '<mixed-citation>' in item:
+            label = item[item.find('<label>')+len('<label>'):item.find('</label>')]
+            mixed_citation = item[item.find('<mixed-citation>')+len('<mixed-citation>'):item.find('</mixed-citation>')]
+            changed = mixed_citation
+            if not '<label>' in mixed_citation:
+                if not changed.startswith(label):
+                    sep = ' '
+                    if changed.startswith('.'):
+                        changed = changed[1:].strip()
+                        sep = '. '
+                    if label.endswith('.'):
+                        label = label[0:-1]
+                        sep = '. '
+                    changed = label + sep + changed
+                if mixed_citation != changed:
+                    if mixed_citation in item:
+                        item = item.replace(mixed_citation, changed)
+                    else:
+                        print('not found mixed-citation')
+    return item
+
+
 def normalize_mixed_citations(content):
-    tree, e = xml_utils.load_xml(content)
-    if tree is not None:
-        replacement = {}
-        root = tree.getroot()
-        doc = root.find('.')
-        refs = doc.findall('.//ref')
-        if refs is not None:
-            for ref in refs:
-                mixed_node = ref.find('mixed-citation')
-                if mixed_node is not None:
-                    label = ref.findtext('label')
-                    if label is not None:
-                        label = label.strip()
-                        mixed = xml_utils.node_text(mixed_node).strip()
-                        if not mixed.startswith(label):
-                            if mixed.startswith('.') and not mixed.startswith('. '):
-                                mixed = '. ' + mixed[1:]
-                            sep = '. ' if not mixed.startswith('.') and not label.endswith('.') else ''
-                            replacement[mixed] = label + sep + ' '.join(mixed.split())
-        for this, that in replacement.items():
-            content = content.replace(this, that)
+    content = content.replace('<ref', '~BREAK~<ref')
+    content = content.replace('</ref>', '</ref>~BREAK~')
+    content = ''.join([normalize_mixed_citations_item(item) for item in content.split('~BREAK~')])
     return content
 
 
@@ -737,47 +743,28 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
 
+        content = xml_utils.normalize_spaces(content)
         content = normalize_mixed_citations(content)
-        #xml_status(content, 'outros ajustes')
-
-        content = content.replace('\n', '')
-        content = content.replace('\t', '')
-
-        for style in ['sup', 'sub', 'bold', 'italic']:
-            content = content.replace('<' + style + '/>', '')
-
-            content = content.replace('<' + style + '> ', ' <' + style + '>')
-            content = content.replace(' </' + style + '>', '</' + style + '> ')
-
-            content = content.replace('</' + style + '><' + style + '>', '')
-            content = content.replace('<' + style + '></' + style + '>', '')
-            content = content.replace('<' + style + '> </' + style + '>', ' ')
-            content = content.replace('</' + style + '> <' + style + '>', ' ')
-
-            content = content.replace('<' + style + '> ', ' <' + style + '>')
-            content = content.replace(' </' + style + '>', '</' + style + '> ')
-
-        #xml_status(content, 'estilos')
-
+        content = remove_styles_off_source(content)
         content = xml_utils.pretty_print(content)
-        #xml_status(content, 'pretty_print')
 
-        content = content.replace('<source>', '~BREAK~<source>')
-        content = content.replace('</source>', '</source>~BREAK~')
-        parts = content.split('~BREAK~')
-        content = []
-        for part in parts:
-            if part.startswith('<source>') and part.endswith('</source>'):
-                source = part[len('<source>'):]
-                source = source[0:-len('</source>')]
-                source = ' '.join([w.strip() for w in source.split()])
-                part = '<source>' + source + '</source>'
-                for style in ['italic', 'bold', 'italic']:
-                    if part.startswith('<source><' + style + '>') and part.endswith('</' + style + '></source>'):
-                        part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
-            content.append(part)
-        content = ''.join(content)
     return (content, replaced_entities_report)
+
+
+def remove_styles_off_source(content):
+    content = content.replace('<source>', '~BREAK~<source>').replace('</source>', '</source>~BREAK~')
+    parts = []
+    for part in content.split('~BREAK~'):
+        if part.startswith('<source>') and part.endswith('</source>'):
+            source = part[len('<source>'):]
+            source = source[0:-len('</source>')]
+            source = ' '.join([w.strip() for w in source.split()])
+            part = '<source>' + source + '</source>'
+            for style in ['italic', 'bold', 'italic']:
+                if part.startswith('<source><' + style + '>') and part.endswith('</' + style + '></source>'):
+                    part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
+        parts.append(part)
+    return ''.join(parts)
 
 
 def get_new_name(doc_files_info, doc, acron):
@@ -1234,10 +1221,13 @@ def replace_fontsymbols(content, html_content):
 
 
 def make_zip(files, zip_name):
-    zipf = zipfile.ZipFile(zip_name, 'w')
-    for f in files:
-        zipf.write(f, arcname=os.path.basename(f))
-    zipf.close()
+    try:
+        zipf = zipfile.ZipFile(zip_name, 'w')
+        for f in files:
+            zipf.write(f, arcname=os.path.basename(f))
+        zipf.close()
+    except:
+        pass
 
 
 def make_pkg_zip(src_pkg_path):
@@ -1271,8 +1261,11 @@ def make_pkg_item_zip(xml_filename, dest_path):
     src_path = os.path.dirname(xml_filename)
     xml_name = os.path.basename(xml_filename)
     name = xml_name[0:-4]
-    zipf = zipfile.ZipFile(dest_path + '/' + name + '.zip', 'w')
-    for item in os.listdir(src_path):
-        if item.startswith(name + '.') or item.startswith(name + '-'):
-            zipf.write(src_path + '/' + item, arcname=item)
-    zipf.close()
+    try:
+        zipf = zipfile.ZipFile(dest_path + '/' + name + '.zip', 'w')
+        for item in os.listdir(src_path):
+            if item.startswith(name + '.') or item.startswith(name + '-'):
+                zipf.write(src_path + '/' + item, arcname=item)
+        zipf.close()
+    except:
+        pass

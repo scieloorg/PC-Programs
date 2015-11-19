@@ -932,7 +932,7 @@ def extract_report_core(content):
 
         part1 = part1.replace('\n', '<br/>')
         part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
-        report = part1 + part2
+        report = '<p>' + part1 + part2 + '</p>'
     elif '</body>' in content:
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
