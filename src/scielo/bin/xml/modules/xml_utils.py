@@ -7,6 +7,7 @@ import HTMLParser
 from StringIO import StringIO
 
 from __init__ import _
+import fs_utils
 
 
 ENTITIES_TABLE = None
@@ -53,7 +54,7 @@ class XMLContent(object):
         self.content = self.content.replace(' '*2, ' '*1)
 
         if is_xml_well_formed(self.content) is None:
-            self._fix_style_tags()
+            self._fix_open_and_close_style_tags()
         if is_xml_well_formed(self.content) is None:
             self._fix_open_close()
 
@@ -71,7 +72,7 @@ class XMLContent(object):
         for change in changes:
             self.content = self.content.replace('<' + test + '>', '[' + test + ']')
 
-    def _fix_style_tags(self):
+    def _fix_open_and_close_style_tags(self):
         rcontent = self.content
         tags = ['italic', 'bold', 'sub', 'sup']
         tag_list = []
@@ -163,7 +164,6 @@ def replace_doctype(content, new_doctype):
 
 
 def apply_dtd(xml_filename, doctype):
-    import fs_utils
     temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
     shutil.copyfile(xml_filename, temp_filename)
     content = replace_doctype(fs_utils.read_file(xml_filename), doctype)
@@ -398,39 +398,39 @@ def load_xml(content):
     return (xml, e)
 
 
-def remove_processing_instruction_etc(content):
+def split_prefix(content):
+    prefix = ''
     p = content.rfind('</')
     if p > 0:
-        tag = content[content.rfind('</') + 2:]
-        tag = tag[0:tag.find('>')]
-
-        if content.startswith('<') and not content.startswith('<' + tag):
-            content = content[content.find('<' + tag):]
-
-    return content
+        tag = content[p+2:]
+        tag = tag[0:tag.find('>')].strip()
+        if content.startswith('<'):
+            prefix = content[0:content.find('<' + tag)]
+    return prefix
 
 
 def minidom_pretty_print(content):
     pretty = None
     import xml.dom.minidom
     try:
+        content = normalize_spaces(content)
+        content = preserve_styles(content)
         if isinstance(content, unicode):
             content = content.encode('utf-8')
         doc = xml.dom.minidom.parseString(content)
-        pretty = remove_processing_instruction_etc(doc.toprettyxml())
+        pretty = doc.toprettyxml().strip()
+        if not isinstance(pretty, unicode):
+            pretty = pretty.decode('utf-8')
+        prefix = split_prefix(pretty)
+        pretty = pretty[len(prefix):].strip()
+        pretty = remove_break_lines_off_element_content(pretty)
+        pretty = restore_styles(pretty)
 
     except Exception as e:
         print('ERROR in pretty')
         print(e)
-        open('./pretty_print.xml', 'w').write(content)
+        fs_utils.write_file('./pretty_print.xml', content)
     return pretty
-
-
-def remove_break_lines_inside_elements(content):
-    content = remove_break_lines_inside_elements2(content)
-    content = content.replace(' </', '</')
-    content = restore_styles(content)
-    return content.strip()
 
 
 def preserve_styles(content):
@@ -447,65 +447,38 @@ def restore_styles(content):
     return content
 
 
-def remove_break_lines_inside_elements2(content):
-    data = content.replace('>', '>~remove_break_lines_inside_elements~')
-    data = data.replace('<', '~remove_break_lines_inside_elements~<')
-    new = []
-    level = 0
-    for item in data.split('~remove_break_lines_inside_elements~'):
-        if item.startswith('</') and item.endswith('>'):
-            level -= 1
-        elif item.startswith('<') and item.endswith('>'):
-            level += 1
-        elif item.startswith('<') and item.endswith('/>'):
-            level += 0
-        elif not item.strip() == '':
-            item = ' '.join([c.replace('PRETTYPRINTPRESERVESPACE', ' ').strip() for c in item.split()])
-            item = item.strip()
-        else:
-            item = '\n' + item.replace('\n', '')
-        new.append(item)
-    return ''.join(new)
+def remove_break_lines_off_element_content_item(item):
+    if not item.startswith('<') and not item.endswith('>'):
+        if not item.strip() == '':
+            item = preserve_space_only(item)
+    return item
 
 
-def prepare_for_minidom_pretty_print(content):
-    data = preserve_styles(content)
-    data = data.replace('>', '>~prepare_for_minidom_pretty_print~')
-    data = data.replace('<', '~prepare_for_minidom_pretty_print~<')
-    data = data.replace('\t', '').replace('\n', '')
-    new = []
-    for item in data.split('~prepare_for_minidom_pretty_print~'):
-        if not item.startswith('<') and not item.endswith('>'):
-            if not item.strip() == '':
-                item = item.replace(' ', 'PRETTYPRINTPRESERVESPACE')
-            else:
-                item = item.strip()
-        new.append(item)
-    return ''.join(new)
+def remove_break_lines_off_element_content(content):
+    data = content.replace('>', '>~remove_break_lines_off_element_content~')
+    data = data.replace('<', '~remove_break_lines_off_element_content~<')
+    return ''.join([remove_break_lines_off_element_content_item(item) for item in data.split('~remove_break_lines_off_element_content~')]).strip()
 
 
 def pretty_print(content):
     root = None
     pretty = None
-    fixed = remove_processing_instruction_etc(content)
-    if fixed in content:
-        prefix = content[0:content.find(fixed)]
-    else:
-        prefix = ''
     root = 'root'
+    content = content.strip()
+    prefix = split_prefix(content)
+    fixed = content[len(prefix):].strip()
     fixed = '<' + root + '>' + fixed + '</' + root + '>'
 
     if is_xml_well_formed(fixed):
-        fixed = prepare_for_minidom_pretty_print(fixed)
         pretty = minidom_pretty_print(fixed)
+
     if pretty is None:
         pretty = content
-        print(fixed)
+        fs_utils.write_file('./not_pretty.txt', fixed)
         print('not pretty')
     else:
-        pretty = prefix + remove_break_lines_inside_elements(pretty)
-    if root is not None:
-        pretty = pretty.replace('<' + root + '>', '').replace('</' + root + '>', '')
+        pretty = pretty.replace('<' + root + '>', '').replace('</' + root + '>', '').strip()
+        pretty = prefix + remove_break_lines_off_element_content(pretty)
     return pretty
 
 
@@ -549,3 +522,59 @@ def remove_tags(content):
                 new.append(item)
         content = ''.join(new)
     return content
+
+
+def preserve_space_only(item):
+    item = item.replace(' ', 'NORMALIZESPACESPRESERVE')
+    item = ' '.join(item.split())
+    item = item.replace('NORMALIZESPACESPRESERVE', ' ')
+    while ' '*2 in item:
+        item = item.replace(' '*2, ' ')
+    return item
+
+
+def normalize_spaces_in_item(item):
+    if not item.startswith('<') and not item.endswith('>'):
+        #text
+        item = preserve_space_only(item)
+    elif item.startswith('</') and item.endswith('>'):
+        #close
+        item = '</' + item[2:-1].strip() + '>'
+    elif item.startswith('<') and item.endswith('/>'):
+        #empty tag
+        item = '<' + ' '.join(item[1:-2].split()) + '/>'
+    elif item.startswith('<') and item.endswith('>'):
+        #open
+        item = '<' + ' '.join(item[1:-1].split()) + '>'
+    return item
+
+
+def normalize_spaces(content):
+    xml = content
+    prefix = split_prefix(content)
+    if len(prefix) > 0:
+        xml = content[len(prefix):]
+    xml = xml.replace('\r', '')
+    xml = xml.replace('>', '>NORMALIZESPACES')
+    xml = xml.replace('<', 'NORMALIZESPACES<')
+    xml = ''.join([normalize_spaces_in_item(item) for item in xml.split('NORMALIZESPACES')])
+    xml = remove_exceding_style_tags(xml)
+    return prefix + xml
+
+
+def remove_exceding_style_tags(content):
+    new = content
+    doit = True
+    while doit is True:
+        doit = False
+        for style in ['sup', 'sub', 'bold', 'italic']:
+            new = new.replace('<' + style + '/>', '')
+            new = new.replace('<' + style + '> ', ' <' + style + '>')
+            new = new.replace(' </' + style + '>', '</' + style + '> ')
+            new = new.replace('</' + style + '><' + style + '>', '')
+            new = new.replace('<' + style + '></' + style + '>', '')
+            new = new.replace('<' + style + '> </' + style + '>', ' ')
+            new = new.replace('</' + style + '> <' + style + '>', ' ')
+            doit = (new != content)
+            content = new
+    return new

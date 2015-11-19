@@ -615,13 +615,12 @@ class ArticlesPkgReport(object):
                     items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items, 'FATAL ERROR'])
                     items.append([_('e-ISSN'), article.e_issn, e_issn_items, 'FATAL ERROR'])
                     items.append([_('print ISSN'), article.print_issn, p_issn_items, 'FATAL ERROR'])
-                    items.append([_('publisher name'), article.publisher_name.strip(), publisher_name_items, 'ERROR'])
+                    items.append([_('publisher name'), article.publisher_name, publisher_name_items, 'ERROR'])
                     items.append([_('license'), article.license_url, license_items, 'ERROR'])
 
                     for label, value, expected_values, err_msg in items:
                         expected_values_msg = _(' or ').join(expected_values)
-                        if value is None:
-                            value = 'None'
+                        value = 'None' if value is None else value.strip()
                         if len(expected_values) == 0:
                             expected_values_msg = 'None'
                             status = 'WARNING' if value != expected_values_msg else 'OK'
@@ -933,7 +932,7 @@ def extract_report_core(content):
 
         part1 = part1.replace('\n', '<br/>')
         part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
-        report = part1 + part2
+        report = '<p>' + part1 + part2 + '</p>'
     elif '</body>' in content:
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
