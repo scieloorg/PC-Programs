@@ -1,12 +1,23 @@
 # coding=utf-8
 
+from datetime import datetime
+
 IMDEBUGGING = False
+
+
+def now():
+    now = datetime.now().isoformat().replace('-', '').replace(':', '').replace('T', ' ')[0:13]
+    return now.split(' ')
 
 
 def display_datetime(dateiso, timeiso):
     y = dateiso[0:4]
     md = dateiso[4:]
-    return y + '-' + '-'.join([md[i*2:i*2+2] for i in range(0, 2)]) + ' ' + ':'.join([timeiso[i*2:i*2+2] for i in range(0, 2)])
+    y = y + '-' + '-'.join([md[i*2:i*2+2] for i in range(0, 2)])
+    if timeiso is not None:
+        if len(timeiso) > 0:
+            y += ' ' + ':'.join([timeiso[i*2:i*2+2] for i in range(0, 2)])
+    return y
 
 
 def is_similar(text, items, min_rate=0.8):

@@ -76,7 +76,7 @@ def complete_issue_items_row(article, action, result, source, notes='', results=
     _source = source
     if source == 'registered':
         _source = 'database'
-        _dates = str(article.creation_date_display) + ' / ' + str(article.last_update)
+        _dates = str(article.creation_date_display) + ' / ' + str(article.last_update_display)
         action = ''
     else:
         _dates = ''
@@ -115,9 +115,9 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                 result = actions_result_labels[action]
                 _notes = ''
                 if action == 'update':
-                    if article.last_update is None:
+                    if article.last_update_display is None:
                         result = 'error'
-                    elif previous_registered_articles.get(article.xml_name).last_update == article.last_update:
+                    elif previous_registered_articles.get(article.xml_name).last_update_display == article.last_update_display:
                         result = 'error'
                     name = article.xml_name
                     if name in unmatched_orders.keys():
@@ -275,9 +275,9 @@ class Conversion(object):
                     result = actions_result_labels[action]
                     _notes = ''
                     if action == 'update':
-                        if article.last_update is None:
+                        if article.last_update_display is None:
                             result = 'error'
-                        elif self.previous_registered_articles.get(article.xml_name).last_update == article.last_update:
+                        elif self.previous_registered_articles.get(article.xml_name).last_update_display == article.last_update_display:
                             result = 'error'
                         name = article.xml_name
                         if name in self.changed_orders.keys():

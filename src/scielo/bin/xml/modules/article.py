@@ -1086,7 +1086,8 @@ class Article(ArticleXML):
         self.pid = None
         self.creation_date_display = None
         self.creation_date = None
-        self.last_update = None
+        self.last_update_date = None
+        self.last_update_display = None
         self._api_crossref_doi_query_result = None
         self._doi_journal_and_article = None
         self._queried_doi_pid = None
