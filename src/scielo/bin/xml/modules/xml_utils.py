@@ -536,7 +536,10 @@ def preserve_space_only(item):
 def normalize_spaces_in_item(item):
     if not item.startswith('<') and not item.endswith('>'):
         #text
-        item = preserve_space_only(item)
+        if item.strip() == '':
+            item = ''
+        else:
+            item = preserve_space_only(item)
     elif item.startswith('</') and item.endswith('>'):
         #close
         item = '</' + item[2:-1].strip() + '>'

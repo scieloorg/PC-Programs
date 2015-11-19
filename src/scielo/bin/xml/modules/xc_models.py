@@ -91,26 +91,31 @@ class RegisteredArticle(object):
         return r if len(r) == 23 else None
 
     @property
+    def dates(self):
+        return [item for item in sorted([self.article_records[0].get('91'), self.article_records[0].get('93')]) if item is not None]
+
+    @property
     def creation_date_display(self):
-        return utils.display_datetime(self.article_records[0]['91'], self.article_records[0]['92'])
+        return utils.display_datetime(self.creation_date, '')
+
+    @property
+    def last_update_display(self):
+        return utils.display_datetime(self.last_update_date, self.last_update_time)
 
     @property
     def creation_date(self):
-        return (self.article_records[0]['91'], self.article_records[0]['92'])
+        return self.dates[0] if len(self.dates) > 0 else utils.now()[0]
 
     @property
-    def last_update(self):
-        #2015-03-26T14:43:50.272660
-        last = self.article_records[0].get('93')
-        if last is not None:
-            if '-' in last:
-                last = last.replace('T', ' ')[0:16]
-            if ' ' in last:
-                last = last.split(' ')
-                last = utils.display_datetime(last[0], last[1])
-            else:
-                last = utils.display_datetime(last, '')
-        return last
+    def last_update_date(self):
+        return self.dates[-1] if len(self.dates) > 0 else utils.now()[0]
+
+    @property
+    def last_update_time(self):
+        t = self.article_records[0].get('92')
+        if t is None:
+            d, t = utils.now()
+        return t
 
     @property
     def order(self):
@@ -376,14 +381,10 @@ class ArticleRecords(object):
 
     def outline(self, total_of_records):
         rec_o = {}
-        if self.article.creation_date is None:
-            rec_o['91'] = datetime.now().isoformat().replace('-', '').replace(':', '').replace('T', ' ')[0:13]
-            rec_o['93'] = rec_o['91']
-            rec_o['91'], rec_o['92'] = rec_o['91'].split(' ')
-        else:
-            rec_o['91'] = self.article.creation_date[0]
-            rec_o['92'] = self.article.creation_date[1]
-            rec_o['93'] = datetime.now().isoformat().replace('-', '').replace('T', ' ').replace(':', '')[0:13]
+        d, t = utils.now()
+        rec_o['91'] = d
+        rec_o['92'] = t
+        rec_o['93'] = d if self.article.creation_date is None else self.article.creation_date
         rec_o['703'] = total_of_records
         return rec_o
 
@@ -741,7 +742,8 @@ class ArticleDB(object):
                 doc.pid = registered_article.pid
                 doc.creation_date_display = registered_article.creation_date_display
                 doc.creation_date = registered_article.creation_date
-                doc.last_update = registered_article.last_update
+                doc.last_update_date = registered_article.last_update_date
+                doc.last_update_display = registered_article.last_update_display
                 doc.article_records = registered_article.article_records
 
                 self._registered_articles[xml_name] = doc

@@ -38,6 +38,8 @@ def xpm_version():
         f = CURRENT_PATH + '/../../xpm_version.txt'
     elif os.path.isfile(CURRENT_PATH + '/../../cfg/xpm_version.txt'):
         f = CURRENT_PATH + '/../../cfg/xpm_version.txt'
+    elif os.path.isfile(CURRENT_PATH + '/../../cfg/version.txt'):
+        f = CURRENT_PATH + '/../../cfg/version.txt'
     version = ''
     if f is not None:
         version = open(f).readlines()[0].decode('utf-8')
