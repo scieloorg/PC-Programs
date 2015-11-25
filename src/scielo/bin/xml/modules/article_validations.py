@@ -1152,12 +1152,16 @@ class ReferenceContentValidation(object):
         if not self.reference.publication_type is None:
             authors = None
             if len(self.reference.authors_list) > 0:
+                _authors = []
                 for item in self.reference.authors_list:
                     if isinstance(item, article.PersonAuthor):
-                        authors = item.surname + ' ...' if item.surname is not None else str(item.fname)
+                        a = ' '.join([name for name in [item.fname, item.surname] if name is not None])
+                        if len(a) > 0:
+                            _authors.append(a)
                     elif isinstance(item, article.CorpAuthor):
-                        authors = item.collab
-
+                        _authors.append(item.collab)
+                if len(_authors) > 0:
+                    authors = ', '.join(_authors)
             items = [
                     self.validate_element('person-group', authors), 
                     self.validate_element('article-title', self.reference.article_title), 
