@@ -12,6 +12,10 @@ import fs_utils
 
 ENTITIES_TABLE = None
 
+etree.register_namespace('mml', 'http://www.w3.org/1998/Math/MathML')
+etree.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
+etree.register_namespace('xml', 'http://www.w3.org/XML/1998/namespace')
+
 
 def date_element(date_node):
     d = None
