@@ -660,7 +660,7 @@ class ArticlesPkgReport(object):
         report.append(self.journal_issue_header_report)
         if self.registered_journal_data_validations is not None:
             if self.registered_journal_data_validations.total > 0:
-                report.append(html_reports.tag('h2', _('Checking journal data: XML files and registered data') + '<sup>*</sup>') + html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Registered data are supposed to be correct and updated, but if you identify they are not, ignore the error messages.'), 'note') + self.registered_journal_data_validations.report(True))
+                report.append(html_reports.tag('h2', _('Checking journal data: XML files and registered data') + '<sup>*</sup>') + html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('If the data in the XML files are correct, please, ignore the error messages and report the errors found in the registered data.') + html_reports.tag('p', html_reports.link('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', _('Consult the registered data'))), 'note') + self.registered_journal_data_validations.report(True))
 
         self.evaluate_pkg_journal_and_issue_data_consistence()
         for item in [self.changed_orders_validations, self.pkg_data_consistence_validations]:
