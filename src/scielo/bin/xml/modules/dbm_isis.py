@@ -12,7 +12,7 @@ import fs_utils
 
 
 def change_circ(content):
-    return content.replace('^', '&#94;')
+    return content.replace('^', '<PRESERVECIRC/>')
 
 
 def format_value(content):
@@ -56,12 +56,15 @@ class IDFile(object):
         self.content_formatter = content_formatter
 
     def _format_file(self, records):
-        r = ''
+        r = []
         index = 0
         for item in records:
             index += 1
-            r += self._format_id(index) + self._format_record(item)
-        return r
+            s = self._format_id(index) + self._format_record(item)
+            r.append(s)
+            if 'mml:' in s:
+                print(s)
+        return ''.join(r)
 
     def _format_id(self, index):
         i = '000000' + str(index)
@@ -204,13 +207,25 @@ class IDFile(object):
             os.makedirs(path)
         content = self._format_file(records)
 
+        if 'mml:' in content:
+            if '&#94;' in content:
+                print('sim')
+            if '<PRESERVE94/>' in content:
+                print('sim2')
         if isinstance(content, unicode):
             content = u_encode(content, 'iso-8859-1')
+            content = content.replace('<PRESERVECIRC/>', '&#94;')
+            if 'mml:' in content:
+                if '&#94;' in content:
+                    print('no1')
+                if '<PRESERVECIRC/>' in content:
+                    print('no2')
         try:
             open(filename, 'w').write(content)
         except Exception as e:
             utils.debbuging('saving...')
             utils.debbuging(e)
+            print(e)
 
 
 class CISIS(object):
