@@ -155,6 +155,9 @@ fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
 role;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
+authorid;#TRUE#;#TRUE#
+
+authorid
 
 awarded
 orgname;#FALSE#;#FALSE#

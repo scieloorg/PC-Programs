@@ -737,7 +737,6 @@ def normalize_xml_content(doc_files_info, content, version):
         #xml_status(content, 'normalize_mixed_citations')
         content = content.replace('&amp;amp;', '&amp;')
         content = content.replace('&amp;#', '&#')
-        content = content.replace('&mldr;', u"\u2026")
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
         content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
         content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')

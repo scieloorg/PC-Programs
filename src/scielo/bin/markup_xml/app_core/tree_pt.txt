@@ -202,3 +202,4 @@ alttext;Identifica um texto alternativo para descrever uma imagem.
 alttitle;Identifica um título alternativo do documento
 element;Identifica quaisquer elementos de XML
 elemattr;Identifica quaisquer attributos de XML
+authorid;Identify um identificador único para o autor
