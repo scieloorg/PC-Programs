@@ -326,7 +326,9 @@ def convert_entities_to_chars(content, debug=False):
     if '&' in content:
         content = preserve_xml_entities(content)
         content = htmlent2char(content)
+        content = content.replace('&mldr;', u"\u2026")
         content, replaced_named_ent = named_ent_to_char(content)
+
         register_remaining_named_entities(content)
 
         content = restore_xml_entities(content)
