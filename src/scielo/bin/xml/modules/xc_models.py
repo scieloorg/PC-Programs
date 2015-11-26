@@ -220,22 +220,24 @@ class ArticleRecords(object):
         self._metadata['49'] = 'nd' if self.article.section_code is None else self.article.section_code
 
         self._metadata['10'] = []
+        #self._metadata['10?'] = []
         for item in self.article.contrib_names:
-            new = {}
-            new['n'] = item.fname
-            new['s'] = item.surname
+            surname_and_suffix = item.surname
             if item.suffix is not None:
                 if item.suffix != '':
-                    new['s'] += ' ' + item.suffix
+                    surname_and_suffix += ' ' + item.suffix
+            new = {}
+            new['n'] = item.fname
+            new['s'] = surname_and_suffix
             new['p'] = item.prefix
             new['r'] = normalize_role(item.role)
-            #if len(item.xref) == 0 and len(self.article.affiliations) > 0 and len(self.article.contrib_names) == 1:
-            #    new['1'] = ' '.join([aff.id for aff in self.article.affiliations if aff.id is not None])
-            #else:
-            #    new['1'] = ' '.join(item.xref)
             new['1'] = ' '.join(item.xref)
-            new['k'] = item.contrib_id
+            new['k'] = item.contrib_id.get('orcid')
+            new['l'] = item.contrib_id.get('lattes')
             self._metadata['10'].append(new)
+
+            #for contrib_id_type, contrib_id in item.contrib_id.items():
+            #    self._metadata['10?'].append({'n': item.fname, 's': surname_and_suffix, 'i': contrib_id, 't': contrib_id_type})
 
         self._metadata['11'] = [c.collab for c in self.article.contrib_collabs]
         self._metadata['12'] = []

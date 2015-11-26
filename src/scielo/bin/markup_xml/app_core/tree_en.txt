@@ -202,3 +202,4 @@ alttext;Identify an alternative text for a graphic or figure
 alttitle;Identify an alternative title for the document title
 element;Identify any element of XML
 elemattr;Identify any attribute of XML
+authorid;Identify unique researcher identifier

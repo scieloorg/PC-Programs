@@ -935,6 +935,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:attribute name="equal-contrib">yes</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
+	<xsl:template match="authorid/@*">
+		<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	<xsl:template match="authorid/@authidtp">
+		<xsl:attribute name="contrib-id-type"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	<xsl:template match="authorid">
+		<contrib-id>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</contrib-id>
+	</xsl:template>
 	<xsl:template match="author" mode="front-contrib">
 		<!-- author front -->
 		<xsl:variable name="author_rid" select="@rid"/>
@@ -942,7 +953,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select=".//xref|role"/>
+			<xsl:apply-templates select=".//xref|role|authorid"/>
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>

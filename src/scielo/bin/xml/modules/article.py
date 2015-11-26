@@ -92,7 +92,7 @@ class PersonAuthor(object):
         self.surname = ''
         self.suffix = ''
         self.prefix = ''
-        self.contrib_id = ''
+        self.contrib_id = {}
         self.role = ''
         self.xref = []
 
@@ -473,7 +473,8 @@ class ArticleXML(object):
                     p.surname = contrib.findtext('name/surname')
                     p.suffix = contrib.findtext('name/suffix')
                     p.prefix = contrib.findtext('name/prefix')
-                    p.contrib_id = contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
+                    for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
+                        p.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
                     p.role = contrib.attrib.get('contrib-type')
                     for xref_item in contrib.findall('xref[@ref-type="aff"]'):
                         p.xref.append(xref_item.attrib.get('rid'))
@@ -511,7 +512,8 @@ class ArticleXML(object):
                     p.surname = contrib.findtext('name/surname')
                     p.suffix = contrib.findtext('name/suffix')
                     p.prefix = contrib.findtext('name/prefix')
-                    p.contrib_id = contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
+                    for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
+                        p.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
                     p.role = contrib.attrib.get('contrib-type')
                     for xref_item in contrib.findall('xref[@ref-type="aff"]'):
                         p.xref.append(xref_item.attrib.get('rid'))
