@@ -422,45 +422,42 @@ class ArticleXML(object):
     def keywords_by_lang(self):
         if self._keywords_by_lang is None:
             k = {}
-            if not self.article_meta is None:
-                for node in self.article_meta.findall('kwd-group'):
-                    language = xml_utils.element_lang(node)
-                    if language is None:
-                        language = self.language
-                    kw_items = []
-                    for kw in node.findall('kwd'):
-                        t = Text()
-                        t.language = language
-                        t.text = xml_utils.node_text(kw)
-                        kw_items.append(t)
-                    k[language] = kw_items
-            for subart in self.translations:
-                for node in subart.findall('.//kwd-group'):
-                    language = xml_utils.element_lang(node)
-                    kw_items = []
-                    for kw in node.findall('kwd'):
-                        t = Text()
-                        t.language = language
-                        t.text = xml_utils.node_text(kw)
-                        kw_items.append(t)
-                    k[language] = kw_items
+            for item in self.keywords:
+                if not item['l'] in k.keys():
+                    k[item['l']] = []
+
+                t = Text()
+                t.language = item['l']
+                t.text = item['k']
+
+                k[item['l']].append(t)
+
             self._keywords_by_lang = k
         return self._keywords_by_lang
 
     @property
-    def keywords(self):
+    def article_keywords(self):
         k = []
         if not self.article_meta is None:
             for node in self.article_meta.findall('kwd-group'):
                 language = xml_utils.element_lang(node)
                 for kw in node.findall('kwd'):
                     k.append({'l': language, 'k': xml_utils.node_text(kw)})
+        return k
+
+    @property
+    def subarticle_keywords(self):
+        k = []
         for subart in self.translations:
             for node in subart.findall('.//kwd-group'):
                 language = xml_utils.element_lang(node)
                 for kw in node.findall('kwd'):
                     k.append({'l': language, 'k': xml_utils.node_text(kw)})
         return k
+
+    @property
+    def keywords(self):
+        return self.article_keywords + self.subarticle_keywords
 
     @property
     def contrib_names(self):
@@ -556,7 +553,7 @@ class ArticleXML(object):
         return self.titles[0].title if len(self.titles) > 0 else None
 
     @property
-    def titles(self):
+    def title_group_title(self):
         k = []
         if self.article_meta is not None:
             for node in self.article_meta.findall('.//title-group'):
@@ -565,12 +562,23 @@ class ArticleXML(object):
                 t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
                 t.language = self.language
                 k.append(t)
+        return k
+
+    @property
+    def trans_title_group_titles(self):
+        k = []
+        if self.article_meta is not None:
             for node in self.article_meta.findall('.//trans-title-group'):
                 t = Title()
                 t.title = article_utils.remove_xref(xml_utils.node_text(node.find('trans-title')))
                 t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('trans-subtitle')))
                 t.language = xml_utils.element_lang(node)
                 k.append(t)
+        return k
+
+    @property
+    def subarticle_title_group_titles(self):
+        k = []
         if self.translations is not None:
             for subart in self.translations:
                 for node in subart.findall('.//title-group'):
@@ -582,33 +590,17 @@ class ArticleXML(object):
         return k
 
     @property
+    def titles(self):
+        return self.title_group_title + self.trans_title_group_titles + self.subarticle_title_group_titles
+
+    @property
     def titles_by_lang(self):
         if self._titles_by_lang is None:
             k = {}
-            if self.article_meta is not None:
-                language = self.language
-                for node in self.article_meta.findall('.//title-group'):
-                    t = Title()
-                    t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
-                    t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
-                    t.language = language
-                    k[language] = t
-                for node in self.article_meta.findall('.//trans-title-group'):
-                    language = xml_utils.element_lang(node)
-                    t = Title()
-                    t.title = article_utils.remove_xref(xml_utils.node_text(node.find('trans-title')))
-                    t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('trans-subtitle')))
-                    t.language = language
-                    k[language] = t
-            if self.translations is not None:
-                for subart in self.translations:
-                    for node in subart.findall('.//title-group'):
-                        language = xml_utils.element_lang(subart)
-                        t = Title()
-                        t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
-                        t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
-                        t.language = language
-                        k[language] = t
+            for item in self.titles:
+                if not item.language in k.keys():
+                    k[item.language] = []
+                k[item.language].append(item)
             self._titles_by_lang = k
         return self._titles_by_lang
 
@@ -869,34 +861,7 @@ class ArticleXML(object):
         return r
 
     @property
-    def abstracts_by_lang(self):
-        if self._abstracts_by_lang is None:
-            r = {}
-            if self.article_meta is not None:
-                language = self.language
-                for a in self.article_meta.findall('.//abstract'):
-                    _abstract = Text()
-                    _abstract.language = language
-                    _abstract.text = xml_utils.node_text(a)
-                    r[language] = _abstract
-                for a in self.article_meta.findall('.//trans-abstract'):
-                    language = xml_utils.element_lang(a)
-                    _abstract = Text()
-                    _abstract.language = language
-                    _abstract.text = xml_utils.node_text(a)
-                    r[language] = _abstract
-            for subart in self.translations:
-                language = xml_utils.element_lang(subart)
-                for a in subart.findall('.//abstract'):
-                    _abstract = Text()
-                    _abstract.language = language
-                    _abstract.text = xml_utils.node_text(a)
-                    r[language] = _abstract
-            self._abstracts_by_lang = r
-        return self._abstracts_by_lang
-
-    @property
-    def abstracts(self):
+    def abstract(self):
         r = []
         if self.article_meta is not None:
             for a in self.article_meta.findall('.//abstract'):
@@ -904,24 +869,45 @@ class ArticleXML(object):
                 _abstract.language = self.language
                 _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
+        return r
+
+    @property
+    def trans_abstracts(self):
+        r = []
+        if self.article_meta is not None:
             for a in self.article_meta.findall('.//trans-abstract'):
                 _abstract = Text()
                 _abstract.language = xml_utils.element_lang(a)
                 _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
+        return r
+
+    @property
+    def subarticle_abstracts(self):
+        r = []
         for subart in self.translations:
-            subart_lang = xml_utils.element_lang(subart)
+            language = xml_utils.element_lang(subart)
             for a in subart.findall('.//abstract'):
                 _abstract = Text()
-                _abstract.language = subart_lang
-                _abstract.text = xml_utils.node_text(a)
-                r.append(_abstract)
-            for a in subart.findall('.//trans-abstract'):
-                _abstract = Text()
-                _abstract.language = xml_utils.element_lang(a)
+                _abstract.language = language
                 _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
         return r
+
+    @property
+    def abstracts_by_lang(self):
+        if self._abstracts_by_lang is None:
+            r = {}
+            for item in self.abstracts:
+                if not item.language in r.keys():
+                    r[item.language] = []
+                r[item.language].append(item)
+            self._abstracts_by_lang = r
+        return self._abstracts_by_lang
+
+    @property
+    def abstracts(self):
+        return self.abstract + self.trans_abstracts + self.subarticle_abstracts
 
     @property
     def references(self):

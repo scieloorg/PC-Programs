@@ -471,18 +471,19 @@ class ArticlesPkgReport(object):
             lang_dep = {}
             for lang in doc.title_abstract_kwd_languages:
 
-                elements = {}
-                elem = doc.titles_by_lang.get(lang)
-                if elem is not None:
-                    elements['title'] = elem.title
-                elem = doc.abstracts_by_lang.get(lang)
-                if elem is not None:
-                    elements['abstract'] = elem.text
-                elem = doc.keywords_by_lang.get(lang)
-                if elem is not None:
-                    elements['keywords'] = [k.text for k in elem]
+                data = {}
+                data['title'] = doc.titles_by_lang.get(lang)
+                data['abstract'] = doc.abstracts_by_lang.get(lang)
+                data['keywords'] = doc.keywords_by_lang.get(lang)
+
                 lang += ' (' + str(attributes.LANGUAGES.get(lang)).encode('utf-8') + ')'
-                lang_dep[lang] = elements
+                lang_dep[lang] = {}
+                for k, values in data.items():
+                    if values is not None:
+                        if k == 'title':
+                            lang_dep[lang][k] = [item.title for item in values]
+                        else:
+                            lang_dep[lang][k] = [item.text for item in values]
 
             values = []
             values.append(xml_name)
