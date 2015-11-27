@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-27 13:40-0200\n"
+"POT-Creation-Date: 2015-11-27 17:05-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1147,7 +1147,9 @@ msgstr ". Asegúrese que identificó correctamente: "
 #: modules/pkg_reports.py:622 modules/xc_models.py:1259
 #: modules/article_validations.py:1161 modules/article_validations.py:1218
 #: modules/article_validations.py:1273 modules/pkg_reports.py:623
-#: modules/xc_models.py:1261
+#: modules/xc_models.py:1261 modules/article_validations.py:745
+#: modules/article_validations.py:747 modules/article_validations.py:749
+#: modules/article_validations.py:752
 msgid " or "
 msgstr " o "
 
@@ -1501,7 +1503,7 @@ msgstr "Warning - indica que algo puede estar incorrecto o necesita atención"
 #: modules/pkg_reports.py:983 modules/xpmaker.py:1039
 #: modules/pkg_reports.py:988 modules/pkg_reports.py:987
 #: modules/pkg_reports.py:985 modules/xpmaker.py:1040
-#: modules/pkg_reports.py:986
+#: modules/pkg_reports.py:986 modules/xpmaker.py:1048
 msgid "Result of the processing:"
 msgstr "Resultado del proceso:"
 
@@ -2297,7 +2299,7 @@ msgstr "no se pudo leer el archivo de configuración de XML Converter: "
 #: modules/xmlcvrter.py:1169 modules/xpmaker.py:1110 modules/xmlcvrter.py:1057
 #: modules/xpmaker.py:1109 modules/xmlcvrter.py:1058 modules/xmlcvrter.py:1063
 #: modules/xmlcvrter.py:789 modules/xpmaker.py:1131 modules/xmlcvrter.py:795
-#: modules/xpmaker.py:1151 modules/xpmaker.py:1152
+#: modules/xpmaker.py:1151 modules/xpmaker.py:1152 modules/xpmaker.py:1160
 msgid "Incorrect parameters"
 msgstr "Parámetros incorrectos"
 
@@ -2309,7 +2311,7 @@ msgstr "Parámetros incorrectos"
 #: modules/xmlcvrter.py:1170 modules/xpmaker.py:1111 modules/xmlcvrter.py:1058
 #: modules/xpmaker.py:1110 modules/xmlcvrter.py:1059 modules/xmlcvrter.py:1064
 #: modules/xmlcvrter.py:790 modules/xpmaker.py:1132 modules/xmlcvrter.py:796
-#: modules/xpmaker.py:1152 modules/xpmaker.py:1153
+#: modules/xpmaker.py:1152 modules/xpmaker.py:1153 modules/xpmaker.py:1161
 msgid "Usage"
 msgstr "Uso"
 
@@ -2321,7 +2323,7 @@ msgstr "Uso"
 #: modules/xmlcvrter.py:1172 modules/xpmaker.py:1113 modules/xmlcvrter.py:1060
 #: modules/xpmaker.py:1112 modules/xmlcvrter.py:1061 modules/xmlcvrter.py:1066
 #: modules/xmlcvrter.py:792 modules/xpmaker.py:1134 modules/xmlcvrter.py:798
-#: modules/xpmaker.py:1154 modules/xpmaker.py:1155
+#: modules/xpmaker.py:1154 modules/xpmaker.py:1155 modules/xpmaker.py:1163
 msgid "where"
 msgstr "donde"
 
@@ -2351,7 +2353,7 @@ msgstr "No fue posible crear"
 #: modules/xpmaker.py:698 modules/xpmaker.py:717 modules/xpmaker.py:726
 #: modules/xpmaker.py:734 modules/xpmaker.py:759 modules/xpmaker.py:760
 #: modules/xpmaker.py:752 modules/xpchecker.py:170 modules/xpmaker.py:825
-#: modules/xpmaker.py:845 modules/xpmaker.py:844
+#: modules/xpmaker.py:845 modules/xpmaker.py:844 modules/xpmaker.py:853
 msgid "Unable to load"
 msgstr "No fue posible cargar"
 
@@ -2422,6 +2424,7 @@ msgstr "Total de @href no encontrados en el paquete"
 #: modules/xpmaker.py:717 modules/xpmaker.py:726 modules/xpmaker.py:734
 #: modules/xpmaker.py:759 modules/xpmaker.py:760 modules/xpmaker.py:752
 #: modules/xpmaker.py:825 modules/xpmaker.py:845 modules/xpmaker.py:844
+#: modules/xpmaker.py:853
 msgid ". Try to open it in an XML Editor to view the errors."
 msgstr ". Intente abrirlo en un Editor XML para ver los errores."
 
@@ -2429,6 +2432,7 @@ msgstr ". Intente abrirlo en un Editor XML para ver los errores."
 #: modules/xpmaker.py:795 modules/xpmaker.py:804 modules/xpmaker.py:812
 #: modules/xpmaker.py:837 modules/xpmaker.py:833 modules/xpmaker.py:825
 #: modules/xpmaker.py:890 modules/xpmaker.py:910 modules/xpmaker.py:911
+#: modules/xpmaker.py:919
 msgid "Make packages for "
 msgstr "Hacer paquetes para "
 
@@ -2436,6 +2440,7 @@ msgstr "Hacer paquetes para "
 #: modules/xpmaker.py:795 modules/xpmaker.py:804 modules/xpmaker.py:812
 #: modules/xpmaker.py:837 modules/xpmaker.py:833 modules/xpmaker.py:825
 #: modules/xpmaker.py:890 modules/xpmaker.py:910 modules/xpmaker.py:911
+#: modules/xpmaker.py:919
 msgid " files."
 msgstr " archivos."
 
@@ -2443,6 +2448,7 @@ msgstr " archivos."
 #: modules/xpmaker.py:821 modules/xpmaker.py:830 modules/xpmaker.py:838
 #: modules/xpmaker.py:863 modules/xpmaker.py:859 modules/xpmaker.py:851
 #: modules/xpmaker.py:916 modules/xpmaker.py:936 modules/xpmaker.py:937
+#: modules/xpmaker.py:945
 msgid "generating report..."
 msgstr "generando informe..."
 
@@ -2450,6 +2456,7 @@ msgstr "generando informe..."
 #: modules/xpmaker.py:823 modules/xpmaker.py:832 modules/xpmaker.py:840
 #: modules/xpmaker.py:865 modules/xpmaker.py:861 modules/xpmaker.py:853
 #: modules/xpmaker.py:918 modules/xpmaker.py:938 modules/xpmaker.py:939
+#: modules/xpmaker.py:947
 msgid "Unable to generate the XML file."
 msgstr "No fue posible generar el archivo XML."
 
@@ -2457,6 +2464,7 @@ msgstr "No fue posible generar el archivo XML."
 #: modules/xpmaker.py:826 modules/xpmaker.py:835 modules/xpmaker.py:843
 #: modules/xpmaker.py:868 modules/xpmaker.py:864 modules/xpmaker.py:856
 #: modules/xpmaker.py:921 modules/xpmaker.py:941 modules/xpmaker.py:942
+#: modules/xpmaker.py:950
 msgid ""
 "It is not PMC article or unable to find journal-id (nlm-ta) in the XML file."
 msgstr ""
@@ -2467,13 +2475,14 @@ msgstr ""
 #: modules/xpmaker.py:841 modules/xpmaker.py:850 modules/xpmaker.py:858
 #: modules/xpmaker.py:883 modules/xpmaker.py:879 modules/xpmaker.py:871
 #: modules/xpmaker.py:936 modules/xpmaker.py:956 modules/xpmaker.py:957
+#: modules/xpmaker.py:965
 msgid "Missing journal-id (nlm-ta)."
 msgstr "No se encontró journal-id (nlm-ta)."
 
 #: modules/xpmaker.py:861 modules/xpmaker.py:860 modules/xpmaker.py:880
 #: modules/xpmaker.py:889 modules/xpmaker.py:897 modules/xpmaker.py:922
 #: modules/xpmaker.py:918 modules/xpmaker.py:910 modules/xpmaker.py:975
-#: modules/xpmaker.py:995 modules/xpmaker.py:996
+#: modules/xpmaker.py:995 modules/xpmaker.py:996 modules/xpmaker.py:1004
 msgid "No files to process"
 msgstr "Ningún archivo para procesar"
 
@@ -2481,7 +2490,7 @@ msgstr "Ningún archivo para procesar"
 #: modules/xpmaker.py:916 modules/xpmaker.py:925 modules/xpmaker.py:934
 #: modules/xpmaker.py:959 modules/xpmaker.py:955 modules/xpmaker.py:947
 #: modules/xpmaker.py:946 modules/xpmaker.py:1007 modules/xpmaker.py:1027
-#: modules/xpmaker.py:1028
+#: modules/xpmaker.py:1028 modules/xpmaker.py:1036
 msgid "XML Package Maker Report"
 msgstr "Informe XML Package Maker"
 
@@ -2489,7 +2498,7 @@ msgstr "Informe XML Package Maker"
 #: modules/xpmaker.py:1081 modules/xpmaker.py:1090 modules/xpmaker.py:1099
 #: modules/xpmaker.py:1124 modules/xpmaker.py:1122 modules/xpmaker.py:1114
 #: modules/xpmaker.py:1113 modules/xpmaker.py:1135 modules/xpmaker.py:1155
-#: modules/xpmaker.py:1156
+#: modules/xpmaker.py:1156 modules/xpmaker.py:1164
 msgid "XML filename or path which contains XML files"
 msgstr "Archivo XML o ruta que contiene los archivos XML"
 
@@ -2497,7 +2506,7 @@ msgstr "Archivo XML o ruta que contiene los archivos XML"
 #: modules/xpmaker.py:1082 modules/xpmaker.py:1091 modules/xpmaker.py:1100
 #: modules/xpmaker.py:1125 modules/xpmaker.py:1123 modules/xpmaker.py:1115
 #: modules/xpmaker.py:1114 modules/xpmaker.py:1136 modules/xpmaker.py:1156
-#: modules/xpmaker.py:1157
+#: modules/xpmaker.py:1157 modules/xpmaker.py:1165
 msgid "journal acronym"
 msgstr "acrónimo de la revista"
 
@@ -2577,7 +2586,7 @@ msgstr "En el artículo: \""
 #: modules/xpmaker.py:814 modules/xpmaker.py:815 modules/xpmaker.py:834
 #: modules/xpmaker.py:843 modules/xpmaker.py:851 modules/xpmaker.py:876
 #: modules/xpmaker.py:872 modules/xpmaker.py:864 modules/xpmaker.py:929
-#: modules/xpmaker.py:949 modules/xpmaker.py:950
+#: modules/xpmaker.py:949 modules/xpmaker.py:950 modules/xpmaker.py:958
 msgid "Generating PMC Package"
 msgstr "Generando el paquete para PMC"
 
@@ -3460,8 +3469,31 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Expected {unexpected} for {demander}. Be sure that \"{demander}\" is correct."
-msgstr "Esperado {unexpected} para {demander}. Esté seguro de que \"{demander}\" está correcto."
+msgstr ""
+"Esperado {unexpected} para {demander}. Esté seguro de que \"{demander}\" "
+"está correcto."
+
+#: modules/article_validations.py:752 modules/article_validations.py:779
+#, python-brace-format
+msgid "Required only one {element} for each language. Found values: {values}"
+msgstr ""
+"Permitido solamente un {element} para cada idioma. Valores encontrados: "
+"{values}"
+
+#: modules/article_validations.py:752 modules/article_validations.py:779
+#, python-brace-format
+msgid ""
+"Required only one {element} for each language. Values found for @xml:lang=\"{lang}\": "
+"{values}"
+msgstr ""
+"Permitido somente um {element} para cada idioma. Valores encontrados para "
+"@xml:lang=\"{lang}\": {values}"
 
 #: modules/article_validations.py:787
-msgid "Values are duplicated: "
-msgstr "Valores están duplicados: "
+#, python-brace-format
+msgid ""
+"Required only unique values of {element} for each language. Duplicated "
+"values found for @xml:lang=\"{lang}\": {values}"
+msgstr ""
+"Permitido somente valores únicos de {element} para cada idioma. Valores "
+"duplicados encontrados para @xml:lang=\"{lang}\": {values}"

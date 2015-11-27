@@ -732,7 +732,7 @@ class ArticleContentValidation(object):
     def total_of_figures(self):
         return self._total(self.article.total_of_figures, self.article.fig_count, _('total of figures'), 'fig-count')
 
-    def titles_by_lang(self, lang):
+    def titles_by_lang(self, lang, err_level):
         valid = []
         errors = []
         sorted_by_lang = self.article.titles_by_lang.get(lang)
@@ -742,17 +742,17 @@ class ArticleContentValidation(object):
                 values = [item.title for item in sorted_by_lang]
         if all(values) is True:
             if lang is None:
-                errors.append(('title-group/@xml:lang | trans-title-group/@xml:lang', err_level, _('Invalid value') + ': None' + ':' + '|'.join(values)))
+                errors.append(('@xml:lang (title-group' + _(' or ') + 'trans-title-group)', err_level, _('Invalid value') + ': None' + ':' + '|'.join(values)))
             else:
-                valid.append(('title-group[@xml:lang="' + lang + '"] | trans-title-group[@xml:lang="' + lang + '"]', 'INFO', '|'.join(values)))
+                valid.append(('title-group' + _(' or ') + 'trans-title-group (@xml:lang="' + lang + '")', 'INFO', '|'.join(values)))
         else:
-            label = 'title-group[@xml:lang="' + lang + '"] | trans-title-group[@xml:lang="' + lang + '"]' if sorted_by_lang is None else 'article-title(@xml:lang="' + lang + '") | trans-title(@xml:lang="' + lang + '")'
+            label = 'title-group' + _(' or ') + 'trans-title-group (@xml:lang="' + lang + '")' if sorted_by_lang is None else 'article-title' + _(' or ') + 'trans-title (@xml:lang="' + lang + '")'
             errors.append((label, err_level, _('not found')))
         if len(values) > 1:
-            errors.append(('article-title(@xml:lang="' + lang + '") | trans-title(@xml:lang="' + lang + '")', 'FATAL ERROR', _('Required only one. Found values: ') + '|'.join(values)))
+            errors.append(('article-title' + _(' or ') + 'trans-title (@xml:lang="' + lang + '")', 'FATAL ERROR', _('Required only one {element} for each language. Values found for @xml:lang="{lang}": {values}').format(element='article-title' + _(' or ') + 'trans-title', values='|'.join(values), lang=lang)))
         return (values, valid, errors)
 
-    def texts_by_lang(self, lang, elem_group_name, elem_item_name, text_elements, mininum=0):
+    def texts_by_lang(self, lang, err_level, elem_group_name, elem_item_name, text_elements, mininum=0):
         valid = []
         errors = []
         sorted_by_lang = text_elements.get(lang)
@@ -760,23 +760,23 @@ class ArticleContentValidation(object):
         if not sorted_by_lang is None:
             if len(sorted_by_lang) > 0:
                 values = [item.text for item in sorted_by_lang]
-        label = elem_item_name if elem_group_name is None else elem_group_name
+        elem_name = elem_item_name if elem_group_name is None else elem_group_name
         if all(values) is True:
             if lang is None:
-                errors.append((label + '/@xml:lang', err_level, _('Invalid value') + ': None' + ':' + '|'.join(values)))
+                errors.append((elem_name + '/@xml:lang', err_level, _('Invalid value') + ': None' + ':' + '|'.join(values)))
             else:
-                valid.append((label + '(@xml:lang="' + lang + '")', 'INFO', '|'.join(values)))
+                valid.append((elem_name + ' (@xml:lang="' + lang + '")', 'INFO', '|'.join(values)))
                 if mininum > 0:
                     if len(values) < mininum:
-                        errors.append((label + '(@xml:lang="' + lang + '")', err_level, _('Required at least {number} items').format(number=mininum)))
+                        errors.append((elem_name + ' (@xml:lang="' + lang + '")', err_level, _('Required at least {number} items').format(number=mininum)))
         else:
             if sorted_by_lang is None:
                 if elem_group_name is not None:
-                    label = elem_group_name
-            errors.append((label + '(@xml:lang="' + lang + '")', err_level, _('not found')))
+                    elem_name = elem_group_name
+            errors.append((elem_name + ' (@xml:lang="' + lang + '")', err_level, _('not found')))
         if mininum == 0:
             if len(values) > 1:
-                errors.append((label, 'FATAL ERROR', _('Required only one. Found values: ') + '|'.join(values)))
+                errors.append((elem_item_name + ' (@xml:lang="' + lang + '")', 'FATAL ERROR', _('Required only one {element} for each language. Values found for @xml:lang="{lang}": {values}').format(lang=lang, element=elem_item_name, values='|'.join(values))))
         else:
             if len(values) != len(list(set(values))):
                 duplicated = {}
@@ -784,7 +784,7 @@ class ArticleContentValidation(object):
                     if not value in duplicated.keys():
                         duplicated[value] = 0
                     duplicated[value] += 1
-                errors.append((label, 'FATAL ERROR', _('Invalid values') + '.  ' + _('Values are duplicated: ') + '|'.join([k for k, c in duplicated.items() if c > 1])))
+                errors.append((elem_item_name, 'FATAL ERROR', _('Required only unique values of {element} for each language. Duplicated values found for @xml:lang="{lang}": {values}').format(lang=lang, element=elem_item_name, values='|'.join([k for k, c in duplicated.items() if c > 1]))))
         return (values, valid, errors)
 
     @property
@@ -793,13 +793,13 @@ class ArticleContentValidation(object):
 
         for lang in sorted(self.article.title_abstract_kwd_languages):
             err_level = 'ERROR' if lang != self.article.language else 'FATAL ERROR'
-            titles, valid, errors = self.titles_by_lang(lang)
+            titles, valid, errors = self.titles_by_lang(lang, err_level)
 
-            abstracts, _valid, _errors = self.texts_by_lang(lang, None, 'abstract', self.article.abstracts_by_lang)
+            abstracts, _valid, _errors = self.texts_by_lang(lang, err_level, None, 'abstract', self.article.abstracts_by_lang)
             valid += _valid
             errors += _errors
 
-            keywords, _valid, _errors = self.texts_by_lang(lang, 'kwd-group', 'kwd', self.article.keywords_by_lang, mininum=2)
+            keywords, _valid, _errors = self.texts_by_lang(lang, err_level, 'kwd-group', 'kwd', self.article.keywords_by_lang, mininum=2)
             valid += _valid
             errors += _errors
 
