@@ -746,23 +746,32 @@ def normalize_xml_content(doc_files_info, content, version):
 
         content = xml_utils.normalize_spaces(content)
         content = normalize_mixed_citations(content)
-        content = remove_styles_off_source(content)
+        content = remove_styles_off_content(content)
         content = xml_utils.pretty_print(content)
 
     return (content, replaced_entities_report)
 
 
-def remove_styles_off_source(content):
-    content = content.replace('<source>', '~BREAK~<source>').replace('</source>', '</source>~BREAK~')
+def remove_styles_off_content(content):
+    for tag in ['source', 'article-title', 'trans-title', 'kwd']:
+        content = remove_styles_off_tagged_content(tag, content)
+    return content
+
+
+def remove_styles_off_tagged_content(tag, content):
+    open_tag = '<' + tag + '>'
+    close_tag = '</' + tag + '>'
+
+    content = content.replace(open_tag, '~BREAK~' + open_tag).replace(close_tag, close_tag + '~BREAK~')
     parts = []
     for part in content.split('~BREAK~'):
-        if part.startswith('<source>') and part.endswith('</source>'):
-            source = part[len('<source>'):]
-            source = source[0:-len('</source>')]
-            source = ' '.join([w.strip() for w in source.split()])
-            part = '<source>' + source + '</source>'
+        if part.startswith(open_tag) and part.endswith(close_tag):
+            data = part[len(open_tag):]
+            data = data[0:-len(close_tag)]
+            data = ' '.join([w.strip() for w in data.split()])
+            part = open_tag + data + close_tag
             for style in ['italic', 'bold', 'italic']:
-                if part.startswith('<source><' + style + '>') and part.endswith('</' + style + '></source>'):
+                if part.startswith(open_tag + '<' + style + '>') and part.endswith('</' + style + '>' + close_tag):
                     part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
         parts.append(part)
     return ''.join(parts)
