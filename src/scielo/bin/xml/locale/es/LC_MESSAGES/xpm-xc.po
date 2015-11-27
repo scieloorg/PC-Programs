@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-25 17:44-0200\n"
+"POT-Creation-Date: 2015-11-27 09:16-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,7 +155,7 @@ msgstr "Al menos uno es requerido "
 #: modules/article_validations.py:97 modules/article_validations.py:99
 #: modules/article_validations.py:92 modules/article_validations.py:94
 #: modules/article_validations.py:877 modules/xc_models.py:634
-#: modules/xc_models.py:635
+#: modules/xc_models.py:635 modules/attributes.py:461
 msgid "Required"
 msgstr "Requerido"
 
@@ -527,7 +527,7 @@ msgstr "Encontrado"
 #: modules/article_validations.py:740 modules/article_validations.py:636
 #: modules/article_validations.py:738 modules/article_validations.py:752
 #: modules/article_validations.py:766 modules/article_validations.py:650
-#: modules/article_validations.py:780
+#: modules/article_validations.py:780 modules/attributes.py:465
 msgid "Invalid value"
 msgstr "Valor inválido"
 
@@ -3357,8 +3357,15 @@ msgstr "Consulta a los datos registrados"
 msgid ""
 "If the data in the XML files are correct, please, ignore the error messages "
 "and report the errors found in the registered data."
-msgstr "Si los datos en los archivos XML están correctos, por favor, ignore los mensajes de error y infórmenos de los errores encontrados en los datos registrados."
+msgstr ""
+"Si los datos en los archivos XML están correctos, por favor, ignore los "
+"mensajes de error y infórmenos de los errores encontrados en los datos "
+"registrados."
 
 #: modules/pkg_reports.py:663
 msgid "Consult the registered data"
 msgstr "Consulta a los datos registrados"
+
+#: modules/attributes.py:461 modules/attributes.py:464
+msgid "ISO Country Code"
+msgstr "Código ISO de país"

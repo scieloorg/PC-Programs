@@ -453,3 +453,14 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
         results.append(('@article-type', status, '@article-type=' + article_type + _(' and ') + _('section title') + '=' + article_section + ': ' + _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. ' + suggestions_msg))
 
     return results
+
+
+def validate_iso_country_code(iso_country_code):
+    r = []
+    if iso_country_code is None:
+        r.append((_('ISO Country Code'), 'FATAL ERROR', _('Required')))
+    else:
+        if not iso_country_code in COUNTRY_CODES:
+            r.append((_('ISO Country Code'), 'FATAL ERROR', \
+                iso_country_code + ': ' + _('Invalid value')))
+    return r
