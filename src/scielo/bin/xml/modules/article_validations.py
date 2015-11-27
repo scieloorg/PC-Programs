@@ -645,9 +645,9 @@ class ArticleContentValidation(object):
 
             r.append(required('aff/institution/[@content-type="original"]', aff.original, 'ERROR', False))
             r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
-            if aff.i_country is not None:
-                if len(aff.i_country) != 2 or aff.i_country.upper() != aff.i_country:
-                    r.append(('aff/country/@country', 'FATAL ERROR', aff.i_country + ': ' + _('Invalid value') + '. ' + _('It must be ISO code of ') + aff.country))
+
+            for i_country_validation in attributes.validate_iso_country_code(aff.i_country):
+                r.append(i_country_validation)
 
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'FATAL ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
