@@ -314,7 +314,7 @@ class ArticleContentValidation(object):
             if not str(self.article.sps) in attributes.sps_current_versions():
                 expected_values = attributes.expected_sps_versions(article_dateiso)
                 if not str(self.article.sps) in expected_values:
-                    status = 'FATAL ERROR'
+                    status = 'ERROR'
                     msg = _('Invalid value for ') + ' ' + label + ': ' + str(self.article.sps) + '. ' + _('Expected values') + ': ' + _(' or ').join(expected_values)
         r.append((label, status, msg))
         return r
@@ -767,7 +767,7 @@ class ArticleContentValidation(object):
             else:
                 valid.append((elem_name + ' (@xml:lang="' + lang + '")', 'INFO', '|'.join(values)))
                 if mininum > 0:
-                    if len(values) < mininum:
+                    if 1 < len(values) < mininum:
                         errors.append((elem_name + ' (@xml:lang="' + lang + '")', err_level, _('Required at least {number} items').format(number=mininum)))
         else:
             if sorted_by_lang is None:

@@ -410,8 +410,10 @@ def split_prefix(content):
     if p > 0:
         tag = content[p+2:]
         tag = tag[0:tag.find('>')].strip()
-        if content.startswith('<'):
+
+        if content.startswith('<') or content.find('<?') or content.find('<!'):
             prefix = content[0:content.find('<' + tag)]
+
     return prefix
 
 
@@ -427,6 +429,8 @@ def minidom_pretty_print(content):
         pretty = doc.toprettyxml().strip()
         if not isinstance(pretty, unicode):
             pretty = pretty.decode('utf-8')
+
+        pretty = pretty.strip()
         prefix = split_prefix(pretty)
         pretty = pretty[len(prefix):].strip()
         pretty = remove_break_lines_off_element_content(pretty)
@@ -559,7 +563,7 @@ def normalize_spaces_in_item(item):
 
 
 def normalize_spaces(content):
-    xml = content
+    xml = content.strip()
     prefix = split_prefix(content)
     if len(prefix) > 0:
         xml = content[len(prefix):]
