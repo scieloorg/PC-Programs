@@ -162,11 +162,11 @@ def validate_surname(label, value):
     label, status, msg = required(label, value, 'ERROR')
     if status == 'OK':
         msg = value
-        suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
+        suffix_list = [item.upper() for item in [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'Junior', u'Senior']]
 
         parts = value.split(' ')
         if len(parts) > 1:
-            rejected = [item for item in parts if item in suffix_list]
+            rejected = [item for item in parts if item.upper() in suffix_list or item in ['Jr', 'Sr']]
             suffix = ' '.join(rejected)
 
             if len(suffix) > 0:
