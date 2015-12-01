@@ -112,7 +112,7 @@
 <!ENTITY % cita SYSTEM "citation4_0.dtd">
 %cita;
 
-<!ELEMENT text  - - ( (doi?, related*), (titlegrp? & authgrp? &
+<!ELEMENT text  - - ( (doi?, url?, related*), (titlegrp? & authgrp? & aff? & 
 ((#PCDATA) | xmlbody )? & back?)) +(%i.float;) >
 <!ATTLIST text
           pii      CDATA #REQUIRED
@@ -134,10 +134,12 @@
           dateiso  CDATA #REQUIRED
 	  fpage    CDATA #REQUIRED
           lpage    CDATA #REQUIRED
+          pagcount CDATA #REQUIRED
           issn     CDATA #REQUIRED
 		  old-pid CDATA #IMPLIED
 		  ahpdate CDATA #IMPLIED
 		  rvpdate CDATA #IMPLIED
+      artdate CDATA #IMPLIED
           hcomment CDATA #IMPLIED
           toccode  CDATA #REQUIRED >
 
@@ -146,4 +148,4 @@
 <!--    Back Matter                                                       -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT back     - -  ((vancouv | iso690 | abnt6023 | apa | other), licenses) >
+<!ELEMENT back     - -  ((vancouv | iso690 | abnt6023 | apa | other)?, fngrp*, licenses?) >

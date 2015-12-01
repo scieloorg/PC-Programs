@@ -743,7 +743,6 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('publication-type="web"', 'publication-type="webpage"')
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
-
         content = xml_utils.normalize_spaces(content)
         content = normalize_mixed_citations(content)
         content = remove_styles_off_content(content)
