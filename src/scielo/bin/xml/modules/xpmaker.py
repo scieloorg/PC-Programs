@@ -752,7 +752,7 @@ def normalize_xml_content(doc_files_info, content, version):
 
 
 def remove_styles_off_content(content):
-    for tag in ['source', 'article-title', 'trans-title', 'kwd']:
+    for tag in ['article-title', 'trans-title', 'kwd', 'source']:
         content = remove_styles_off_tagged_content(tag, content)
     return content
 
@@ -769,8 +769,11 @@ def remove_styles_off_tagged_content(tag, content):
             data = data[0:-len(close_tag)]
             data = ' '.join([w.strip() for w in data.split()])
             part = open_tag + data + close_tag
+            remove_all = False
+            if len(parts) > 0:
+                remove_all = (tag == 'source' and 'publication-type="journal"' in parts[len(parts)-1])
             for style in ['italic', 'bold', 'italic']:
-                if part.startswith(open_tag + '<' + style + '>') and part.endswith('</' + style + '>' + close_tag):
+                if remove_all or part.startswith(open_tag + '<' + style + '>') and part.endswith('</' + style + '>' + close_tag):
                     part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
         parts.append(part)
     return ''.join(parts)
