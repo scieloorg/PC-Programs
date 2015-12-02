@@ -413,7 +413,7 @@ class ArticlesPkgReport(object):
                 if not ref.source in self.sources_at.keys():
                     self.sources_at[ref.source] = []
                 if not xml_name in self.sources_at[ref.source]:
-                    self.sources_at[ref.source].append(str(ref.id) + ' - ' + xml_name)
+                    self.sources_at[ref.source].append(xml_name + ': ' + str(ref.id) + ' - ' + ref.publication_type)
                 if not ref.publication_type in self.reftype_and_sources.keys():
                     self.reftype_and_sources[ref.publication_type] = {}
                 if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
@@ -436,7 +436,7 @@ class ArticlesPkgReport(object):
                         numbers = len([n for n in ref.source if n.isdigit()])
                         not_numbers = len(ref.source) - numbers
                         if not_numbers < numbers:
-                            self.unusual_sources.append([ref.source, ref.id, xml_name])
+                            self.unusual_sources.append([xml_name, ref.id, ref.source])
         self.bad_sources_and_reftypes = {source: reftypes for source, reftypes in self.sources_and_reftypes.items() if len(reftypes) > 1}
 
     def tabulate_languages(self):
