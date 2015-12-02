@@ -770,8 +770,8 @@ def remove_styles_off_tagged_content(tag, content):
             data = ' '.join([w.strip() for w in data.split()])
             part = open_tag + data + close_tag
             remove_all = False
-            if len(parts) > 0:
-                remove_all = (tag == 'source' and 'publication-type="journal"' in parts[len(parts)-1])
+            if tag == 'source' and len(parts) > 0:
+                remove_all = 'publication-type="journal"' in parts[len(parts)-1]
             for style in ['italic', 'bold', 'italic']:
                 if remove_all or part.startswith(open_tag + '<' + style + '>') and part.endswith('</' + style + '>' + close_tag):
                     part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
