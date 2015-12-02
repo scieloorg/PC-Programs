@@ -531,9 +531,10 @@ class ArticleXML(object):
     def contrib_collabs(self):
         k = []
         if self.article_meta is not None:
-            for contrib in self.article_meta.findall('.//contrib/collab'):
+            for contrib in self.article_meta.findall('.//contrib[collab]'):
                 collab = CorpAuthor()
-                collab.collab = contrib.text
+                collab.role = contrib.attrib.get('contrib-type')
+                collab.collab = contrib.findtext('collab')
                 k.append(collab)
         return k
 
