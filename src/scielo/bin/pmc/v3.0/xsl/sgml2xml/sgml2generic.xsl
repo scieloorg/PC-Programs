@@ -2737,16 +2737,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 			<xsl:value-of select="@id"/>
 		</xsl:variable>
-		<xsl:if test=".//graphic">
+		<xsl:if test="graphic">
 			<xsl:choose>
-				<xsl:when test="substring(.//graphic/@href,1,1)='?'">
-					<graphic xlink:href="{substring(.//graphic/@href,2)}{@id}"></graphic>
+				<xsl:when test="substring(graphic/@href,1,1)='?'">
+					<graphic xlink:href="{substring(graphic/@href,2)}{@id}"></graphic>
 				</xsl:when>
 				<xsl:when test="@filename">
 					<graphic xlink:href="{@filename}"></graphic>
 				</xsl:when>
 				<xsl:otherwise>
-					<graphic xlink:href="{.//graphic/@href}"></graphic>	
+					<graphic xlink:href="{graphic/@href}"></graphic>	
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>

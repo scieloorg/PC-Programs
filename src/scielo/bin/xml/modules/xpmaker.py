@@ -731,10 +731,7 @@ def normalize_xml_content(doc_files_info, content, version):
         #xml_status(content, 'sgml normalized')
 
     xml, e = xml_utils.load_xml(content)
-    if xml is None:
-        print(e)
-    else:
-        #xml_status(content, 'normalize_mixed_citations')
+    if xml is not None:
         content = content.replace('&amp;amp;', '&amp;')
         content = content.replace('&amp;#', '&#')
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
@@ -817,8 +814,6 @@ def normalize_package_name(doc_files_info, acron, content):
     curr_and_new_href_list = None
 
     if not doc.tree is None:
-        register_log('get_attach_info')
-
         doc_files_info.new_name = get_new_name(doc_files_info, doc, acron)
         curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info, doc)
 

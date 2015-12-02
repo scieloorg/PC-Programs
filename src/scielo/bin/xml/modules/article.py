@@ -1090,10 +1090,11 @@ class Article(ArticleXML):
         r = []
         if self.tree is not None:
             for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
-                for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+                for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
                     href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
                     _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
                     r.append(_href)
+        print(r)
         return r
 
     @property
