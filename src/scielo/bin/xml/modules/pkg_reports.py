@@ -484,6 +484,36 @@ class ArticlesPkgReport(object):
                             lang_dep[lang][k] = [item.title for item in values]
                         else:
                             lang_dep[lang][k] = [item.text for item in values]
+            authors = []
+            for item in doc.contrib_names:
+                item_content = ''
+                if item.role is not None:
+                    item_content += '(contrib-type=' + item.role + ') '
+                if item.surname is not None:
+                    item_content += item.surname
+                if item.fname is not None:
+                    item_content += ', ' + item.fname
+                if item.prefix is not None:
+                    item_content += ' | prefix: ' + item.prefix
+                if item.suffix is not None:
+                    item_content += ' | suffix: ' + item.suffix
+                authors.append(item_content)
+            for item in doc.contrib_collabs:
+                item_content = 'collab: '
+                if item.role is not None:
+                    item_content += '(contrib-type=' + item.role + ') '
+                if item.collab is not None:
+                    item_content += item.collab
+                authors.append(item_content)
+
+            values = []
+            values.append(xml_name)
+            values.append(doc.toc_section)
+            values.append(doc.article_type)
+            values.append(authors)
+            values.append('')
+            values.append('')
+            items.append(label_values(labels, values))
 
             values = []
             values.append(xml_name)
