@@ -1094,7 +1094,6 @@ class Article(ArticleXML):
                     href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
                     _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
                     r.append(_href)
-        print(r)
         return r
 
     @property
