@@ -158,7 +158,7 @@ class ArticleDisplayReport(object):
     @property
     def fpage(self):
         r = self.display_labeled_value('fpage', self.article.fpage, 'fpage')
-        r += self.display_labeled_value('lpage', self.article.fpage, 'lpage')
+        r += self.display_labeled_value('lpage', self.article.lpage, 'lpage')
         return r
 
     @property
