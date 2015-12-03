@@ -567,12 +567,22 @@ def normalize_spaces(content):
     prefix = split_prefix(content)
     if len(prefix) > 0:
         xml = content[len(prefix):]
+    xml = fix_styles_spaces(xml)
     xml = xml.replace('\r', '')
     xml = xml.replace('>', '>NORMALIZESPACES')
     xml = xml.replace('<', 'NORMALIZESPACES<')
     xml = ''.join([normalize_spaces_in_item(item) for item in xml.split('NORMALIZESPACES')])
     xml = remove_exceding_style_tags(xml)
     return prefix + xml
+
+
+def fix_styles_spaces(content):
+    for style in ['bold', 'italic']:
+        if content.count('</' + style + '> ') == 0 and content.count('</' + style + '>') > 0:
+            content = content.replace('</' + style + '>', '</' + style + '> ')
+        if content.count(' <' + style + '>') == 0 and content.count('<' + style + '>') > 0:
+            content = content.replace('<' + style + '>', ' <' + style + '>')
+    return content
 
 
 def remove_exceding_style_tags(content):

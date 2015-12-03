@@ -322,20 +322,15 @@ class ArticlesPkgReport(object):
         values = []
         values.append(_('references by type'))
         values.append('INFO')
-        values.append({reftype: str(sum(sources.values())) for reftype, sources in self.reftype_and_sources.items()})
+        values.append({reftype: str(sum([len(occ) for occ in sources.values()])) for reftype, sources in self.reftype_and_sources.items()})
         items.append(label_values(labels, values))
 
         #message = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}}
         if len(self.bad_sources_and_reftypes) > 0:
             values = []
-            values.append(_('same sources as different types'))
+            values.append(_('same sources as different types references'))
             values.append('ERROR')
             values.append(self.bad_sources_and_reftypes)
-            items.append(label_values(labels, values))
-            values = []
-            values.append(_('same sources as different types references'))
-            values.append('INFO')
-            values.append({source: self.sources_at.get(source) for source in self.bad_sources_and_reftypes.keys()})
             items.append(label_values(labels, values))
 
         if len(self.missing_source) > 0:
@@ -358,7 +353,7 @@ class ArticlesPkgReport(object):
                 items = []
                 h += html_reports.tag('h4', reftype)
                 for source in sorted(sources.keys()):
-                    items.append({'source': source, 'total': str(sources[source])})
+                    items.append({'source': source, 'total': sources[source]})
                 h += html_reports.sheet(labels, items, 'dbstatus')
         return h
 
@@ -397,7 +392,6 @@ class ArticlesPkgReport(object):
 
     def compile_references(self):
         self.sources_and_reftypes = {}
-        self.sources_at = {}
         self.reftype_and_sources = {}
         self.missing_source = []
         self.missing_year = []
@@ -405,33 +399,31 @@ class ArticlesPkgReport(object):
         self.unusual_years = []
         for xml_name, doc in self.complete_issue_articles.articles.items():
             for ref in doc.references:
-                if not ref.source in self.sources_and_reftypes.keys():
-                    self.sources_and_reftypes[ref.source] = {}
-                if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
-                    self.sources_and_reftypes[ref.source][ref.publication_type] = 0
-                self.sources_and_reftypes[ref.source][ref.publication_type] += 1
-                if not ref.source in self.sources_at.keys():
-                    self.sources_at[ref.source] = []
-                if not xml_name in self.sources_at[ref.source]:
-                    self.sources_at[ref.source].append(xml_name + ': ' + str(ref.id) + ' - ' + ref.publication_type)
+                if ref.source is not None:
+                    if not ref.source in self.sources_and_reftypes.keys():
+                        self.sources_and_reftypes[ref.source] = {}
+                    if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
+                        self.sources_and_reftypes[ref.source][ref.publication_type] = []
+                    self.sources_and_reftypes[ref.source][ref.publication_type].append(xml_name + ': ' + str(ref.id))
+
                 if not ref.publication_type in self.reftype_and_sources.keys():
                     self.reftype_and_sources[ref.publication_type] = {}
                 if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
-                    self.reftype_and_sources[ref.publication_type][ref.source] = 0
-                self.reftype_and_sources[ref.publication_type][ref.source] += 1
+                    self.reftype_and_sources[ref.publication_type][ref.source] = []
+                self.reftype_and_sources[ref.publication_type][ref.source].append(xml_name + ': ' + str(ref.id))
 
                 # year
                 if ref.publication_type in attributes.BIBLIOMETRICS_USE:
                     if ref.year is None:
-                        self.missing_year.append([ref.id, xml_name])
+                        self.missing_year.append([xml_name, ref.id])
                     else:
                         numbers = len([n for n in ref.year if n.isdigit()])
                         not_numbers = len(ref.year) - numbers
                         if not_numbers > numbers:
-                            self.unusual_years.append([ref.year, ref.id, xml_name])
+                            self.unusual_years.append([xml_name, ref.id, ref.year])
 
                     if ref.source is None:
-                        self.missing_source.append([ref.id, xml_name])
+                        self.missing_source.append([xml_name, ref.id])
                     else:
                         numbers = len([n for n in ref.source if n.isdigit()])
                         not_numbers = len(ref.source) - numbers

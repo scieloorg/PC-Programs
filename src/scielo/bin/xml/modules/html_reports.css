@@ -14,7 +14,9 @@ div {
     border: none;
 }
 
-
+td {
+  vertical-align: top;
+}
 .subtitle {
   margin: 5px;
   font-size: 8pt;
