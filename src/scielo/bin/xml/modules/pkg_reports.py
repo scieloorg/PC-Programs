@@ -305,10 +305,10 @@ class ArticlesPkgReport(object):
         r += html_reports.tag('h4', _('Affiliations overview'))
         items = []
         affs_compiled = self.compile_affiliations()
-        for label, q in affs_compiled.items():
-            items.append({'label': label, 'quantity': str(q)})
+        for label, occs in affs_compiled.items():
+            items.append({'label': label, 'quantity': str(len(occs)), _('files'): sorted(list(set(occs)))})
 
-        r += html_reports.sheet(['label', 'quantity'], items, 'dbstatus')
+        r += html_reports.sheet(['label', 'quantity', _('files')], items, 'dbstatus')
         return r
 
     def references_overview_report(self):
@@ -370,24 +370,24 @@ class ArticlesPkgReport(object):
                 _('authors with invalid xref[@ref-type=aff]'), 
                 _('incomplete affiliations')]
         for k in keys:
-            evaluation[k] = 0
+            evaluation[k] = []
 
         for xml_name, doc in self.complete_issue_articles.articles.items():
             aff_ids = [aff.id for aff in doc.affiliations]
             for contrib in doc.contrib_names:
                 if len(contrib.xref) == 0:
-                    evaluation[_('authors without aff')] += 1
+                    evaluation[_('authors without aff')].append(xml_name)
                 elif len(contrib.xref) > 1:
                     valid_xref = [xref for xref in contrib.xref if xref in aff_ids]
                     if len(valid_xref) != len(contrib.xref):
-                        evaluation[_('authors with invalid xref[@ref-type=aff]')] += 1
+                        evaluation[_('authors with invalid xref[@ref-type=aff]')].append(xml_name)
                     elif len(valid_xref) > 1:
-                        evaluation[_('authors with more than 1 affs')] += 1
+                        evaluation[_('authors with more than 1 affs')].append(xml_name)
                     elif len(valid_xref) == 0:
-                        evaluation[_('authors without aff')] += 1
+                        evaluation[_('authors without aff')].append(xml_name)
             for aff in doc.affiliations:
                 if None in [aff.id, aff.i_country, aff.norgname, aff.orgname, aff.city, aff.state, aff.country]:
-                    evaluation[_('incomplete affiliations')] += 1
+                    evaluation[_('incomplete affiliations')].append(xml_name)
         return evaluation
 
     def compile_references(self):
