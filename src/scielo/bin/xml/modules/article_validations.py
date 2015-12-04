@@ -13,14 +13,14 @@ import html_reports
 import institutions_service
 
 
-def confirm_missing_items(missing_xref_items, bibr_xref_ranges_items):
+def confirm_missing_xref_items(missing_xref_items, any_xref_ranges_items):
     confirmed_missing = missing_xref_items
-    if len(bibr_xref_ranges_items) > 0:
+    if len(any_xref_ranges_items) > 0:
         missing_numbers = [int(rid[1:]) for rid in missing_xref_items if rid[1:].isdigit()]
         not_missing = []
         i = 0
         for missing_number in missing_numbers:
-            for start, end, start_node, end_node in bibr_xref_ranges_items:
+            for start, end, start_node, end_node in any_xref_ranges_items:
                 if start < missing_number < end:
                     not_missing.append(missing_xref_items[i])
             i += 1
@@ -281,8 +281,10 @@ class ArticleContentValidation(object):
         items.append(self.titles_abstracts_keywords)
         items.append(self.validate_xref_reftype)
         #utils.debugging(datetime.now().isoformat() + ' validations')
+
+        #items.append(self.xref_rid_and_text)
         items.append(self.missing_xref_list)
-        items.append(self.missing_bibr_xref)
+        #items.append(self.missing_bibr_xref)
 
         #utils.debugging(datetime.now().isoformat() + ' validations 2')
         r = self.normalize_validations(items)
@@ -955,7 +957,7 @@ class ArticleContentValidation(object):
                 elements = attributes.REFTYPE_AND_TAG_ITEMS.get(xref['ref-type'])
                 tag = id_and_elem_name.get(xref['rid'])
                 if tag is None:
-                    message.append(('xref/@rid', 'FATAL ERROR', _('Missing') + ' element[@id=' + xref['rid'] + _(' and ') + '@ref-type=' + xref['ref-type'] + ']'))
+                    message.append(('xref/@rid', 'FATAL ERROR', _('Missing') + ' ' + xref['ref-type'] + '[@id=' + xref['rid'] + ']'))
                 elif elements is None:
                     # no need to validate
                     valid = True
@@ -979,25 +981,34 @@ class ArticleContentValidation(object):
 
     @property
     def missing_xref_list(self):
-        alert_tags = ['fig', 'table-wrap', ]
-        rid_list = [node['rid'] for node in self.article.xref_nodes]
+        tag_and_xref_types = {'ref': 'bibr', 'fig-group': 'fig', 'table-wrap-group': 'table', 'fig': 'fig', 'table-wrap': 'table'}
         message = []
         missing = {}
+        tags_id_list = {k: [] for k in tag_and_xref_types.keys()}
         for node in self.article.elements_which_has_id_attribute:
-            _id = node.attrib.get('id')
-            if _id is None:
-                message.append((node.tag, 'ERROR', _('Missing') + ' @id'))
-            else:
-                if not _id in rid_list:
-                    if node.tag in alert_tags:
-                        if not node.tag in missing.keys():
-                            missing[node.tag] = []
-                        missing[node.tag].append(_id)
+            if node.tag in tag_and_xref_types.keys():
+                xref_type = tag_and_xref_types[node.tag]
+                _id = node.attrib.get('id')
+                xref_nodes = [item for item in self.article.xref_nodes if item['rid'] == _id]
+                if len(xref_nodes) == 0:
+                    if not xref_type in missing.keys():
+                        missing[xref_type] = []
+                    missing[xref_type].append(_id)
+                else:
+                    for item in xref_nodes:
+                        if item['ref-type'] != xref_type:
+                            message.append(('xref/@ref-type', 'FATAL ERROR', 'xref[@rid="' + item['rid'] + '"]/@ref-type=' + item['ref-type'] + ': ' + _('Invalid value') + '. ' + _('Expected value:') + xref_type))
 
-        for tag, not_found in missing.items():
-            for xref_rid in not_found:
-                message.append((tag, 'ERROR', _('Missing') + ': ' + 'xref[@rid="' + xref_rid + '"]'))
+        for xref_type, missing_xref_list in missing.items():
+            missing_xref_list = confirm_missing_xref_items(missing_xref_list, self.article.any_xref_ranges.get(xref_type))
 
+            if len(missing_xref_list) > 0:
+                for xref in missing_xref_list:
+                    message.append(('xref[@ref-type=' + xref_type + ']', 'ERROR', _('Missing') + ' xref[@ref-type=' + xref_type + ']: ' + xref))
+
+            for start, end, start_node, end_node in self.article.any_xref_ranges.get(xref_type):
+                if start > end:
+                    message.append(('xref', 'ERROR', _('Invalid values for @rid={rid} or xref={xref} or @rid={rid2} or xref={xref2}').format(rid=start_node.attrib.get('rid'), xref=start_node.text, rid2=end_node.attrib.get('rid'), xref2=end_node.text)))
         return message
 
     @property
@@ -1017,8 +1028,8 @@ class ArticleContentValidation(object):
             message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
 
         if len(missing) > 0:
-            if self.article.is_bibr_xref_number:
-                missing = confirm_missing_items(missing, self.article.bibr_xref_ranges)
+            print(missing)
+            missing = confirm_missing_xref_items(missing, self.article.bibr_xref_ranges)
 
             if len(missing) > 0:
                 for xref in missing:
@@ -1033,6 +1044,17 @@ class ArticleContentValidation(object):
                 if rid is not None and bibr_xref.text is not None:
                     if not rid[1:] in bibr_xref.text and not bibr_xref.text.replace('(', '').replace(')', '') in rid:
                         message.append(('xref/@rid', 'ERROR', _('Invalid values for @rid={rid} or xref={xref}').format(rid=rid, xref=bibr_xref.text)))
+        return message
+
+    @property
+    def xref_rid_and_text(self):
+        message = []
+        for xref_node in self.article.xref_nodes:
+            rid = xref_node['rid']
+            if rid is not None and xref_node['xml'] is not None:
+                if not rid[1:] in xref_node['xml']:
+                    message.append(('xref/@rid', 'WARNING', _('Invalid values for @rid={rid} or xref={xref}').format(rid=rid, xref=xref_node['xml'])))
+        return message
 
     def href_list(self, path):
         href_items = {}

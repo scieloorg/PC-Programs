@@ -757,7 +757,7 @@ def remove_styles_off_content(content):
 def remove_styles_off_tagged_content(tag, content):
     open_tag = '<' + tag + '>'
     close_tag = '</' + tag + '>'
-
+    content = content.replace(open_tag + ' ', ' ' + open_tag).replace(' ' + close_tag, close_tag + ' ')
     content = content.replace(open_tag, '~BREAK~' + open_tag).replace(close_tag, close_tag + '~BREAK~')
     parts = []
     for part in content.split('~BREAK~'):
@@ -773,7 +773,7 @@ def remove_styles_off_tagged_content(tag, content):
                 if remove_all or part.startswith(open_tag + '<' + style + '>') and part.endswith('</' + style + '>' + close_tag):
                     part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
         parts.append(part)
-    return ''.join(parts)
+    return ''.join(parts).replace(open_tag + ' ', ' ' + open_tag).replace(' ' + close_tag, close_tag + ' ')
 
 
 def get_new_name(doc_files_info, doc, acron):
