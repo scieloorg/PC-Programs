@@ -951,8 +951,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="author_rid" select="@rid"/>
 		<contrib>
 			<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
-			<xsl:apply-templates select=".//authorid"/>
 			<xsl:apply-templates select="@*[name()!='rid']"/>
+			<xsl:apply-templates select=".//authorid"/>
 			<xsl:apply-templates select="."/>
 			<xsl:apply-templates select=".//xref|role"/>
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
