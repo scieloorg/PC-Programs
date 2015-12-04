@@ -164,6 +164,9 @@ class ArticleXML(object):
         self._bibr_xref_parent_nodes = None
         self._is_bibr_xref_number = None
         self._bibr_xref_nodes = None
+        self._any_xref_ranges = None
+        self._any_xref_parent_nodes = None
+        self._any_xref_nodes = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
@@ -223,6 +226,72 @@ class ArticleXML(object):
         return r
 
     @property
+    def any_xref_ranges(self):
+        if self._any_xref_ranges is None:
+            self._any_xref_ranges = {}
+            for xref_type, xref_type_nodes in self.any_xref_parent_nodes.items():
+                if not xref_type in self._any_xref_ranges.keys():
+                    self._any_xref_ranges[xref_type] = []
+                for xref_parent_node, xref_node_items in xref_type_nodes:
+                    # nodes de um tipo de xref
+                    xref_parent_xml = xml_utils.tostring(xref_parent_node)
+                    parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+                    parts = [item for item in parts if ' ref-type="' + xref_type + '"' in item]
+                    k = 0
+                    for item in parts:
+                        text = ''
+                        delimiter = ''
+                        if '</xref>' in item:
+                            delimiter = '</xref>'
+                        elif '/>' in item:
+                            delimiter = '/>'
+                        if len(delimiter) > 0:
+                            if delimiter in item:
+                                text = item[item.find(delimiter)+len(delimiter):]
+                        if text.startswith('-'):
+                            start = None
+                            end = None
+                            n = xref_node_items[k].attrib.get('rid')
+                            if n is not None:
+                                n = n[1:]
+                                if n.isdigit():
+                                    start = int(n)
+                            if k < len(xref_node_items):
+                                n = xref_node_items[k+1].attrib.get('rid')
+                                if n is not None:
+                                    n = n[1:]
+                                    if n.isdigit():
+                                        end = int(n)
+                                if not None in [start, end]:
+                                    self._any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
+                        #elif '-' in text:
+                        #    print(text)
+                        k += 1
+        return self._any_xref_ranges
+
+    @property
+    def any_xref_parent_nodes(self):
+        if self._any_xref_parent_nodes is None:
+            self._any_xref_parent_nodes = {}
+            if self.tree is not None:
+                for xref_parent_node in self.tree.findall('.//*[xref]'):
+                    xref_nodes = {}
+                    for xref_node in xref_parent_node.findall('xref'):
+                        xref_type = xref_node.attrib.get('ref-type')
+                        if not xref_type in xref_nodes.keys():
+                            xref_nodes[xref_type] = []
+                        xref_nodes[xref_type].append(xref_node)
+
+                    if not xref_type in self._any_xref_parent_nodes.keys():
+                        self._any_xref_parent_nodes[xref_type] = []
+                    for xref_type, xref_type_nodes in xref_nodes.items():
+                        if len(xref_type_nodes) > 1:
+                            # considerar apenas quando há mais de 1 xref[@ref-type='<any>']
+                            # pois range somente éh possível a partir de 2
+                            self._any_xref_parent_nodes[xref_type].append((xref_parent_node, xref_type_nodes))
+        return self._any_xref_parent_nodes
+
+    @property
     def bibr_xref_ranges(self):
         if self._bibr_xref_ranges is None:
             self._bibr_xref_ranges = []
@@ -244,7 +313,7 @@ class ArticleXML(object):
                             if len(delimiter) > 0:
                                 if delimiter in parts[k]:
                                     text = parts[k][parts[k].find(delimiter)+len(delimiter):]
-                            if '-' in text:
+                            if text.startswith('-'):
                                 start = None
                                 end = None
                                 n = bibr_xref_node_items[k-1].attrib.get('rid')
@@ -259,6 +328,8 @@ class ArticleXML(object):
                                         end = int(n)
                                 if not None in [start, end]:
                                     self._bibr_xref_ranges.append([start, end, bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
+                            #elif '-' in text:
+                            #    print(text)
         return self._bibr_xref_ranges
 
     @property

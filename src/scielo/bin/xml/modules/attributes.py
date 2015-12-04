@@ -336,7 +336,7 @@ def suggestions_of_article_type_by_section_title(section_title):
             suggestions.append('review-article')
         elif 'revis' in lower_section_title and ('artigo' in lower_section_title or u'artículo' in lower_section_title):
             suggestions.append('review-article')
-        elif 'tech' in lower_section_title or u'técnico' in lower_section_title:
+        elif ('tech' in lower_section_title and 'article' in lower_section_title) or (u'técnico' in lower_section_title and 'informe' in lower_section_title) or (u'técnico' in lower_section_title and u'relatório' in lower_section_title):
             suggestions.append('technical-report')
         elif 'comment' in lower_section_title or 'coment' in lower_section_title:
             suggestions.append('article-commentary')
