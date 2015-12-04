@@ -135,7 +135,7 @@ def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
 
 def validate_name(label, value, invalid_terms):
     r = []
-    result = required(label, value, 'ERROR')
+    result = required(label, value, 'WARNING')
     label, status, msg = result
     if status == 'OK':
         result = invalid_terms_in_value(label, value, invalid_terms, 'ERROR')
