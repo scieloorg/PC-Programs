@@ -957,7 +957,7 @@ class ArticleContentValidation(object):
                 elements = attributes.REFTYPE_AND_TAG_ITEMS.get(xref['ref-type'])
                 tag = id_and_elem_name.get(xref['rid'])
                 if tag is None:
-                    message.append(('xref/@rid', 'FATAL ERROR', _('Missing') + ' ' + xref['ref-type'] + '[@id=' + xref['rid'] + ']'))
+                    message.append(('xref/@rid', 'FATAL ERROR', xref['xml'] + ': ' + _('Missing') + ' ' + xref['ref-type'] + '[@id=' + xref['rid'] + ']'))
                 elif elements is None:
                     # no need to validate
                     valid = True
@@ -1000,15 +1000,18 @@ class ArticleContentValidation(object):
                             message.append(('xref/@ref-type', 'FATAL ERROR', 'xref[@rid="' + item['rid'] + '"]/@ref-type=' + item['ref-type'] + ': ' + _('Invalid value') + '. ' + _('Expected value:') + xref_type))
 
         for xref_type, missing_xref_list in missing.items():
-            missing_xref_list = confirm_missing_xref_items(missing_xref_list, self.article.any_xref_ranges.get(xref_type))
+            if self.article.any_xref_ranges.get(xref_type) is None:
+                print(xref_type + ' has no xref ranges???')
+            else:
+                missing_xref_list = confirm_missing_xref_items(missing_xref_list, self.article.any_xref_ranges.get(xref_type))
 
             if len(missing_xref_list) > 0:
                 for xref in missing_xref_list:
                     message.append(('xref[@ref-type=' + xref_type + ']', 'ERROR', _('Missing') + ' xref[@ref-type=' + xref_type + ']: ' + xref))
-
-            for start, end, start_node, end_node in self.article.any_xref_ranges.get(xref_type):
-                if start > end:
-                    message.append(('xref', 'ERROR', _('Invalid values for @rid={rid} or xref={xref} or @rid={rid2} or xref={xref2}').format(rid=start_node.attrib.get('rid'), xref=start_node.text, rid2=end_node.attrib.get('rid'), xref2=end_node.text)))
+            if self.article.any_xref_ranges.get(xref_type) is not None:
+                for start, end, start_node, end_node in self.article.any_xref_ranges.get(xref_type):
+                    if start > end:
+                        message.append(('xref', 'ERROR', _('Invalid values for @rid={rid} or xref={xref} or @rid={rid2} or xref={xref2}').format(rid=start_node.attrib.get('rid'), xref=start_node.text, rid2=end_node.attrib.get('rid'), xref2=end_node.text)))
         return message
 
     @property

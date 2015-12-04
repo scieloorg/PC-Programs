@@ -282,8 +282,9 @@ class ArticleXML(object):
                             xref_nodes[xref_type] = []
                         xref_nodes[xref_type].append(xref_node)
 
-                    if not xref_type in self._any_xref_parent_nodes.keys():
-                        self._any_xref_parent_nodes[xref_type] = []
+                        if not xref_type in self._any_xref_parent_nodes.keys():
+                            self._any_xref_parent_nodes[xref_type] = []
+
                     for xref_type, xref_type_nodes in xref_nodes.items():
                         if len(xref_type_nodes) > 1:
                             # considerar apenas quando há mais de 1 xref[@ref-type='<any>']
