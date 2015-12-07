@@ -250,8 +250,5 @@
 		</uri>
 	</xsl:template>
 	
-	<xsl:template match="*[pub-date/@pub-type='collection']/pub-date[@pub-type='epub']">
-	</xsl:template>
-	
 	<xsl:template match="funding-group"></xsl:template>
 </xsl:stylesheet>
