@@ -757,14 +757,14 @@ class ArticlesPkgReport(object):
                 issue_common_data += html_reports.format_list(label + ':', 'ol', self.complete_issue_articles._compiled_pkg_metadata[label].keys())
         return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', issue_common_data, 'issue-data')
 
-    def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, is_xml_generation, selected_names=None):
+    def validate_articles_pkg_xml_and_data(self, doc_files_info_items, dtd_files, is_xml_generation, selected_names=None):
         pkg_path = os.path.dirname(doc_files_info_items.values()[0].new_xml_filename)
 
         self.pkg_xml_structure_validations = PackageValidationsResults(self.report_path, 'xmlstr-', '')
         self.pkg_xml_content_validations = PackageValidationsResults(self.report_path, 'xmlcon-', '')
 
         self.validate_articles_pkg_xml_structure(doc_files_info_items, dtd_files, selected_names)
-        self.validate_articles_pkg_xml_content(doc_files_info_items, pkg_path, {k: v.new_name for k, v in doc_files_info_items.items()}, org_manager, is_xml_generation, selected_names)
+        self.validate_articles_pkg_xml_content(doc_files_info_items, pkg_path, {k: v.new_name for k, v in doc_files_info_items.items()}, is_xml_generation, selected_names)
 
         if self.is_db_generation:
             self.pkg_xml_structure_validations.save_reports()
@@ -810,7 +810,7 @@ class ArticlesPkgReport(object):
             else:
                 utils.display_message(' -- not selected')
 
-    def validate_articles_pkg_xml_content(self, doc_files_info_items, pkg_path, new_names, org_manager, is_xml_generation, selected_names=None):
+    def validate_articles_pkg_xml_content(self, doc_files_info_items, pkg_path, new_names, is_xml_generation, selected_names=None):
         if selected_names is None:
             selected_names = self.pkg_articles.articles.keys()
         n = '/' + str(len(self.pkg_articles.articles))
@@ -828,7 +828,7 @@ class ArticlesPkgReport(object):
             utils.display_message(item_label)
 
             if xml_name in selected_names:
-                report_content = article_reports.article_data_and_validations_report(org_manager, doc, new_name, pkg_path, self.is_db_generation, is_xml_generation)
+                report_content = article_reports.article_data_and_validations_report(doc, new_name, pkg_path, self.is_db_generation, is_xml_generation)
                 data_validations = ValidationsResults(report_content)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
                 if is_xml_generation:

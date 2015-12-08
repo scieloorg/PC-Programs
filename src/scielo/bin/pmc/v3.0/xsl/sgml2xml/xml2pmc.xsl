@@ -230,7 +230,7 @@
 		
 	</xsl:template>
 	
-	<xsl:template match="contrib/xref[text()='']"></xsl:template>
+	<xsl:template match="contrib/xref[normalize-space(text())='']"></xsl:template>
 	<xsl:template match="ref/@specific-use|element-citation/@specific-use"></xsl:template>
 	<xsl:template match="article/@specific-use"></xsl:template>
 	

@@ -937,7 +937,7 @@ language
 +--+-----------+
 |ca|Catalan    |
 +--+-----------+
-|ch|Chinese    |
+|zh|Chinese    |
 +--+-----------+
 |cs|Czech      |
 +--+-----------+

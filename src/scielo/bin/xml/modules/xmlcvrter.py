@@ -7,6 +7,7 @@ from datetime import datetime
 from __init__ import _
 import fs_utils
 import utils
+import article_utils
 import html_reports
 import dbm_isis
 import xc_models
@@ -342,7 +343,7 @@ class Conversion(object):
                     if xml_name in self.changed_orders.keys():
                         incorrect_order, curr_order = self.changed_orders[xml_name]
 
-                    normalize_affiliations(self.pkg.articles[xml_name])
+                    article_utils.normalize_affiliations(self.pkg.articles[xml_name])
                     self.db.evaluate(self.pkg.issue_models.record, self.pkg.articles[xml_name], valid_aop, incorrect_order)
                 else:
                     xc_result = 'rejected'
@@ -489,7 +490,7 @@ def convert_package(src_path):
 
             fs_utils.append_file(log_package, 'pkg_validator.validate_articles_pkg_xml_and_data')
 
-            pkg_validator.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, False, conversion.selected_articles.keys())
+            pkg_validator.validate_articles_pkg_xml_and_data(doc_file_info_items, dtd_files, False, conversion.selected_articles.keys())
 
             pkg_xml_fatal_errors = pkg_validator.pkg_xml_structure_validations.fatal_errors + pkg_validator.pkg_xml_content_validations.fatal_errors
 
@@ -889,27 +890,11 @@ def execute_converter(package_paths, collection_name=None):
     utils.display_message(_('finished'))
 
 
-def normalize_affiliations(article):
-    article.normalized_affiliations = {}
-    for aff in article.affiliations:
-        norm_aff, ign = converter_env.institution_normalizer.normalized_institution(aff)
-        if norm_aff is not None:
-            article.normalized_affiliations[aff.id] = norm_aff
-
-
 def prepare_env(config):
     global converter_env
 
     if converter_env is None:
         converter_env = ConverterEnv()
-
-    import institutions_service
-
-    org_manager = institutions_service.OrgManager()
-    org_manager.load()
-
-    from article import InstitutionNormalizer
-    converter_env.institution_normalizer = InstitutionNormalizer(org_manager)
 
     db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
     converter_env.db_manager = xc_models.DBManager(db_isis, [config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst'], [config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst'], config.serial_path, config.local_web_app_path)

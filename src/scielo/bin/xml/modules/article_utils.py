@@ -6,6 +6,8 @@ import urllib2
 import json
 
 import utils
+import institutions_service
+import article as article_module
 
 
 URL_CHECKED = []
@@ -327,3 +329,62 @@ def api_crossref_doi_pid(doi_query_result):
 
 def query_doi_pid(api_crossref_doi_query_result):
     return api_crossref_doi_pid(api_crossref_doi_query_result)
+
+
+def normalize_affiliations(article):
+    article.normalized_affiliations = {}
+    for aff in article.affiliations:
+        norm_aff, ign = normalized_institution(aff)
+        if norm_aff is not None:
+            article.normalized_affiliations[aff.id] = norm_aff
+
+
+def normalized_institution(aff):
+    norm_aff = None
+    found_institutions = None
+    orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
+    if aff.norgname is not None or aff.orgname is not None:
+        found_institutions = institutions_service.validate_organization(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+
+    if found_institutions is not None:
+        if len(found_institutions) == 1:
+            valid = found_institutions
+        else:
+            valid = []
+            if aff.i_country is None:
+                country_info = {}
+                for k, v in list(set([(norm_country_name, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_country_name is not None and norm_country_code is not None])):
+                    if not k in country_info.keys():
+                        country_info[k] = []
+                    country_info[k].append(v)
+                country_info = {k: v[0] for k, v in country_info.items() if len(v) == 1}
+                print(country_info)
+
+                for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
+                    if norm_orgname.upper() in orgnames:
+                        if norm_country_code is None:
+                            norm_country_code = country_info.get(norm_country_name)
+                            print(norm_country_code)
+                            print(norm_country_name)
+                        valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+            else:
+                for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
+                    if norm_orgname.upper() in orgnames and aff.i_country == norm_country_code:
+                        valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+            if len(valid) > 1:
+                country_info = list(set([(norm_country_name, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
+
+                valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
+        if len(valid) == 1:
+            norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = valid[0]
+
+            if norm_orgname is not None and norm_country_code is not None:
+                norm_aff = article_module.Affiliation()
+                norm_aff.id = aff.id
+                norm_aff.norgname = norm_orgname
+                norm_aff.city = norm_city
+                norm_aff.state = norm_state
+                norm_aff.i_country = norm_country_code
+                norm_aff.country = norm_country_name
+
+    return (norm_aff, found_institutions)

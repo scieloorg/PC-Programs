@@ -9,7 +9,7 @@ filename = None
 ctrl_filename = None
 
 if len(sys.argv) == 7:
-    ign, orgname, norgname, country_name, country_code, state, city = sys.argv
+    ign, orgname, norgname, country_name, country_code, state, city = [item.decode(encoding=sys.getfilesystemencoding()) for item in sys.argv]
     print([orgname, norgname, country_name, country_code, state, city])
     org_manager = institutions_service.OrgManager()
 
@@ -26,7 +26,9 @@ if len(sys.argv) == 7:
     if city == '':
         city = None
 
-    normaff_result = institutions_service.validate_organization(org_manager, orgname, norgname, country_name, country_code, state, city)
+    normaff_result = institutions_service.validate_organization(orgname, norgname, country_name, country_code, state, city)
+    print(normaff_result)
+    normaff_result = institutions_service.normaff_search('|'.join([item if item is not None else '' for item in [orgname, country_name]]))
     print(normaff_result)
 else:
     print('python normaff_checker.py orgname norgname country_name country_code state city')
