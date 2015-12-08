@@ -675,34 +675,48 @@ def message_file_list(label, file_list):
     return '\n' + label + ': ' + str(len(file_list)) + '\n' + '\n'.join(sorted(file_list))
 
 
-def normalize_mixed_citations_item(item):
-    if item.startswith('<ref') and item.endswith('</ref>'):
-        if '<label>' in item and '<mixed-citation>' in item:
-            label = item[item.find('<label>')+len('<label>'):item.find('</label>')]
-            mixed_citation = item[item.find('<mixed-citation>')+len('<mixed-citation>'):item.find('</mixed-citation>')]
-            changed = mixed_citation
-            if not '<label>' in mixed_citation:
-                if not changed.startswith(label):
-                    sep = ' '
-                    if changed.startswith('.'):
-                        changed = changed[1:].strip()
-                        sep = '. '
-                    if label.endswith('.'):
-                        label = label[0:-1]
-                        sep = '. '
-                    changed = label + sep + changed
-                if mixed_citation != changed:
-                    if mixed_citation in item:
-                        item = item.replace(mixed_citation, changed)
-                    else:
-                        print('not found mixed-citation')
+def fix_book_data(item):
+    if 'publication-type="book"' in item and '</article-title>' in item:
+        item = item.replace('article-title', 'chapter-title')
+    if 'publication-type="book"' in item and not '</source>' in item:
+        item = item.replace('chapter-title', 'source')
     return item
 
 
-def normalize_mixed_citations(content):
+def normalize_mixed_citation(item):
+    if '<label>' in item and '<mixed-citation>' in item:
+        label = item[item.find('<label>')+len('<label>'):item.find('</label>')]
+        mixed_citation = item[item.find('<mixed-citation>')+len('<mixed-citation>'):item.find('</mixed-citation>')]
+        changed = mixed_citation
+        if not '<label>' in mixed_citation:
+            if not changed.startswith(label):
+                sep = ' '
+                if changed.startswith('.'):
+                    changed = changed[1:].strip()
+                    sep = '. '
+                if label.endswith('.'):
+                    label = label[0:-1]
+                    sep = '. '
+                changed = label + sep + changed
+            if mixed_citation != changed:
+                if mixed_citation in item:
+                    item = item.replace(mixed_citation, changed)
+                else:
+                    print('not found mixed-citation')
+    return item
+
+
+def normalize_references_item(item):
+    if item.startswith('<ref') and item.endswith('</ref>'):
+        item = normalize_mixed_citation(item)
+        item = fix_book_data(item)
+    return item
+
+
+def normalize_references(content):
     content = content.replace('<ref', '~BREAK~<ref')
     content = content.replace('</ref>', '</ref>~BREAK~')
-    content = ''.join([normalize_mixed_citations_item(item) for item in content.split('~BREAK~')])
+    content = ''.join([normalize_references_item(item) for item in content.split('~BREAK~')])
     return content
 
 
@@ -741,7 +755,7 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
         content = xml_utils.normalize_spaces(content)
-        content = normalize_mixed_citations(content)
+        content = normalize_references(content)
         content = remove_styles_off_content(content)
         content = xml_utils.pretty_print(content)
 
@@ -1017,11 +1031,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             report_components['issue-report'] = pkg_validator.issue_report
             toc_f = pkg_validator.blocking_errors
         if toc_f == 0:
-            org_manager = institutions_service.OrgManager()
-            org_manager.load()
-            institution_normalizer = article.InstitutionNormalizer(org_manager)
-
-            pkg_validator.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, is_xml_generation)
+            pkg_validator.validate_articles_pkg_xml_and_data(doc_files_info_items, scielo_dtd_files, is_xml_generation)
 
             if not is_xml_generation:
                 report_components['detail-report'] = pkg_validator.detail_report()

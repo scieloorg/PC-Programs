@@ -200,6 +200,11 @@ h5 {
     color: black;
     padding: 2px;
 }
+.valid {
+    background-color: #77B2D6;
+    color: white;
+    padding: 2px;
+}
 .label {
     font-weight: bold;
     font-family: Courier;

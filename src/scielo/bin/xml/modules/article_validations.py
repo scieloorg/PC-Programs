@@ -13,6 +13,10 @@ import html_reports
 import institutions_service
 
 
+def join_not_None_items(items, sep=', '):
+    return sep.join([item for item in items if item is not None])
+
+
 def confirm_missing_xref_items(missing_xref_items, any_xref_ranges_items):
     confirmed_missing = missing_xref_items
     if len(any_xref_ranges_items) > 0:
@@ -194,8 +198,7 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, org_manager, _article, is_db_generation, check_url):
-        self.org_manager = org_manager
+    def __init__(self, _article, is_db_generation, check_url):
         self.article = _article
         self.is_db_generation = is_db_generation
         self.check_url = check_url
@@ -654,19 +657,19 @@ class ArticleContentValidation(object):
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'FATAL ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
 
-            norm_aff, found_institutions = self.org_manager.normalized_institution(aff)
-            r.append(('aff', 'INFO', ', '.join([item for item in [aff.orgname, aff.city, aff.state, aff.country] if item is not None])))
-            r.append(('normalized aff', 'INFO', ', '.join([item for item in [aff.norgname, aff.i_country] if item is not None])))
+            norm_aff, found_institutions = article_utils.normalized_institution(aff)
+            r.append(('aff', 'INFO', join_not_None_items([aff.orgname, aff.city, aff.state, aff.country])))
+            r.append(('normalized aff', 'INFO', join_not_None_items([aff.norgname, aff.i_country])))
 
             if norm_aff is None:
-                msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in list(set([aff.orgname, aff.norgname])) if item is not None)
+                msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([aff.orgname, aff.norgname])), ' or ')
                 if found_institutions is not None:
                     if len(found_institutions) > 0:
-                        msg += _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in found_institutions])
+                        msg += _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
                 r.append(('normalized aff checked', 'ERROR', msg))
             else:
                 status = 'INFO'
-                r.append(('normalized aff checked', 'INFO', _('Valid: ') + ', '.join([item for item in [norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country] if item is not None])))
+                r.append(('normalized aff checked', 'VALID', _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))
                 self.article.normalized_affiliations[aff.id] = norm_aff
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
@@ -709,7 +712,7 @@ class ArticleContentValidation(object):
             return (_('total of pages of ') + self.article.elocation_id, 'WARNING', _('Unable to calculate'))
         else:
             pages = [self.article.fpage, self.article.lpage]
-            pages = '-'.join([item for item in pages if item is not None])
+            pages = join_not_None_items(pages, '-')
             if pages != '':
                 return (_('total of pages of ') + pages, 'WARNING', _('Unable to calculate'))
 
@@ -997,7 +1000,7 @@ class ArticleContentValidation(object):
                 else:
                     for item in xref_nodes:
                         if item['ref-type'] != xref_type:
-                            message.append(('xref/@ref-type', 'FATAL ERROR', 'xref[@rid="' + item['rid'] + '"]/@ref-type=' + item['ref-type'] + ': ' + _('Invalid value') + '. ' + _('Expected value:') + xref_type))
+                            message.append(('xref/@ref-type', 'FATAL ERROR', 'xref[@rid="' + str(item['rid']) + '"]/@ref-type=' + str(item['ref-type']) + ': ' + _('Invalid value') + '. ' + _('Expected value:') + str(xref_type)))
 
         for xref_type, missing_xref_list in missing.items():
             if self.article.any_xref_ranges.get(xref_type) is None:
