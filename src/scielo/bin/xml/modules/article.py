@@ -248,7 +248,7 @@ class ArticleXML(object):
                         if len(delimiter) > 0:
                             if delimiter in item:
                                 text = item[item.find(delimiter)+len(delimiter):]
-                        if text.startswith('-'):
+                        if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
                             start = None
                             end = None
                             n = xref_node_items[k].attrib.get('rid')
@@ -264,8 +264,6 @@ class ArticleXML(object):
                                         end = int(n)
                                 if not None in [start, end]:
                                     self._any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
-                        #elif '-' in text:
-                        #    print(text)
                         k += 1
         return self._any_xref_ranges
 
@@ -314,7 +312,7 @@ class ArticleXML(object):
                             if len(delimiter) > 0:
                                 if delimiter in parts[k]:
                                     text = parts[k][parts[k].find(delimiter)+len(delimiter):]
-                            if text.startswith('-'):
+                            if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
                                 start = None
                                 end = None
                                 n = bibr_xref_node_items[k-1].attrib.get('rid')
