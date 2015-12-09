@@ -661,6 +661,10 @@ class ArticleContentValidation(object):
             r.append(('aff', 'INFO', join_not_None_items([aff.orgname, aff.city, aff.state, aff.country])))
             r.append(('normalized aff', 'INFO', join_not_None_items([aff.norgname, aff.i_country])))
 
+            print('='*8)
+            print(norm_aff)
+            print('='*8)
+            
             if norm_aff is None:
                 msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([aff.orgname, aff.norgname])), ' or ')
                 if found_institutions is not None:

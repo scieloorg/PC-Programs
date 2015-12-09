@@ -375,6 +375,11 @@ def normalized_institution(aff):
                 country_info = list(set([(norm_country_name, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
 
                 valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
+
+        print('-'*10)
+        print('valid:')
+        print(valid)
+        
         if len(valid) == 1:
             norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = valid[0]
 

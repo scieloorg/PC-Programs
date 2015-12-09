@@ -34,6 +34,7 @@ class OrgManager(object):
         pass
 
     def search_institutions(self, orgname, city, state, country_code, country_name, exact_country=None):
+        print([orgname, city, state, country_code, country_name])
         results = self.local_institutions_manager.get_institutions(orgname, city, state, country_code, country_name)
         results += self.search_at_wayta(orgname, country_name, exact_country)
         results = sorted(list(set(results)))
@@ -61,9 +62,10 @@ class OrgManager(object):
         self.local_institutions_manager.create_db()
 
     def search_at_wayta(self, orgname, country_name, exact_country=None):
-        r = [(_orgname, None, None, None, _country_name) for score, _orgname, _country_name in wayta_search(orgname, country_name, exact_country) if _orgname == orgname]
+        #keys = ['score', 'value', 'city', 'state', 'iso3166', 'country']
+        r = [(_orgname, _city, _state, _country_code, _country_name) for score, _orgname, _city, _state, _country_code, _country_name in wayta_search(orgname, country_name, exact_country) if _orgname == orgname]
         if not len(r) == 1:
-            r = [(_orgname, None, None, None, _country_name) for score, _orgname, _country_name in wayta_search(orgname, country_name, exact_country)]
+            r = [(_orgname, _city, _state, _country_code, _country_name) for score, _orgname, _city, _state, _country_code, _country_name in wayta_search(orgname, country_name, exact_country)]
         return r
 
 
@@ -220,9 +222,10 @@ def format_wayta_results(result, filter_country=None):
     try:
         results = json.loads(result)
         if filter_country is None:
-            r = [(item.get('score'), item.get('value'), item.get('country')) for item in results.get('choices') if item.get('value', '') != '']
+            keys = ['score', 'value', 'city', 'state', 'iso3166', 'country']
+            r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '']
         else:
-            r = [(item.get('score'), item.get('value'), item.get('country')) for item in results.get('choices') if item.get('value', '') != '' and filter_country == item.get('country')]
+            r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '' and filter_country == item.get('country')]
     except Exception as e:
         print(e)
     return r
@@ -299,6 +302,9 @@ def validate_organization(orgname, norgname, country_name, country_code, state, 
         fixed = list(set(fixed))
         if len(fixed) == 1:
             _results = fixed
+    print('*'*10)
+    print(_results)
+    print('*'*10)
     return _results
 
 
