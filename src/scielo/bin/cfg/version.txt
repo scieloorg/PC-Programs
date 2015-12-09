@@ -1,4 +1,4 @@
-﻿4.0.090 trial - 01/12/2015*
+﻿4.0.090 trial - 14/12/2015*
 ==========================
 - XC
   - (bug) Do not use any api to find previous PID
@@ -14,12 +14,13 @@
 - XPM
   - (improvement) Present the "translation" of code languages
   - (improvement) Improve identification of normalized institutions
-  - (improvement) Do not consider missing bibr xref if it is in a xref range. Ex.: 2, 3, 4 are in (1-5), so they are not missing
+  - (improvement) Do not consider missing bibr/fig/table-wrap xref if it is in a xref range. Ex.: 2, 3, 4 are in (1-5), so they are not missing
   - (improvement) Do not require acronym
   - (improvement) Validation of article/@specific-use
   - (improvement) Better presentation of XML in the reports (textarea to code)
   - (improvement) Improve pretty print
   - (improvement) Improve validation of @article-type
+  - (improvement) Display the more details on overview reports (duplicity of source/aff/etc)
   - (new) Validation of fig-group/@ref-type and table-wrap-group/@ref-type
   - (new) Presentation of table
   - (new) Normalize mixed-citation, including label
@@ -33,12 +34,18 @@
   - (new) Identify duplication of trans-title/article-title, abstract/trans-abstract, kwd
   - (new) Validation of ISO Country Code
   - (bug) Fix history validation: received and accepted
-  - (bug) Remove inconvenient styles (bold/italic) within article-title, trans-title, kwd
+  - (bug) Remove inconvenient styles (bold/italic) within article-title, trans-title, kwd, source
   - (bug) Fix position of fn-group of translation
+  - (bug) Validate suffixes which are in capital letters (ex.: JUNIOR)
+  - (bug) Remove funding-group off PMC package
+  - (bug) Validation of affiliations using Wayta
 - Markup
   - (bug) Fix identification of *deflist
   - (bug) Fix [fngrp 
   - (bug) Enable tag authorid to identify ORCID
+  - (bug) Fix presentation of lpage value
+  - (bug) Fix the identification of the sources as using *source (blank space was being removed) 
+  - (bug) Fix automatic identification of table footnotes 
   - (new) Allow identify future dates: one year after the current one
   - (improvement) Do not complete by default the sps version
   - (improvement) Remove ref/@status=valid
