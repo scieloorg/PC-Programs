@@ -264,6 +264,8 @@ class ArticleXML(object):
                                         end = int(n)
                                 if not None in [start, end]:
                                     self._any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
+                        #else:
+                        #    print(text)
                         k += 1
         return self._any_xref_ranges
 

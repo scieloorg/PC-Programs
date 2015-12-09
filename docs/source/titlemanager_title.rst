@@ -599,12 +599,12 @@ Enter in HTML in English, Portuguese, Spanish, a text, which inform the license 
 
 
 
-Copyrighter 
-...........
+Copyright holder 
+................
 
 Field: 62
 
-Copyrighter
+Copyright holder
 
 Examples:    
 - Brazilian Journal of Medical and Biological Research    

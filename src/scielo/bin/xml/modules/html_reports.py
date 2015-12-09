@@ -197,7 +197,7 @@ def display_xml(value, width=70):
 
 
 def p_message(value):
-    return tag('p', value, get_message_style(value, 'ok'))
+    return tag('p', value, get_message_style(value, ''))
 
 
 def color_text(value):
@@ -273,6 +273,8 @@ def get_message_style(value, default):
         r = 'error'
     elif 'WARNING' in value:
         r = 'warning'
+    elif 'OK' in value:
+        r = 'ok'
     elif default is None or default == '':
         r = value
     else:
