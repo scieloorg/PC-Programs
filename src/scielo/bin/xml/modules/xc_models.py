@@ -544,6 +544,7 @@ class IssueModels(object):
         i.issn_id = record.get('35')
         i.journal_title = record.get('130')
         i.journal_id_nlm_ta = record.get('421')
+        i.journal_id_publisher_id = record.get('930').lower()
         issns = record.get('435')
         # 0011-5258^tPRINT
         # 1678-4588^tONLIN
@@ -565,7 +566,8 @@ class IssueModels(object):
         if article.tree is not None:
             validations = []
             validations.append((_('journal title'), article.journal_title, self.issue.journal_title))
-            validations.append((_('journal id NLM'), article.journal_id_nlm_ta, self.issue.journal_id_nlm_ta))
+            validations.append((_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.issue.journal_id_publisher_id))
+            validations.append((_('journal-id (nlm-ta)'), article.journal_id_nlm_ta, self.issue.journal_id_nlm_ta))
 
             a_issn = article.journal_issns.get('epub') if article.journal_issns is not None else None
             if a_issn is not None:

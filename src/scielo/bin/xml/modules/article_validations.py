@@ -229,7 +229,7 @@ class ArticleContentValidation(object):
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.publisher_name)
         #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.journal_id)
+        items.append(self.journal_id_publisher_id)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_issns)
@@ -405,8 +405,8 @@ class ArticleContentValidation(object):
         return required('publisher name', self.article.publisher_name, 'FATAL ERROR')
 
     @property
-    def journal_id(self):
-        return required('journal-id', self.article.journal_id, 'FATAL ERROR')
+    def journal_id_publisher_id(self):
+        return required('journal-id (publisher-id)', self.article.journal_id_publisher_id, 'FATAL ERROR')
 
     @property
     def journal_id_nlm_ta(self):
