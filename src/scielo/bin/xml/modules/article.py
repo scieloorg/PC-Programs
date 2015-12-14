@@ -65,7 +65,7 @@ class HRef(object):
         if self.id is None and parent is not None:
             self.id = parent.attrib.get('id', None)
         self.parent = parent
-        self.is_internal_file = xml_name in src
+        self.is_internal_file = (not '/' in src)
         self.is_image = ext in IMG_EXTENSIONS
 
     def file_location(self, path):
@@ -83,6 +83,10 @@ class HRef(object):
                         if location[-5:-4] != '.' and location[-4:-3] != '.':
                             location += '.jpg'
         return location
+
+    @property
+    def name_without_extension(self):
+        return self.src[0:self.src.rfind('.')] if '.' in self.src else self.src
 
 
 class PersonAuthor(object):
@@ -1131,6 +1135,33 @@ class ArticleXML(object):
     def href_files(self):
         return [href for href in self.hrefs if href.is_internal_file] if self.hrefs is not None else []
 
+    @property
+    def hrefs(self):
+        r = []
+        if self.tree is not None:
+            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+                for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
+                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
+                    r.append(_href)
+        return r
+
+    @property
+    def tables(self):
+        r = []
+        if self.tree is not None:
+            for t in self.tree.findall('.//*[table]'):
+                graphic = t.find('./graphic')
+                _href = None
+                if graphic is not None:
+                    src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    xml = xml_utils.node_xml(graphic)
+
+                    _href = HRef(src, graphic, t, xml, self.prefix)
+                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
+                r.append(_table)
+        return r
+
 
 class Article(ArticleXML):
 
@@ -1158,32 +1189,13 @@ class Article(ArticleXML):
         self.normalized_affiliations = None
         self.article_records = None
 
-    @property
-    def hrefs(self):
-        r = []
-        if self.tree is not None:
-            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
-                for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
-                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
-                    r.append(_href)
-        return r
-
-    @property
-    def tables(self):
-        r = []
-        if self.tree is not None:
-            for t in self.tree.findall('.//*[table]'):
-                graphic = t.find('./graphic')
-                _href = None
-                if graphic is not None:
-                    src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    xml = xml_utils.node_xml(graphic)
-
-                    _href = HRef(src, graphic, t, xml, self.prefix)
-                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
-                r.append(_table)
-        return r
+    def package_files(self, pkg_path):
+        files = [item for item in os.listdir(pkg_path) if item.startswith(self.prefix) and not item.endswith('.xml')]
+        for hrefitem in self.href_files:
+            file_location = hrefitem.file_location(pkg_path)
+            if os.path.isfile(file_location):
+                files.append(hrefitem.src)
+        return files
 
     @property
     def clinical_trial_url(self):

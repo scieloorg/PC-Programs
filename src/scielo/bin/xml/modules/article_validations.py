@@ -1069,21 +1069,17 @@ class ArticleContentValidation(object):
     def href_list(self, path):
         href_items = {}
         for hrefitem in self.article.hrefs:
-            status = 'OK'
-            message = ''
+            status_message = []
             if hrefitem.is_internal_file:
                 file_location = hrefitem.file_location(path)
                 if os.path.isfile(file_location):
                     if not '.' in hrefitem.src:
-                        message = _('missing extension of ') + hrefitem.src + '.'
-                        status = 'WARNING'
+                        status_message.append(('WARNING', _('missing extension of ') + hrefitem.src + '.'))
                 else:
                     if file_location.endswith(hrefitem.src):
-                        message = hrefitem.src + _(' not found in package')
-                        status = 'FATAL ERROR'
+                        status_message.append(('FATAL ERROR', hrefitem.src + _(' not found in package')))
                     elif file_location.endswith('.jpg') and (hrefitem.src.endswith('.tif') or hrefitem.src.endswith('.tiff')):
-                        message = os.path.basename(file_location) + _(' not found in package')
-                        status = 'FATAL ERROR'
+                        status_message.append(('FATAL ERROR', os.path.basename(file_location) + _(' not found in package')))
                 hreflocation = 'file:///' + file_location
             else:
                 hreflocation = hrefitem.src
@@ -1091,14 +1087,35 @@ class ArticleContentValidation(object):
                     if not article_utils.url_check(hrefitem.src, 1):
                         status = 'WARNING'
                         message = hrefitem.src + _(' is not working')
+                        status_message.append(('WARNING', hrefitem.src + _(' is not working')))
 
             if hrefitem.is_image:
                 display = html_reports.image(hreflocation)
             else:
                 display = html_reports.link(hreflocation, hrefitem.src)
-
-            href_items[hrefitem.src] = {'display': display, 'msg': message, 'status': status, 'elem': hrefitem}
+            if len(status_message) == 0:
+                status_message.append(('INFO', ''))
+            href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}
         return href_items
+
+    def package_files(self, pkg_path):
+        inxml = [item.name_without_extension for item in self.article.href_files]
+        inxml += [item.src for item in self.article.href_files]
+        items = []
+        for item in sorted(self.article.package_files(pkg_path)):
+            status = 'INFO' if item.startswith(self.article.prefix) else 'ERROR'
+            message = _('found in the package') if status == 'INFO' else _('file name must start with ') + self.article.prefix
+            items.append((item, status, message))
+            if item in inxml:
+                items.append((item, 'INFO', _('found in XML')))
+            else:
+                if not item.endswith('.pdf'):
+                    without_extension = item[0:item.rfind('.')] if '.' in item else item
+                    if without_extension in xml:
+                        items.append((without_extension, 'INFO', _('found in XML')))
+                    else:
+                        items.append((item, 'ERROR', _('not found in XML')))
+        return items
 
 
 class ReferenceContentValidation(object):

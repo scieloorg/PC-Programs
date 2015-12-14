@@ -20,7 +20,6 @@ import xml_versions
 import xpchecker
 import pkg_reports
 
-import institutions_service
 import symbols
 
 
