@@ -639,7 +639,7 @@ class ArticlesPkgReport(object):
                     unmatched = []
                     items = []
                     items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items, 'FATAL ERROR'])
-                    items.append([_('journal-id (publisher-id'), article.journal_id_publisher_id, acron_items, 'FATAL ERROR'])
+                    items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, acron_items, 'FATAL ERROR'])
                     items.append([_('e-ISSN'), article.e_issn, e_issn_items, 'FATAL ERROR'])
                     items.append([_('print ISSN'), article.print_issn, p_issn_items, 'FATAL ERROR'])
                     items.append([_('publisher name'), article.publisher_name, publisher_name_items, 'ERROR'])

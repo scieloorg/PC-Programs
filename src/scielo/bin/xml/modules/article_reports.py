@@ -26,7 +26,6 @@ class ArticleDisplayReport(object):
         self.article = article
         self.xml_name = xml_name
         self.xml_path = xml_path
-        self.files = package_files(xml_path, xml_name)
         self.sheet_data = sheet_data
 
     @property
@@ -69,17 +68,6 @@ class ArticleDisplayReport(object):
         r += self.funding
         r += self.footnotes
         return html_reports.tag('h2', 'article/back') + html_reports.tag('div', r, 'article-data')
-
-    @property
-    def files_and_href(self):
-        r = ''
-        r += html_reports.tag('h4', _('Files in the package'))
-        th, w, data = self.sheet_data.package_files(self.files)
-        r += html_reports.sheet(th, data)
-        r += html_reports.tag('h4', '@href')
-        th, w, data = self.sheet_data.hrefs_sheet_data(self.xml_path)
-        r += html_reports.sheet(th, data)
-        return r
 
     @property
     def authors_sheet(self):
@@ -437,46 +425,44 @@ class ArticleSheetData(object):
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 
+    def files_and_href(self, package_path):
+        r = ''
+        r += html_reports.tag('h4', _('Files in the package'))
+        th, data = self.package_files(package_path)
+        r += html_reports.sheet(th, data, table_style='validation', row_style='status')
+        r += html_reports.tag('h4', '@href')
+        th, data = self.hrefs_sheet_data(package_path)
+        r += html_reports.sheet(th, data, table_style='validation', row_style='status')
+        return r
+
     def hrefs_sheet_data(self, path):
-        t_header = ['href', 'display', 'xml']
+        t_header = ['href', 'status', 'message', 'display', 'xml']
         r = []
         href_items = self.article_validation.href_list(path)
         for src in sorted(href_items.keys()):
             hrefitem = href_items.get(src)
             if hrefitem['elem'].is_internal_file:
-                row = {}
-                row['href'] = src
-                row['display'] = hrefitem['display']
-                if hrefitem['status'] != 'OK':
-                    row['display'] += hrefitem['status'] + ': ' + hrefitem['msg']
-                row['xml'] = hrefitem['elem'].xml
-                r.append(row)
-        return (t_header, ['display', 'xml'], r)
+                for result in hrefitem['results']:
+                    row = {}
+                    row['href'] = src
+                    row['xml'] = hrefitem['elem'].xml
+                    row['display'] = hrefitem['display']
+                    row['status'] = result[0]
+                    row['message'] = result[1]
+                    r.append(row)
+        return (t_header, r)
 
-    def package_files(self, files):
-        t_header = ['files', 'status']
+    def package_files(self, package_path):
         r = []
-        inxml = [item.src for item in self.article.hrefs]
-
-        for item in sorted(files):
-            row = {}
-            row['files'] = item
-            status = ''
-            if item in inxml:
-                status = _('found in XML')
-            else:
-                if not item.endswith('.pdf'):
-                    if item[:-4] in inxml:
-                        status = _('found in XML')
-                    else:
-                        if item.endswith('.jpg') and (item.replace('.jpg', '.tif') in ' '.join(inxml) or item.replace('.jpg', '.tiff') in ' '.join(inxml)):
-                            # jpg was converted from a tif
-                            status = 'OK'
-                        else:
-                            status = 'WARNING: ' + _('not found in XML')
-            row['status'] = status
-            r.append(row)
-        return (t_header, ['files', 'status'], r)
+        t_header = ['files', 'status', 'message']
+        if len(self.article_validation.package_files(package_path)) > 0:
+            for filename, status, message in self.article_validation.package_files(package_path):
+                row = {}
+                row['files'] = filename
+                row['status'] = status
+                row['message'] = message
+                r.append(row)
+        return (t_header, r)
 
     def affiliations_sheet_data(self):
         t_header = ['aff id', 'aff orgname', 'aff norgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', ]
@@ -493,16 +479,6 @@ class ArticleSheetData(object):
             row['aff country'] = a.country
             r.append(row)
         return (t_header, ['aff xml'], r)
-
-
-def package_files(path, xml_name):
-    r = []
-    for item in os.listdir(path):
-        prefix = xml_name.replace('.xml', '')
-        if item.startswith(prefix + '.') or item.startswith(prefix + '-') or item.startswith(prefix + '_'):
-            if not item.endswith('.xml'):
-                r.append(item)
-    return r
 
 
 def article_data_and_validations_report(article, new_name, package_path, is_db_generation, is_sgml_generation):
@@ -525,7 +501,7 @@ def article_data_and_validations_report(article, new_name, package_path, is_db_g
 
         content.append(article_validation_report.validations(is_sgml_generation))
         content.append(article_display_report.table_tables)
-        content.append(article_display_report.files_and_href)
+        content.append(sheet_data.files_and_href(package_path))
 
         if is_sgml_generation:
             content.append(article_display_report.article_body)
@@ -534,3 +510,4 @@ def article_data_and_validations_report(article, new_name, package_path, is_db_g
         content = html_reports.join_texts(content)
 
     return content
+
