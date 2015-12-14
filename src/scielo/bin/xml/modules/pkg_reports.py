@@ -112,7 +112,7 @@ class PkgArticles(object):
         self.issue_files = None
         self.issue_models = None
 
-        self.expected_equal_values = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        self.expected_equal_values = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         self.expected_unique_value = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
         self.required_journal_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
@@ -228,6 +228,7 @@ class PkgArticles(object):
     def find_journal_data(self):
         journals = get_journals()
         nlm_title_items = []
+        acron_items = []
         e_issn_items = []
         p_issn_items = []
         publisher_name_items = []
@@ -242,6 +243,8 @@ class PkgArticles(object):
                         for item in j_items:
                             if len(item.nlm_title) > 0:
                                 nlm_title_items.append(item.nlm_title)
+                            if len(item.acron) > 0:
+                                acron_items.append(item.acron)
                             if len(item.e_issn) > 0:
                                 e_issn_items.append(item.e_issn)
                             if len(item.p_issn) > 0:
@@ -254,7 +257,7 @@ class PkgArticles(object):
         r = None
         if found:
             r = []
-            for item in [nlm_title_items, p_issn_items, e_issn_items, publisher_name_items, license_items]:
+            for item in [nlm_title_items, acron_items, p_issn_items, e_issn_items, publisher_name_items, license_items]:
                 r.append(list(set(item)))
         return r
 
@@ -629,13 +632,14 @@ class ArticlesPkgReport(object):
             journal_data = self.pkg_articles.find_journal_data()
 
             if journal_data is not None:
-                nlm_title_items, p_issn_items, e_issn_items, publisher_name_items, license_items = journal_data
+                nlm_title_items, acron_items, p_issn_items, e_issn_items, publisher_name_items, license_items = journal_data
                 self._registered_journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
 
                 for xml_name, article in self.pkg_articles.articles.items():
                     unmatched = []
                     items = []
                     items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items, 'FATAL ERROR'])
+                    items.append([_('journal-id (publisher-id'), article.journal_id_publisher_id, acron_items, 'FATAL ERROR'])
                     items.append([_('e-ISSN'), article.e_issn, e_issn_items, 'FATAL ERROR'])
                     items.append([_('print ISSN'), article.print_issn, p_issn_items, 'FATAL ERROR'])
                     items.append([_('publisher name'), article.publisher_name, publisher_name_items, 'ERROR'])

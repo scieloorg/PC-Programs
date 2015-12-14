@@ -454,9 +454,9 @@ class ArticleXML(object):
             return self.journal_meta.findtext('.//publisher-name')
 
     @property
-    def journal_id(self):
+    def journal_id_publisher_id(self):
         if self.journal_meta is not None:
-            return self.journal_meta.findtext('journal-id')
+            return self.journal_meta.findtext('journal-id[@journal-id-type="publisher-id"]')
 
     @property
     def journal_id_nlm_ta(self):
@@ -1238,7 +1238,8 @@ class Article(ArticleXML):
     def summary(self):
         data = {}
         data['journal-title'] = self.journal_title
-        data['journal id NLM'] = self.journal_id_nlm_ta
+        data['journal-id (publisher-id)'] = self.journal_id_publisher_id
+        data['journal-id (nlm-ta)'] = self.journal_id_nlm_ta
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items() if v is not None]) if self.journal_issns is not None else None
         data['print ISSN'] = self.print_issn
         data['e-ISSN'] = self.e_issn
