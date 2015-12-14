@@ -1111,7 +1111,7 @@ class ArticleContentValidation(object):
             else:
                 if not item.endswith('.pdf'):
                     without_extension = item[0:item.rfind('.')] if '.' in item else item
-                    if without_extension in xml:
+                    if without_extension in inxml:
                         items.append((without_extension, 'INFO', _('found in XML')))
                     else:
                         items.append((item, 'ERROR', _('not found in XML')))
