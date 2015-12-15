@@ -1103,7 +1103,7 @@ class ArticleContentValidation(object):
         inxml += [item.src for item in self.article.href_files]
         items = []
         for item in sorted(self.article.package_files(pkg_path)):
-            status = 'INFO' if item.startswith(self.article.prefix) else 'ERROR'
+            status = 'INFO' if item.startswith(self.article.prefix) else 'FATAL ERROR'
             message = _('found in the package') if status == 'INFO' else _('file name must start with ') + self.article.prefix
             items.append((item, status, message))
             if item in inxml:
