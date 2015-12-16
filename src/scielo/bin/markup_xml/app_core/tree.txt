@@ -150,6 +150,7 @@ onbehalf;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 
 author
+fname-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -162,6 +163,7 @@ authorid
 awarded
 orgname;#FALSE#;#FALSE#
 orgdiv;#FALSE#;#FALSE#
+fname-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
@@ -452,6 +454,7 @@ no
 notes
 
 oauthor
+fname-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -667,6 +670,7 @@ sectitle
 sertitle
 
 sig
+fname-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -693,6 +697,7 @@ subart;#FALSE#;#TRUE#
 subkey
 
 subresp
+fname-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -1009,6 +1014,7 @@ cauthor;#FALSE#;#TRUE#
 et-al;#FALSE#;#TRUE#
 
 pauthor
+fname-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -1085,4 +1091,6 @@ attrib
 alttitle
 
 alttext
+
+fname-surname
 
