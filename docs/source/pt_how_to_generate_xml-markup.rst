@@ -66,7 +66,7 @@ Veja qual é o procedimento para atualizar os títulos de SciELO BR + SciELO Red
 Clique em "All" e então em [download]:
 
 .. image:: img/mkp-atualiza-all.jpg
-   :height: 400px
+   :height: 300px
    :align: center
 
 
@@ -84,14 +84,14 @@ Caso queira atualizar os periódicos de uma única coleção, clique em iniciar,
 
 
 .. image:: img/atualiza-titulos.jpg
-   :height: 400px
+   :height: 300px
    :align: center
 
 
 Para conferir, clique em ‘close’ e confira os títulos disponíveis no arquivo: "markup_journals.csv".
 
 .. raw:: html
-   :file: 
+   :file: videos/Atualização_títulos_de_periodicos.wmv
 
 
 _elementos
