@@ -1213,7 +1213,7 @@ class DBManager(object):
         if eissn is not None:
             _expr.append(eissn)
         if journal_title is not None:
-            _expr.append("'" + journal_title + "'")
+            _expr.append(journal_title.replace('(', '').replace(')', ''))
             #utils.display_message(journal_title)
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
