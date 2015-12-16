@@ -91,7 +91,7 @@ Caso queira atualizar os periódicos de uma única coleção, clique em iniciar,
 Para conferir, clique em ‘close’ e confira os títulos disponíveis no arquivo: "markup_journals.csv".
 
 .. raw:: html
-   :file: videos/Atualização_títulos_de_periodicos.wmv
+   :file: https://www.youtube.com/watch?v=SNAXZ1BaMM0&index=5&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH
 
 
 _elementos
