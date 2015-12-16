@@ -150,6 +150,7 @@ xmlabstr;Identifica un resumen con secciones
 toctitle;Identifica el título de la sección del sumario. Este item es obligatorio para la generación del XML.
 role;Identifica el rol del autor
 surname-fname;Identifica surname y fname de un autor (surname separador fname o fname separador surname)
+fname-surname;Identifica fname y surname en este orden
 *oauthor;Identifica automáticamente apenas un oauthor
 *author;Identifica automáticamente apenas un author
 *sertitle;Identifica todos los títulos abreviados da revista, a partir del texto seleccionado.
