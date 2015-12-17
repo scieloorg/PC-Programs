@@ -655,11 +655,11 @@ class ArticleXML(object):
         return k
 
     @property
-    def subarticle_title_group_titles(self):
+    def translations_title_group_titles(self):
         k = []
         if self.translations is not None:
             for subart in self.translations:
-                for node in subart.findall('.//title-group'):
+                for node in subart.findall('*/title-group'):
                     t = Title()
                     t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
                     t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
@@ -669,7 +669,7 @@ class ArticleXML(object):
 
     @property
     def titles(self):
-        return self.title_group_title + self.trans_title_group_titles + self.subarticle_title_group_titles
+        return self.title_group_title + self.trans_title_group_titles + self.translations_title_group_titles
 
     @property
     def titles_by_lang(self):
