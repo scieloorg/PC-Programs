@@ -458,6 +458,6 @@ class IsisDAO(object):
 
 def run_command(cmd):
     if isinstance(cmd, unicode):
-        print(cmd)
+        #print(cmd)
         cmd = cmd.encode(encoding=sys.getfilesystemencoding())
     os.system(cmd)
