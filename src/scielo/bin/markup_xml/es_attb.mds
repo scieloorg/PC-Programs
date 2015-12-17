@@ -155,7 +155,7 @@ indefinido;Materiales y Metodologías;* Resultados y Discusión;* Resultados y Con
 nd;materials|methods;results|discussion;results|conclusions;results|discussion|conclusions;cases;conclusions;discussion;intro;materials;methods;results;subjects;supplementary-material
 
 listtype
-Lista ordenada. Caracter del prefijo es un número o letra dependiendo del estilo;Lista no-ordenada. Caracter del prefijo es un caracter especial;Lista ordenada. Caracter del prefijo es un caracter alfabético en caja baja;Lista ordenada. Caracter del prefijo es un caracter alfabético en caja alta;Lista ordenada. Caracter del prefijo es un numeral romano en caja baja;Lista ordenada. Caracter del prefijo es un numeral romano en caja alta;Lista simple (ningun prefijo)
+Lista ordenada. Caracter del prefijo es un número o letra dependiendo del estilo;Lista no-ordenada. Caracter del prefijo es un caracter especial;Lista ordenada. Caracter del prefijo es un caracter alfabético en minúscula;Lista ordenada. Caracter del prefijo es un caracter alfabético en mayúscula;Lista ordenada. Caracter del prefijo es un numeral romano en caja baja;Lista ordenada. Caracter del prefijo es un numeral romano en caja alta;Lista simple (ningun prefijo)
 order;bullet;alpha-lower;alpha-upper;roman-lower;roman-upper;simple
 
 fntype
