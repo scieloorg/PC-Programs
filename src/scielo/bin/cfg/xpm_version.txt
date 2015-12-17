@@ -1,17 +1,5 @@
-﻿4.0.090 trial - 14/12/2015*
-==========================
-- XC
-  - (bug) Do not use any api to find previous PID
-  - (bug) Fix the transference of articles files (it was using the collection scilista instead of gerapadrao scilista)
-  - (bug) Include order validation in journal/issue report, and considere it as a critical error
-  - (bug) Solve how to save large records (Chinese, Russian, Arabic abstracts)
-  - (bug) Solve character ^ in field content
-  - (improvement) Do not display XPM button 
-  - (improvement) Retrieve reports of documents which were previously converted
-  - (improvement) Remove temporary files and directories
-  - (improvement) General improvements
-  - (new) Register creation date of article
-- XPM
+﻿4.0.091 - 18/12/2015
+====================
   - (improvement) Present the "translation" of code languages
   - (improvement) Improve identification of normalized institutions
   - (improvement) Do not consider missing bibr/fig/table-wrap xref if it is in a xref range. Ex.: 2, 3, 4 are in (1-5), so they are not missing
@@ -33,23 +21,14 @@
   - (new) Tool to compare updates of normalized institutions
   - (new) Identify duplication of trans-title/article-title, abstract/trans-abstract, kwd
   - (new) Validation of ISO Country Code
+  - (new) Add to scielo_package ther files which are in XML in spite of their names are not according to the rules. E.g.: a01.xml and a02-gf01.png. But error messages must be displayed.
+  - (new) Validate journal-id (publisher-id)
   - (bug) Fix history validation: received and accepted
   - (bug) Remove inconvenient styles (bold/italic) within article-title, trans-title, kwd, source
   - (bug) Fix position of fn-group of translation
   - (bug) Validate suffixes which are in capital letters (ex.: JUNIOR)
   - (bug) Remove funding-group off PMC package
-  - (bug) Validation of affiliations using Wayta
-- Markup
-  - (bug) Fix identification of *deflist
-  - (bug) Fix [fngrp 
-  - (bug) Enable tag authorid to identify ORCID
-  - (bug) Fix presentation of lpage value
-  - (bug) Fix the identification of the sources as using *source (blank space was being removed) 
-  - (bug) Fix automatic identification of table footnotes 
-  - (new) Allow identify future dates: one year after the current one
-  - (improvement) Do not complete by default the sps version
-  - (improvement) Remove ref/@status=valid
-  - (improvement) Download of journals list, selecting a collection
+  - (bug) Fix validations of affiliations using Wayta
 
 4.0.090 trial - 16/09/2015
 ==========================
