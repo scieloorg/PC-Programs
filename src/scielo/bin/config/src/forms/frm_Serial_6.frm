@@ -601,6 +601,7 @@ Function WarnMandatoryFields() As Boolean
     warning = warning + .is_mandatory_at_least_one(SERIAL7.Text_PISSN.text, "PISSN", SERIAL7.Text_EISSN.text, "EISSN")
     
     warning = warning + .isA_mandatoryField(SERIAL7.ComboUserSubscription.text, "ser5_UserSubscription")
+    warning = warning + .isA_mandatoryField(SERIAL7.ComboPublishingModel.text, "ser5_PublishingModel")
     If SERIAL7.ListSciELONet.SelCount = 0 Then warning = warning + .isA_mandatoryField("", "ser5_SciELONet")
     warning = warning + .isA_mandatoryField(SERIAL8.ComboCCode.text, "ser5_CCode")
     warning = warning + .isA_mandatoryField(SERIAL8.TxtDocCreation.text, "ser5_DocCreation")

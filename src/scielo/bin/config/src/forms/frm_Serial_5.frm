@@ -53,6 +53,15 @@ Begin VB.Form SERIAL7
       TabIndex        =   14
       Top             =   120
       Width           =   7455
+      Begin VB.ComboBox ComboPublishingModel 
+         Height          =   315
+         Left            =   4320
+         Sorted          =   -1  'True
+         TabIndex        =   30
+         Text            =   "ComboPublishingModel"
+         Top             =   1200
+         Width           =   2535
+      End
       Begin VB.TextBox Text_PISSN 
          Height          =   285
          Left            =   5280
@@ -84,12 +93,12 @@ Begin VB.Form SERIAL7
          Width           =   3855
       End
       Begin VB.ListBox ListSciELONet 
-         Height          =   3210
+         Height          =   2535
          Left            =   4080
          Sorted          =   -1  'True
          Style           =   1  'Checkbox
          TabIndex        =   4
-         Top             =   1080
+         Top             =   1680
          Width           =   3255
       End
       Begin VB.TextBox TxtPubId 
@@ -144,6 +153,15 @@ Begin VB.Form SERIAL7
          Text            =   "mmmmmmmm"
          Top             =   480
          Width           =   1095
+      End
+      Begin VB.Label LabelPublishingModel 
+         AutoSize        =   -1  'True
+         Caption         =   "PublishingModel"
+         Height          =   195
+         Left            =   4320
+         TabIndex        =   31
+         Top             =   960
+         Width           =   1155
       End
       Begin VB.Label LabPISSN 
          Caption         =   "Print ISSN"
@@ -298,6 +316,7 @@ Sub MySetLabels()
     LabEISSN.Caption = .getLabel("eISSN")
     LabPISSN.Caption = .getLabel("pISSN")
     Lab_SubmissionOnline.Caption = .getLabel("ser5_SubmissionOnline")
+    LabelPublishingModel.Caption = .getLabel("ser5_PublishingModel")
     End With
     
     With ConfigLabels
@@ -313,6 +332,7 @@ Sub MySetLabels()
     
     Call FillCombo(ComboFTP, CodeFTP)
     Call FillCombo(ComboUserSubscription, CodeUsersubscription)
+    Call FillCombo(ComboPublishingModel, CodePublishingModel)
     
     Call FillList(ListSciELONet, CodeScieloNet)
     
@@ -330,6 +350,7 @@ Sub MyGetContentFromBase(MfnTitle As Long)
         Call ScieloNetRead(MfnTitle)
         Text_SubmissionOnline.text = Serial_TxtContent(MfnTitle, 692)
         Text1.text = Serial_TxtContent(MfnTitle, 690)
+        ComboPublishingModel.text = Serial_ComboContent(CodePublishingModel, MfnTitle, 699, "undefined")
         
         Dim pissn As String
         Dim eissn As String
@@ -348,6 +369,7 @@ Sub MyClearContent()
         ComboFTP.text = ""
         Text_SubmissionOnline.text = ""
         ComboUserSubscription.text = ""
+        ComboPublishingModel.text = ""
         Text_EISSN.text = ""
         Text_PISSN.text = ""
         Text1.text = ""
@@ -397,6 +419,10 @@ Private Sub CmdSave_Click()
 End Sub
 
 
+Private Sub Combo1_Change()
+
+End Sub
+
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     Call FormQueryUnload(Cancel, UnloadMode)
 End Sub
@@ -445,6 +471,9 @@ Private Sub ComboUserSubscription_gotfocus()
     FrmInfo.ShowHelpMessage Fields.getHelp("ser5_UserSubscription")
 End Sub
 
+Private Sub ComboPublishingModel_gotfocus()
+    FrmInfo.ShowHelpMessage Fields.getHelp("ser5_PublishingModel")
+End Sub
 Function ScieloNetRead(MfnTitle As Long) As String
     Dim i As Long
     Dim item As ClCode
