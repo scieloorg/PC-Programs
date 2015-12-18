@@ -390,10 +390,9 @@ Siga os mesmos passos descritos para resumo sem seção:
    :align: center
 
 
-
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=FVTjDOIGV0Y&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=7" frameborder="0" allowfullscreen></iframe>
+   <iframe width="853" height="480" src="https://www.youtube.com/watch?v=FVTjDOIGV0Y&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=7" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
 
 
 .. _palavra-chave:
@@ -427,7 +426,8 @@ Ao clicar em [*kwdgrp] o programa abrirá uma janela a qual deverá ser indicado
 .. image:: img/doc-mkp-kwd-grp.jpg
    :height: 100px
    :align: center
-          
+
+         
 
 Marcação Manual:
 ----------------
@@ -455,6 +455,13 @@ Em seguida selecione palavra por palavra e identifique com o elemento [kwd]:
 .. image:: img/doc-mkp-kwd-kwd.jpg
    :height: 300px
    :align: center
+
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=6sNTlHF8WdU&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=9" frameborder="0" allowfullscreen></iframe>
+
 
 
 .. _historico:
@@ -486,6 +493,12 @@ Caso haja a data de revisado, selecione o dado e identifique com o elemento [rev
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=w4Bw7dXpS0E&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=8" frameborder="0" allowfullscreen></iframe>
+   
+
+
 .. _correspondencia:
 
 Correspondência
@@ -503,6 +516,10 @@ Selecione o e-mail do autor correspondente e identifique com o elemento [email] 
 .. image:: img/doc-mkp-email-corresp.jpg
    :height: 300px
    :align: center
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=fuzSrOMlSvo&index=10&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _ensaio-clinico:
@@ -533,6 +550,11 @@ Para encontrar a URL do ensaio clínico faça uma busca na internet pelo número
 .. note:: Comumente a informação de ensaio clínico está posicionada abaixo de resumos ou palavras-chave.
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=0bln_fugnAA&index=12&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 .. _referencias:
 
 Referências
@@ -552,6 +574,10 @@ O programa identificará todas as referências selecionadas com a tag [ref] do t
 .. image:: img/doc-mkp-mkp-refs.jpg
    :height: 400px
    :align: center
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=MoTVIJk21UM&index=13&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>   
 
 
 .. _tipos-de-referencias:
@@ -596,6 +622,13 @@ Utilizada para referenciar monografias, dissertações ou teses para obtenção 
    :height: 200px
    :align: center
 
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=h1ytjcXZv5U&index=21&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 .. _conferencia:
 
 Confproc
@@ -609,6 +642,12 @@ Utilizada para referenciar documentos relacionados à eventos: atas, anais, resu
 .. image:: img/doc-mkp-ref-confproc.jpg
    :height: 250px
    :align: center
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=k0OWNjboFWE&index=16&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
 
 
 .. _relatorio:
@@ -626,6 +665,7 @@ Utilizada para referenciar relatórios técnicos, normalmente de autoria institu
    :align: center
 
 
+
 .. _patente:
 
 Patent
@@ -638,6 +678,11 @@ Utilizada para referenciar patentes; a patente representa um título de propried
 
 .. image:: img/doc-mkp-patent.jpg
    :align: center
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=4BffTcmIkF8&index=20&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _lei:
@@ -684,6 +729,12 @@ Ex.:
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=geq2_UgMYa0&index=17&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
+
 .. _livro-inpress:
 
 Book no prelo
@@ -697,6 +748,10 @@ Livros finalizados, porém em fase de edição geralmente ao final da referênci
 .. image:: img/doc-mkp-ref-book-no-prelo.jpg
    :height: 180px
    :align: center
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=P2fiGsmitqM&index=15&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _capitulo-de-livro:
@@ -729,7 +784,14 @@ Utilizada para referenciar publicações seriadas científicas, como revistas, b
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=2gD6Ej1v0h4&index=14&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
+
 Nas referências abaixo, seu tipo deverá ser alterado manualmente de [book] para o tipo correspondente.
+
 
 .. _base-de-dados:
 
@@ -760,6 +822,10 @@ Utilizada para referenciar um software, um programa de computador. Ex.:
    :height: 200px
    :align: center
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=KMaiNAJ__U4&index=18&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
 
 .. _web:
 
@@ -782,6 +848,11 @@ Utilizada para referenciar, web sites ou informações contidas em blogs, twiter
 
 .. image:: img/doc-mkp-ref-web-bb.jpg
    :align: center
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=EwufVmJ4R74&index=19&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _outro:
@@ -888,6 +959,11 @@ Para notas de rodapé que apresentam informação de suporte de entidade, instit
 .. image:: img/doc-mkp-fn-supp.jpg
    :height: 250px
    :align: center
+   
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=a_b9uzylEUU&index=30&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 Suporte com Informação de Financiamento
@@ -928,6 +1004,10 @@ Caso a nota de rodapé apresente mais que uma instituição financiadora e núme
    :height: 300px
    :align: center
    
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=FVTnNPGqWiU&index=31&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _fn-automatico:
@@ -1084,7 +1164,7 @@ Glossário
 A identificação de glossário é basicamente a mesma que a lista de definições, pois ao selecionar um glossário e identificar com o elemento [glossary] o próximo passo é selecionar toda a lista e marcar com o elemento :ref:`lista-definição`. No entanto a diferença é que o glossário deve ser identificado apenas "back", "app" ou "boxed-text". Segue marcação de glossário abaixo de referências, em "back":
 
 .. image:: img/doc-mkp-glossary-.jpg
-   :height: 200px
+   :height: 200p
    :align: center
 
 Selecione todos os dados de glossário e marque com o elemento :ref:`lista-definicao`:
