@@ -56,7 +56,50 @@ Para composição do “ID” combine o prefixo do tipo do elemento e um número
 +------------------------+---------------------------+---------+---------------------+
 
 
-.. _elementos-markup:
+
+.. _update-titles:
+
+Atualização de Títulos
+======================
+
+Para atualizar os títutos de periódicos SciELO, clique em iniciar (img), em seguida em "Todos os Programas", depois disso clique na pasta onde o programa Markup foi instalado e então clique em "Markup - update journals list".
+
+O programa abre uma janela onde o usuário pode optar em carregar os títulos dos periódicos SciELO BR + SciELO rede, ou atualizar os títulos dos periódicos de uma única coleção.
+Veja qual é o procedimento para atualizar os títulos de SciELO BR + SciELO Rede:
+Clique em "All" e então em [download]:
+
+.. image:: img/mkp-atualiza-all.jpg
+   :height: 300px
+   :align: center
+
+
+O programa carrega todos os títulos dos periódicos SciELO. Para conferir clique em ‘close’, entre na pasta onde o programa foi instalado, exemplo:
+C:\markup90trial\bin\markup
+
+Dentro da pasta markup, abra o arquivo .csv "markup_journals.csv" e perceba que na planilha há  títulos de periódicos das diversas coleções do SciELO e também da coleção do SciELO BR.
+
+.. image:: img/mkp-lista-titles.jpg
+   :height: 400px
+   :align: center
+
+
+Caso queira atualizar os periódicos de uma única coleção, clique em iniciar, em seguida em "Markup - update journals list", selecione a coleção desejada e clique em [download]:
+
+
+.. image:: img/atualiza-titulos.jpg
+   :height: 300px
+   :align: center
+
+
+Para conferir, clique em ‘close’ e confira os títulos disponíveis no arquivo: "markup_journals.csv".
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=SNAXZ1BaMM0&index=5&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
+
+.. _markup:
 
 Dados Básicos
 =============
@@ -213,6 +256,33 @@ O programa Markup não faz marcação automática de função de autor como, por
           o tipo de referência cruzada a ser incluída.
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=R8YYjXZSk1c&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=6" frameborder="0" allowfullscreen></iframe>
+
+
+Contrib-ID
+==========
+Autores que apresentam registro no ORCID ou no Lattes devem inserir o link de registro ao lado do nome, após o label do autor:
+
+ .. image:: img/mkp-contrib-id.jpg
+   :height: 230px
+   :align: center
+
+Ao fazer a marcação de [doc] o programa identificará automaticamente todos os dados iniciais do documento, inclusive marcará em [author] o link de registro do autor.
+Ainda que o programa inclua o link na tag [author], será necessário completar a marcação desse dado.
+
+Para isso, entre no nível de author, selecione o link do autor e clique em [author-id].
+O programa abrirá uma janela onde deverá ser indicado o tipo de registro do autor: se lattes ou ORCID. 
+
+ .. image:: img/mkp-marcando-id-contrib.jpg
+   :height: 230px
+   :align: center
+
+Selecione o tipo correto e clique em [Continuar].
+
+
+
 .. _afiliação:
 
 Afiliações
@@ -320,6 +390,10 @@ Siga os mesmos passos descritos para resumo sem seção:
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="853" height="480" src="https://www.youtube.com/watch?v=FVTjDOIGV0Y&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=7" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
 
 .. _palavra-chave:
 
@@ -352,7 +426,8 @@ Ao clicar em [*kwdgrp] o programa abrirá uma janela a qual deverá ser indicado
 .. image:: img/doc-mkp-kwd-grp.jpg
    :height: 100px
    :align: center
-          
+
+         
 
 Marcação Manual:
 ----------------
@@ -380,6 +455,13 @@ Em seguida selecione palavra por palavra e identifique com o elemento [kwd]:
 .. image:: img/doc-mkp-kwd-kwd.jpg
    :height: 300px
    :align: center
+
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=6sNTlHF8WdU&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=9" frameborder="0" allowfullscreen></iframe>
+
 
 
 .. _historico:
@@ -411,6 +493,12 @@ Caso haja a data de revisado, selecione o dado e identifique com o elemento [rev
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=w4Bw7dXpS0E&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=8" frameborder="0" allowfullscreen></iframe>
+   
+
+
 .. _correspondencia:
 
 Correspondência
@@ -428,6 +516,10 @@ Selecione o e-mail do autor correspondente e identifique com o elemento [email] 
 .. image:: img/doc-mkp-email-corresp.jpg
    :height: 300px
    :align: center
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=fuzSrOMlSvo&index=10&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _ensaio-clinico:
@@ -458,6 +550,11 @@ Para encontrar a URL do ensaio clínico faça uma busca na internet pelo número
 .. note:: Comumente a informação de ensaio clínico está posicionada abaixo de resumos ou palavras-chave.
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=0bln_fugnAA&index=12&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 .. _referencias:
 
 Referências
@@ -477,6 +574,10 @@ O programa identificará todas as referências selecionadas com a tag [ref] do t
 .. image:: img/doc-mkp-mkp-refs.jpg
    :height: 400px
    :align: center
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=MoTVIJk21UM&index=13&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>   
 
 
 .. _tipos-de-referencias:
@@ -521,6 +622,13 @@ Utilizada para referenciar monografias, dissertações ou teses para obtenção 
    :height: 200px
    :align: center
 
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=h1ytjcXZv5U&index=21&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 .. _conferencia:
 
 Confproc
@@ -534,6 +642,12 @@ Utilizada para referenciar documentos relacionados à eventos: atas, anais, resu
 .. image:: img/doc-mkp-ref-confproc.jpg
    :height: 250px
    :align: center
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=k0OWNjboFWE&index=16&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
 
 
 .. _relatorio:
@@ -551,6 +665,7 @@ Utilizada para referenciar relatórios técnicos, normalmente de autoria institu
    :align: center
 
 
+
 .. _patente:
 
 Patent
@@ -563,6 +678,11 @@ Utilizada para referenciar patentes; a patente representa um título de propried
 
 .. image:: img/doc-mkp-patent.jpg
    :align: center
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=4BffTcmIkF8&index=20&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _lei:
@@ -609,6 +729,12 @@ Ex.:
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=geq2_UgMYa0&index=17&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
+
 .. _livro-inpress:
 
 Book no prelo
@@ -622,6 +748,10 @@ Livros finalizados, porém em fase de edição geralmente ao final da referênci
 .. image:: img/doc-mkp-ref-book-no-prelo.jpg
    :height: 180px
    :align: center
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=P2fiGsmitqM&index=15&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _capitulo-de-livro:
@@ -654,7 +784,14 @@ Utilizada para referenciar publicações seriadas científicas, como revistas, b
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=2gD6Ej1v0h4&index=14&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
+
 Nas referências abaixo, seu tipo deverá ser alterado manualmente de [book] para o tipo correspondente.
+
 
 .. _base-de-dados:
 
@@ -685,6 +822,10 @@ Utilizada para referenciar um software, um programa de computador. Ex.:
    :height: 200px
    :align: center
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=KMaiNAJ__U4&index=18&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
 
 .. _web:
 
@@ -709,6 +850,11 @@ Utilizada para referenciar, web sites ou informações contidas em blogs, twiter
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=EwufVmJ4R74&index=19&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 .. _outro:
 
 Other
@@ -721,6 +867,30 @@ Utilizada para referenciar tipos não previstos pelo SciELO. Ex.:
 
 .. image:: img/doc-mkp-ref-other.jpg
    :align: center
+
+
+
+.. _previous:
+
+"Previous" em Referências
+=========================
+
+Há normas que permitem que as obras que referenciam a mesma autoria repetidamente, sejam substituídas por um traço sublinear equivalente à seis espaços. Ex.:
+
+
+*______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight [Internet]. Washington: FiercePharma; 2015.*
+
+Ao fazer a marcação de [refs] o programa duplicará a referência com previous da seguinte forma:
+
+[ref id="r16" reftype="book"] [text-ref]______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015[/text-ref]. *______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015*[/ref]
+
+A marcação da referência deverá ser feita após *[/text-ref]*
+
+.. note:: Em referências que apresentam o elemento [text-ref], o dado a ser marcado deverá ser o que consta após o [/text-ref]. 
+          Nunca fazer a marcação da referência que consta em [text-ref][/text-ref].
+
+Para identificação de referências com esse tipo de dado, selecione os traços sublineares e identifique com a tag [*authors] com asterisco. Dessa forma o programa recuperará o nome do autor da referência anterior e fará a identificação automática do grupo de autores, identificando o sobrenome e o primeiro nome.
+
 
 
 .. _automata:
@@ -791,6 +961,11 @@ Para notas de rodapé que apresentam informação de suporte de entidade, instit
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=a_b9uzylEUU&index=30&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 Suporte com Informação de Financiamento
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -829,6 +1004,39 @@ Caso a nota de rodapé apresente mais que uma instituição financiadora e núme
    :height: 300px
    :align: center
    
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=FVTnNPGqWiU&index=31&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
+.. _fn-automatico:
+
+Notas - Identificação Automática
+=========================
+
+Para notas de rodapé que estão posicionadas ao fim de cada página no documento, com formatação de notas de rodapé do Word, é possível fazer a marcação automática do número referenciado no documento e da nota de rodapé.
+
+As chamadas no corpo do texto para notas de rodapé deverão estar com uma formatação simples: em formato numérico e em "sup".
+Já as notas deverão estar com a formatação de nota de rodapé do Word e além disso,  deve ser inserido um espaço antes da nota. Veja:
+
+.. image:: img/mkp-espaco-fn.jpg
+   :height: 300px
+   :align: center
+
+Estando formatado corretamente, clique com o mouse em qualquer parágrafo e em seguida clique na tag [*fn].
+
+.. image:: img/mkp-botao-fn.jpg
+   :height: 300px
+   :align: center
+
+Ao clicar em [*fn] o programa faz a marcação automática de [xref] no corpo do texto e também da nota ao pé da página.
+
+.. image:: img/mkp-nota-automatico.jpg
+   :height: 300px
+   :align: center
+
+
 
 .. _apendice:
 
@@ -880,6 +1088,11 @@ Exemplo, selecione a figura com seu respectivo label e caption e identifique com
 .. note:: Assegure-se de que o id da figura de apêndice é único no documento.
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=ZqjFc0Hg4P8&index=34&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 Para apêndices que apresentam parágrafos, selecione o título do apêndice e identifique com o elemento [sectitle]
 
 .. image:: img/doc-mkp-sectitle-app-paragrafo1.jpg
@@ -892,6 +1105,11 @@ Em seguida, selecione o parágrafo e marque com a tag [p]
 .. image:: img/doc-mkp-sectitle-app-paragrafo2.jpg
    :height: 300px
    :align: center
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=_BM7cKHcWoA&index=32&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _agradecimentos:
@@ -956,7 +1174,7 @@ Glossário
 A identificação de glossário é basicamente a mesma que a lista de definições, pois ao selecionar um glossário e identificar com o elemento [glossary] o próximo passo é selecionar toda a lista e marcar com o elemento :ref:`lista-definição`. No entanto a diferença é que o glossário deve ser identificado apenas "back", "app" ou "boxed-text". Segue marcação de glossário abaixo de referências, em "back":
 
 .. image:: img/doc-mkp-glossary-.jpg
-   :height: 200px
+   :height: 200p
    :align: center
 
 Selecione todos os dados de glossário e marque com o elemento :ref:`lista-definicao`:
