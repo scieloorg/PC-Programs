@@ -35,14 +35,19 @@ Select the folder of the corresponding installer.
   .. image:: img/howtoinstall_download3.png
 
 
-Click on the installer file to download it:
-
-  .. image:: img/howtoinstall_download4.png
+Select **article_text_markup** to download the installer to work with Markup on HTML files, using article and text DTD.
 
 
+Select **xml_markup** to download the installer to work with Markup to generate XML. Note: this installer includes XPM (XML Package Maker).
 
-  .. image:: img/howtoinstall_download5.png
+
+Select **xpm** to download the installer only for XPM (XML Package Maker).
+
+
+There will be the available versions of the programs.
+
+The installers which name has **-trial** can be changed any time. 
 
 -----
 
-Last update of this page: August, 2015
+Last update of this page: December, 2015

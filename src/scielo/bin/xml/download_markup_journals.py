@@ -33,7 +33,7 @@ class MkpDownloadJournalListGUI(object):
         self.tkFrame.buttons_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.buttons_labelframe.pack(fill="both", expand="yes")
 
-        self.tkFrame.label_folder = Tkinter.Label(self.tkFrame.folder_labelframe, text='Download journals data for Markup', font="Verdana 12 bold")
+        self.tkFrame.label_folder = Tkinter.Label(self.tkFrame.folder_labelframe, text=' '*10 + 'Select collection' + ' '*10, font="Verdana 12 bold")
         self.tkFrame.label_folder.pack(side='left')
 
         #options = collections.keys()
@@ -79,9 +79,9 @@ class MkpDownloadJournalListGUI(object):
 
 def open_main_window(collections, destination_filename, temp_filename, updated):
     tk_root = Tkinter.Tk()
+    tk_root.title('Download journals data')
 
     tkFrame = Tkinter.Frame(tk_root)
-
     main = MkpDownloadJournalListGUI(tkFrame, collections, destination_filename, temp_filename, updated)
     main.tkFrame.pack(side="top", fill="both", expand=True)
 
