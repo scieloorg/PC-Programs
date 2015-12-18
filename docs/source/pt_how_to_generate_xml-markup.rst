@@ -959,7 +959,7 @@ Para notas de rodapé que apresentam informação de suporte de entidade, instit
 .. image:: img/doc-mkp-fn-supp.jpg
    :height: 250px
    :align: center
-   
+
 
 .. raw:: html
 
@@ -1088,6 +1088,11 @@ Exemplo, selecione a figura com seu respectivo label e caption e identifique com
 .. note:: Assegure-se de que o id da figura de apêndice é único no documento.
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=ZqjFc0Hg4P8&index=34&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 Para apêndices que apresentam parágrafos, selecione o título do apêndice e identifique com o elemento [sectitle]
 
 .. image:: img/doc-mkp-sectitle-app-paragrafo1.jpg
@@ -1100,6 +1105,11 @@ Em seguida, selecione o parágrafo e marque com a tag [p]
 .. image:: img/doc-mkp-sectitle-app-paragrafo2.jpg
    :height: 300px
    :align: center
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=_BM7cKHcWoA&index=32&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _agradecimentos:
