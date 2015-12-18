@@ -57,48 +57,6 @@ Para composição do “ID” combine o prefixo do tipo do elemento e um número
 
 
 
-.. _update-titles:
-
-Atualização de Títulos
-======================
-
-Para atualizar os títutos de periódicos SciELO, clique em iniciar (img), em seguida em "Todos os Programas", depois disso clique na pasta onde o programa Markup foi instalado e então clique em "Markup - update journals list".
-
-O programa abre uma janela onde o usuário pode optar em carregar os títulos dos periódicos SciELO BR + SciELO rede, ou atualizar os títulos dos periódicos de uma única coleção.
-Veja qual é o procedimento para atualizar os títulos de SciELO BR + SciELO Rede:
-Clique em "All" e então em [download]:
-
-.. image:: img/mkp-atualiza-all.jpg
-   :height: 300px
-   :align: center
-
-
-O programa carrega todos os títulos dos periódicos SciELO. Para conferir clique em ‘close’, entre na pasta onde o programa foi instalado, exemplo:
-C:\markup90trial\bin\markup
-
-Dentro da pasta markup, abra o arquivo .csv "markup_journals.csv" e perceba que na planilha há  títulos de periódicos das diversas coleções do SciELO e também da coleção do SciELO BR.
-
-.. image:: img/mkp-lista-titles.jpg
-   :height: 400px
-   :align: center
-
-
-Caso queira atualizar os periódicos de uma única coleção, clique em iniciar, em seguida em "Markup - update journals list", selecione a coleção desejada e clique em [download]:
-
-
-.. image:: img/atualiza-titulos.jpg
-   :height: 300px
-   :align: center
-
-
-Para conferir, clique em ‘close’ e confira os títulos disponíveis no arquivo: "markup_journals.csv".
-
-.. raw:: html
-
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=SNAXZ1BaMM0&index=5&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
-
-
-
 .. _markup:
 
 Dados Básicos

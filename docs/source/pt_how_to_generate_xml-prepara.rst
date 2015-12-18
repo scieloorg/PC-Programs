@@ -85,6 +85,11 @@ Estes arquivos são gerado pelo programa `Title Manager <titlemanager.html>`_ ou
    Então, se o Markup é usado em outro computador, é necessário copiar estes arquivos para o computadr onde o Markup é executado.
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=SNAXZ1BaMM0&index=5&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
 .. _estrutura-de-pastas:
 
 Estrutura de pastas
@@ -109,6 +114,10 @@ Veja que dentro da pasta "markup_xml" foi inserido 2 pastas, no mesmo nível:
 ..  note:: Caso o responsável pela marcação não siga a recomendação de estrutura apresentada acima, não será 
            possível iniciar a marcação do documento e gerar o arquivo .xml.
 
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=RLizVtt5Ca8&index=4&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 .. _formato-scielo:
 
