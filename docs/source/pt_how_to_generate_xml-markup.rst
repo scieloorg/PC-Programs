@@ -57,11 +57,14 @@ Para composição do “ID” combine o prefixo do tipo do elemento e um número
 
 
 
+.. _update-titles:
 
 Atualização de Títulos
 ======================
 
-Para atualizar os títutos de periódicos SciELO, clique em iniciar (img), em seguida em "Todos os Programas", depois disso clique na pasta onde o programa Markup foi instalado e então clique em "Markup - update journals list". O programa abre uma janela onde o usuário pode optar em carregar os títulos dos periódicos SciELO BR + SciELO rede, ou atualizar os títulos dos periódicos de uma única coleção.
+Para atualizar os títutos de periódicos SciELO, clique em iniciar (img), em seguida em "Todos os Programas", depois disso clique na pasta onde o programa Markup foi instalado e então clique em "Markup - update journals list".
+
+O programa abre uma janela onde o usuário pode optar em carregar os títulos dos periódicos SciELO BR + SciELO rede, ou atualizar os títulos dos periódicos de uma única coleção.
 Veja qual é o procedimento para atualizar os títulos de SciELO BR + SciELO Rede:
 Clique em "All" e então em [download]:
 
@@ -95,9 +98,8 @@ Para conferir, clique em ‘close’ e confira os títulos disponíveis no arqui
    <iframe width="560" height="315" src="https://www.youtube.com/watch?v=SNAXZ1BaMM0&index=5&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
-_elementos
 
-.. -markup:
+.. _markup:
 
 Dados Básicos
 =============
@@ -254,6 +256,33 @@ O programa Markup não faz marcação automática de função de autor como, por
           o tipo de referência cruzada a ser incluída.
 
 
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=R8YYjXZSk1c&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=6" frameborder="0" allowfullscreen></iframe>
+
+
+Contrib-ID
+==========
+Autores que apresentam registro no ORCID ou no Lattes devem inserir o link de registro ao lado do nome, após o label do autor:
+
+ .. image:: img/mkp-contrib-id.jpg
+   :height: 230px
+   :align: center
+
+Ao fazer a marcação de [doc] o programa identificará automaticamente todos os dados iniciais do documento, inclusive marcará em [author] o link de registro do autor.
+Ainda que o programa inclua o link na tag [author], será necessário completar a marcação desse dado.
+
+Para isso, entre no nível de author, selecione o link do autor e clique em [author-id].
+O programa abrirá uma janela onde deverá ser indicado o tipo de registro do autor: se lattes ou ORCID. 
+
+ .. image:: img/mkp-marcando-id-contrib.jpg
+   :height: 230px
+   :align: center
+
+Selecione o tipo correto e clique em [Continuar].
+
+
+
 .. _afiliação:
 
 Afiliações
@@ -360,6 +389,11 @@ Siga os mesmos passos descritos para resumo sem seção:
 .. image:: img/doc-mkp-mkp-resumo.jpg
    :align: center
 
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=FVTjDOIGV0Y&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=7" frameborder="0" allowfullscreen></iframe>
 
 
 .. _palavra-chave:
@@ -764,6 +798,30 @@ Utilizada para referenciar tipos não previstos pelo SciELO. Ex.:
    :align: center
 
 
+
+.. _previous:
+
+"Previous" em Referências
+=========================
+
+Há normas que permitem que as obras que referenciam a mesma autoria repetidamente, sejam substituídas por um traço sublinear equivalente à seis espaços. Ex.:
+
+
+*______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight [Internet]. Washington: FiercePharma; 2015.*
+
+Ao fazer a marcação de [refs] o programa duplicará a referência com previous da seguinte forma:
+
+[ref id="r16" reftype="book"] [text-ref]______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015[/text-ref]. *______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015*[/ref]
+
+A marcação da referência deverá ser feita após *[/text-ref]*
+
+.. note:: Em referências que apresentam o elemento [text-ref], o dado a ser marcado deverá ser o que consta após o [/text-ref]. 
+          Nunca fazer a marcação da referência que consta em [text-ref][/text-ref].
+
+Para identificação de referências com esse tipo de dado, selecione os traços sublineares e identifique com a tag [*authors] com asterisco. Dessa forma o programa recuperará o nome do autor da referência anterior e fará a identificação automática do grupo de autores, identificando o sobrenome e o primeiro nome.
+
+
+
 .. _automata:
 
 Marcação Automática
@@ -870,6 +928,35 @@ Caso a nota de rodapé apresente mais que uma instituição financiadora e núme
    :height: 300px
    :align: center
    
+
+
+.. _fn-automatico:
+
+Notas - Identificação Automática
+=========================
+
+Para notas de rodapé que estão posicionadas ao fim de cada página no documento, com formatação de notas de rodapé do Word, é possível fazer a marcação automática do número referenciado no documento e da nota de rodapé.
+
+As chamadas no corpo do texto para notas de rodapé deverão estar com uma formatação simples: em formato numérico e em "sup".
+Já as notas deverão estar com a formatação de nota de rodapé do Word e além disso,  deve ser inserido um espaço antes da nota. Veja:
+
+.. image:: img/mkp-espaco-fn.jpg
+   :height: 300px
+   :align: center
+
+Estando formatado corretamente, clique com o mouse em qualquer parágrafo e em seguida clique na tag [*fn].
+
+.. image:: img/mkp-botao-fn.jpg
+   :height: 300px
+   :align: center
+
+Ao clicar em [*fn] o programa faz a marcação automática de [xref] no corpo do texto e também da nota ao pé da página.
+
+.. image:: img/mkp-nota-automatico.jpg
+   :height: 300px
+   :align: center
+
+
 
 .. _apendice:
 
