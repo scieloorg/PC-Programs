@@ -27,9 +27,6 @@ Select the folder which contains XML package files
 .. image:: img/xc_gui_selected_folder.png
 
 
-No need to inform journal acronym. It is only needed to run XML Package Maker.
-
-
 Press **XML Converter**.
 
 

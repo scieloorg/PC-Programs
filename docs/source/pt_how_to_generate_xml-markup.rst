@@ -86,7 +86,7 @@ Dentro da pasta markup, abra o arquivo .csv "markup_journals.csv" e perceba que 
 Caso queira atualizar os periódicos de uma única coleção, clique em iniciar, em seguida em "Markup - update journals list", selecione a coleção desejada e clique em [download]:
 
 
-.. image:: img/atualiza-titulos.jpg
+.. image:: img/download_journals_data.png
    :height: 300px
    :align: center
 

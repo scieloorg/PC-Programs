@@ -754,6 +754,14 @@ Select the corresponding option:
 - na: not available
 
 
+Publishing Model
+................
+
+Field: 699
+
+Select the publishing model. 
+
+
 SciELO Net
 ..........
 

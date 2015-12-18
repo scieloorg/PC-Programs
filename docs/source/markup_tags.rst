@@ -354,6 +354,14 @@ Contains: `author`_, `corpauth`_, `onbehalf`_
 
 Attributes: none
 
+authid
+------
+
+Element
+
+
+
+Attributes: `authidtp <markup_tags.html#attribute-authidtp>`_
 author
 ------
 
@@ -629,14 +637,6 @@ Contained in: `aff`_, `aiserial`_, `amonog`_, `confgrp`_, `iiserial`_, `imonog`_
 
 Attributes: none
 
-ctrbid
-------
-
-Element
-
-
-
-Attributes: `ctrbidtp <markup_tags.html#attribute-ctrbidtp>`_
 
 ctreg
 -----
@@ -2536,6 +2536,23 @@ Attributes: none
 
 Attributes
 ..........
+
+Attribute authidtp
+------------------
+
+Attribute
+
+Identify the type of author id
+
+Is attribute of: 
+
+
++------+-----------+
+|orcid |orcid      |
++------+-----------+
+|lattes|lattes     |
++------+-----------+
+
 
 Attribute blcktype
 ------------------

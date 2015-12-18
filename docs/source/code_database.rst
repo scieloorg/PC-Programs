@@ -42,6 +42,14 @@ article status
 |1|Available|
 +-+---------+
 
+authidtp
+--------
++-----+-----+
+|orcid|orcid|
++-----+-----+
+|lattes|lattes|
++-----+-----+
+
 blcktype
 --------
 +---+-----------+
@@ -516,11 +524,6 @@ ctdbid
 |UMIN  |UMIN - University Hospital Medical Information Network                     |
 +------+---------------------------------------------------------------------------+
 
-ctrbidtp
---------
-+-----+-----+
-|ORCID|ORCID|
-+-----+-----+
 
 date
 ----

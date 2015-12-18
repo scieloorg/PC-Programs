@@ -231,7 +231,7 @@ Field: 435, subfield ^t = 'ONLIN'
 Enter the Electronic ISSN if it is a current ISSN, if applicable.
 
 
-Editor issue
+Issue Editor
 ............
 
 Field: 62
