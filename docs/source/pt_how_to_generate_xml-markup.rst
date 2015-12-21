@@ -216,7 +216,7 @@ O programa Markup não faz marcação automática de função de autor como, por
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=R8YYjXZSk1c&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=6" frameborder="0" allowfullscreen></iframe>
+   <video align="center" width="320" height="240" src="_static/dados-basicos.mp4" type="video/mp4" controls></video>
 
 
 Contrib-ID
@@ -350,7 +350,7 @@ Siga os mesmos passos descritos para resumo sem seção:
 
 .. raw:: html
 
-   <iframe width="853" height="480" src="https://www.youtube.com/watch?v=FVTjDOIGV0Y&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=7" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+   <video width="320" height="240" src="_static/resumos.mp4" type="video/mp4" controls></video>
 
 
 .. _palavra-chave:
@@ -385,7 +385,8 @@ Ao clicar em [*kwdgrp] o programa abrirá uma janela a qual deverá ser indicado
    :height: 100px
    :align: center
 
-         
+
+
 
 Marcação Manual:
 ----------------
@@ -418,8 +419,7 @@ Em seguida selecione palavra por palavra e identifique com o elemento [kwd]:
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=6sNTlHF8WdU&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=9" frameborder="0" allowfullscreen></iframe>
-
+   <video width="320" height="240" src="_static/Keywords.mp4" type="video/mp4" controls></video>
 
 
 .. _historico:
@@ -453,7 +453,7 @@ Caso haja a data de revisado, selecione o dado e identifique com o elemento [rev
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=w4Bw7dXpS0E&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH&index=8" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/histórico.mp4" type="video/mp4" controls></video>
    
 
 
@@ -477,8 +477,7 @@ Selecione o e-mail do autor correspondente e identifique com o elemento [email] 
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=fuzSrOMlSvo&index=10&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
-
+   <video width="320" height="240" src="_static/correspondencia.mp4" type="video/mp4" controls></video>
 
 .. _ensaio-clinico:
 
@@ -510,7 +509,7 @@ Para encontrar a URL do ensaio clínico faça uma busca na internet pelo número
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=0bln_fugnAA&index=12&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/ensaio_clinico.mp4" type="video/mp4" controls></video>
 
 
 .. _referencias:
@@ -535,7 +534,7 @@ O programa identificará todas as referências selecionadas com a tag [ref] do t
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=MoTVIJk21UM&index=13&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>   
+   <video width="320" height="240" src="_static/referencias.mp4" type="video/mp4" controls></video>   
 
 
 .. _tipos-de-referencias:
@@ -584,7 +583,7 @@ Utilizada para referenciar monografias, dissertações ou teses para obtenção 
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=h1ytjcXZv5U&index=21&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/thesis.mp4" type="video/mp4" controls></video>
 
 
 .. _conferencia:
@@ -604,7 +603,7 @@ Utilizada para referenciar documentos relacionados à eventos: atas, anais, resu
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=k0OWNjboFWE&index=16&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/confproc.mp4" type="video/mp4" controls></video>
 
 
 
@@ -640,7 +639,7 @@ Utilizada para referenciar patentes; a patente representa um título de propried
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=4BffTcmIkF8&index=20&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/patente.mp4" type="video/mp4" controls></video>
 
 
 .. _lei:
@@ -671,6 +670,7 @@ Utilizada para referenciar publicações seriadas sem cunho científico, como re
    :align: center
 
 
+
 .. _livro:
 
 Book
@@ -689,7 +689,7 @@ Ex.:
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=geq2_UgMYa0&index=17&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/referencia_book.mp4" type="video/mp4" controls></video>
 
 
 
@@ -709,7 +709,7 @@ Livros finalizados, porém em fase de edição geralmente ao final da referênci
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=P2fiGsmitqM&index=15&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/book_prelo.mp4" type="video/mp4" controls></video>
 
 
 .. _capitulo-de-livro:
@@ -744,7 +744,7 @@ Utilizada para referenciar publicações seriadas científicas, como revistas, b
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=2gD6Ej1v0h4&index=14&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/journal.mp4" type="video/mp4" controls></video>
 
 
 
@@ -766,6 +766,10 @@ Utilizada para referenciar bases e bancos de dados. Ex.:
    :align: center
 
 
+.. raw:: html
+
+   <video width="320" height="240" src="_static/database.mp4" type="video/mp4" controls></video>
+
 .. _software:
 
 Software
@@ -782,7 +786,7 @@ Utilizada para referenciar um software, um programa de computador. Ex.:
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=KMaiNAJ__U4&index=18&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/software.mp4" type="video/mp4" controls></video>
 
 
 .. _web:
@@ -810,7 +814,7 @@ Utilizada para referenciar, web sites ou informações contidas em blogs, twiter
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=EwufVmJ4R74&index=19&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/webpage.mp4" type="video/mp4" controls></video>
 
 
 .. _outro:
@@ -826,6 +830,10 @@ Utilizada para referenciar tipos não previstos pelo SciELO. Ex.:
 .. image:: img/doc-mkp-ref-other.jpg
    :align: center
 
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/other.mp4" type="video/mp4" controls></video>
 
 
 .. _previous:
@@ -921,7 +929,7 @@ Para notas de rodapé que apresentam informação de suporte de entidade, instit
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=a_b9uzylEUU&index=30&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/fn-supported.mp4" type="video/mp4" controls></video>
 
 
 Suporte com Informação de Financiamento
@@ -965,7 +973,7 @@ Caso a nota de rodapé apresente mais que uma instituição financiadora e núme
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=FVTnNPGqWiU&index=31&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/nota-com-financiamento.mp4" type="video/mp4" controls></video>
 
 
 .. _fn-automatico:
@@ -1048,7 +1056,7 @@ Exemplo, selecione a figura com seu respectivo label e caption e identifique com
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=ZqjFc0Hg4P8&index=34&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/app-figura.mp4" type="video/mp4" controls></video>
 
 
 Para apêndices que apresentam parágrafos, selecione o título do apêndice e identifique com o elemento [sectitle]
@@ -1067,7 +1075,7 @@ Em seguida, selecione o parágrafo e marque com a tag [p]
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=_BM7cKHcWoA&index=32&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <video width="320" height="240" src="_static/apendice-em-texto.mp4" type="video/mp4" controls></video>
 
 
 .. _agradecimentos:
@@ -1089,6 +1097,13 @@ A informação de agradecimento fica entre o final do corpo do texto e antes de 
 .. image:: img/doc-mkp-ack-fim.jpg
    :height: 150px
    :align: center
+
+
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/ack-sem-financiamento.mp4" type="video/mp4" controls></video>
+
 
 Comumente os dados de agradecimentos apresentam informação de financiamento, com número de contrato e instituição financiadora. Para esse tipo de marcação é necessário fazer a identificação desses elementos de financiamento em agradecimentos através do elemento [funding].
 Após a marcação de [ack], o próximo passo é selecionar toda a informação de instituição financiadora e número de contrato pelo elemento [funding].
@@ -1125,6 +1140,11 @@ Quando houver mais de uma instituição financiadora e número de contrato, marc
    :align: center
 
 
+.. raw:: html
+
+   <video width="320" height="240" src="_static/ack-financiamento.mp4" type="video/mp4" controls></video>
+
+
 .. _glossario:
 
 Glossário
@@ -1146,6 +1166,7 @@ Abaixo o resultado da marcação de glossário:
 .. image:: img/doc-mkp-glossary.jpg
    :height: 200px
    :align: center
+
 
 
 .. _xmlbody:
@@ -1202,6 +1223,11 @@ Ao clicar em "Aplicar" o programa abrirá uma janela perguntando se as referênc
 O próximo passo após a marcação automática do corpo do texto é verificar se os dados foram marcados corretamente e completar a marcação dos elementos disponíveis no documento.
 
 
+.. raw:: html
+
+   <video width="320" height="240" src="_static/xmlbody.mp4" type="video/mp4" controls></video>
+
+
 .. _seção:
 
 Seções e Subseções
@@ -1226,6 +1252,12 @@ No entanto, caso o programa não faça a identificação automática correta de 
    :align: center
 
 .. note:: no menu dropdown as seções combinadas são precedidas por asterisco
+
+
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/seção-subseção.mp4" type="video/mp4" controls></video>
 
 
 .. _xref:
@@ -1319,6 +1351,12 @@ Selecionar [ref-type] do tipo caixa de texto e indicar a sequência do ID no doc
    :align: center
 
 
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/xref.mp4" type="video/mp4" controls></video>
+
+
 .. _paragrafo:
 
 Parágrafos
@@ -1337,6 +1375,12 @@ Os parágrafos são identificados automaticamente no corpo do texto ao fazer a i
 .. image:: img/doc-mkp-element-p.jpg
    :height: 100px
    :align: center
+
+
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/marcacao-paragrafo.mp4" type="video/mp4" controls></video>
 
 
 .. _figura:
@@ -1373,6 +1417,13 @@ Certifique-se de que o id de figura é único no documento.
 .. image:: img/doc-mkp-attrib-fig.jpg
    :height: 400px
    :align: center
+
+
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/figuras.mp4" type="video/mp4" controls></video>
+
 
 
 .. note:: A marcação de label e caption é automática,, isso porque esses dados estão em conformidade com 
@@ -1530,6 +1581,9 @@ Utilizando o botão [*boxedtxt] o programa faz a marcação automática de [sect
 
 Caso a caixa de texto apresente uma figura, uma tabela, listas etc, é possível também utilizar o elemento [*boxedtxt] e depois fazer a identificação desses objetos através das tags flutuantes do programa.
 
+.. raw:: html
+
+   <video width="320" height="240" src="_static/caixa-de-texto.mp4" type="video/mp4" controls></video>
 
 
 .. _verso:
@@ -1554,6 +1608,12 @@ O programa identificará cada linha como [verseline]. Caso o poema apresente tí
    :height: 180px
    :align: center
 
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/versos1.mp4" type="video/mp4" controls></video>
+
+
 .. _citação:
 
 Citações Diretas
@@ -1577,6 +1637,13 @@ O resultado deve ser:
    :height: 200px
    :align: center
 
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/citação.mp4" type="video/mp4" controls></video>
+
+
+
 .. _lista:
 
 Listas
@@ -1594,6 +1661,14 @@ Verifique os tipos possíveis de lista em :ref:`elemento-list` e selecione o tip
 .. image:: img/doc-mkp-list.jpg
    :height: 250px
    :align: center
+
+
+
+
+.. raw:: html
+
+   <video width="320" height="240" src="_static/listas1.mp4" type="video/mp4" controls></video>
+
 
 .. note:: O programa Markup não faz a marcação de sublistas. Portanto, para verificar como identificar sublistas, 
          consulte a documentação "Markup_90_O_que_ha_novo.pdf" item "Processos Manuais".
