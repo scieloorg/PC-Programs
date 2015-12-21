@@ -94,9 +94,16 @@ Caso queira atualizar os periódicos de uma única coleção, clique em iniciar,
 Para conferir, clique em ‘close’ e confira os títulos disponíveis no arquivo: "markup_journals.csv".
 
 .. raw:: html
-
+  <div>
    <iframe width="560" height="315" src="https://www.youtube.com/watch?v=SNAXZ1BaMM0&index=5&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+  </div>
 
+
+.. raw:: html
+
+  <div>
+     <iframe width="560" height="315" src="https://www.youtube.com/watch?v=SNAXZ1BaMM0&index=5&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+  </div>
 
 
 .. _markup:
