@@ -216,7 +216,7 @@ O programa Markup não faz marcação automática de função de autor como, por
 
 .. raw:: html
 
-   <video width="320" height="240" src="_static/dados-basicos.mp4" type="video/mp4" controls></video>
+   <video width="320" height="240" src="_static/dados-basicos.mp4" type="video/mp4" controls/>
 
 
 Contrib-ID
