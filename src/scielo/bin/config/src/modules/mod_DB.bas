@@ -32,9 +32,9 @@ Function Serial_CheckExisting(SerialTitle_to_find As String) As Long
     End If
 End Function
 
-Function Serial_TxtContent(mfn As Long, tag As Long, Optional language As String) As String
+Function Serial_TxtContent(Mfn As Long, tag As Long, Optional language As String) As String
 'xxx
-    Serial_TxtContent = journalDAO.getFieldContentByLanguage(mfn, tag, language)
+    Serial_TxtContent = journalDAO.getFieldContentByLanguage(Mfn, tag, language)
 End Function
 
 Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As String
@@ -55,8 +55,8 @@ Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As S
     
     Serial_ComboDefaultValue = content
 End Function
-Function Serial_ComboContent(Code As ColCode, mfn As Long, tag As Long, Optional DefaultOption As String) As String
-    Serial_ComboContent = journalDAO.getDecodedValue(Code, mfn, tag, DefaultOption)
+Function Serial_ComboContent(Code As ColCode, Mfn As Long, tag As Long, Optional DefaultOption As String) As String
+    Serial_ComboContent = journalDAO.getDecodedValue(Code, Mfn, tag, DefaultOption)
 End Function
 
 Function TagTxtContent(content As String, tag As Long) As String
@@ -74,7 +74,7 @@ Function TagTxtContent(content As String, tag As Long) As String
         Wend
     TagTxtContent = NewContent
 End Function
-Sub serial_issn_get(mfn As Long, ByRef pissn As String, ByRef eissn As String)
+Sub serial_issn_get(Mfn As Long, ByRef pissn As String, ByRef eissn As String)
     Dim v435 As String
     Dim v35 As String
     Dim v935 As String
@@ -85,11 +85,11 @@ Sub serial_issn_get(mfn As Long, ByRef pissn As String, ByRef eissn As String)
     
     pissn = ""
     eissn = ""
-    v435 = journalDAO.getRepetitiveFieldValue(mfn, 435, "%")
+    v435 = journalDAO.getRepetitiveFieldValue(Mfn, 435, "%")
     If Len(v435) = 0 Then
-        v35 = journalDAO.getRepetitiveFieldValue(mfn, 35, "")
-        v935 = journalDAO.getRepetitiveFieldValue(mfn, 935, "")
-        v400 = journalDAO.getRepetitiveFieldValue(mfn, 400, "")
+        v35 = journalDAO.getRepetitiveFieldValue(Mfn, 35, "")
+        v935 = journalDAO.getRepetitiveFieldValue(Mfn, 935, "")
+        v400 = journalDAO.getRepetitiveFieldValue(Mfn, 400, "")
         If v35 = "ONLIN" Then
             eissn = v935
             If v935 <> v400 Then
@@ -126,7 +126,7 @@ Sub serial_issn_build_field(ByRef pissn As String, ByRef eissn As String, ByRef 
         v935 = eissn
     End If
 End Sub
-Sub Serial_ListContent(list As ListBox, Code As ColCode, mfn As Long, tag As Long)
+Sub Serial_ListContent(list As ListBox, Code As ColCode, Mfn As Long, tag As Long)
     Dim content As String
     Dim exist As Boolean
     Dim itemCode As ClCode
@@ -137,7 +137,7 @@ Sub Serial_ListContent(list As ListBox, Code As ColCode, mfn As Long, tag As Lon
     Dim found As Boolean
     
     sep = "%"
-    content = journalDAO.getRepetitiveFieldValue(mfn, tag, sep)
+    content = journalDAO.getRepetitiveFieldValue(Mfn, tag, sep)
     
     For i = 0 To list.ListCount - 1
         list.selected(i) = False
@@ -270,6 +270,7 @@ Function Serial_Save(MfnTitle As Long) As Long
     reccontent = reccontent + TagTxtContent(v935, 935)
     reccontent = reccontent + TagTxtContent(v35, 35)
     
+    reccontent = reccontent + TagComboContent(CodePublishingModel, SERIAL7.ComboPublishingModel.text, 699)
     reccontent = reccontent + TagComboContent(CodeUsersubscription, SERIAL7.ComboUserSubscription.text, 67)
     reccontent = reccontent + TagTxtContent(SERIAL7.Text1.text, 690)
     reccontent = reccontent + TagTxtContent(SERIAL7.ScieloNetWrite, 691)
@@ -526,6 +527,7 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     
     change = change Or (StrComp(SERIAL7.Text1.text, Serial_TxtContent(MfnTitle, 690)) <> 0)
     change = change Or (StrComp(SERIAL7.ComboUserSubscription.text, Serial_ComboContent(CodeUsersubscription, MfnTitle, 67)) <> 0)
+    change = change Or (StrComp(SERIAL7.ComboPublishingModel.text, Serial_ComboContent(CodePublishingModel, MfnTitle, 699, "undefined")) <> 0)
     change = change Or (StrComp(SERIAL7.Text_SubmissionOnline.text, Serial_TxtContent(MfnTitle, 692)) <> 0)
     
     change = change Or (StrComp(SERIAL8.ComboCCode.text, Serial_ComboContent(CodeCCode, MfnTitle, 10)) <> 0)
@@ -709,7 +711,7 @@ Sub generateFile_JournalList4Automata()
     Next
     Close fn
 End Sub
-Function isTitleFormCompleted(mfn As Long) As Boolean
+Function isTitleFormCompleted(Mfn As Long) As Boolean
     Dim i As Long
     Dim completed As Boolean
     
@@ -719,7 +721,7 @@ Function isTitleFormCompleted(mfn As Long) As Boolean
         
         i = i + 1
         
-        completed = (Len(journalDAO.getRepetitiveFieldValue(mfn, CLng(Fields.getMandatoryFields.item(i)), "")) > 0)
+        completed = (Len(journalDAO.getRepetitiveFieldValue(Mfn, CLng(Fields.getMandatoryFields.item(i)), "")) > 0)
     Wend
     
     isTitleFormCompleted = completed

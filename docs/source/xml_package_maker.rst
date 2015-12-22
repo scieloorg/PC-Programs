@@ -26,10 +26,6 @@ Select the folder which contains XML package files
 .. image:: img/xpm_gui_selected_folder.png
 
 
-Inform the journal acronym which will be used to form the files and package names
-
-.. image:: img/xpm_gui_acron.png
-
 
 Press **XML Package Maker**.
 
@@ -197,4 +193,4 @@ Sources report
 
 ----------------
 
-Last update of this page: August, 2015
+Last update of this page: December 2015

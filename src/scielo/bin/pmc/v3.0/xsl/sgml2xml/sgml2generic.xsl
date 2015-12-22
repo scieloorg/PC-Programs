@@ -1896,7 +1896,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:when>
 			<xsl:otherwise>
 				<surname><xsl:value-of select="$s"/></surname>
-				<given-names><xsl:value-of select="$f"/></given-names>						
+				<given-names><xsl:value-of select="$f"/></given-names>			
+				<xsl:if test="suffix"><suffix><xsl:value-of select="suffix"/></suffix></xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
 		</name>

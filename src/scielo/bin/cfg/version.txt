@@ -1,11 +1,12 @@
-﻿4.0.090 trial - 14/12/2015*
-==========================
+﻿4.0.091 - 18/12/2015
+====================
 - XC
   - (bug) Do not use any api to find previous PID
   - (bug) Fix the transference of articles files (it was using the collection scilista instead of gerapadrao scilista)
   - (bug) Include order validation in journal/issue report, and considere it as a critical error
   - (bug) Solve how to save large records (Chinese, Russian, Arabic abstracts)
   - (bug) Solve character ^ in field content
+  - (bug) Fix checking of registered journal which has parentesis in the title
   - (improvement) Do not display XPM button 
   - (improvement) Retrieve reports of documents which were previously converted
   - (improvement) Remove temporary files and directories
@@ -33,12 +34,14 @@
   - (new) Tool to compare updates of normalized institutions
   - (new) Identify duplication of trans-title/article-title, abstract/trans-abstract, kwd
   - (new) Validation of ISO Country Code
+  - (new) Add to scielo_package ther files which are in XML in spite of their names are not according to the rules. E.g.: a01.xml and a02-gf01.png. But error messages must be displayed.
+  - (new) Validate journal-id (publisher-id)
   - (bug) Fix history validation: received and accepted
   - (bug) Remove inconvenient styles (bold/italic) within article-title, trans-title, kwd, source
   - (bug) Fix position of fn-group of translation
   - (bug) Validate suffixes which are in capital letters (ex.: JUNIOR)
   - (bug) Remove funding-group off PMC package
-  - (bug) Validation of affiliations using Wayta
+  - (bug) Fix validations of affiliations using Wayta
 - Markup
   - (bug) Fix identification of *deflist
   - (bug) Fix [fngrp 
@@ -46,10 +49,15 @@
   - (bug) Fix presentation of lpage value
   - (bug) Fix the identification of the sources as using *source (blank space was being removed) 
   - (bug) Fix automatic identification of table footnotes 
+  - (bug) Fix automatic identification of *authors (Cases: Last name Name Jr, NAME SUFFIX SURNAME, SURNAME N. N., et al, )
   - (new) Allow identify future dates: one year after the current one
-  - (improvement) Do not complete by default the sps version
+  - (new) fname-surname button in order to identify Fname Surname
+  - (improvement) Do not complete by default the sps version 1.2
   - (improvement) Remove ref/@status=valid
   - (improvement) Download of journals list, selecting a collection
+- Title Manager
+  - (new) Field to identify a journal which adopts continuous publishing model
+  - (bug) Fix texts / translations
 
 4.0.090 trial - 16/09/2015
 ==========================

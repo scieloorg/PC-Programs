@@ -32,39 +32,10 @@ Somente se é um periódico do www.scielo.org, use o menú para atualizar a list
    .. image:: img/scielo_menu_download_journals.png
 
 
-Se você trabalha com apenas 1 coleção ou periódico, a melhor opção é abrir uma sessão de DOS e escrever os dois seguintes comandos, onde está <collection_name>, coloque o nome da coleção correspondente.
+Selecione a coleção:
 
-  .. code::
+   .. image:: img/download_journals_data.png
 
-     cd \scielo\bin\xml
-     python download_markup_journals.py "<collection_name>"
-
-  
-Exemplos:
-
-  .. code::
-
-    python download_markup_journals.py "Brazil"
-    python download_markup_journals.py "Public Health"
-
-
-Coleções:
-
-  * Argentina
-  * Bolivia
-  * Brazil
-  * Chile
-  * Colombia
-  * Costa Rica
-  * Cuba
-  * Mexico
-  * Peru
-  * Portugal
-  * Public Health
-  * Social Sciences
-  * South Africa
-  * Spain
-  * Uruguay
 
 
 Outros periódicos
