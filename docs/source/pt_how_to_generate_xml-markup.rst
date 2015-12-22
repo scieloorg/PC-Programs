@@ -453,7 +453,7 @@ Caso haja a data de revisado, selecione o dado e identifique com o elemento [rev
 
 .. raw:: html
 
-   <video width="320" height="240" src="_static/histórico.mp4" type="video/mp4" controls></video>
+   <video width="320" height="240" src="_static/historico.mp4" type="video/mp4" controls></video>
    
 
 
@@ -1257,7 +1257,7 @@ No entanto, caso o programa não faça a identificação automática correta de 
 
 .. raw:: html
 
-   <video width="320" height="240" src="_static/seção-subseção.mp4" type="video/mp4" controls></video>
+   <video width="320" height="240" src="_static/secao-subsecao.mp4" type="video/mp4" controls></video>
 
 
 .. _xref:
@@ -1640,7 +1640,7 @@ O resultado deve ser:
 
 .. raw:: html
 
-   <video width="320" height="240" src="_static/citação.mp4" type="video/mp4" controls></video>
+   <video width="320" height="240" src="_static/citacao.mp4" type="video/mp4" controls></video>
 
 
 
