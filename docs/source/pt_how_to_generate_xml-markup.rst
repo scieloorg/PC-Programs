@@ -419,7 +419,7 @@ Em seguida selecione palavra por palavra e identifique com o elemento [kwd]:
 
 .. raw:: html
 
-   <video width="320" height="240" src="_static/Keywords.mp4" type="video/mp4" controls></video>
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/6sNTlHF8WdU?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _historico:
