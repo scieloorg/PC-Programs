@@ -406,7 +406,9 @@ class ArticleContentValidation(object):
 
     @property
     def journal_id_publisher_id(self):
-        return required('journal-id (publisher-id)', self.article.journal_id_publisher_id, 'FATAL ERROR')
+        if self.article.sps.replace('.', '').isdigit():
+            if float(self.article.sps) >= 1.3:
+                return required('journal-id (publisher-id)', self.article.journal_id_publisher_id, 'FATAL ERROR')
 
     @property
     def journal_id_nlm_ta(self):
