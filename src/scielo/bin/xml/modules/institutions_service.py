@@ -218,11 +218,10 @@ def wayta_request(text):
 def format_wayta_results(result, filter_country=None):
     import json
     r = []
-
+    keys = ['score', 'value', 'city', 'state', 'iso3166', 'country']
     try:
         results = json.loads(result)
         if filter_country is None:
-            keys = ['score', 'value', 'city', 'state', 'iso3166', 'country']
             r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '']
         else:
             r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '' and filter_country == item.get('country')]
