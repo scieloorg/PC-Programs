@@ -1,5 +1,10 @@
-﻿4.0.091 - 18/12/2015
-====================
+﻿4.0.091 trial - 08/01/2016
+==========================
+- XPM
+  - (bug) Require journal-id (publisher) only from sps 1.3
+
+4.0.091 trial - 18/12/2015
+==========================
   - (improvement) Present the "translation" of code languages
   - (improvement) Improve identification of normalized institutions
   - (improvement) Do not consider missing bibr/fig/table-wrap xref if it is in a xref range. Ex.: 2, 3, 4 are in (1-5), so they are not missing
@@ -30,8 +35,8 @@
   - (bug) Remove funding-group off PMC package
   - (bug) Fix validations of affiliations using Wayta
 
-4.0.090 trial - 16/09/2015
-==========================
+4.0.090 - 16/09/2015
+====================
 - Markup
   - (bug) Fix identification of xref (bibr) which is numeric an which pattern is (1,2-3)
 - XC

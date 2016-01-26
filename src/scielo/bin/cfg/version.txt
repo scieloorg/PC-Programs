@@ -1,5 +1,14 @@
-﻿4.0.091 - 18/12/2015
-====================
+﻿4.0.091 trial - 08/01/2016
+==========================
+- XC
+  - (bug) Require journal-id (publisher) only from sps 1.3
+- XPM
+  - (bug) Require journal-id (publisher) only from sps 1.3
+- Markup
+  - (bug) Fix normalized instituition finder
+
+4.0.091 trial - 18/12/2015
+==========================
 - XC
   - (bug) Do not use any api to find previous PID
   - (bug) Fix the transference of articles files (it was using the collection scilista instead of gerapadrao scilista)
@@ -59,8 +68,8 @@
   - (new) Field to identify a journal which adopts continuous publishing model
   - (bug) Fix texts / translations
 
-4.0.090 trial - 16/09/2015
-==========================
+4.0.090 - 16/09/2015
+====================
 - Markup
   - (bug) Fix identification of xref (bibr) which is numeric an which pattern is (1,2-3)
 - XC
