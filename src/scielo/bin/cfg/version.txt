@@ -4,6 +4,7 @@
   - (bug) Fix automatic markup of *authors for fname which follows A. B. C.
   - (bug) Fix automatic markup of *authors which finishes with , et al
   - (bug) Fix automatic markup of *authors when the next reference has same author
+  - (bug) Fix automatic markup of *author for "Surname, F., & Surname, A." pattern
 - Title Manager
   - (bug) Allow # in section titles
   - (bug) Identify publishing model is not complete

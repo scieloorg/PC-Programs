@@ -350,7 +350,7 @@ Sub MyGetContentFromBase(MfnTitle As Long)
         Call ScieloNetRead(MfnTitle)
         Text_SubmissionOnline.text = Serial_TxtContent(MfnTitle, 692)
         Text1.text = Serial_TxtContent(MfnTitle, 690)
-        ComboPublishingModel.text = Serial_ComboContent(CodePublishingModel, MfnTitle, 699, "undefined")
+        ComboPublishingModel.text = Serial_ComboContent(CodePublishingModel, MfnTitle, 699, "")
         
         Dim pissn As String
         Dim eissn As String
