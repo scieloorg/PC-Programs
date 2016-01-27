@@ -8,9 +8,9 @@
 ,v65,';',
 ,v35,';',
 ,v42/,
-,(v49^t|;|),'No section title'/,
+,(if v49^t:';' then replace(v49^t,';',','),';' else v49^t|;| fi),'No section title'/,
 ,(v49^c|;|),'nd'/,
-,proc(,ref(['c:\Scielo\serial\code\code']l(['c:\Scielo\serial\code\code']'en_scheme'),('a999{',v2,'{'),'a998{',(|~|v2^c|~|,v2^v,|#|v2^c|#|),'{'),),
+,proc(,ref(['c:\scielo_suporte\serial\code\code']l(['c:\scielo_suporte\serial\code\code']'en_scheme'),('a999{',v2,'{'),'a998{',(|~|v2^c|~|,v2^v,|#|v2^c|#|),'{'),),
 ,if a(v85) then
 	,(if v999^c='nd' then
 		,v999^v/,
@@ -24,7 +24,7 @@
 ,fi,
 
 ,proc('d999'),
-,proc(,ref(['c:\Scielo\serial\code\code']l(['c:\Scielo\serial\code\code']'standard'),('a999{',v2,'{')),),
+,proc(,ref(['c:\scielo_suporte\serial\code\code']l(['c:\scielo_suporte\serial\code\code']'standard'),('a999{',v2,'{')),),
 ,if a(v117) then
 	,(if v999^c='other' then
 		,v999^v/,

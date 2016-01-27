@@ -105,10 +105,10 @@ Private Function UpdateIssueTable() As Boolean
     
     With Paths("Markup Issue Table")
         For i = 1 To idiomsinfo.count
-            originalPft = idiomsinfo(i).code + "_" + Paths("Markup Issue Table Format").FileName
+            originalPft = idiomsinfo(i).Code + "_" + Paths("Markup Issue Table Format").FileName
             configuredPft = "cfg_" + originalPft
             Call ConfigurePft(originalPft, configuredPft, "c:\scielo\code\code", Paths("Code Database").Path + "\" + Paths("Code Database").FileName)
-            Call issueDAO.UpdateIssueTable(.Path + "\" + idiomsinfo(i).code + "_" + .FileName, configuredPft)
+            Call issueDAO.UpdateIssueTable(.Path + "\" + idiomsinfo(i).Code + "_" + .FileName, configuredPft)
         Next
     Call issueDAO.UpdateIssueTable(.Path + "\" + .FileName, App.Path + "\misc\issue.xml.pft")
     End With

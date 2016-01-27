@@ -527,7 +527,7 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     
     change = change Or (StrComp(SERIAL7.Text1.text, Serial_TxtContent(MfnTitle, 690)) <> 0)
     change = change Or (StrComp(SERIAL7.ComboUserSubscription.text, Serial_ComboContent(CodeUsersubscription, MfnTitle, 67)) <> 0)
-    change = change Or (StrComp(SERIAL7.ComboPublishingModel.text, Serial_ComboContent(CodePublishingModel, MfnTitle, 699, "undefined")) <> 0)
+    change = change Or (StrComp(SERIAL7.ComboPublishingModel.text, Serial_ComboContent(CodePublishingModel, MfnTitle, 699)) <> 0)
     change = change Or (StrComp(SERIAL7.Text_SubmissionOnline.text, Serial_TxtContent(MfnTitle, 692)) <> 0)
     
     change = change Or (StrComp(SERIAL8.ComboCCode.text, Serial_ComboContent(CodeCCode, MfnTitle, 10)) <> 0)
@@ -713,16 +713,15 @@ Sub generateFile_JournalList4Automata()
 End Sub
 Function isTitleFormCompleted(Mfn As Long) As Boolean
     Dim i As Long
-    Dim completed As Boolean
+    Dim data As String
+    Dim missing As String
     
-    completed = True
+    For i = 1 To Fields.getMandatoryFields.count
+        data = journalDAO.getRepetitiveFieldValue(Mfn, CLng(Fields.getMandatoryFields.item(i)), "")
+        If Len(data) = 0 Then
+            missing = missing + vbCrLf + Fields.getMandatoryFields.item(i)
+        End If
+    Next
     
-    While i < Fields.getMandatoryFields.count And (completed)
-        
-        i = i + 1
-        
-        completed = (Len(journalDAO.getRepetitiveFieldValue(Mfn, CLng(Fields.getMandatoryFields.item(i)), "")) > 0)
-    Wend
-    
-    isTitleFormCompleted = completed
+    isTitleFormCompleted = (Len(missing) = 0)
 End Function
