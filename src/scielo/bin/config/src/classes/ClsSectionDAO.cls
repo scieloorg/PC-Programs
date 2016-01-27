@@ -26,34 +26,31 @@ Private Function getTempHeader(Mfn As Long, language As String) As String
 End Function
 
 Private Sub getSections(Mfn As Long, lang As String, sections As ClsSections)
+    Dim ITEMS() As String
+    Dim texts() As String
+    Dim i As Long
+    
     Dim s As String
-    Dim p0 As Long
-    Dim p As Long
-    Dim textSectionCodeTitle As String
     
     Dim sectionObj As ClsSection
     Dim pairSectionTitleAndLang As ClsTextByLang
     
-    
     Dim textSectionCode As String
     Dim textSectionTitle As String
     
+    s = isisSection.UsePft(Mfn, "(if v49^l='" + lang + "' then v49^c|<CODE-TITLE-SEP>|,v49^t|<NEXTITEM>| fi)")
+    ITEMS = Split(s, "<NEXTITEM>")
     
-    s = isisSection.UsePft(Mfn, "(if v49^l='" + lang + "' then v49^c|*|,v49^t|#| fi)")
-        
-    p0 = 1
-    p = InStr(s, "#")
-    While p > 0
-        textSectionCodeTitle = Mid(s, p0, p - p0)
-        textSectionCode = Mid(textSectionCodeTitle, 1, InStr(textSectionCodeTitle, "*") - 1)
-        textSectionTitle = Mid(textSectionCodeTitle, InStr(textSectionCodeTitle, "*") + 1)
-        
+    For i = 0 To UBound(ITEMS) - 1
+        texts = Split(ITEMS(i), "<CODE-TITLE-SEP>")
+        textSectionCode = texts(0)
+        textSectionTitle = texts(1)
+    
         Set sectionObj = sections.item(textSectionCode)
         
         If sectionObj Is Nothing Then
         
             Set sectionObj = New ClsSection
-            
             
             sectionObj.sectionCode = textSectionCode
             Set sectionObj.sectionNames = New ColTextByLang
@@ -77,11 +74,9 @@ Private Sub getSections(Mfn As Long, lang As String, sections As ClsSections)
                 
             End If
         End If
+    Next
+    
         
-        
-        p0 = p + 1
-        p = InStr(p0, s, "#", vbBinaryCompare)
-    Wend
 End Sub
 
 Function getTOC(mfnSection As Long, tocObj As ClsTOC) As ClsTOC
@@ -96,11 +91,11 @@ Function getTOC(mfnSection As Long, tocObj As ClsTOC) As ClsTOC
         
        
             Set headers = New ClsTextByLang
-            headers.lang = idiomsinfo(i).code
+            headers.lang = idiomsinfo(i).Code
             
             If mfnSection > 0 Then
-                headers.text = getTempHeader(mfnSection, idiomsinfo(i).code)
-                Call getSections(mfnSection, idiomsinfo(i).code, tocObj.sections)
+                headers.text = getTempHeader(mfnSection, idiomsinfo(i).Code)
+                Call getSections(mfnSection, idiomsinfo(i).Code, tocObj.sections)
             End If
             If Len(headers.text) = 0 Then headers.text = idiomsinfo(i).More
             Call tocObj.names.add(headers)

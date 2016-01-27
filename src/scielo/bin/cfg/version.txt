@@ -4,6 +4,9 @@
   - (bug) Fix automatic markup of *authors for fname which follows A. B. C.
   - (bug) Fix automatic markup of *authors which finishes with , et al
   - (bug) Fix automatic markup of *authors when the next reference has same author
+- Title Manager
+  - (bug) Allow # in section titles
+  - (bug) Identify publishing model is not complete
 
 4.0.091 trial - 08/01/2016
 ==========================
