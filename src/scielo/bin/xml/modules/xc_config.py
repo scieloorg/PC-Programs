@@ -300,7 +300,7 @@ class XMLConverterConfiguration(object):
     def transference_servers(self):
         servers = self._data.get('TRANSFER_SERVER')
         if servers is not None:
-            servers = servers.split(',')
+            servers = servers.split(';')
         return servers
 
     @property
