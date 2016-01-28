@@ -101,10 +101,10 @@ def gerapadrao(args):
 
                         if config.is_enabled_transference:
                             open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - inicio transf bases\n')
-                            transfer_website_bases(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases', log_filename)
+                            transfer_website_bases(config.local_web_app_path + '/bases', config.transference_user, config.transference_servers, config.remote_web_app_path + '/bases', log_filename)
                             open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - fim transf bases\n')
                             open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - inicio transf files\n')
-                            transfer_website_files(config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path, scilista_items, log_filename)
+                            transfer_website_files(config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path, scilista_items, log_filename)
                             open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - fim transf files\n')
                         if mailer is not None:
                             mailer.send_message(config.email_to, config.email_subject_website_update.replace('Gerapadrao', 'Gerapadrao ' + start_time + ' '), config.email_text_website_update + scilista_content)
@@ -119,18 +119,20 @@ def gerapadrao_command(proc_path, gerapadrao_status_filename):
     return 'cd ' + proc_path + ';./GeraPadrao.bat;echo FINISHED>' + gerapadrao_status_filename
 
 
-def transfer_website_bases(local_bases_path, user, server, remote_bases_path, log_filename):
+def transfer_website_bases(local_bases_path, user, servers, remote_bases_path, log_filename):
     folders = ['artigo', 'issue', 'newissue', 'title']
 
     for folder in folders:
-        xc.run_remote_mkdirs(user, server, remote_bases_path + '/' + folder, log_filename)
-        xc.run_scp(local_bases_path + '/' + folder, user, server, remote_bases_path, log_filename)
+        for server in servers:
+            xc.run_remote_mkdirs(user, server, remote_bases_path + '/' + folder, log_filename)
+            xc.run_scp(local_bases_path + '/' + folder, user, server, remote_bases_path, log_filename)
 
 
-def transfer_website_files(local_web_app_path, user, server, remote_web_app_path, scilista_items, log_filename):
+def transfer_website_files(local_web_app_path, user, servers, remote_web_app_path, scilista_items, log_filename):
     scilista_items = [item.strip().split(' ') for item in scilista_items if ' ' in item]
     for acron, issue_id in scilista_items:
-        transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path, log_filename)
+        for server in servers:
+            transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path, log_filename)
 
 
 def transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path, log_filename):
