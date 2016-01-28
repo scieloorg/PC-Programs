@@ -297,8 +297,11 @@ class XMLConverterConfiguration(object):
         return self._data.get('TRANSFER_USER')
 
     @property
-    def transference_server(self):
-        return self._data.get('TRANSFER_SERVER')
+    def transference_servers(self):
+        servers = self._data.get('TRANSFER_SERVER')
+        if servers is not None:
+            servers = servers.split(',')
+        return servers
 
     @property
     def is_enabled_email_service(self):
@@ -382,7 +385,7 @@ class XMLConverterConfiguration(object):
             errors.append('Missing LOCAL_WEB_APP_PATH')
         if self.remote_web_app_path is None:
             errors.append('Missing REMOTE_WEB_APP_PATH')
-        if self.transference_server is None:
+        if self.transference_servers is None:
             errors.append('Missing TRANSFER_SERVER')
         if self.transference_user is None:
             errors.append('Missing TRANSFER_USER')

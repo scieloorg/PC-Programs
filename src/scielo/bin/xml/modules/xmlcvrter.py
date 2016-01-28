@@ -649,7 +649,7 @@ def report_status(title, status, style=None):
     return text
 
 
-def transfer_website_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path):
+def transfer_website_files(acron, issue_id, local_web_app_path, user, servers, remote_web_app_path):
     # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
     issue_id_path = acron + '/' + issue_id
 
@@ -658,11 +658,12 @@ def transfer_website_files(acron, issue_id, local_web_app_path, user, server, re
     for folder in folders:
         dest_path = remote_web_app_path + folder + issue_id_path
         source_path = local_web_app_path + folder + issue_id_path
-        xc.run_remote_mkdirs(user, server, dest_path)
-        xc.run_rsync(source_path, user, server, dest_path)
+        for server in servers:
+            xc.run_remote_mkdirs(user, server, dest_path)
+            xc.run_rsync(source_path, user, server, dest_path)
 
 
-def transfer_report_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path):
+def transfer_report_files(acron, issue_id, local_web_app_path, user, servers, remote_web_app_path):
     # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
     issue_id_path = acron + '/' + issue_id
 
@@ -671,8 +672,9 @@ def transfer_report_files(acron, issue_id, local_web_app_path, user, server, rem
     for folder in folders:
         dest_path = remote_web_app_path + folder + issue_id_path
         source_path = local_web_app_path + folder + issue_id_path
-        xc.run_remote_mkdirs(user, server, dest_path)
-        xc.run_rsync(source_path, user, server, dest_path)
+        for server in servers:
+            xc.run_remote_mkdirs(user, server, dest_path)
+            xc.run_rsync(source_path, user, server, dest_path)
 
 
 def queue_packages(download_path, temp_path, queue_path, archive_path):
@@ -861,7 +863,7 @@ def execute_converter(package_paths, collection_name=None):
                         open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
 
                     if config.is_enabled_transference:
-                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
+                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
 
                 if report_location is not None:
                     if config.is_windows:
@@ -872,7 +874,7 @@ def execute_converter(package_paths, collection_name=None):
                         link = converter_env.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
                         report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 
-                        transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
+                        transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
                         send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
 
             except Exception as e:
