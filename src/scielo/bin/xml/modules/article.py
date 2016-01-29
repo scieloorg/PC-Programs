@@ -1169,6 +1169,7 @@ class Article(ArticleXML):
         ArticleXML.__init__(self, tree)
         self.xml_name = xml_name
         self.prefix = xml_name.replace('.xml', '')
+        self.new_prefix = self.prefix
         self.filename = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
         self.number = None
         self.number_suppl = None
