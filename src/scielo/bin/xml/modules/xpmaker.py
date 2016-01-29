@@ -836,6 +836,7 @@ def normalize_package_name(doc_files_info, acron, content):
 
             xml, e = xml_utils.load_xml(content)
             doc = article.Article(xml, doc_files_info.xml_name)
+            doc.new_prefix = doc_files_info.new_name
 
     doc_files_info.new_xml_filename = doc_files_info.new_xml_path + '/' + doc_files_info.new_name + '.xml'
     return (doc, doc_files_info, curr_and_new_href_list, content)
