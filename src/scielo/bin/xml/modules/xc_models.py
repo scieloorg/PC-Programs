@@ -19,10 +19,12 @@ import institutions_service
 import html_reports
 
 
-ISSN_CONVERSION = {
+ISSN_TYPE_CONVERSION = {
     'ONLIN': 'epub',
     'PRINT': 'ppub',
-    }
+    'epub': 'ONLIN',
+    'ppub': 'PRINT',
+}
 
 
 def author_tag(is_person, is_analytic_author):
@@ -32,36 +34,64 @@ def author_tag(is_person, is_analytic_author):
     return r[is_person][is_analytic_author]
 
 
-def read_issn_fields(fields):
-    _issns = None
-    if fields is not None:
-        if not isinstance(fields, list):
-            fields = [fields]
-        _issns = {}
-        for item in fields:
-            if isinstance(item, dict):
-                if 't' in item.keys() and '_' in item.keys():
-                    _issns[ISSN_CONVERSION.get(item.get('t'), item.get('t'))] = item.get('_')
-                elif 'epub' in item.keys() or 'ppub' in item.keys():
-                    for k, v in item.items():
-                        _issns[k] = v
-            elif isinstance(item, tuple):
-                _issns[item[0]] = item[1]
-    return _issns
+def title_issns(record):
+    print('title_issns()')
+    for tag in ['400', '35', '935', '435', ]:
+        print(tag)
+        print(record.get(tag))
+    issn_items = registered_issn_items(record.get('435'))
+    if issn_items is None:
+        issn_items = {}
+        issn = record.get('935')
+        if issn is None:
+            issn = record.get('400')
+        issn_type = record.get('35')
+        if issn_type is None:
+            issn_type = 'UNKNOWN_ISSN_TYPE'
+        issn_items[issn_type] = issn
+    print('issns:')
+    print(issn_items)
+    return issn_items
 
 
-def format_issn_fields(issns):
+def issue_issns(record):
+    print('issue_issns()')
+    for tag in ['35', '935', '435', ]:
+        print(tag)
+        print(record.get(tag))
+    issn_items = registered_issn_items(record.get('435'))
+    if issn_items is None:
+        issn_items = {}
+        issn = record.get('935')
+        if issn is None:
+            issn = record.get('35')
+        issn_type = 'UNKNOWN_ISSN_TYPE'
+        issn_items[issn_type] = issn
+    print('issns:')
+    print(issn_items)
+    return issn_items
+
+
+def registered_issn_items(issns_field):
+    issn_items = issns_field
+    if issns_field is not None:
+        issn_items = {}
+        if not isinstance(issns_field, list):
+            issns_field = [issns_field]
+        if isinstance(issns_field, list):
+            for occ in issns_field:
+                issn_items[ISSN_TYPE_CONVERSION.get(occ.get('t'))] = occ.get('_')
+    return issn_items
+
+
+def format_issn_fields(issn_items, convert_issn_type):
     fields = []
-    if issns is not None:
-        if not isinstance(issns, list):
-            issns = [issns]
-        for issn in issns:
-            if isinstance(issn, dict):
-                for k, v in issn.items():
-                    issn = {}
-                    issn['t'] = k
-                    issn['_'] = v
-                    fields.append(issn)
+    if issn_items is not None:
+        if isinstance(issn_items, dict):
+            for issn_type, issn_value in issn_items.items():
+                if convert_issn_type:
+                    issn_type = ISSN_TYPE_CONVERSION.get(issn_type, issn_type)
+                fields.append({'_': issn_value, 't': issn_type})
     return fields
 
 
@@ -160,15 +190,15 @@ class ArticleRecords(object):
             self._metadata['62'] = self.article.publisher_name
         if not '421' in self._metadata.keys():
             self._metadata['421'] = self.article.journal_id_nlm_ta
-        if not '435' in self._metadata.keys():
-            self._metadata['435'] = self.article.journal_issns
+        #FIXME
+        #if not '435' in self._metadata.keys():
+        #    self._metadata['435'] = self.article.journal_issns
 
     def fix_issue_data(self):
         if '130' in self._metadata.keys():
             self._metadata['100'] = self._metadata['130']
             del self._metadata['130']
-        if '435' in self._metadata.keys():
-            self._metadata['435'] = format_issn_fields(read_issn_fields(self.article.journal_issns))
+        self._metadata['435'] = format_issn_fields(self.article.journal_issns, False)
         if '480' in self._metadata.keys():
             del self._metadata['480']
 
@@ -451,46 +481,24 @@ class RegisteredTitle(object):
 
     def __init__(self, record):
         self.record = record
-        self._issns = None
-        self._e_issn = None
-        self._print_issn = None
+        self._issns = title_issns(record)
 
-    def license(self):
+    @property
+    def journal_id_nlm_ta(self):
         if self.record is not None:
-            return self.record.get('541')
-
-    def find_issns(self):
-        print('find_issns')
-        print(self.record.get('435'))
-        issns = self.record.get('435')
-        issn_items = {}
-        if issns is None:
-            issn = self.record.get('935')
-            if issn is None:
-                issn = self.record.get('400')
-            issn_type = self.record.get('35')
-            if issn_type is None:
-                issn_type = 'unidentified'
-            issn_items[issn_type] = issn
-        else:
-            if not isinstance(issns, list):
-                issns = [issns]
-            if isinstance(issns, list):
-                for issn in issns:
-                    issn_items[issn.get('t')] = issn.get('_')
-        return issn_items
+            return self.record.get('421')
 
     @property
     def print_issn(self):
         if self._issns is None:
-            self._issns = self.find_issns()
-        return self._issns.get('PRINT')
+            self._issns = title_issns(self.record)
+        return self._issns.get('ppub')
 
     @property
     def e_issn(self):
         if self._issns is None:
-            self._issns = self.find_issns()
-        return self._issns.get('ONLIN')
+            self._issns = title_issns(self.record)
+        return self._issns.get('epub')
 
 
 class IssueModels(object):
@@ -545,20 +553,23 @@ class IssueModels(object):
         i.journal_title = record.get('130')
         i.journal_id_nlm_ta = record.get('421')
         i.journal_id_publisher_id = record.get('930').lower()
-        issns = record.get('435')
-        # 0011-5258^tPRINT
-        # 1678-4588^tONLIN
-        # [{'_': 1234-567, 't': PRINT}, {'_': 1678-4588, 't': ONLIN}]
-        i.journal_issns = read_issn_fields(record.get('435'))
-        if i.journal_issns is None:
-            i.e_issn = None
-            i.print_issn = None
-        else:
-            i.e_issn = i.journal_issns.get('epub')
-            i.print_issn = i.journal_issns.get('ppub')
+        i.journal_issns = issue_issns(record)
         i.publisher_name = record.get('62', record.get('480'))
         i.license = record.get('541')
         return i
+
+    def complete_issue_info(self, registered_title):
+        if self._issue is not None:
+            unknown_issn = self._issue.journal_issns.get('UNKNOWN_ISSN_TYPE')
+            if unknown_issn is not None and registered_title._issns is not None:
+                if registered_title._issns.get('UNKNOWN_ISSN_TYPE') is None:
+                    for k, v in registered_title._issns.items():
+                        if v == unknown_issn:
+                            self._issue.journal_issns[k] = v
+                        if 'UNKNOWN_ISSN_TYPE' in self._issue.journal_issns.keys():
+                            del self._issue.journal_issns['UNKNOWN_ISSN_TYPE']
+            if self._issue.journal_id_nlm_ta is None:
+                self._issue.journal_id_nlm_ta = registered_title.journal_id_nlm_ta
 
     def validate_article_issue_data(self, article, is_rolling_pass=False):
         results = []
@@ -569,15 +580,11 @@ class IssueModels(object):
             validations.append((_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.issue.journal_id_publisher_id))
             validations.append((_('journal-id (nlm-ta)'), article.journal_id_nlm_ta, self.issue.journal_id_nlm_ta))
 
-            a_issn = article.journal_issns.get('epub') if article.journal_issns is not None else None
-            if a_issn is not None:
-                i_issn = self.issue.journal_issns.get('epub') if self.issue.journal_issns is not None else None
-                validations.append((_('journal e-ISSN'), a_issn, i_issn))
+            if article.e_issn is not None:
+                validations.append((_('journal e-ISSN'), article.e_issn, self.issue.e_issn))
 
-            a_issn = article.journal_issns.get('ppub') if article.journal_issns is not None else None
-            if a_issn is not None:
-                i_issn = self.issue.journal_issns.get('ppub') if self.issue.journal_issns is not None else None
-                validations.append((_('journal print ISSN'), a_issn, i_issn))
+            if article.print_issn is not None:
+                validations.append((_('journal print ISSN'), article.print_issn, self.issue.print_issn))
 
             validations.append((_('issue label'), article.issue_label, self.issue.issue_label))
             a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
@@ -752,12 +759,6 @@ class ArticleDB(object):
 
                 self._registered_articles[xml_name] = doc
         return self._registered_articles
-
-    @property
-    def registered_issue_models(self):
-        if self._issue_models is None:
-            self._issue_models = IssueModels(self._registered_i_record) if self._registered_i_record is not None else None
-        return self._issue_models
 
     def content_formatter(self, content):
 
@@ -1264,18 +1265,13 @@ class DBManager(object):
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
-                if issue_models.issue.license is None or issue_models.issue.print_issn is None or issue_models.issue.e_issn is None:
+                if issue_models.issue.print_issn is None and issue_models.issue.e_issn is None:
                     j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                     if j_record is None:
                         msg = html_reports.p_message('ERROR: ' + _('Unable to get journal data') + ' ' + journal_title)
                     else:
                         t = RegisteredTitle(j_record)
-                        if issue_models.issue.license is None:
-                            issue_models.issue.license = t.license()
-                        if issue_models.issue.print_issn is None:
-                            issue_models.issue.print_issn = t.print_issn
-                        if issue_models.issue.e_issn is None:
-                            issue_models.issue.e_issn = t.e_issn
+                        issue_models.complete_issue_info(t)
 
         return (acron_issue_label, issue_models, msg)
 
