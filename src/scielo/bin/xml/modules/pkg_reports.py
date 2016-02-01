@@ -873,11 +873,10 @@ class ArticlesPkgReport(object):
                     block += html_reports.report_block('xmlrep' + new_name, self.pkg_xml_structure_validations.item(new_name).message, 'xmlrep', a_name)
 
             if self.pkg_xml_content_validations.item(new_name) is not None:
-                if self.pkg_xml_content_validations.item(new_name).total > 0:
-                    status = html_reports.statistics_display(self.pkg_xml_content_validations.item(new_name))
-                    links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
-                    links += html_reports.tag('span', status, 'smaller')
-                    block += html_reports.report_block('datarep' + new_name, self.pkg_xml_content_validations.item(new_name).message, 'datarep', a_name)
+                status = html_reports.statistics_display(self.pkg_xml_content_validations.item(new_name))
+                links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
+                links += html_reports.tag('span', status, 'smaller')
+                block += html_reports.report_block('datarep' + new_name, self.pkg_xml_content_validations.item(new_name).message, 'datarep', a_name)
 
             if self.is_db_generation:
                 if self.registered_issue_data_validations is not None:
