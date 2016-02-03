@@ -1272,7 +1272,7 @@ class DBManager(object):
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
-                if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None)or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
+                if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
                     j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                     if j_record is None:
                         msg = html_reports.p_message('ERROR: ' + _('Unable to get journal data') + ' ' + journal_title)
