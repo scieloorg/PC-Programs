@@ -489,6 +489,11 @@ class RegisteredTitle(object):
             return self.record.get('421')
 
     @property
+    def license(self):
+        if self.record is not None:
+            return self.record.get('541')
+
+    @property
     def print_issn(self):
         if self._issns is None:
             self._issns = title_issns(self.record)
@@ -570,6 +575,8 @@ class IssueModels(object):
                             del self._issue.journal_issns['UNKNOWN_ISSN_TYPE']
             if self._issue.journal_id_nlm_ta is None:
                 self._issue.journal_id_nlm_ta = registered_title.journal_id_nlm_ta
+            if self._issue.license is None:
+                self._issue.license = registered_title.license
 
     def validate_article_issue_data(self, article, is_rolling_pass=False):
         results = []
