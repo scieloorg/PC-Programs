@@ -288,7 +288,7 @@ class CISIS(object):
             os.unlink(result_filename + '.mst')
             os.unlink(result_filename + '.xrf')
         cmd = self.cisis_path + '/mx btell=0 ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
-        print(type(cmd))
+        #print(type(cmd))
         run_command(cmd)
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):

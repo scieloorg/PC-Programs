@@ -1714,10 +1714,21 @@ class Issue(object):
         self.acron = acron
         self.year = dateiso[0:4]
         self.compl = compl
+        self.journal_issns = None
 
     @property
     def issue_label(self):
         return article_utils.format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)
+
+    @property
+    def print_issn(self):
+        if self.journal_issns is not None:
+            return self.journal_issns.get('ppub')
+
+    @property
+    def e_issn(self):
+        if self.journal_issns is not None:
+            return self.journal_issns.get('epub')
 
 
 class Journal(object):

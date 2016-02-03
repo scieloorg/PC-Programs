@@ -358,14 +358,11 @@ def normalized_institution(aff):
                         country_info[k] = []
                     country_info[k].append(v)
                 country_info = {k: v[0] for k, v in country_info.items() if len(v) == 1}
-                print(country_info)
 
                 for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
                     if norm_orgname.upper() in orgnames:
                         if norm_country_code is None:
                             norm_country_code = country_info.get(norm_country_name)
-                            print(norm_country_code)
-                            print(norm_country_name)
                         valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
             else:
                 for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
@@ -376,10 +373,6 @@ def normalized_institution(aff):
 
                 valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
 
-        print('-'*10)
-        print('valid:')
-        print(valid)
-        
         if len(valid) == 1:
             norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = valid[0]
 

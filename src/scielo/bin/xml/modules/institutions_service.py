@@ -34,17 +34,9 @@ class OrgManager(object):
         pass
 
     def search_institutions(self, orgname, city, state, country_code, country_name, exact_country=None):
-        print([orgname, city, state, country_code, country_name])
         results = self.local_institutions_manager.get_institutions(orgname, city, state, country_code, country_name)
         results += self.search_at_wayta(orgname, country_name, exact_country)
         results = sorted(list(set(results)))
-
-        print('\n')
-        print('-'*8 + 'FINAL' + '-'*8)
-        for item in results:
-            print(item)
-        print('-'*10)
-        print('')
         return results
 
     def institution_exists(self, orgname, city, state, country_code, country_name):
@@ -112,8 +104,6 @@ class OrgDBManager(object):
         return country_name
 
     def get_institutions(self, orgname, city, state, country_code, country_name):
-        print('\n')
-        print('-'*8 + 'LOCAL' + '-'*8)
         orgname, city, state, country_code, country_name = [normalize_term(item) for item in [orgname, city, state, country_code, country_name]]
         norm_country_name = self.normalized_country_name(country_code, country_name)
         if norm_country_name is not None and country_code is None:
@@ -128,9 +118,6 @@ class OrgDBManager(object):
                 results += _results
 
         results = list(set(results))
-        for item in results:
-            print(item)
-        print('-'*8 + 'LOCAL finished' + '-'*8)
         return results
 
     def get_countries_expr(self, country_names):
@@ -203,8 +190,6 @@ def wayta_request(text):
         if result is None:
             result = []
         if len(result) == 0:
-            print('')
-            print(full_url)
             response = urllib2.urlopen(full_url, timeout=30)
             result = response.read()
             previous_requests[full_url] = result
@@ -251,8 +236,6 @@ def unicode2cp1252(results):
 
 
 def wayta_search(orgname, country, filter_country=None):
-    print('\n')
-    print('-'*8 + 'WAYTA' + '-'*8)
     results = []
     for text in orgname.split(','):
         try:
@@ -265,9 +248,6 @@ def wayta_search(orgname, country, filter_country=None):
             pass
     results = sorted(list(set(results)))
     results.reverse()
-    for item in results:
-        print(item)
-    print('-'*8 + 'WAYTA finished' + '-'*8)
     return results
 
 
@@ -301,9 +281,6 @@ def validate_organization(orgname, norgname, country_name, country_code, state, 
         fixed = list(set(fixed))
         if len(fixed) == 1:
             _results = fixed
-    print('*'*10)
-    print(_results)
-    print('*'*10)
     return _results
 
 
