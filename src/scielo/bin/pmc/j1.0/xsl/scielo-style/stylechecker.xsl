@@ -262,5 +262,70 @@
       
    </xsl:template>
  
+    <xsl:template match="contrib">
+        
+        <xsl:call-template name="empty-element-check"/>
+        
+        <xsl:choose>
+            <xsl:when test="$stream='manuscript'">
+                <xsl:call-template name="ms-contrib-content-test"/>
+                <xsl:call-template name="ms-contrib-attribute-test-alt"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="contrib-attribute-checking"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        
+        <xsl:call-template name="contrib-author-notes-test"/>
+        
+        <xsl:call-template name="contrib-content-test"/>
+        
+        <!--  <xsl:call-template name="xlink-attribute-check"/>  -->
+        
+        <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
   
 </xsl:stylesheet>
+
+<xsl:template name="ms-contrib-attribute-test-alt">
+    
+    <xsl:if test="not(@contrib-type)">
+        <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'contrib attribute'"/>
+            <xsl:with-param name="description">
+                <xsl:text>&lt;contrib&gt; must contain a contrib-type attribute</xsl:text>
+            </xsl:with-param>
+            <xsl:with-param name="tg-target" select="'tags.html#el-contrib'"/>
+        </xsl:call-template>
+    </xsl:if>
+    
+    <xsl:if test="contains('|author|editor|translator|compiler|',concat('|',@contrib-type,'|'))">
+        <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'contrib attribute'"/>
+            <xsl:with-param name="description">
+                <xsl:text>contrib-type attribute must be set to either 'author' or 'editor' or 'translator' or 'compiler'</xsl:text>
+            </xsl:with-param>
+            <xsl:with-param name="tg-target" select="'tags.html#el-contrib'"/>
+        </xsl:call-template>
+    </xsl:if>
+    
+    <xsl:if test="@id">
+        <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'contrib attribute'"/>
+            <xsl:with-param name="description">
+                <xsl:text>&lt;contrib&gt; should not contain an id attribute</xsl:text>
+            </xsl:with-param>
+            <xsl:with-param name="tg-target" select="'tags.html#el-contrib'"/>
+        </xsl:call-template>
+    </xsl:if>
+    
+    <xsl:if test="@rid">
+        <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'contrib attribute'"/>
+            <xsl:with-param name="description">
+                <xsl:text>&lt;contrib&gt; should not contain an rid attribute</xsl:text>
+            </xsl:with-param>
+            <xsl:with-param name="tg-target" select="'tags.html#el-contrib'"/>
+        </xsl:call-template>
+    </xsl:if>
+</xsl:template>
