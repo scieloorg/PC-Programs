@@ -102,6 +102,10 @@ def html(title, body):
     s = ''
     s += '<html>'
     s += '<head>'
+    if title is None:
+        title = ''
+    if body is None:
+        body = ''
     if isinstance(title, list):
         s += '<meta charset="utf-8"/><title>' + ' - '.join(title) + '</title>'
     else:
@@ -255,10 +259,6 @@ def format_html_data(value, width=70):
 
 
 def save(filename, title, body):
-    if title is not None:
-        title = title
-    if body is not None:
-        body = body
     r = html(title, body)
     if isinstance(r, unicode):
         r = r.encode('utf-8')

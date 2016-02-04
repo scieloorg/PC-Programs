@@ -865,8 +865,6 @@ class ArticleDB(object):
                 self.aop_manager.manage_ex_aop(valid_aop)
                 is_excluded_aop = self.aop_manager.is_excluded_aop.get(valid_aop.xml_name, False)
                 is_excluded_aop_msg = self.aop_manager.is_excluded_aop_msg.get(valid_aop.xml_name, [])
-                print('is_excluded_aop')
-                print(is_excluded_aop)
                 validations.append(is_excluded_aop)
         self.validations[article.xml_name] = all(validations)
 
@@ -1112,11 +1110,8 @@ class AopManager(object):
                 data.append(_('aop first author') + ':' + html_reports.format_html_data(t))
         msg = ''
         msg += html_reports.tag('h5', _('Checking existence of aop version'))
-        print(msg_list)
-        print(data)
         msg += ''.join([html_reports.p_message(item) for item in msg_list])
         msg += ''.join([html_reports.p_message(item) for item in data])
-        print(msg)
         return msg
 
     def mark_aop_as_deleted(self, aop):
@@ -1137,8 +1132,6 @@ class AopManager(object):
             if aop is not None:
                 if aop.pid is not None:
                     done, msg = self.journal_files.archive_ex_aop_files(aop, self.db_names.get(aop.xml_name))
-                    print('done')
-                    print(done)
                     if done:
                         self.mark_aop_as_deleted(aop)
             self.is_excluded_aop[aop.xml_name] = done
