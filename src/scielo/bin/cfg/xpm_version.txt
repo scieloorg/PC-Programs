@@ -1,4 +1,13 @@
-﻿4.0.091 trial - 08/01/2016
+﻿4.0.091 trial - 04/02/2016
+==========================
+- XPM 
+  - (bug) Require journal-id (publisher-id) only from sps 1.3
+  - (bug) Fix generation of xref (aff) for PMC
+  - (bug) Fix validation of @contrib-type, allowing translator and compiler
+  - (bug) Fix absence of a message about a missing image which had no extension
+  - (improvement) Display link to "contents validations report" although there is no error
+
+4.0.091 trial - 08/01/2016
 ==========================
 - XPM
   - (bug) Require journal-id (publisher-id) only from sps 1.3
