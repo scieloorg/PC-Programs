@@ -865,8 +865,6 @@ class ArticleDB(object):
                 self.aop_manager.manage_ex_aop(valid_aop)
                 is_excluded_aop = self.aop_manager.is_excluded_aop.get(valid_aop.xml_name, False)
                 is_excluded_aop_msg = self.aop_manager.is_excluded_aop_msg.get(valid_aop.xml_name, [])
-                print('is_excluded_aop')
-                print(is_excluded_aop)
                 validations.append(is_excluded_aop)
         self.validations[article.xml_name] = all(validations)
 
@@ -1103,13 +1101,13 @@ class AopManager(object):
                     msg_list.append('FATAL ERROR: ' + _('the title/author of article and "aop version" are different.'))
 
                 t = '' if article.title is None else article.title
-                data.append(_('doc title') + ':' + html_reports.display_xml(t))
+                data.append(_('doc title') + ':' + html_reports.format_html_data(t))
                 t = '' if aop.title is None else aop.title
-                data.append(_('aop title') + ':' + html_reports.display_xml(t))
+                data.append(_('aop title') + ':' + html_reports.format_html_data(t))
                 t = '' if article.first_author_surname is None else article.first_author_surname
-                data.append(_('doc first author') + ':' + html_reports.display_xml(t))
+                data.append(_('doc first author') + ':' + html_reports.format_html_data(t))
                 t = '' if aop.first_author_surname is None else aop.first_author_surname
-                data.append(_('aop first author') + ':' + html_reports.display_xml(t))
+                data.append(_('aop first author') + ':' + html_reports.format_html_data(t))
         msg = ''
         msg += html_reports.tag('h5', _('Checking existence of aop version'))
         msg += ''.join([html_reports.p_message(item) for item in msg_list])
@@ -1134,8 +1132,6 @@ class AopManager(object):
             if aop is not None:
                 if aop.pid is not None:
                     done, msg = self.journal_files.archive_ex_aop_files(aop, self.db_names.get(aop.xml_name))
-                    print('done')
-                    print(done)
                     if done:
                         self.mark_aop_as_deleted(aop)
             self.is_excluded_aop[aop.xml_name] = done
