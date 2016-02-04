@@ -400,6 +400,11 @@ class ArticleXML(object):
                 return self.tree.find('.').attrib.get('article-type')
 
     @property
+    def body_words(self):
+        if self.body is not None:
+            return xml_utils.remove_tags(' '.join(xml_utils.node_text(self.body).split()))
+
+    @property
     def language(self):
         if self._language is None:
             if self.tree is not None:

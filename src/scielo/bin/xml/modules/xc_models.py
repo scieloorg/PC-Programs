@@ -1073,12 +1073,20 @@ class AopManager(object):
     def similarity_rate(self, article, aop):
         r = 0
         if not aop is None:
-            r += how_similar(article.title, aop.title)
-            r += how_similar(article.first_author_surname, aop.first_author_surname)
-            r = (r * 100) / 2
+            if article.article_type == 'correction':
+                if article.body_words is not None and aop.body_words is not None:
+                    r += how_similar(article.body_words[0:300], aop.body_words[0:300])
+                    r = r * 100
+                else:
+                    r = 1
+            else:
+                r += how_similar(article.title, aop.title)
+                r += how_similar(article.first_author_surname, aop.first_author_surname)
+                r = (r * 100) / 2
         return r
 
     def check_aop_message(self, article, aop, status):
+        label = 'body' if article.article_type == 'correction' else _('title/author')
         data = []
         msg_list = []
         if status == 'new aop':
@@ -1093,21 +1101,27 @@ class AopManager(object):
             else:
                 msg_list.append('INFO: ' + _('Found: "aop version"'))
                 if status == 'partially matched aop':
-                    msg_list.append('INFO: ' + _('the title/author of article and its "aop version" are similar.'))
+                    msg_list.append('INFO: ' + _('the {data} of article and its "aop version" are similar.').format(data=label))
                 elif status == 'aop missing PID':
                     msg_list.append('ERROR: ' + _('the "aop version" has no PID'))
                 elif status == 'unmatched aop':
                     status = 'unmatched aop'
-                    msg_list.append('FATAL ERROR: ' + _('the title/author of article and "aop version" are different.'))
+                    msg_list.append('FATAL ERROR: ' + _('the {data} of article and "aop version" are different.').format(data=label))
 
-                t = '' if article.title is None else article.title
-                data.append(_('doc title') + ':' + html_reports.format_html_data(t))
-                t = '' if aop.title is None else aop.title
-                data.append(_('aop title') + ':' + html_reports.format_html_data(t))
-                t = '' if article.first_author_surname is None else article.first_author_surname
-                data.append(_('doc first author') + ':' + html_reports.format_html_data(t))
-                t = '' if aop.first_author_surname is None else aop.first_author_surname
-                data.append(_('aop first author') + ':' + html_reports.format_html_data(t))
+                if article.article_type == 'correction':
+                    t = '' if article.body_words is None else article.body_words[0:300]
+                    data.append(_('doc body') + ':' + html_reports.format_html_data(t))
+                    t = '' if aop.body_words is None else aop.body_words[0:300]
+                    data.append(_('aop body') + ':' + html_reports.format_html_data(t))
+                else:
+                    t = '' if article.title is None else article.title
+                    data.append(_('doc title') + ':' + html_reports.format_html_data(t))
+                    t = '' if aop.title is None else aop.title
+                    data.append(_('aop title') + ':' + html_reports.format_html_data(t))
+                    t = '' if article.first_author_surname is None else article.first_author_surname
+                    data.append(_('doc first author') + ':' + html_reports.format_html_data(t))
+                    t = '' if aop.first_author_surname is None else aop.first_author_surname
+                    data.append(_('aop first author') + ':' + html_reports.format_html_data(t))
         msg = ''
         msg += html_reports.tag('h5', _('Checking existence of aop version'))
         msg += ''.join([html_reports.p_message(item) for item in msg_list])
