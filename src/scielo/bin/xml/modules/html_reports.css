@@ -201,8 +201,12 @@ h5 {
     padding: 2px;
 }
 .valid {
-    background-color: #77B2D6;
+    background-color: #799888;
     color: white;
+    padding: 2px;
+}
+.info {
+    background-color: #FFFFF7;
     padding: 2px;
 }
 .label {
@@ -415,7 +419,8 @@ td img {
 }
 
 .not-selected-tab {
-  background-color: #CAC7BE;
+  /* background-color: #CAC7BE; */
+  background-color: #99B2B7;
   color: white;
   padding: 10px;
   border: 1px solid white;

@@ -171,14 +171,15 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
                 # row style
                 tr_style = None
                 if row_style is not None:
-                    tr_style = get_message_style(row.get(row_style), '')
+                    tr_style = get_message_style(row.get(row_style))
                 tbody += tag('tr', tr, tr_style)
         r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', tbody), table_style))
     return r
 
 
 def display_xml(value, width=70):
-    value = xml_utils.pretty_print(value)
+    if '<' in value and '>' in value:
+        value = xml_utils.pretty_print(value)
     parts = []
     for line in value.split('\n'):
         left = line
@@ -264,7 +265,7 @@ def save(filename, title, body):
     open(filename, 'w').write(r)
 
 
-def get_message_style(value, default):
+def get_message_style(value, default=''):
     if value is None:
         value = ''
     if 'FATAL ERROR' in value:
@@ -275,12 +276,12 @@ def get_message_style(value, default):
         r = 'warning'
     elif 'OK' in value:
         r = 'ok'
-    elif default is None or default == '':
-        r = value
+    elif 'INFO' in value:
+        r = 'info'
+    elif 'VALID' in value:
+        r = 'valid'
     else:
         r = default
-    if r is not None:
-        r = r.replace(' ', '-').replace('@', '')
     return r
 
 

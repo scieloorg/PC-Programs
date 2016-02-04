@@ -471,24 +471,27 @@ def remove_break_lines_off_element_content(content):
 
 
 def pretty_print(content):
-    root = None
-    pretty = None
-    root = 'root'
-    content = content.strip()
-    prefix = split_prefix(content)
-    fixed = content[len(prefix):].strip()
-    fixed = '<' + root + '>' + fixed + '</' + root + '>'
+    if '<' in content and '>' in content:
+        root = None
+        pretty = None
+        root = 'root'
+        content = content.strip()
+        prefix = split_prefix(content)
+        fixed = content[len(prefix):].strip()
+        fixed = '<' + root + '>' + fixed + '</' + root + '>'
 
-    if is_xml_well_formed(fixed):
-        pretty = minidom_pretty_print(fixed)
+        if is_xml_well_formed(fixed):
+            pretty = minidom_pretty_print(fixed)
 
-    if pretty is None:
-        pretty = content
-        fs_utils.write_file('./not_pretty.txt', fixed)
-        print('not pretty')
+        if pretty is None:
+            pretty = content
+            fs_utils.write_file('./not_pretty.txt', fixed)
+            print('not pretty')
+        else:
+            pretty = pretty.replace('<' + root + '>', '').replace('</' + root + '>', '').strip()
+            pretty = prefix + remove_break_lines_off_element_content(pretty)
     else:
-        pretty = pretty.replace('<' + root + '>', '').replace('</' + root + '>', '').strip()
-        pretty = prefix + remove_break_lines_off_element_content(pretty)
+        pretty = content
     return pretty
 
 

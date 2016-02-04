@@ -1103,17 +1103,20 @@ class AopManager(object):
                     msg_list.append('FATAL ERROR: ' + _('the title/author of article and "aop version" are different.'))
 
                 t = '' if article.title is None else article.title
-                data.append(_('doc title') + ':' + html_reports.display_xml(t))
+                data.append(_('doc title') + ':' + html_reports.format_html_data(t))
                 t = '' if aop.title is None else aop.title
-                data.append(_('aop title') + ':' + html_reports.display_xml(t))
+                data.append(_('aop title') + ':' + html_reports.format_html_data(t))
                 t = '' if article.first_author_surname is None else article.first_author_surname
-                data.append(_('doc first author') + ':' + html_reports.display_xml(t))
+                data.append(_('doc first author') + ':' + html_reports.format_html_data(t))
                 t = '' if aop.first_author_surname is None else aop.first_author_surname
-                data.append(_('aop first author') + ':' + html_reports.display_xml(t))
+                data.append(_('aop first author') + ':' + html_reports.format_html_data(t))
         msg = ''
         msg += html_reports.tag('h5', _('Checking existence of aop version'))
+        print(msg_list)
+        print(data)
         msg += ''.join([html_reports.p_message(item) for item in msg_list])
         msg += ''.join([html_reports.p_message(item) for item in data])
+        print(msg)
         return msg
 
     def mark_aop_as_deleted(self, aop):
