@@ -1071,6 +1071,7 @@ class ArticleContentValidation(object):
         href_items = {}
         for hrefitem in self.article.hrefs:
             status_message = []
+
             if hrefitem.is_internal_file:
                 file_location = hrefitem.file_location(path)
                 if os.path.isfile(file_location):
@@ -1081,6 +1082,9 @@ class ArticleContentValidation(object):
                         status_message.append(('FATAL ERROR', hrefitem.src + _(' not found in package')))
                     elif file_location.endswith('.jpg') and (hrefitem.src.endswith('.tif') or hrefitem.src.endswith('.tiff')):
                         status_message.append(('FATAL ERROR', os.path.basename(file_location) + _(' not found in package')))
+                    elif file_location.endswith('.jpg') and not '.' in hrefitem.src:
+                        status_message.append(('WARNING', _('missing extension of ') + hrefitem.src + '.'))
+                        status_message.append(('FATAL ERROR', os.path.basename(file_location) + _(' not found in package')))
                 hreflocation = 'file:///' + file_location
             else:
                 hreflocation = hrefitem.src
@@ -1089,7 +1093,6 @@ class ArticleContentValidation(object):
                         status = 'WARNING'
                         message = hrefitem.src + _(' is not working')
                         status_message.append(('WARNING', hrefitem.src + _(' is not working')))
-
             if hrefitem.is_image:
                 display = html_reports.image(hreflocation)
             else:
