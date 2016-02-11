@@ -1930,10 +1930,10 @@
 !v001!listtype^les
 !v002!^corder^vLista ordenada. Caracter del prefijo es un número o letra dependiendo del estilo
 !v002!^cbullet^vLista no-ordenada. Caracter del prefijo es un caracter especial
-!v002!^calpha-lower^vLista ordenada. Caracter del prefijo es un caracter alfabético en caja baja
-!v002!^calpha-upper^vLista ordenada. Caracter del prefijo es un caracter alfabético en caja alta
-!v002!^croman-lower^vLista ordenada. Caracter del prefijo es un numeral romano en caja baja
-!v002!^croman-upper^vLista ordenada. Caracter del prefijo es un numeral romano en caja alta
+!v002!^calpha-lower^vLista ordenada. Caracter del prefijo es un caracter alfabético en minúscula
+!v002!^calpha-upper^vLista ordenada. Caracter del prefijo es un caracter alfabético en mayúscula
+!v002!^croman-lower^vLista ordenada. Caracter del prefijo es un numeral romano en minúscula
+!v002!^croman-upper^vLista ordenada. Caracter del prefijo es un numeral romano en mayúscula
 !v002!^csimple^vLista simple (ningun prefijo)
 !ID 000131
 !v001!sec-type^len
@@ -2080,3 +2080,21 @@
 !v001!publishingmodel^len
 !v002!^ccontinuous^vcontinuous
 !v002!^cundefined^vundefined
+!ID 000155
+!v001!historystatus^len
+!v002!^vCeased^cD
+!v002!^vNot open access^cSnot-open-access
+!v002!^vSuspended by the committee^cSsuspended-by-committee
+!v002!^vSuspended by the editor^cSsuspended-by-editor
+!ID 000156
+!v001!historystatus^les
+!v002!^vTerminado^cD
+!v002!^vSospendido por el comité^cSsuspended-by-committee
+!v002!^vSospendido por el editor^cSsuspended-by-editor
+!v002!^vNo es acceso abierto^cSnot-open-access
+!ID 000157
+!v001!historystatus^lpt
+!v002!^vEncerrado^cD
+!v002!^vSuspenso pelo Comitê^cSsuspended-by-committee
+!v002!^vSuspenso pelo editor^cSsuspended-by-editor
+!v002!^vNão é acesso aberto^cSnot-open-access

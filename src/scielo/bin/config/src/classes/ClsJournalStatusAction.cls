@@ -128,10 +128,13 @@ Function checkStatus(previousStatus As String, status As String) As Boolean
     checkStatus = (Len(err) = 0)
 End Function
 
-Function isValidStatusTransition(previousStatus As String, status As String) As Boolean
+Function isValidStatusTransition(ByVal previousStatus As String, ByVal status As String) As Boolean
 
     Dim s As String
     Dim r As Boolean
+    
+    previousStatus = Mid(previousStatus, 1, 1)
+    status = Mid(status, 1, 1)
     
     s = previousStatus + status
     If previousStatus <> status And Len(status) = 1 And Len(previousStatus) = 1 Then

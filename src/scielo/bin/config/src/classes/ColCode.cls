@@ -51,7 +51,7 @@ NOT_FOUND:
 exist = False
 While (Not exist) And (i < count)
         i = i + 1
-        If StrComp(vntIndexKey, mCol(i).value, vbTextCompare) = 0 Then
+        If StrComp(vntIndexKey, mCol(i).value, vbTextCompare) = 0 Or StrComp(vntIndexKey, mCol(i).Code) = 0 Then
             exist = True
             Set item = mCol(i)
         End If
@@ -67,14 +67,14 @@ Public Property Get count() As Long
 End Property
 
 
-Public Sub Remove(vntIndexKey As Variant)
+Public Sub remove(vntIndexKey As Variant)
     'used when removing an element from the collection
     'vntIndexKey contains either the Index or Key, which is why
     'it is declared as a Variant
     'Syntax: x.Remove(xyz)
 
 
-    mCol.Remove vntIndexKey
+    mCol.remove vntIndexKey
 End Sub
 
 

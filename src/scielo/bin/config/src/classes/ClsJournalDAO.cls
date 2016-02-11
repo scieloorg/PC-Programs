@@ -26,6 +26,7 @@ Function getJournalStandardList() As MyCollection
         Set journal = New ClsJournal
         
         journal.is_published = isis.FieldContentOccGet(i, 50, 1)
+        Set journal.journalStatusHistory = journalDAO.getHistory(i)
         
         journal.ISSN = isis.FieldContentOccGet(i, 400, 1)
         journal.shorttitle = isis.FieldContentOccGet(i, 150, 1)
@@ -70,8 +71,12 @@ Function getHistory(Mfn As Long) As ClsHistory
         If InStr(occs(i), "^c") > 0 Then
             Set journalStatus = New ClsJournalStatus
             journalStatus.statusDate = isis.getSubfieldContent("c", occs(i))
-            journalStatus.status = isis.getSubfieldContent("d", occs(i))
-            
+            journalStatus.status = isis.getSubfieldContent("d", occs(i)) & isis.getSubfieldContent("e", occs(i))
+            If journalStatus.status = "E" Then
+                journalStatus.status = "Snot-open-access"
+            ElseIf journalStatus.status = "S" Then
+                journalStatus.status = "Ssuspended-by-committee"
+            End If
             Call history.add(journalStatus, journalStatus.statusDate)
         End If
         
@@ -93,7 +98,12 @@ Function tagHistory(history As ClsHistory) As String
         If Len(Occ) = 0 Then
             Occ = "<" + tag + ">^a" + journalStatus.statusDate + "^b" + journalStatus.status
         Else
-            Occ = Occ + "^c" + journalStatus.statusDate + "^d" + journalStatus.status + "</" + tag + ">"
+            Dim detailed_status As String
+            detailed_status = journalStatus.status
+            If Len(detailed_status) > 1 Then
+                detailed_status = Mid(detailed_status, 1, 1) + "^e" + Mid(detailed_status, 2)
+            End If
+            Occ = Occ + "^c" + journalStatus.statusDate + "^d" + detailed_status + "</" + tag + ">"
             tagged = Occ + tagged
             Occ = ""
         End If
@@ -154,6 +164,9 @@ Function getJournalList() As ClsJournalList
             j.CollectionURL = isis.UsePft(i, "v690")
             j.JournalStandard = isis.UsePft(i, "v117")
             j.shorttitle = isis.UsePft(i, "v150")
+            j.is_published = isis.UsePft(i, "v50")
+            Set j.journalStatusHistory = journalDAO.getHistory(i)
+            
             Call jlist.add(j)
         End If
     Next

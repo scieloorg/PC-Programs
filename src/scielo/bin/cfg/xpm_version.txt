@@ -1,4 +1,9 @@
-﻿4.0.091 trial - 04/02/2016
+﻿4.0.091 trial - 11/02/2016
+==========================
+- XPM
+  - (bug) Fix message of missing image which href value has no extension
+
+4.0.091 trial - 04/02/2016
 ==========================
 - XPM 
   - (bug) Require journal-id (publisher-id) only from sps 1.3

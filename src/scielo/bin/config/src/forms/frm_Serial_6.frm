@@ -378,7 +378,7 @@ Private Const MAX_LINES_INDEX = 10
 Private Sub CmdBack_Click()
     Hide
     IsBack = True
-    If changed(MyMfnTitle) Then receiveData
+    receiveData
     JOURNAL5.MyOpen (MyMfnTitle)
 End Sub
 
