@@ -407,11 +407,12 @@ class ArticleContentValidation(object):
     @property
     def journal_id_publisher_id(self):
         version_number = self.article.sps
-        if 'sps-' in version_number:
-            version_number = version_number[4:]
-        if version_number.replace('.', '').isdigit():
-            if float(version_number) >= 1.3:
-                return required('journal-id (publisher-id)', self.article.journal_id_publisher_id, 'FATAL ERROR')
+        if version_number is not None:
+            if 'sps-' in version_number:
+                version_number = version_number[4:]
+            if version_number.replace('.', '').isdigit():
+                if float(version_number) >= 1.3:
+                    return required('journal-id (publisher-id)', self.article.journal_id_publisher_id, 'FATAL ERROR')
 
     @property
     def journal_id_nlm_ta(self):

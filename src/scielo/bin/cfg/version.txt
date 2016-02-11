@@ -1,4 +1,15 @@
-﻿4.0.091 trial - 04/02/2016
+﻿4.0.091 trial - 11/02/2016
+==========================
+- Title Manager
+  - (new) Include new status to journal history
+  - (improvement) Present the journal list sorted by "status" 
+- XC
+  - (new) Handle corrections as aop
+  - (bug) Fix presentation of aop report (Conversion tab)
+- XPM
+  - (bug) Fix message of missing image which href value has no extension
+
+4.0.091 trial - 04/02/2016
 ==========================
 - Markup
   - (bug) Fix automatic markup of *authors for fname which follows A. B. C.

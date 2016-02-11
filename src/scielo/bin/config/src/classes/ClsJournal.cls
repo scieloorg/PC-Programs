@@ -37,6 +37,7 @@ Public print_issn As String
 Public online_issn As String
 Public license_code As String
 
+
 Public Property Let SUBJECT(ByVal vNewValue As String)
     mvarSUBJECT = vNewValue
 End Property

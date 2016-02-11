@@ -455,7 +455,8 @@ Property Let ChangeInterfaceIdiom(idiom As String)
     Call codedao.getTable(idiom, "publication level", CodePubLevel)
     Call codedao.getTable(idiom, "frequency", CodeFrequency)
     Call codedao.getTable(idiom, "status", codeStatus)
-    Call codedao.getTable(idiom, "history", codeHistory)
+    'FIXME
+    Call codedao.getTable(idiom, "historystatus", codeHistory)
     Call codedao.getTable(idiom, "country", CodeCountry)
     Call codedao.getTable(idiom, "state", CodeState)
     
