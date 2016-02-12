@@ -187,8 +187,38 @@ Sources report
 .. image:: img/xpm_report_sources_others.png
 
 
+.. _viacomando:
 
+Executar Package Maker pelo Terminal
+-------------------------------------
 
+Para executar o Package Maker via linha de comando, abra o terminal e entre na seguinte pasta:
+
+.. code::
+   C:\markup\bin\xml
+
+.. image:: img/mkp-pkm-dos.jpg
+   :align: center
+
+Agora digite: python xml_package_maker.py
+
+.. image:: img/mkp-pkm-cmd.jpg
+   :align: center
+
+Veja que o programa abrirá uma janela onde deverá ser selecionada a pasta do pacote que será validado:
+
+.. image:: img/mkp-select-folder-pm.jpg
+   :align: center
+
+Clique em "Choose Folder", escolha o pacote para validar e clique no botão [Package Maker]. O programa Package Maker validará o pacote e gerará 5 pastas:
+
+* errors
+* pmc_package
+* scielo_package
+* scielo_package_zips
+* work
+
+Confira em `Pastas Geradas <pt_how_to_generate_xml-results.html#pastas-geradas>`_ a funcionalidade de cada uma das pastas e dê continuidade no processo de verificação e envio de pacote para o SciELO.
 
 
 ----------------
