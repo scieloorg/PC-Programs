@@ -189,28 +189,35 @@ Sources report
 
 .. _viacomando:
 
-Executar Package Maker pelo Terminal
--------------------------------------
+Execute Package Maker via Terminal
+----------------------------------
 
-Para executar o Package Maker via linha de comando, abra o terminal e entre na seguinte pasta:
+To execute Package Maker via command line, open the terminal and go to the following folder:
 
-.. code::
-   C:\markup\bin\xml
+.. code-block:: xml
+   
+      C:\markup\bin\xml
+
 
 .. image:: img/mkp-pkm-dos.jpg
    :align: center
 
-Agora digite: python xml_package_maker.py
+Now type: *python xml_package_maker.py c:\pasta_xml\pacote*
 
-.. image:: img/mkp-pkm-cmd.jpg
+.. image:: img/mkp-pm-cmd.jpg
    :align: center
 
-Veja que o programa abrirá uma janela onde deverá ser selecionada a pasta do pacote que será validado:
+The program will validate the package in the terminal itself and then will open the interactive report:
 
-.. image:: img/mkp-select-folder-pm.jpg
+.. image:: img/mkp-validando-no-cmd.jpg
    :align: center
 
-Clique em "Choose Folder", escolha o pacote para validar e clique no botão [Package Maker]. O programa Package Maker validará o pacote e gerará 5 pastas:
+
+.. image:: img/mkp-valid-report-gerado.jpg
+  :align: center
+
+
+Notice that in the folder "C:\rcefac" a folder named "1982-0216-rcefac-17-05_xml_package_maker_result" was generated with 5 folders:
 
 * errors
 * pmc_package
@@ -218,7 +225,7 @@ Clique em "Choose Folder", escolha o pacote para validar e clique no botão [Pac
 * scielo_package_zips
 * work
 
-Confira em `Pastas Geradas <pt_how_to_generate_xml-results.html#pastas-geradas>`_ a funcionalidade de cada uma das pastas e dê continuidade no processo de verificação e envio de pacote para o SciELO.
+Check in Generated `Folders the functionality <pt_how_to_generate_xml-results.html#pastas-geradas>`_ of each folder and continue the verification process and sending of the package to SciELO.
 
 
 ----------------
