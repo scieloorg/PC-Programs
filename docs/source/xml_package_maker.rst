@@ -187,8 +187,45 @@ Sources report
 .. image:: img/xpm_report_sources_others.png
 
 
+.. _viacomando:
+
+Execute Package Maker via Terminal
+----------------------------------
+
+To execute Package Maker via command line, open the terminal and go to the following folder:
+
+.. code-block:: xml
+   
+      C:\markup\bin\xml
 
 
+.. image:: img/mkp-pkm-dos.jpg
+   :align: center
+
+Now type: *python xml_package_maker.py c:\pasta_xml\pacote*
+
+.. image:: img/mkp-pm-cmd.jpg
+   :align: center
+
+The program will validate the package in the terminal itself and then will open the interactive report:
+
+.. image:: img/mkp-validando-no-cmd.jpg
+   :align: center
+
+
+.. image:: img/mkp-valid-report-gerado.jpg
+  :align: center
+
+
+Notice that in the folder "C:\rcefac" a folder named "1982-0216-rcefac-17-05_xml_package_maker_result" was generated with 5 folders:
+
+* errors
+* pmc_package
+* scielo_package
+* scielo_package_zips
+* work
+
+Check in Generated `Folders the functionality <pt_how_to_generate_xml-results.html#pastas-geradas>`_ of each folder and continue the verification process and sending of the package to SciELO.
 
 
 ----------------
