@@ -30,6 +30,8 @@ Select the folder which contains XML package files
 Press **XML Package Maker**.
 
 
+.. _viacomando:
+
 Or, to execute Package Maker via command line, open the terminal and go to the folder where the program is installed:
 
 .. image:: img/mkp-pkm-dos.jpg
@@ -202,7 +204,6 @@ Sources report
 .. image:: img/xpm_report_sources_others.png
 
 
-.. _viacomando:
 
 
 
