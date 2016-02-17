@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from __init__ import _
+import validation_status
 import article_utils
 
 
@@ -441,9 +442,9 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
     suggestions = suggestions_of_article_type_by_section_title(article_section)
     if not article_type in suggestions:
         suggestions_msg = ''
-        status = 'ERROR'
+        status = validation_status.STATUS_ERROR
         if len(suggestions) == 0:
-            status = 'WARNING'
+            status = validation_status.STATUS_WARNING
             if has_abstract is True:
                 suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
             else:
@@ -458,9 +459,9 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
 def validate_iso_country_code(iso_country_code):
     r = []
     if iso_country_code is None:
-        r.append((_('ISO Country Code'), 'FATAL ERROR', _('Required')))
+        r.append((_('ISO Country Code'), validation_status.STATUS_FATAL_ERROR, _('Required')))
     else:
         if not iso_country_code in COUNTRY_CODES:
-            r.append((_('ISO Country Code'), 'FATAL ERROR', \
+            r.append((_('ISO Country Code'), validation_status.STATUS_FATAL_ERROR, 
                 iso_country_code + ': ' + _('Invalid value')))
     return r

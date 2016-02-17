@@ -8,6 +8,7 @@ from mimetypes import MimeTypes
 import zipfile
 
 from __init__ import _
+import validation_status
 import utils
 import fs_utils
 import java_xml_utils
@@ -861,7 +862,7 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     doc, doc_files_info, curr_and_new_href_list, content = normalize_package_name(doc_files_info, acron, content)
 
     if doc.tree is None:
-        packed_files_report = 'ERROR: ' + _('Unable to load') + ' ' + doc_files_info.new_xml_filename + _('. Try to open it in an XML Editor to view the errors.')
+        packed_files_report = validation_status.STATUS_ERROR + ': ' + _('Unable to load') + ' ' + doc_files_info.new_xml_filename + _('. Try to open it in an XML Editor to view the errors.')
         pkg_reports.display_report(doc_files_info.new_xml_filename)
     else:
         related_packed, href_packed, not_found = pack_article_files(doc_files_info, scielo_pkg_path, curr_and_new_href_list)

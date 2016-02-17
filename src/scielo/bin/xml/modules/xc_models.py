@@ -5,6 +5,7 @@ import shutil
 from datetime import datetime
 
 from __init__ import _
+import validation_status
 import utils
 import xml_utils
 import fs_utils
@@ -597,9 +598,9 @@ class IssueModels(object):
             a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
             i_year = self.issue.dateiso[0:4] if self.issue.dateiso is not None else ''
             if self.issue.dateiso is not None:
-                _status = 'FATAL ERROR'
+                _status = validation_status.STATUS_FATAL_ERROR
                 if self.issue.dateiso.endswith('0000'):
-                    _status = 'WARNING'
+                    _status = validation_status.STATUS_WARNING
             validations.append((_('issue pub-date'), a_year, i_year))
 
             # check issue data
@@ -615,12 +616,12 @@ class IssueModels(object):
                 if not article_data == issue_data:
                     _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
                     if issue_data == 'None':
-                        status = 'ERROR'
+                        status = validation_status.STATUS_ERROR
                     else:
                         if label == _('issue pub-date'):
                             status = _status
                         else:
-                            status = 'FATAL ERROR'
+                            status = validation_status.STATUS_FATAL_ERROR
                     results.append((label, status, _msg))
 
             validations = []
@@ -636,30 +637,30 @@ class IssueModels(object):
                     issue_data = ' | '.join(issue_data)
                 if utils.how_similar(article_data, issue_data) < 0.8:
                     _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
-                    results.append((label, 'ERROR', _msg))
+                    results.append((label, validation_status.STATUS_ERROR, _msg))
 
             # license
             if self.issue.license is None:
-                results.append(('license', 'ERROR', _('Unable to identify issue license')))
+                results.append(('license', validation_status.STATUS_ERROR, _('Unable to identify issue license')))
             elif article.license_url is not None:
                 if not '/' + self.issue.license.lower() + '/' in article.license_url.lower() + '/':
-                    results.append(('license', 'ERROR', _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
+                    results.append(('license', validation_status.STATUS_ERROR, _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
                 else:
-                    results.append(('license', 'INFO', _('In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
+                    results.append(('license', validation_status.STATUS_INFO, _('In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
 
             # section
             fixed_sectitle = None
             if article.toc_section is None:
-                results.append(('section', 'FATAL ERROR', _('Required')))
+                results.append(('section', validation_status.STATUS_FATAL_ERROR, _('Required')))
             else:
                 section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article.toc_section)
                 if matched_rate != 1:
                     if not article.is_ahead:
                         registered_sections = _('Registered sections') + ':\n' + u'; '.join(self.section_titles)
                         if section_code is None:
-                            results.append(('section', 'ERROR', article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
+                            results.append(('section', validation_status.STATUS_ERROR, article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
                         else:
-                            results.append(('section', 'WARNING', _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
+                            results.append(('section', validation_status.STATUS_WARNING, _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
             # @article-type
             _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
             import attributes
@@ -876,17 +877,17 @@ class ArticleDB(object):
 
         msg = []
         if id_created is False:
-            msg.append('FATAL ERROR: ' + _('<article>.id not updated/created'))
+            msg.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('<article>.id not updated/created'))
         if is_excluded_incorrect_order is not None:
-            msg.append('WARNING: ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
+            msg.append(validation_status.STATUS_WARNING + ': ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
             if is_excluded_incorrect_order is True:
-                msg.append('INFO: ' + _('Done'))
+                msg.append(validation_status.STATUS_INFO + ': ' + _('Done'))
             else:
-                msg.append('ERROR: ' + _('Unable to exclude ') + incorrect_order)
+                msg.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude ') + incorrect_order)
         if is_excluded_aop is True:
-            msg.append('INFO: ' + _('ex aop was excluded'))
+            msg.append(validation_status.STATUS_INFO + ': ' + _('ex aop was excluded'))
         elif is_excluded_aop is False:
-            msg.append('ERROR: ' + _('Unable to exclude ex aop'))
+            msg.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude ex aop'))
             if is_excluded_aop_msg is not None:
                 for m in is_excluded_aop_msg:
                     msg.append(m)
@@ -922,7 +923,7 @@ class ArticleDB(object):
                 self.is_not_converted.append(xml_name)
             self.eval_msg[xml_name].append(_('Result: ') + xc_result)
             if not xc_result in ['converted', 'skipped']:
-                self.eval_msg[xml_name].append('FATAL ERROR')
+                self.eval_msg[xml_name].append(validation_status.STATUS_FATAL_ERROR)
 
     def finish_conversion(self, pkg_path, i_record):
         is_converted = False
@@ -930,8 +931,6 @@ class ArticleDB(object):
             # todos validos serem adicionados aa base
             self.create_issue_id_file(i_record)
             self.create_db()
-            print('self.issue_files.save_source_files')
-            print(pkg_path)
             self.issue_files.save_source_files(pkg_path)
             self.check_registration()
             if len(self.is_not_converted) == 0:
@@ -1090,23 +1089,23 @@ class AopManager(object):
         data = []
         msg_list = []
         if status == 'new aop':
-            msg_list.append('INFO: ' + _('This document is an "aop".'))
+            msg_list.append(validation_status.STATUS_INFO + ': ' + _('This document is an "aop".'))
         else:
             msg_list.append(_('Checking if ') + article.xml_name + _(' has an "aop version"'))
             if article.doi is not None:
                 msg_list.append(_('Checking if ') + article.doi + _(' has an "aop version"'))
 
             if status == 'new doc':
-                msg_list.append('WARNING: ' + _('Not found an "aop version" of this document.'))
+                msg_list.append(validation_status.STATUS_WARNING + ': ' + _('Not found an "aop version" of this document.'))
             else:
-                msg_list.append('INFO: ' + _('Found: "aop version"'))
+                msg_list.append(validation_status.STATUS_INFO + ': ' + _('Found: "aop version"'))
                 if status == 'partially matched aop':
-                    msg_list.append('INFO: ' + _('the {data} of article and its "aop version" are similar.').format(data=label))
+                    msg_list.append(validation_status.STATUS_INFO + ': ' + _('the {data} of article and its "aop version" are similar.').format(data=label))
                 elif status == 'aop missing PID':
-                    msg_list.append('ERROR: ' + _('the "aop version" has no PID'))
+                    msg_list.append(validation_status.STATUS_ERROR + ': ' + _('the "aop version" has no PID'))
                 elif status == 'unmatched aop':
                     status = 'unmatched aop'
-                    msg_list.append('FATAL ERROR: ' + _('the {data} of article and "aop version" are different.').format(data=label))
+                    msg_list.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('the {data} of article and "aop version" are different.').format(data=label))
 
                 if article.article_type == 'correction':
                     t = '' if article.body_words is None else article.body_words[0:300]
@@ -1273,19 +1272,19 @@ class DBManager(object):
         msg = None
         acron_issue_label = 'unidentified issue'
         if issue_label is None:
-            msg = html_reports.p_message('FATAL ERROR: ' + _('Unable to identify the article\'s issue'))
+            msg = html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to identify the article\'s issue'))
         else:
             i_record = self.find_i_record(issue_label, p_issn, e_issn)
             if i_record is None:
                 acron_issue_label = 'not_registered issue'
-                msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
+                msg = html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
                 if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
                     j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                     if j_record is None:
-                        msg = html_reports.p_message('ERROR: ' + _('Unable to get journal data') + ' ' + journal_title)
+                        msg = html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to get journal data') + ' ' + journal_title)
                     else:
                         t = RegisteredTitle(j_record)
                         issue_models.complete_issue_info(t)

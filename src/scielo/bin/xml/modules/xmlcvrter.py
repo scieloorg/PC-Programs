@@ -5,6 +5,7 @@ import shutil
 from datetime import datetime
 
 from __init__ import _
+import validation_status
 import fs_utils
 import utils
 import article_utils
@@ -125,7 +126,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                         previous_order, new_order = unmatched_orders[name]
                         _notes = previous_order + '=>' + new_order
                         if result == 'error':
-                            _notes = 'ERROR: ' + _('Unable to replace ') + _notes
+                            _notes = validation_status.STATUS_ERROR + ': ' + _('Unable to replace ') + _notes
                 labels, values = complete_issue_items_row(article, action, result, 'registered', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
         elif order in sorted_package.keys():
@@ -137,7 +138,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                 if name in unmatched_orders.keys():
                     previous_order, new_order = unmatched_orders[name]
                     _notes = previous_order + '=>' + new_order
-                    _notes = 'ERROR: ' + _('Unable to replace ') + _notes
+                    _notes = validation_status.STATUS_ERROR + ': ' + _('Unable to replace ') + _notes
 
                 labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
@@ -204,7 +205,7 @@ class Conversion(object):
                 self.expected_registered += 1
         unmatched_orders_errors = ''
         if self.changed_orders is not None:
-            unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in self.changed_orders.items()])
+            unmatched_orders_errors = ''.join([html_reports.p_message(validation_status.STATUS_WARNING + ': ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in self.changed_orders.items()])
         self.changed_orders_validations = pkg_reports.ValidationsResults(unmatched_orders_errors)
 
     @property
@@ -285,7 +286,7 @@ class Conversion(object):
                             previous_order, new_order = self.changed_orders[name]
                             _notes = previous_order + '=>' + new_order
                             if result == 'error':
-                                _notes = 'ERROR: ' + _('Unable to replace ') + _notes
+                                _notes = validation_status.STATUS_ERROR + ': ' + _('Unable to replace ') + _notes
                     labels, values = complete_issue_items_row(article, action, result, 'registered', _notes, True)
                     items.append(pkg_reports.label_values(labels, values))
             elif order in sorted_package.keys():
@@ -297,7 +298,7 @@ class Conversion(object):
                     if name in self.changed_orders.keys():
                         previous_order, new_order = self.changed_orders[name]
                         _notes = previous_order + '=>' + new_order
-                        _notes = 'ERROR: ' + _('Unable to replace ') + _notes
+                        _notes = validation_status.STATUS_ERROR + ': ' + _('Unable to replace ') + _notes
 
                     labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes, True)
                     items.append(pkg_reports.label_values(labels, values))
@@ -378,7 +379,7 @@ def conclusion_message(total, converted, not_converted, xc_status, acron_issue_l
     reason = ''
     if xc_status == 'rejected':
         action = _(' not')
-        status = 'FATAL ERROR'
+        status = validation_status.STATUS_FATAL_ERROR
         if total > 0:
             if not_converted > 0:
                 reason = _('because it is not complete (') + str(not_converted) + '/' + str(total) + _(' were not converted).')
@@ -390,13 +391,13 @@ def conclusion_message(total, converted, not_converted, xc_status, acron_issue_l
         action = _(' not')
         reason = _('because no document was changed.')
     elif xc_status == 'accepted':
-        status = 'WARNING'
+        status = validation_status.STATUS_WARNING
         reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
     elif xc_status == 'approved':
-        status = 'OK'
+        status = validation_status.STATUS_OK
         reason = ''
     else:
-        status = 'FATAL ERROR'
+        status = validation_status.STATUS_FATAL_ERROR
         reason = _('because there are blocking errors in the package.')
     text = status + ': ' + acron_issue_label + _(' will') + action + ' ' + result + ' ' + reason
     text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(converted) + '/' + str(total)) + html_reports.p_message(text)
@@ -772,10 +773,10 @@ def is_valid_configuration_file(configuration_filename):
     messages = []
     if configuration_filename is None:
         messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
-        messages.append('ERROR: ' + _('No configuration file was informed'))
+        messages.append(validation_status.STATUS_ERROR + ': ' + _('No configuration file was informed'))
     elif not os.path.isfile(configuration_filename):
         messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
-        messages.append('ERROR: ' + _('unable to read XML Converter configuration file: ') + configuration_filename)
+        messages.append(validation_status.STATUS_ERROR + ': ' + _('unable to read XML Converter configuration file: ') + configuration_filename)
     return messages
 
 
@@ -795,7 +796,7 @@ def call_converter(args, version='1.0'):
         if len(errors) > 0:
             messages = []
             messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
-            messages.append('ERROR: ' + _('Incorrect parameters'))
+            messages.append(validation_status.STATUS_ERROR + ': ' + _('Incorrect parameters'))
             messages.append('\n' + _('Usage') + ':')
             messages.append('python xml_converter.py <xml_folder> | <collection_acron>')
             messages.append(_('where') + ':')

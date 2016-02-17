@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from __init__ import _
+import validation_status
 import utils
 import xml_utils
 import article_utils
@@ -299,7 +300,7 @@ class ArticleValidationReport(object):
         items, performance = self.article_validation.validations
 
         if not display_all:
-            #items = [(label, status, msg) for label, status, msg in items if status != 'OK']
+            #items = [(label, status, msg) for label, status, msg in items if status != validation_status.STATUS_OK]
             new_items = []
             for item in items:
                 if item is not None:
@@ -308,7 +309,7 @@ class ArticleValidationReport(object):
                         utils.debugging(item)
                     else:
                         label, status, msg = item
-                        if status != 'OK':
+                        if status != validation_status.STATUS_OK:
                             new_items.append((label, status, msg))
             items = new_items
 
@@ -326,8 +327,8 @@ class ArticleValidationReport(object):
         found_errors = []
         for ref, ref_result in self.article_validation.references:
             if not display_all:
-                found_errors = [status for label, status, msg in ref_result if status in ['WARNING', 'ERROR', 'FATAL ERROR']]
-                ref_result = [(label, status, msg) for label, status, msg in ref_result if status != 'OK']
+                found_errors = [status for label, status, msg in ref_result if status in [validation_status.STATUS_WARNING, validation_status.STATUS_ERROR, validation_status.STATUS_FATAL_ERROR]]
+                ref_result = [(label, status, msg) for label, status, msg in ref_result if status != validation_status.STATUS_OK]
 
             if len(found_errors) > 0:
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
@@ -485,7 +486,7 @@ def article_data_and_validations_report(article, new_name, package_path, is_db_g
         sheet_data = None
         article_display_report = None
         article_validation_report = None
-        content = 'FATAL ERROR: ' + _('Unable to get data of ') + new_name + '.'
+        content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to get data of ') + new_name + '.'
     else:
         article_validation = article_validations.ArticleContentValidation(article, is_db_generation, False)
         sheet_data = ArticleSheetData(article, article_validation)
@@ -509,4 +510,3 @@ def article_data_and_validations_report(article, new_name, package_path, is_db_g
         content = html_reports.join_texts(content)
 
     return content
-

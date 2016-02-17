@@ -5,6 +5,7 @@ from datetime import datetime
 import urllib2
 import json
 
+import validation_status
 import utils
 import institutions_service
 import article as article_module
@@ -216,19 +217,19 @@ def display_values_with_attributes(label, values_with_attributes):
 
 
 def conditional_required(label, value):
-    return display_value(label, value) if value is not None else 'WARNING: Required ' + label + ', if exists. '
+    return display_value(label, value) if value is not None else validation_status.STATUS_WARNING + ': Required ' + label + ', if exists. '
 
 
 def required(label, value):
-    return display_value(label, value) if value is not None else 'ERROR: Required ' + label + '. '
+    return display_value(label, value) if value is not None else validation_status.STATUS_ERROR + ': Required ' + label + '. '
 
 
 def required_one(label, value):
-    return display_attributes(label, value) if value is not None else 'ERROR: Required ' + label + '. '
+    return display_attributes(label, value) if value is not None else validation_status.STATUS_ERROR + ': Required ' + label + '. '
 
 
 def expected_values(label, value, expected):
-    return display_value(label, value) if value in expected else 'ERROR: ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
+    return display_value(label, value) if value in expected else validation_status.STATUS_ERROR + ': ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
 
 
 def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):

@@ -13,7 +13,7 @@ try:
 except:
     os.environ['XML_CATALOG_FILES'] = ''
 
-
+import validation_status
 import java_xml_utils
 import xml_utils
 import html_reports
@@ -88,7 +88,7 @@ def java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_
         #parameters = {'filename': xml_report}
         java_xml_utils.xml_transform(xml_report, xsl_report, report_filename, parameters)
     else:
-        fs_utils.write_file(report_filename, 'FATAL ERROR: ' + _('Unable to create') + ' ' + report_filename)
+        fs_utils.write_file(report_filename, validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create') + ' ' + report_filename)
     if os.path.isfile(report_filename):
         c = fs_utils.read_file(report_filename)
         is_valid_style = ('Total of errors = 0' in c) and (('Total of warnings = 0' in c) or (not 'Total of warnings =' in c))
@@ -167,7 +167,7 @@ def validate_article_xml(xml_filename, dtd_files, dtd_report_filename, style_rep
     if e is None:
         is_valid_style = style_validation(xml_filename, dtd_files.doctype_with_local_path, style_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report, dtd_files.database_name)
     else:
-        text = 'FATAL ERROR: ' + _('Unable to load') + ' ' + xml_filename + '\n' + str(e).decode('utf-8')
+        text = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to load') + ' ' + xml_filename + '\n' + str(e).decode('utf-8')
         fs_utils.write_file(style_report_filename, text)
     f, e, w = style_checker_statistics(style_report_filename)
     register_log('validate_article_xml: fim')
