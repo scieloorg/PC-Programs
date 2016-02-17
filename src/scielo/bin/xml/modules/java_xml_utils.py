@@ -5,7 +5,7 @@ import shutil
 import tempfile
 from datetime import datetime
 
-
+import validation_status
 import xml_utils
 import fs_utils
 
@@ -68,7 +68,7 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     os.system(cmd)
 
     if not os.path.exists(temp_result_filename):
-        fs_utils.write_file(temp_result_filename, 'ERROR: transformation error.\n' + cmd)
+        fs_utils.write_file(temp_result_filename, validation_status.STATUS_ERROR + ': transformation error.\n' + cmd)
         error = True
     shutil.move(temp_result_filename, result_filename)
 
@@ -105,7 +105,7 @@ def xml_validate(xml_filename, result_filename, doctype=None):
     if os.path.exists(temp_result_filename):
         result = fs_utils.read_file(temp_result_filename, sys.getfilesystemencoding())
 
-        if 'ERROR' in result.upper():
+        if validation_status.STATUS_ERROR in result.upper():
             n = 0
             s = ''
             for line in open(xml_filename, 'r').readlines():
@@ -115,7 +115,7 @@ def xml_validate(xml_filename, result_filename, doctype=None):
             result += '\n' + s.decode('utf-8')
             fs_utils.write_file(temp_result_filename, result)
     else:
-        result = 'ERROR: Not valid. Unknown error.\n' + cmd
+        result = validation_status.STATUS_ERROR + ': Not valid. Unknown error.\n' + cmd
         fs_utils.write_file(temp_result_filename, result)
 
     shutil.move(temp_result_filename, result_filename)
@@ -126,4 +126,4 @@ def xml_validate(xml_filename, result_filename, doctype=None):
         except:
             pass
     register_log('xml_validate: fim')
-    return not 'ERROR' in result.upper()
+    return not validation_status.STATUS_ERROR in result.upper()

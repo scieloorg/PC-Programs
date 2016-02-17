@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 
 from __init__ import _
+import validation_status
 import attributes
 import article_reports
 import article_utils
@@ -290,10 +291,10 @@ class ArticlesPkgReport(object):
         self.consistence_blocking_errors = None
         self.changed_orders_validations = None
 
-        self.complete_issue_articles.error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq-elocation-id': 'ERROR'}
+        self.complete_issue_articles.error_level_for_unique = {'order': validation_status.STATUS_FATAL_ERROR, 'doi': validation_status.STATUS_FATAL_ERROR, 'elocation id': validation_status.STATUS_FATAL_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
 
         if not self.is_db_generation:
-            self.complete_issue_articles.error_level_for_unique['order'] = 'WARNING'
+            self.complete_issue_articles.error_level_for_unique['order'] = validation_status.STATUS_WARNING
 
     def overview_report(self):
         r = ''
@@ -324,7 +325,7 @@ class ArticlesPkgReport(object):
 
         values = []
         values.append(_('references by type'))
-        values.append('INFO')
+        values.append(validation_status.STATUS_INFO)
         values.append({reftype: str(sum([len(occ) for occ in sources.values()])) for reftype, sources in self.reftype_and_sources.items()})
         items.append(label_values(labels, values))
 
@@ -332,18 +333,18 @@ class ArticlesPkgReport(object):
         if len(self.bad_sources_and_reftypes) > 0:
             values = []
             values.append(_('same sources as different types references'))
-            values.append('ERROR')
+            values.append(validation_status.STATUS_ERROR)
             values.append(self.bad_sources_and_reftypes)
             items.append(label_values(labels, values))
 
         if len(self.missing_source) > 0:
-            items.append({'label': _('references missing source'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.missing_source]})
+            items.append({'label': _('references missing source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_source]})
         if len(self.missing_year) > 0:
-            items.append({'label': _('references missing year'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.missing_year]})
+            items.append({'label': _('references missing year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_year]})
         if len(self.unusual_sources) > 0:
-            items.append({'label': _('references with unusual value for source'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.unusual_sources]})
+            items.append({'label': _('references with unusual value for source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_sources]})
         if len(self.unusual_years) > 0:
-            items.append({'label': _('references with unusual value for year'), 'status': 'ERROR', 'message': [' - '.join(item) for item in self.unusual_years]})
+            items.append({'label': _('references with unusual value for year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_years]})
 
         return html_reports.tag('h4', _('Package references overview')) + html_reports.sheet(labels, items, table_style='dbstatus')
 
@@ -586,7 +587,7 @@ class ArticlesPkgReport(object):
             if self.complete_issue_articles.articles[xml_name].pages == '':
                 msg.append(_('no pagination was found'))
                 if not self.complete_issue_articles.articles[xml_name].is_ahead:
-                    status = 'ERROR'
+                    status = validation_status.STATUS_ERROR
             if fpage is not None and lpage is not None:
                 if fpage.isdigit() and lpage.isdigit():
                     int_fpage = int(fpage)
@@ -595,16 +596,16 @@ class ArticlesPkgReport(object):
                     #if not self.complete_issue_articles.articles[xml_name].is_rolling_pass and not self.complete_issue_articles.articles[xml_name].is_ahead:
                     if int_previous_lpage is not None:
                         if int_previous_lpage > int_fpage:
-                            status = 'FATAL ERROR' if not self.complete_issue_articles.articles[xml_name].is_epub_only else 'WARNING'
+                            status = validation_status.STATUS_FATAL_ERROR if not self.complete_issue_articles.articles[xml_name].is_epub_only else validation_status.STATUS_WARNING
                             msg.append(_('Invalid pages') + ': ' + _('check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage == int_fpage:
-                            status = 'WARNING'
+                            status = validation_status.STATUS_WARNING
                             msg.append(_('lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the same').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage + 1 < int_fpage:
-                            status = 'WARNING'
+                            status = validation_status.STATUS_WARNING
                             msg.append(_('there is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                     if int_fpage > int_lpage:
-                        status = 'FATAL ERROR'
+                        status = validation_status.STATUS_FATAL_ERROR
                         msg.append(_('Invalid page range'))
                     int_previous_lpage = int_lpage
                     previous_lpage = lpage
@@ -638,31 +639,31 @@ class ArticlesPkgReport(object):
                 for xml_name, article in self.pkg_articles.articles.items():
                     unmatched = []
                     items = []
-                    items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items, 'FATAL ERROR'])
-                    items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, acron_items, 'FATAL ERROR'])
-                    items.append([_('e-ISSN'), article.e_issn, e_issn_items, 'FATAL ERROR'])
-                    items.append([_('print ISSN'), article.print_issn, p_issn_items, 'FATAL ERROR'])
-                    items.append([_('publisher name'), article.publisher_name, publisher_name_items, 'ERROR'])
-                    items.append([_('license'), article.license_url, license_items, 'ERROR'])
+                    items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items, validation_status.STATUS_FATAL_ERROR])
+                    items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, acron_items, validation_status.STATUS_FATAL_ERROR])
+                    items.append([_('e-ISSN'), article.e_issn, e_issn_items, validation_status.STATUS_FATAL_ERROR])
+                    items.append([_('print ISSN'), article.print_issn, p_issn_items, validation_status.STATUS_FATAL_ERROR])
+                    items.append([_('publisher name'), article.publisher_name, publisher_name_items, validation_status.STATUS_ERROR])
+                    items.append([_('license'), article.license_url, license_items, validation_status.STATUS_ERROR])
 
                     for label, value, expected_values, err_msg in items:
                         expected_values_msg = _(' or ').join(expected_values)
                         value = 'None' if value is None else value.strip()
                         if len(expected_values) == 0:
                             expected_values_msg = 'None'
-                            status = 'WARNING' if value != expected_values_msg else 'OK'
+                            status = validation_status.STATUS_WARNING if value != expected_values_msg else validation_status.STATUS_OK
                         else:
-                            status = 'OK'
+                            status = validation_status.STATUS_OK
                             if not value in expected_values:
                                 if label == _('license'):
                                     status = err_msg
                                     for expected_value in expected_values:
                                         if '/' + expected_value.lower() + '/' in str(value) + '/':
-                                            status = 'OK'
+                                            status = validation_status.STATUS_OK
                                             break
                                 else:
                                     status = err_msg
-                        if status != 'OK':
+                        if status != validation_status.STATUS_OK:
                             unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': expected_values_msg})
 
                     validations_result = ''
@@ -709,18 +710,18 @@ class ArticlesPkgReport(object):
 
         r = ''
         if len(self.complete_issue_articles.invalid_xml_name_items) > 0:
-            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
+            r += html_reports.tag('div', html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Invalid XML files.')))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', self.complete_issue_articles.invalid_xml_name_items, 'issue-problem'))
         for label, items in self.complete_issue_articles.pkg_missing_items.items():
-            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
+            r += html_reports.tag('div', html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
 
         for label in self.complete_issue_articles.expected_equal_values:
             if len(self.complete_issue_articles._compiled_pkg_metadata[label]) > 1:
-                _status = 'FATAL ERROR'
+                _status = validation_status.STATUS_FATAL_ERROR
                 if label == 'issue pub date':
                     if self.complete_issue_articles.is_rolling_pass:
-                        _status = 'WARNING'
+                        _status = validation_status.STATUS_WARNING
                 _m = _('same value for %s is required for all the documents in the package') % (label)
                 part = html_reports.p_message(_status + ': ' + _m + '.')
                 for found_value, xml_files in self.complete_issue_articles._compiled_pkg_metadata[label].items():
@@ -737,7 +738,7 @@ class ArticlesPkgReport(object):
                 if len(duplicated) > 0:
                     _m = _(': unique value of %s is required for all the documents in the package') % (label)
                     part = html_reports.p_message(self.complete_issue_articles.error_level_for_unique[label] + _m)
-                    if self.complete_issue_articles.error_level_for_unique[label] == 'FATAL ERROR':
+                    if self.complete_issue_articles.error_level_for_unique[label] == validation_status.STATUS_FATAL_ERROR:
                         self.consistence_blocking_errors += 1
                     for found_value, xml_files in duplicated.items():
                         part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
@@ -1066,12 +1067,9 @@ def label_errors_type(content, error_type, prefix):
 
 
 def label_errors(content):
-    content = content.replace('ERROR', '[ERROR')
-    content = content.replace('FATAL [ERROR', 'FATAL ERROR')
-    content = label_errors_type(content, 'FATAL ERROR', 'F')
-    content = label_errors_type(content, '[ERROR', 'E')
-    content = label_errors_type(content, 'WARNING', 'W')
-    content = content.replace('[ERROR', 'ERROR')
+    content = label_errors_type(content, validation_status.STATUS_FATAL_ERROR, 'F')
+    content = label_errors_type(content, validation_status.STATUS_ERROR, 'E')
+    content = label_errors_type(content, validation_status.STATUS_WARNING, 'W')
     return content
 
 

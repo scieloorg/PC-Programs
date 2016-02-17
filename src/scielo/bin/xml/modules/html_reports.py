@@ -5,7 +5,8 @@ import os
 from datetime import datetime
 
 from __init__ import _
-import xml_utils
+from . import validation_status
+from . import xml_utils
 
 
 def validations_table(results):
@@ -28,10 +29,10 @@ def statistics(content, word):
 
 
 def statistics_numbers(content):
-    e = statistics(content, 'ERROR')
-    f = statistics(content, 'FATAL ERROR')
+    e = statistics(content, validation_status.STATUS_ERROR)
+    f = statistics(content, validation_status.STATUS_FATAL_ERROR)
     e = e - f
-    w = statistics(content, 'WARNING')
+    w = statistics(content, validation_status.STATUS_WARNING)
     return (f, e, w)
 
 
@@ -268,17 +269,17 @@ def save(filename, title, body):
 def get_message_style(value, default=''):
     if value is None:
         value = ''
-    if 'FATAL ERROR' in value:
+    if validation_status.STATUS_FATAL_ERROR in value:
         r = 'fatalerror'
-    elif 'ERROR' in value:
+    elif validation_status.STATUS_ERROR in value:
         r = 'error'
-    elif 'WARNING' in value:
+    elif validation_status.STATUS_WARNING in value:
         r = 'warning'
-    elif 'OK' in value:
+    elif validation_status.STATUS_OK in value:
         r = 'ok'
-    elif 'INFO' in value:
+    elif validation_status.STATUS_INFO in value:
         r = 'info'
-    elif 'VALID' in value:
+    elif validation_status.STATUS_VALID in value:
         r = 'valid'
     else:
         r = default
