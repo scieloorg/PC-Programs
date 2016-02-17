@@ -105,7 +105,7 @@ def xml_validate(xml_filename, result_filename, doctype=None):
     if os.path.exists(temp_result_filename):
         result = fs_utils.read_file(temp_result_filename, sys.getfilesystemencoding())
 
-        if validation_status.STATUS_ERROR in result.upper():
+        if 'ERROR' in result.upper():
             n = 0
             s = ''
             for line in open(xml_filename, 'r').readlines():
