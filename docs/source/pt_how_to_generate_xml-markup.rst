@@ -2067,7 +2067,7 @@ Perceba que foi dado sequência nos IDs das figuras.
 Considerar a regra para: Autores e suas respectivas afiliações, figuras, tabelas, caixas de texto, equações, apêndices etc.
 
 
-..note:: No caso do DOI, atualmente nosso sistema o atribui apenas ao documento de idioma principal.
+.. note:: No caso do DOI, atualmente nosso sistema o atribui apenas ao documento de idioma principal.
 
 
 .. _carta-resposta:
@@ -2636,7 +2636,7 @@ Insira agora uma nova tag <table-wrap> com <label>, <caption> e <title> logo aba
    :align: center
 
 
-..note:: Para tabelas codificadas o processo é o mesmo.
+.. note:: Para tabelas codificadas o processo é o mesmo.
 
 
 **Figuras**
