@@ -31,7 +31,6 @@ def statistics(content, word):
 def statistics_numbers(content):
     e = statistics(content, validation_status.STATUS_ERROR)
     f = statistics(content, validation_status.STATUS_FATAL_ERROR)
-    e = e - f
     w = statistics(content, validation_status.STATUS_WARNING)
     return (f, e, w)
 
