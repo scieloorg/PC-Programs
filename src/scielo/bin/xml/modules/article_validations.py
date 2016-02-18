@@ -1168,7 +1168,8 @@ class ReferenceContentValidation(object):
     def evaluate(self, article_year):
         r = []
         r.append(self.xml)
-        r.append(self.mixed_citation)
+        for item in self.mixed_citation:
+            r.append(item)
         r.append(self.publication_type)
         if self.publication_type_other is not None:
             r.append(self.publication_type_other)
@@ -1179,6 +1180,8 @@ class ReferenceContentValidation(object):
         for item in self.year(article_year):
             r.append(item)
         for item in self.source:
+            r.append(item)
+        for item in self.ext_link:
             r.append(item)
         return r
 
@@ -1348,10 +1351,16 @@ class ReferenceContentValidation(object):
 
     @property
     def ext_link(self):
-        r = None
+        r = []
         if self.reference.ext_link is not None:
-            if not self.reference.ext_link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').strip() in self.reference.mixed_citation:
-                r = ('ext-link', validation_status.STATUS_ERROR, '"' + self.reference.ext_link + '" ' + _('is missing in') + ' "' + self.reference.mixed_citation + '"')
+            ext_link = self.reference.ext_link
+            if not isinstance(ext_link, list):
+                ext_link = [self.reference.ext_link]
+            for link in ext_link:
+                if not link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').strip() in self.reference.mixed_citation:
+                    r += [('ext-link', validation_status.STATUS_ERROR, '"' + self.reference.ext_link + '" ' + _('is missing in') + ' <mixed-citation>' + self.reference.mixed_citation + '</mixed-citation>')]
+            if not '<ext-link' in self.reference.mixed_citation:
+                r += [('ext-link', validation_status.STATUS_WARNING, '"<ext-link>" ' + _('is missing in') + ' "<mixed-citation>"')]
         return r
 
     @property
@@ -1369,10 +1378,18 @@ class ReferenceContentValidation(object):
 
     @property
     def mixed_citation(self):
+        r = []
         if self.reference.mixed_citation is not None:
-            return ('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation)
+            r.append(('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation))
+            if self.reference.source is not None:
+                if not self.reference.source in self.reference.mixed_citation:
+                    r.append(('source', validation_status.STATUS_ERROR, _('Not found "{element}" in {where}').format(element=self.reference.source, where='<mixed-citation>')))
+            if self.reference.year is not None:
+                if not self.reference.year in self.reference.mixed_citation:
+                    r.append(('year', validation_status.STATUS_ERROR, _('Not found "{element}" in {where}').format(element=self.reference.year, where='<mixed-citation>')))
         else:
-            return required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False)
+            r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
+        return r
 
     @property
     def authors_list(self):
