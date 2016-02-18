@@ -1142,22 +1142,45 @@ class ArticleContentValidation(object):
         return href_items
 
     def package_files(self, pkg_path):
+        items = []
+
+        #XML: files
+        if self.article.language is not None:
+            items.append((self.article.new_prefix + '.pdf', validation_status.STATUS_INFO, _('PDF ({lang})').format(lang=self.article.language)))
+            if not self.article.new_prefix + '.pdf' in self.article.package_files(pkg_path):
+                items.append((self.article.new_prefix + '.pdf', validation_status.STATUS_WARNING, _('not found in the package')))
+        pdf_langs = [item[-6:-4] for item in self.article.package_files(pkg_path) if item.endswith('.pdf') and item[-7:-6] == '-']
+        for lang in self.article.trans_languages:
+            if not lang in pdf_langs:
+                items.append((self.article.new_prefix + '-' + lang + '.pdf', validation_status.STATUS_WARNING, _('not found in the package')))
+
+        #files: XML
         inxml = [item.name_without_extension for item in self.article.href_files]
         inxml += [item.src for item in self.article.href_files]
-        items = []
         for item in sorted(self.article.package_files(pkg_path)):
             status = validation_status.STATUS_INFO if item.startswith(self.article.new_prefix) else validation_status.STATUS_FATAL_ERROR
             message = _('found in the package') if status == validation_status.STATUS_INFO else _('file name must start with ') + self.article.prefix
             items.append((item, status, message))
             if item in inxml:
                 items.append((item, validation_status.STATUS_INFO, _('found in XML')))
-            else:
-                if not item.endswith('.pdf'):
-                    without_extension = item[0:item.rfind('.')] if '.' in item else item
-                    if without_extension in inxml:
-                        items.append((without_extension, validation_status.STATUS_INFO, _('found in XML')))
+            elif item == self.article.new_prefix + '.pdf':
+                items.append((item, validation_status.STATUS_INFO, _('PDF ({lang})').format(lang=self.article.language)))
+            elif item.endswith('.pdf'):
+                lang = item[len(self.article.new_prefix):]
+                if lang.startswith('-'):
+                    lang = lang[1:3]
+                    if lang in self.article.trans_languages:
+                        items.append((item, validation_status.STATUS_INFO, _('found sub-article({lang}) in XML').format(lang=lang)))
+                    elif lang in self.article.language:
+                        items.append((item, validation_status.STATUS_WARNING, _('PDF ({lang})').format(lang=lang) + _(' must not have -{lang} in PDF name').format(lang=lang)))
                     else:
-                        items.append((item, validation_status.STATUS_ERROR, _('not found in XML')))
+                        items.append((item, validation_status.STATUS_WARNING, _('not found sub-article({lang}) in XML').format(lang=lang)))
+            else:
+                without_extension = item[0:item.rfind('.')] if '.' in item else item
+                if without_extension in inxml:
+                    items.append((without_extension, validation_status.STATUS_INFO, _('found in XML')))
+                else:
+                    items.append((item, validation_status.STATUS_ERROR, _('not found in XML')))
         return items
 
 
