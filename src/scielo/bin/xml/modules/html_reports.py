@@ -182,7 +182,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
 
 
 def display_xml(value, width=70):
-    if '<' in value and '>' in value:
+    if '<' in value or '>' in value:
         value = xml_utils.pretty_print(value)
     parts = []
     for line in value.split('\n'):
@@ -251,7 +251,7 @@ def format_html_data(value, width=70):
         r = msg + '<select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value)]) + '</select>'
     elif '<img' in value or '</a>' in value:
         r = value
-    elif '<' in value and '>' in value:
+    elif '<' in value and '>' in value and ('</' in value or '/>' in value):
         r = display_xml(value, width)
     else:
         r = value
