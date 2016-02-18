@@ -30,6 +30,7 @@ log_items = []
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+DISPLAY_REPORT = True
 
 
 def xpm_version():
@@ -1042,7 +1043,9 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             xpm_validations = pkg_reports.format_complete_report(report_components)
             filename = report_path + '/xml_package_maker.html'
             pkg_reports.save_report(filename, _('XML Package Maker Report'), xpm_validations.message, xpm_version())
-            pkg_reports.display_report(filename)
+            global DISPLAY_REPORT
+            if DISPLAY_REPORT is True:
+                pkg_reports.display_report(filename)
 
         if not is_db_generation:
             if is_xml_generation:
@@ -1141,12 +1144,18 @@ def make_packages(path, acron, version='1.0'):
 
 
 def get_inputs(args):
+    global DISPLAY_REPORT
     args = [arg.decode(encoding=sys.getfilesystemencoding()) for arg in args]
     script = args[0]
     path = None
     acron = None
     if len(args) == 3:
-        script, path, acron = args
+        script, path, other = args
+        if other == u'disable-report':
+            DISPLAY_REPORT = False
+        else:
+            acron = other
+
     elif len(args) == 2:
         script, path = args
     return (script, path, acron)
