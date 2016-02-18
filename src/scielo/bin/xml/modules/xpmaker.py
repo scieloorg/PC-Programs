@@ -836,7 +836,7 @@ def get_curr_and_new_href_list(doc_files_info, doc):
 
 def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
     register_log('pack_xml_file')
-    content = xml_utils.replace_doctype(content, xml_versions.DTDFiles('scielo', version).doctype)
+    #content = xml_utils.replace_doctype(content, xml_versions.DTDFiles('scielo', version).doctype)
     fs_utils.write_file(new_xml_filename, content)
 
     if do_incorrect_copy:
