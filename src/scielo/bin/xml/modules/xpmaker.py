@@ -683,10 +683,27 @@ def fix_book_data(item):
     return item
 
 
-def normalize_mixed_citation(item):
+def fix_mixed_citation_ext_link(ref):
+    if '<ext-link' in ref and '<mixed-citation>' in ref:
+        mixed_citation = ref[ref.find('<mixed-citation>')+len('<mixed-citation>'):ref.find('</mixed-citation>')]
+        new_mixed_citation = mixed_citation
+        if not '<ext-link' in mixed_citation:
+            for ext_link in ref.replace('<ext-link', '~BREAK~<ext-link').split('~BREAK~'):
+                if ext_link.startswith('<ext-link'):
+                    if '</ext-link>' in ext_link:
+                        ext_link = ext_link[0:ext_link.find('</ext-link>')+len('</ext-link>')]
+                        content = ext_link[ext_link.find('>')+1:]
+                        content = content[0:content.find('</ext-link>')]
+                        new_mixed_citation = new_mixed_citation.replace(content, ext_link)
+            if new_mixed_citation != mixed_citation:
+                ref = ref.replace(mixed_citation, new_mixed_citation)
+    return ref
+
+
+def fix_mixed_citation_label(item):
     if '<label>' in item and '<mixed-citation>' in item:
-        label = item[item.find('<label>')+len('<label>'):item.find('</label>')]
         mixed_citation = item[item.find('<mixed-citation>')+len('<mixed-citation>'):item.find('</mixed-citation>')]
+        label = item[item.find('<label>')+len('<label>'):item.find('</label>')]
         changed = mixed_citation
         if not '<label>' in mixed_citation:
             if not changed.startswith(label):
@@ -702,14 +719,21 @@ def normalize_mixed_citation(item):
                 if mixed_citation in item:
                     item = item.replace(mixed_citation, changed)
                 else:
-                    print('not found mixed-citation')
+                    print('Unable to insert label to mixed_citation')
+                    print('mixed-citation:')
+                    print(mixed_citation)
+                    print('item:')
+                    print(item)
+                    print('changes:')
+                    print(changed)
     return item
 
 
 def normalize_references_item(item):
     if item.startswith('<ref') and item.endswith('</ref>'):
-        item = normalize_mixed_citation(item)
+        item = fix_mixed_citation_label(item)
         item = fix_book_data(item)
+        item = fix_mixed_citation_ext_link(item)
     return item
 
 
