@@ -228,6 +228,7 @@ class ArticleContentValidation(object):
             items.append(self.expiration_sps)
         items.append(self.language)
         items.append(self.languages)
+        items.append(self.months_seasons)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_title)
         #utils.debugging(datetime.now().isoformat() + ' validations')
@@ -350,6 +351,38 @@ class ArticleContentValidation(object):
         for lang in self.article.keywords_by_lang.keys():
             msg.append(check_lang('kwd-group', lang))
         return msg
+
+    @property
+    def months_seasons(self):
+        MONTHS_ABBREV = '|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|'
+        r = []
+        for parent, parent_id, value in self.article.months:
+            error = False
+            if value.isdigit():
+                if not int(value) in range(1, 13):
+                    error = True
+            else:
+                error = True
+            if error:
+                r.append((parent + '(' + parent_id + ')', _('Invalid value for ') + '<month>.' + _('Expected values') + ': ' + ' | '.join([str(i) for i in range(1, 13)])))
+        for parent, parent_id, value in self.article.seasons:
+            error = False
+            if '-' in value:
+                months = value.split('-')
+                month_names = MONTHS_ABBREV
+                if len(months) == 2:
+                    for m in months:
+                        if '|' + m + '|' in month_names:
+                            month_names = month_names[month_names.find(m) + len(m) + 2]
+                        else:
+                            error = True
+                else:
+                    error = True
+            elif '|' + value + '|' in MONTHS_ABBREV:
+                error = True
+            if error:
+                r.append((parent + '(' + parent_id + ')', _('Invalid value for ') + '<season>.'))
+        return r
 
     @property
     def related_articles(self):
