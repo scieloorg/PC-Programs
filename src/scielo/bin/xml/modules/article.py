@@ -183,6 +183,32 @@ class ArticleXML(object):
                     self.sub_articles.append(s)
             self.responses = self.tree.findall('./response')
 
+    @property
+    def months(self):
+        items = []
+        nodes = self.tree.findall('.//pub-date[month]')
+        for node in nodes:
+            items.append((node.tag, node.attrib.get('pub-type'), node.findtext('month')))
+        nodes = self.tree.findall('.//element-citation[month]/..')
+        for node in nodes:
+            for month_node in node.findall('.//element-citation/month'):
+                items.append((node.tag, node.attrib.get('id'), month_node.text))
+        print(items)
+        return items
+
+    @property
+    def seasons(self):
+        items = []
+        nodes = self.tree.findall('.//pub-date[season]')
+        for node in nodes:
+            items.append((node.tag, node.attrib.get('pub-type'), node.findtext('season')))
+        nodes = self.tree.findall('.//element-citation[season]/..')
+        for node in nodes:
+            for season_node in node.findall('.//element-citation/season'):
+                items.append((node.tag, node.attrib.get('id'), season_node.text))
+        print(items)
+        return items
+
     def sections(self, node, scope):
         r = []
         if node is not None:
