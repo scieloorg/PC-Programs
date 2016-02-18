@@ -364,7 +364,7 @@ class ArticleContentValidation(object):
             else:
                 error = True
             if error:
-                r.append((parent + '(' + parent_id + ')', _('Invalid value for ') + '<month>.' + _('Expected values') + ': ' + ' | '.join([str(i) for i in range(1, 13)])))
+                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + '<month>: ' + value + '. ' + _('Expected values') + ': ' + ' | '.join([str(i) for i in range(1, 13)])))
         for parent, parent_id, value in self.article.seasons:
             error = False
             if '-' in value:
@@ -373,7 +373,8 @@ class ArticleContentValidation(object):
                 if len(months) == 2:
                     for m in months:
                         if '|' + m + '|' in month_names:
-                            month_names = month_names[month_names.find(m) + len(m) + 2]
+                            month_names = month_names[month_names.find(m) + len(m):]
+                            print(month_names)
                         else:
                             error = True
                 else:
@@ -381,7 +382,7 @@ class ArticleContentValidation(object):
             elif '|' + value + '|' in MONTHS_ABBREV:
                 error = True
             if error:
-                r.append((parent + '(' + parent_id + ')', _('Invalid value for ') + '<season>.'))
+                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + '<season>: ' + value + '.'))
         return r
 
     @property
