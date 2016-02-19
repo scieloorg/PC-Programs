@@ -653,16 +653,25 @@ class IssueModels(object):
             if article.toc_section is None:
                 results.append(('section', validation_status.STATUS_FATAL_ERROR, _('Required')))
             else:
-                section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article.toc_section)
-                if matched_rate != 1:
-                    if not article.is_ahead:
-                        registered_sections = _('Registered sections') + ':\n' + u'; '.join(self.section_titles)
-                        if section_code is None:
-                            results.append(('section', validation_status.STATUS_ERROR, article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
-                        else:
-                            results.append(('section', validation_status.STATUS_WARNING, _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
+                _results = []
+                for article_section in article.toc_sections:
+                    section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article_section)
+                    if matched_rate != 1:
+                        if not article.is_ahead:
+                            if section_code is None:
+                                _results.append(('section', validation_status.STATUS_ERROR, article_section + _(' is not a registered section.')))
+                            else:
+                                _results = [('section', validation_status.STATUS_WARNING, _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article_section + '")')]
+                                break
+                    else:
+                        break
+                if len(_results) > 0:
+                    results.append(('section', validation_status.STATUS_INFO, _('Registered sections') + ':\n' + u'; '.join(self.section_titles)))
+                    for _result in _results:
+                        results.append(_result)
+
             # @article-type
-            _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
+            _sectitle = article_section if fixed_sectitle is None else fixed_sectitle
             import attributes
             for item in attributes.validate_article_type_and_section(article.article_type, _sectitle, len(article.abstracts) > 0):
                 results.append(item)
