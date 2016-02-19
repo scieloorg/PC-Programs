@@ -523,6 +523,18 @@ class ArticleXML(object):
         return r
 
     @property
+    def toc_sections(self):
+        r = []
+        r.append(self.toc_section)
+        if self.sub_articles is not None:
+            for node in self.sub_articles:
+                nodes = node.findall('.//subj-group/subject')
+                if nodes is not None:
+                    for s in nodes:
+                        r.append(s.text)
+        return r
+
+    @property
     def normalized_toc_section(self):
         return attributes.normalized_toc_section(self.toc_section)
 
