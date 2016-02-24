@@ -397,6 +397,5 @@ def tiff_info(img_filename):
         if im.info.get('dpi') is not None:
             x, y = im.info.get('dpi')
             info['dpi'] = x if x < y else y
-        info['height'] = im.height
-        info['width'] = im.width
+        info['width'], info['height'] = im.size
         return info
