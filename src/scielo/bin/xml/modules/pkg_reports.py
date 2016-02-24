@@ -1021,7 +1021,8 @@ def save_report(filename, title, content, xpm_version=None):
 
 def display_report(report_filename):
     try:
-        os.system('python -mwebbrowser "file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()) + '"')
+        import webbrowser
+        webbrowser.open('file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()), new=2)
     except:
         pass
 

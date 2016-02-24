@@ -441,15 +441,14 @@ class ArticleSheetData(object):
         href_items = self.article_validation.href_list(path)
         for src in sorted(href_items.keys()):
             hrefitem = href_items.get(src)
-            if hrefitem['elem'].is_internal_file:
-                for result in hrefitem['results']:
-                    row = {}
-                    row['href'] = src
-                    row['xml'] = hrefitem['elem'].xml
-                    row['display'] = hrefitem['display']
-                    row['status'] = result[0]
-                    row['message'] = result[1]
-                    r.append(row)
+            for result in hrefitem['results']:
+                row = {}
+                row['href'] = src
+                row['xml'] = hrefitem['elem'].xml
+                row['display'] = hrefitem['display']
+                row['status'] = result[0]
+                row['message'] = result[1]
+                r.append(row)
         return (t_header, r)
 
     def package_files(self, package_path):

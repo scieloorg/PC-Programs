@@ -12,6 +12,38 @@ import utils
 import article
 import html_reports
 import institutions_service
+import fs_utils
+
+
+MIN_IMG_DPI = 300
+MIN_IMG_WIDTH = 789
+MAX_IMG_WIDTH = 2250
+MAX_IMG_HEIGHT = 2625
+
+
+def evaluate_tiff(img_filename):
+    status_message = []
+    errors = []
+    img_info = article_utils.tiff_info(img_filename)
+    if img_info is not None:
+        info = []
+        info.append('{dpi} dpi'.format(dpi=img_info.get('dpi')))
+        info.append(_('height: {height} pixels').format(height=img_info.get('height')))
+        info.append(_('width: {width} pixels').format(width=img_info.get('width')))
+
+        if img_info.get('dpi') is not None:
+            if img_info.get('dpi') < MIN_IMG_DPI:
+                errors.append(_('Expected >= {value} dpi').format(value=MIN_IMG_DPI))
+        #if img_info.get('height') > MAX_IMG_HEIGHT:
+        #    errors.append(_('Expected height <= {value} pixels').format(value=MAX_IMG_HEIGHT))
+        #if not (MIN_IMG_WIDTH < img_info.get('width') < MAX_IMG_WIDTH):
+        #    errors.append(_('Expected width: between {min} and {max} pixels').format(min=MIN_IMG_WIDTH, max=MAX_IMG_WIDTH))
+        if len(errors) > 0:
+            status_message.append((validation_status.STATUS_ERROR, '; '.join(info) + ' | ' + '. '.join(errors)))
+        else:
+            status_message.append((validation_status.STATUS_INFO, '; '.join(info)))
+
+    return status_message
 
 
 def join_not_None_items(items, sep=', '):
@@ -1113,6 +1145,8 @@ class ArticleContentValidation(object):
 
             if hrefitem.is_internal_file:
                 file_location = hrefitem.file_location(path)
+                status_message = evaluate_tiff(path + '/' + hrefitem.src)
+
                 if os.path.isfile(file_location):
                     if not '.' in hrefitem.src:
                         status_message.append((validation_status.STATUS_WARNING, _('missing extension of ') + hrefitem.src + '.'))
@@ -1125,26 +1159,32 @@ class ArticleContentValidation(object):
                         status_message.append((validation_status.STATUS_WARNING, _('missing extension of ') + hrefitem.src + '.'))
                         status_message.append((validation_status.STATUS_FATAL_ERROR, os.path.basename(file_location) + _(' not found in package')))
                 hreflocation = 'file:///' + file_location
+                if hrefitem.is_image:
+                    display = html_reports.image(hreflocation)
+                if len(status_message) == 0:
+                    status_message.append((validation_status.STATUS_INFO, ''))
+                href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}
             else:
                 hreflocation = hrefitem.src
-                if self.check_url:
+                if self.check_url or 'scielo' in hrefitem.src:
                     if not article_utils.url_check(hrefitem.src, 1):
-                        status = validation_status.STATUS_WARNING
-                        message = hrefitem.src + _(' is not working')
-                        status_message.append((validation_status.STATUS_WARNING, hrefitem.src + _(' is not working')))
-            if hrefitem.is_image:
-                display = html_reports.image(hreflocation)
-            else:
-                display = html_reports.link(hreflocation, hrefitem.src)
-            if len(status_message) == 0:
-                status_message.append((validation_status.STATUS_INFO, ''))
-            href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}
+                        message = _(' is not working')
+                        if 'scielo' in hrefitem.src:
+                            message += '. ' + _('Be sure that there is no missing character such as _.')
+                        status_message.append((validation_status.STATUS_WARNING, hrefitem.src + message))
+                        if hrefitem.is_image:
+                            display = html_reports.image(hreflocation)
+                        else:
+                            display = html_reports.link(hreflocation, hrefitem.src)
+                        if len(status_message) == 0:
+                            status_message.append((validation_status.STATUS_INFO, ''))
+                        href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}
         return href_items
 
     def package_files(self, pkg_path):
         items = []
 
-        #XML: files
+        #from XML, find files
         if self.article.language is not None:
             items.append((self.article.new_prefix + '.pdf', validation_status.STATUS_INFO, _('PDF ({lang})').format(lang=self.article.language)))
             if not self.article.new_prefix + '.pdf' in self.article.package_files(pkg_path):
@@ -1154,7 +1194,7 @@ class ArticleContentValidation(object):
             if not lang in pdf_langs:
                 items.append((self.article.new_prefix + '-' + lang + '.pdf', validation_status.STATUS_WARNING, _('not found in the package')))
 
-        #files: XML
+        #from files, find in XML
         inxml = [item.name_without_extension for item in self.article.href_files]
         inxml += [item.src for item in self.article.href_files]
         for item in sorted(self.article.package_files(pkg_path)):
@@ -1382,9 +1422,9 @@ class ReferenceContentValidation(object):
                 ext_link = [self.reference.ext_link]
             for link in ext_link:
                 if not link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').strip() in self.reference.mixed_citation:
-                    r += [('ext-link', validation_status.STATUS_ERROR, '"' + self.reference.ext_link + '" ' + _('is missing in') + ' <mixed-citation>' + self.reference.mixed_citation + '</mixed-citation>')]
+                    r += [('ext-link', validation_status.STATUS_ERROR, _('Be sure that the value of ext-link ({ext_link}) is found in <mixed-citation>{mixed}</mixed-citation>').format(ext_link=link, mixed=self.reference.mixed_citation))]
             if not '<ext-link' in self.reference.mixed_citation:
-                r += [('ext-link', validation_status.STATUS_WARNING, '"<ext-link>" ' + _('is missing in') + ' "<mixed-citation>"')]
+                r += [('ext-link', validation_status.STATUS_WARNING, _('Missing ext-link element in mixed-citation'))]
         return r
 
     @property
@@ -1407,10 +1447,10 @@ class ReferenceContentValidation(object):
             r.append(('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation))
             if self.reference.source is not None:
                 if not self.reference.source in self.reference.mixed_citation:
-                    r.append(('source', validation_status.STATUS_ERROR, _('Not found "{element}" in {where}').format(element=self.reference.source, where='<mixed-citation>')))
+                    r.append(('source', validation_status.STATUS_ERROR, _('Be sure that the value of {element} ({value}) is found in <mixed-citation>{mixed}</mixed-citation>').format(element='source', value=self.reference.source, mixed=self.reference.mixed_citation)))
             if self.reference.year is not None:
                 if not self.reference.year in self.reference.mixed_citation:
-                    r.append(('year', validation_status.STATUS_ERROR, _('Not found "{element}" in {where}').format(element=self.reference.year, where='<mixed-citation>')))
+                    r.append(('year', validation_status.STATUS_ERROR, _('Be sure that the value of {element} ({value}) is found in <mixed-citation>{mixed}</mixed-citation>').format(element='year', value=self.reference.year, mixed=self.reference.mixed_citation)))
         else:
             r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
         return r

@@ -4,6 +4,7 @@
 from datetime import datetime
 import urllib2
 import json
+from PIL import Image
 
 import validation_status
 import utils
@@ -387,3 +388,15 @@ def normalized_institution(aff):
                 norm_aff.country = norm_country_name
 
     return (norm_aff, found_institutions)
+
+
+def tiff_info(img_filename):
+    if img_filename[img_filename.rfind('.')+1:] in ['tiff', 'tif']:
+        info = {}
+        im = Image.open(img_filename)
+        if im.info.get('dpi') is not None:
+            x, y = im.info.get('dpi')
+            info['dpi'] = x if x < y else y
+        info['height'] = im.height
+        info['width'] = im.width
+        return info
