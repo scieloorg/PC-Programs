@@ -171,7 +171,6 @@
 	</xsl:template>
 	<xsl:template match="article[@xml:lang!='en']/back">
 		<back>
-		<xsl:variable name="name" select="name()"/>
 		<xsl:apply-templates select="$translations[@xml:lang='en']/back/ack"/>
 		<xsl:apply-templates select="ref-list"/>
 		<xsl:apply-templates select="$translations[@xml:lang='en']/back/*[name()!='ack']"/>
