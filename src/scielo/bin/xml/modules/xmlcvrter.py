@@ -669,13 +669,13 @@ def transfer_report_files(acron, issue_id, local_web_app_path, user, servers, re
     issue_id_path = acron + '/' + issue_id
 
     folders = ['/htdocs/reports/']
-
     for folder in folders:
         dest_path = remote_web_app_path + folder + issue_id_path
         source_path = local_web_app_path + folder + issue_id_path
+        log_filename = './transfer_report_' + issue_id_path.replace('/', '-') + '.log'
         for server in servers:
-            xc.run_remote_mkdirs(user, server, dest_path)
-            xc.run_rsync(source_path, user, server, dest_path)
+            xc.run_remote_mkdirs(user, server, dest_path, log_filename)
+            xc.run_rsync(source_path, user, server, dest_path, log_filename)
 
 
 def queue_packages(download_path, temp_path, queue_path, archive_path):

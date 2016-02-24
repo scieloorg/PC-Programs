@@ -11,6 +11,7 @@ from __init__ import _
 import validation_status
 import utils
 import fs_utils
+import article_utils
 import java_xml_utils
 import html_reports
 
@@ -1013,11 +1014,39 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
             xpchecker.style_validation(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
             xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
 
+            add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, doc.language)
+
     if do_it:
-        for f in os.listdir(scielo_pkg_path):
-            if not f.endswith('.xml') and not f.endswith('.jpg'):
-                shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
         make_pkg_zip(pmc_pkg_path)
+
+
+def validate_pmc_image(img_filename):
+    info = article_utils.tiff_info(img_filename)
+    if info is not None:
+        if info.get('dpi') < 300:
+            print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=info.get('dpi')))
+
+
+def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
+    dest_path = os.path.dirname(pmc_xml_filename)
+    xml_name = os.path.basename(pmc_xml_filename)[:-4]
+    xml, e = xml_utils.load_xml(pmc_xml_filename)
+    doc = article.Article(xml, xml_name)
+    if language == 'en':
+        shutil.copyfile(scielo_pkg_path + '/' + xml_name + '.pdf', dest_path + '/' + xml_name + '.pdf')
+        for item in doc.href_files:
+            shutil.copyfile(scielo_pkg_path + '/' + item, dest_path + '/' + item)
+            validate_pmc_image(dest_path + '/' + item)
+    else:
+        shutil.copyfile(scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
+        content = fs_utils.read_file(pmc_xml_filename)
+        for item in doc.href_files:
+            new = item.src.replace('-en.', '.')
+            content = content.replace(item.src, new)
+
+            shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
+            validate_pmc_image(dest_path + '/' + new)
+        fs_utils.write_file(pmc_xml_filename, content)
 
 
 def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=False):

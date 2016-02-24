@@ -147,6 +147,10 @@
 		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
 	
+	<xsl:template match="article[@xml:lang!='en']/@xml:lang">
+		<xsl:attribute name="{name()}">en</xsl:attribute>
+	</xsl:template>
+	
 	<xsl:template match="article[@xml:lang!='en']//article-meta//abstract">
 		<xsl:apply-templates select="..//trans-abstract[@xml:lang='en']" mode="abstract"/>
 		<xsl:apply-templates select="$translations[@xml:lang='en']//abstract"/>
@@ -166,10 +170,12 @@
 		<xsl:apply-templates select="$translations[@xml:lang='en']/body"/>
 	</xsl:template>
 	<xsl:template match="article[@xml:lang!='en']/back">
+		<back>
 		<xsl:variable name="name" select="name()"/>
 		<xsl:apply-templates select="$translations[@xml:lang='en']/back/ack"/>
 		<xsl:apply-templates select="ref-list"/>
 		<xsl:apply-templates select="$translations[@xml:lang='en']/back/*[name()!='ack']"/>
+		</back>
 	</xsl:template>
 	<!-- BODY - end -->
 	
