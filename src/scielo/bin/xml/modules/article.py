@@ -220,7 +220,6 @@ class ArticleXML(object):
         for node in nodes:
             for month_node in node.findall('.//element-citation/month'):
                 items.append((node.tag, node.attrib.get('id'), month_node.text))
-        print(items)
         return items
 
     @property
@@ -233,7 +232,6 @@ class ArticleXML(object):
         for node in nodes:
             for season_node in node.findall('.//element-citation/season'):
                 items.append((node.tag, node.attrib.get('id'), season_node.text))
-        print(items)
         return items
 
     def sections(self, node, scope):

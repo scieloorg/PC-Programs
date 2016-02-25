@@ -407,7 +407,6 @@ class ArticleContentValidation(object):
                     for m in months:
                         if '|' + m + '|' in month_names:
                             month_names = month_names[month_names.find(m) + len(m):]
-                            print(month_names)
                         else:
                             error = True
                 else:
@@ -1111,7 +1110,6 @@ class ArticleContentValidation(object):
             message.append(('xref[@ref-type=bibr]', validation_status.STATUS_FATAL_ERROR, '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
 
         if len(missing) > 0:
-            print(missing)
             missing = confirm_missing_xref_items(missing, self.article.bibr_xref_ranges)
 
             if len(missing) > 0:
