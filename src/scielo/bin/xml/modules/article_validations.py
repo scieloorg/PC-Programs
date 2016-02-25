@@ -23,25 +23,26 @@ MAX_IMG_HEIGHT = 2625
 
 def evaluate_tiff(img_filename):
     status_message = []
-    errors = []
-    img_info = article_utils.tiff_info(img_filename)
-    if img_info is not None:
-        info = []
-        info.append('{dpi} dpi'.format(dpi=img_info.get('dpi')))
-        info.append(_('height: {height} pixels').format(height=img_info.get('height')))
-        info.append(_('width: {width} pixels').format(width=img_info.get('width')))
+    if os.path.isfile(img_filename):
+        img_info = article_utils.tiff_info(img_filename)
+        if img_info is not None:
+            errors = []
+            info = []
+            info.append('{dpi} dpi'.format(dpi=img_info.get('dpi')))
+            info.append(_('height: {height} pixels').format(height=img_info.get('height')))
+            info.append(_('width: {width} pixels').format(width=img_info.get('width')))
 
-        if img_info.get('dpi') is not None:
-            if img_info.get('dpi') < MIN_IMG_DPI:
-                errors.append(_('Expected >= {value} dpi').format(value=MIN_IMG_DPI))
-        #if img_info.get('height') > MAX_IMG_HEIGHT:
-        #    errors.append(_('Expected height <= {value} pixels').format(value=MAX_IMG_HEIGHT))
-        #if not (MIN_IMG_WIDTH < img_info.get('width') < MAX_IMG_WIDTH):
-        #    errors.append(_('Expected width: between {min} and {max} pixels').format(min=MIN_IMG_WIDTH, max=MAX_IMG_WIDTH))
-        if len(errors) > 0:
-            status_message.append((validation_status.STATUS_ERROR, '; '.join(info) + ' | ' + '. '.join(errors)))
-        else:
-            status_message.append((validation_status.STATUS_INFO, '; '.join(info)))
+            if img_info.get('dpi') is not None:
+                if img_info.get('dpi') < MIN_IMG_DPI:
+                    errors.append(_('Expected >= {value} dpi').format(value=MIN_IMG_DPI))
+            #if img_info.get('height') > MAX_IMG_HEIGHT:
+            #    errors.append(_('Expected height <= {value} pixels').format(value=MAX_IMG_HEIGHT))
+            #if not (MIN_IMG_WIDTH < img_info.get('width') < MAX_IMG_WIDTH):
+            #    errors.append(_('Expected width: between {min} and {max} pixels').format(min=MIN_IMG_WIDTH, max=MAX_IMG_WIDTH))
+            if len(errors) > 0:
+                status_message.append((validation_status.STATUS_ERROR, '; '.join(info) + ' | ' + '. '.join(errors)))
+            else:
+                status_message.append((validation_status.STATUS_INFO, '; '.join(info)))
 
     return status_message
 
