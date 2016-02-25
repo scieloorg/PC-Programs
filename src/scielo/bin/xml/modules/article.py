@@ -467,6 +467,8 @@ class ArticleXML(object):
                 item['href'] = rel.attrib.get('{http://www.w3.org/1999/xlink}href')
                 item['related-article-type'] = rel.attrib.get('related-article-type')
                 item['ext-link-type'] = rel.attrib.get('ext-link-type')
+                if item['ext-link-type'] == 'scielo-pid':
+                    item['ext-link-type'] = 'pid'
                 item['id'] = rel.attrib.get('id')
                 if not item['related-article-type'] in ['corrected-article', 'press-release']:
                     item['id'] = ''.join([c for c in item['id'] if c.isdigit()])
