@@ -253,6 +253,8 @@ def format_html_data(value, width=70):
         r = value
     elif '<' in value and '>' in value and ('</' in value or '/>' in value):
         r = display_xml(value, width)
+    elif '<' in value or '>' in value:
+        r = value.replace('<', '&lt;').replace('>', '&gt;')
     else:
         r = value
     return r
