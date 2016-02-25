@@ -3399,18 +3399,13 @@ et al.</copyright-statement>
 		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>-->
 		<xsl:variable name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/><xsl:value-of select="@pid-doi"/></xsl:variable>
 		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
-			<xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1)='S'"><xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="ext-link-type"><xsl:choose>
-						<xsl:when test="contains($id,'doi')">doi</xsl:when>
-						<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
-						<xsl:otherwise>doi</xsl:otherwise>
-					</xsl:choose>
-					</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type"><xsl:choose>
+				<xsl:when test="string-length($id)=23 and substring($id,1)='S'">scielo-pid</xsl:when>
+				<xsl:when test="contains($id,'doi')">doi</xsl:when>
+				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
+				<xsl:otherwise>doi</xsl:otherwise>
+			</xsl:choose></xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
@@ -3418,18 +3413,14 @@ et al.</copyright-statement>
 		<!-- errata -->
 		<xsl:variable name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/><xsl:value-of select="@pid-doi"/></xsl:variable>
 		<related-article related-article-type="{@reltp}" id="ra1" xmlns:xlink="http://www.w3.org/1999/xlink">
-			<xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1)='S'"><xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="ext-link-type"><xsl:choose>
-						<xsl:when test="contains($id,'doi')">doi</xsl:when>
-						<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
-						<xsl:otherwise>doi</xsl:otherwise>
-					</xsl:choose>
-					</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose><xsl:apply-templates select="*|text()"></xsl:apply-templates>
+			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type"><xsl:choose>
+				<xsl:when test="string-length($id)=23 and substring($id,1)='S'">scielo-pid</xsl:when>
+				<xsl:when test="contains($id,'doi')">doi</xsl:when>
+				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
+				<xsl:otherwise>doi</xsl:otherwise>
+			</xsl:choose></xsl:attribute>
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
 	<xsl:template match="related[@reltp='article']" mode="front-related">
@@ -3438,18 +3429,15 @@ et al.</copyright-statement>
 		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>-->
 		<xsl:variable name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/><xsl:value-of select="@pid-doi"/></xsl:variable>
 		<related-article related-article-type="article-reference" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
-			<xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1)='S'"><xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="ext-link-type"><xsl:choose>
-						<xsl:when test="contains($id,'doi')">doi</xsl:when>
-						<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
-						<xsl:otherwise>doi</xsl:otherwise>
-					</xsl:choose>
-					</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose><xsl:attribute name="specific-use">processing-only</xsl:attribute>
+			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type"><xsl:choose>
+				<xsl:when test="string-length($id)=23 and substring($id,1)='S'">scielo-pid</xsl:when>
+				<xsl:when test="contains($id,'doi')">doi</xsl:when>
+				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
+				<xsl:otherwise>doi</xsl:otherwise>
+			</xsl:choose>
+			</xsl:attribute>
+			<xsl:attribute name="specific-use">processing-only</xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
@@ -3459,18 +3447,14 @@ et al.</copyright-statement>
 		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>-->
 		<xsl:variable name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/><xsl:value-of select="@pid-doi"/></xsl:variable>
 		<related-article related-article-type="commentary">
-			<xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1)='S'"><xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute></xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
-					<xsl:attribute name="ext-link-type"><xsl:choose>
-						<xsl:when test="contains($id,'doi')">doi</xsl:when>
-						<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
-						<xsl:otherwise>doi</xsl:otherwise>
-					</xsl:choose>
-					</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose><xsl:attribute name="specific-use">processing-only</xsl:attribute>
+			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type"><xsl:choose>
+				<xsl:when test="string-length($id)=23 and substring($id,1)='S'">scielo-pid</xsl:when>
+				<xsl:when test="contains($id,'doi')">doi</xsl:when>
+				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
+				<xsl:otherwise>doi</xsl:otherwise>
+			</xsl:choose></xsl:attribute>
+			<xsl:attribute name="specific-use">processing-only</xsl:attribute>
 		</related-article>
 	</xsl:template>
 	
