@@ -982,6 +982,7 @@ confgrp;#TRUE#;#FALSE#
 contract;#FALSE#;#FALSE#
 date;#TRUE#;#TRUE#
 edition;#FALSE#;#TRUE#
+elocatid;#FALSE#;#TRUE#
 extent;#FALSE#;#TRUE#
 issn;#TRUE#;#TRUE#
 isbn;#TRUE#;#TRUE#
@@ -1002,6 +1003,8 @@ suppl;#FALSE#;#TRUE#
 thesgrp;#FALSE#;#FALSE#
 url;#TRUE#;#TRUE#
 volid;#TRUE#;#TRUE#
+
+elocatid
 
 text-ref
 
