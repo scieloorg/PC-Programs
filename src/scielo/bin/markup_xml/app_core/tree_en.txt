@@ -36,6 +36,7 @@ deposit;Identify the date of deposit in the repository
 doi;Identify the DOI
 dperiod;Identify the período of time tratado at the content of the document
 edition;Identify the edition number
+elocatid;Identify the elocation-id
 email;Electronic address of the author
 equation;Identify the elements of a equation
 et-al;Indicate non cited authors

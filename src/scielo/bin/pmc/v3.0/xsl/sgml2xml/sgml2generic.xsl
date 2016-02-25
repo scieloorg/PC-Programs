@@ -1334,6 +1334,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	<xsl:template match="elocatid">
+		<xsl:attribute name="elocation-id"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
 	<xsl:template match="pages">
 		<!-- page-range>
 			<xsl:value-of select="normalize-space(.)"/>

@@ -36,6 +36,7 @@ deposit;Agrupa los elementos de un repositorio
 doi;Identifica el DOI
 dperiod;Identifica el período de tiempo tratado en el contenido del documento
 edition;Identifica el número de la edición
+elocatid;Identifica el elocation-id
 email;Identifica la dirección electrónica del autor
 equation;Agrupa os elementos de ecuación
 et-al;Indica que hay autores no mencionados
