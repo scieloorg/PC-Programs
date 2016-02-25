@@ -414,7 +414,7 @@ class ArticleContentValidation(object):
             elif '|' + value + '|' in MONTHS_ABBREV:
                 error = True
             if error:
-                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + '<season>: ' + value + '.'))
+                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + '<season>: ' + value + '. Expected values: initial month and final month separated by hyphen. E.g.: Jan-Feb. Expected values for the months: ' + MONTHS_ABBREV.replace('|', ' ')))
         return r
 
     @property
