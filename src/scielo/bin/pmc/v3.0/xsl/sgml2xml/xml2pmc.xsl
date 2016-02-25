@@ -178,6 +178,7 @@
 	</xsl:template>
 	<!-- BODY - end -->
 	
+	<xsl:template match="sub-article[@article-type='translation' and @xml:lang!='en']//article-title/xref"></xsl:template>
 	<xsl:template match="sub-article[@article-type='translation']//front-stub//@xml:lang|sub-article[@article-type='translation']//front//@xml:lang"></xsl:template>
 	<xsl:template match="mixed-citation">
 		<xsl:choose>
