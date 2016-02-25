@@ -1204,7 +1204,7 @@ def get_inputs(args):
     acron = None
     if len(args) == 3:
         script, path, other = args
-        if other == u'disable-report':
+        if other == u'-skip-show':
             DISPLAY_REPORT = False
         else:
             acron = other
@@ -1229,10 +1229,10 @@ def call_make_packages(args, version):
             messages.append('\n===== ATTENTION =====\n')
             messages.append('ERROR: ' + _('Incorrect parameters'))
             messages.append('\n' + _('Usage') + ':')
-            messages.append('python ' + script + ' <xml_src> [<acron>]')
+            messages.append('python ' + script + ' <xml_src> [-skip-show]')
             messages.append(_('where') + ':')
             messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
-            messages.append('  <acron> = ' + _('journal acronym'))
+            messages.append('  [-skip-show]' + _('optional parameter to omit report'))
             messages.append('\n'.join(errors))
             utils.display_message('\n'.join(messages))
         else:

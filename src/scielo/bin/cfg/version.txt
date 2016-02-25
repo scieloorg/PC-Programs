@@ -1,4 +1,22 @@
-﻿4.0.091 trial - 11/02/2016
+﻿4.0.091 trial - 25/02/2016
+==========================
+- Markup
+  - (new) normaff of subdoc (sub-article//aff) which is not translation
+  - (new) elocatid (elocation-id) in ref
+  - (new) new values for authid (@contrib-id-type): scopus and researchid
+  - (improvement) remove exceding values for subarttp (sub-article/@article-type)
+  - (improvement) generate XML with ext-link-type="scielo-pid" instead of ext-link-type="pid" 
+- XPM
+  - (improvement) generate PMC XML only with article (en) or sub-article (en), but preserving the metadata in other languages.
+  - (new) inform dpi, height and width of images
+  - (new) include DTD URL in DOCTYPE
+  - (new) check if there is the PDF file corresponding to sub-article (translation)
+  - (new) option to skip report display
+  - (new) insert ext-link in mixed-citation and inform error if it is missing 
+- XC
+  - (improvement) check also if sub-article//subject is a registered TOC section
+
+4.0.091 trial - 11/02/2016
 ==========================
 - Title Manager
   - (new) Include new status to journal history
