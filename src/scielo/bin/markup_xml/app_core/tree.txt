@@ -953,6 +953,7 @@ glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
+normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 refs;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
