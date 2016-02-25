@@ -41,6 +41,33 @@ def format_author(author):
     return r
 
 
+def get_affiliation(aff):
+    a = Affiliation()
+
+    a.xml = xml_utils.node_xml(aff)
+    a.id = aff.get('id')
+    if aff.find('label') is not None:
+        a.label = ' '.join(aff.find('label').itertext())
+    country = aff.findall('country')
+    a.country = nodetext(country)
+    if not country is None:
+        if isinstance(country, list):
+            a.i_country = '|'.join([item.attrib.get('country') for item in country if item.attrib.get('country') is not None])
+            if a.i_country == '':
+                a.i_country = None
+
+    a.email = nodetext(aff.findall('email'), ', ')
+    a.original = nodetext(aff.findall('institution[@content-type="original"]'))
+    a.norgname = nodetext(aff.findall('institution[@content-type="normalized"]'))
+    a.orgname = nodetext(aff.findall('institution[@content-type="orgname"]'))
+    a.orgdiv1 = nodetext(aff.findall('institution[@content-type="orgdiv1"]'))
+    a.orgdiv2 = nodetext(aff.findall('institution[@content-type="orgdiv2"]'))
+    a.orgdiv3 = nodetext(aff.findall('institution[@content-type="orgdiv3"]'))
+    a.city = nodetext(aff.findall('addr-line/named-content[@content-type="city"]'))
+    a.state = nodetext(aff.findall('addr-line/named-content[@content-type="state"]'))
+    return a
+
+
 class Table(object):
 
     def __init__(self, name, id, label, caption, graphic, table):
@@ -528,8 +555,8 @@ class ArticleXML(object):
     def toc_sections(self):
         r = []
         r.append(self.toc_section)
-        if self.sub_articles is not None:
-            for node in self.sub_articles:
+        if self.translations is not None:
+            for node in self.translations:
                 nodes = node.findall('.//subj-group/subject')
                 if nodes is not None:
                     for s in nodes:
@@ -851,32 +878,11 @@ class ArticleXML(object):
         affs = []
         if self.article_meta is not None:
             for aff in self.article_meta.findall('.//aff'):
-                a = Affiliation()
-
-                a.xml = xml_utils.node_xml(aff)
-                a.id = aff.get('id')
-                if aff.find('label') is not None:
-                    a.label = ' '.join(aff.find('label').itertext())
-                country = aff.findall('country')
-                a.country = nodetext(country)
-                if not country is None:
-                    if isinstance(country, list):
-                        a.i_country = '|'.join([item.attrib.get('country') for item in country if item.attrib.get('country') is not None])
-                        if a.i_country == '':
-                            a.i_country = None
-
-                a.email = nodetext(aff.findall('email'), ', ')
-                a.original = nodetext(aff.findall('institution[@content-type="original"]'))
-                a.norgname = nodetext(aff.findall('institution[@content-type="normalized"]'))
-                a.orgname = nodetext(aff.findall('institution[@content-type="orgname"]'))
-                a.orgdiv1 = nodetext(aff.findall('institution[@content-type="orgdiv1"]'))
-                a.orgdiv2 = nodetext(aff.findall('institution[@content-type="orgdiv2"]'))
-                a.orgdiv3 = nodetext(aff.findall('institution[@content-type="orgdiv3"]'))
-                a.city = nodetext(aff.findall('addr-line/named-content[@content-type="city"]'))
-                a.state = nodetext(aff.findall('addr-line/named-content[@content-type="state"]'))
-
-                affs.append(a)
-
+                affs.append(get_affiliation(aff))
+        if self.sub_articles is not None:
+            for sub_art in self.sub_articles:
+                for aff in sub_art.findall('.//aff'):
+                    affs.append(get_affiliation(aff))
         return affs
 
     @property
