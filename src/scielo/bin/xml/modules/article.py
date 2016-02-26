@@ -13,7 +13,16 @@ from __init__ import _
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
-
+REQUIRES_PERMISSIONS = [
+        'boxed-text', 
+        'disp-quote', 
+        'fig', 
+        'graphic', 
+        'media', 
+        'supplementary-material', 
+        'table-wrap', 
+        'verse-group', 
+    ]
 
 def nodetext(node, sep='|'):
     if node is None:
@@ -443,6 +452,15 @@ class ArticleXML(object):
         if self.tree is not None:
             if self.tree.find('.') is not None:
                 return self.tree.find('.').attrib.get('specific-use')
+
+    @property
+    def sps_version_number(self):
+        version_number = self.sps
+        if version_number is not None:
+            if 'sps-' in version_number:
+                version_number = version_number[4:]
+            if version_number.replace('.', '').isdigit():
+                return float(version_number)
 
     @property
     def article_type(self):
@@ -1133,47 +1151,44 @@ class ArticleXML(object):
             return 'ND'
 
     @property
-    def license_text(self):
-        r = None
-        if self.tree is not None:
-            node = self.tree.find('.//license-p')
-            if node is not None:
-                r = xml_utils.node_text(node)
-                if '>' in r:
-                    r = r[r.rfind('>')+1:]
-        return r
+    def article_copyright(self):
+        _article_cpright = {}
+        if self.article_meta is not None:
+            _article_cpright['statement'] = xml_utils.node_text(self.article_meta.find('.//copyright-statement'))
+            _article_cpright['year'] = self.article_meta.findtext('.//copyright-year')
+            _article_cpright['holder'] = self.article_meta.findtext('.//copyright-holder')
+        return _article_cpright
 
     @property
-    def license_type(self):
-        r = None
-        if self.tree is not None:
-            node = self.tree.find('.//license')
-            if node is not None:
-                r = node.attrib.get('license-type')
-        return r
+    def article_licenses(self):
+        _article_licenses = {}
+        if self.article_meta is not None:
+            for license_node in self.article_meta.findall('.//license'):
+                lang = xml_utils.element_lang(license_node)
+                _article_licenses[lang] = {}
+                _article_licenses[lang]['href'] = license_node.attrib.get('{http://www.w3.org/1999/xlink}href')
+                _article_licenses[lang]['type'] = license_node.attrib.get('license-type')
+                _article_licenses[lang]['text'] = xml_utils.node_text(license_node.find('.//license-p'))
+        return _article_licenses
 
     @property
-    def license_url(self):
-        r = None
-        if self.tree is not None:
-            node = self.tree.find('.//license')
-            if node is not None:
-                r = node.attrib.get('{http://www.w3.org/1999/xlink}href')
-                if r is not None:
-                    if '/deed.' in r:
-                        r = r[0:r.rfind('/deed.')]
-                    if r.endswith('/'):
-                        r = r[:-1]
-        return r
-
-    @property
-    def license_graphic(self):
-        r = None
-        if self.tree is not None:
-            node = self.tree.find('.//license//graphic')
-            if node is not None:
-                r = node.attrib.get('{http://www.w3.org/1999/xlink}href')
-        return r
+    def permissions_required(self):
+        missing_permissions = []
+        for tag in REQUIRES_PERMISSIONS:
+            for node in self.tree.findall('.//' + tag):
+                missing_children = []
+                for child in ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']:
+                    if node.find('.//' + child) is None:
+                        missing_children.append(child)
+                if len(missing_children) > 0:
+                    identif = node.tag
+                    if node.attrib.get('id') is None:
+                        if self.tree.findall('.//' + tag) > 1:
+                            identif = xml_utils.node_xml(node)
+                    else:
+                        identif = node.tag + '(' + node.attrib.get('id', '') + ')'
+                    missing_permissions.append([identif, missing_children])
+        return missing_permissions
 
     @property
     def elements_which_has_id_attribute(self):

@@ -639,12 +639,15 @@ class ArticlesPkgReport(object):
                 for xml_name, article in self.pkg_articles.articles.items():
                     unmatched = []
                     items = []
+                    license_url = None
+                    if len(article.article_licenses) > 0:
+                        license_url = article.article_licenses.values()[0].get('href')
                     items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items, validation_status.STATUS_FATAL_ERROR])
                     items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, acron_items, validation_status.STATUS_FATAL_ERROR])
                     items.append([_('e-ISSN'), article.e_issn, e_issn_items, validation_status.STATUS_FATAL_ERROR])
                     items.append([_('print ISSN'), article.print_issn, p_issn_items, validation_status.STATUS_FATAL_ERROR])
                     items.append([_('publisher name'), article.publisher_name, publisher_name_items, validation_status.STATUS_ERROR])
-                    items.append([_('license'), article.license_url, license_items, validation_status.STATUS_ERROR])
+                    items.append([_('license'), license_url, license_items, validation_status.STATUS_ERROR])
 
                     for label, value, expected_values, err_msg in items:
                         expected_values_msg = _(' or ').join(expected_values)

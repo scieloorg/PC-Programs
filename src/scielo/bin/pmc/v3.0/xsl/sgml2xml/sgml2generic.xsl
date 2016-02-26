@@ -3766,6 +3766,7 @@ et al.</copyright-statement>
 				<xsl:apply-templates select="..//subdoc[@subarttp='translation']" mode="license-element"/>
 			</permissions>
 		</xsl:if>
+		<xsl
 	</xsl:template>
 	
 	<xsl:template match="cpright">
