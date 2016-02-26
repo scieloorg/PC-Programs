@@ -204,4 +204,8 @@ alttext;Identifica un texto alternativo para describir una imágen.
 alttitle;Identifica un título alternativo del documento
 element;Identifica cualquier elemento de XML
 elemattr;Identifica cualquier attributo de XML
-authorid;Identify un identificador único para el autor
+authorid;Identifica un identificador único para el autor
+cpright;Agrupa declaración, año y detenedor de los derechos autorales
+cpdate;Identifica año de los derechos autorales
+cpholder;Identifica el detenedor de los derechos autorales
+licinfo;Identifica licencia

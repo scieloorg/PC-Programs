@@ -245,7 +245,7 @@
 <!ELEMENT refs    - - (sectitle?, ref+) >
 <!ELEMENT ref     - - ( text-ref | label? | authors* 
                         | arttitle | chptitle | source
-                        | date | pages
+                        | date | pages | elocatid 
                         | volid | issueno | suppl | part | series | issn
                         | isbn | extent | edition | publoc | pubname
                         | confgrp | reportid | contract 

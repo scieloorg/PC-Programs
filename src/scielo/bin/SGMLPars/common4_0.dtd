@@ -8,7 +8,7 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product | sup " > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product | sup | cpright | licinfo " > 
 <!ENTITY % m.name   "(fname? & surname & ctrbid*)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
@@ -165,6 +165,14 @@ filename       CDATA #IMPLIED>
 	 >
 <!ELEMENT quote - - (#PCDATA)>
 <!ELEMENT sup - - (#PCDATA)>
+
+<!ELEMENT cpright - - (cpyear? | cpholder? | (#PCDATA)) >
+<!ELEMENT licinfo - - (#PCDATA) >
+<!ATTLIST licinfo
+          language CDATA    #REQUIRED 
+          href CDATA    #REQUIRED 
+          >
+
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    pubid                                                        -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

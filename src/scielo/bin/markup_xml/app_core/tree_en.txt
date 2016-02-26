@@ -205,3 +205,8 @@ alttitle;Identify an alternative title for the document title
 element;Identify any element of XML
 elemattr;Identify any attribute of XML
 authorid;Identify unique researcher identifier
+cpright;Agroup copyright statement, year and holder
+cpyear;Identify copyright year
+cpholder;Identify copyright holder
+licinfo;Identify license
+

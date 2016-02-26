@@ -8,6 +8,7 @@ ifloat
 boxedtxt;#TRUE#;#TRUE#
 cltrial;#TRUE#;#FALSE#
 corresp;#FALSE#;#FALSE#
+cpright;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
 *deflist;#FALSE#;#TRUE#
 element;#TRUE#;#TRUE#
@@ -18,6 +19,7 @@ figgrps;#FALSE#;#TRUE#
 fngrp;#TRUE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
+licinfo;#TRUE#;#TRUE#
 *list;#FALSE#;#TRUE#
 list;#FALSE#;#TRUE#
 product;#TRUE#;#TRUE#
@@ -1097,4 +1099,14 @@ alttitle
 alttext
 
 fname-surname
+
+cpright
+cpyear;#FALSE#;#FALSE#
+cpholder;#FALSE#;#FALSE#
+
+cpyear
+
+cpholder
+
+licinfo
 
