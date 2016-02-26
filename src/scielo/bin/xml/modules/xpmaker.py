@@ -1204,10 +1204,10 @@ def get_inputs(args):
     acron = None
     if len(args) == 3:
         script, path, other = args
-        if other == u'-skip-show':
+        if other == u'-auto':
             DISPLAY_REPORT = False
-        else:
-            acron = other
+        elif other is not None:
+            acron = None if other.startswith('-') else other
 
     elif len(args) == 2:
         script, path = args
@@ -1229,10 +1229,10 @@ def call_make_packages(args, version):
             messages.append('\n===== ATTENTION =====\n')
             messages.append('ERROR: ' + _('Incorrect parameters'))
             messages.append('\n' + _('Usage') + ':')
-            messages.append('python ' + script + ' <xml_src> [-skip-show]')
+            messages.append('python ' + script + ' <xml_src> [-auto]')
             messages.append(_('where') + ':')
             messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
-            messages.append('  [-skip-show]' + _('optional parameter to omit report'))
+            messages.append('  [-auto]' + _('optional parameter to omit report'))
             messages.append('\n'.join(errors))
             utils.display_message('\n'.join(messages))
         else:

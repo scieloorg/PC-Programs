@@ -81,6 +81,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
 	<xsl:variable name="lang"><xsl:value-of select="node()/@xml:lang"/></xsl:variable>
 	<xsl:template match="*" mode="license-text">
+		<xsl:param name="lang" select="$lang"/>
 		<xsl:choose>
 			<xsl:when test="$lang='pt'">Este é um artigo publicado em acesso aberto sob uma licença Creative Commons</xsl:when>
 			<xsl:when test="$lang='es'">Este es un artículo publicado en acceso abierto bajo una licencia Creative Commons</xsl:when>
@@ -303,10 +304,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="graphic">
 		<xsl:choose>
 			<xsl:when test="substring(@href,1,1)='?'">
-				<graphic xlink:href="{substring(@href,2)}"></graphic>
+				<graphic xlink:href="{substring(@href,2)}">
+					<xsl:apply-templates select="cpright | licinfo"/>
+				</graphic>
 			</xsl:when>
 			<xsl:otherwise>
-				<graphic xlink:href="{@href}"></graphic>	
+				<graphic xlink:href="{@href}"><xsl:apply-templates select="cpright | licinfo"/></graphic>	
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -314,10 +317,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="sec/graphic">
 		<p><xsl:choose>
 			<xsl:when test="substring(@href,1,1)='?'">
-				<graphic xlink:href="{substring(@href,2)}"></graphic>
+				<graphic xlink:href="{substring(@href,2)}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
 			</xsl:when>
 			<xsl:otherwise>
-				<graphic xlink:href="{@href}"></graphic>	
+				<graphic xlink:href="{@href}"><xsl:apply-templates select="cpright | licinfo"/></graphic>	
 			</xsl:otherwise>
 		</xsl:choose></p>
 	</xsl:template>
@@ -808,7 +811,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="product|front/product|xmlbody/product|back/product" mode="product-in-article-meta"/>
 			<xsl:apply-templates select="cltrial|front/cltrial|back//cltrial|xmlbody//cltrial" mode="front-clinical-trial"/>
 			<xsl:apply-templates select="hist|front//hist|back//hist"/>
-			<xsl:apply-templates select="back/licenses| cc | .//extra-scielo/license"/>
+			
+			<xsl:apply-templates select="cpright | licinfo"/>
+			<xsl:if test="not(cpright) and not(licinfo)">
+				<permissions>
+				<xsl:apply-templates select="back/licenses| cc | .//extra-scielo/license"/>
+				</permissions>
+			</xsl:if>
+			
 			<xsl:apply-templates select="front/related|related" mode="front-related"/>
 			<xsl:apply-templates select="back//related|xmlbody//related" mode="front-related"/>
 			
@@ -2123,6 +2133,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
+			<xsl:apply-templates select="cpright | licinfo"/>
 		</fig>
 	</xsl:template>
 
@@ -2134,6 +2145,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select=".//caption"/>
 				<xsl:apply-templates select="." mode="graphic"/>
 				<xsl:apply-templates select="." mode="notes"/>
+				<xsl:apply-templates select="cpright | licinfo"/>
 			</table-wrap>
 		</p>
 	</xsl:template>
@@ -2744,13 +2756,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:if test="graphic">
 			<xsl:choose>
 				<xsl:when test="substring(graphic/@href,1,1)='?'">
-					<graphic xlink:href="{substring(graphic/@href,2)}{@id}"></graphic>
+					<graphic xlink:href="{substring(graphic/@href,2)}{@id}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
 				</xsl:when>
 				<xsl:when test="@filename">
-					<graphic xlink:href="{@filename}"></graphic>
+					<graphic xlink:href="{@filename}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
 				</xsl:when>
 				<xsl:otherwise>
-					<graphic xlink:href="{graphic/@href}"></graphic>	
+					<graphic xlink:href="{graphic/@href}"><xsl:apply-templates select="cpright | licinfo"/></graphic>	
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
@@ -3220,6 +3232,7 @@ et al.</copyright-statement>
 					</p>
 				</xsl:otherwise>
 			</xsl:choose>
+			<xsl:apply-templates select="cpright | licinfo"/>
 		</disp-quote>
 	</xsl:template>
 
@@ -3537,41 +3550,41 @@ et al.</copyright-statement>
 	
 	<xsl:template match="p//product//*"><xsl:apply-templates select="*|text()"></xsl:apply-templates></xsl:template>
 	
+	<xsl:template match="*" mode="license-element">
+		<xsl:param name="lang" select="$lang"/>
+		<xsl:param name="href"/>
+		
+		<xsl:variable name="language"><xsl:choose>
+			<xsl:when test="@xml:lang"><xsl:value-of select="@xml:lang"/></xsl:when>
+			<xsl:when test="$lang"><xsl:value-of select="$lang"/></xsl:when>
+		</xsl:choose></xsl:variable>
+		<license xml:lang="{$language}" license-type="open-access" xlink:href="{$href}">
+			<license-p>
+				<xsl:apply-templates select="." mode="license-text">
+					<xsl:with-param name="lang" select="$language"/>
+				</xsl:apply-templates>
+			</license-p>
+		</license>
+	</xsl:template>
+	
 	<xsl:template match="cc">
-		<xsl:variable name="href">http://creativecommons.org/licenses/</xsl:variable>
 		<xsl:variable name="ccid"><xsl:if test="@ccid"><xsl:value-of select="translate(@ccid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>/</xsl:if></xsl:variable>
 		<xsl:variable name="cversion"><xsl:if test="@cversion"><xsl:value-of select="@cversion"/>/</xsl:if></xsl:variable>
 		<xsl:variable name="cccompl"><xsl:if test="@cccompl!='nd'"><xsl:value-of select="translate(@cccompl,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>/</xsl:if></xsl:variable>
-		<xsl:variable name="licid"><xsl:value-of select="concat($ccid,$cversion,$cccompl)"/></xsl:variable>
-		<permissions>
-			<license license-type="open-access" xlink:href="{$href}{$licid}">
-				<license-p>
-					<!--graphic>
-						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
-					</graphic-->
-					<xsl:apply-templates select="." mode="license-text"></xsl:apply-templates>
-				</license-p>
-			</license>
-		</permissions>
+		
+		<xsl:apply-templates select="." mode="license-element">
+			<xsl:with-param name="href" select="concat('http://creativecommons.org/licenses/',$ccid,$cversion,$cccompl)"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template match="extra-scielo/license">
-		<xsl:variable name="href"><xsl:value-of select="normalize-space(.)"/></xsl:variable>
 		<xsl:variable name="ccid"><xsl:value-of select="../license-type"/></xsl:variable>
 		<xsl:variable name="cversion"><xsl:value-of select="../license-version"/></xsl:variable>
 		<xsl:variable name="cccompl"><xsl:value-of select="../license-complement"/></xsl:variable>
-		<xsl:variable name="licid"><xsl:value-of select="concat($ccid,'/',$cversion,'/',$cccompl)"/></xsl:variable>
-		<permissions>
-			<license license-type="open-access" xlink:href="{$href}">
-				<license-p>
-					<!--graphic>
-						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
-					</graphic-->
-					<!-- CC <xsl:value-of select="../license-label"/>-->
-					<xsl:apply-templates select="." mode="license-text"></xsl:apply-templates>
-				</license-p>
-			</license>
-		</permissions>
+		
+		<xsl:apply-templates select="." mode="license-element">
+			<xsl:with-param name="href" select="concat('http://creativecommons.org/licenses/',$ccid,$cversion,$cccompl)"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template match="ack">
@@ -3706,6 +3719,7 @@ et al.</copyright-statement>
 					<xsl:apply-templates select="*|text()"/>
 				</xsl:otherwise>
 			</xsl:choose>
+			<xsl:apply-templates select="cpright | licinfo"/>
 		</boxed-text>
 	</xsl:template>
 	
@@ -3743,5 +3757,51 @@ et al.</copyright-statement>
 				<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
 			</xref>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="licinfo">
+		<xsl:if test="not(../cpright)">
+			<permissions>
+				<xsl:apply-templates select="." mode="license"/>
+				<xsl:apply-templates select="..//subdoc[@subarttp='translation']" mode="license-element"/>
+			</permissions>
+		</xsl:if>
+		<xsl
+	</xsl:template>
+	
+	<xsl:template match="cpright">
+		<permissions>
+			<xsl:apply-templates select="." mode="copyright"/>
+			<xsl:apply-templates select="../licinfo" mode="license"/>
+			<xsl:apply-templates select="..//subdoc[@subarttp='translation']" mode="license-element"/>
+		</permissions>
+	</xsl:template>
+	
+	<xsl:template match="cpright" mode="copyright">
+		<copyright-statement><xsl:apply-templates select="*|text()" mode="text-only"/></copyright-statement>
+		<xsl:if test="cpyear">
+			<copyrigth-year><xsl:value-of select="cpyear"/></copyrigth-year>
+		</xsl:if>
+		<xsl:if test="cpholder">
+			<copyrigth-holder><xsl:value-of select="cholder"/></copyrigth-holder>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="cpright//text()" mode="text-only">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	<xsl:template match="cpright//*" mode="text-only">
+		<xsl:apply-templates select="*|text()" mode="text-only"/>
+	</xsl:template>
+	<xsl:template match="licinfo/@href">
+		<xsl:attribute name="xlink:href"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	<xsl:template match="licinfo/@language">
+		<xsl:attribute name="xml:lang"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	<xsl:template match="licinfo" mode="license">
+		<license>
+			<xsl:attribute name="license-type">open-access</xsl:attribute>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</license>
 	</xsl:template>
 </xsl:stylesheet>

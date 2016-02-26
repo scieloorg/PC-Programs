@@ -311,11 +311,7 @@ class ArticleContentValidation(object):
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.funding)
         #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.license_text)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.license_url)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.license_type)
+        items.append(self.article_permissions)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.history)
         #utils.debugging(datetime.now().isoformat() + ' validations')
@@ -326,6 +322,8 @@ class ArticleContentValidation(object):
         #items.append(self.xref_rid_and_text)
         items.append(self.missing_xref_list)
         #items.append(self.missing_bibr_xref)
+
+        items.append(self.elements_permissions)
 
         #utils.debugging(datetime.now().isoformat() + ' validations 2')
         r = self.normalize_validations(items)
@@ -476,13 +474,9 @@ class ArticleContentValidation(object):
 
     @property
     def journal_id_publisher_id(self):
-        version_number = self.article.sps
-        if version_number is not None:
-            if 'sps-' in version_number:
-                version_number = version_number[4:]
-            if version_number.replace('.', '').isdigit():
-                if float(version_number) >= 1.3:
-                    return required('journal-id (publisher-id)', self.article.journal_id_publisher_id, validation_status.STATUS_FATAL_ERROR)
+        if self.article.sps_version_number is not None:
+            if self.article.sps_version_number >= 1.3:
+                return required('journal-id (publisher-id)', self.article.journal_id_publisher_id, validation_status.STATUS_FATAL_ERROR)
 
     @property
     def journal_id_nlm_ta(self):
@@ -937,21 +931,36 @@ class ArticleContentValidation(object):
         return display_attributes('accepted', self.article.accepted)
 
     @property
-    def license_text(self):
-        return required('license-p', self.article.license_text, validation_status.STATUS_FATAL_ERROR, False)
+    def elements_permissions(self):
+        r = []
+        status = validation_status.STATUS_WARNING if self.article.sps_version_number >= 1.4 else validation_status.STATUS_INFO
+        if len(self.article.permissions_required) > 0:
+            for xml, missing_children in self.article.permissions_required:
+                r.append((xml, status, _('It is highly recommended identifying {elem}').format(elem=', '.join(missing_children))))
+        return r
 
     @property
-    def license_url(self):
-        if self.article.license_url is None:
-            return ('license/@href', validation_status.STATUS_FATAL_ERROR, _('Required'))
-        elif not '://creativecommons.org/licenses/' in self.article.license_url:
-            return ('license/@href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + self.article.license_url)
-        elif not article_utils.url_check(self.article.license_url):
-            return ('license/@href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + self.article.license_url + _(' is not working.'))
-
-    @property
-    def license_type(self):
-        return expected_values('@license-type', self.article.license_type, ['open-access'], 'FATAL ')
+    def article_permissions(self):
+        r = []
+        if self.article.sps_version_number >= 1.4:
+            for cp_elem in ['statement', 'year', 'holder']:
+                if self.article.article_copyright.get(cp_elem) is None:
+                    r.append(('copyright-' + cp_elem, validation_status.STATUS_WARNING, _('It is highly recommended identifying {elem}').format(elem='copyright-' + cp_elem)))
+        for lang, license in self.article.article_licenses.items():
+            if lang is None:
+                if self.article.sps_version_number >= 1.4:
+                    r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('Identify @xml:lang of license')))
+            else:
+                r.append(('license/@xml:lang', validation_status.STATUS_INFO, lang))
+            if license.get('href') is None:
+                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
+            elif not '://creativecommons.org/licenses/' in license.get('href'):
+                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
+            elif not article_utils.url_check(license.get('href')):
+                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
+            r.append(expected_values('license/@license-type', license.get('type'), ['open-access'], 'FATAL '))
+            r.append(required('license/license-p', license.get('text'), validation_status.STATUS_FATAL_ERROR, False))
+        return [item for item in r if r is not None]
 
     @property
     def references(self):
