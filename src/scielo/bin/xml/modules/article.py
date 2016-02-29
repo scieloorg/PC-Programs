@@ -24,6 +24,7 @@ REQUIRES_PERMISSIONS = [
         'verse-group', 
     ]
 
+
 def nodetext(node, sep='|'):
     if node is None:
         r = None
