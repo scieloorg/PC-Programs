@@ -719,6 +719,7 @@ class ArticleContentValidation(object):
             r.append(required('aff/@id', aff.id, validation_status.STATUS_FATAL_ERROR))
 
             r.append(required('aff/institution/[@content-type="original"]', aff.original, validation_status.STATUS_ERROR, False))
+            r.append(required('aff/country', aff.country, validation_status.STATUS_FATAL_ERROR))
             r.append(required('aff/country/@country', aff.i_country, validation_status.STATUS_FATAL_ERROR))
 
             for i_country_validation in attributes.validate_iso_country_code(aff.i_country):
