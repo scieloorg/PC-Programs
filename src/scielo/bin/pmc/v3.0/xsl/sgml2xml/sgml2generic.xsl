@@ -2729,17 +2729,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="graphic" mode="elem-graphic">
-		<xsl:choose>
-			<xsl:when test="substring(@href,1,1)='?'">
-				<graphic xlink:href="{substring(@href,2)}{@id}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
-			</xsl:when>
-			<xsl:when test="../@filename">
-				<graphic xlink:href="{../@filename}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
-			</xsl:when>
-			<xsl:otherwise>
-				<graphic xlink:href="{@href}"><xsl:apply-templates select="cpright | licinfo"/></graphic>	
-			</xsl:otherwise>
-		</xsl:choose>
+		<graphic>
+			<xsl:attribute name="xlink:href"><xsl:choose>
+				<xsl:when test="substring(@href,1,1)='?'"><xsl:value-of select="concat(substring(@href,2),@id)"/></xsl:when>
+				<xsl:when test="../@filename"><xsl:value-of select="../@filename"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="@href"/></xsl:otherwise>
+			</xsl:choose></xsl:attribute>
+			<xsl:apply-templates select="cpright | licinfo"/>
+		</graphic>
 	</xsl:template>
 	
 	<xsl:template match="tr/td | tr/th" mode="pmc-table-cols">
