@@ -22,7 +22,7 @@ ISIS Base. One record per issue. Each record contains the following tags:
 043  s   Supplement number
 043  y   Year
 043  c   City
-043  m   last
+043  m   Month
 048  l   Language header summary
 048  h   Header Summary (Table of contents, summary, etc.)
 049  c   Code sections
