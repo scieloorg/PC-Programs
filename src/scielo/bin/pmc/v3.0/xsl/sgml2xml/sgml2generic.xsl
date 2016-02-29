@@ -302,27 +302,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="graphic">
-		<xsl:choose>
-			<xsl:when test="substring(@href,1,1)='?'">
-				<graphic xlink:href="{substring(@href,2)}">
-					<xsl:apply-templates select="cpright | licinfo"/>
-				</graphic>
-			</xsl:when>
-			<xsl:otherwise>
-				<graphic xlink:href="{@href}"><xsl:apply-templates select="cpright | licinfo"/></graphic>	
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:apply-templates select="." mode="elem-graphic"/>
 	</xsl:template>
 	
 	<xsl:template match="sec/graphic">
-		<p><xsl:choose>
-			<xsl:when test="substring(@href,1,1)='?'">
-				<graphic xlink:href="{substring(@href,2)}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
-			</xsl:when>
-			<xsl:otherwise>
-				<graphic xlink:href="{@href}"><xsl:apply-templates select="cpright | licinfo"/></graphic>	
-			</xsl:otherwise>
-		</xsl:choose></p>
+		<p>
+			<xsl:apply-templates select="." mode="elem-graphic"/>
+		</p>
 	</xsl:template>
 	
 	<xsl:template match="@resptp">
@@ -2099,30 +2085,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="figgrp">
-		<p>
-			<fig>
-				<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
-				<xsl:if test="@ftype!='other'">
-					<xsl:attribute name="fig-type">
-						<xsl:value-of select="@ftype"/>
-					</xsl:attribute>
-				</xsl:if>
-				<xsl:apply-templates select=".//label"/>
-				<xsl:apply-templates select=".//caption"/>
-				<xsl:apply-templates select="." mode="graphic"/>
-			</fig>
-		</p>
-	</xsl:template>
-
-	<xsl:template match="*[name()!='tabwrap']/table">
-		<p>
-			<xsl:apply-templates select="@*| * | text()" mode="tableless"/>
-		</p>
-	</xsl:template>
-
-	<xsl:template match="p/figgrp|figgrps/figgrp">
-		<!-- FIXMEID -->
+	<xsl:template match="figgrp" mode="elem-fig">
 		<fig>
 			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
 			<xsl:if test="@ftype!='other'">
@@ -2133,23 +2096,47 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
-			<xsl:apply-templates select="cpright | licinfo"/>
+			<xsl:apply-templates select="attrib | cpright | licinfo"/>
 		</fig>
 	</xsl:template>
-
-	<xsl:template match="tabwrap">
-		<p><!-- FIXMEID -->
-			<table-wrap>
-				<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
-				<xsl:apply-templates select="label"/>
-				<xsl:apply-templates select=".//caption"/>
-				<xsl:apply-templates select="." mode="graphic"/>
-				<xsl:apply-templates select="." mode="notes"/>
-				<xsl:apply-templates select="cpright | licinfo"/>
-			</table-wrap>
+	
+	<xsl:template match="figgrp">
+		<p>
+			<xsl:apply-templates select="." mode="elem-fig"/>
 		</p>
 	</xsl:template>
 
+	<xsl:template match="p/figgrp|figgrps/figgrp">
+		<xsl:apply-templates select="." mode="elem-fig"/>
+	</xsl:template>
+	
+	<xsl:template match="*[name()!='tabwrap']/table">
+		<p>
+			<xsl:apply-templates select="@*| * | text()" mode="tableless"/>
+		</p>
+	</xsl:template>
+	
+	<xsl:template match="tabwrap" mode="elem-table-wrap">
+		<table-wrap>
+			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
+			<xsl:apply-templates select="label"/>
+			<xsl:apply-templates select=".//caption"/>
+			<xsl:apply-templates select="." mode="graphic"/>
+			<xsl:apply-templates select="." mode="notes"/>
+			<xsl:apply-templates select="cpright | licinfo"/>
+		</table-wrap>
+	</xsl:template>
+	
+	<xsl:template match="tabwrap">
+		<p><!-- FIXMEID -->
+			<xsl:apply-templates select="." mode="elem-table-wrap"/>
+		</p>
+	</xsl:template>
+
+	<xsl:template match="p/tabwrap">		
+		<xsl:apply-templates select="." mode="elem-table-wrap"/>
+	</xsl:template>
+	
 	<xsl:template match="tabwrap//fntable" mode="table">
 		<xsl:param name="table_id"/>
 		<!-- FIXMEID -->
@@ -2177,18 +2164,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="p/tabwrap">
-		
-		<table-wrap>
-			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
-			
-			<xsl:apply-templates select=".//label"/>
-			<xsl:apply-templates select=".//caption"/>
-			<xsl:apply-templates select="." mode="graphic"/>
-			<xsl:apply-templates select="." mode="notes"/>
-		</table-wrap>
-	</xsl:template>
-
     <xsl:template match="*[contains(name(),'citat')]//*[contains(name(),'contrib')]//title">
 		<xsl:variable name="title">
 			<xsl:apply-templates select="*|text()"/>
@@ -2724,14 +2699,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[contains(name(),'citat')]//p | *[contains(name(),'citat')]/text()"> </xsl:template>
 	<xsl:template match="*" mode="debug"> </xsl:template>
 	<xsl:template match="equation" mode="graphic">
-		<xsl:variable name="standardname">
-			<xsl:value-of select="$prefix"/>
-			<xsl:choose>
-				<xsl:when test="name()='equation'">e</xsl:when>
-				<xsl:otherwise>g</xsl:otherwise>
-			</xsl:choose>
-			<xsl:value-of select="@id"/>
-		</xsl:variable>
+		<xsl:variable name="standardname" select="concat($prefix, 'e', @id)"/>
 		<xsl:choose>
 			<xsl:when test="count(graphic) + count(texmath) + count(mmlmath) = 1">
 				<xsl:apply-templates select="label|graphic|text()|texmath|mmlmath"></xsl:apply-templates>
@@ -2745,32 +2713,35 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="figgrp | tabwrap" mode="graphic">
-		<xsl:variable name="standardname">
-			<xsl:value-of select="$prefix"/>
-			<xsl:choose>
-				<xsl:when test="name()='equation'">e</xsl:when>
-				<xsl:otherwise>g</xsl:otherwise>
-			</xsl:choose>
-			<xsl:value-of select="@id"/>
-		</xsl:variable>
-		<xsl:if test="graphic">
-			<xsl:choose>
-				<xsl:when test="substring(graphic/@href,1,1)='?'">
-					<graphic xlink:href="{substring(graphic/@href,2)}{@id}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
-				</xsl:when>
-				<xsl:when test="@filename">
-					<graphic xlink:href="{@filename}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
-				</xsl:when>
-				<xsl:otherwise>
-					<graphic xlink:href="{graphic/@href}"><xsl:apply-templates select="cpright | licinfo"/></graphic>	
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:if>
-		<xsl:if test=".//table">
-			<xsl:apply-templates select=".//table" mode="pmc-table"></xsl:apply-templates>
-		</xsl:if>
-		<xsl:apply-templates select="attrib"></xsl:apply-templates>
+		<xsl:variable name="standardname" select="concat($prefix, 'g', @id)"/>
+		<xsl:choose>
+			<xsl:when test="graphic and table">
+				<alternatives>
+					<xsl:apply-templates select="graphic" mode="elem-graphic"/>
+					<xsl:apply-templates select="table" mode="pmc-table"/>
+				</alternatives>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="graphic" mode="elem-graphic"/>
+				<xsl:apply-templates select="table" mode="pmc-table"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
+	
+	<xsl:template match="graphic" mode="elem-graphic">
+		<xsl:choose>
+			<xsl:when test="substring(@href,1,1)='?'">
+				<graphic xlink:href="{substring(@href,2)}{@id}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
+			</xsl:when>
+			<xsl:when test="../@filename">
+				<graphic xlink:href="{../@filename}"><xsl:apply-templates select="cpright | licinfo"/></graphic>
+			</xsl:when>
+			<xsl:otherwise>
+				<graphic xlink:href="{@href}"><xsl:apply-templates select="cpright | licinfo"/></graphic>	
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="tr/td | tr/th" mode="pmc-table-cols">
 		<col>
 			<xsl:if test="@colspan"><xsl:attribute name="span"><xsl:value-of select="@colspan"/></xsl:attribute></xsl:if>
@@ -3766,7 +3737,6 @@ et al.</copyright-statement>
 				<xsl:apply-templates select="..//subdoc[@subarttp='translation']" mode="license-element"/>
 			</permissions>
 		</xsl:if>
-		<xsl
 	</xsl:template>
 	
 	<xsl:template match="cpright">
