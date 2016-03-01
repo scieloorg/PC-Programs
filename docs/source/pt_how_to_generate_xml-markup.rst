@@ -2316,7 +2316,7 @@ A indicação de página eletrônica do documento deve ser inserida no campo [el
    :align: center
 
 
-.. note:: Arquivos RP apresentam elocation, portanto não apresenta fpage e lpage, devendo ser inserido a informação 00 em cada.
+.. note:: Arquivos RP apresentam elocation, portanto não apresenta fpage e lpage.
 
 
 .. _resenha:
