@@ -1247,9 +1247,9 @@ class Article(ArticleXML):
         self.creation_date = None
         self.last_update_date = None
         self.last_update_display = None
-        self._api_crossref_doi_query_result = None
-        self._doi_journal_and_article = None
-        self._queried_doi_pid = None
+        self._doi_journal_titles = None
+        self._doi_article_titles = None
+        self._doi_pid = None
         self.registered_aop_pid = None
         self._previous_pid = None
         self.normalized_affiliations = None
@@ -1291,27 +1291,28 @@ class Article(ArticleXML):
         return '; '.join(_pages)
 
     @property
-    def api_crossref_doi_query_result(self):
-        if self.doi is not None:
-            if self._api_crossref_doi_query_result is None:
-                self._api_crossref_doi_query_result = article_utils.api_crossref_doi_query(self.doi)
-            if self._api_crossref_doi_query_result is None:
-                self._api_crossref_doi_query_result = '{}'
-        return self._api_crossref_doi_query_result
+    def doi_journal_titles(self):
+        if self._doi_journal_titles is None:
+            self._doi_data = article_utils.doi_data(self.doi)
+            if self._doi_data is not None:
+                self._doi_journal_titles = self._doi_data.get('journal-titles')
+        return self._doi_journal_titles
 
     @property
-    def queried_doi_pid(self):
-        if self._queried_doi_pid is None:
-            self._queried_doi_pid = article_utils.query_doi_pid(self.api_crossref_doi_query_result)
-            if self._queried_doi_pid is None:
-                self._queried_doi_pid = ''
-        return self._queried_doi_pid
+    def doi_article_titles(self):
+        if self._doi_article_titles is None:
+            self._doi_data = article_utils.doi_data(self.doi)
+            if self._doi_data is not None:
+                self._doi_article_titles = self._doi_data.get('article-titles')
+        return self._doi_article_titles
 
     @property
-    def doi_journal_and_article(self):
-        if self._doi_journal_and_article is None:
-            self._doi_journal_and_article = article_utils.api_crossref_doi_journal_and_article(self.api_crossref_doi_query_result)
-        return self._doi_journal_and_article
+    def doi_pid(self):
+        if self._doi_pid is None:
+            self._doi_data = article_utils.doi_data(self.doi)
+            if self._doi_data is not None:
+                self._doi_pid = self._doi_data.get('pid')
+        return self._doi_pid
 
     def summary(self):
         data = {}
