@@ -377,9 +377,9 @@ class ArticleContentValidation(object):
         for lang in self.article.trans_languages:
             msg.append(check_lang('sub-article', lang))
         for lang in self.article.titles_by_lang.keys():
-            msg.append(check_lang('article-title', lang))
+            msg.append(check_lang('[title-group | trans-title-group]', lang))
         for lang in self.article.abstracts_by_lang.keys():
-            msg.append(check_lang('abstract', lang))
+            msg.append(check_lang('[abstract | trans-abstract]', lang))
         for lang in self.article.keywords_by_lang.keys():
             msg.append(check_lang('kwd-group', lang))
         return msg
