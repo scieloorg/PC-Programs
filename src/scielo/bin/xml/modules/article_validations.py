@@ -235,7 +235,8 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, _article, is_db_generation, check_url):
+    def __init__(self, pkg_data, _article, is_db_generation, check_url):
+        self.pkg_data = pkg_data
         self.article = _article
         self.is_db_generation = is_db_generation
         self.check_url = check_url
@@ -543,30 +544,31 @@ class ArticleContentValidation(object):
             r.append(required('doi', self.article.doi, validation_status.STATUS_WARNING))
 
         if self.article.doi is not None:
+            if self.pkg_data.journal_doi_prefix is not None:
+                if not self.article.doi.startswith(self.pkg_data.journal_doi_prefix):
+                    r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.pkg_data.journal_doi_prefix)))
 
-            journal_titles, article_titles = self.article.doi_journal_and_article
-
-            if not journal_titles is None:
+            if not self.article.doi_journal_titles is None:
                 status = validation_status.STATUS_INFO
-                if not self.article.journal_title in journal_titles:
-                    max_rate, items = utils.most_similar(utils.similarity(journal_titles, self.article.journal_title))
+                if not self.article.journal_title in self.article.doi_journal_titles:
+                    max_rate, items = utils.most_similar(utils.similarity(self.article.doi_journal_titles, self.article.journal_title))
                     if max_rate < 0.7:
                         status = validation_status.STATUS_FATAL_ERROR
-                r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(journal_titles)))
+                r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(self.article.doi_journal_titles)))
 
-            if not article_titles is None:
+            if not self.article.doi_article_titles is None:
                 status = validation_status.STATUS_INFO
                 max_rate = 0
                 selected = None
                 for t in self.article.titles:
-                    rate, items = utils.most_similar(utils.similarity(article_titles, xml_utils.remove_tags(t.title)))
+                    rate, items = utils.most_similar(utils.similarity(self.article.doi_article_titles, xml_utils.remove_tags(t.title)))
                     if rate > max_rate:
                         max_rate = rate
                 if max_rate < 0.7:
                     status = validation_status.STATUS_FATAL_ERROR
-                r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(article_titles)))
+                r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(self.article.doi_article_titles)))
 
-            if journal_titles is None:
+            if self.article.doi_journal_titles is None:
                 found = False
                 for issn in [self.article.print_issn, self.article.e_issn]:
                     if issn is not None:

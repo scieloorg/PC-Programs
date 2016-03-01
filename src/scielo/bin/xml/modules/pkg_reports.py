@@ -112,6 +112,7 @@ class PkgArticles(object):
         self.reftype_and_sources = None
         self.issue_files = None
         self.issue_models = None
+        self._doi_prefix = None
 
         self.expected_equal_values = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         self.expected_unique_value = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
@@ -219,6 +220,12 @@ class PkgArticles(object):
         if self._compiled_pkg_metadata is None:
             self.compile_pkg_metadata()
         return more_frequent(self._compiled_pkg_metadata['print ISSN'])
+
+    @property
+    def journal_doi_prefix(self):
+        if self._doi_prefix is None:
+            self._doi_prefix = article_utils.journal_doi_prefix([self.pkg_p_issn, self.pkg_e_issn])
+        return self._doi_prefix
 
     def identify_issue(self, db_manager, pkg_name):
         self.acron_issue_label, self.issue_models, issue_error_msg = db_manager.get_issue_models(self.pkg_journal_title, self.pkg_issue_label, self.pkg_p_issn, self.pkg_e_issn)
@@ -836,7 +843,7 @@ class ArticlesPkgReport(object):
             utils.display_message(item_label)
 
             if xml_name in selected_names:
-                report_content = article_reports.article_data_and_validations_report(doc, new_name, pkg_path, self.is_db_generation, is_xml_generation)
+                report_content = article_reports.article_data_and_validations_report(self.pkg_articles, doc, new_name, pkg_path, self.is_db_generation, is_xml_generation)
                 data_validations = ValidationsResults(report_content)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
                 if is_xml_generation:

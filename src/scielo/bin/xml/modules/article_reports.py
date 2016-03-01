@@ -480,14 +480,14 @@ class ArticleSheetData(object):
         return (t_header, ['aff xml'], r)
 
 
-def article_data_and_validations_report(article, new_name, package_path, is_db_generation, is_sgml_generation):
+def article_data_and_validations_report(pkg_data, article, new_name, package_path, is_db_generation, is_sgml_generation):
     if article.tree is None:
         sheet_data = None
         article_display_report = None
         article_validation_report = None
         content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to get data of ') + new_name + '.'
     else:
-        article_validation = article_validations.ArticleContentValidation(article, is_db_generation, False)
+        article_validation = article_validations.ArticleContentValidation(pkg_data, article, is_db_generation, False)
         sheet_data = ArticleSheetData(article, article_validation)
         article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
         article_validation_report = ArticleValidationReport(article_validation)

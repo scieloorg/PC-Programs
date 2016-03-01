@@ -1038,7 +1038,8 @@ def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
             shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
             validate_pmc_image(dest_path + '/' + item.src)
     else:
-        shutil.copyfile(scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
+        if os.path.isfile(scielo_pkg_path + '/' + xml_name + '-en.pdf'):
+            shutil.copyfile(scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
         content = fs_utils.read_file(pmc_xml_filename)
         for item in doc.href_files:
             new = item.src.replace('-en.', '.')
