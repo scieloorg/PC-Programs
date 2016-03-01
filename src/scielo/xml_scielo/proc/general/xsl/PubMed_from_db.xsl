@@ -299,9 +299,14 @@
 	<xsl:template match="pages/occ"/>
 	<xsl:template match="pages">
 		<xsl:element name="FirstPage">
-			<xsl:if test="occ/@first!='0'">
-				<xsl:value-of select="occ/@first"/>
-			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="occ/@elocation_id!=''">
+					<xsl:value-of select="occ/@elocation_id"/>
+				</xsl:when>
+				<xsl:when test="occ/@first!='0'">
+					<xsl:value-of select="occ/@first"/>
+				</xsl:when>
+			</xsl:choose>
 		</xsl:element>
 		<xsl:element name="LastPage">
 			<xsl:if test="occ/@last!='0'">

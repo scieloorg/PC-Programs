@@ -29,6 +29,7 @@ style=fixed
 014 pages
 014^f first
 014^l last
+014^e elocation_id
 015 realDataPublished
 016 analytic_author
 016^n name
