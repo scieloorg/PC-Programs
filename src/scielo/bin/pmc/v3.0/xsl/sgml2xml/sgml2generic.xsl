@@ -3314,7 +3314,7 @@ et al.</copyright-statement>
 			<xsl:choose>
 				<xsl:when test="@issueno='ahead'"></xsl:when>
 				<xsl:when test="(number(@issueno)=0 or not(@issueno)) and (number(@volid)=0 or not(@volid))"></xsl:when>
-				<xsl:when test="@artdate"></xsl:when><!-- rolling pass -->
+				<xsl:when test="@artdate">collection</xsl:when><!-- rolling pass -->
 				<xsl:when test="@ahpdate">collection</xsl:when>
 				<xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
 			</xsl:choose>
