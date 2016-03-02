@@ -748,7 +748,7 @@ class ArticleContentValidation(object):
                 if found_institutions is not None:
                     if len(found_institutions) > 0:
                         msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
-                r.append((_('normalized aff checked'), validation_status.STATUS_ERROR, msg))
+                r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
             else:
                 status = validation_status.STATUS_INFO
                 r.append((_('normalized aff checked'), validation_status.STATUS_VALID, _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))
@@ -1470,7 +1470,7 @@ class ReferenceContentValidation(object):
         if self.reference.mixed_citation is not None:
             r.append(('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation))
             if self.reference.source is not None:
-                if not self.reference.source in self.reference.mixed_citation:
+                if not xml_utils.remove_tags(self.reference.source) in xml_utils.remove_tags(self.reference.mixed_citation):
                     r.append(('source', validation_status.STATUS_ERROR, _('Be sure that the value of {element} ({value}) is found in <mixed-citation>{mixed}</mixed-citation>').format(element='source', value=self.reference.source, mixed=self.reference.mixed_citation)))
             if self.reference.year is not None:
                 if not self.reference.year in self.reference.mixed_citation:

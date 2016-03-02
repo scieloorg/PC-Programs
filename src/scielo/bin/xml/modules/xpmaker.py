@@ -783,6 +783,7 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('<institution content-type="normalized"/>', '')
         content = content.replace('<institution content-type="normalized"></institution>', '')
         content = xml_utils.normalize_spaces(content)
+        content = content.replace('> :', '>:')
         content = content.replace('<institution content-type="normalized"/>', '')
         content = content.replace('<institution content-type="normalized"></institution>', '')
         content = normalize_references(content)
