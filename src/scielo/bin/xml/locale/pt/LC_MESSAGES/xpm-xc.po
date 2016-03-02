@@ -4570,7 +4570,7 @@ msgstr "Use aff/institution/[@content-type=\"normalized\"] somente se o nome nor
 
 #: modules/article_validations.py:749
 msgid ". Check if any option of the list is the normalized name: "
-msgstr ". Verifique se alguma opção de lista é o nome normalizado: "
+msgstr ". Verifique se alguma opção da lista é o nome normalizado: "
 
 #: modules/article_validations.py:750 modules/article_validations.py:753
 msgid "normalized aff checked"
