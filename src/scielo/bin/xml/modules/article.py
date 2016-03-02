@@ -25,6 +25,25 @@ REQUIRES_PERMISSIONS = [
     ]
 
 
+def element_which_requires_permissions(node, node_graphic=None):
+    missing_children = []
+    missing_permissions = []
+    for child in ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']:
+        if node.find('.//' + child) is None:
+            missing_children.append(child)
+    if len(missing_children) > 0:
+        identif = node.tag
+        if node.attrib.get('id') is None:
+            if self.tree.findall('.//' + tag) > 1:
+                identif = xml_utils.node_xml(node)
+        else:
+            identif = node.tag + '(' + node.attrib.get('id', '') + ')'
+            if node_graphic is not None:
+                identif += '/graphic'
+        missing_permissions.append([identif, missing_children])
+    return missing_permissions
+
+
 def nodetext(node, sep='|'):
     if node is None:
         r = None
@@ -219,6 +238,19 @@ class ArticleXML(object):
                 if s.attrib.get('article-type') != 'translation':
                     self.sub_articles.append(s)
             self.responses = self.tree.findall('./response')
+
+    def paragraphs_startswith(self, character=':'):
+        paragraphs = []
+        if self.tree is not None:
+            for node_p in self.tree.findall('.//p'):
+                text = node_p.text
+                if text is None:
+                    text = xml_utils.node_text(node_p)
+                if character in text:
+                    text = text.split(character)[0]
+                    if text.strip() == '':
+                        paragraphs.append(xml_utils.node_xml(node_p))
+        return paragraphs
 
     @property
     def months(self):
@@ -1176,19 +1208,19 @@ class ArticleXML(object):
     def permissions_required(self):
         missing_permissions = []
         for tag in REQUIRES_PERMISSIONS:
-            for node in self.tree.findall('.//' + tag):
-                missing_children = []
-                for child in ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']:
-                    if node.find('.//' + child) is None:
-                        missing_children.append(child)
-                if len(missing_children) > 0:
-                    identif = node.tag
-                    if node.attrib.get('id') is None:
-                        if self.tree.findall('.//' + tag) > 1:
-                            identif = xml_utils.node_xml(node)
-                    else:
-                        identif = node.tag + '(' + node.attrib.get('id', '') + ')'
-                    missing_permissions.append([identif, missing_children])
+            xpath = './/' + tag
+            if tag == 'graphic':
+                xpath = './/*[graphic]'
+
+                for node in self.tree.findall(xpath):
+                    if not node.tag in ['fig', 'table-wrap']:
+                        for node_graphic in node.findall('graphic'):
+                            for elem in element_which_requires_permissions(node, node_graphic):
+                                missing_permissions.append(elem)
+            else:
+                for node in self.tree.findall(xpath):
+                    for elem in element_which_requires_permissions(node):
+                        missing_permissions.append(elem)
         return missing_permissions
 
     @property
