@@ -235,8 +235,8 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, pkg_data, _article, is_db_generation, check_url):
-        self.pkg_data = pkg_data
+    def __init__(self, journal, _article, is_db_generation, check_url):
+        self.journal = journal
         self.article = _article
         self.is_db_generation = is_db_generation
         self.check_url = check_url
@@ -269,6 +269,7 @@ class ArticleContentValidation(object):
         items.append(self.publisher_name)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_id_publisher_id)
+        items.append(self.journal_id_nlm_ta)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_issns)
@@ -481,7 +482,11 @@ class ArticleContentValidation(object):
 
     @property
     def journal_id_nlm_ta(self):
-        return conditional_required('journal-id (nlm-ta)', self.article.journal_id_nlm_ta)
+        if self.journal.nlm_title != self.article.journal_id_nlm_ta:
+            if self.journal.nlm_title is None:
+                return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Use journal-id (nlm-ta) only for NLM journals.')))
+            else:
+                return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=self.article.journal_id_nlm_ta, expected=self.journal.nlm_title)))
 
     @property
     def journal_issns(self):
@@ -544,9 +549,9 @@ class ArticleContentValidation(object):
             r.append(required('doi', self.article.doi, validation_status.STATUS_WARNING))
 
         if self.article.doi is not None:
-            if self.pkg_data.journal_doi_prefix is not None:
-                if not self.article.doi.startswith(self.pkg_data.journal_doi_prefix):
-                    r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.pkg_data.journal_doi_prefix)))
+            if self.journal.doi_prefix is not None:
+                if not self.article.doi.startswith(self.journal.doi_prefix):
+                    r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.journal.doi_prefix)))
 
             if not self.article.doi_journal_titles is None:
                 status = validation_status.STATUS_INFO

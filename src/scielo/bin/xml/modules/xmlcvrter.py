@@ -448,8 +448,12 @@ def convert_package(src_path):
 
     pkg = pkg_reports.PkgArticles(pkg_articles, pkg_path)
 
+    journals_list = xc_models.JournalsList()
+    journal = journals_list.get_journal(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title)
+
     fs_utils.append_file(log_package, 'identify_issue')
     issue_error_msg = pkg.identify_issue(converter_env.db_manager, pkg_name)
+    issue = None #FIXE
 
     fs_utils.append_file(log_package, 'pkg.xml_list()')
     report_components['xml-files'] = pkg.xml_list()
@@ -468,7 +472,7 @@ def convert_package(src_path):
         fs_utils.append_file(log_package, 'conversion.evaluate_pkg_and_registered_items')
         conversion.evaluate_pkg_and_registered_items(converter_env.skip_identical_xml)
 
-        pkg_validator = pkg_reports.ArticlesPkgReport(tmp_report_path, pkg, conversion.previous_registered_articles, is_db_generation)
+        pkg_validator = pkg_reports.ArticlesPkgReport(tmp_report_path, pkg, journal, issue, conversion.previous_registered_articles, is_db_generation)
 
         fs_utils.append_file(log_package, 'pkg_validator.overview_report()')
         report_components['pkg_overview'] = pkg_validator.overview_report()

@@ -1074,7 +1074,16 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
 
         pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path)
 
-        pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, None, is_db_generation)
+        import xc_models
+        journals_list = xc_models.JournalsList()
+        print(journals_list._journals)
+        print(journals_list.get_journal_instances(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title))
+        print([pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title])
+        journal = journals_list.get_journal(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title)
+
+        issue = None
+
+        pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, journal, issue, None, is_db_generation)
 
         report_components['xml-files'] = pkg.xml_list()
 
