@@ -733,21 +733,24 @@ class ArticleContentValidation(object):
                 r.append(i_country_validation)
 
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, validation_status.STATUS_FATAL_ERROR))
-            r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, validation_status.STATUS_ERROR))
 
             norm_aff, found_institutions = article_utils.normalized_institution(aff)
             r.append(('aff', validation_status.STATUS_INFO, join_not_None_items([aff.orgname, aff.city, aff.state, aff.country])))
-            r.append(('normalized aff', validation_status.STATUS_INFO, join_not_None_items([aff.norgname, aff.i_country])))
+            r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_INFO, aff.norgname))
+            r.append(('aff/country/@country', validation_status.STATUS_INFO, aff.i_country))
+
+            if aff.norgname is None or aff.norgname == '':
+                r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element.')))
 
             if norm_aff is None:
                 msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([aff.orgname, aff.norgname])), ' or ')
                 if found_institutions is not None:
                     if len(found_institutions) > 0:
-                        msg += _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
-                r.append(('normalized aff checked', validation_status.STATUS_ERROR, msg))
+                        msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
+                r.append((_('normalized aff checked'), validation_status.STATUS_ERROR, msg))
             else:
                 status = validation_status.STATUS_INFO
-                r.append(('normalized aff checked', validation_status.STATUS_VALID, _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))
+                r.append((_('normalized aff checked'), validation_status.STATUS_VALID, _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))
                 self.article.normalized_affiliations[aff.id] = norm_aff
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
