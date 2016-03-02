@@ -4455,12 +4455,13 @@ msgstr "ningun valor"
 msgid ""
 "Use aff/institution/[@content-type=\"normalized\"] only if the normalized "
 "name is known, otherwise use no element."
-msgstr ""
+msgstr "Use aff/institution/[@content-type=\"normalized\"] solamente si el nombre normalizado es conocido, sino no use ningun elemento."
 
 #: modules/article_validations.py:749
 msgid ". Check if any option of the list is the normalized name: "
-msgstr ""
+msgstr ". Verifique si alguna opción en la lista es el nombre normalizado: "
 
 #: modules/article_validations.py:750 modules/article_validations.py:753
 msgid "normalized aff checked"
-msgstr ""
+msgstr "Nombre normalizado validado"
+
