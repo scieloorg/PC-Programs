@@ -453,7 +453,8 @@ def convert_package(src_path):
 
     fs_utils.append_file(log_package, 'identify_issue')
     issue_error_msg = pkg.identify_issue(converter_env.db_manager, pkg_name)
-    issue = None #FIXE
+    #FIXME
+    issue = None
 
     fs_utils.append_file(log_package, 'pkg.xml_list()')
     report_components['xml-files'] = pkg.xml_list()

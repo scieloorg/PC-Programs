@@ -378,9 +378,9 @@ class ArticleContentValidation(object):
         for lang in self.article.trans_languages:
             msg.append(check_lang('sub-article', lang))
         for lang in self.article.titles_by_lang.keys():
-            msg.append(check_lang('article-title', lang))
+            msg.append(check_lang('(title-group | trans-title-group)', lang))
         for lang in self.article.abstracts_by_lang.keys():
-            msg.append(check_lang('abstract', lang))
+            msg.append(check_lang('(abstract | trans-abstract)', lang))
         for lang in self.article.keywords_by_lang.keys():
             msg.append(check_lang('kwd-group', lang))
         return msg
@@ -483,7 +483,7 @@ class ArticleContentValidation(object):
     @property
     def journal_id_nlm_ta(self):
         if self.journal.nlm_title != self.article.journal_id_nlm_ta:
-            if self.journal.nlm_title is None:
+            if self.journal.nlm_title is None or len(self.journal.nlm_title) == 0:
                 return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Use journal-id (nlm-ta) only for NLM journals.')))
             else:
                 return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=self.article.journal_id_nlm_ta, expected=self.journal.nlm_title)))

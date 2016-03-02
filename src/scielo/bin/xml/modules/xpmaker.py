@@ -1076,9 +1076,6 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
 
         import xc_models
         journals_list = xc_models.JournalsList()
-        print(journals_list._journals)
-        print(journals_list.get_journal_instances(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title))
-        print([pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title])
         journal = journals_list.get_journal(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title)
 
         issue = None

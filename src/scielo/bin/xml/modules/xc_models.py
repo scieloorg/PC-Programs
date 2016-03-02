@@ -1355,35 +1355,48 @@ class JournalsList(object):
 
                         for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
                             if not issn in self._journals.keys():
-                                self._journals[issn] = {}
-                            if not j.journal_title in self._journals[issn].keys():
-                                self._journals[issn][j.journal_title] = []
-                            self._journals[issn][j.journal_title].append(j)
+                                self._journals[issn] = []
+                            self._journals[issn].append(j)
 
     def get_journal_instances(self, p_issn, e_issn, journal_title):
         journal_instances = []
         for issn in [p_issn, e_issn]:
             if issn is not None:
-                for j in self._journals.get(issn, {}).get(journal_title, []):
+                for j in self._journals.get(issn, []):
                     journal_instances.append(j)
         return journal_instances
 
     def get_journal(self, p_issn, e_issn, journal_title):
+
         journal = Journal()
         for issn in [p_issn, e_issn]:
             if issn is not None:
-                for j in self._journals.get(issn, {}).get(journal_title, []):
-                    if journal.p_issn is None:
-                        journal.p_issn = j.p_issn
-                    if journal.e_issn is None:
-                        journal.e_issn = j.e_issn
-                    if journal.abbrev_title is None:
-                        journal.abbrev_title = j.abbrev_title
-                    if journal.nlm_title is None:
-                        journal.nlm_title = j.nlm_title
-                    if journal.publisher_name is None:
-                        journal.publisher_name = j.publisher_name
-                    if journal.license is None:
-                        journal.license = j.license
+                for j in self._journals.get(issn, []):
+                    journal.acron = update_list(journal.acron, j.acron)
+                    journal.p_issn = update_value(journal.p_issn, j.p_issn)
+                    journal.e_issn = update_value(journal.e_issn, j.e_issn)
+                    journal.abbrev_title = update_list(journal.abbrev_title, j.abbrev_title)
+                    journal.nlm_title = update_list(journal.nlm_title, j.nlm_title)
+                    journal.publisher_name = update_list(journal.publisher_name, j.publisher_name)
+                    journal.license = update_list(journal.license, j.license)
+
+                    journal.collection_acron = update_list(journal.collection_acron, j.collection_acron)
+                    journal.journal_title = update_list(journal.journal_title, j.journal_title)
+                    journal.issn_id = update_list(journal.issn_id, j.issn_id)
+
         journal.doi_prefix = article_utils.journal_doi_prefix([journal.e_issn, journal.p_issn])
         return journal
+
+
+def update_list(item, value):
+    if item is None:
+        item = []
+    if value is not None and len(value) > 0:
+        item.append(value)
+    return list(set(item))
+
+
+def update_value(item, value):
+    if item is None and value is not None and len(value) > 0:
+        item = value
+    return value

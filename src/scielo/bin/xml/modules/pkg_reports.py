@@ -613,22 +613,21 @@ class ArticlesPkgReport(object):
                 if len(article.article_licenses) > 0:
                     license_url = article.article_licenses.values()[0].get('href')
                 items.append([_('NLM title'), article.journal_id_nlm_ta, self.journal.nlm_title, validation_status.STATUS_FATAL_ERROR])
-                items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal.collection_acron, validation_status.STATUS_FATAL_ERROR])
+                items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal.acron, validation_status.STATUS_FATAL_ERROR])
                 items.append([_('e-ISSN'), article.e_issn, self.journal.e_issn, validation_status.STATUS_FATAL_ERROR])
                 items.append([_('print ISSN'), article.print_issn, self.journal.p_issn, validation_status.STATUS_FATAL_ERROR])
                 items.append([_('publisher name'), article.publisher_name, self.journal.publisher_name, validation_status.STATUS_ERROR])
                 items.append([_('license'), license_url, self.journal.license, validation_status.STATUS_ERROR])
 
                 for label, value, expected_values, err_msg in items:
-                    print(expected_values)
-                    if expected_values is None:
-                        expected_values = 'None'
+                    if expected_values is None or expected_values == '':
+                        expected_values = _('no value')
                     if not isinstance(expected_values, list):
                         expected_values = [expected_values]
                     expected_values_msg = _(' or ').join(expected_values)
-                    value = 'None' if value is None else value.strip()
+                    value = _('no value') if value is None else value.strip()
                     if len(expected_values) == 0:
-                        expected_values_msg = 'None'
+                        expected_values_msg = _('no value')
                         status = validation_status.STATUS_WARNING if value != expected_values_msg else validation_status.STATUS_OK
                     else:
                         status = validation_status.STATUS_OK
@@ -1068,52 +1067,10 @@ def more_frequent(data):
         if len(items) == 1:
             return items[0]
         elif len(items) > 1:
-            more = 0
-            value = None
+            q = 0
+            selected = None
             for item in items:
-                if len(data[item]) > more:
-                    more = len(data[item])
-                    value = item
-            return value
-
-
-def get_journals():
-    #REMOVEME
-    url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
-    CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-    downloaded_filename = CURRENT_PATH + '/../../markup/downloaded_markup_journals.csv'
-    if not os.path.isdir(CURRENT_PATH + '/../../markup'):
-        os.makedirs(CURRENT_PATH + '/../../markup')
-    fs_utils.get_downloaded_data(url, downloaded_filename)
-
-    import csv
-    from article import Journal
-    journals = {}
-    with open(downloaded_filename, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter='\t')
-        for item in spamreader:
-            if len(item) >= 10:
-                item = [elem.decode('utf-8').strip() for elem in item]
-                if item[1] != 'ISSN':
-                    j = Journal()
-                    j.collection_acron = item[0]
-                    j.collection_name = item[4]
-                    j.issn_id = item[1]
-                    j.p_issn = item[2]
-                    j.e_issn = item[3]
-                    j.acron = item[5]
-                    j.abbrev_title = item[6]
-                    j.journal_title = item[7]
-                    j.nlm_title = item[8]
-                    j.publisher_name = item[9]
-                    if len(item) == 12:
-                        j.license = item[11]
-
-                    for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
-                        if not issn in journals.keys():
-                            journals[issn] = {}
-                        if not j.journal_title in journals[issn].keys():
-                            journals[issn][j.journal_title] = []
-                        journals[issn][j.journal_title].append(j)
-    return journals
-
+                if len(data[item]) > q:
+                    q = len(data[item])
+                    selected = item
+            return selected
