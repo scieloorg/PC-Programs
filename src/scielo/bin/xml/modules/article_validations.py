@@ -235,8 +235,8 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, pkg_data, _article, is_db_generation, check_url):
-        self.pkg_data = pkg_data
+    def __init__(self, journal, _article, is_db_generation, check_url):
+        self.journal = journal
         self.article = _article
         self.is_db_generation = is_db_generation
         self.check_url = check_url
@@ -269,6 +269,7 @@ class ArticleContentValidation(object):
         items.append(self.publisher_name)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_id_publisher_id)
+        items.append(self.journal_id_nlm_ta)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_issns)
@@ -377,9 +378,9 @@ class ArticleContentValidation(object):
         for lang in self.article.trans_languages:
             msg.append(check_lang('sub-article', lang))
         for lang in self.article.titles_by_lang.keys():
-            msg.append(check_lang('[title-group | trans-title-group]', lang))
+            msg.append(check_lang('(title-group | trans-title-group)', lang))
         for lang in self.article.abstracts_by_lang.keys():
-            msg.append(check_lang('[abstract | trans-abstract]', lang))
+            msg.append(check_lang('(abstract | trans-abstract)', lang))
         for lang in self.article.keywords_by_lang.keys():
             msg.append(check_lang('kwd-group', lang))
         return msg
@@ -481,7 +482,11 @@ class ArticleContentValidation(object):
 
     @property
     def journal_id_nlm_ta(self):
-        return conditional_required('journal-id (nlm-ta)', self.article.journal_id_nlm_ta)
+        if self.journal.nlm_title != self.article.journal_id_nlm_ta:
+            if self.journal.nlm_title is None or len(self.journal.nlm_title) == 0:
+                return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Use journal-id (nlm-ta) only for NLM journals.')))
+            else:
+                return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=self.article.journal_id_nlm_ta, expected=self.journal.nlm_title)))
 
     @property
     def journal_issns(self):
@@ -544,9 +549,9 @@ class ArticleContentValidation(object):
             r.append(required('doi', self.article.doi, validation_status.STATUS_WARNING))
 
         if self.article.doi is not None:
-            if self.pkg_data.journal_doi_prefix is not None:
-                if not self.article.doi.startswith(self.pkg_data.journal_doi_prefix):
-                    r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.pkg_data.journal_doi_prefix)))
+            if self.journal.doi_prefix is not None:
+                if not self.article.doi.startswith(self.journal.doi_prefix):
+                    r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.journal.doi_prefix)))
 
             if not self.article.doi_journal_titles is None:
                 status = validation_status.STATUS_INFO
@@ -728,21 +733,24 @@ class ArticleContentValidation(object):
                 r.append(i_country_validation)
 
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, validation_status.STATUS_FATAL_ERROR))
-            r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, validation_status.STATUS_ERROR))
 
             norm_aff, found_institutions = article_utils.normalized_institution(aff)
             r.append(('aff', validation_status.STATUS_INFO, join_not_None_items([aff.orgname, aff.city, aff.state, aff.country])))
-            r.append(('normalized aff', validation_status.STATUS_INFO, join_not_None_items([aff.norgname, aff.i_country])))
+            r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_INFO, aff.norgname))
+            r.append(('aff/country/@country', validation_status.STATUS_INFO, aff.i_country))
+
+            if aff.norgname is None or aff.norgname == '':
+                r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element.')))
 
             if norm_aff is None:
                 msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([aff.orgname, aff.norgname])), ' or ')
                 if found_institutions is not None:
                     if len(found_institutions) > 0:
-                        msg += _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
-                r.append(('normalized aff checked', validation_status.STATUS_ERROR, msg))
+                        msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
+                r.append((_('normalized aff checked'), validation_status.STATUS_ERROR, msg))
             else:
                 status = validation_status.STATUS_INFO
-                r.append(('normalized aff checked', validation_status.STATUS_VALID, _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))
+                r.append((_('normalized aff checked'), validation_status.STATUS_VALID, _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))
                 self.article.normalized_affiliations[aff.id] = norm_aff
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
