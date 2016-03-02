@@ -1331,7 +1331,9 @@ class Article(ArticleXML):
         data['lpage'] = self.lpage
         data['fpage'] = self.fpage
         data['elocation id'] = self.elocation_id
-
+        data['license'] = None
+        if len(self.article_licenses) > 0:
+            data['license'] = self.article_licenses.values()[0]['href']
         return data
 
     @property

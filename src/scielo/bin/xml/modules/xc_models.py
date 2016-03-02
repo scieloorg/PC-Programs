@@ -10,7 +10,7 @@ import utils
 import xml_utils
 import fs_utils
 from utils import how_similar
-from article import Issue, PersonAuthor, Article
+from article import Issue, PersonAuthor, Article, Journal
 from attributes import ROLE, DOCTOPIC, doctopic_label
 from dbm_isis import IDFile
 import article_utils
@@ -1319,3 +1319,84 @@ class DBManager(object):
         if len(issues_records) > 0:
             i_record = issues_records[0]
         return i_record
+
+
+class JournalsList(object):
+
+    def __init__(self):
+        url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
+        CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+        downloaded_filename = CURRENT_PATH + '/../../markup/downloaded_markup_journals.csv'
+        if not os.path.isdir(CURRENT_PATH + '/../../markup'):
+            os.makedirs(CURRENT_PATH + '/../../markup')
+        fs_utils.get_downloaded_data(url, downloaded_filename)
+
+        import csv
+        self._journals = {}
+        with open(downloaded_filename, 'rb') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter='\t')
+            for item in spamreader:
+                if len(item) >= 10:
+                    item = [elem.decode('utf-8').strip() for elem in item]
+                    if item[1] != 'ISSN':
+                        j = Journal()
+                        j.collection_acron = item[0]
+                        j.collection_name = item[4]
+                        j.issn_id = item[1]
+                        j.p_issn = item[2]
+                        j.e_issn = item[3]
+                        j.acron = item[5]
+                        j.abbrev_title = item[6]
+                        j.journal_title = item[7]
+                        j.nlm_title = item[8]
+                        j.publisher_name = item[9]
+                        if len(item) == 12:
+                            j.license = item[11]
+
+                        for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
+                            if not issn in self._journals.keys():
+                                self._journals[issn] = []
+                            self._journals[issn].append(j)
+
+    def get_journal_instances(self, p_issn, e_issn, journal_title):
+        journal_instances = []
+        for issn in [p_issn, e_issn]:
+            if issn is not None:
+                for j in self._journals.get(issn, []):
+                    journal_instances.append(j)
+        return journal_instances
+
+    def get_journal(self, p_issn, e_issn, journal_title):
+
+        journal = Journal()
+        for issn in [p_issn, e_issn]:
+            if issn is not None:
+                for j in self._journals.get(issn, []):
+                    journal.acron = update_list(journal.acron, j.acron)
+                    journal.p_issn = update_value(journal.p_issn, j.p_issn)
+                    journal.e_issn = update_value(journal.e_issn, j.e_issn)
+                    journal.abbrev_title = update_list(journal.abbrev_title, j.abbrev_title)
+                    journal.nlm_title = update_list(journal.nlm_title, j.nlm_title)
+                    journal.publisher_name = update_list(journal.publisher_name, j.publisher_name)
+                    journal.license = update_list(journal.license, j.license)
+
+                    journal.collection_acron = update_list(journal.collection_acron, j.collection_acron)
+                    journal.journal_title = update_list(journal.journal_title, j.journal_title)
+                    journal.issn_id = update_list(journal.issn_id, j.issn_id)
+
+        journal.doi_prefix = article_utils.journal_doi_prefix([journal.e_issn, journal.p_issn])
+        return journal
+
+
+def update_list(item, value):
+    if item is None:
+        item = []
+    if value is not None and len(value) > 0:
+        item.append(value)
+    return list(set(item))
+
+
+def update_value(item, value):
+    if item is None and value is not None and len(value) > 0:
+        item = value
+    return value

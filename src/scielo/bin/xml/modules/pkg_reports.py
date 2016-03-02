@@ -112,9 +112,9 @@ class PkgArticles(object):
         self.reftype_and_sources = None
         self.issue_files = None
         self.issue_models = None
-        self._doi_prefix = None
 
-        self.expected_equal_values = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        self.journal_check_list_labels = ['journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'license']
+        self.expected_equal_values = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date']
         self.expected_unique_value = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
         self.required_journal_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
@@ -180,7 +180,7 @@ class PkgArticles(object):
 
     def compile_pkg_metadata(self):
         self.invalid_xml_name_items = []
-        self._compiled_pkg_metadata = {label: {} for label in self.expected_equal_values + self.expected_unique_value}
+        self._compiled_pkg_metadata = {label: {} for label in self.expected_equal_values + self.expected_unique_value + ['license']}
         self.pkg_missing_items = {}
         labels = self.expected_equal_values + self.expected_unique_value
         for xml_name, article in self.articles.items():
@@ -221,59 +221,26 @@ class PkgArticles(object):
             self.compile_pkg_metadata()
         return more_frequent(self._compiled_pkg_metadata['print ISSN'])
 
-    @property
-    def journal_doi_prefix(self):
-        if self._doi_prefix is None:
-            self._doi_prefix = article_utils.journal_doi_prefix([self.pkg_p_issn, self.pkg_e_issn])
-        return self._doi_prefix
-
     def identify_issue(self, db_manager, pkg_name):
         self.acron_issue_label, self.issue_models, issue_error_msg = db_manager.get_issue_models(self.pkg_journal_title, self.pkg_issue_label, self.pkg_p_issn, self.pkg_e_issn)
         self.acron_issue_label = self.acron_issue_label.replace('issue', pkg_name)
         self.issue_files = db_manager.get_issue_files(self.issue_models, self.pkg_path)
         return issue_error_msg
 
-    def find_journal_data(self):
-        journals = get_journals()
-        nlm_title_items = []
-        acron_items = []
-        e_issn_items = []
-        p_issn_items = []
-        publisher_name_items = []
-        license_items = []
-        found = False
-        for issn in [self.pkg_p_issn, self.pkg_e_issn]:
-            if issn is not None:
-                j_titles = journals.get(issn)
-                if j_titles is not None:
-                    j_items = j_titles.get(self.pkg_journal_title)
-                    if j_items is not None:
-                        for item in j_items:
-                            if len(item.nlm_title) > 0:
-                                nlm_title_items.append(item.nlm_title)
-                            if len(item.acron) > 0:
-                                acron_items.append(item.acron)
-                            if len(item.e_issn) > 0:
-                                e_issn_items.append(item.e_issn)
-                            if len(item.p_issn) > 0:
-                                p_issn_items.append(item.p_issn)
-                            if len(item.publisher_name) > 0:
-                                publisher_name_items.append(' '.join([name.strip() for name in item.publisher_name.split()]))
-                            if len(item.license) > 0:
-                                license_items.append(item.license)
-                            found = True
-        r = None
-        if found:
-            r = []
-            for item in [nlm_title_items, acron_items, p_issn_items, e_issn_items, publisher_name_items, license_items]:
-                r.append(list(set(item)))
-        return r
+    @property
+    def journal_check_list(self):
+        data = {}
+        index = 0
+        for label in self.journal_check_list_labels:
+            data[label] = self._compiled_pkg_metadata.get(label, {}).items()
+        return data
 
 
 class ArticlesPkgReport(object):
 
-    def __init__(self, report_path, pkg_articles, previous_registered_articles, is_db_generation):
-
+    def __init__(self, report_path, pkg_articles, journal, issue, previous_registered_articles, is_db_generation):
+        self.journal = journal
+        self.issue = issue
         self.pkg_articles = pkg_articles
         self.report_path = report_path
         if self.pkg_articles.issue_files is not None:
@@ -637,49 +604,49 @@ class ArticlesPkgReport(object):
     def registered_journal_data_validations(self):
         licenses = []
         if self._registered_journal_data_validations is None:
-            journal_data = self.pkg_articles.find_journal_data()
+            self._registered_journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
 
-            if journal_data is not None:
-                nlm_title_items, acron_items, p_issn_items, e_issn_items, publisher_name_items, license_items = journal_data
-                self._registered_journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
+            for xml_name, article in self.pkg_articles.articles.items():
+                unmatched = []
+                items = []
+                license_url = None
+                if len(article.article_licenses) > 0:
+                    license_url = article.article_licenses.values()[0].get('href')
+                items.append([_('NLM title'), article.journal_id_nlm_ta, self.journal.nlm_title, validation_status.STATUS_FATAL_ERROR])
+                items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal.acron, validation_status.STATUS_FATAL_ERROR])
+                items.append([_('e-ISSN'), article.e_issn, self.journal.e_issn, validation_status.STATUS_FATAL_ERROR])
+                items.append([_('print ISSN'), article.print_issn, self.journal.p_issn, validation_status.STATUS_FATAL_ERROR])
+                items.append([_('publisher name'), article.publisher_name, self.journal.publisher_name, validation_status.STATUS_ERROR])
+                items.append([_('license'), license_url, self.journal.license, validation_status.STATUS_ERROR])
 
-                for xml_name, article in self.pkg_articles.articles.items():
-                    unmatched = []
-                    items = []
-                    license_url = None
-                    if len(article.article_licenses) > 0:
-                        license_url = article.article_licenses.values()[0].get('href')
-                    items.append([_('NLM title'), article.journal_id_nlm_ta, nlm_title_items, validation_status.STATUS_FATAL_ERROR])
-                    items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, acron_items, validation_status.STATUS_FATAL_ERROR])
-                    items.append([_('e-ISSN'), article.e_issn, e_issn_items, validation_status.STATUS_FATAL_ERROR])
-                    items.append([_('print ISSN'), article.print_issn, p_issn_items, validation_status.STATUS_FATAL_ERROR])
-                    items.append([_('publisher name'), article.publisher_name, publisher_name_items, validation_status.STATUS_ERROR])
-                    items.append([_('license'), license_url, license_items, validation_status.STATUS_ERROR])
+                for label, value, expected_values, err_msg in items:
+                    if expected_values is None or expected_values == '':
+                        expected_values = _('no value')
+                    if not isinstance(expected_values, list):
+                        expected_values = [expected_values]
+                    expected_values_msg = _(' or ').join(expected_values)
+                    value = _('no value') if value is None else value.strip()
+                    if len(expected_values) == 0:
+                        expected_values_msg = _('no value')
+                        status = validation_status.STATUS_WARNING if value != expected_values_msg else validation_status.STATUS_OK
+                    else:
+                        status = validation_status.STATUS_OK
+                        if not value in expected_values:
+                            if label == _('license'):
+                                status = err_msg
+                                for expected_value in expected_values:
+                                    if '/' + expected_value.lower() + '/' in str(value) + '/':
+                                        status = validation_status.STATUS_OK
+                                        break
+                            else:
+                                status = err_msg
+                    if status != validation_status.STATUS_OK:
+                        unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': expected_values_msg})
 
-                    for label, value, expected_values, err_msg in items:
-                        expected_values_msg = _(' or ').join(expected_values)
-                        value = 'None' if value is None else value.strip()
-                        if len(expected_values) == 0:
-                            expected_values_msg = 'None'
-                            status = validation_status.STATUS_WARNING if value != expected_values_msg else validation_status.STATUS_OK
-                        else:
-                            status = validation_status.STATUS_OK
-                            if not value in expected_values:
-                                if label == _('license'):
-                                    status = err_msg
-                                    for expected_value in expected_values:
-                                        if '/' + expected_value.lower() + '/' in str(value) + '/':
-                                            status = validation_status.STATUS_OK
-                                            break
-                                else:
-                                    status = err_msg
-                        if status != validation_status.STATUS_OK:
-                            unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': expected_values_msg})
-
-                    validations_result = ''
-                    if len(unmatched) > 0:
-                        validations_result = html_reports.sheet([_('data'), 'status', _('in XML'), _('registered journal data') + '*'], unmatched, table_style='dbstatus', row_style='status')
-                    self._registered_journal_data_validations.add(xml_name, ValidationsResults(validations_result))
+                validations_result = ''
+                if len(unmatched) > 0:
+                    validations_result = html_reports.sheet([_('data'), 'status', _('in XML'), _('registered journal data') + '*'], unmatched, table_style='dbstatus', row_style='status')
+                self._registered_journal_data_validations.add(xml_name, ValidationsResults(validations_result))
         return self._registered_journal_data_validations
 
     @property
@@ -843,7 +810,7 @@ class ArticlesPkgReport(object):
             utils.display_message(item_label)
 
             if xml_name in selected_names:
-                report_content = article_reports.article_data_and_validations_report(self.pkg_articles, doc, new_name, pkg_path, self.is_db_generation, is_xml_generation)
+                report_content = article_reports.article_data_and_validations_report(self.journal, doc, new_name, pkg_path, self.is_db_generation, is_xml_generation)
                 data_validations = ValidationsResults(report_content)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
                 if is_xml_generation:
@@ -1100,50 +1067,10 @@ def more_frequent(data):
         if len(items) == 1:
             return items[0]
         elif len(items) > 1:
-            more = 0
-            value = None
+            q = 0
+            selected = None
             for item in items:
-                if len(data[item]) > more:
-                    more = len(data[item])
-                    value = item
-            return value
-
-
-def get_journals():
-    url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
-    CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-    downloaded_filename = CURRENT_PATH + '/../../markup/downloaded_markup_journals.csv'
-    if not os.path.isdir(CURRENT_PATH + '/../../markup'):
-        os.makedirs(CURRENT_PATH + '/../../markup')
-    fs_utils.get_downloaded_data(url, downloaded_filename)
-
-    import csv
-    from article import Journal
-    journals = {}
-    with open(downloaded_filename, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter='\t')
-        for item in spamreader:
-            if len(item) >= 10:
-                item = [elem.decode('utf-8').strip() for elem in item]
-                if item[1] != 'ISSN':
-                    j = Journal()
-                    j.collection_acron = item[0]
-                    j.collection_name = item[4]
-                    j.issn_id = item[1]
-                    j.p_issn = item[2]
-                    j.e_issn = item[3]
-                    j.acron = item[5]
-                    j.abbrev_title = item[6]
-                    j.journal_title = item[7]
-                    j.nlm_title = item[8]
-                    j.publisher_name = item[9]
-                    if len(item) == 12:
-                        j.license = item[11]
-
-                    for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
-                        if not issn in journals.keys():
-                            journals[issn] = {}
-                        if not j.journal_title in journals[issn].keys():
-                            journals[issn][j.journal_title] = []
-                        journals[issn][j.journal_title].append(j)
-    return journals
+                if len(data[item]) > q:
+                    q = len(data[item])
+                    selected = item
+            return selected
