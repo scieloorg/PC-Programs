@@ -220,6 +220,19 @@ class ArticleXML(object):
                     self.sub_articles.append(s)
             self.responses = self.tree.findall('./response')
 
+    def paragraphs_startswith(self, character=':'):
+        paragraphs = []
+        if self.tree is not None:
+            for node_p in self.tree.findall('.//p'):
+                text = node_p.text
+                if text is None:
+                    text = xml_utils.node_text(node_p)
+                if character in text:
+                    text = text.split(character)[0]
+                    if text.strip() == '':
+                        paragraphs.append(xml_utils.node_xml(node_p))
+        return paragraphs
+
     @property
     def months(self):
         items = []

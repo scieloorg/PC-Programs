@@ -321,6 +321,7 @@ class ArticleContentValidation(object):
         items.append(self.validate_xref_reftype)
         #utils.debugging(datetime.now().isoformat() + ' validations')
 
+        items.append(self.paragraphs)
         #items.append(self.xref_rid_and_text)
         items.append(self.missing_xref_list)
         #items.append(self.missing_bibr_xref)
@@ -1077,6 +1078,10 @@ class ArticleContentValidation(object):
 
                     message.append(('xref/@rid', validation_status.STATUS_FATAL_ERROR, _msg))
         return message
+
+    @property
+    def paragraphs(self):
+        return [('paragraphs', validation_status.STATUS_ERROR, {_('Do not start a paragraph with the colon character (:)'): self.article.paragraphs_startswith(':')})]
 
     @property
     def missing_xref_list(self):
