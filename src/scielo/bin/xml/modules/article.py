@@ -276,24 +276,20 @@ class ArticleXML(object):
                 items.append((node.tag, node.attrib.get('id'), season_node.text))
         return items
 
-    def sections(self, node, scope):
-        r = []
-        if node is not None:
-            for sec in node.findall('./sec'):
-                r.append((scope + '/sec', sec.attrib.get('sec-type', ''), sec.findtext('title')))
-                for subsec in sec.findall('sec'):
-                    r.append((scope + '/sec/sec', subsec.attrib.get('sec-type', 'None'), subsec.findtext('title')))
-                    for subsubsec in subsec.findall('sec'):
-                        r.append((scope + '/sec/sec/sec', subsubsec.attrib.get('sec-type', 'None'), subsubsec.findtext('title')))
-        return r
+    def sections(self, node):
+        _sections = []
+        for sec in node.findall('.//sec'):
+            if sec.attrib.get('sec-type') is not None:
+                _sections.append((sec.attrib.get('sec-type'), sec.findtext('title')))
+        return _sections
 
     @property
     def article_sections(self):
-        r = self.sections(self.body, 'article')
+        r = []
+        r.append({'article': self.sections(self.body)})
         if self.translations is not None:
             for item in self.translations:
-                for sec in self.sections(item.find('.//body'), 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'):
-                    r.append(sec)
+                r.append({'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]': self.sections(item.find('.//body'))})
         return r
 
     @property

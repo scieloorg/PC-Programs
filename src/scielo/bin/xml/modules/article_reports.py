@@ -173,8 +173,12 @@ class ArticleDisplayReport(object):
 
     @property
     def sections(self):
-        _sections = ['[' + sec_id + '] ' + sec_title + ' (' + str(sec_type) + ')' for sec_id, sec_type, sec_title in self.article.article_sections]
-        return html_reports.format_list('sections:', 'ul', _sections)
+        _sections = []
+        for item in self.article.article_sections:
+            local, sections = item.items()
+            type_and_title_items = [sectitle + ' (' + sectype + ')' for sectype, sectitle in sections]
+            _sections.append([local, type_and_title_items])
+        return html_reports.format_list('sections:', 'ol', _sections)
 
     @property
     def formulas(self):
