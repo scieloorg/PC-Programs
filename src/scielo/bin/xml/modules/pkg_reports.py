@@ -114,7 +114,7 @@ class PkgArticles(object):
         self.issue_models = None
 
         self.journal_check_list_labels = ['journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'license']
-        self.expected_equal_values = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date']
+        self.expected_equal_values = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', 'license']
         self.expected_unique_value = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
         self.required_journal_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
@@ -699,6 +699,8 @@ class ArticlesPkgReport(object):
                 if label == 'issue pub date':
                     if self.complete_issue_articles.is_rolling_pass:
                         _status = validation_status.STATUS_WARNING
+                elif label == 'license':
+                    _status = validation_status.STATUS_WARNING
                 _m = _('same value for %s is required for all the documents in the package') % (label)
                 part = html_reports.p_message(_status + ': ' + _m + '.')
                 for found_value, xml_files in self.complete_issue_articles._compiled_pkg_metadata[label].items():

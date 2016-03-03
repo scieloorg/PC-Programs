@@ -34,8 +34,7 @@ def element_which_requires_permissions(node, node_graphic=None):
     if len(missing_children) > 0:
         identif = node.tag
         if node.attrib.get('id') is None:
-            if self.tree.findall('.//' + tag) > 1:
-                identif = xml_utils.node_xml(node)
+            identif = xml_utils.node_xml(node)
         else:
             identif = node.tag + '(' + node.attrib.get('id', '') + ')'
             if node_graphic is not None:
