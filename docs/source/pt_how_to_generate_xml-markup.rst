@@ -1904,8 +1904,7 @@ A marcação deverá ser conforme segue abaixo:
 .. image:: img/doc-nkp-supple.jpg
    :align: center
 
-.. note:: Antes de iniciar a marcação de material suplementar certifique-se de que o PDF suplementar foi incluído na 
-          pasta "src" comentado em `Estrutura de Pastas <pt_how_to_generate_xml-prepara.html#estrutura-de-pastas>`_.
+.. note:: Antes de iniciar a marcação de material suplementar certifique-se de que o PDF ou IMG (JPEG, PNG) suplementar foi incluído na pasta "src" comentado em `Estrutura de Pastas <pt_how_to_generate_xml-prepara.html#estrutura-de-pastas>`_.
 
 
 .. _suplemento-em-apendice:
