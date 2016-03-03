@@ -1977,23 +1977,22 @@ Verificar modelo abaixo:
    :width: 200px
 
 
-Identificando Traduções
-^^^^^^^^^^^^^^^^^^^^^^^
+Identificando Artigos com Traduções
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e complete as informações.
-A marcação do arquivo de idioma principal não muda, siga as orientações anteriores para a identificação dos elementos. Note que o programa identifica com o elemento [doc] todo o arquivo, inclusive a tradução.
+Com o arquivo formatado, faça a identificação de todo o documento com o elemento [doc], incluindo suas traduções.
 
 .. image:: img/mkp-subdoc-fechadoc.jpg
    :align: center
 
 
-.. note:: É fundamental que a última tag do arquivo como um todo seja o elemento [/doc]. Certifique-se disso.
+.. note:: É fundamental que a última tag do arquivo seja o elemento [/doc]. Certifique-se disso.
 
 
-Finalizado a marcação do arquivo de idioma principal selecione toda a tradução e marque com a tag [subdoc].
+Finalizado a marcação do artigo em seu idioma original, selecione a tradução e marque com a tag [subdoc].
 O programa abre uma janela onde deve ser identificado os campos: 
 
-* ID            - Identificador único do arquivo: S + nº de ordem;
+* ID            - Identificador único do arquivo: S (sub-article) + nº de ordem;
 * subarttp - selecionar o tipo de artigo: "tradução";
 * language - idioma da tradução do arquivo.
 
@@ -2002,7 +2001,7 @@ O programa abre uma janela onde deve ser identificado os campos:
    :width: 600px
    :align: center
 
-Agora, no nível de [subdoc], faça a marcação dos elementos que compõem a tradução do documento:
+Nos artigos traduzidos, a marcação de elementos como autor, título, afiliações (se houver) etc será manual. 
 
 
 .. image:: img/mkp-subdoc-nivel.jpg
@@ -2011,7 +2010,7 @@ Agora, no nível de [subdoc], faça a marcação dos elementos que compõem a tr
    :align: center
 
 
-.. note::  O programa Markup não faz a identificação automática do arquivo traduzido.
+.. note::  Se houver mais de uma tradução no artigo, cada uma delas deverá ser marcada separadamente com o elemento [subdoc], sendo a primeira tradução identicada como s1, a segunda como s2 e assim por diante.
 
 
 Afiliação traduzida
