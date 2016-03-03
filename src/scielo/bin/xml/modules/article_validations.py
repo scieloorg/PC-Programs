@@ -21,6 +21,15 @@ MAX_IMG_WIDTH = 2250
 MAX_IMG_HEIGHT = 2625
 
 
+def update_pkg_files_report(d, k, status, message):
+    if not k in d.keys():
+        d[k] = {}
+    if not status in d[k].keys():
+        d[k][status] = []
+    d[k][status].append(message)
+    return d
+
+
 def evaluate_tiff(img_filename):
     status_message = []
     if os.path.isfile(img_filename):
@@ -1225,45 +1234,60 @@ class ArticleContentValidation(object):
         return href_items
 
     def package_files(self, pkg_path):
-        items = []
-
+        _pkg_files = {}
         #from XML, find files
-        if self.article.language is not None:
-            items.append((self.article.new_prefix + '.pdf', validation_status.STATUS_INFO, _('PDF ({lang})').format(lang=self.article.language)))
-            if not self.article.new_prefix + '.pdf' in self.article.package_files(pkg_path):
-                items.append((self.article.new_prefix + '.pdf', validation_status.STATUS_WARNING, _('not found in the package')))
         pdf_langs = [item[-6:-4] for item in self.article.package_files(pkg_path) if item.endswith('.pdf') and item[-7:-6] == '-']
+        if self.article.language is not None:
+            filename = self.article.new_prefix + '.pdf'
+            _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_INFO, _('PDF ({lang})').format(lang=self.article.language))
+            if not filename in self.article.package_files(pkg_path):
+                _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_WARNING, _('not found in the package'))
         for lang in self.article.trans_languages:
             if not lang in pdf_langs:
-                items.append((self.article.new_prefix + '-' + lang + '.pdf', validation_status.STATUS_WARNING, _('not found in the package')))
+                filename = self.article.new_prefix + '-' + lang + '.pdf'
+                _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_WARNING, _('not found in the package'))
 
         #from files, find in XML
         inxml = [item.name_without_extension for item in self.article.href_files]
         inxml += [item.src for item in self.article.href_files]
-        for item in sorted(self.article.package_files(pkg_path)):
+        for item in self.article.package_files(pkg_path):
+            print(item)
             status = validation_status.STATUS_INFO if item.startswith(self.article.new_prefix) else validation_status.STATUS_FATAL_ERROR
             message = _('found in the package') if status == validation_status.STATUS_INFO else _('file name must start with ') + self.article.prefix
-            items.append((item, status, message))
+            _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
+
+            status = validation_status.STATUS_INFO
+            message = None
             if item in inxml:
-                items.append((item, validation_status.STATUS_INFO, _('found in XML')))
+                message = _('found in XML')
             elif item == self.article.new_prefix + '.pdf':
-                items.append((item, validation_status.STATUS_INFO, _('PDF ({lang})').format(lang=self.article.language)))
+                message = None
             elif item.endswith('.pdf'):
                 lang = item[len(self.article.new_prefix):]
                 if lang.startswith('-'):
                     lang = lang[1:3]
                     if lang in self.article.trans_languages:
-                        items.append((item, validation_status.STATUS_INFO, _('found sub-article({lang}) in XML').format(lang=lang)))
+                        message = _('found sub-article({lang}) in XML').format(lang=lang)
                     elif lang in self.article.language:
-                        items.append((item, validation_status.STATUS_WARNING, _('PDF ({lang})').format(lang=lang) + _(' must not have -{lang} in PDF name').format(lang=lang)))
+                        status = validation_status.STATUS_WARNING
+                        message = _('PDF ({lang})').format(lang=lang) + _(' must not have -{lang} in PDF name').format(lang=lang)
                     else:
-                        items.append((item, validation_status.STATUS_WARNING, _('not found sub-article({lang}) in XML').format(lang=lang)))
+                        status = validation_status.STATUS_WARNING
+                        message = _('not found sub-article({lang}) in XML').format(lang=lang)
             else:
-                without_extension = item[0:item.rfind('.')] if '.' in item else item
-                if without_extension in inxml:
-                    items.append((without_extension, validation_status.STATUS_INFO, _('found in XML')))
-                else:
-                    items.append((item, validation_status.STATUS_ERROR, _('not found in XML')))
+                if '.' in item:
+                    without_extension = item[0:item.rfind('.')]
+                    if '"' + without_extension + '"' in inxml:
+                        message = _('found in XML')
+                    elif not item.endswith('.jpg'):
+                        status = validation_status.STATUS_ERROR
+                        message = _('not found in XML')
+            if message is not None:
+                _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
+        items = []
+        for filename in sorted(_pkg_files.keys()):
+            for status, message_list in _pkg_files[filename].items():
+                items.append((filename, status, message_list))
         return items
 
 

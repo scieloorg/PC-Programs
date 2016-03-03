@@ -1685,7 +1685,7 @@ msgstr "Archivos XML inválidos."
 #, python-format
 msgid "same value for %s is required for all the documents in the package"
 msgstr ""
-"el mismo valor para %s es requerido para todos los documentos del paquete"
+"el mismo valor para %s es esperado para todos los documentos del paquete"
 
 #: modules/pkg_reports.py:267 modules/pkg_reports.py:296
 #: modules/pkg_reports.py:354 modules/pkg_reports.py:383
