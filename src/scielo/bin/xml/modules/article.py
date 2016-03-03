@@ -1288,7 +1288,7 @@ class Article(ArticleXML):
             file_location = hrefitem.file_location(pkg_path)
             if os.path.isfile(file_location):
                 files.append(hrefitem.src)
-        return files
+        return list(set(files))
 
     @property
     def clinical_trial_url(self):
