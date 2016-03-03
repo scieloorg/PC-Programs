@@ -1034,6 +1034,17 @@ def format_complete_report(report_components):
     return validations
 
 
+def format_declaration_report(validations_results):
+    t = ['FATAL ERROR', 'ERROR', 'WARNING']
+    i = 0
+    lines = []
+    for item in [validations_results.fatal_errors, validations_results.errors, validations_results.warnings]:
+        for n in range(item):
+            lines.append({'label': '[' + t[i][0] + str(n + 1) + ']', 'status': '[' + t[i] + ']', _('why it is not a valid message?'): '&#160;'})
+        i += 1
+    return html_reports.sheet(['label', 'status', _('why it is not a valid message?')], lines, table_style='dbstatus')
+
+
 def label_errors_type(content, error_type, prefix):
     new = []
     i = 0

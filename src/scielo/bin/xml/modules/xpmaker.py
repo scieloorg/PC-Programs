@@ -1112,6 +1112,16 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             if DISPLAY_REPORT is True:
                 pkg_reports.display_report(filename)
 
+            header = html_reports.tag('p', _('Please, inform why each fatal error, error and warning is not valid.'))
+            header += html_reports.tag('p', _('It is very important and mandatory complete this report and send it with the package.'))
+            header += html_reports.tag('p', _('It will be used to improve the messages and/or fix the validations made by XPM.'))
+            header += html_reports.tag('p', _('Complete the "{column}" column.').format(column=_('why it is not a valid message?')))
+            #header += html_reports.tag('p', _('Do not complete the "{column}" column.').format(column=_('answer')))
+
+            html_reports.save(report_path + '/xpm_invalid_messages.html', _('XPM invalid messages'), header + pkg_reports.format_declaration_report(xpm_validations))
+            if DISPLAY_REPORT is True:
+                pkg_reports.display_report(report_path + '/xpm_invalid_messages.html')
+
         if not is_db_generation:
             if is_xml_generation:
                 make_pmc_report(articles, doc_files_info_items)
