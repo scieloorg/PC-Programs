@@ -175,10 +175,10 @@ class ArticleDisplayReport(object):
     def sections(self):
         _sections = []
         for item in self.article.article_sections:
-            local, sections = item.items()
-            type_and_title_items = [sectitle + ' (' + sectype + ')' for sectype, sectitle in sections]
-            _sections.append([local, type_and_title_items])
-        return html_reports.format_list('sections:', 'ol', _sections)
+            for label, sections in item.items():
+                type_and_title_items = [sectitle + ' (' + sectype + ')' for sectype, sectitle in sections]
+            _sections.append([label, type_and_title_items])
+        return html_reports.format_list('sections:', 'ul', _sections)
 
     @property
     def formulas(self):
@@ -501,7 +501,7 @@ def article_data_and_validations_report(journal, article, new_name, package_path
         if is_sgml_generation:
             content.append(article_display_report.issue_header)
             content.append(article_display_report.article_front)
-
+        content.append(article_display_report.sections)
         content.append(article_validation_report.validations(is_sgml_generation))
         content.append(article_display_report.table_tables)
         content.append(sheet_data.files_and_href(package_path))

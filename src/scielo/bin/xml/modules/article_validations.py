@@ -1251,7 +1251,6 @@ class ArticleContentValidation(object):
         inxml = [item.name_without_extension for item in self.article.href_files]
         inxml += [item.src for item in self.article.href_files]
         for item in self.article.package_files(pkg_path):
-            print(item)
             status = validation_status.STATUS_INFO if item.startswith(self.article.new_prefix) else validation_status.STATUS_FATAL_ERROR
             message = _('found in the package') if status == validation_status.STATUS_INFO else _('file name must start with ') + self.article.prefix
             _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
