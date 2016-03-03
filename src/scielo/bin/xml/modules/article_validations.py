@@ -321,6 +321,7 @@ class ArticleContentValidation(object):
         items.append(self.validate_xref_reftype)
         #utils.debugging(datetime.now().isoformat() + ' validations')
 
+        items.append(self.sections)
         items.append(self.paragraphs)
         #items.append(self.xref_rid_and_text)
         items.append(self.missing_xref_list)
@@ -1078,6 +1079,24 @@ class ArticleContentValidation(object):
 
                     message.append(('xref/@rid', validation_status.STATUS_FATAL_ERROR, _msg))
         return message
+
+    @property
+    def sections(self):
+        expected_values = ['cases', 'conclusions', 'discussion', 'intro', 'materials', 'methods', 'results', 'supplementary-material']
+        r = []
+        for body in self.article.article_sections:
+            for label, sections in body.items():
+                for sectype, sectitle in sections:
+                    if not sectype in expected_values:
+                        invalid = None
+                        if '|' in sectype:
+                            invalid = [sec for sec in sectype.split('|') if not sec in expected_values]
+                        else:
+                            invalid = sectype
+                        if invalid is not None:
+                            if len(invalid) > 0:
+                                r.append((label + '/sec/@sec-type', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=sectype, expected=_(' and/or ').join(expected_values))))
+        return r
 
     @property
     def paragraphs(self):

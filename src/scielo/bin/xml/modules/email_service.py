@@ -86,13 +86,19 @@ class EmailService(object):
             try:
                 smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
             except Exception as e:
-                msg = MIMEMultipart()
-                msg['From'] = self.mail_from
-                msg['To'] = ', '.join(to)
-                msg['Subject'] = Header(subject, 'utf-8')
-                msg['BCC'] = ', '.join(bcc)
-                msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
-                smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
+
+                try:
+
+                    msg = MIMEMultipart()
+                    msg['From'] = self.mail_from
+                    msg['To'] = ', '.join(to)
+                    msg['Subject'] = Header(subject, 'utf-8')
+                    msg['BCC'] = ', '.join(bcc)
+                    msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
+                    smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
+
+                except Exception as e:
+                    print(e)
             #except Exception as inst:
             #    msg = MIMEMultipart()
             #    msg['From'] = self.mail_from
