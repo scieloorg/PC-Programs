@@ -2211,7 +2211,7 @@ O total de página, [pagcount*], para arquivos AOP deve ser sempre "1":
 
 Selecione o valor "artigo original" para o campo [doctopic].
 
-No campo [other] deve ser inserido 5 dígitos que obedecem a uma regra SciELO. Verifique abaixo a regra para construir o identificador do Ahead Of Print:
+No campo [order] deve ser inserido 5 dígitos que obedecem a uma regra SciELO. Verifique abaixo a regra para construir o identificador do Ahead Of Print:
 
 Para a construção do ID de Ahead será utilizado uma parte da numeração do lote e outra da ordem do documento.
 
@@ -2237,7 +2237,7 @@ Exemplo lote da bjmbr número 7 de 2015 = lote 0715 **usar: 071**
 +-----------------------------------------+------------------+
 
 
-O campo other deverá apresentar o valor de other da seguinte forma:
+O campo order deverá apresentar o valor de order da seguinte forma:
 
 **3 primeiros dígitos do lote + 2 dígitos da quantidade do lote**
 
