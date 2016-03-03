@@ -207,7 +207,7 @@ def validate_surname(label, value):
 
         parts = value.split(' ')
         if len(parts) > 1:
-            rejected = [item for item in parts if item.upper() in suffix_list or item in ['Jr', 'Sr']]
+            rejected = [item for item in parts if item.upper() in suffix_list or item in ['Jr.', 'Jr', 'Sr']]
             suffix = ' '.join(rejected)
 
             if len(suffix) > 0:
