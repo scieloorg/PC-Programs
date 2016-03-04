@@ -737,6 +737,9 @@ class ArticleContentValidation(object):
             r.append(required('aff/@id', aff.id, validation_status.STATUS_FATAL_ERROR))
 
             r.append(required('aff/institution/[@content-type="original"]', aff.original, validation_status.STATUS_ERROR, False))
+            resp = required('aff/country', aff.country, validation_status.STATUS_FATAL_ERROR)
+            resp = (resp[0], resp[1], resp[2] + _('. E.g.: Use {this} instead of {that}.').format(this='<country country="BR">Brasil</country>', that='<country country="BR"/>'))
+            r.append(resp)
             r.append(required('aff/country', aff.country, validation_status.STATUS_FATAL_ERROR))
             r.append(required('aff/country/@country', aff.i_country, validation_status.STATUS_FATAL_ERROR))
 
