@@ -15,7 +15,7 @@ Este manual tem como objetivo apresentar o uso do programa de marcação `Markup
 Sugestão de Atribuição de “ID”
 ==============================
 
-Alguns elementos exigem o atributo "ID".
+O atributo "ID" é usado para identificar alguns elementos, tornando possível estabelecer referências cruzadas entre sua chamada no decorrer do texto e o elemento em si, como figuras, tabelas, afiliações etv.
 Para composição do “ID” combine o prefixo do tipo do elemento e um número inteiro, como segue:
 
 +------------------------+---------------------------+---------+---------------------+
@@ -69,10 +69,9 @@ Estando o arquivo formatado de acordo com o manual `Preparação de Arquivos par
    :align: center
 
 
-Perceba que ao clicar em [doc] o programa irá abrir uma caixa de diálogo onde deverá ser completado com os dados básicos do documento:
+Ao clicar em [doc] o programa abrirá um formulário para ser completado com os dados básicos do artigo:
 
-Insira o nome do periódico no campo “collection/journal” que o programa irá inserir as informações da revista automaticamente. 
-Feito isso, o próximo passo é completar as informações nos demais campos. Veja abaixo os campos que devem ser preenchidos:
+Ao selecionar o periódico no campo “collection/journal” que o programa preencherá alguns dados automaticamente, tais como: ISSNs, título abreviado, acrônimo, entre outros. Os demais dados serão preenchidos manualmente, de acordo com as orientações abaixo:
 
 
 +-------------------+-----------------------------------------------------------------------------------------------+
@@ -142,14 +141,14 @@ Feito isso, o próximo passo é completar as informações nos demais campos. Ve
 Front
 =====
 
-Tendo preenchido todos os campos, ao clicar em [Ok] o programa irá abrir uma janela perguntando se o documento está de acordo com o modelo para efetuar a marcação automática:
+Tendo preenchido todos os campos, ao clicar em [Ok] será aberta uma janela perguntando se o documento está na formatação adequada para efetuar a marcação automática:
 
 .. image:: img/doc-mkp-mkp-automatic.jpg
    :height: 450px
    :align: center
 
 
-Ao clicar em [Sim] veja que o programa efetua a marcação automática dos elementos básicos do documento:
+Ao clicar em [Sim], o programa efetuará a marcação automática dos elementos básicos do documento:
 
 .. image:: img/doc-mkp-mkp--auto.jpg
    :height: 400px
@@ -157,9 +156,7 @@ Ao clicar em [Sim] veja que o programa efetua a marcação automática dos eleme
    :align: center
 
 
-.. note:: Caso o arquivo esteja com a formatação recomendada, o programa Markup irá fazer a marcação automática de DOI, seção 
-          (esses dois primeiros, se presente), título e títulos traduzidos, autores, label de autores e afiliações.
-          Caso o arquivo não esteja na formatação recomendada em “Preparação de Arquivos para o Programa Markup”, o programa 
+.. note:: Caso o arquivo não esteja na formatação recomendada em “Preparação de Arquivos para o Programa Markup”, o programa 
           não identificará corretamente os elementos.
 
 
@@ -195,7 +192,7 @@ Alguns autores apresentam mais que 1 label ao lado do nome, porém o programa n�
    :height: 300px
    :align: center
 
-Note que para identificar o label de autor relacionado à afiliação, o tipo de xref (ref-type) selecionado foi o "affiliation" e o rid "aff3" para relacionar o label 3 à afiliação correspondente.
+Por se tratar de referência cruzada (xref) de afiliação, o tipo de xref (ref-type) selecionado foi o "affiliation" e o rid (relacionado ao ID) "aff3" para relacionar o label 3 à afiliação correspondente.
 
 O programa Markup não faz marcação automática de função de autor como, por exemplo, o cargo exercido. Para isso é necessário selecionar a informação que consta ao lado do nome do autor, ir para o nível inferior do elemento [author] e identificar esse dado com a tag [role]. Veja:
 
@@ -250,13 +247,13 @@ Abaixo o resultado da identificação de assinatura do autor/editor:
 On Behalf
 ========
 O elemento [on-behalf] é utilizado quando um autor exerce papel de representante de um grupo ou organização. 
-Para identificar esse dado primeiramente verifique se a informação do representante do grupo está na mesma linha do autor anterior. Exemplo:
+Para identificar esse dado, verifique se a informação do representante do grupo está na mesma linha do autor anterior. Exemplo:
 
 
     Fernando Augusto Proietti :sup:`2`  Interdisciplinary HTLV Research Group
 
 
-Estando na mesma linha, faça a identificaçao do elemento [doc]. Veja que o programa identificará o autor "Fernando Augusto Proietti" da seguinte forma:
+O programa identificará o autor "Fernando Augusto Proietti" da seguinte forma:
 
 .. image:: img/mkp-on-behalf.jpg
    :height: 150px
@@ -284,13 +281,11 @@ Ao fazer a marcação de [doc] o programa identificará automaticamente todos os
 Ainda que o programa inclua o link na tag [author], será necessário completar a marcação desse dado.
 
 Para isso, entre no nível de author, selecione o link do autor e clique em [author-id].
-O programa abrirá uma janela onde deverá ser indicado o tipo de registro do autor: se lattes ou ORCID. 
+Na janela aberta pelo programa, selecione o tipo de registro do autor: se lattes ou ORCID e clique em [Continuar]
 
 .. image:: img/mkp-marcando-id-contrib.jpg
    :height: 230px
    :align: center
-
-Selecione o tipo correto e clique em [Continuar].
 
 
 

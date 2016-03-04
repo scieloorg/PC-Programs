@@ -48,12 +48,12 @@ No lugar, deve existir:
 - ??_issue.mds: atualizado/criado assim que qualquer dado de fascículo é criado ou atualizado
 - journal-standard.txt: atualizado/criado assim que qualquer dado de periódico é criado ou atualizado
 
-Estes arquivos são gerado pelo programa `Title Manager <titlemanager.html>`_ ou `SciELO Manager <http://docs.scielo.org/projects/scielo-manager/en/latest/>`_.
+Estes arquivos são gerados pelo programa `Title Manager <titlemanager.html>`_ ou `SciELO Manager <http://docs.scielo.org/projects/scielo-manager/en/latest/>`_.
 
 
 .. note::
    Title Manager gera estes arquivos em /scielo/bin/markup no computador onde Title Manager é executado.
-   Então, se o Markup é usado em outro computador, é necessário copiar estes arquivos para o computadr onde o Markup é executado.
+   Então, se o Markup é usado em outro computador, é necessário copiar estes arquivos para o computador onde o Markup será executado.
 
 
 .. raw:: html
@@ -76,14 +76,13 @@ esteja como segue:
 
 
 
-Veja que dentro da pasta "markup_xml" foi inserido 2 pastas, no mesmo nível:
+Veja que dentro da pasta "markup_xml" foram inseridas duas pastas, no mesmo nível:
 
- * src: A pasta src (source) é utilizada para inserir os arquivos .pdf, vídeos e suplementos.
- * scielo_markup: Nessa pasta deve ser inserido os arquivos .doc ou .docx.
+ * src: utilizada para inserir os arquivos PDF, mídia e suplementos.
+ * scielo_markup: utilizada para inserir os arquivos .doc ou .docx.
 
 
-..  note:: Caso o responsável pela marcação não siga a recomendação de estrutura apresentada acima, não será 
-           possível iniciar a marcação do documento e gerar o arquivo .xml.
+..  note:: Se a recomendação de estrutura apresentada acima não for seguida, o processo de marcação não será iniciado.
 
 
 .. raw:: html
@@ -132,4 +131,4 @@ Exemplo:
 
 
 
-.. note:: As imagens dos arquivos devem estar disponíveis no arquivo .doc e marcado com o elemento indicado.
+.. note:: As imagens dos artigos devem estar disponíveis no arquivo .doc, preferencialmente em formato .jpeg e .png.
