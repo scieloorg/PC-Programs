@@ -294,10 +294,10 @@ Na janela aberta pelo programa, selecione o tipo de registro do autor: se lattes
 Afiliações
 ----------
 
-O Programa Markup faz a identificação apenas de [normaff] de afiliações, ou seja, o detalhamento das afiliações não é feito automaticamente.
-Ao fazer a marcação automática dos elementos básicos do arquivo, complete a marcação de afiliações identificando: instituição maior [orgname], divisão 1 [orgdiv1], divisão 2 [orgdiv2], cidade [city], estado [state] (esses 4 ultimos, se presentes) e o país [country].
+O Programa Markup faz a identificação apenas de grupo de dados de cada afiliação com o elemento [normaff], ou seja, o detalhamento das afiliações não é feito automaticamente.
+Complete a marcação de afiliações identificando: instituição maior [orgname], divisão 1 [orgdiv1], divisão 2 [orgdiv2], cidade [city], estado [state] (esses 4 últimos, se presentes) e o país [country].
 
-Para fazer a identificação dos elementos acima vá para o nível inferior do elemento [normaff] e faça o detalhamento de cada afiliação. Veja:
+Para fazer a identificação dos elementos acima vá para o nível inferior do elemento [normaff] e faça o detalhamento de cada afiliação.
 
 
 .. image:: img/doc-mkp-detalhamento-aff.jpg
@@ -305,7 +305,7 @@ Para fazer a identificação dos elementos acima vá para o nível inferior do e
    :align: center
 
 
-Após o detalhamento de afiliações o próximo passo é fazer a normalização das instituições e países. Para isso, selecione o elemento [normaff] e clique no "lapis" para editar os atributos. O programa irá apresentar uma janela para normalização dos elementos indicados nos campos em branco. Veja:
+Após o detalhamento de afiliações, será necessário verificar se a instituição marcada e país correspondente, possui forma normalizada por SciELO. Para isso, selecione o elemento [normaff] e clique no "lapis" para editar os atributos. O programa abrirá uma janela para normalização dos elementos indicados nos campos em branco.
 
 
 .. image:: img/doc-mkp-normalizacao-aff.jpg
@@ -314,7 +314,7 @@ Após o detalhamento de afiliações o próximo passo é fazer a normalização 
 
 
 
-No campo "icountry" selecione o país da instituição maior (orgname), em seguida clique em "find" para encontrar a instituição normalizada. Ao fazer esse procedimento, o programa Markup consultará nossa base de dados de instituições normalizadas e verificará se a instituição selecionada foi normalizada e consta na lista.
+No campo "icountry" selecione o país da instituição maior (orgname), em seguida clique em "find" para encontrar a instituição normalizada. Ao fazer esse procedimento, o programa Markup consultará nossa base de dados de instituições normalizadas e verificará se a instituição selecionada consta na lista.
 
 
 .. image:: img/doc-mkp-normalizadas.jpg
@@ -338,8 +338,7 @@ No campo "icountry" selecione o país da instituição maior (orgname), em segui
 Resumos
 =======
 
-Os resumos devem ser identificados manualmente. Para marcação de resumos simples (não apresentam seções) e para os resumos estruturados (apresentam seções) utilizar o elemento [xmlabstr]. Na marcação selecione o título do resumo e o texto e em seguida marque com o botão [xmlabstr], dessa forma a interface web do SciELO assumirá a forma como o periódico adota para identificar o elemento.
-Observe que ao utilizar o [xmlabstr] para resumos simples, o programa marca automaticamente o título e o parágrafo do resumo:
+Os resumos devem ser identificados manualmente. Para marcação de resumos simples (sem seções) e para os resumos estruturados (com seções) utilizar o elemento [xmlabstr]. Na marcação, selecione o título do resumo e o texto e em seguida marque com o botão [xmlabstr].
 
 Resumo sem Seção:
 -----------------
@@ -351,7 +350,7 @@ Resumo sem Seção:
    :align: center
 
 
-Na sequência clique em [xmlabstr] o programa abrirá uma janela a qual deverá ser indicado o idioma do resumo marcado:
+Quando clicar em [xmlabstr] o programa abrirá uma janela onde deve-se selecionar o idioma do resumo marcado:
 
 
 **marcação:** 
@@ -368,7 +367,7 @@ Na sequência clique em [xmlabstr] o programa abrirá uma janela a qual deverá 
    :align: center
 
 
-Já em resumos estruturados, além do programa identificar o título automaticamente é identificado também cada seção do resumo e seus respectivos parágrafos. Veja:
+Já em resumos estruturados, o programa também marcará cada seção do resumo e seus respectivos parágrafos.
 
 
 Resumo com Seção:
@@ -406,8 +405,8 @@ Siga os mesmos passos descritos para resumo sem seção:
 Keywords
 ========
 
-O programa Markup apresenta duas tags para identificação de palavra-chave, a tag [*kwdgrp] e [kwdgrp].
-A tag [*kwdgrp], com asterisco, é utilizada para identificação automática de cada palavra-chave e também do título. Para isso, selecione toda a informação inclusive o título e identifique os dados com o elemento [*kwdgrp].
+O programa Markup apresenta dois botões para identificação de palavras-chave, [*kwdgrp] e [kwdgrp].
+O botão [*kwdgrp], com asterisco, é utilizada para identificação automática de cada palavra-chave e também do título. Para isso, selecione toda a informação inclusive o título e identifique os dados com o elemento [*kwdgrp].
 
 Marcação Automática:
 --------------------
@@ -419,7 +418,7 @@ Marcação Automática:
    :align: center
 
 
-Ao clicar em [*kwdgrp] o programa abrirá uma janela a qual deverá ser indicado o idioma das palavra-chave marcada:
+Ao clicar em [*kwdgrp] o programa abrirá uma janela para seleção do idioma das palavras-chave marcadas:
 
 
 **marcação:** 
@@ -439,7 +438,7 @@ Ao clicar em [*kwdgrp] o programa abrirá uma janela a qual deverá ser indicado
 Marcação Manual:
 ----------------
 
-Caso a marcação automática não ocorra conforme o esperado, pode-se marcar o grupo de palavras-chave manualmente. Selecione o grupo de palavras e marque com o elemento [kwdgrp] conforme abaixo:
+Caso a marcação automática não ocorra conforme o esperado, pode-se marcar o grupo de palavras-chave manualmente. Selecione o grupo de palavras-chave e marque com o elemento [kwdgrp].
 
 
 **marcação:**
@@ -450,14 +449,14 @@ Caso a marcação automática não ocorra conforme o esperado, pode-se marcar o 
 
 
 
-Feita a marcação de todos os dados de palavras-chave, o próximo passo é fazer a identificação de item por item, iniciando pelo título. Para isso selecione o título das palavras-chave e identifique com o elemento [sectitle]:
+Em seguida, faça a identificação de item por item. Para tanto, selecione o título das palavras-chave e identifique com o elemento [sectitle]:
 
 .. image:: img/doc-mkp-sec-kwd.jpg
    :height: 300px
    :align: center
 
 
-Em seguida selecione palavra por palavra e identifique com o elemento [kwd]:
+Na sequência, selecione palavra por palavra e marque com o elemento [kwd]:
 
 .. image:: img/doc-mkp-kwd-kwd.jpg
    :height: 300px
@@ -475,7 +474,7 @@ Em seguida selecione palavra por palavra e identifique com o elemento [kwd]:
 History
 =======
 
-O elemento [hist] é utilizado para identificar o histórico do documento. Para isso selecione toda a informação de histórico e marque com o elemento [hist]:
+O elemento [hist] é utilizado para marcar o histórico do documento. Selecione todo o dado de histórico e marque com o elemento [hist]:
 
 
 .. image:: img/doc-mkp-hist-select.jpg
@@ -484,7 +483,7 @@ O elemento [hist] é utilizado para identificar o histórico do documento. Para 
 
 
 
-Feito isso selecione a data de recebido e identifique com o elemento [received]. Confira a data ISO indicada no campo dateiso e corrija, se necessário. A estrutura da data ISO esperada nesse campo é:
+Selecione então a data de recebido e marque com o elemento [received]. Confira a data ISO indicada no campo dateiso e corrija, se necessário. A estrutura da data ISO esperada nesse campo é:
 ANO MÊS DIA. Veja:
 
 .. image:: img/doc-mkp-received.jpg
@@ -492,7 +491,7 @@ ANO MÊS DIA. Veja:
    :align: center
 
 
-Caso haja a data de revisado, selecione o dado e identifique com o elemento [revised]. Faça o mesmo para a data de aceito; selecione a data e identitique com o elemento [accepted]. Confira a data ISO indicada no campo dateisso e corrija se necessário. Veja:
+Caso haja a data de revisado, selecione-a e marque com o elemento [revised]. Faça o mesmo para a data de aceito; selecionando o elemento [accepted]. Confira a data ISO indicada no campo dateisso e corrija, se necessário.
 
 .. image:: img/doc-mkp-accepted.jpg
    :height: 350px
@@ -510,14 +509,14 @@ Caso haja a data de revisado, selecione o dado e identifique com o elemento [rev
 Correspondência
 ===============
 
-Com o elemento [corresp] é possível fazer a identificação dos dados de correspondência do autor. Essa tag possui um subnível para identificação do e-mail do autor. Para identificar esse dado, selecione toda a informação de correspondência e marque com o elemento [corresp]. Será apresentada uma janela para identificação do id de correspondência que, nesse caso, deve ser “c” + o número de ordem da correspondência.
+Com o elemento [corresp] é possível marcar os dados de correspondência do autor. Esse elemento possui um subnível para identificação do e-mail do autor. Selecione toda a informação de correspondência e marque com o elemento [corresp]. Será apresentada uma janela para marcação do ID de correspondência que, nesse caso, deve ser “c” + o número de ordem da correspondência.
 
 .. image:: img/doc-mkp-corresp-select.jpg
    :height: 300px
    :align: center
 
 
-Selecione o e-mail do autor correspondente e identifique com o elemento [email] e suba um nível para marcar o próximo elemento.
+Selecione o e-mail do autor correspondente e marque com o elemento [email]. Suba um nível para marcar o próximo elemento.
 
 .. image:: img/doc-mkp-email-corresp.jpg
    :height: 300px
@@ -531,16 +530,14 @@ Selecione o e-mail do autor correspondente e identifique com o elemento [email] 
 
 Ensaio Clínico
 ==============
-Cada ensaio clínico deve ter um protocolo, ou plano de ação que descreve o que será feito no estudo, como será conduzido, e por que cada parte do estudo é necessária - incluindo detalhes como os critérios para a participação do paciente, o calendário de testes, procedimentos e medicamentos, bem como a duração do estudo. Informações retiradas do site <http://www.nlm.nih.gov/services/faqctgov.html>
-
-Arquivos que apresentam informação de ensaio clínico com número de registro, devem ser identificados pela tag [cltrial]:
+Arquivos que apresentam informação de ensaio clínico com número de registro, devem ser marcados com o elemento [cltrial]:
 
 .. image:: img/doc-mkp-tag-cltrial.jpg
    :height: 150px
    :align: center
 
 
-O programa abrirá uma janela com 2 campos para identificação da URL da base de dados onde o Ensaio foi indexado e um campo "ctdbid" para selecionar a base correspondente:
+Na janela aberta pelo programa, preencha o campo de URL da base de dados onde o Ensaio foi indexado e o campo "ctdbid" selecionando a base correspondente:
 
 .. image:: img/doc-mkp-clinicaltr.jpg
    :height: 300px
@@ -552,7 +549,7 @@ Para encontrar a URL do ensaio clínico faça uma busca na internet pelo número
    :height: 80px
    :align: center
 
-.. note:: Comumente a informação de ensaio clínico está posicionada abaixo de resumos ou palavras-chave.
+.. note:: Comumente a informação de Ensaio clínico está posicionada abaixo de resumos ou palavras-chave.
 
 
 .. raw:: html
@@ -565,9 +562,9 @@ Para encontrar a URL do ensaio clínico faça uma busca na internet pelo número
 Referências
 ===========
 
-As referências bibliográficas são identificadas elemento a elemento e seu formato original é mantido para apresentação no SciELO.
+As referências bibliográficas são marcadas elemento a elemento e seu formato original é mantido para apresentação no site do SciELO.
 
-O programa identificará todas as referências selecionadas com a tag [ref] do tipo [book]. A alteração do tipo de referência será manual ou automática, dependendo do tipo de elemento marcado, conforme poderá ser observado adiante.
+O programa marcará todas as referências selecionadas com o elemento [ref] do tipo [book]. A alteração do tipo de referência será manual ou automática, dependendo do tipo de elemento marcado, conforme será observado mais adiante.
 
 
 .. image:: img/doc-mkp-select-refs-mkp.jpg
@@ -590,8 +587,8 @@ O programa identificará todas as referências selecionadas com a tag [ref] do t
 Tipos de Referências
 --------------------
 
-A partir da marcação feita, alguns tipos de referência serão alterados automaticamente sem intervenção manual (ex.: tese, conferência e artigo de periódico); já para os demais casos, será necessária a alteração manual.
-Para alterar o tipo de referência clique no elemento [ref] e em seguida clique no lápis "Editar Atributos" e em "reftype" selecione o tipo correto.
+A partir da marcação feita, alguns tipos de referência serão alterados automaticamente sem intervenção manual (ex.: tese, conferência, relatório, patente e artigo de periódico); já para os demais casos, será necessária a alteração manual.
+Para alterar o tipo de referência clique no elemento [ref], em seguida, no lápis "Editar Atributos" e em "reftype" para selecionar o tipo correto.
 
 .. image:: img/doc-mkp-edit-ref-type.jpg
    :height: 400px
@@ -604,10 +601,9 @@ Para alterar o tipo de referência clique no elemento [ref] e em seguida clique 
    :align: center
 
 
-Entretanto, recomendamos que edite o "reftype" somente **após** marcar todos os elementos da [ref], pois dependendo dos elementos marcados o "reftype" pode ser alterado automaticamente pelo Markup. 
+Recomenda-se a edição de "reftype" somente **após** marcar todos os elementos da [ref], pois dependendo dos elementos marcados o "reftype" pode ser alterado automaticamente pelo Markup. 
 
-.. note:: Uma referência deve ter sua tipologia sempre baseada no seu conteúdo e nunca no seu suporte. Ou seja uma lei representa um
-          documento legal, portanto o tipo de referência é “legal-doc”, não importa se foi publicado em um journal ou site. Uma referência de artigo de um periódico científico, mesmo que publicado em um site possui o tipo “journal”. 
+.. note:: Uma referência deve ter sua tipologia sempre baseada no seu conteúdo e nunca no seu suporte. Por exemplo, uma lei representa um documento legal, portanto o tipo de referência é “legal-doc”, mesmo que esteja publicado em um jornal ou site. Uma referência de artigo de um periódico científico, mesmo que publicado em um site possui o tipo “journal”. 
           É importante entender estes aspectos nas referências para poder interpretar sua tipologia e seus elementos. Nem toda referência que possui um link é uma “webpage”, nem toda a referência que possui um volume é um “journal”, livros também podem ter volumes.
 
 
@@ -618,7 +614,7 @@ Abaixo seguem os tipos de referência suportados por SciELO e a marcação de ca
 
 Thesis
 ^^^^^^
-Utilizada para referenciar monografias, dissertações ou teses para obtenção de um grau acadêmico, tais como livre-docência, doutorado, mestrado, bacharelado, licenciatura, etc. A seleção do elemento [thesgrp] determinará a alteração do tipo [book] para [thesis]. Ex:
+Utilizada para referenciar monografias, dissertações ou teses para obtenção de um grau acadêmico, tais como livre-docência, doutorado, mestrado, bacharelado, licenciatura etc. A seleção do elemento [thesgrp] determinará a alteração do tipo [book] para [thesis]. Ex:
 
 
    *PINHEIRO, Fernanda Domingos. Em defesa da liberdade: libertos e livres de cor nos tribunais do Antigo Regime português (Mariana e Lisboa, 1720-1819). Tese de doutorado, Departamento de História, Instituto de Filosofia e Ciências Humanas, Universidade Estadual de Campinas, 2013*
@@ -638,7 +634,7 @@ Utilizada para referenciar monografias, dissertações ou teses para obtenção 
 
 Confproc
 ^^^^^^^^
-Utilizada para referenciar documentos relacionados à eventos: atas, anais, resultados, proceedings, convenções, conferências entre outros. Ao marcar o elemento [confgrp] o programa alterará o tipo de referência para [confproc]. Ex.:
+Utilizada para referenciar documentos relacionados à eventos: atas, anais, convenções, conferências entre outros. Ao marcar o elemento [confgrp] o programa alterará o tipo de referência para [confproc]. Ex.:
 
 
    *FABRE, C. Interpretation of nominal compounds: combining domain-independent and domain-specific information. In: INTERNATIONAL CONFERENCE ON COMPUTATIONAL LINGUISTICS (COLING), 16, 1996, Stroudsburg. Proceedings... Stroudsburg: Association of Computational Linguistics, 1996. v.1, p.364-369.*
@@ -669,7 +665,7 @@ Utilizada para referenciar relatórios técnicos, normalmente de autoria institu
    :height: 250px
    :align: center
 
-
+.. note:: Nos casos em que não houver número de relatório, a alteração do tipo de referência deverá ser feita manualmente.
 
 .. _patente:
 
