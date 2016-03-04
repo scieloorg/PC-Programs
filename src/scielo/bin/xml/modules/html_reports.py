@@ -164,7 +164,9 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
 
                         # cell style
                         cell_style = 'td_status' if label == '@id' else cell_style_prefix + label
-                        if cell_style == label:
+                        if len(cell_style.split()) > 1:
+                            cell_style = None
+                        elif cell_style == label:
                             cell_style = get_message_style(row.get(label), label)
 
                         tr += tag('td', cell_content, cell_style)
