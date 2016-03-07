@@ -747,6 +747,18 @@ class ArticleContentValidation(object):
                 r.append(i_country_validation)
 
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, validation_status.STATUS_FATAL_ERROR))
+            for item in [aff.orgdiv1, aff.orgdiv2, aff.orgdiv3]:
+                if item is not None:
+                    status = ''
+                    if 'univers' in item.lower():
+                        status = validation_status.STATUS_FATAL_ERROR
+                    elif not 'depart' in item.lower() and not 'divi' in item.lower():
+                        status = validation_status.STATUS_WARNING
+                    if len(status) > 0:
+                        if aff.orgname is not None:
+                            r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of {orgname}').format(value=item, orgname=aff.orgname)))
+                        else:
+                            r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of an organization.').format(value=item)))
 
             norm_aff, found_institutions = article_utils.normalized_institution(aff)
             r.append(('aff', validation_status.STATUS_INFO, join_not_None_items([aff.orgname, aff.city, aff.state, aff.country])))
