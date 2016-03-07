@@ -71,7 +71,7 @@ Estando o arquivo formatado de acordo com o manual `Preparação de Arquivos par
 
 Ao clicar em [doc] o programa abrirá um formulário para ser completado com os dados básicos do artigo:
 
-Ao selecionar o periódico no campo “collection/journal” que o programa preencherá alguns dados automaticamente, tais como: ISSNs, título abreviado, acrônimo, entre outros. Os demais dados serão preenchidos manualmente, de acordo com as orientações abaixo:
+Ao selecionar o periódico no campo “collection/journal” o programa preencherá alguns dados automaticamente, tais como: ISSNs, título abreviado, acrônimo, entre outros. Os demais dados serão preenchidos manualmente, de acordo com as orientações abaixo:
 
 
 +-------------------+-----------------------------------------------------------------------------------------------+
@@ -148,7 +148,7 @@ Tendo preenchido todos os campos, ao clicar em [Ok] será aberta uma janela perg
    :align: center
 
 
-Ao clicar em [Sim], o programa efetuará a marcação automática dos elementos básicos do documento:
+Ao clicar em [Sim], o programa efetuará a marcação automática dos elementos básicos do documento.
 
 .. image:: img/doc-mkp-mkp--auto.jpg
    :height: 400px
@@ -185,7 +185,7 @@ Faça o mesmo para os demais títulos traduzidos.
 Autores
 -------
 
-Alguns autores apresentam mais que 1 label ao lado do nome, porém o programa não faz a marcação automática de mais que 1 label. Para isso, selecione o label do autor e identifique com o elemento [xref]. Veja:
+Alguns autores apresentam mais que 1 label ao lado do nome, porém o programa não faz a marcação automática de mais que 1 label. Para isso, selecione o label do autor e identifique com o elemento [xref].
 
 
 .. image:: img/doc-mkp-xref-label.jpg
@@ -265,8 +265,6 @@ Agora selecione o nome do grupo ou organização e identifique com a tag: [onbeh
 .. image:: img/mkp-tag-onbehalf.jpg
    :height: 150px
    :align: center
-
-Confira o vídeo da marcação de [onbehalf] e o resultado final:
 
 
 Contrib-ID
@@ -1158,7 +1156,7 @@ A seção de agradecimento, geralmente, encontra-se entre o final do corpo do te
    <iframe width="560" height="315" src="https://www.youtube.com/embed/sxZlGq4vwhk?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
-Comumente os dados de agradecimentos apresentam dados de financiamento, com número de contrato e instituição financiadora. Quando presentes, marque os dados com o elemento [funding].
+Comumente os agradecimentos apresentam dados de financiamento, com número de contrato e instituição financiadora. Quando presentes, marque os dados com o elemento [funding].
 
 .. image:: img/doc-mkp-nivel-inf-ack.jpg
    :height: 200px
@@ -1439,15 +1437,15 @@ Os parágrafos são marcados automaticamente no corpo do texto ao fazer a identi
 Figuras
 -------
 
-Ao fazer a marcação de [xmlbody] o programa identifica automaticamente o "graphic" da imagem, entretanto o responsável pela marcação do documento deve completar a marcação dos dados como label, caption e fonte (esse último, se existir).
+Ao fazer a marcação de [xmlbody] o programa identifica automaticamente as imagens com o elemento "graphic". 
 
-* Selecione a imagem envolvendo o label, caption e fonte e identifique com o elemento [figgrp].
+Para marcar o grupo de dados da figura, selecione a imagem, sua legenda (label e caption) e fonte, se houver e marque com o elemento [figgrp].
 
 .. image:: img/doc-mkp-select-fig.jpg
    :height: 400px
    :align: center
 
-* O programa irá abrir uma janela com um campo para identificação do "id" da figura.
+* Preencha "id" da figura na janela aberta pelo programa.
 
 .. image:: img/doc-mkp-id-fig.jpg
    :height: 200px
@@ -1478,9 +1476,7 @@ Certifique-se de que o id de figura é único no documento.
 
 
 
-.. note:: A marcação de label e caption é automática,, isso porque esses dados estão em conformidade com 
-          a `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_, com label e caption abaixo da imagem no arquivo .doc. A informação de fonte deve estar acima 
-          da imagem. Veja o exemplo da imagem acima.
+.. note:: A marcação de label e caption será automática se estiver conforme as instruções dadas em `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_, com label e caption abaixo da imagem no arquivo .doc. A informação de fonte deve estar acima da imagem. Veja o exemplo da imagem acima.
 
 
 .. _tabela:
@@ -1488,7 +1484,7 @@ Certifique-se de que o id de figura é único no documento.
 Tabelas
 -------
 
-As tabelas podem ser apresentadas como imagem ou em texto para codificação dos elementos que compõem a tabela. As tabelas que estão como imagem devem apresentar o label, caption e notas (essa última, se existir) em texto, para que todos os elementos sejam identificados.
+As tabelas podem ser apresentadas como imagem ou em texto. As tabelas que estão como imagem devem apresentar o label, caption e notas (essa última, se existir) em texto, para que todos os elementos sejam marcados.
 As tabelas devem estar, preferencialmente, em formato texto, usandos-se figuras para tabelas complexas (com células mescladas, símbolos, fórmulas, imagens etc).
 
 
@@ -1499,19 +1495,17 @@ Ao fazer a marcação de [xmlbody] o programa identifica automaticamente o "grap
 
 Mesmo estando na forma de figura, o id do elemento deverá ser o indicado para tabelas (t1, t2, t3 ...). Certifique-se de que o id de tabela é único no documento.
 
-* Selecione toda a informação de tabela e identique com o elemento [tabwrap]
-
 .. image:: img/doc-mkp-select-tableimg.jpg
    :height: 450px
    :width: 300px
    :align: center
 
-* O programa irá abrir uma janela com um campo para identificação do "id" da tabela.
+* Preencha o "id" da tabela na janela aberta pelo programa.
 
 .. image:: img/doc-mkp-id-figimg.jpg
    :align: center
 
-Certifique-se de que o id de figura é único no documento.
+Certifique-se de que o id da tabela é único no documento.
 
 .. image:: img/doc-mkp-tabimg.jpg
    :height: 450px
@@ -1524,17 +1518,16 @@ Certifique-se de que o id de figura é único no documento.
 Tabelas em Texto
 ^^^^^^^^^^^^^^^^
 
-O programa também codifica tabelas em texto. Para isso, selecionte toda a informação de tabela (label, caption, corpo da tabela e notas de rodapé, esse ultimo se existir) e identifique com o elemento [tabwrap].
+O programa também codifica tabelas em texto. Para isso, selecionte toda a informação de tabela (label, caption, corpo da tabela e notas de rodapé, se houver) e marque com o elemento [tabwrap].
 
 .. image:: img/doc-mkp-select-tab-text.jpg
    :height: 350px
    :align: center
 
 
-.. note:: O cabeçalho da tabela deve estar em negrito. Essa formatação é essencial para que o programa consiga fazer a identificação 
-          correta de [thead] e os elementos que o compõe.
+.. note:: O cabeçalho das colunas da tabela deve estar em negrito. Essa formatação é essencial para que o programa consiga fazer a identificação correta de [thead] e os elementos que o compõe.
 
-* O programa irá abrir uma janela com um campo para identificação do "id" da tabela.
+* Preencha "id" da tabela na janela aberta pelo programa.
 
 .. image:: img/doc-mkp-id-tabtext.jpg
    :height: 200px
@@ -1547,8 +1540,6 @@ Certifique-se de que o id de tabela é único no documento.
    :height: 400px
    :width: 280px
    :align: center
-
-Veja que o programa fez a marcação automática de label, caption, notas de rodapé e ainda, a codificação da tabela.
 
 
 .. note:: Tabelas irregulares, com células mescladas ou com tamanhos extensos possivelmente apresentarão problemas de marcação.
@@ -1564,19 +1555,19 @@ Há dois tipos de equações que o programa suporta: as equações em linha (em 
 
 **Equação em linha**
 
-As equações em linha devem ser inseridas no parágrafo como imagem. A identificação é feita automaticamente pelo programa Markup ao fazer a identificação de [xmlbody].
+As equações em linha devem ser inseridas no parágrafo como imagem. A marcação é feita automaticamente pelo programa ao fazer a identificação de [xmlbody].
 
 .. image:: img/doc-mkp-eqline.jpg
    :height: 200px
    :align: center
 
-Se o programa Markup não fizer a marcação automática da equação em linha, é possível fazer a marcação manualmente. Para isso selecione a equação em linha e identifique com o elemento [graphic].
+Se o programa não fizer a marcação automática da equação em linha, é possível fazer a marcação manualmente. Para isso selecione a equação em linha e clique no elemento [graphic].
 
 .. image:: img/doc-mkp=eqline-man.jpg
    :height: 250px
    :align: center
 
-Note que o programa abre uma janela com um campo para a identificação do "href" da equação. Nesse campo insira o nome do arquivo:
+No campo "href" insira o nome do arquivo:
 
 .. image:: img/doc-mkp-eq-line-href.jpg
    :height: 200px
@@ -1590,19 +1581,19 @@ O resultado será:
 
 **Equações**
 
-As equações disponíveis como parágrafos devem ser identificadas com a tag [equation]
+As equações disponíveis como parágrafos devem ser identificadas com o elemento [equation]
 
 .. image:: img/doc-mkp-eq1.jpg
    :height: 200px
    :align: center
 
-Será aberta uma janela com um campo para a identificação do "id" da equação. Certifique-se de que o id da equação é único no documento.
+Preencha do "id" da equação na janela aberta pelo programa. Certifique-se de que o id da equação é único no documento.
 
 .. image:: img/doc-mkp-eq2.jpg
    :height: 200px
    :align: center
 
-Ao fazer a marcação da equação o programa identifica o elemento [equation] e, caso haja informação de label na equação, é possível identificar esse dado com o botão [label].
+Ao fazer a marcação da equação, o programa identifica o elemento [equation]. Caso haja informação de número da equação, identifique-o com o elemento [label].
 
 .. image:: img/doc-mkp-eq3.jpg
    :height: 200px
@@ -1613,7 +1604,7 @@ Ao fazer a marcação da equação o programa identifica o elemento [equation] e
 Caixa de Texto
 --------------
 
-As caixas de texto podem apresentar figuras, equações, listas, glossários ou um texto. Para identificar esse elemento selecione toda a informação de caixa de texto, inclusive o label e caption e identifique com o botão [*boxedtxt]:
+As caixas de texto podem apresentar figuras, equações, listas, glossários ou um texto. Para marcar esse elemento, selecione toda a informação de caixa de texto, inclusive o label e caption, e identifique com o botão [*boxedtxt]:
 
 .. image:: img/doc-mkp-boxselect.jpg
    :height: 300px
@@ -1625,13 +1616,13 @@ Preencha o campo de ID da caixa de texto na janela que se abrirá após a seleç
    :height: 200px
    :align: center
 
-Utilizando o botão [*boxedtxt] o programa faz a marcação automática de [sectitle] da caixa de texto e também dos parágrafos:
+Utilizando o botão [*boxedtxt] o programa faz a marcação automática de título da caixa de texto e também dos parágrafos:
 
 .. image:: img/doc-mkp-resultboxed.jpg
    :height: 400px
    :align: center
 
-Caso a caixa de texto apresente uma figura, uma tabela, listas etc, é possível também utilizar o elemento [*boxedtxt] e depois fazer a identificação desses objetos através das tags flutuantes do programa.
+Caso a caixa de texto apresente uma figura, uma tabela, listas etc, é possível também utilizar o elemento [*boxedtxt] e depois fazer a marcação desses objetos através das tags flutuantes do programa.
 
 .. raw:: html
 
@@ -1649,7 +1640,7 @@ Para identificar versos ou poemas no corpo do texto, selecione toda a informaç�
    :height: 150px
    :align: center
 
-O programa identificará cada linha como [verseline]. Caso o poema apresente título, exclua a marcação de verseline, selecione o elemento e identifique com o botão [label]. A autoria do poema deve ser identificada com o elemento [attrib].
+O programa identificará cada linha como [verseline]. Caso o poema apresente título, exclua a marcação de verseline, selecione o título e marque com o elemento [label]. A autoria do poema deve ser marcada com o elemento [attrib].
 
 .. image:: img/doc-mkp-versee.jpg
    :height: 150px
@@ -1671,13 +1662,13 @@ O programa identificará cada linha como [verseline]. Caso o poema apresente tí
 Citações Diretas
 ----------------
 
-As citações são identificadas automaticamente no corpo do texto, ao fazer a marcação de [xmlbody]. Para isso, as citações devem ser alinhadas à direita com 4cm de recuo.
+As citações são marcadas automaticamente no corpo do texto, ao fazer a marcação de [xmlbody], desde que esteja com a formatação adequada.
 
 .. image:: img/mkp-doc-quoteok.jpg
    :height: 200px
    :align: center
 
-Caso o programa não faça a marcação automática, selecione a citação desejada e em seguida marque com o botão [quote]:
+Caso o programa não faça a marcação automática, selecione a citação desejada e em seguida marque com o elemento [quote]:
 
 .. image:: img/doc-mkp-quotee.jpg
    :height: 300px
@@ -1701,7 +1692,7 @@ O resultado deve ser:
 Listas
 ------
 
-Para identificar listas selecione todos os itens e identifique com o elemento [*list]. O programa abrirá uma janela, onde deve-se selecionar o tipo de lista:
+Para identificar listas selecione todos os itens e marque com o elemento [*list]. Selecione o tipo de lista na janela aberta pelo programa:
 
 .. image:: img/doc-mkp-list-type.jpg
    :height: 400px
@@ -1722,14 +1713,13 @@ Verifique os tipos possíveis de lista em :ref:`elemento-list` e selecione o tip
    <iframe width="560" height="315" src="https://www.youtube.com/embed/6697hJl4H7M?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
-.. note:: O programa Markup não faz a marcação de sublistas. Portanto, para verificar como identificar sublistas, 
+.. note:: O programa Markup não faz a marcação de sublistas. Para verificar como marcar sublistas, 
          consulte a documentação "Markup_90_O_que_ha_novo.pdf" item "Processos Manuais".
 
 
 .. _elemento-list:
 
-O atributo ``@list-type`` especifica o prefixo a ser utilizado no marcador da 
-lista. Os valores possíveis são:
+O atributo ``@list-type`` especifica o prefixo a ser utilizado no marcador da lista. Os valores possíveis são:
 
 +----------------+-------------------------------------------------------------------+
 | Valor          | Descrição                                                         |
@@ -1757,13 +1747,13 @@ lista. Os valores possíveis são:
 Lista de Definição
 ------------------
 
-Para identificar listas de definições selecione todos os dados, inclusive o título se existir, e marque com o elemento [*deflist]
+Para marcar listas de definições selecione todos os dados, inclusive o título se existir, e marque com o elemento [*deflist]
 
 .. image:: img/doc-mkp-deflistselect.jpg
    :height: 300px
    :align: center
 
-Na janela que será aberta pelo programa, preencha o campo de identificação de id da lista. Certifique-se de que o id é único no documento.
+Na janela aberta pelo programa, preencha o campo de "id" da lista. Certifique-se de que o id é único no documento.
 
 .. image:: img/doc-mkp-def-selec.jpg
    :height: 200px
@@ -1782,7 +1772,7 @@ Após isso, confirme o título da lista de definição e em seguida a marcação
    :align: center
 
 
-Ao finalizar, verifique se a marcação automática de cada termo e definição da lista de definição estão de acordo com o modelo abaixo.
+Ao finalizar, verifique se a marcação automática de cada termo da lista de definição estão de acordo com o modelo abaixo.
 
 .. image:: img/doc-mkp-deflist.jpg
    :height: 300px
@@ -1791,34 +1781,34 @@ Ao finalizar, verifique se a marcação automática de cada termo e definição 
 .. note:: O programa faz a marcação automática de cada item da lista de definições apenas se a lista estiver com 
           a formatação requerida pelo SciELO: com o termo em negrito, hífen como separador e a definição do termo sem formatação.
 
-Caso o programa não faça a marcação automática da lista de definições, é possível identificar os elementos manualmente. Veja:
+Caso o programa não faça a marcação automática da lista de definições, é possível identificar os elementos manualmente.
 
-* Selecione toda a lista de denifições e identifique com o elemento [deflist], sem asterisco:
+* Selecione toda a lista de denifições e marque com o elemento [deflist], sem asterisco:
 
 .. image:: img/doc-mkp-mandef1.jpg
    :height: 300px
    :align: center
 
 
-* Identifique o título com o elemento [sectitle] (apenas se houver informação de título):
+* Marque o título com o elemento [sectitle] (apenas se houver informação de título):
 
 .. image:: img/doc-mkp-defsect.jpg
    :height: 250px
    :align: center
 
-* Selecione o termo e a definição e identifique com o botão [defitem]:
+* Selecione o termo e a definição e marque com o elemento [defitem]:
 
 .. image:: img/doc-mkp-defitem.jpg
    :height: 250px
    :align: center
 
-* Selecione apenas o termo e marque com o botão [term]:
+* Selecione apenas o termo e marque com o elemento [term]:
 
 .. image:: img/doc-mkp-term.jpg
    :height: 80px
    :align: center
 
-* O próximo passo é selecionar a definição e identificar com o botão [def]:
+* O próximo passo será selecionar a definição e identificar com o elemento [def]:
 
 .. image:: img/mkp-doc-def.jpg
    :height: 200px
@@ -1833,7 +1823,7 @@ Faça o mesmo para os demais termos e definições.
 Material Suplementar
 --------------------
 
-A identificação de materiais suplementares deve ser feita pela tag [supplmat]. A indicação de Material suplementar pode estar em linha, como um parágrafo "solto" no documento ou como apêndice.
+A marcação de materiais suplementares deve ser feita pelo elemento [supplmat]. A indicação de Material suplementar pode estar em linha, como um parágrafo "solto" no documento ou como apêndice.
 
 
 .. _suplemento-em-paragrafo:
@@ -1841,7 +1831,7 @@ A identificação de materiais suplementares deve ser feita pela tag [supplmat].
 Objeto Suplementar em [xmlbody]
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Selecione toda a informação de material suplementar, incluindo label e caption - se existir - e identifique com o elemento [supplmat]:
+Selecione todo o dado de material suplementar, incluindo label e caption, se existir, e marque com o elemento [supplmat]:
 
 .. image:: img/doc-mkp-suppl-f.jpg
    :height: 300px
@@ -1855,7 +1845,7 @@ Na janela aberta pelo programa,  preencha o campo de "id", o qual deverá ser ú
    :height: 200px
    :align: center
 
-Na sequência, faça a identificação do label do material suplementar e em seguida selecione toda a informação de figura e marque com o botão [figgrp]. A marcação deverá ser conforme segue o exemplo abaixo:
+Na sequência, faça a marcação do label do material suplementar. Selecione todo o grupo de dados da figura e marque com o elemento [figgrp]. A marcação deverá ser conforme o exemplo abaixo:
 
 .. image:: img/doc-mkp-suppl2.jpg
    :height: 300px
@@ -1867,25 +1857,26 @@ Na sequência, faça a identificação do label do material suplementar e em seg
 Material Suplementar em Linha
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Selecione a informação de material suplementar e identifique com o elemento [supplmat]:
+Selecione a informação de material suplementar e marque com o elemento [supplmat]:
 
 .. image:: img/doc-mkp-selectms.jpg
    :height: 180px
    :align: center
 
-Na janela aberta pelo programa,  preencha o campo de "id", o qual deverá ser único no documento, e o campo "href" com o nome do pdf suplementar exatamente como consta na pasta "src". Veja:
+Na janela aberta pelo programa,  preencha o campo de "id", o qual deverá ser único no documento, e o campo "href" com o nome do pdf suplementar exatamente como consta na pasta "src".
 
 .. image:: img/doc-mkp-camposms.jpg
    :height: 200px
    :align: center
 
 
-A marcação deverá ser conforme segue abaixo:
+A marcação deverá ser conforme abaixo:
 
 .. image:: img/doc-nkp-supple.jpg
    :align: center
 
-.. note:: Antes de iniciar a marcação de material suplementar certifique-se de que o PDF ou IMG (JPEG, PNG) suplementar foi incluído na pasta "src" comentado em `Estrutura de Pastas <pt_how_to_generate_xml-prepara.html#estrutura-de-pastas>`_.
+.. note:: Antes de iniciar a marcação de material suplementar certifique-se de que o PDF suplementar foi incluído na 
+          pasta "src" comentado em `Estrutura de Pastas <pt_how_to_generate_xml-prepara.html#estrutura-de-pastas>`_.
 
 
 .. _suplemento-em-apendice:
@@ -1900,7 +1891,7 @@ Nesse caso, marca-se, primeiramente, o objeto com o elemento [appgrp] e em segui
   :width: 350px
   :align: center
 
-Selecione novamente toda a informação desse material suplementar e identifique com o elemento [app]. Em seguida, marque o label do material com a tag [sectitle]:
+Selecione novamente todo dado de material suplementar e marque com o elemento [app]. Em seguida, marque o label do material com o elemento [sectitle]:
 
 .. image:: img/doc-mkp-suppl-app.jpg
    :height: 400px
@@ -1908,7 +1899,7 @@ Selecione novamente toda a informação desse material suplementar e identifique
    :align: center
 
 
-Selecione o material suplementar e identifique com a tag [supplmat]:
+Selecione o material suplementar e identifique com o elemento [supplmat]:
 
 .. image:: img/doc-mkp-app-suuol.jpg
    :height: 400px
@@ -1916,7 +1907,7 @@ Selecione o material suplementar e identifique com a tag [supplmat]:
    :align: center
    
 
-Após a marcação de [supplmat] identifique o objeto do material com as tags flutuantes:
+Após a marcação de [supplmat] marque o objeto do material com as tags flutuantes:
 
 .. image:: img/doc-mkp-suppl4.jpg
    :height: 400px
@@ -1939,13 +1930,14 @@ Arquivos traduzidos apresentam uma formatação específica. Veja abaixo os iten
 A tradução do documento deve ser simplificada:
 
 1. Inserir apenas as informações que apresentam tradução, por exemplo:
-    a. DOI - se houver;
-    b. Seção - se houver tradução;
-    c. Autores e Afiliações - apenas se houver afiliação traduzida;
-    d. Resumos -  se houver tradução;
-    e. Palavras-chave -  se houver tradução;
-    f. Correspondência -  se houver tradução;
-    g. Notas de autor ou do arquivo - se houver tradução.
+    a. Seção - se houver tradução;
+    b. Autores e Afiliações - apenas se houver afiliação traduzida;
+    c. Resumos -  se houver tradução;
+    d. Palavras-chave -  se houver tradução;
+    e. Correspondência -  se houver tradução;
+    f. Notas de autor ou do arquivo - se houver tradução;
+    g. Corpo do texto.
+    
 2. Título é mandatório;
 3. Não inserir novamente referências bibliográficas;
 4. Manter as citações bibliográficas no corpo do texto conforme constam no PDF.
@@ -1957,22 +1949,23 @@ Verificar modelo abaixo:
    :width: 200px
 
 
-Identificando Artigos com Traduções
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Identificando Arquivos com Traduções
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Com o arquivo formatado, faça a identificação de todo o documento com o elemento [doc], incluindo suas traduções.
+Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e complete as informações.
+A marcação do arquivo de idioma principal não muda, siga as orientações anteriores para a marcação dos elementos.
 
 .. image:: img/mkp-subdoc-fechadoc.jpg
    :align: center
 
 
-.. note:: É fundamental que a última tag do arquivo seja o elemento [/doc]. Certifique-se disso.
+.. note:: É fundamental que o último elemento do arquivo como um todo seja o elemento [/doc]. Certifique-se disso.
 
 
-Finalizado a marcação do artigo em seu idioma original, selecione a tradução e marque com a tag [subdoc].
-O programa abre uma janela onde deve ser identificado os campos: 
+Finalizado a marcação do arquivo de idioma principal selecione toda a tradução e marque com o elemento [subdoc].
+Na janela aberta pelo programa, preencha os campos a seguir: 
 
-* ID            - Identificador único do arquivo: S (sub-article) + nº de ordem;
+* ID            - Identificador único do arquivo: S + nº de ordem;
 * subarttp - selecionar o tipo de artigo: "tradução";
 * language - idioma da tradução do arquivo.
 
@@ -1981,7 +1974,7 @@ O programa abre uma janela onde deve ser identificado os campos:
    :width: 600px
    :align: center
 
-Nos artigos traduzidos, a marcação de elementos como autor, título, afiliações (se houver) etc será manual. 
+Agora, no nível de [subdoc], faça a marcação dos elementos que compõem a tradução do documento:
 
 
 .. image:: img/mkp-subdoc-nivel.jpg
@@ -1990,15 +1983,15 @@ Nos artigos traduzidos, a marcação de elementos como autor, título, afiliaç�
    :align: center
 
 
-.. note::  Se houver mais de uma tradução no artigo, cada uma delas deverá ser marcada separadamente com o elemento [subdoc], sendo a primeira tradução identicada como s1, a segunda como s2 e assim por diante.
+.. note::  O programa Markup não faz a identificação automática do arquivo traduzido.
 
 
 Afiliação traduzida
 ^^^^^^^^^^^^^^^^^^^
 
-A identificação de afiliação traduzida não segue o padrão de identificação do artigo de idioma principal.
-As afiliações traduzidas não devem apresentar o detalhamento orientado anteriormente em <inserir link>. 
-Em [subdoc] selecione a afiliação traduzida e identifique com a tag [afftrans]:
+A marcação de afiliação traduzida não segue o padrão de marcação do artigo de idioma principal.
+As afiliações traduzidas não devem apresentar o detalhamento orientado anteriormente em afiliações. 
+Em [subdoc] selecione a afiliação traduzida e identifique com o elemento [afftrans]:
 
 .. image:: img/mkp-afftrans.jpg
    :height: 300px
@@ -2013,9 +2006,9 @@ Tendo identificado todos os dados iniciais da tradução, siga com a marcação 
 Identificando 'body' de tradução
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A marcação do body segue a mesma orientação anterior, selecione todo o corpo do texto e identique com a tag [xmlbody] do nível [subdoc]. 
+A marcação do corpo do texto segue a mesma orientação anterior. Selecione todo o corpo do texto e marque com o elemento [xmlbody] do nível [subdoc]. 
 
-Perceba que o programa faz a marcação automática das referências no corpo do texto inserindo o 'rid" correspondente ao 'id' das referências bibliográficas marcadas no artigo principal.
+O programa fará a marcação automática das referências cruzadas no corpo do texto inserindo o 'rid" correspondente ao 'id' das referências bibliográficas marcadas no artigo principal.
 
 .. image:: img/mkp-body-trans.jpg
    :height: 300px
@@ -2024,7 +2017,7 @@ Perceba que o programa faz a marcação automática das referências no corpo do
 
 Nesse caso mantenha o RID inserido automaticamente.
 Figuras, Tabelas, Equações, Apêndices etc devem apresentar ID diferente do inserido no arquivo principal.
-Para isso, dê continuidade nos IDs, por exemplo:
+Para isso, dê continuidade nos IDs. Por exemplo:
 
 
 **Artigo principal apresenta 2 figuras:**
@@ -2043,10 +2036,10 @@ Para isso, dê continuidade nos IDs, por exemplo:
    :align: center
 
 Perceba que foi dado sequência nos IDs das figuras.
-Considerar a regra para: Autores e suas respectivas afiliações, figuras, tabelas, caixas de texto, equações, apêndices etc.
+Considere a regra para: Autores e suas respectivas afiliações, figuras, tabelas, caixas de texto, equações, apêndices etc.
 
 
-.. note:: No caso do DOI, atualmente nosso sistema o atribui apenas ao documento de idioma principal.
+.. note:: Caso haja mais de uma tradução no artigo, cmarcá-las separadamente com o elemento [subdoc].
 
 
 .. _carta-resposta:
@@ -2060,15 +2053,14 @@ A Carta e resposta também devem estar em um único arquivo .doc ou .docx.
 
 A resposta deve estar no mesmo documento que a carta. Verifique abaixo quais são os dados que devem estar presentes na resposta:
 
-1. Não inserir DOI;
-2. Inserir seção;
-3. Autores e Afiliações, se existente;
-4. Correspondência, se existente;
-5. Notas de autor ou do arquivo, se existente;
-6. Título é mandatório;
-7. Referências Bibliográficas, se a resposta apresentar.
+1. Inserir seção;
+2. Autores e Afiliações, se existente;
+3. Correspondência, se existente;
+4. Notas de autor ou do arquivo, se existente;
+5. Título é mandatório;
+6. Referências Bibliográficas, se a resposta apresentar.
 
-Verificar modelo abaixo:
+Veja o modelo abaixo:
 
 [imagem]
 
@@ -2083,11 +2075,11 @@ A marcação da carta não muda, siga as orientações anteriores para a identif
    :height: 450px
    :align: center
 
-.. note:: É fundamental que a última tag do arquivo como um todo seja o elemento [/doc]. Certifique-se disso.
+.. note:: É fundamental que o último elemento do arquivo como um todo seja o elemento [/doc]. Certifique-se disso.
 
 
-Finalizado a marcação da carta selecione toda a resposta e marque com a tag [subdoc].
-O programa abre uma janela onde deve ser identificado os campos: 
+Finalizada a marcação da carta, selecione toda a resposta e marque com o elemento [subdoc].
+na janela aberta pelo programa, inclua os campos: 
 
 * ID       - Identificador único do arquivo: S + nº de ordem;
 * subarttp - selecionar o tipo de artigo: "reply";
@@ -2098,21 +2090,20 @@ O programa abre uma janela onde deve ser identificado os campos:
 
 .. note::  O programa Markup não faz a identificação automática da resposta.
 
-Agora, no nível de [subdoc], faça a marcação dos elementos que compõem a resposta do documento:
+No nível de [subdoc], faça a marcação dos elementos que compõem a resposta do documento:
 
 .. image:: img/mkp-dados-basicos-resposta.jpg
    :align: center
 
 
 .. note:: Os dados como: afiliações e autores, objetos no corpo do texto e referencias bibliográficas devem apresentar IDs sequenciais, seguindo a ordem da carta. Exemplo, se a última afiliação da carta foi aff3, no documento de resposta a primeira afiliação será aff4 e assim por diante.
-No caso do DOI, atualmente nosso sistema o atribui apenas ao documento principal, ou seja, apenas na carta.
 
 
 .. _errata:
 
 Errata
 ======
-Para identificar uma errata, verifique primeiramente se o arquivo está formatado corretamente. Segue abaixo a formatação requerida para a identificação correta dos dados de uma errata:
+Para marcar uma errata, verifique primeiramente se o arquivo está formatado corretamente conforme orientações abaixo:
 
 * 1ªlinha: DOI
 * 2ªlinha: Seção "Errata" ou "Erratum"
@@ -2125,37 +2116,33 @@ Para identificar uma errata, verifique primeiramente se o arquivo está formatad
    :align: center
 
 
-Marcação de errata
-------------------
-Abra a errata no Markup e identifique com a tag [doc].
-Ao abrir o formulário insira o nome do periódico e confira os metadados que são adicionados automaticamente.
-E complete os campos que seguem: volume, número, dataiso, month/season, paginação, order e pagecount.
-No campo [doctopic] é muito importante que seja inserido o tipo de arquivo corretamente. Portanto para errata selecione o valor "errata":
-
-Complete os campos [language] e [sps-version] com a versão mais recente do SciELO PS e clique em [OK]
-O programa identificará automaticamente os elementos básicos da errata como: seção, número de DOI e título:
+Marcando a errata
+-----------------
+Abra a errata no Markup e identifique com o elemento [doc].
+Ao abrir o formulário, selecione o título do periódico e confira os metadados que são adicionados automaticamente.
+Complete os demais campos e, em [doctopic], selecione o valor "errata" e  clique em [OK]
+O programa marcará automaticamente os elementos básicos da errata como: seção, número de DOI e título:
 
 .. image:: img/mkp-formulario-errata.jpg
    :height: 350px
    :align: center
 
-Para finalizar a identificação da errata, verifique se todos os elementos foram identificados corretamente siga com a marcação.
-Selecione o corpo do texto e identifique com a tag [xmlbody]:
+Para finalizar a marcação da errata, verifique se todos os elementos foram identificados corretamente e siga com a marcação.
+Selecione o corpo do texto e identifique com o elemento [xmlbody]:
 
 .. image:: img/mkp-xmlbody-errata.jpg
    :height: 350px
    :align: center
 
 
-Feito isso, insira o cursor do mouse antes da tag [toctitle], e clique na tag [related].
-Note que o programa abre uma janela onde deve ser preenchido os campos: [reltp] 'tipo de related' e [pid-doi] 'numero do PID ou DOI relacionado'.
-Selecione o valor "corrected-article" e no campo [pid-doi] insira o número de DOI do artigo que será corrigido e clique em [Continuar]:
+Insira o cursor do mouse antes do elemento [toctitle], e clique no botão [related].
+Na janela aberta pelo programa, preencha os campos: [reltp] 'tipo de relação' com o valor "corrected-article" e [pid-doi] 'numero do PID ou DOI relacionado' com o número de DOI do artigo que será corrigido e clique em [Continuar]:
  
 .. image:: img/mkp-related-campos.jpg
    :height: 200px
    :align: center
 
-O programa insere a tag [related] a qual fará link com o artigo que apresenta erro:
+O programa insere o elemento [related] o qual fará link com o artigo que apresenta erro:
 
 .. image:: img/mkp-resultado-related.jpg
    :height: 300px
@@ -2170,15 +2157,13 @@ O programa insere a tag [related] a qual fará link com o artigo que apresenta e
 Ahead Of Print
 ==============
 
-O arquivo Ahead Of Print deve apresentar formatação indicada no ítem `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_, entretanto como arquivos AOP não apresentam informação de seção, volume e número, após a informação de número de DOI deixar uma linha em branco e em seguida inserir o título do documento:
+O arquivo Ahead Of Print (AOP) deve apresentar formatação indicada no ítem `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_. Como arquivos em AOP não apresentam seção, volume, número e paginação, após o número de DOI deixar uma linha em branco e em seguida inserir o título do documento:
 
 .. image:: img/mkp-exemplo-ahead.jpg
    :height: 300px
    :align: center
 
-Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e complete as informações.
-No preenchimento do formulário para Ahead Of Print, o responsável pela marcação deve inserir o valor "00" para os campos: 
-[fpage], [lpage], [volume] e [issue].
+No preenchimento do formulário para Ahead Of Print, deve-se inserir o valor "00" para os campos: [fpage], [lpage], [volume] e [issue].
 
 Em [dateiso] insira a data de publicação completa: Ano+Mês+Dia; já no campo [season], insira o mês de publicação.
 O total de página, [pagcount*], para arquivos AOP deve ser sempre "1":
@@ -2192,7 +2177,7 @@ Selecione o valor "artigo original" para o campo [doctopic].
 
 No campo [order] deve ser inserido 5 dígitos que obedecem a uma regra SciELO. Verifique abaixo a regra para construir o identificador do Ahead Of Print:
 
-Para a construção do ID de Ahead será utilizado uma parte da numeração do lote e outra da ordem do documento.
+Para a construção do ID de AOP será utilizado uma parte da numeração do lote e outra da ordem do documento.
 
 *1 - Copie os três primeiros dígitos do lote*
 
@@ -2230,28 +2215,26 @@ Arquivo 2:
 .. image:: img/mkp-other-aop2.jpg
    :align: center
 
-etc..
+etc.
 
 
-Em [ahpdate] insira a mesma data que consta em [dateiso]. Tendo preenchido todos os dados, clique em [Ok].
+Em [ahpdate] insira a mesma data que consta em [dateiso]. Após preencher todos os dados, clique em [Ok].
 
 .. image:: img/doc-preench-aop.jpg
    :height: 300px
    :align: center
 
 
-.. note:: Ao gerar o arquivo .xml o programa insere automaticamente a tag <subject> com o valor "Articles", conforme recomendado pelo SciELO PS.
+.. note:: Ao gerar o arquivo .xml o programa inserirá automaticamente o elemento <subject> com o valor "Articles", conforme recomendado pelo SciELO PS.
 
 
 .. _rolling-pass:
 
-Rolling Pass    
-============
+Publicação Contínua (Rolling Pass)    
+==================================
 O arquivo Rolling Pass deve apresentar formatação indicada no ítem `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_. 
-Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e complete as informações.
 
-No preenchimento do formulário para Rolling Pass, o responsável pela marcação deve ficar atento ao modelo de publicação do periódico. 
-Verifique abaixo os modelos de publicação de Rolling Pass e a marcação no formulário:
+Antes de preencher formulário para Rolling Pass, deve-se saber o formato de publicação adotado pelo periódico, os quais podem ser:
 
 **Volume e número**
 
@@ -2288,14 +2271,14 @@ Os artigos deverão apresentar um ID único dentro de sua seção, portanto reco
 * 1234-5678-rctb-v10-0356.xml    0102
                  ...
 
-A indicação de página eletrônica do documento deve ser inserida no campo [elocatid].
+O identificador eletrônico do documento deve ser inserido no campo [elocatid].
 
 .. image:: img/rp-formulario.jpg
    :height: 300px
    :align: center
 
 
-.. note:: Arquivos RP apresentam elocation, portanto não apresenta fpage e lpage.
+.. note:: Arquivos Rolling Pass apresentam elocation. Dessa forma, não deve-se preencher dados correspondentes a [fpage] e [lpage].
 
 
 .. _resenha:
@@ -2303,9 +2286,9 @@ A indicação de página eletrônica do documento deve ser inserida no campo [el
 Resenha
 =======
 As resenhas geralmente apresentam um dado a mais que os arquivos comuns: a referência bibliográfica do livro resenhado.
-A formatação do documento deve seguir a mesma orientação disponível em `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_ , porém a referência da resenha deve ser posicionada antes do corpo do texto. 
+A formatação do documento deve seguir a mesma orientação disponível em `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_ , incluindo-se referência bibliográfica do item resenhado antes do corpo do texto. 
 
-Verificar modelo abaixo:
+Verifique modelo abaixo:
 
 .. image:: img/mkp-format-resenha.jpg
    :align: center
@@ -2314,15 +2297,14 @@ Verificar modelo abaixo:
 
 Identificando Resenhas
 ----------------------
-Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e complete as informações. Em [doctopic] selecione o tipo "resenha (book review)". 
-A marcação dos dados iniciais é semelhante às orientações anteriores com diferença apenas na identificação da referência do livro resenhado.
+Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e complete as informações. Em [doctopic] selecione o tipo "resenha (book review)". A marcação dos dados iniciais é semelhante às orientações anteriores, excetuando-se a marcação da referência do livro resenhado.
 
-Para identificar a referência do livro antes do corpo do texto selecione toda a resenha e marque com a tag [product]. Perceba que ao marcar, o programa apresenta uma janela onde deve ser inserido o tipo de referência bibliográfica em [prodtype]:
+Para marcar a referência do livro, selecione toda a referência e marque com o elemento [product]. Na janela aberta pelo programa, insera o tipo de referência bibliográfica em [prodtype]:
 
 .. image:: img/mkp-product.jpg
    :align: center
 
-Após isso, faça a marcação da referência através dos elementos apresentados no programa:
+Na sequência, faça a marcação da referência usando os elementos apresentados no programa:
 
 .. image:: img/mkp-product-reference.jpg
    :align: center
@@ -2330,16 +2312,17 @@ Após isso, faça a marcação da referência através dos elementos apresentado
 Finalize a marcação do arquivo e gere o XML.
 
 
-.. note:: O programa não apresenta todos os elementos para identificação de referência bibliográfica. Portanto, identifique os dados da referência através dos elementos que constam no programa Markup.
+.. note:: O programa não apresenta todos os elementos para marcação de referência bibliográfica no elemento [product]. Marque apenas os dados da referência com os elementos disponibilizados pelo programa.
 
 
 .. _formato-abreviado:
 
-Formato Abreviado
-================
+Artigos em Formato Abreviado
+============================
 
-O arquivo no formato abreviado possui uma estrutura diferente do convencional, apresentando os dados básicos do documento e as referências completas.
-O corpo do texto de um arquivo no formato abreviado deve ser suprimido, substituindo o texto por apenas dois parágrafos:
+O formato abreviado de marcação é utilizados somente nos casos de inserção de números retrospectivos na coleção do periódico.
+O arquivo no formato abreviado apresentará os dados básicos do documento (título do artigo, autores, afiliação, seção, resumo, palavras-chave e as referências completas).
+O corpo do texto de um arquivo no formato abreviado deve ser suprimido, substituindo o texto por dois parágrafos:
 
    *Texto completo disponível apenas em PDF.*
 
@@ -2361,21 +2344,21 @@ Faça a marcação de referências bibliográficas de acordo com a orientação 
 .. image:: img/mkp-abrev-refs.jpg
    :align: center
 
-A identificação dos parágrafos deve ser feita pela tag [xmlbody]. Para isso, selecione os dois parágrafos e clique na tag [xmlbody]:
+A marcação dos parágrafos deve ser feita pelo elemento [xmlbody], selecionando os dois parágrafos e clicando em [xmlbody]:
 
 .. image:: img/mkp-xmlbody-abrev.jpg
    :align: center
 
 
-.. note:: A única informação que não será identificada no arquivo de 'Formato Abreviado' será o corpo do texto, o qual estará disponível no PDF.
+.. note:: A única informação que não será marcada no arquivo de 'Formato Abreviado' será o corpo do texto, o qual estará disponível no PDF.
 
 
 .. _press-release:
 
 Press Releases
 ==============
-Os arquivos Press Releases são bastante simples, não exigem seção, número de DOI e, às vezes não exigem afiliação de autor.
-Uma vez aprovados, os Press Releases poderão ser formatados para uma identificação mais otimizada do processo.
+Por ser um texto de divulgação que visa dar mais visibilidade a um número ou artigo publicado em um periódico, o press realise não segue a mesma estrutura de um artigo científico. Dessa forma, não possue seção, número de DOI e, não há obrigatoriedade de inclusão de afiliação de autor.
+Uma vez aprovados, os Press Releases poderão ser formatados para uma marcação mais otimizada.
 
 * 1ª linha do arquivo: correspondente ao número de DOI, deve ficar em branco;
 * 2ª linha do arquivo: correspondente à seção do documento, deve ficar em branco;
@@ -2392,31 +2375,31 @@ Identificando o Press Release
 -----------------------------
 Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e considere os seguintes itens para arquivo PR:
 
-* Nos campos 'volid' e 'issue' insira o número correspondente ao fascículo que o PR está relacionado e em 'isidpart' insira a informação 'pr' qualificando o arquivo como um Press Release;
+* Nos campos 'volid' e 'issue' insira o número correspondente ao número que o Press Release está relacionado e em 'isidpart' insira a informação 'pr' qualificando o arquivo como um Press Release;
 * Em [doctopic] selecione o tipo "Press Release";
-* Caso o Press Release seja um PR de fascículo, insira a informação "00001" no campo [order] para que o Press Release seja posicionado corretamente no sumário eletrônico; caso o PR seja de artigo, apenas insira a informação "01".
+* Caso o Press Release esteja relacionado a um número, insira a informação "00001" no campo [order] para que o Press Release seja posicionado corretamente no sumário eletrônico; caso o Press Release seja de artigo, apenas insira a informação "01".
 
 .. image:: img/mkp-form-press-release.jpg
    :align: center
 
 
-Ao clicar em [OK] o programa identificará automaticamente todas as informações de dados iniciais, pulando número de DOI e os demais dados que o Press Release não apresenta.
+Ao clicar em [OK] o programa marcará automaticamente todos os dados iniciais, pulando número de DOI e os demais dados que o Press Release não apresenta.
 
-Complete as informações do PR como: [xref] de autores, normalização de afiliações (esses dois últimos, se houver), corpo do texto com a tag [xmlbody] e identificação de assinatura de autor com a tag [sigblock].
+Complete demais dados do Press Relase como: [xref] de autores, normalização de afiliações (esses dois últimos, se houver), corpo do texto com o elemento [xmlbody] e identificação de assinatura de autor com o elemento [sigblock].
 
 .. image:: img/mkp-press-release.jpg
    :align: center
 
 
-Caso o PR seja de artigo, ou seja, o Press Release está relacionado a um artigo específico de um fascículo é necessário relacionar o PR ao artigo em questão.
-Para isso, insira o cursor do mouse após o elemento [doc] e clique no elemento [related]. O programa abrirá uma janela onde deverá ser preenchidos os campos 'reltp' (tipo de related) e o campo 'pid-doi'.
+Caso o Press Release esteja relacionado a artigo específico, será necessário relacioná-lo ao artigo em questão.
+Dessa forma, insira o cursor do mouse após o elemento [doc] e clique no elemento [related]. O programa abrirá uma janela onde deverá ser preenchidos os campos 'reltp' (tipo de relação) e o campo 'pid-doi'.
 No campo 'reltp' selecione o valor 'press-release'; já em 'pid-doi' insira o número de DOI do artigo relacionado.
 
 .. image:: img/mkp-related-press-release.jpg
    :align: center
 
 
-.. note:: A identificação pelo elemento [related] deve ser realizada apenas para Press Releases do tipo "artigo".
+.. note:: A identificação pelo elemento [related] deve ser realizada apenas para Press Releases relacionado a um "artigo".
 
 
 .. _processos-manuais:
@@ -2424,35 +2407,33 @@ No campo 'reltp' selecione o valor 'press-release'; já em 'pid-doi' insira o n�
 Processos Manuais
 ================
 
-O programa de marcação atende à 80% do SciELO Publishing Schema. 
-Há alguns dados que devem ser marcados manualmente, seja no próprio programa Markup, seja no arquivo xml propriamente dito.
+O programa de marcação atende mais 80% das regras estabelecidas no SciELO Publishing Schema. 
+Há alguns dados que devem ser marcados manualmente, seja no próprio programa Markup, seja diretamente no arquivo xml gerado pelo programa.
 
 
-Afiliação com mais que 1 instituição
+Afiliação com mais de uma instituição
 ------------------------------------
-O programa Markup não realiza marcação de afiliações com mais que uma instituição, esse procedimento deverá ser feito diretamente no arquivo .xml, através de um editor de XML.
-Portanto, com o .xml gerado abra o documento em um editor e encontre a afiliação que deverá ser corrigida.
-
-Para identificar a segunda instituição deverá ser inserido manualmente uma segunda tag '<aff>' com um ID diferente do que já consta no documento:
+O programa Markup não realiza marcação de afiliações com mais que uma instituição. Nesse caso, o dado será incluído diretamente no arquivo .xml.
+Abra o arquivo .xml em um editor de XML e inclua o elemento <aff> com um ID diferente do que já consta no documento:
 
 .. image:: img/mkp-aff-xml-id.jpg
    :align: center
 
-.. note:: Essa nova tag não deverá apresentar nenhum label e não apresentará a tag <institution content-type="original">. Esse elemento deverá existir somente na tag original da afiliação correspondente a essa.
+.. note:: A afiliação incluída manualmente não deve apresentar <label> e <institution content-type="original">, já que seus dados para apresentação no site já estão disponíveis na afiliação marcada no programa.
 
 
-Verifique a segunda instituição da afiliação original e copie para a afiliação nova fazendo a identificação do dado com a tag <institution content-type="orgname"> e com a tag de normalização:
+Verifique a segunda instituição da afiliação original e copie para a afiliação nova fazendo a marcação do dado com o elemento <institution content-type="orgname"> e <institution content-type="normalized">:
 
 .. image:: img/mkp-aff-id-xml-norm.jpg
    :align: center
 
-Caso essa instituição apresente divisões, faça a marcação do dado conforme a instituição identificada acima.
-Agora identifique o país correspondente a essa segunda instituição e marque com a tag <country country="">:
+Caso essa instituição apresente divisões, faça a marcação do dado conforme as demais já feitas no documento.
+Em seguida, marque seu país correspondente com o elemento <country country="xx">:
 
 .. image:: img/mkp-xml-aff-complete.jpg
    :align: center
 
-Tendo identificado corretamente a segunda instituição e o país, o próximo passo é relacionar essa tag <aff id=""> com o autor correspondente.
+O próximo passo será relacionar essa afiliação <aff id="affx"> com o autor correspondente.
 Considerando que o autor não apresenta mais que um label, insira a tag <xref> fechada:
 
 .. image:: img/mkp-xref-fechada.jpg
@@ -2466,18 +2447,18 @@ Salve o documento .xml e valide o arquivo.
 Tipo de Mídia
 -------------
 
-O programa Markup faz também a identificação de mídias como:
+O programa Markup faz também a identificação de mídias como: 
 
 * vídeos
 * áudios
 * filmes
 * animações
 
-Para isso, é necessário inserir esses arquivos na pasta "src" com o mesmo nome do arquivo .doc, porém acrescente um hífen e o identificador da mídia. Exemplo:
+Desde que seus arquivos estejam disponíveis na pasta "src" com o mesmo nome do arquivo .doc, acrescentado de hífen e o ID da mídia. Exemplo:
 
       *Artigo12-m1.wmv*
 
-A marcação da mídia no corpo do texto deve ser feita através da tag [media]. Perceba que ao clicar nessa tag abrirá uma janela com 2 campos: "id" e "href".
+A marcação da mídia no corpo do texto deve ser feita através do elemento [media]. Na janela aberta pelo programa, preencha os campos "id" e "href".
 No campo "id" insira o prefixo "m" + o número de ordem da mídia. Exemplo: m1.
 
 Já em "href" insira o nome da mídia com a extensão: "Artigo12-m1.wmv".
@@ -2487,7 +2468,7 @@ Já em "href" insira o nome da mídia com a extensão: "Artigo12-m1.wmv".
 
 Feito isso gere o arquivo .xml.
 
-Com o arquivo .xml gerado o próximo passo é verificar e corrigir, se necessário, os atributos que qualificam o tipo de mídia.
+Com o arquivo .xml gerado verifique se há erros e corrija, se necessário, os atributos que qualificam o tipo de mídia.
 O Programa apresenta os atributos:
 
 * mime-subtype - especifica o tipo de mídia como "video" ou "application".
@@ -2520,17 +2501,17 @@ Primeiramente, encontre os itens de sublista:
 .. image:: img/mkp-itensublist.jpg
    :align: center
 
-Adicione uma tag <list> acima da primeira tag <list-item> da sublista:
+Adicione o elemento <list> acima do primeiro item <list-item> da sublista:
 
 .. image:: img/mkp-sub-lista.jpg
    :align: center
 
-Feito isso, recorte a tag </list-item> que consta acima da tag <list> da sublista:
+Recorte o elemento </list-item> que consta acima da tag <list> da sublista:
 
 .. image:: img/mkp-recort-listitem.jpg
    :align: center
 
-Agora cole a tag </list-item> recortada logo abaixo da tag </list> da sublista:
+Cole o elemento </list-item> recortado logo abaixo da tag </list> da sublista:
 
 .. image:: img/mkp-cola-list-item.jpg
    :align: center
@@ -2553,12 +2534,12 @@ Método 2:
 Caso a lista e sublista não tenham sido marcadas no programa Markup, é possível que ao gerar o arquivo .xml a lista tenha sido identificada como parágrafos.
 Portanto será necessário fazer a identificação manual da lista e da sublista.
 
-Primeiramente, retire todos os parágrafos da lista e sublista e a envolva com a tag <list> acrescentando o atributo @list-type= com o valor correspondente ao marcador da lista:
+Primeiramente, retire todos os parágrafos da lista e sublista e a envolva com o elemento <list> acrescentando o atributo @list-type= com o valor correspondente ao marcador da lista:
 
 .. image:: img/mkp-manual-list.jpg
    :align: center
 
-Agora insira a tag <list-item> e <p> para cada item da lista:
+Agora insira o elemento <list-item> e <p> para cada item da lista:
 
 .. image:: img/mkp-list-sem-sublist.jpg
    :align: center
@@ -2568,19 +2549,19 @@ Identifique os itens de sublista:
 .. image:: img/mkp-itensublist.jpg
    :align: center
 
-Adicione uma tag <list> acima da primeira tag <list-item> da sublista:
+Adicione um elemento <list> acima do primeiro elemento <list-item> da sublista:
 
 .. image:: img/mkp-sub-lista.jpg
    :align: center
 
 
-Feito isso, recorte a tag </list-item> que consta acima da tag <list> da sublista:
+Recorte o elemento </list-item> que consta acima do elemento <list> da sublista:
 
 .. image:: img/mkp-recort-listitem.jpg
    :align: center
 
 
-Agora cole a tag </list-item> recortada logo abaixo da tag </list> da sublista:
+Agora cole o elemento </list-item> recortado logo abaixo de </list> da sublista:
 
 .. image:: img/mkp-cola-list-item.jpg
    :align: center
@@ -2592,24 +2573,24 @@ Agora cole a tag </list-item> recortada logo abaixo da tag </list> da sublista:
 Legendas Traduzidas
 -------------------
 
-O Programa Markup não faz a identificação de figuras ou tabelas com legendas traduzidas. Para fazer essa marcação é necessário utilizar um editor de XML. Verifique a identificação de legendas de tabelas e de figuras abaixo:
+O Programa Markup não faz a marcação de figuras ou tabelas com legendas traduzidas. Para fazer essa marcação é necessário utilizar um editor de XML. Verifique a marcação de legendas de tabelas e de figuras abaixo:
 
 **Tabelas**
 
-Primeiramente abra o arquivo .xml em um editor de sua preferência e localize a tabela que apresenta a legenda traduzida.
+Abra o arquivo .xml em um editor de sua preferência e localize a tabela que apresenta a legenda traduzida.
 
-Agora insira a tag <table-wrap-group> envolvendo toda a tabela, desde <table-wrap>:
+Insira o elemento <table-wrap-group> envolvendo toda a tabela, desde <table-wrap>:
 
 .. image:: img/mkp-tab-wrap-g-legend.jpg
    :align: center
 
-Apague o @id="t2" de <table-wrap> e insira o atributo de idioma @xml:lang="" com a sigla correspondente ao idioma principal da tabela. Em seguida, insira um @id único para o <table-wrap-group>:
+Apague o @id="xx" de <table-wrap> e insira o atributo de idioma @xml:lang="xx" com a sigla correspondente ao idioma principal da tabela. Em seguida, insira um @id único para o <table-wrap-group>:
 
 .. image:: img/mkp-tab-legend-ids.jpg
    :align: center
 
 
-Insira agora uma nova tag <table-wrap> com <label>, <caption> e <title> logo abaixo da tag <table-wrap-group> com o atributo de idioma @xml:lang="" correspondente ao idioma da tradução. E insira a legenda traduzida em <title>:
+Insira um novo elemento <table-wrap> com <label>, <caption> e <title> logo abaixo de <table-wrap-group> com o atributo de idioma @xml:lang="xx" correspondente ao idioma da tradução. E insira a legenda traduzida em <title>:
 
 .. image:: img/mkp-legenda-trans-tab.jpg
    :align: center
@@ -2620,20 +2601,20 @@ Insira agora uma nova tag <table-wrap> com <label>, <caption> e <title> logo aba
 
 **Figuras**
 
-Primeiramente abra o arquivo .xml em um editor de sua preferência e localize a figura que apresenta a legenda traduzida.
+Abra o arquivo .xml em um editor de sua preferência e localize a figura que apresenta a legenda traduzida.
 
-Agora insira a tag <fig-group> envolvendo toda a figura, desde <fig>:
+Insira o elemento <fig-group> envolvendo toda a figura, desde <fig>:
 
 .. image:: img/mkp-fig-legend.jpg
    :align: center
 
-Apague o @id="f3" de <fig> e insira o atributo de idioma @xml:lang="" com a sigla correspondente ao idioma principal da figura. Em seguida, insira um @id único para o <fig-group>:
+Apague o @id="xx" de <fig> e insira o atributo de idioma @xml:lang="xx" com a sigla correspondente ao idioma principal da figura. Em seguida, insira um @id único para o <fig-group>:
 
 .. image:: img/mkp-fig-group-trans.jpg
    :align: center
 
 
-Insira agora uma nova tag <fig> com <label>, <caption> e <title> logo abaixo da tag <fig-group> com o atributo de idioma @xml:lang="" correspondente ao idioma da tradução. E insira a legenda traduzida em <title>:
+Insira um novo elemento <fig> com <label>, <caption> e <title> logo abaixo de <fig-group> com o atributo de idioma @xml:lang="xx" correspondente ao idioma da tradução. E insira a legenda traduzida em <title>:
 
 .. image:: img/mkp-fig-legend-traduzida.jpg
    :align: center
@@ -2644,8 +2625,8 @@ Insira agora uma nova tag <fig> com <label>, <caption> e <title> logo abaixo da 
 Autores sem label
 -----------------
 
-Alguns autores não apresentam label em autor e em afiliação. Para identificar o dado, faça a marcação tradicional do autor no programa Markup e insira em afiliação o ID de cada autor.
-Após gerar o arquivo .xml do documento, abra-o em um editor de XML e insira a <xref> fechada de cada autor. Veja:
+Alguns autores não apresentam label em autor e em afiliação. Para marcar o dado, faça a marcação tradicional do autor no programa Markup e insira em afiliação o ID de cada autor.
+Após gerar o arquivo .xml do documento, abra-o em um editor de XML e insira a <xref> fechada de cada autor.
 
 .. image:: img/mkp-author-sem-label.jpg
    :align: center
