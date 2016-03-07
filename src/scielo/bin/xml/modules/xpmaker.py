@@ -397,7 +397,7 @@ def hdimages_to_jpeg(source_path, jpg_path, replace=False):
                     try:
                         im = Image.open(image_filename)
                         im.thumbnail(im.size)
-                        im.save(jpg_filename, "JPEG")
+                        im.save(jpg_filename, "JPEG", quality=72, optimize=True, progressive=True)
                         utils.display_message(jpg_filename)
                     except Exception as inst:
                         utils.display_message('Unable to generate ' + jpg_filename)

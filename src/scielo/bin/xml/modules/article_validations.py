@@ -30,7 +30,15 @@ def update_pkg_files_report(d, k, status, message):
     return d
 
 
-def evaluate_tiff(img_filename):
+def image_height(img_filename):
+    print(img_filename)
+    if os.path.isfile(img_filename):
+        img_info = article_utils.tiff_info(img_filename)
+        if img_info is not None:
+            return img_info.get('height')
+
+
+def evaluate_tiff(img_filename, min_height=None, max_height=None):
     status_message = []
     if os.path.isfile(img_filename):
         img_info = article_utils.tiff_info(img_filename)
@@ -41,15 +49,21 @@ def evaluate_tiff(img_filename):
             info.append(_('height: {height} pixels').format(height=img_info.get('height')))
             info.append(_('width: {width} pixels').format(width=img_info.get('width')))
 
+            status = None
+            if min_height is not None:
+                if img_info.get('height') < min_height:
+                    errors.append(_('Be sure that {img} has valid dimensions. The images must be proportional among themselves.').format(img=os.path.basename(img_filename)))
+                    status = validation_status.STATUS_WARNING
+            if max_height is not None:
+                if img_info.get('height') > max_height:
+                    errors.append(_('Be sure that {img} has valid dimensions. The images must be proportional among themselves.').format(img=os.path.basename(img_filename)))
+                    status = validation_status.STATUS_WARNING
             if img_info.get('dpi') is not None:
                 if img_info.get('dpi') < MIN_IMG_DPI:
                     errors.append(_('Expected >= {value} dpi').format(value=MIN_IMG_DPI))
-            #if img_info.get('height') > MAX_IMG_HEIGHT:
-            #    errors.append(_('Expected height <= {value} pixels').format(value=MAX_IMG_HEIGHT))
-            #if not (MIN_IMG_WIDTH < img_info.get('width') < MAX_IMG_WIDTH):
-            #    errors.append(_('Expected width: between {min} and {max} pixels').format(min=MIN_IMG_WIDTH, max=MAX_IMG_WIDTH))
+                    status = validation_status.STATUS_ERROR
             if len(errors) > 0:
-                status_message.append((validation_status.STATUS_ERROR, '; '.join(info) + ' | ' + '. '.join(errors)))
+                status_message.append((status, '; '.join(info) + ' | ' + '. '.join(errors)))
             else:
                 status_message.append((validation_status.STATUS_INFO, '; '.join(info)))
 
@@ -1206,13 +1220,37 @@ class ArticleContentValidation(object):
         return message
 
     def href_list(self, path):
+        inline_max_height = sorted([image_height(path + '/' + href.src) for href in self.article.inline_graphics])
+        print(sorted([image_height(path + '/' + href.src) for href in self.article.inline_graphics]))
+        print(sorted([image_height(path + '/' + href.src) for href in self.article.disp_formulas]))
+        if len(inline_max_height) > 0:
+            inline_max_height = inline_max_height[len(inline_max_height) / 2]
+        else:
+            inline_max_height = None
+        if inline_max_height is None:
+            disp_formula_max_height = sorted([image_height(path + '/' + href.src) for href in self.article.disp_formulas])
+            if len(disp_formula_max_height) > 0:
+                disp_formula_max_height = disp_formula_max_height[len(disp_formula_max_height) / 2]
+            else:
+                disp_formula_max_height = None
+        else:
+            disp_formula_max_height = inline_max_height * 3
+        disp_formula_mix_height = inline_max_height
+
         href_items = {}
         for hrefitem in self.article.hrefs:
             status_message = []
 
             if hrefitem.is_internal_file:
                 file_location = hrefitem.file_location(path)
-                status_message = evaluate_tiff(path + '/' + hrefitem.src)
+                if hrefitem in self.article.inline_graphics:
+                    max_height = inline_max_height
+                elif hrefitem in self.article.disp_formulas:
+                    max_height = disp_formula_max_height
+                else:
+                    max_height = None
+                min_height = inline_max_height
+                status_message = evaluate_tiff(path + '/' + hrefitem.src, min_height, max_height)
 
                 if os.path.isfile(file_location):
                     if not '.' in hrefitem.src:

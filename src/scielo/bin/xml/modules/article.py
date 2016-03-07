@@ -208,6 +208,7 @@ class ArticleXML(object):
         self.translations = []
         self.sub_articles = []
         self.responses = []
+        self._hrefs = None
         self._title_abstract_kwd_languages = None
         self._language = None
         self._trans_languages = None
@@ -1229,14 +1230,23 @@ class ArticleXML(object):
 
     @property
     def hrefs(self):
-        r = []
-        if self.tree is not None:
-            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
-                for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
-                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
-                    r.append(_href)
-        return r
+        if self._hrefs is None:
+            self._hrefs = []
+            if self.tree is not None:
+                for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+                    for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
+                        href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                        _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
+                        self._hrefs.append(_href)
+        return self._hrefs
+
+    @property
+    def inline_graphics(self):
+        return [item for item in self.hrefs if item.element.tag in ['inline-graphic', 'inline-formula']]
+
+    @property
+    def disp_formulas(self):
+        return [item for item in self.hrefs if item.parent.tag == 'disp-formula']
 
     @property
     def tables(self):
