@@ -487,7 +487,7 @@ AÑO MES DÍA.
    :align: center
 
 
-Caso haya la fecha de revisado, seleccione-a y marque con el elemento [revised]. Haga el mismo para la fecha de acepto; seleccionando el elemento [accepted]. Confiera la fecha ISO indicada en el campo dateiso y corrija, se necesario.
+Caso haya la fecha de revisado, selecciónela y marque con el elemento [revised]. Haga el mismo para la fecha de acepto; seleccionando el elemento [accepted]. Confiera la fecha ISO indicada en el campo dateiso y corrija, se necesario.
 
 .. image:: img/doc-mkp-accepted.jpg
    :height: 350px
