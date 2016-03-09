@@ -1,17 +1,29 @@
-﻿4.0.091 trial - 25/02/2016
-==========================
-- XPM
-  - (improvement) generate PMC XML only with article (en) or sub-article (en), but preserving the metadata in other languages.
-  - (new) inform dpi, height and width of images
-  - (new) include DTD URL in DOCTYPE
-  - (new) check if there is the PDF file corresponding to sub-article (translation)
-  - (new) option to skip report display
-  - (new) insert ext-link in mixed-citation and inform error if it is missing 
-
-4.0.091 trial - 11/02/2016
+﻿4.0.091 trial - 09/03/2016
 ==========================
 - XPM
   - (bug) Fix message of missing image which href value has no extension
+  - (improvement) generate PMC XML only with article (en) or sub-article (en), but preserving the metadata in other languages.
+  - (improvement) improve message of required normalized aff
+  - (new) inform dpi, height and width of images
+  - (new) include DTD URL in DOCTYPE
+  - (new) check if there is the PDF file corresponding to sub-article (translation)
+  - (new) insert ext-link in mixed-citation and inform error if it is missing 
+  - (new) related-article indication
+  - (new) height inline-graphics/proportion validations
+  - (new) orgdiv validation
+  - (new) form to justify invalid messages
+  - (new) warn different licenses in an issue
+  - (new) validate values for sec/@sec-type
+  - (new) considere Jr. as suffix
+  - (new) inform error if any paragraph starts with dot (.)
+  - (new) inform error if there is nlm-ta for not NLM journal
+  - (new) DOI prefix validation
+  - (new) inform error if aff/country is empty
+  - (new) New element: alternatives
+  - (new) -auto parameter to skip report display
+  - (new) New element: sub-article(not translation)//aff
+  - (new) New elements: copyright, copyright-year, copyright-holder, permissions
+  - (new) Validations of copyright, copyright-year, copyright-holder, permissions
 
 4.0.091 trial - 04/02/2016
 ==========================

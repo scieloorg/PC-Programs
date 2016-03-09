@@ -995,53 +995,53 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\pt_BR\Lc_messages\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\pt_BR\Lc_messages\xpm-xc.po
+  Source=c:\src\scielo\bin\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\pt_BR\Lc_messages\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\pt_BR\Lc_messages\xpm-xc.mo
+  Source=c:\src\scielo\bin\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\es_MX\Lc_messages\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\es_MX\Lc_messages\xpm-xc.po
+  Source=c:\src\scielo\bin\xml\locale\es_MX\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\locale\es_MX\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\es_MX\Lc_messages\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\es_MX\Lc_messages\xpm-xc.mo
+  Source=c:\src\scielo\bin\xml\locale\es_MX\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\locale\es_MX\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\es\Lc_messages\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\es\Lc_messages\xpm-xc.po
+  Source=c:\src\scielo\bin\xml\locale\es\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\locale\es\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\es\Lc_messages\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\es\Lc_messages\xpm-xc.mo
+  Source=c:\src\scielo\bin\xml\locale\es\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\locale\es\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\pt\Lc_messages\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\pt\Lc_messages\xpm-xc.po
+  Source=c:\src\scielo\bin\xml\locale\pt\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\locale\pt\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\pt\Lc_messages\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\pt\Lc_messages\xpm-xc.mo
+  Source=c:\src\scielo\bin\xml\locale\pt\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\locale\pt\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\en\Lc_messages\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\en\Lc_messages\xpm-xc.po
+  Source=c:\src\scielo\bin\xml\locale\en\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\locale\en\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\locale\en\Lc_messages\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\en\Lc_messages\xpm-xc.mo
+  Source=c:\src\scielo\bin\xml\locale\en\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\locale\en\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
@@ -1062,6 +1062,11 @@ end
 item: Install File
   Source=c:\src\scielo\bin\xml\tables\entities.csv
   Destination=%PROGDIR%\xml\tables\entities.csv
+  Flags=0000000010000010
+end
+item: Install File
+  Source=c:\src\scielo\bin\xml\modules\validation_status.py
+  Destination=%PROGDIR%\xml\modules\validation_status.py
   Flags=0000000010000010
 end
 item: Install File
