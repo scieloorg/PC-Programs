@@ -418,7 +418,7 @@ class ArticlesPkgReport(object):
             doc = self.complete_issue_articles.articles[xml_name]
             values = []
             values.append(xml_name)
-            values.append(doc.toc_section)
+            values.append(doc.sorted_toc_sections)
             values.append(doc.article_type)
             values.append(['[' + str(t.language) + '] ' + str(t.title) for t in doc.titles])
             values.append([t.language for t in doc.abstracts])
@@ -478,7 +478,7 @@ class ArticlesPkgReport(object):
 
             values = []
             values.append(xml_name)
-            values.append(doc.toc_section)
+            values.append(doc.sorted_toc_sections)
             values.append(doc.article_type)
             values.append(authors)
             values.append('')
@@ -487,7 +487,7 @@ class ArticlesPkgReport(object):
 
             values = []
             values.append(xml_name)
-            values.append(doc.toc_section)
+            values.append(doc.sorted_toc_sections)
             values.append(doc.article_type)
             values.append(lang_dep)
             values.append(doc.language)
@@ -823,7 +823,7 @@ class ArticlesPkgReport(object):
                 utils.display_message(' -- not selected')
 
     def detail_report(self):
-        labels = ['name', 'order', 'fpage', 'pagination', 'doi', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
+        labels = ['name', 'order', 'fpage', 'pagination', 'doi/aop pid/related', 'toc section', '@article-type', 'article title', 'reports']
         items = []
 
         n = '/' + str(len(self.complete_issue_articles.articles))
@@ -873,10 +873,8 @@ class ArticlesPkgReport(object):
             values.append(self.complete_issue_articles.articles[new_name].order)
             values.append(self.complete_issue_articles.articles[new_name].fpage)
             values.append(self.complete_issue_articles.articles[new_name].pages)
-
-            values.append(self.complete_issue_articles.articles[new_name].doi)
-            values.append(self.complete_issue_articles.articles[new_name].previous_pid)
-            values.append(self.complete_issue_articles.articles[new_name].toc_section)
+            values.append({'doi': self.complete_issue_articles.articles[new_name].doi, 'aop doi': self.complete_issue_articles.articles[new_name].previous_pid, 'related': [item.get('xml', '') for item in self.complete_issue_articles.articles[new_name].related_articles]})
+            values.append(self.complete_issue_articles.articles[new_name].sorted_toc_sections)
             values.append(self.complete_issue_articles.articles[new_name].article_type)
             values.append(self.complete_issue_articles.articles[new_name].title)
             values.append(links)

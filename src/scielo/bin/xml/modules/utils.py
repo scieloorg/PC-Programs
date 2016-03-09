@@ -91,7 +91,9 @@ def tiff_image(img_filename):
 
 
 def valid_formula_min_max_height(values, percent=0.25):
-    m = values[int(len(values)/2)]
+    m = 0
+    if len(values) > 0:
+        m = values[int(len(values)/2)]
     r = int(m * percent)
     _min = m - r
     _max = m + r

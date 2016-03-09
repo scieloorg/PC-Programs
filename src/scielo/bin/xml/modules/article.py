@@ -544,6 +544,7 @@ class ArticleXML(object):
                 item['id'] = rel.attrib.get('id')
                 if not item['related-article-type'] in ['corrected-article', 'press-release']:
                     item['id'] = ''.join([c for c in item['id'] if c.isdigit()])
+                item['xml'] = xml_utils.node_xml(rel)
                 r.append(item)
         return r
 
@@ -608,6 +609,17 @@ class ArticleXML(object):
                         r.append(s.text)
         return r
 
+    @property
+    def sorted_toc_sections(self):
+        r = []
+        r.append(self.toc_section)
+        if self.translations is not None:
+            for node in self.translations:
+                nodes = node.findall('.//subj-group/subject')
+                if nodes is not None:
+                    for s in nodes:
+                        r.append(s.text)
+        return sorted(r)
     @property
     def normalized_toc_section(self):
         return attributes.normalized_toc_section(self.toc_section)
