@@ -406,12 +406,9 @@ def normalized_institution(aff):
     return (norm_aff, found_institutions)
 
 
-def tiff_info(img_filename):
-    if img_filename[img_filename.rfind('.')+1:] in ['tiff', 'tif']:
-        info = {}
-        im = Image.open(img_filename)
-        if im.info.get('dpi') is not None:
-            x, y = im.info.get('dpi')
-            info['dpi'] = x if x < y else y
-        info['width'], info['height'] = im.size
-        return info
+def image_heights(path, href_list):
+    items = []
+    for href in href_list:
+        img = utils.tiff_image(path + '/' + href.src)
+        items.append(img.size[1])
+    return sorted(items)

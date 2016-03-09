@@ -1,6 +1,8 @@
 # coding=utf-8
-
+import os
 from datetime import datetime
+
+from PIL import Image
 
 IMDEBUGGING = False
 
@@ -76,3 +78,32 @@ def display_message(text):
         except:
             print('error in display_message')
             print(sys.getfilesystemencoding())
+
+
+def is_tiff(img_filename):
+    return os.path.splitext(img_filename)[1] in ['.tiff', '.tif']
+
+
+def tiff_image(img_filename):
+    if is_tiff(img_filename):
+        if os.path.isfile(img_filename):
+            return Image.open(img_filename)
+
+
+def valid_formula_min_max_height(values, percent=0.25):
+    m = values[int(len(values)/2)]
+    r = int(m * percent)
+    _min = m - r
+    _max = m + r
+    print(m)
+    print(r)
+    print(_min)
+    print(_max)
+    if _min < 16:
+        m = 16 + r
+    if _max > 200:
+        m = 200 - r
+    print(m - r)
+    print(m + r)
+
+    return (m - r, m + r)
