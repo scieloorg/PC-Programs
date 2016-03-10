@@ -498,11 +498,11 @@ class ArticleContentValidation(object):
 
     @property
     def journal_id_nlm_ta(self):
-        if self.journal.nlm_title != self.article.journal_id_nlm_ta:
+        if not self.article.journal_id_nlm_ta in self.journal.nlm_title:
             if self.journal.nlm_title is None or len(self.journal.nlm_title) == 0:
                 return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Use journal-id (nlm-ta) only for NLM journals.')))
             else:
-                return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=self.article.journal_id_nlm_ta, expected=self.journal.nlm_title)))
+                return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=self.article.journal_id_nlm_ta, expected='|'.join(self.journal.nlm_title))))
 
     @property
     def journal_issns(self):
