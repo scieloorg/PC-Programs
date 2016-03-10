@@ -276,76 +276,52 @@ class ArticleContentValidation(object):
             items.append(self.expiration_sps)
         items.append(self.language)
         items.append(self.languages)
-        items.append(self.months_seasons)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.journal_title)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.publisher_name)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.journal_id_publisher_id)
-        items.append(self.journal_id_nlm_ta)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.journal_issns)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.issue_label)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.article_type)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.article_date_types)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.toc_section)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.order)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.doi)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.pagination)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.total_of_pages)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.total_of_equations)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.total_of_tables)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.total_of_figures)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.total_of_references)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.refstats)
-        items.append(self.refs_sources)
 
-        items.append(self.ref_display_only_stats)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.contrib)
-        items.append(self.contrib_names)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.contrib_collabs)
-        #utils.debugging(datetime.now().isoformat() + ' validations affiliations')
-        items.append(self.affiliations)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.funding)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.article_permissions)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.history)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
-        items.append(self.titles_abstracts_keywords)
-        items.append(self.validate_xref_reftype)
-        #utils.debugging(datetime.now().isoformat() + ' validations')
+        if self.article.article_meta is None:
+            items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('Missing {elem}.').format(elem='journal-meta')))
+        else:
+            items.append(self.journal_title)
+            items.append(self.publisher_name)
+            items.append(self.journal_id_publisher_id)
+            items.append(self.journal_id_nlm_ta)
+            items.append(self.journal_issns)
+
+        if self.article.article_meta is None:
+            items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('Missing {elem}.').format(elem='article-meta')))
+        else:
+            items.append(self.months_seasons)
+            items.append(self.issue_label)
+            items.append(self.article_date_types)
+            items.append(self.toc_section)
+            items.append(self.order)
+            items.append(self.doi)
+            items.append(self.pagination)
+            items.append(self.total_of_pages)
+            items.append(self.total_of_equations)
+            items.append(self.total_of_tables)
+            items.append(self.total_of_figures)
+            items.append(self.total_of_references)
+            items.append(self.ref_display_only_stats)
+            items.append(self.contrib)
+            items.append(self.contrib_names)
+            items.append(self.contrib_collabs)
+            items.append(self.affiliations)
+            items.append(self.funding)
+            items.append(self.article_permissions)
+            items.append(self.history)
+            items.append(self.titles_abstracts_keywords)
 
         items.append(self.sections)
         items.append(self.paragraphs)
-        #items.append(self.xref_rid_and_text)
+        items.append(self.validate_xref_reftype)
         items.append(self.missing_xref_list)
-        #items.append(self.missing_bibr_xref)
-
         items.append(self.elements_permissions)
 
-        #utils.debugging(datetime.now().isoformat() + ' validations 2')
+        items.append(self.refstats)
+        items.append(self.refs_sources)
+
         r = self.normalize_validations(items)
-        #utils.debugging(datetime.now().isoformat() + ' validations 3')
         return (r, performance)
 
     @property
@@ -688,7 +664,7 @@ class ArticleContentValidation(object):
             return numbers
 
         r = []
-        if len(self.article.award_id) == 0:
+        if self.article.award_id is None:
             found = has_number(self.article.ack_xml)
             if found > 4:
                 r.append(('award-id', validation_status.STATUS_ERROR, _('Found numbers in') + ' ack. ' + self.article.ack_xml))
@@ -803,30 +779,24 @@ class ArticleContentValidation(object):
         return display_value('clinical trial text', self.article.clinical_trial_text)
 
     def _total(self, total, count, label_total, label_count):
-        if count is None and total == 0:
-            r = (label_total, validation_status.STATUS_OK, str(total))
-        else:
-            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', validation_status.STATUS_WARNING, _('Unable to validate'))
-            if count is not None:
-                if count.isdigit():
-                    count = int(count)
-                    if total == count:
-                        r = (label_total, validation_status.STATUS_OK, str(total))
-                    else:
-                        r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', validation_status.STATUS_ERROR, _('They must have the same value'))
+        r = []
+        q = 0
+        if count is not None:
+            if count.isdigit():
+                q = int(count)
+            else:
+                r.append((label_count, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=count, label=label_count) + _('Expected value is a number greater or equal to 0.')))
+        if total is not None:
+            if total < 0:
+                r.append((label_count, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=str(total), label=label_total) + _('Expected value is a number greater or equal to 0.')))
+            if total != q:
+                if count is not None:
+                    r.append((label_count + ' (' + count + ') x ' + label_total + ' (' + str(total) + ')', validation_status.STATUS_ERROR, _('They must have the same value')))
         return r
 
     @property
     def total_of_pages(self):
-        if self.article.total_of_pages is not None:
-            return self._total(self.article.total_of_pages, self.article.page_count, 'total of pages', 'page-count')
-        elif self.article.elocation_id:
-            return (_('total of pages of ') + self.article.elocation_id, validation_status.STATUS_WARNING, _('Unable to calculate'))
-        else:
-            pages = [self.article.fpage, self.article.lpage]
-            pages = join_not_None_items(pages, '-')
-            if pages != '':
-                return (_('total of pages of ') + pages, validation_status.STATUS_WARNING, _('Unable to calculate'))
+        return self._total(self.article.total_of_pages, self.article.page_count, 'total of pages', 'page-count')
 
     @property
     def total_of_references(self):
@@ -1129,7 +1099,8 @@ class ArticleContentValidation(object):
 
     @property
     def paragraphs(self):
-        return [('paragraphs', validation_status.STATUS_ERROR, {_('Do not start a paragraph with the colon character (:)'): self.article.paragraphs_startswith(':')})]
+        if len(self.article.paragraphs_startswith(':')) > 0:
+            return [('paragraphs', validation_status.STATUS_ERROR, {_('Do not start a paragraph with the colon character (:)'): self.article.paragraphs_startswith(':')})]
 
     @property
     def missing_xref_list(self):

@@ -249,6 +249,8 @@ class ArticleXML(object):
                 if character in text:
                     text = text.split(character)[0]
                     if text.strip() == '':
+                        print('---')
+                        print(xml_utils.node_xml(node_p))
                         paragraphs.append(xml_utils.node_xml(node_p))
         return paragraphs
 
@@ -876,23 +878,28 @@ class ArticleXML(object):
 
     @property
     def funding_source(self):
-        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//funding-source')]
+        if self.article_meta is not None:
+            return [xml_utils.node_text(item) for item in self.article_meta.findall('.//funding-source')]
 
     @property
     def principal_award_recipient(self):
-        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//principal-award-recipient')]
+        if self.article_meta is not None:
+            return [xml_utils.node_text(item) for item in self.article_meta.findall('.//principal-award-recipient')]
 
     @property
     def principal_investigator(self):
-        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//principal-investigator')]
+        if self.article_meta is not None:
+            return [xml_utils.node_text(item) for item in self.article_meta.findall('.//principal-investigator')]
 
     @property
     def award_id(self):
-        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//award-id')]
+        if self.article_meta is not None:
+            return [xml_utils.node_text(item) for item in self.article_meta.findall('.//award-id')]
 
     @property
     def funding_statement(self):
-        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//funding-statement')]
+        if self.article_meta is not None:
+            return [xml_utils.node_text(item) for item in self.article_meta.findall('.//funding-statement')]
 
     @property
     def ack_xml(self):
@@ -1013,6 +1020,8 @@ class ArticleXML(object):
         if self.fpage is not None and self.lpage is not None:
             if self.fpage.isdigit() and self.lpage.isdigit():
                 return int(self.lpage) - int(self.fpage) + 1
+        elif self.elocation_id is not None:
+            return 1
 
     def total(self, node, xpath):
         if node is not None:
