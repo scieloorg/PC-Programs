@@ -438,7 +438,10 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
     results = []
     if article_type is None:
         article_type = 'None'
+    if article_section is None:
+        article_section = 'None'
 
+    status = ''
     suggestions = suggestions_of_article_type_by_section_title(article_section)
     if not article_type in suggestions:
         suggestions_msg = ''
