@@ -14,8 +14,8 @@ def validations_table(results):
     if results is not None:
         rows = []
         for label, status, msg in results:
-            rows.append({'label': label, 'status': status, 'message': msg})
-        r = tag('div', sheet(['label', 'status', 'message'], rows, table_style='validation', row_style='status'))
+            rows.append({'label': label, 'status': status, 'message': msg, _('why it is not a valid message?'): ' '})
+        r = tag('div', sheet(['label', 'status', 'message', _('why it is not a valid message?')], rows, table_style='validation'))
     return r
 
 
@@ -95,7 +95,8 @@ def tag(tag_name, content, style=None):
         content = ''
     if tag_name == 'p' and '</p>' in content:
         tag_name = 'div'
-    return '<' + tag_name + attr('class', style) + '>' + content + '</' + tag_name + '>'
+    style = attr('class', style) if style is not None else ''
+    return '<' + tag_name + style + '>' + content + '</' + tag_name + '>'
 
 
 def html(title, body):
@@ -137,55 +138,60 @@ def statistics_display(validations_results, inline=True):
     return tag(tag_name, stats, get_stats_numbers_style(validations_results.fatal_errors, validations_results.errors, validations_results.warnings))
 
 
-def sheet(table_header, table_data, table_style='sheet', row_style=None, html_cell_content=[]):
+def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):
     r = ''
     if not table_header is None:
-        width = 70
-        if len(table_header) > 3:
-            width = int(float(140) / len(table_header))
+        width = 70 if len(table_header) > 4 else int(float(140) / len(table_header))
         th = ''.join([tag('th', label, 'th') for label in table_header])
-
+        html_cell_content.append(_('why it is not a valid message?'))
         if len(table_data) == 0:
-            tbody = tag('tr', ''.join(['<td>-</td>' for label in table_header]))
+            tr_items = [tag('tr', ''.join(['<td>-</td>' for label in table_header]))]
         else:
-            cell_style_prefix = 'td_' if table_style == 'validation' else ''
-            tbody = ''
-
+            tr_items = []
             for row in table_data:
-                tr = ''
-                if len(row) == len(table_header):
-                    for label in table_header:
-                        # cell content
-                        cell_content = row.get(label, '')
-                        if not label in html_cell_content:
-                            cell_content = format_html_data(cell_content, width)
-                        if table_style == 'sheet':
-                            cell_content = color_text(cell_content)
-
-                        # cell style
-                        cell_style = 'td_status' if label == '@id' else cell_style_prefix + label
-                        if len(cell_style.split()) > 1:
-                            cell_style = None
-                        elif cell_style == label:
-                            cell_style = get_message_style(row.get(label), label)
-
-                        tr += tag('td', cell_content, cell_style)
-                elif len(row) == 1:
+                td_items = []
+                if len(row) == 1 and len(table_header) > 1:
                     # hidden tr
-                    tr += '<td colspan="' + str(len(table_header)) + '" class="' + label + '-hidden-block">' + row.get(label, '') + '</td>'
+                    td_items.append('<td colspan="' + str(len(table_header)) + '" class="' + label + '-hidden-block">' + row.get(label, '') + '</td>')
+                elif len(table_header) == len(row):
+                    for label in table_header:
+                        td_content = row.get(label, '')
+                        td_style = None
+
+                        if label == _('why it is not a valid message?'):
+                            if 'ERROR' in row.get('status', '') or 'WARNING' in row.get('status', ''):
+                                td_content = '<textarea rows="5" coluns="100"> </textarea>'
+                            else:
+                                td_content = ' - '
+                        else:
+                            # cell style
+                            td_style = colums_styles.get(label)
+                            if td_style is None:
+                                if label in ['label', 'message', 'status', 'xml']:
+                                    td_style = 'td_' + label
+                            if td_style is None:
+                                td_style = 'td_regular'
+                            if not label in html_cell_content:
+                                td_content = format_html_data(td_content, width)
+                                if table_style == 'sheet':
+                                    td_content = color_text(td_content)
+
+                        td_items.append(tag('td', td_content, td_style))
 
                 # row style
                 tr_style = None
+                if row_style is None:
+                    if 'status' in table_header:
+                        row_style = 'status'
                 if row_style is not None:
                     tr_style = get_message_style(row.get(row_style))
-                tbody += tag('tr', tr, tr_style)
-        r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', tbody), table_style))
+
+                tr_items.append(tag('tr', ''.join(td_items), tr_style))
+        r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', ''.join(tr_items)), table_style))
     return r
 
 
-def display_xml(value, width=70):
-    if '<' in value or '>' in value:
-        value = xml_utils.pretty_print(value)
+def break_words(value, width=40):
     parts = []
     for line in value.split('\n'):
         left = line
@@ -195,10 +201,17 @@ def display_xml(value, width=70):
             left = left[len(part):]
 
     value = '\n'.join(parts)
+    return value
+
+
+def display_xml(value, width=40):
+    if '<' in value or '>' in value:
+        value = xml_utils.pretty_print(value)
+    #value = break_words(value, width)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
     value = value.replace('\t', '&nbsp;'*2)
-    value = value.replace(' ', '<font color="#F56991">&#183;</font>').replace('\n', '<br/>')
+    value = value.replace(' ', ' <font color="#F56991">&#183;</font> ').replace('\n', '<br/>')
 
     return '<code>' + value + '</code>'
 

@@ -433,37 +433,39 @@ class ArticleSheetData(object):
         r = ''
         r += html_reports.tag('h4', _('Files in the package'))
         th, data = self.package_files(package_path)
-        r += html_reports.sheet(th, data, table_style='validation', row_style='status')
+        r += html_reports.sheet(th, data, table_style='validation')
         r += html_reports.tag('h4', '@href')
         th, data = self.hrefs_sheet_data(package_path)
-        r += html_reports.sheet(th, data, table_style='validation', row_style='status')
+        r += html_reports.sheet(th, data, table_style='validation')
         return r
 
     def hrefs_sheet_data(self, path):
-        t_header = ['href', 'status', 'message', 'display', 'xml']
+        t_header = ['label', 'status', 'message', _('why it is not a valid message?'), 'display', 'xml']
         r = []
         href_items = self.article_validation.href_list(path)
         for src in sorted(href_items.keys()):
             hrefitem = href_items.get(src)
             for result in hrefitem['results']:
                 row = {}
-                row['href'] = src
+                row['label'] = src
                 row['xml'] = hrefitem['elem'].xml
                 row['display'] = hrefitem['display']
                 row['status'] = result[0]
                 row['message'] = result[1]
+                row[_('why it is not a valid message?')] = ''
                 r.append(row)
         return (t_header, r)
 
     def package_files(self, package_path):
         r = []
-        t_header = ['files', 'status', 'message']
+        t_header = ['label', 'status', 'message', _('why it is not a valid message?')]
         if len(self.article_validation.package_files(package_path)) > 0:
             for filename, status, message in self.article_validation.package_files(package_path):
                 row = {}
-                row['files'] = filename
+                row['label'] = filename
                 row['status'] = status
                 row['message'] = message
+                row[_('why it is not a valid message?')] = ''
                 r.append(row)
         return (t_header, r)
 
@@ -497,10 +499,12 @@ def article_data_and_validations_report(journal, article, new_name, package_path
         article_validation_report = ArticleValidationReport(article_validation)
 
         content = []
+        #FIXME
 
         if is_sgml_generation:
             content.append(article_display_report.issue_header)
             content.append(article_display_report.article_front)
+
         content.append(article_validation_report.validations(is_sgml_generation))
         content.append(article_display_report.table_tables)
         content.append(sheet_data.files_and_href(package_path))

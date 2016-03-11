@@ -294,13 +294,14 @@ class ArticlesPkgReport(object):
         if self.reftype_and_sources is None:
             self.compile_references()
 
-        labels = ['label', 'status', 'message']
+        labels = ['label', 'status', 'message', _('why it is not a valid message?')]
         items = []
 
         values = []
         values.append(_('references by type'))
         values.append(validation_status.STATUS_INFO)
         values.append({reftype: str(sum([len(occ) for occ in sources.values()])) for reftype, sources in self.reftype_and_sources.items()})
+        values.append('')
         items.append(label_values(labels, values))
 
         #message = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}}
@@ -309,16 +310,17 @@ class ArticlesPkgReport(object):
             values.append(_('same sources as different types references'))
             values.append(validation_status.STATUS_ERROR)
             values.append(self.bad_sources_and_reftypes)
+            values.append('')
             items.append(label_values(labels, values))
 
         if len(self.missing_source) > 0:
-            items.append({'label': _('references missing source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_source]})
+            items.append({'label': _('references missing source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_source], _('why it is not a valid message?'): ''})
         if len(self.missing_year) > 0:
-            items.append({'label': _('references missing year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_year]})
+            items.append({'label': _('references missing year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_year], _('why it is not a valid message?'): ''})
         if len(self.unusual_sources) > 0:
-            items.append({'label': _('references with unusual value for source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_sources]})
+            items.append({'label': _('references with unusual value for source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_sources], _('why it is not a valid message?'): ''})
         if len(self.unusual_years) > 0:
-            items.append({'label': _('references with unusual value for year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_years]})
+            items.append({'label': _('references with unusual value for year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_years], _('why it is not a valid message?'): ''})
 
         return html_reports.tag('h4', _('Package references overview')) + html_reports.sheet(labels, items, table_style='dbstatus')
 
@@ -588,7 +590,7 @@ class ArticlesPkgReport(object):
             msg = '; '.join(msg)
             if len(msg) > 0:
                 msg = '. ' + msg
-            results.append({'label': xml_name, 'status': status, 'message': self.complete_issue_articles.articles[xml_name].pages + msg})
+            results.append({'label': xml_name, 'status': status, 'message': self.complete_issue_articles.articles[xml_name].pages + msg, _('why it is not a valid message?'): ''})
         return results
 
     @property
@@ -641,11 +643,11 @@ class ArticlesPkgReport(object):
                             else:
                                 status = err_msg
                     if status != validation_status.STATUS_OK:
-                        unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': expected_values_msg})
+                        unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': expected_values_msg, _('why it is not a valid message?'): ''})
 
                 validations_result = ''
                 if len(unmatched) > 0:
-                    validations_result = html_reports.sheet([_('data'), 'status', _('in XML'), _('registered journal data') + '*'], unmatched, table_style='dbstatus', row_style='status')
+                    validations_result = html_reports.sheet([_('data'), 'status', _('in XML'), _('registered journal data') + '*', _('why it is not a valid message?')], unmatched, table_style='dbstatus')
                 self._registered_journal_data_validations.add(xml_name, ValidationsResults(validations_result))
         return self._registered_journal_data_validations
 
@@ -723,7 +725,7 @@ class ArticlesPkgReport(object):
                         part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                     r += part
 
-        pages = html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.pages(), table_style='validation', row_style='status'))
+        pages = html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message', _('why it is not a valid message?')], self.pages(), table_style='validation'))
 
         toc_report = html_reports.tag('h2', _('Checking issue data consistence')) + html_reports.tag('div', r, 'issue-messages') + pages
         self.pkg_data_consistence_validations = ValidationsResults(toc_report)
