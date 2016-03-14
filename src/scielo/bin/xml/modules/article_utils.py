@@ -339,11 +339,13 @@ def journal_doi_prefix(issn_list):
         print(issn)
         if issn is not None:
             json_results = execute_api(api_crossref_issn_query_url(issn))
-            items = json_results.get('message', {}).get('items')
-            if items is not None:
-                prefix = items[0].get('prefix')
-                if prefix is not None:
-                    prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
+            if json_results is not None:
+                items = json_results.get('message', {}).get('items')
+                if items is not None:
+                    if len(items) > 0:
+                        prefix = items[0].get('prefix')
+                        if prefix is not None:
+                            prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
         if prefix is not None:
             break
     return prefix
@@ -410,5 +412,6 @@ def image_heights(path, href_list):
     items = []
     for href in href_list:
         img = utils.tiff_image(path + '/' + href.src)
-        items.append(img.size[1])
+        if img is not None:
+            items.append(img.size[1])
     return sorted(items)

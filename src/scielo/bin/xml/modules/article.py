@@ -280,9 +280,10 @@ class ArticleXML(object):
 
     def sections(self, node):
         _sections = []
-        for sec in node.findall('.//sec'):
-            if sec.attrib.get('sec-type') is not None:
-                _sections.append((sec.attrib.get('sec-type'), sec.findtext('title')))
+        if node is not None:
+            for sec in node.findall('.//sec'):
+                if sec.attrib.get('sec-type') is not None:
+                    _sections.append((sec.attrib.get('sec-type'), sec.findtext('title')))
         return _sections
 
     @property
