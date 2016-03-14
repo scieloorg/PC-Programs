@@ -66,7 +66,7 @@ class ConverterEnv(object):
 
 def register_log(message):
     if not '<' in message:
-        message = html_reports.p_message(message)
+        message = html_reports.p_message(message, False)
     converter_report_lines.append(message)
 
 
@@ -205,7 +205,7 @@ class Conversion(object):
                 self.expected_registered += 1
         unmatched_orders_errors = ''
         if self.changed_orders is not None:
-            unmatched_orders_errors = ''.join([html_reports.p_message(validation_status.STATUS_WARNING + ': ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in self.changed_orders.items()])
+            unmatched_orders_errors = ''.join([html_reports.p_message(validation_status.STATUS_WARNING + ': ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order)), False) for name, order in self.changed_orders.items()])
         self.changed_orders_validations = pkg_reports.ValidationsResults(unmatched_orders_errors)
 
     @property
@@ -400,7 +400,7 @@ def conclusion_message(total, converted, not_converted, xc_status, acron_issue_l
         status = validation_status.STATUS_FATAL_ERROR
         reason = _('because there are blocking errors in the package.')
     text = status + ': ' + acron_issue_label + _(' will') + action + ' ' + result + ' ' + reason
-    text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(converted) + '/' + str(total)) + html_reports.p_message(text)
+    text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(converted) + '/' + str(total), False) + html_reports.p_message(text, False)
     return text
 
 

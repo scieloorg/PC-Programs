@@ -90,13 +90,13 @@ def link(href, label):
     return '<a href="' + href + '" target="_blank">' + label + '</a>'
 
 
-def tag(tag_name, content, style=None):
+def tag(tag_name, content, style=None, attributes={}):
     if content is None:
         content = ''
     if tag_name == 'p' and '</p>' in content:
         tag_name = 'div'
     style = attr('class', style) if style is not None else ''
-    return '<' + tag_name + style + '>' + content + '</' + tag_name + '>'
+    return '<' + tag_name + style + ' '.join([attr(name, val) for name, val in attributes.items()]) + '>' + content + '</' + tag_name + '>'
 
 
 def html(title, body):
@@ -216,8 +216,13 @@ def display_xml(value, width=40):
     return '<code>' + value + '</code>'
 
 
-def p_message(value):
-    return tag('p', value, get_message_style(value, ''))
+def p_message(value, display_justification_input=True):
+    style = get_message_style(value, '')
+    justification_input = ''
+    if display_justification_input is True:
+        if style in ['error', 'fatalerror', 'warning']:
+            justification_input = tag('p', tag('textarea'), attributes={'cols': '300', 'rows': '5'})
+    return tag('p', value, style) + justification_input
 
 
 def color_text(value):

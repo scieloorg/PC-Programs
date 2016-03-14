@@ -298,7 +298,7 @@ class ArticleValidationReport(object):
         return r
 
     def display_item(self, item):
-        return html_reports.p_message(item)
+        return html_reports.p_message(item, False)
 
     def validations(self, display_all):
         items, performance = self.article_validation.validations
