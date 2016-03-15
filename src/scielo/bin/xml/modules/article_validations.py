@@ -1227,10 +1227,10 @@ class ArticleContentValidation(object):
                 href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}
             else:
                 hreflocation = hrefitem.src
-                if self.check_url or 'scielo' in hrefitem.src:
-                    if not article_utils.url_check(hrefitem.src, 1):
+                if self.check_url or ('scielo' in hrefitem.src and not hrefitem.src.endswith('.pdf')):
+                    if not article_utils.url_check(hrefitem.src, 30):
                         message = _(' is not working')
-                        if 'scielo' in hrefitem.src:
+                        if ('scielo' in hrefitem.src and not hrefitem.src.endswith('.pdf')):
                             message += '. ' + _('Be sure that there is no missing character such as _.')
                         status_message.append((validation_status.STATUS_WARNING, hrefitem.src + message))
                         if hrefitem.is_image:
