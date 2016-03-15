@@ -1111,23 +1111,14 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             if os.path.isfile(filename):
                 bkp_filename = report_path + '/xpm_bkp_' + '-'.join(utils.now()) + '.html'
                 shutil.copyfile(filename, bkp_filename)
-            pkg_reports.save_report(filename, _('XML Package Maker Report'), xpm_validations.message, xpm_version())
+            pkg_reports.save_report(filename, 
+                                    _('XML Package Maker Report'), 
+                                    html_reports.save_form(xpm_validations.total > 0, filename) + xpm_validations.message, 
+                                    xpm_version())
 
             global DISPLAY_REPORT
             if DISPLAY_REPORT is True:
                 pkg_reports.display_report(filename)
-
-            #header = html_reports.tag('p', _('Please, inform why each fatal error, error and warning is not valid.'))
-            #header += html_reports.tag('p', _('It is very important and mandatory to complete this report and send it with the package.'))
-            #header += html_reports.tag('p', _('It will be used to improve the messages and/or fix the validations made by XPM.'))
-            #header += html_reports.tag('p', _('Complete the "{column}" column.').format(column=_('why it is not a valid message?')))
-            #invalid_msg_report_filename = report_path + '/xpm_invalid_messages.html'
-            #if os.path.isfile(invalid_msg_report_filename):
-            #    invalid_msg_report_bkp_filename = report_path + '/xpm_invalid_messages' + '-'.join(utils.now()) + '.html'
-            #    shutil.copyfile(invalid_msg_report_filename, invalid_msg_report_bkp_filename)
-            #html_reports.save(invalid_msg_report_filename, _('XPM invalid messages'), header + pkg_reports.format_declaration_report(xpm_validations))
-            #if DISPLAY_REPORT is True:
-            #    pkg_reports.display_report(invalid_msg_report_filename)
 
         if not is_db_generation:
             if is_xml_generation:

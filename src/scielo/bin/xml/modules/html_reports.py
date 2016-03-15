@@ -59,7 +59,7 @@ def join_texts(texts):
 def styles():
     css = '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/html_reports.css', 'r').read() + '</style>'
     js = open(os.path.dirname(os.path.realpath(__file__)) + '/html_reports_collapsible.js', 'r').read()
-    return css + js
+    return css + js + save_report_js()
 
 
 def body_section(style, anchor_name, title, content, sections=[]):
@@ -368,4 +368,30 @@ def report_block(report_id, content, style, location):
     r += content
     r += '<div class="endreport"><span class="button" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\', \'' + location + '\')"> ' + _('close') + ' </span></div>'
     r += '</div>'
+    return r
+
+
+def save_report_js():
+    s = []
+    s.append('<script type="text/javascript">')
+    s.append('function save_report(filename) {')
+    s.append(' var a = document.getElementById("download_file");')
+    s.append(' var file = new Blob([document.innerHTML], {type: \'text/html\'});')
+    s.append(' a.href = URL.createObjectURL(file);')
+    s.append(' a.download = filename;')
+    s.append(' a.click();')
+    s.append('}')
+    s.append('</script>')
+    return ''.join(s)
+
+
+def save_form(display, filename):
+    r = ''
+    if display:
+        s = []
+        s.append('<p class="selected-tab" onclick="save_report(\'{filename}\')">[ {message} ]</p>'.format(message=_('save report with my comments'), 
+                                                                                                           filename=os.path.basename(filename)))
+        s.append('<a id="download_file"></a>')
+
+        r = tag('div', ''.join(s), 'tabs')
     return r
