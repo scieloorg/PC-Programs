@@ -1246,11 +1246,11 @@ class ArticleContentValidation(object):
             filename = self.article.new_prefix + '.pdf'
             _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_INFO, _('PDF ({lang})').format(lang=self.article.language))
             if not filename in self.article.package_files(pkg_path):
-                _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_WARNING, _('not found in the package'))
+                _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_ERROR, _('not found in the package'))
         for lang in self.article.trans_languages:
             if not lang in pdf_langs:
                 filename = self.article.new_prefix + '-' + lang + '.pdf'
-                _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_WARNING, _('not found in the package'))
+                _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_ERROR, _('not found in the package'))
 
         #from files, find in XML
         inxml = [item.name_without_extension for item in self.article.href_files]
@@ -1273,10 +1273,10 @@ class ArticleContentValidation(object):
                     if lang in self.article.trans_languages:
                         message = _('found sub-article({lang}) in XML').format(lang=lang)
                     elif lang in self.article.language:
-                        status = validation_status.STATUS_WARNING
+                        status = validation_status.STATUS_ERROR
                         message = _('PDF ({lang})').format(lang=lang) + _(' must not have -{lang} in PDF name').format(lang=lang)
                     else:
-                        status = validation_status.STATUS_WARNING
+                        status = validation_status.STATUS_ERROR
                         message = _('not found sub-article({lang}) in XML').format(lang=lang)
             else:
                 if '.' in item:
