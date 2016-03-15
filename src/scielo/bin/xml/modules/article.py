@@ -249,8 +249,6 @@ class ArticleXML(object):
                 if character in text:
                     text = text.split(character)[0]
                     if text.strip() == '':
-                        print('---')
-                        print(xml_utils.node_xml(node_p))
                         paragraphs.append(xml_utils.node_xml(node_p))
         return paragraphs
 

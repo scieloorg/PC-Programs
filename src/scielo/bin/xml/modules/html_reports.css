@@ -26,6 +26,9 @@ td {
   padding: 5px;
   float: right;
 }
+.element-table {
+  width: 90%
+}
 .element-table table {
    border: 1px solid gray;
    font-family: Courier;
@@ -53,6 +56,14 @@ pre {
     word-wrap:break-word;
     color: #113F8C;
 }
+code {
+    color: #113F8C;
+    background-color: white;
+    font-size: 7pt;
+    font-family: Courier;
+    word-wrap:break-word;
+    width: 10%;
+}
 h1 {
     text-align: center;
     font-family: "Verdana";
@@ -70,12 +81,13 @@ h5 {
     text-align: left;
     margin: 5px;
 }
-.xml {
+.td_xml {
     color: #113F8C;
     background-color: white;
     font-size: 7pt;
     font-family: Courier;
     word-wrap:break-word;
+    width: 15%;
 }
 .validation {
    border: 1px dotted #8B85AB;
@@ -105,12 +117,21 @@ h5 {
 } 
 .td_message {
    border: 1px dotted gray;
-   font-family: Courier;
-   font-size: 10pt;
+   font-family: Verdana;
+   font-size: 9pt;
    color: black;
    vertical-align: top;
    word-wrap:break-word;
-   max-width:80%;  
+   width:30%;  
+} 
+.td_regular {
+   border: 1px dotted gray;
+   font-family: Arial;
+   font-size: 7pt;
+   color: black;
+   vertical-align: top;
+   word-wrap:break-word;
+   width:10%;  
 } 
 .fatalerror .td_label {
    border: 1px solid gray;
@@ -133,12 +154,12 @@ h5 {
 } 
 .fatalerror .td_message {
    border: 1px solid gray;
-   font-family: Courier;
-   font-size: 10pt;
+   font-family: Verdana;
+   font-size: 9pt;
    color: white;
    vertical-align: top;
    word-wrap:break-word;
-   max-width:80%;  
+   width:30%;  
 } 
 .validation th {
   border: 1px solid gray;
@@ -417,7 +438,6 @@ td img {
   color: black;
   background-color: white;
 }
-
 .not-selected-tab {
   /* background-color: #CAC7BE; */
   background-color: #99B2B7;

@@ -908,12 +908,12 @@ class ArticleDB(object):
             self._registration_reports = {}
             for xml_name, messages in self.aop_manager.checking_aop_validations.items():
                 self._registration_reports[xml_name] = []
-                self._registration_reports[xml_name].append(html_reports.p_message(messages))
+                self._registration_reports[xml_name].append(html_reports.p_message(messages, False))
             for xml_name, messages in self.eval_msg.items():
                 if not xml_name in self._registration_reports.keys():
                     self._registration_reports[xml_name] = []
                 for msg in messages:
-                    self._registration_reports[xml_name].append(html_reports.p_message(msg))
+                    self._registration_reports[xml_name].append(html_reports.p_message(msg, False))
         return self._registration_reports
 
     def check_registration(self):
@@ -1132,8 +1132,8 @@ class AopManager(object):
                     data.append(_('aop first author') + ':' + html_reports.format_html_data(t))
         msg = ''
         msg += html_reports.tag('h5', _('Checking existence of aop version'))
-        msg += ''.join([html_reports.p_message(item) for item in msg_list])
-        msg += ''.join([html_reports.p_message(item) for item in data])
+        msg += ''.join([html_reports.p_message(item, False) for item in msg_list])
+        msg += ''.join([html_reports.p_message(item, False) for item in data])
         return msg
 
     def mark_aop_as_deleted(self, aop):
@@ -1281,19 +1281,19 @@ class DBManager(object):
         msg = None
         acron_issue_label = 'unidentified issue'
         if issue_label is None:
-            msg = html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to identify the article\'s issue'))
+            msg = html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to identify the article\'s issue'), False)
         else:
             i_record = self.find_i_record(issue_label, p_issn, e_issn)
             if i_record is None:
                 acron_issue_label = 'not_registered issue'
-                msg = html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
+                msg = html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.', False)
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
                 if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
                     j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                     if j_record is None:
-                        msg = html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to get journal data') + ' ' + journal_title)
+                        msg = html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to get journal data') + ' ' + journal_title, False)
                     else:
                         t = RegisteredTitle(j_record)
                         issue_models.complete_issue_info(t)
