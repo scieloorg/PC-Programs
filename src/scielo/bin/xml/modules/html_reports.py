@@ -221,7 +221,7 @@ def p_message(value, display_justification_input=True):
     justification_input = ''
     if display_justification_input is True:
         if style in ['error', 'fatalerror', 'warning']:
-            justification_input = tag('p', tag('textarea'), attributes={'cols': '300', 'rows': '5'})
+            justification_input = tag('p', tag('textarea', ' '), attributes={'cols': '300', 'rows': '5'})
     return tag('p', value, style) + justification_input
 
 
