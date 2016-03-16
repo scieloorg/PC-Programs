@@ -1041,8 +1041,9 @@ def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
         if os.path.isfile(scielo_pkg_path + '/' + xml_name + '.pdf'):
             shutil.copyfile(scielo_pkg_path + '/' + xml_name + '.pdf', dest_path + '/' + xml_name + '.pdf')
         for item in doc.href_files:
-            shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
-            validate_pmc_image(dest_path + '/' + item.src)
+            if os.path.isfile(scielo_pkg_path + '/' + item.src):
+                shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
+                validate_pmc_image(dest_path + '/' + item.src)
     else:
         if os.path.isfile(scielo_pkg_path + '/' + xml_name + '-en.pdf'):
             shutil.copyfile(scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
@@ -1050,9 +1051,9 @@ def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
         for item in doc.href_files:
             new = item.src.replace('-en.', '.')
             content = content.replace(item.src, new)
-
-            shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
-            validate_pmc_image(dest_path + '/' + new)
+            if os.path.isfile(scielo_pkg_path + '/' + item.src):
+                shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
+                validate_pmc_image(dest_path + '/' + new)
         fs_utils.write_file(pmc_xml_filename, content)
 
 
@@ -1113,7 +1114,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
                 shutil.copyfile(filename, bkp_filename)
             pkg_reports.save_report(filename, 
                                     _('XML Package Maker Report'), 
-                                    html_reports.save_form(xpm_validations.total > 0, filename) + xpm_validations.message, 
+                                    html_reports.save_form(xpm_validations.total > 0, u'xml_package_maker.html') + xpm_validations.message, 
                                     xpm_version())
 
             global DISPLAY_REPORT

@@ -271,12 +271,15 @@ def format_html_data(value, width=70):
         r = msg + '<select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value)]) + '</select>'
     elif '<img' in value or '</a>' in value:
         r = value
-    elif '<' in value and '>' in value and ('</' in value or '/>' in value):
+    #elif '<' in value and '>' in value and ('</' in value or '/>' in value):
+    elif value.strip().startswith('<') and value.strip().endswith('>'):
         r = display_xml(value, width)
     elif '<' in value or '>' in value:
         r = value.replace('<', '&lt;').replace('>', '&gt;')
     else:
         r = value
+    r = r.replace(' **', ' <strong>').replace('** ', '</strong> ')
+
     return r
 
 
@@ -389,8 +392,7 @@ def save_form(display, filename):
     r = ''
     if display:
         s = []
-        s.append('<p class="selected-tab" onclick="save_report(\'{filename}\')">[ {message} ]</p>'.format(message=_('save report with my comments'), 
-                                                                                                           filename=os.path.basename(filename)))
+        #s.append('<p class="selected-tab" onclick="save_report(' + "'" + filename + "'" + ')">[ {message} ]</p>'.format(message=_('save report with my comments')))
         s.append('<a id="download_file"></a>')
 
         r = tag('div', ''.join(s), 'tabs')
