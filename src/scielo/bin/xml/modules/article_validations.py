@@ -406,7 +406,6 @@ class ArticleContentValidation(object):
 
     @property
     def months_seasons(self):
-        MONTHS_ABBREV = '|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|'
         r = []
         for parent, parent_id, value in self.article.months:
             error = False
@@ -421,7 +420,7 @@ class ArticleContentValidation(object):
             error = False
             if '-' in value:
                 months = value.split('-')
-                month_names = MONTHS_ABBREV
+                month_names = article_utils.MONTHS_ABBREV
                 if len(months) == 2:
                     for m in months:
                         if '|' + m + '|' in month_names:
@@ -430,10 +429,10 @@ class ArticleContentValidation(object):
                             error = True
                 else:
                     error = True
-            elif '|' + value + '|' in MONTHS_ABBREV:
+            elif '|' + value + '|' in article_utils.MONTHS_ABBREV:
                 error = True
             if error:
-                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + '<season>: ' + value + '. ' + _('Expected value for season: initial month and final month separated by hyphen. E.g.: Jan-Feb. Expected values for the months: ' + MONTHS_ABBREV.replace('|', ' '))))
+                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + '<season>: ' + value + '. ' + _('Expected value for season: initial month and final month separated by hyphen. E.g.: Jan-Feb. Expected values for the months: ' + article_utils.MONTHS_ABBREV.replace('|', ' '))))
         return r
 
     @property
