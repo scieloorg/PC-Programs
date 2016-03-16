@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-15 11:54-0300\n"
+"POT-Creation-Date: 2016-03-16 12:01-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,7 +71,8 @@ msgstr "Fuentes de información"
 #: modules/article_validations.py:1264 modules/article_validations.py:1235
 #: modules/article_validations.py:1242 modules/article_validations.py:1209
 #: modules/article_validations.py:1216 modules/article_validations.py:1213
-#: modules/article_validations.py:1220
+#: modules/article_validations.py:1220 modules/article_validations.py:1240
+#: modules/article_validations.py:1247
 msgid "missing extension of "
 msgstr "no se encontró la extensión de "
 
@@ -110,6 +111,7 @@ msgstr "no se encontró la extensión de "
 #: modules/article_validations.py:1240 modules/article_validations.py:1243
 #: modules/article_validations.py:1214 modules/article_validations.py:1216
 #: modules/article_validations.py:1218 modules/article_validations.py:1221
+#: modules/article_validations.py:1245 modules/article_validations.py:1248
 msgid " not found in package"
 msgstr " no se encontró en el paquete"
 
@@ -130,6 +132,7 @@ msgstr " no se encontró en el paquete"
 #: modules/article_validations.py:1238 modules/article_validations.py:1246
 #: modules/article_validations.py:1276 modules/article_validations.py:1254
 #: modules/article_validations.py:1228 modules/article_validations.py:1232
+#: modules/article_validations.py:1259
 msgid " is not working"
 msgstr " no funciona"
 
@@ -157,6 +160,7 @@ msgstr " no funciona"
 #: modules/article_validations.py:1292 modules/article_validations.py:1311
 #: modules/article_validations.py:1266 modules/article_validations.py:1285
 #: modules/article_validations.py:1270 modules/article_validations.py:1289
+#: modules/article_validations.py:1297 modules/article_validations.py:1316
 msgid "found in XML"
 msgstr "encontrado en el archivo XML"
 
@@ -172,7 +176,7 @@ msgstr "encontrado en el archivo XML"
 #: modules/article_validations.py:1291 modules/article_validations.py:1298
 #: modules/article_validations.py:1306 modules/article_validations.py:1336
 #: modules/article_validations.py:1314 modules/article_validations.py:1288
-#: modules/article_validations.py:1292
+#: modules/article_validations.py:1292 modules/article_validations.py:1319
 msgid "not found in XML"
 msgstr "no se encontró en el archivo XML"
 
@@ -211,6 +215,7 @@ msgstr "Validaciones de contenido"
 #: modules/article_validations.py:112 modules/article_validations.py:109
 #: modules/article_validations.py:114 modules/article_validations.py:121
 #: modules/article_validations.py:126 modules/article_validations.py:117
+#: modules/article_validations.py:139 modules/article_validations.py:144
 msgid " starts with"
 msgstr " empieza con"
 
@@ -224,7 +229,8 @@ msgstr " empieza con"
 #: modules/article_validations.py:107 modules/article_validations.py:109
 #: modules/article_validations.py:111 modules/article_validations.py:121
 #: modules/article_validations.py:123 modules/article_validations.py:112
-#: modules/article_validations.py:114
+#: modules/article_validations.py:114 modules/article_validations.py:139
+#: modules/article_validations.py:141
 msgid " \"space\""
 msgstr " \"espacio\""
 
@@ -233,7 +239,7 @@ msgstr " \"espacio\""
 #: modules/article_validations.py:62 modules/article_validations.py:66
 #: modules/article_validations.py:100 modules/article_validations.py:109
 #: modules/article_validations.py:111 modules/article_validations.py:123
-#: modules/article_validations.py:114
+#: modules/article_validations.py:114 modules/article_validations.py:141
 msgid " ends with"
 msgstr " termina con"
 
@@ -242,7 +248,7 @@ msgstr " termina con"
 #: modules/article_validations.py:68 modules/article_validations.py:72
 #: modules/article_validations.py:106 modules/article_validations.py:115
 #: modules/article_validations.py:117 modules/article_validations.py:129
-#: modules/article_validations.py:120
+#: modules/article_validations.py:120 modules/article_validations.py:147
 msgid "contains invalid characteres:"
 msgstr "contiene caracteres inválidos:"
 
@@ -251,7 +257,7 @@ msgstr "contiene caracteres inválidos:"
 #: modules/article_validations.py:83 modules/article_validations.py:87
 #: modules/article_validations.py:121 modules/article_validations.py:130
 #: modules/article_validations.py:132 modules/article_validations.py:144
-#: modules/article_validations.py:135
+#: modules/article_validations.py:135 modules/article_validations.py:162
 msgid "Required, if exists."
 msgstr "Si existe es requerido."
 
@@ -260,7 +266,7 @@ msgstr "Si existe es requerido."
 #: modules/article_validations.py:87 modules/article_validations.py:91
 #: modules/article_validations.py:125 modules/article_validations.py:134
 #: modules/article_validations.py:136 modules/article_validations.py:148
-#: modules/article_validations.py:139
+#: modules/article_validations.py:139 modules/article_validations.py:166
 msgid "Required at least one "
 msgstr "Al menos uno es requerido "
 
@@ -288,6 +294,8 @@ msgstr "Al menos uno es requerido "
 #: modules/article_validations.py:783 modules/article_validations.py:144
 #: modules/article_validations.py:146 modules/article_validations.py:774
 #: modules/article_validations.py:750 modules/attributes.py:465
+#: modules/article_validations.py:171 modules/article_validations.py:173
+#: modules/article_validations.py:777
 msgid "Required"
 msgstr "Requerido"
 
@@ -375,7 +383,9 @@ msgstr "Requerido"
 #: modules/article_validations.py:353 modules/article_validations.py:392
 #: modules/article_validations.py:409 modules/article_validations.py:1340
 #: modules/article_validations.py:1339 modules/article_validations.py:1342
-#: modules/article_validations.py:1344
+#: modules/article_validations.py:1344 modules/article_validations.py:187
+#: modules/article_validations.py:380 modules/article_validations.py:436
+#: modules/article_validations.py:1369 modules/article_validations.py:1371
 msgid "Invalid value for "
 msgstr "Valor inválido para"
 
@@ -427,7 +437,8 @@ msgstr "Valor inválido para"
 #: modules/article_validations.py:242 modules/article_validations.py:377
 #: modules/article_validations.py:416 modules/article_validations.py:1040
 #: modules/article_validations.py:353 modules/article_validations.py:392
-#: modules/attributes.py:456
+#: modules/attributes.py:456 modules/article_validations.py:269
+#: modules/article_validations.py:380 modules/article_validations.py:419
 msgid "Expected values"
 msgstr "Valores esperados"
 
@@ -436,7 +447,7 @@ msgstr "Valores esperados"
 #: modules/article_validations.py:131 modules/article_validations.py:135
 #: modules/article_validations.py:172 modules/article_validations.py:181
 #: modules/article_validations.py:183 modules/article_validations.py:195
-#: modules/article_validations.py:186
+#: modules/article_validations.py:186 modules/article_validations.py:213
 msgid "Invalid character/word"
 msgstr "Palabra/carácter inválido"
 
@@ -492,7 +503,8 @@ msgstr "Palabra/carácter inválido"
 #: modules/article_validations.py:225 modules/article_validations.py:195
 #: modules/article_validations.py:237 modules/article_validations.py:186
 #: modules/article_validations.py:228 modules/pkg_reports.py:709
-#: modules/pkg_reports.py:725
+#: modules/pkg_reports.py:725 modules/article_validations.py:213
+#: modules/article_validations.py:255
 msgid "in"
 msgstr "en"
 
@@ -513,7 +525,7 @@ msgstr "sea correcto"
 #: modules/article_validations.py:173 modules/article_validations.py:177
 #: modules/article_validations.py:214 modules/article_validations.py:223
 #: modules/article_validations.py:225 modules/article_validations.py:237
-#: modules/article_validations.py:228
+#: modules/article_validations.py:228 modules/article_validations.py:255
 msgid "Invalid terms"
 msgstr "Términos inválidos"
 
@@ -522,7 +534,7 @@ msgstr "Términos inválidos"
 #: modules/article_validations.py:174 modules/article_validations.py:178
 #: modules/article_validations.py:215 modules/article_validations.py:224
 #: modules/article_validations.py:226 modules/article_validations.py:238
-#: modules/article_validations.py:229
+#: modules/article_validations.py:229 modules/article_validations.py:256
 msgid "must be identified as"
 msgstr "debe ser identificado como"
 
@@ -531,7 +543,7 @@ msgstr "debe ser identificado como"
 #: modules/article_validations.py:187 modules/article_validations.py:191
 #: modules/article_validations.py:228 modules/article_validations.py:237
 #: modules/article_validations.py:239 modules/article_validations.py:251
-#: modules/article_validations.py:242
+#: modules/article_validations.py:242 modules/article_validations.py:269
 msgid "Author"
 msgstr "Autor"
 
@@ -540,7 +552,7 @@ msgstr "Autor"
 #: modules/article_validations.py:187 modules/article_validations.py:191
 #: modules/article_validations.py:228 modules/article_validations.py:237
 #: modules/article_validations.py:239 modules/article_validations.py:251
-#: modules/article_validations.py:242
+#: modules/article_validations.py:242 modules/article_validations.py:269
 msgid "has no"
 msgstr "no tiene"
 
@@ -571,7 +583,7 @@ msgstr "no tiene"
 #: modules/article_validations.py:1098 modules/article_validations.py:243
 #: modules/article_validations.py:1100 modules/article_validations.py:255
 #: modules/article_validations.py:1112 modules/article_validations.py:246
-#: modules/article_validations.py:1103
+#: modules/article_validations.py:1103 modules/article_validations.py:273
 msgid "of"
 msgstr "de"
 
@@ -591,7 +603,7 @@ msgstr "Valor inválido de"
 #: modules/article_validations.py:191 modules/article_validations.py:195
 #: modules/article_validations.py:232 modules/article_validations.py:241
 #: modules/article_validations.py:243 modules/article_validations.py:255
-#: modules/article_validations.py:246
+#: modules/article_validations.py:246 modules/article_validations.py:273
 msgid "Valid values: "
 msgstr "Valores válidos: "
 
@@ -610,7 +622,7 @@ msgstr "Formato inválido para @xml:lang. Son necesarias dos letras minúsculas.
 #: modules/article_validations.py:447 modules/article_validations.py:449
 #: modules/article_validations.py:458 modules/article_validations.py:460
 #: modules/article_validations.py:472 modules/article_validations.py:463
-#: modules/article_validations.py:439
+#: modules/article_validations.py:439 modules/article_validations.py:466
 msgid "Check the value of"
 msgstr "Verificar el valor de"
 
@@ -625,6 +637,7 @@ msgstr "Verificar el valor de"
 #: modules/article_validations.py:504 modules/article_validations.py:513
 #: modules/article_validations.py:515 modules/article_validations.py:527
 #: modules/article_validations.py:518 modules/article_validations.py:494
+#: modules/article_validations.py:521
 msgid "Missing ISSN. Required at least one."
 msgstr "ISSN no encontrado. Se requiere al menos uno."
 
@@ -648,6 +661,7 @@ msgstr "ISSN no encontrado. Se requiere al menos uno."
 #: modules/article_validations.py:527 modules/article_validations.py:530
 #: modules/article_validations.py:539 modules/article_validations.py:542
 #: modules/article_validations.py:533 modules/article_validations.py:506
+#: modules/article_validations.py:536
 msgid " requires contrib names or collabs."
 msgstr " se requiere contrib names o collabs."
 
@@ -747,7 +761,8 @@ msgstr " se requiere contrib names o collabs."
 #: modules/article_validations.py:1162 modules/article_validations.py:1190
 #: modules/article_validations.py:524 modules/article_validations.py:1133
 #: modules/article_validations.py:1161 modules/article_validations.py:1165
-#: modules/pkg_reports.py:695
+#: modules/pkg_reports.py:695 modules/article_validations.py:551
+#: modules/article_validations.py:1164 modules/article_validations.py:1192
 msgid "Missing"
 msgstr "No se encontró"
 
@@ -814,7 +829,7 @@ msgstr "pertenezca a esta revista."
 #: modules/article_validations.py:596 modules/article_validations.py:597
 #: modules/article_validations.py:606 modules/article_validations.py:608
 #: modules/article_validations.py:620 modules/article_validations.py:611
-#: modules/article_validations.py:587
+#: modules/article_validations.py:587 modules/article_validations.py:614
 msgid "Missing order. Expected number 1 to 99999."
 msgstr "No se encontró order. Se esperaba un número del 1 a 99999."
 
@@ -838,6 +853,7 @@ msgstr "No se encontró order. Se esperaba un número del 1 a 99999."
 #: modules/article_validations.py:624 modules/article_validations.py:626
 #: modules/article_validations.py:615 modules/article_validations.py:617
 #: modules/article_validations.py:591 modules/article_validations.py:593
+#: modules/article_validations.py:618 modules/article_validations.py:620
 msgid "Invalid format of order. Expected number 1 to 99999."
 msgstr "Formato inválido para order. Se esperaba un número del 1 a 99999."
 
@@ -851,7 +867,7 @@ msgstr "Formato inválido para order. Se esperaba un número del 1 a 99999."
 #: modules/article_validations.py:616 modules/article_validations.py:617
 #: modules/article_validations.py:626 modules/article_validations.py:628
 #: modules/article_validations.py:640 modules/article_validations.py:631
-#: modules/article_validations.py:607
+#: modules/article_validations.py:607 modules/article_validations.py:634
 msgid "is required if there is no fpage > 0 or fpage is not number."
 msgstr "es requerido si fpage no es mayor a 0  o fpage no es un número."
 
@@ -911,7 +927,7 @@ msgstr "Encontrado"
 #: modules/article_validations.py:1161 modules/article_validations.py:862
 #: modules/article_validations.py:883 modules/article_validations.py:1152
 #: modules/article_validations.py:1123 modules/attributes.py:469
-#: modules/article_validations.py:1127
+#: modules/article_validations.py:1127 modules/article_validations.py:1154
 msgid "Invalid value"
 msgstr "Valor inválido"
 
@@ -946,7 +962,7 @@ msgstr "Nombres normalizados de institución similares: "
 #: modules/article_validations.py:760 modules/article_validations.py:765
 #: modules/article_validations.py:772 modules/article_validations.py:774
 #: modules/article_validations.py:786 modules/article_validations.py:777
-#: modules/article_validations.py:753
+#: modules/article_validations.py:753 modules/article_validations.py:780
 msgid "Unable to confirm/find the normalized institution name for "
 msgstr ""
 "No fue posible confirmar/encontrar el nombre normalizado de la institución "
@@ -984,7 +1000,7 @@ msgstr ". Los nombres similares de la institución válidos son: "
 #: modules/article_validations.py:775 modules/article_validations.py:780
 #: modules/article_validations.py:787 modules/article_validations.py:789
 #: modules/article_validations.py:801 modules/article_validations.py:792
-#: modules/article_validations.py:768
+#: modules/article_validations.py:768 modules/article_validations.py:795
 msgid "only one occurrence of "
 msgstr "solamente una ocurrencia de "
 
@@ -1001,7 +1017,7 @@ msgstr "solamente una ocurrencia de "
 #: modules/article_validations.py:775 modules/article_validations.py:780
 #: modules/article_validations.py:787 modules/article_validations.py:789
 #: modules/article_validations.py:801 modules/article_validations.py:792
-#: modules/article_validations.py:768
+#: modules/article_validations.py:768 modules/article_validations.py:795
 msgid " is allowed."
 msgstr " es permitido."
 
@@ -1019,6 +1035,7 @@ msgstr " es permitido."
 #: modules/article_validations.py:804 modules/article_validations.py:811
 #: modules/article_validations.py:813 modules/article_validations.py:825
 #: modules/article_validations.py:816 modules/article_validations.py:794
+#: modules/article_validations.py:821
 msgid "They must have the same value"
 msgstr "Debe tener el mismo valor"
 
@@ -1606,6 +1623,7 @@ msgstr "Verifique si @publication-type es correcto. Esta cita se parece a"
 #: modules/article_validations.py:1523 modules/article_validations.py:1499
 #: modules/article_validations.py:1501 modules/article_validations.py:1475
 #: modules/article_validations.py:1477 modules/article_validations.py:1479
+#: modules/article_validations.py:1504 modules/article_validations.py:1506
 msgid ""
 "Remove @specific-use=\"display-only\". It is required to identify incomplete "
 "references which @publication-type is equal to "
@@ -1632,6 +1650,7 @@ msgstr ""
 #: modules/article_validations.py:1485 modules/article_validations.py:1493
 #: modules/article_validations.py:1523 modules/article_validations.py:1501
 #: modules/article_validations.py:1475 modules/article_validations.py:1479
+#: modules/article_validations.py:1506
 msgid "Expected at least the elements: "
 msgstr "Se esperaban al menos los elementos: "
 
@@ -1654,6 +1673,7 @@ msgstr "Se esperaban al menos los elementos: "
 #: modules/article_validations.py:1489 modules/article_validations.py:1497
 #: modules/article_validations.py:1527 modules/article_validations.py:1505
 #: modules/article_validations.py:1479 modules/article_validations.py:1483
+#: modules/article_validations.py:1510
 msgid "Incomplete Reference"
 msgstr "Cita incompleta"
 
@@ -1676,6 +1696,7 @@ msgstr "Cita incompleta"
 #: modules/article_validations.py:1489 modules/article_validations.py:1497
 #: modules/article_validations.py:1527 modules/article_validations.py:1505
 #: modules/article_validations.py:1479 modules/article_validations.py:1483
+#: modules/article_validations.py:1510
 msgid "Check if the elements of this reference is properly identified."
 msgstr ""
 "Verifique si los elementos de esta cita están identificados correctamente."
@@ -1699,6 +1720,7 @@ msgstr ""
 #: modules/article_validations.py:1493 modules/article_validations.py:1501
 #: modules/article_validations.py:1531 modules/article_validations.py:1509
 #: modules/article_validations.py:1483 modules/article_validations.py:1487
+#: modules/article_validations.py:1514
 msgid " ignored "
 msgstr " ignorado "
 
@@ -1735,6 +1757,7 @@ msgstr "no fue encontrado en"
 #: modules/article_validations.py:1549 modules/article_validations.py:1557
 #: modules/article_validations.py:1587 modules/article_validations.py:1565
 #: modules/article_validations.py:1539 modules/article_validations.py:1543
+#: modules/article_validations.py:1567
 msgid "invalid author"
 msgstr "autor inválido"
 
@@ -1757,6 +1780,7 @@ msgstr "autor inválido"
 #: modules/article_validations.py:1560 modules/article_validations.py:1568
 #: modules/article_validations.py:1598 modules/article_validations.py:1576
 #: modules/article_validations.py:1550 modules/article_validations.py:1554
+#: modules/article_validations.py:1578
 msgid " must not be greater than "
 msgstr " no debe ser mayor que "
 
@@ -1779,6 +1803,7 @@ msgstr " no debe ser mayor que "
 #: modules/article_validations.py:1568 modules/article_validations.py:1576
 #: modules/article_validations.py:1606 modules/article_validations.py:1584
 #: modules/article_validations.py:1558 modules/article_validations.py:1562
+#: modules/article_validations.py:1586
 msgid " is not a number nor in an expected format."
 msgstr " no es un número ni está en el formato esperado."
 
@@ -1923,6 +1948,8 @@ msgstr ". Asegúrese que identificó correctamente: "
 #: modules/article_validations.py:1447 modules/article_validations.py:1508
 #: modules/attributes.py:456 modules/article_validations.py:1394
 #: modules/article_validations.py:1451 modules/article_validations.py:1512
+#: modules/article_validations.py:380 modules/article_validations.py:1421
+#: modules/article_validations.py:1478 modules/article_validations.py:1533
 msgid " or "
 msgstr " o "
 
@@ -1930,7 +1957,7 @@ msgstr " o "
 #: modules/html_reports.py:350 modules/html_reports.py:351
 #: modules/html_reports.py:344 modules/html_reports.py:346
 #: modules/html_reports.py:347 modules/html_reports.py:349
-#: modules/html_reports.py:369
+#: modules/html_reports.py:369 modules/html_reports.py:372
 msgid "close"
 msgstr "cerrar"
 
@@ -2360,7 +2387,7 @@ msgstr "Warning - indica que algo puede estar incorrecto o necesita atención"
 #: modules/pkg_reports.py:1022 modules/xpmaker.py:1113
 #: modules/pkg_reports.py:989 modules/xpmaker.py:1119 modules/xpmaker.py:1123
 #: modules/xpmaker.py:1124 modules/pkg_reports.py:991 modules/xpmaker.py:1130
-#: modules/xpmaker.py:1139 modules/xpmaker.py:1132
+#: modules/xpmaker.py:1139 modules/xpmaker.py:1132 modules/xpmaker.py:1133
 msgid "Result of the processing:"
 msgstr "Resultado del proceso:"
 
@@ -2488,7 +2515,7 @@ msgstr "Ejecutando XML Converter para "
 #: modules/xml_utils.py:488 modules/xml_utils.py:490 modules/xml_utils.py:494
 #: modules/NOVO_xml_utils.py:569 modules/xml_utils.py:498
 #: modules/xml_utils.py:506 modules/xml_utils.py:508 modules/xml_utils.py:512
-#: modules/xml_utils.py:515
+#: modules/xml_utils.py:515 modules/xml_utils.py:529
 msgid "Missing XML location."
 msgstr "No se encontró la ubicación del archivo XML."
 
@@ -2496,7 +2523,7 @@ msgstr "No se encontró la ubicación del archivo XML."
 #: modules/xml_utils.py:492 modules/xml_utils.py:494 modules/xml_utils.py:498
 #: modules/NOVO_xml_utils.py:573 modules/xml_utils.py:502
 #: modules/xml_utils.py:510 modules/xml_utils.py:512 modules/xml_utils.py:516
-#: modules/xml_utils.py:519
+#: modules/xml_utils.py:519 modules/xml_utils.py:533
 msgid "Invalid file. XML file required."
 msgstr "Archivo inválido. Archivo XML requerido."
 
@@ -2504,7 +2531,7 @@ msgstr "Archivo inválido. Archivo XML requerido."
 #: modules/xml_utils.py:494 modules/xml_utils.py:496 modules/xml_utils.py:500
 #: modules/NOVO_xml_utils.py:575 modules/xml_utils.py:504
 #: modules/xml_utils.py:512 modules/xml_utils.py:514 modules/xml_utils.py:518
-#: modules/xml_utils.py:521
+#: modules/xml_utils.py:521 modules/xml_utils.py:535
 msgid "Invalid folder. Folder must have XML files."
 msgstr "Directorio inválido. Debe contener archivos XML."
 
@@ -3265,6 +3292,7 @@ msgstr "no se pudo leer el archivo de configuración de XML Converter: "
 #: modules/xpmaker.py:1230 modules/xpmaker.py:1231 modules/xmlcvrter.py:804
 #: modules/xpmaker.py:1237 modules/xpmaker.py:1241 modules/xpmaker.py:1242
 #: modules/xpmaker.py:1248 modules/xpmaker.py:1257 modules/xpmaker.py:1250
+#: modules/xpmaker.py:1251
 msgid "Incorrect parameters"
 msgstr "Parámetros incorrectos"
 
@@ -3282,6 +3310,7 @@ msgstr "Parámetros incorrectos"
 #: modules/xpmaker.py:1231 modules/xpmaker.py:1232 modules/xmlcvrter.py:805
 #: modules/xpmaker.py:1238 modules/xpmaker.py:1242 modules/xpmaker.py:1243
 #: modules/xpmaker.py:1249 modules/xpmaker.py:1258 modules/xpmaker.py:1251
+#: modules/xpmaker.py:1252
 msgid "Usage"
 msgstr "Uso"
 
@@ -3299,6 +3328,7 @@ msgstr "Uso"
 #: modules/xpmaker.py:1233 modules/xpmaker.py:1234 modules/xmlcvrter.py:807
 #: modules/xpmaker.py:1240 modules/xpmaker.py:1244 modules/xpmaker.py:1245
 #: modules/xpmaker.py:1251 modules/xpmaker.py:1260 modules/xpmaker.py:1253
+#: modules/xpmaker.py:1254
 msgid "where"
 msgstr "donde"
 
@@ -3489,7 +3519,7 @@ msgstr "No se encontró journal-id (nlm-ta)."
 #: modules/xpmaker.py:995 modules/xpmaker.py:996 modules/xpmaker.py:1004
 #: modules/xpmaker.py:1001 modules/xpmaker.py:1015 modules/xpmaker.py:1014
 #: modules/xpmaker.py:1070 modules/xpmaker.py:1071 modules/xpmaker.py:1075
-#: modules/xpmaker.py:1076 modules/xpmaker.py:1077
+#: modules/xpmaker.py:1076 modules/xpmaker.py:1077 modules/xpmaker.py:1078
 msgid "No files to process"
 msgstr "Ningún archivo para procesar"
 
@@ -3500,7 +3530,7 @@ msgstr "Ningún archivo para procesar"
 #: modules/xpmaker.py:1028 modules/xpmaker.py:1036 modules/xpmaker.py:1033
 #: modules/xpmaker.py:1043 modules/xpmaker.py:1042 modules/xpmaker.py:1098
 #: modules/xpmaker.py:1099 modules/xpmaker.py:1105 modules/xpmaker.py:1109
-#: modules/xpmaker.py:1110 modules/xpmaker.py:1115
+#: modules/xpmaker.py:1110 modules/xpmaker.py:1115 modules/xpmaker.py:1116
 msgid "XML Package Maker Report"
 msgstr "Informe XML Package Maker"
 
@@ -3512,7 +3542,7 @@ msgstr "Informe XML Package Maker"
 #: modules/xpmaker.py:1171 modules/xpmaker.py:1170 modules/xpmaker.py:1234
 #: modules/xpmaker.py:1235 modules/xpmaker.py:1241 modules/xpmaker.py:1245
 #: modules/xpmaker.py:1246 modules/xpmaker.py:1252 modules/xpmaker.py:1261
-#: modules/xpmaker.py:1254
+#: modules/xpmaker.py:1254 modules/xpmaker.py:1255
 msgid "XML filename or path which contains XML files"
 msgstr "Archivo XML o ruta que contiene los archivos XML"
 
@@ -3630,6 +3660,7 @@ msgstr "Generando el paquete para PMC"
 #: modules/article_validations.py:564 modules/article_validations.py:573
 #: modules/article_validations.py:575 modules/article_validations.py:587
 #: modules/article_validations.py:578 modules/article_validations.py:554
+#: modules/article_validations.py:581
 msgid "belongs to"
 msgstr "pertenece a"
 
@@ -3643,6 +3674,7 @@ msgstr "pertenece a"
 #: modules/article_validations.py:576 modules/article_validations.py:585
 #: modules/article_validations.py:587 modules/article_validations.py:599
 #: modules/article_validations.py:590 modules/article_validations.py:566
+#: modules/article_validations.py:593
 msgid "is already registered to"
 msgstr "ya está registrado para"
 
@@ -4215,7 +4247,7 @@ msgstr ""
 #: modules/article_validations.py:1171 modules/article_validations.py:1178
 #: modules/article_validations.py:1180 modules/article_validations.py:1192
 #: modules/article_validations.py:1183 modules/article_validations.py:1154
-#: modules/article_validations.py:1158
+#: modules/article_validations.py:1158 modules/article_validations.py:1185
 msgid "Invalid value for"
 msgstr "Valor inválido para"
 
@@ -4228,6 +4260,7 @@ msgstr "Valor inválido para"
 #: modules/article_validations.py:623 modules/article_validations.py:632
 #: modules/article_validations.py:634 modules/article_validations.py:646
 #: modules/article_validations.py:637 modules/article_validations.py:613
+#: modules/article_validations.py:640
 msgid "There is no volume and no issue. It will be considered ahead of print."
 msgstr "No hay volume y tampoco issue. Será considerado ahead of print"
 
@@ -4246,6 +4279,7 @@ msgstr "No hay volume y tampoco issue. Será considerado ahead of print"
 #: modules/article_validations.py:691 modules/article_validations.py:694
 #: modules/article_validations.py:703 modules/article_validations.py:706
 #: modules/article_validations.py:697 modules/article_validations.py:670
+#: modules/article_validations.py:700
 msgid "Found numbers in"
 msgstr "Encontrados números en"
 
@@ -4260,7 +4294,7 @@ msgstr "Encontrados números en"
 #: modules/article_validations.py:767 modules/article_validations.py:772
 #: modules/article_validations.py:779 modules/article_validations.py:781
 #: modules/article_validations.py:793 modules/article_validations.py:784
-#: modules/article_validations.py:760
+#: modules/article_validations.py:760 modules/article_validations.py:787
 msgid "Valid: "
 msgstr "Válido: "
 
@@ -4286,6 +4320,7 @@ msgstr "Válido: "
 #: modules/article_validations.py:1192 modules/article_validations.py:1152
 #: modules/article_validations.py:1183 modules/article_validations.py:1123
 #: modules/article_validations.py:1154 modules/article_validations.py:1158
+#: modules/article_validations.py:1185
 msgid "Expected value:"
 msgstr "Valor esperado:"
 
@@ -4311,7 +4346,8 @@ msgstr "Valor esperado:"
 #: modules/article_validations.py:1192 modules/article_validations.py:1204
 #: modules/article_validations.py:1166 modules/article_validations.py:1195
 #: modules/article_validations.py:1137 modules/article_validations.py:1141
-#: modules/article_validations.py:1170
+#: modules/article_validations.py:1170 modules/article_validations.py:1168
+#: modules/article_validations.py:1197
 #, python-brace-format
 msgid ""
 "Invalid values for @rid={rid} or xref={xref} or @rid={rid2} or xref={xref2}"
@@ -4340,6 +4376,7 @@ msgstr ""
 #: modules/article_validations.py:1200 modules/article_validations.py:1210
 #: modules/article_validations.py:1171 modules/article_validations.py:1181
 #: modules/article_validations.py:1175 modules/article_validations.py:1185
+#: modules/article_validations.py:1202 modules/article_validations.py:1212
 #, python-brace-format
 msgid "Invalid values for @rid={rid} or xref={xref}"
 msgstr "Valores inválidos para @rid={rid} o xref={xref}"
@@ -4362,6 +4399,7 @@ msgstr "Valores inválidos para @rid={rid} o xref={xref}"
 #: modules/article_validations.py:1526 modules/article_validations.py:1556
 #: modules/article_validations.py:1534 modules/article_validations.py:1508
 #: modules/attributes.py:457 modules/article_validations.py:1512
+#: modules/article_validations.py:1533
 msgid "Be sure that "
 msgstr "Asegúrese que "
 
@@ -4449,7 +4487,7 @@ msgstr ", use la versión de SPS más reciente."
 #: modules/article_validations.py:370 modules/article_validations.py:371
 #: modules/article_validations.py:380 modules/article_validations.py:382
 #: modules/article_validations.py:394 modules/article_validations.py:385
-#: modules/article_validations.py:361
+#: modules/article_validations.py:361 modules/article_validations.py:388
 msgid " expires in "
 msgstr " expira en "
 
@@ -4460,7 +4498,7 @@ msgstr " expira en "
 #: modules/article_validations.py:370 modules/article_validations.py:371
 #: modules/article_validations.py:380 modules/article_validations.py:382
 #: modules/article_validations.py:394 modules/article_validations.py:385
-#: modules/article_validations.py:361
+#: modules/article_validations.py:361 modules/article_validations.py:388
 msgid " days."
 msgstr " días."
 
@@ -4572,6 +4610,7 @@ msgstr "Tal vez deba ser "
 #: modules/article_validations.py:1348 modules/article_validations.py:1356
 #: modules/article_validations.py:1386 modules/article_validations.py:1364
 #: modules/article_validations.py:1338 modules/article_validations.py:1342
+#: modules/article_validations.py:1369
 msgid "it starts or ends with space characters."
 msgstr "comienza o termina com caracter de espacio."
 
@@ -4587,6 +4626,7 @@ msgstr "comienza o termina com caracter de espacio."
 #: modules/article_validations.py:1350 modules/article_validations.py:1358
 #: modules/article_validations.py:1388 modules/article_validations.py:1366
 #: modules/article_validations.py:1340 modules/article_validations.py:1344
+#: modules/article_validations.py:1371
 msgid "it must not have styles elements (italic, bold)."
 msgstr "no debe contener elementos de estilo (itálico, negrita)."
 
@@ -4637,7 +4677,9 @@ msgstr "licencia"
 #: modules/article_validations.py:1486 modules/article_validations.py:1488
 #: modules/article_validations.py:1421 modules/article_validations.py:1462
 #: modules/article_validations.py:1425 modules/article_validations.py:1464
-#: modules/article_validations.py:1466
+#: modules/article_validations.py:1466 modules/article_validations.py:238
+#: modules/article_validations.py:1452 modules/article_validations.py:1491
+#: modules/article_validations.py:1493
 #, python-brace-format
 msgid "Be sure that {item} is correct."
 msgstr "Asegúrese que {item} este correcto."
@@ -4648,6 +4690,7 @@ msgstr "Asegúrese que {item} este correcto."
 #: modules/article_validations.py:450 modules/article_validations.py:459
 #: modules/article_validations.py:461 modules/article_validations.py:473
 #: modules/article_validations.py:464 modules/article_validations.py:440
+#: modules/article_validations.py:467
 msgid "quantity of reference types"
 msgstr "Quantidad de tipos de citas"
 
@@ -4657,6 +4700,7 @@ msgstr "Quantidad de tipos de citas"
 #: modules/article_validations.py:462 modules/article_validations.py:471
 #: modules/article_validations.py:473 modules/article_validations.py:485
 #: modules/article_validations.py:476 modules/article_validations.py:452
+#: modules/article_validations.py:479
 msgid "sources"
 msgstr "fuentes de información"
 
@@ -4666,7 +4710,7 @@ msgstr "fuentes de información"
 #: modules/article_validations.py:584 modules/article_validations.py:585
 #: modules/article_validations.py:594 modules/article_validations.py:596
 #: modules/article_validations.py:608 modules/article_validations.py:599
-#: modules/article_validations.py:575
+#: modules/article_validations.py:575 modules/article_validations.py:602
 #, python-brace-format
 msgid "Be sure that {item} belongs to this journal."
 msgstr "Asegúrese que {item} pertenece a esta revista."
@@ -4716,7 +4760,7 @@ msgstr " no está funcionando."
 #: modules/article_validations.py:1424 modules/article_validations.py:1431
 #: modules/article_validations.py:1439 modules/article_validations.py:1469
 #: modules/article_validations.py:1447 modules/article_validations.py:1421
-#: modules/article_validations.py:1425
+#: modules/article_validations.py:1425 modules/article_validations.py:1452
 #, python-brace-format
 msgid "This reference looks like {publication_type}"
 msgstr "Esta cita se parece a {publication_type}"
@@ -4743,7 +4787,8 @@ msgstr "Esta cita se parece a {publication_type}"
 #: modules/article_validations.py:1508 modules/article_validations.py:1510
 #: modules/article_validations.py:1486 modules/article_validations.py:1488
 #: modules/article_validations.py:1462 modules/article_validations.py:1464
-#: modules/article_validations.py:1466
+#: modules/article_validations.py:1466 modules/article_validations.py:1491
+#: modules/article_validations.py:1493
 #, python-brace-format
 msgid "This reference looks like {publication_type}."
 msgstr "Esta cita se parece a {publication_type}."
@@ -4759,7 +4804,7 @@ msgstr "Esta cita se parece a {publication_type}."
 #: modules/article_validations.py:1511 modules/article_validations.py:1518
 #: modules/article_validations.py:1526 modules/article_validations.py:1556
 #: modules/article_validations.py:1534 modules/article_validations.py:1508
-#: modules/article_validations.py:1512
+#: modules/article_validations.py:1512 modules/article_validations.py:1533
 msgid "this reference is not "
 msgstr "esta cita no es "
 
@@ -4967,6 +5012,7 @@ msgstr "archivos"
 #: modules/article_validations.py:1270 modules/article_validations.py:1278
 #: modules/article_validations.py:1308 modules/article_validations.py:1286
 #: modules/article_validations.py:1260 modules/article_validations.py:1264
+#: modules/article_validations.py:1291
 msgid "found in the package"
 msgstr "encontrado en el paquete"
 
@@ -4979,6 +5025,7 @@ msgstr "encontrado en el paquete"
 #: modules/article_validations.py:1270 modules/article_validations.py:1278
 #: modules/article_validations.py:1308 modules/article_validations.py:1286
 #: modules/article_validations.py:1260 modules/article_validations.py:1264
+#: modules/article_validations.py:1291
 msgid "file name must start with "
 msgstr "nombre del archivo debe empezar con "
 
@@ -5017,19 +5064,21 @@ msgstr "título/autor"
 
 #: modules/article_validations.py:32 modules/article_validations.py:41
 #: modules/article_validations.py:49 modules/article_validations.py:40
+#: modules/article_validations.py:67
 #, python-brace-format
 msgid "height: {height} pixels"
 msgstr "altura: {height} pixels"
 
 #: modules/article_validations.py:33 modules/article_validations.py:42
 #: modules/article_validations.py:50 modules/article_validations.py:41
+#: modules/article_validations.py:68
 #, python-brace-format
 msgid "width: {width} pixels"
 msgstr "anchura: {width} pixels"
 
 #: modules/article_validations.py:37 modules/article_validations.py:46
 #: modules/article_validations.py:51 modules/article_validations.py:63
-#: modules/article_validations.py:54
+#: modules/article_validations.py:54 modules/article_validations.py:81
 #, python-brace-format
 msgid "Expected >= {value} dpi"
 msgstr "Esperado por lo menos {value} dpi"
@@ -5038,7 +5087,7 @@ msgstr "Esperado por lo menos {value} dpi"
 #: modules/article_validations.py:417 modules/article_validations.py:419
 #: modules/article_validations.py:428 modules/article_validations.py:430
 #: modules/article_validations.py:442 modules/article_validations.py:433
-#: modules/article_validations.py:409
+#: modules/article_validations.py:409 modules/article_validations.py:436
 msgid ""
 "Expected value for season: initial month and final month separated by "
 "hyphen. E.g.: Jan-Feb. Expected values for the months: "
@@ -5054,6 +5103,7 @@ msgstr ""
 #: modules/article_validations.py:1240 modules/article_validations.py:1248
 #: modules/article_validations.py:1278 modules/article_validations.py:1256
 #: modules/article_validations.py:1230 modules/article_validations.py:1234
+#: modules/article_validations.py:1261
 msgid "Be sure that there is no missing character such as _."
 msgstr "Asegúrese que no haya falta de caracteres como _"
 
@@ -5072,6 +5122,7 @@ msgstr "Asegúrese que no haya falta de caracteres como _"
 #: modules/article_validations.py:1273 modules/article_validations.py:1303
 #: modules/article_validations.py:1247 modules/article_validations.py:1277
 #: modules/article_validations.py:1251 modules/article_validations.py:1281
+#: modules/article_validations.py:1278 modules/article_validations.py:1308
 #, python-brace-format
 msgid "PDF ({lang})"
 msgstr ""
@@ -5091,7 +5142,8 @@ msgstr ""
 #: modules/article_validations.py:1297 modules/article_validations.py:1301
 #: modules/article_validations.py:1275 modules/article_validations.py:1279
 #: modules/article_validations.py:1249 modules/article_validations.py:1253
-#: modules/article_validations.py:1257
+#: modules/article_validations.py:1257 modules/article_validations.py:1280
+#: modules/article_validations.py:1284
 msgid "not found in the package"
 msgstr "no se encontró en el paquete"
 
@@ -5103,6 +5155,7 @@ msgstr "no se encontró en el paquete"
 #: modules/article_validations.py:1284 modules/article_validations.py:1292
 #: modules/article_validations.py:1322 modules/article_validations.py:1300
 #: modules/article_validations.py:1274 modules/article_validations.py:1278
+#: modules/article_validations.py:1305
 #, python-brace-format
 msgid "found sub-article({lang}) in XML"
 msgstr "se encontró sub-article({lang}) en el XML"
@@ -5115,6 +5168,7 @@ msgstr "se encontró sub-article({lang}) en el XML"
 #: modules/article_validations.py:1287 modules/article_validations.py:1295
 #: modules/article_validations.py:1325 modules/article_validations.py:1303
 #: modules/article_validations.py:1277 modules/article_validations.py:1281
+#: modules/article_validations.py:1308
 #, python-brace-format
 msgid " must not have -{lang} in PDF name"
 msgstr " no debe haber -{lang} en el nombre del PDF"
@@ -5127,6 +5181,7 @@ msgstr " no debe haber -{lang} en el nombre del PDF"
 #: modules/article_validations.py:1290 modules/article_validations.py:1298
 #: modules/article_validations.py:1328 modules/article_validations.py:1306
 #: modules/article_validations.py:1280 modules/article_validations.py:1284
+#: modules/article_validations.py:1311
 #, python-brace-format
 msgid "not found sub-article({lang}) in XML"
 msgstr "no se encontró sub-article({lang}) en el XML"
@@ -5189,7 +5244,7 @@ msgstr "PMC: {file} tiene dpi inválido: {dpi}"
 #: modules/article_validations.py:555 modules/article_validations.py:556
 #: modules/article_validations.py:565 modules/article_validations.py:567
 #: modules/article_validations.py:579 modules/article_validations.py:570
-#: modules/article_validations.py:546
+#: modules/article_validations.py:546 modules/article_validations.py:573
 #, python-brace-format
 msgid "Invalid DOI: {doi}. DOI must starts with: {expected}"
 msgstr "DOI inválido: {doi}. DOI debe empezar con: {expected}"
@@ -5219,7 +5274,7 @@ msgstr "Identifique @xml:lang de license"
 
 #: modules/xpmaker.py:1236 modules/xpmaker.py:1242 modules/xpmaker.py:1246
 #: modules/xpmaker.py:1247 modules/xpmaker.py:1253 modules/xpmaker.py:1262
-#: modules/xpmaker.py:1255
+#: modules/xpmaker.py:1255 modules/xpmaker.py:1256
 msgid "optional parameter to omit report"
 msgstr "parámetro opcional para omitir el informe"
 
@@ -5227,6 +5282,7 @@ msgstr "parámetro opcional para omitir el informe"
 #: modules/article_validations.py:489 modules/article_validations.py:498
 #: modules/article_validations.py:500 modules/article_validations.py:512
 #: modules/article_validations.py:503 modules/article_validations.py:479
+#: modules/article_validations.py:506
 msgid "Use journal-id (nlm-ta) only for NLM journals."
 msgstr ""
 "Use journal-id (nlm-ta) solamente para revistas registradas en National "
@@ -5240,6 +5296,7 @@ msgstr ""
 #: modules/article_validations.py:1124 modules/article_validations.py:514
 #: modules/article_validations.py:1136 modules/article_validations.py:505
 #: modules/article_validations.py:1127 modules/article_validations.py:481
+#: modules/article_validations.py:508
 #, python-brace-format
 msgid "Invalid value: {value}. Expected {expected}."
 msgstr "Valor inválido: {value}. Se espera {expected}."
@@ -5255,7 +5312,7 @@ msgstr "ningun valor"
 #: modules/article_validations.py:757 modules/article_validations.py:762
 #: modules/article_validations.py:769 modules/article_validations.py:771
 #: modules/article_validations.py:783 modules/article_validations.py:774
-#: modules/article_validations.py:750
+#: modules/article_validations.py:750 modules/article_validations.py:777
 msgid ""
 "Use aff/institution/[@content-type=\"normalized\"] only if the normalized "
 "name is known, otherwise use no element."
@@ -5268,7 +5325,7 @@ msgstr ""
 #: modules/article_validations.py:763 modules/article_validations.py:768
 #: modules/article_validations.py:775 modules/article_validations.py:777
 #: modules/article_validations.py:789 modules/article_validations.py:780
-#: modules/article_validations.py:756
+#: modules/article_validations.py:756 modules/article_validations.py:783
 msgid ". Check if any option of the list is the normalized name: "
 msgstr ". Verifique si alguna opción en la lista es el nombre normalizado: "
 
@@ -5278,7 +5335,7 @@ msgstr ". Verifique si alguna opción en la lista es el nombre normalizado: "
 #: modules/article_validations.py:767 modules/article_validations.py:772
 #: modules/article_validations.py:779 modules/article_validations.py:781
 #: modules/article_validations.py:793 modules/article_validations.py:784
-#: modules/article_validations.py:760
+#: modules/article_validations.py:760 modules/article_validations.py:787
 msgid "normalized aff checked"
 msgstr "Nombre normalizado validado"
 
@@ -5288,6 +5345,7 @@ msgstr "Nombre normalizado validado"
 #: modules/article_validations.py:1127 modules/article_validations.py:1129
 #: modules/article_validations.py:1141 modules/article_validations.py:1132
 #: modules/article_validations.py:1103 modules/article_validations.py:1107
+#: modules/article_validations.py:1134
 msgid "Do not start a paragraph with the colon character (:)"
 msgstr "No empiece un párrafo con el caracter los dos puntos (:)"
 
@@ -5295,7 +5353,7 @@ msgstr "No empiece un párrafo con el caracter los dos puntos (:)"
 #: modules/article_validations.py:764 modules/article_validations.py:769
 #: modules/article_validations.py:776 modules/article_validations.py:778
 #: modules/article_validations.py:790 modules/article_validations.py:781
-#: modules/article_validations.py:757
+#: modules/article_validations.py:757 modules/article_validations.py:784
 msgid "Suggestions:"
 msgstr "Sugerencias:"
 
@@ -5304,6 +5362,7 @@ msgstr "Sugerencias:"
 #: modules/article_validations.py:1122 modules/article_validations.py:1124
 #: modules/article_validations.py:1136 modules/article_validations.py:1127
 #: modules/article_validations.py:1092 modules/article_validations.py:1101
+#: modules/article_validations.py:1119 modules/article_validations.py:1128
 msgid " and/or "
 msgstr " y/o "
 
@@ -5329,7 +5388,7 @@ msgstr ""
 
 #: modules/article_validations.py:741 modules/article_validations.py:746
 #: modules/article_validations.py:743 modules/article_validations.py:755
-#: modules/article_validations.py:722
+#: modules/article_validations.py:722 modules/article_validations.py:749
 #, python-brace-format
 msgid ". E.g.: Use {this} instead of {that}."
 msgstr ". Ej.: Use {this} en lugar de {that}."
@@ -5388,14 +5447,14 @@ msgstr ""
 
 #: modules/article_validations.py:759 modules/article_validations.py:761
 #: modules/article_validations.py:773 modules/article_validations.py:764
-#: modules/article_validations.py:740
+#: modules/article_validations.py:740 modules/article_validations.py:767
 #, python-brace-format
 msgid "Be sure that {value} is a division of {orgname}"
 msgstr "Asegúrese que {value} es una división de {orgname}"
 
 #: modules/article_validations.py:761 modules/article_validations.py:763
 #: modules/article_validations.py:775 modules/article_validations.py:766
-#: modules/article_validations.py:742
+#: modules/article_validations.py:742 modules/article_validations.py:769
 #, python-brace-format
 msgid "Be sure that {value} is a division of an organization."
 msgstr "Asegúrese que {value} es una división de una organización."
@@ -5409,7 +5468,7 @@ msgstr ""
 "Asegúrese que {img} tienee dimensiones adecuadas. Las imágenes deben ser "
 "proporcionales entre ellas."
 
-#: modules/article_validations.py:51
+#: modules/article_validations.py:51 modules/article_validations.py:78
 #, python-brace-format
 msgid ""
 "Be sure that {img} has valid height. Recommended: min={min} and max={max}. "
@@ -5419,25 +5478,29 @@ msgstr ""
 "Las imágenes deben ser proporcionales entre ellas."
 
 #: modules/article_validations.py:282 modules/article_validations.py:291
+#: modules/article_validations.py:309 modules/article_validations.py:318
 #, python-brace-format
 msgid "Missing {elem}."
 msgstr "No fue encontrado {elem}."
 
 #: modules/article_validations.py:788 modules/article_validations.py:791
+#: modules/article_validations.py:815 modules/article_validations.py:818
 #, python-brace-format
 msgid "{value} is an invalid value for {label}. "
 msgstr "{value} es un valor inválido para {label}. "
 
 #: modules/article_validations.py:788 modules/article_validations.py:791
+#: modules/article_validations.py:815 modules/article_validations.py:818
 msgid "Expected value is a number greater or equal to 0."
 msgstr "Valor esperado es un número más grande o igual a 0."
 
-#: modules/article_validations.py:1092
+#: modules/article_validations.py:1092 modules/article_validations.py:1119
 #, python-brace-format
 msgid "{sectitle} has no @sec-type. Expected values for @sec-type: {expected}."
-msgstr "{sectitle} no tiene @sec-type. Valores esperados para @sec-type: {expected}."
+msgstr ""
+"{sectitle} no tiene @sec-type. Valores esperados para @sec-type: {expected}."
 
-#: modules/article_validations.py:1101
+#: modules/article_validations.py:1101 modules/article_validations.py:1128
 #, python-brace-format
 msgid "Invalid value: {value}. Expected values: {expected}."
 msgstr "Valor inválido: {value}. Valores esperados: {expected}."
@@ -5445,3 +5508,27 @@ msgstr "Valor inválido: {value}. Valores esperados: {expected}."
 #: modules/html_reports.py:392
 msgid "save report with my comments"
 msgstr "guarde el informe con mis comentarios"
+
+#: modules/article_validations.py:39
+#, python-brace-format
+msgid "Found in element-citation/{element}"
+msgstr "Se encontró en element-citation/{element}"
+
+#: modules/article_validations.py:40
+msgid "Not found in mixed-citation"
+msgstr "No se encontró en mixed-citation"
+
+#: modules/article_validations.py:41
+#, python-brace-format
+msgid "Words in {element} which are not found in mixed-citation"
+msgstr "Palabras en {element} que no fueron encontradas en mixed-citation"
+
+#: modules/article_validations.py:44
+#, python-brace-format
+msgid ""
+"Be sure that mixed-citation is complete and {element} is properly identified."
+msgstr "Asegúrese que mixed-citation esté completa y {element} esté correctamente identificado."
+
+#: modules/article_validations.py:1523
+msgid "Identify the links in mixed-citation with the ext-link element."
+msgstr "Identificar los enlaces en mixed-citation con el elemento ext-link."

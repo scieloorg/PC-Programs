@@ -21,6 +21,33 @@ MAX_IMG_WIDTH = 2250
 MAX_IMG_HEIGHT = 2625
 
 
+def validate_element_is_found_in_mixed_citation(element_name, element_content, mixed_citation):
+    r = []
+    if element_content is not None:
+        _mixed = xml_utils.remove_tags(mixed_citation)
+        if not isinstance(element_content, list):
+            element_content = [element_content]
+        for item in element_content:
+            _element_content = xml_utils.remove_tags(item)
+            if not _element_content in _mixed:
+                comp = utils.hightlight_equal(_element_content, _mixed)
+                r.append(
+                    (
+                        element_name,
+                        validation_status.STATUS_ERROR,
+                        [
+                            {_('Found in element-citation/{element}').format(element=element_name): comp[0],
+                            _('Not found in mixed-citation'): comp[1],
+                            _('Words in {element} which are not found in mixed-citation').format(element=element_name): utils.words_not_found(_element_content, _mixed)
+                            },
+
+                            _('Be sure that mixed-citation is complete and {element} is properly identified.').format(element=element_name),
+                        ]
+                    )
+                )
+    return r
+
+
 def update_pkg_files_report(d, k, status, message):
     if not k in d.keys():
         d[k] = {}
@@ -1492,14 +1519,8 @@ class ReferenceContentValidation(object):
     def ext_link(self):
         r = []
         if self.reference.ext_link is not None:
-            ext_link = self.reference.ext_link
-            if not isinstance(ext_link, list):
-                ext_link = [self.reference.ext_link]
-            for link in ext_link:
-                if not link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').strip() in self.reference.mixed_citation:
-                    r += [('ext-link', validation_status.STATUS_ERROR, _('Be sure that the value of ext-link ({ext_link}) is found in <mixed-citation>{mixed}</mixed-citation>').format(ext_link=link, mixed=self.reference.mixed_citation))]
             if not '<ext-link' in self.reference.mixed_citation:
-                r += [('ext-link', validation_status.STATUS_WARNING, _('Missing ext-link element in mixed-citation'))]
+                r += [('ext-link', validation_status.STATUS_WARNING, _('Identify the links in mixed-citation with the ext-link element.'))]
         return r
 
     @property
@@ -1518,16 +1539,19 @@ class ReferenceContentValidation(object):
     @property
     def mixed_citation(self):
         r = []
-        if self.reference.mixed_citation is not None:
-            r.append(('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation))
-            if self.reference.source is not None:
-                if not xml_utils.remove_tags(self.reference.source) in xml_utils.remove_tags(self.reference.mixed_citation):
-                    r.append(('source', validation_status.STATUS_ERROR, _('Be sure that the value of {element} ({value}) is found in <mixed-citation>{mixed}</mixed-citation>').format(element='source', value=self.reference.source, mixed=self.reference.mixed_citation)))
-            if self.reference.year is not None:
-                if not self.reference.year in self.reference.mixed_citation:
-                    r.append(('year', validation_status.STATUS_ERROR, _('Be sure that the value of {element} ({value}) is found in <mixed-citation>{mixed}</mixed-citation>').format(element='year', value=self.reference.year, mixed=self.reference.mixed_citation)))
-        else:
+        if self.reference.mixed_citation is None:
             r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
+        else:
+            r.append(('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation))
+            for item in validate_element_is_found_in_mixed_citation('source', self.reference.source, self.reference.mixed_citation):
+                if item is not None:
+                    r.append(item)
+            for item in validate_element_is_found_in_mixed_citation('year', self.reference.year, self.reference.mixed_citation):
+                if item is not None:
+                    r.append(item)
+            for item in validate_element_is_found_in_mixed_citation('ext-link', self.reference.ext_link, self.reference.mixed_citation):
+                if item is not None:
+                    r.append(item)
         return r
 
     @property
@@ -1573,3 +1597,5 @@ class ReferenceContentValidation(object):
     @property
     def fpage(self):
         return conditional_required('fpage', self.reference.fpage)
+
+

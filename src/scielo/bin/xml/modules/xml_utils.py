@@ -211,6 +211,20 @@ def tostring(node):
     return etree.tostring(node)
 
 
+def complete_entity(xml_content):
+    result = []
+    for item in xml_content.replace('&#', '~BREAK~&#').split('~BREAK~'):
+        if item.startswith('&#'):
+            words = item.split(' ')
+            if len(words) > 0:
+                ent = words[0][2:]
+                if ent.isdigit():
+                    words[0] += ';'
+            item = ' '.join(words)
+        result.append(item)
+    return ''.join(result)
+
+
 def preserve_xml_entities(content):
     if '&' in content:
         content = content.replace('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>')

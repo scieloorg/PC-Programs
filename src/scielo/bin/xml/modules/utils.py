@@ -109,3 +109,27 @@ def valid_formula_min_max_height(values, percent=0.25):
     print(m + r)
 
     return (m - r, m + r)
+
+
+def words_not_found(sentence, other_sentence):
+    not_found = []
+    for word in sentence.split():
+        if not word in other_sentence:
+            not_found.append(word)
+    return not_found
+
+
+def hightlight_equal(sentence1, sentence2):
+    s2 = ''
+    s1 = []
+    diff = ''
+    for item in sentence1.split():
+        if item in sentence2:
+            diff = sentence2[0:sentence2.find(item)]
+            #if len(diff.strip()) > 0:
+            #    diff = ' {{' + diff + '}} '
+            s2 += diff + ' **' + item + '** '
+            sentence2 = sentence2[sentence2.find(item)+len(item):]
+            item = ' **' + item + '** '
+        s1.append(item)
+    return [' ' + ' '.join(s1) + ' ', s2 + ' ' + sentence2]
