@@ -6,12 +6,12 @@ import urllib
 from datetime import datetime
 from mimetypes import MimeTypes
 import zipfile
+import re
 
 from __init__ import _
 import validation_status
 import utils
 import fs_utils
-import article_utils
 import java_xml_utils
 import html_reports
 
@@ -757,7 +757,7 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
 
     #xml_status(content, 'original')
-
+    content = xml_utils.complete_entity(content)
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
     #xml_status(content, 'entidades para char')
@@ -772,6 +772,9 @@ def normalize_xml_content(doc_files_info, content, version):
 
     xml, e = xml_utils.load_xml(content)
     if xml is not None:
+        #content = remove_xmllang_off_article_title(content)
+        content = remove_xmllang_off(content, 'article-title')
+        content = remove_xmllang_off(content, 'source')
         content = content.replace('&amp;amp;', '&amp;')
         content = content.replace('&amp;#', '&#')
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
@@ -791,6 +794,21 @@ def normalize_xml_content(doc_files_info, content, version):
         content = xml_utils.pretty_print(content)
 
     return (content, replaced_entities_report)
+
+
+def remove_xmllang_off(content, element_name):
+    return content if not '<' + element_name + ' ' in content else re.sub(r'<' + element_name + ' (xml:lang=".+")>', utils.repl, content)
+
+
+def remove_xmllang_off_article_title_alt(content):
+    if '<article-title ' in content:
+        new = []
+        for item in content.replace('<article-title ', '<article-title~BREAK~').split('~BREAK~'):
+            if item.strip().startswith('xml:lang') and '</article-title>' in item:
+                item = item[item.find('>'):]
+            new.append(item)
+        content = ''.join(new)
+    return content
 
 
 def remove_styles_off_content(content):
@@ -1041,8 +1059,9 @@ def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
         if os.path.isfile(scielo_pkg_path + '/' + xml_name + '.pdf'):
             shutil.copyfile(scielo_pkg_path + '/' + xml_name + '.pdf', dest_path + '/' + xml_name + '.pdf')
         for item in doc.href_files:
-            shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
-            validate_pmc_image(dest_path + '/' + item.src)
+            if os.path.isfile(scielo_pkg_path + '/' + item.src):
+                shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
+                validate_pmc_image(dest_path + '/' + item.src)
     else:
         if os.path.isfile(scielo_pkg_path + '/' + xml_name + '-en.pdf'):
             shutil.copyfile(scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
@@ -1050,9 +1069,9 @@ def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
         for item in doc.href_files:
             new = item.src.replace('-en.', '.')
             content = content.replace(item.src, new)
-
-            shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
-            validate_pmc_image(dest_path + '/' + new)
+            if os.path.isfile(scielo_pkg_path + '/' + item.src):
+                shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
+                validate_pmc_image(dest_path + '/' + new)
         fs_utils.write_file(pmc_xml_filename, content)
 
 
@@ -1113,7 +1132,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
                 shutil.copyfile(filename, bkp_filename)
             pkg_reports.save_report(filename, 
                                     _('XML Package Maker Report'), 
-                                    html_reports.save_form(xpm_validations.total > 0, filename) + xpm_validations.message, 
+                                    html_reports.save_form(xpm_validations.total > 0, u'xml_package_maker.html') + xpm_validations.message, 
                                     xpm_version())
 
             global DISPLAY_REPORT

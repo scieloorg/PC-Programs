@@ -255,6 +255,9 @@ COUNTRY_CODES = [
  ]
 
 
+PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']
+
+
 def is_required(publication_type, label):
     return label in REFERENCE_REQUIRED_SUBELEMENTS.get(publication_type, [])
 

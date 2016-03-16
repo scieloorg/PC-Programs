@@ -28,7 +28,7 @@ REQUIRES_PERMISSIONS = [
 def element_which_requires_permissions(node, node_graphic=None):
     missing_children = []
     missing_permissions = []
-    for child in ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']:
+    for child in attributes.PERMISSION_ELEMENTS:
         if node.find('.//' + child) is None:
             missing_children.append(child)
     if len(missing_children) > 0:
