@@ -1543,15 +1543,10 @@ class ReferenceContentValidation(object):
             r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
         else:
             r.append(('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation))
-            for item in validate_element_is_found_in_mixed_citation('source', self.reference.source, self.reference.mixed_citation):
-                if item is not None:
-                    r.append(item)
-            for item in validate_element_is_found_in_mixed_citation('year', self.reference.year, self.reference.mixed_citation):
-                if item is not None:
-                    r.append(item)
-            for item in validate_element_is_found_in_mixed_citation('ext-link', self.reference.ext_link, self.reference.mixed_citation):
-                if item is not None:
-                    r.append(item)
+            for label, data in [('source', self.reference.source), ('year', self.reference.year), ('ext-link', self.reference.ext_link)]:
+                for item in validate_element_is_found_in_mixed_citation(label, data, self.reference.mixed_citation):
+                    if item is not None:
+                        r.append(item)
         return r
 
     @property
