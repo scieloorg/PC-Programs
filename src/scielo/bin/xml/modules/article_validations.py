@@ -777,10 +777,13 @@ class ArticleContentValidation(object):
 
             if norm_aff is None:
                 msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([aff.orgname, aff.norgname])), ' or ')
-                if found_institutions is not None:
-                    if len(found_institutions) > 0:
-                        msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
-                r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
+                if found_institutions is None:
+                    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
+                elif len(found_institutions) == 0:
+                    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
+                else:
+                    msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
+                    r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
             else:
                 status = validation_status.STATUS_INFO
                 r.append((_('normalized aff checked'), validation_status.STATUS_VALID, _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))

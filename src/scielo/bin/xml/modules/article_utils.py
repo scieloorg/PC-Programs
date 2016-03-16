@@ -372,26 +372,21 @@ def normalized_institution(aff):
             valid = found_institutions
         else:
             valid = []
-            if aff.i_country is None:
-                country_info = {}
-                for k, v in list(set([(norm_country_name, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_country_name is not None and norm_country_code is not None])):
-                    if not k in country_info.keys():
-                        country_info[k] = []
-                    country_info[k].append(v)
-                country_info = {k: v[0] for k, v in country_info.items() if len(v) == 1}
+            # identify i_country
+            if aff.i_country is None and aff.country is not None:
+                country_info = {norm_country_name: norm_country_code for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_country_name is not None and norm_country_code is not None}
+                aff.i_country = country_info.get(aff.country)
 
-                for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
-                    if norm_orgname.upper() in orgnames:
-                        if norm_country_code is None:
-                            norm_country_code = country_info.get(norm_country_name)
+            # match norgname and i_country in found_institutions
+            for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
+                if norm_orgname.upper() in orgnames:
+                    if aff.i_country is None:
                         valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
-            else:
-                for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
-                    if norm_orgname.upper() in orgnames and aff.i_country == norm_country_code:
+                    elif aff.i_country == norm_country_code:
                         valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+
+            # mais de uma possibilidade, considerar somente norgname e i_country, desconsiderar city, state, etc
             if len(valid) > 1:
-                country_info = list(set([(norm_country_name, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
-
                 valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
 
         if len(valid) == 1:
@@ -405,6 +400,12 @@ def normalized_institution(aff):
                 norm_aff.state = norm_state
                 norm_aff.i_country = norm_country_code
                 norm_aff.country = norm_country_name
+        else:
+            # nenhuma ou varias possibilidades: melhorar resultado de found_institutions
+            matched_by_city = [(norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_city == aff.city]
+            matched_by_state = [(norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_state == aff.state]
+            if len(matched_by_state) > 0 or len(matched_by_city) > 0:
+                found_institutions = list(set(matched_by_city + matched_by_state))
 
     return (norm_aff, found_institutions)
 
