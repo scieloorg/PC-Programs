@@ -343,7 +343,7 @@ class ArticleContentValidation(object):
         items.append(self.paragraphs)
         items.append(self.validate_xref_reftype)
         items.append(self.missing_xref_list)
-        items.append(self.elements_permissions)
+        items.append(self.innerbody_elements_permissions)
 
         items.append(self.refstats)
         items.append(self.refs_sources)
@@ -970,12 +970,13 @@ class ArticleContentValidation(object):
         return display_attributes('accepted', self.article.accepted)
 
     @property
-    def elements_permissions(self):
+    def innerbody_elements_permissions(self):
         r = []
         status = validation_status.STATUS_WARNING if self.article.sps_version_number >= 1.4 else validation_status.STATUS_INFO
         if len(self.article.permissions_required) > 0:
-            for xml, missing_children in self.article.permissions_required:
-                r.append((xml, status, _('It is highly recommended identifying {elem}').format(elem=', '.join(missing_children))))
+            l = [elem_id for elem_id, missing_children in self.article.permissions_required]
+            if len(l) > 0:
+                r.append(('permissions', status, {_('It is highly recommended identifying {elem}, if applicable.').format(elem=', '.join(attributes.PERMISSION_ELEMENTS)): l}))
         return r
 
     @property
