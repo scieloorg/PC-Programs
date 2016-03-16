@@ -6,12 +6,12 @@ import urllib
 from datetime import datetime
 from mimetypes import MimeTypes
 import zipfile
+import re
 
 from __init__ import _
 import validation_status
 import utils
 import fs_utils
-import article_utils
 import java_xml_utils
 import html_reports
 
@@ -757,7 +757,7 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
 
     #xml_status(content, 'original')
-
+    content = xml_utils.complete_entity(content)
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
     #xml_status(content, 'entidades para char')
@@ -772,6 +772,9 @@ def normalize_xml_content(doc_files_info, content, version):
 
     xml, e = xml_utils.load_xml(content)
     if xml is not None:
+        #content = remove_xmllang_off_article_title(content)
+        content = remove_xmllang_off(content, 'article-title')
+        content = remove_xmllang_off(content, 'source')
         content = content.replace('&amp;amp;', '&amp;')
         content = content.replace('&amp;#', '&#')
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
@@ -791,6 +794,21 @@ def normalize_xml_content(doc_files_info, content, version):
         content = xml_utils.pretty_print(content)
 
     return (content, replaced_entities_report)
+
+
+def remove_xmllang_off(content, element_name):
+    return content if not '<' + element_name + ' ' in content else re.sub(r'<' + element_name + ' (xml:lang=".+")>', utils.repl, content)
+
+
+def remove_xmllang_off_article_title_alt(content):
+    if '<article-title ' in content:
+        new = []
+        for item in content.replace('<article-title ', '<article-title~BREAK~').split('~BREAK~'):
+            if item.strip().startswith('xml:lang') and '</article-title>' in item:
+                item = item[item.find('>'):]
+            new.append(item)
+        content = ''.join(new)
+    return content
 
 
 def remove_styles_off_content(content):
