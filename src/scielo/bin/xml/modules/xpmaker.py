@@ -797,7 +797,7 @@ def normalize_xml_content(doc_files_info, content, version):
 
 
 def remove_xmllang_off(content, element_name):
-    return content if not '<' + element_name + ' ' in content else re.sub(r'<' + element_name + ' (xml:lang=".+")>', utils.repl, content)
+    return content if not '<' + element_name + ' ' in content else re.sub(r'<' + element_name + '( xml:lang=".+")>', utils.repl, content)
 
 
 def remove_xmllang_off_article_title_alt(content):
