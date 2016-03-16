@@ -133,3 +133,8 @@ def hightlight_equal(sentence1, sentence2):
             item = ' **' + item + '** '
         s1.append(item)
     return [' ' + ' '.join(s1) + ' ', s2 + ' ' + sentence2]
+
+
+def repl(matchobj):
+    return matchobj.group(0).replace(matchobj.group(1), u'')
+
