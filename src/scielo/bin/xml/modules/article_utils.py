@@ -15,7 +15,8 @@ import article as article_module
 URL_CHECKED = []
 
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
-MONTHS_ABBREV = '|' + '|'.join([k for k in MONTHS.keys() if k != '']) + '|'
+_MONTHS = {v: k for k, v in MONTHS.items()}
+MONTHS_ABBREV = '|' + '|'.join([_MONTHS[k] for k in sorted(_MONTHS.keys()) if k != '00']) + '|'
 
 
 def execute_api(url, timeout=30, debug=False):
