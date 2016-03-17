@@ -756,7 +756,7 @@ class ArticleContentValidation(object):
                 if item is not None:
                     status = ''
                     if 'univers' in item.lower():
-                        status = validation_status.STATUS_FATAL_ERROR
+                        status = validation_status.STATUS_WARNING
                     elif not 'depart' in item.lower() and not 'divi' in item.lower():
                         status = validation_status.STATUS_WARNING
                     if len(status) > 0:
