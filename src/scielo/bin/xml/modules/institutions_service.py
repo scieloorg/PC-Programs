@@ -35,7 +35,7 @@ class OrgManager(object):
 
     def search_institutions(self, orgname, city, state, country_code, country_name, exact_country=None):
         results = self.local_institutions_manager.get_institutions(orgname, city, state, country_code, country_name)
-        results += self.search_at_wayta(orgname, country_name, exact_country)
+        results += self.search_at_wayta(orgname, country_name, exact_country, [city, state])
         results = sorted(list(set(results)))
         return results
 
@@ -53,11 +53,11 @@ class OrgManager(object):
     def create_db(self):
         self.local_institutions_manager.create_db()
 
-    def search_at_wayta(self, orgname, country_name, exact_country=None):
+    def search_at_wayta(self, orgname, country_name, exact_country=None, complements=[]):
         #keys = ['score', 'value', 'city', 'state', 'iso3166', 'country']
-        r = [(_orgname, _city, _state, _country_code, _country_name) for score, _orgname, _city, _state, _country_code, _country_name in wayta_search(orgname, country_name, exact_country) if _orgname == orgname]
+        r = [(_orgname, _city, _state, _country_code, _country_name) for score, _orgname, _city, _state, _country_code, _country_name in wayta_search(orgname, country_name, exact_country, complements) if _orgname == orgname]
         if not len(r) == 1:
-            r = [(_orgname, _city, _state, _country_code, _country_name) for score, _orgname, _city, _state, _country_code, _country_name in wayta_search(orgname, country_name, exact_country)]
+            r = [(_orgname, _city, _state, _country_code, _country_name) for score, _orgname, _city, _state, _country_code, _country_name in wayta_search(orgname, country_name, exact_country, complements)]
         return r
 
 
@@ -235,12 +235,14 @@ def unicode2cp1252(results):
     return '\n'.join(r)
 
 
-def wayta_search(orgname, country, filter_country=None):
+def wayta_search(orgname, country, filter_country=None, complements=[]):
     results = []
     for text in orgname.split(','):
         try:
+            if len(complements) > 0:
+                text += ', ' + ', '.join(complements)
             if country is not None:
-                text += ',' + country
+                text += ', ' + country
             wayta_result = wayta_request(text)
             result = format_wayta_results(wayta_result, filter_country)
             results += result

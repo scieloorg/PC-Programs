@@ -747,8 +747,6 @@ class ArticleContentValidation(object):
             resp = required('aff/country', aff.country, validation_status.STATUS_FATAL_ERROR)
             resp = (resp[0], resp[1], resp[2] + _('. E.g.: Use {this} instead of {that}.').format(this='<country country="BR">Brasil</country>', that='<country country="BR"/>'))
             r.append(resp)
-            r.append(required('aff/country', aff.country, validation_status.STATUS_FATAL_ERROR))
-            r.append(required('aff/country/@country', aff.i_country, validation_status.STATUS_FATAL_ERROR))
 
             for i_country_validation in attributes.validate_iso_country_code(aff.i_country):
                 r.append(i_country_validation)
@@ -768,19 +766,19 @@ class ArticleContentValidation(object):
                             r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of an organization.').format(value=item)))
 
             norm_aff, found_institutions = article_utils.normalized_institution(aff)
-            r.append(('aff', validation_status.STATUS_INFO, join_not_None_items([aff.orgname, aff.city, aff.state, aff.country])))
-            r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_INFO, aff.norgname))
-            r.append(('aff/country/@country', validation_status.STATUS_INFO, aff.i_country))
 
-            if aff.norgname is None or aff.norgname == '':
-                r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element.')))
+            #if aff.norgname is None or aff.norgname == '':
+            #    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element.')))
 
             if norm_aff is None:
                 msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([aff.orgname, aff.norgname])), ' or ')
-                if found_institutions is not None:
-                    if len(found_institutions) > 0:
-                        msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
-                r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
+                if found_institutions is None:
+                    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
+                elif len(found_institutions) == 0:
+                    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
+                else:
+                    msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
+                    r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
             else:
                 status = validation_status.STATUS_INFO
                 r.append((_('normalized aff checked'), validation_status.STATUS_VALID, _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))

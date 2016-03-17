@@ -160,7 +160,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_
 
                         if label == _('why it is not a valid message?'):
                             if 'ERROR' in row.get('status', '') or 'WARNING' in row.get('status', ''):
-                                td_content = '<textarea rows="5" coluns="100"> </textarea>'
+                                td_content = '<textarea rows="5" cols="40"> </textarea>'
                             else:
                                 td_content = ' - '
                         else:
@@ -221,7 +221,7 @@ def p_message(value, display_justification_input=True):
     justification_input = ''
     if display_justification_input is True:
         if style in ['error', 'fatalerror', 'warning']:
-            justification_input = tag('p', tag('textarea', ' '), attributes={'cols': '300', 'rows': '5'})
+            justification_input = tag('p', tag('textarea', ' ', attributes={'cols': '100', 'rows': '5'}))
     return tag('p', value, style) + justification_input
 
 
