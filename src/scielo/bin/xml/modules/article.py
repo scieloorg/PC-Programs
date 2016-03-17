@@ -1205,11 +1205,34 @@ class ArticleXML(object):
         if self.article_meta is not None:
             for license_node in self.article_meta.findall('.//license'):
                 lang = xml_utils.element_lang(license_node)
+                href = license_node.attrib.get('{http://www.w3.org/1999/xlink}href')
+
                 _article_licenses[lang] = {}
-                _article_licenses[lang]['href'] = license_node.attrib.get('{http://www.w3.org/1999/xlink}href')
+                _article_licenses[lang]['href'] = href
+                if href is not None:
+                    if 'creativecommons.org/licenses/' in href:
+                        _article_licenses[lang]['code-and-version'] = href[href.find('creativecommons.org/licenses/')+len('creativecommons.org/licenses/'):].lower()
+                        if 'igo' in _article_licenses[lang]['code-and-version']:
+                            _article_licenses[lang]['code-and-version'] = _article_licenses[lang]['code-and-version'][0:_article_licenses[lang]['code-and-version'].find('igo')+len('igo')]
+                        else:
+                            items = _article_licenses[lang]['code-and-version'].split('/')
+                            _article_licenses[lang]['code-and-version'] = items[0] + '/' + items[1]
                 _article_licenses[lang]['type'] = license_node.attrib.get('license-type')
                 _article_licenses[lang]['text'] = xml_utils.node_text(license_node.find('.//license-p'))
         return _article_licenses
+
+    @property
+    def article_license_code_and_version_lang(self):
+        r = {}
+        for lang, lic in self.article_licenses.items():
+            if lic.get('code-and-version') is not None:
+                r[lic.get('code-and-version')] = []
+            r[lic.get('code-and-version')].append(lang)
+        return r
+
+    @property
+    def article_license_code_and_versions(self):
+        return self.article_license_code_and_version_lang.keys()
 
     @property
     def permissions_required(self):

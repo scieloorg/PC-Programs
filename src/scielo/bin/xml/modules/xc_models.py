@@ -640,13 +640,14 @@ class IssueModels(object):
                     results.append((label, validation_status.STATUS_ERROR, _msg))
 
             # license
+            article_license_code_and_versions = ' | '.join(article.article_license_code_and_versions)
             if self.issue.license is None:
                 results.append(('license', validation_status.STATUS_ERROR, _('Unable to identify issue license')))
-            elif article.license_url is not None:
-                if not '/' + self.issue.license.lower() + '/' in article.license_url.lower() + '/':
-                    results.append(('license', validation_status.STATUS_ERROR, _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
+            elif article_license_code_and_versions is not None:
+                if not self.issue.license.lower() in article_license_code_and_versions:
+                    results.append(('license', validation_status.STATUS_ERROR, _('data mismatched. In article: "') + article_license_code_and_versions + _('" and in issue: "') + self.issue.license + '"'))
                 else:
-                    results.append(('license', validation_status.STATUS_INFO, _('In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
+                    results.append(('license', validation_status.STATUS_INFO, _('In article: "') + article_license_code_and_versions + _('" and in issue: "') + self.issue.license + '"'))
 
             # section
             fixed_sectitle = None
