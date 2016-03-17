@@ -400,13 +400,6 @@ def normalized_institution(aff):
                 norm_aff.state = norm_state
                 norm_aff.i_country = norm_country_code
                 norm_aff.country = norm_country_name
-        else:
-            # nenhuma ou varias possibilidades: melhorar resultado de found_institutions
-            matched_by_city = [(norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_city == aff.city]
-            matched_by_state = [(norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_state == aff.state]
-            if len(matched_by_state) > 0 or len(matched_by_city) > 0:
-                found_institutions = list(set(matched_by_city + matched_by_state))
-
     return (norm_aff, found_institutions)
 
 

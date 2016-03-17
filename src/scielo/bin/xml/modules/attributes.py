@@ -465,9 +465,9 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
 def validate_iso_country_code(iso_country_code):
     r = []
     if iso_country_code is None:
-        r.append((_('ISO Country Code'), validation_status.STATUS_FATAL_ERROR, _('Required')))
+        r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, _('Required')))
     else:
         if not iso_country_code in COUNTRY_CODES:
-            r.append((_('ISO Country Code'), validation_status.STATUS_FATAL_ERROR, 
+            r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, 
                 iso_country_code + ': ' + _('Invalid value')))
     return r
