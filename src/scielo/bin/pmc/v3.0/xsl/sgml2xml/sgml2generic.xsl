@@ -3523,7 +3523,7 @@ et al.</copyright-statement>
 		<xsl:param name="href"/>
 		
 		<xsl:variable name="language"><xsl:choose>
-			<xsl:when test="@xml:lang"><xsl:value-of select="@xml:lang"/></xsl:when>
+			<xsl:when test="@language"><xsl:value-of select="@language"/></xsl:when>
 			<xsl:when test="$lang"><xsl:value-of select="$lang"/></xsl:when>
 		</xsl:choose></xsl:variable>
 		<license xml:lang="{$language}" license-type="open-access" xlink:href="{$href}">
@@ -3747,10 +3747,10 @@ et al.</copyright-statement>
 	<xsl:template match="cpright" mode="copyright">
 		<copyright-statement><xsl:apply-templates select="*|text()" mode="text-only"/></copyright-statement>
 		<xsl:if test="cpyear">
-			<copyrigth-year><xsl:value-of select="cpyear"/></copyrigth-year>
+			<copyright-year><xsl:value-of select="cpyear"/></copyright-year>
 		</xsl:if>
 		<xsl:if test="cpholder">
-			<copyrigth-holder><xsl:value-of select="cholder"/></copyrigth-holder>
+			<copyright-holder><xsl:value-of select="cholder"/></copyright-holder>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="cpright//text()" mode="text-only">
