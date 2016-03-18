@@ -585,7 +585,7 @@ class IssueModels(object):
         if article.tree is not None:
             validations = []
             validations.append((_('journal title'), article.journal_title, self.issue.journal_title))
-            validations.append((_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.issue.journal_id_publisher_id))
+            #validations.append((_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.issue.journal_id_publisher_id))
             validations.append((_('journal-id (nlm-ta)'), article.journal_id_nlm_ta, self.issue.journal_id_nlm_ta))
 
             if article.e_issn is not None:
