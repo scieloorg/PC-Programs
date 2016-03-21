@@ -1516,9 +1516,9 @@ class ReferenceContentValidation(object):
     @property
     def ext_link(self):
         r = []
-        if self.reference.ext_link is not None:
+        if self.reference.ext_link is not None and self.reference.mixed_citation is not None:
             if not '<ext-link' in self.reference.mixed_citation:
-                r += [('ext-link', validation_status.STATUS_WARNING, _('Identify the links in mixed-citation with the ext-link element.'))]
+                r.append(('ext-link', validation_status.STATUS_WARNING, _('Identify the links in mixed-citation with the ext-link element.')))
         return r
 
     @property
