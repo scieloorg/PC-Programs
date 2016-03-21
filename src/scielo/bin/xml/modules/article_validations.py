@@ -500,11 +500,11 @@ class ArticleContentValidation(object):
 
     @property
     def journal_id_nlm_ta(self):
-        if not self.article.journal_id_nlm_ta in self.journal.nlm_title:
-            if self.journal.nlm_title is None or len(self.journal.nlm_title) == 0:
-                return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Use journal-id (nlm-ta) only for NLM journals.')))
-            else:
-                return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=self.article.journal_id_nlm_ta, expected='|'.join(self.journal.nlm_title))))
+        if self.journal.nlm_title is not None:
+            if len(self.journal.nlm_title) > 0:
+                if self.article.journal_id_nlm_ta is not None:
+                    if not self.article.journal_id_nlm_ta in self.journal.nlm_title:
+                        return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=self.article.journal_id_nlm_ta, expected='|'.join(self.journal.nlm_title))))
 
     @property
     def journal_issns(self):
@@ -884,7 +884,12 @@ class ArticleContentValidation(object):
             if sorted_by_lang is None:
                 if elem_group_name is not None:
                     elem_name = elem_group_name
-            errors.append((elem_name + ' (@xml:lang="' + lang + '")', err_level, _('not found')))
+            res = [item for item in values if item is not None]
+            if len(res) == 0:
+                res = _('not found')
+            else:
+                res = {_('any data not found'): res}
+            errors.append((elem_name + ' (@xml:lang="' + lang + '")', err_level, res))
         if mininum == 0:
             if len(values) > 1:
                 errors.append((elem_item_name + ' (@xml:lang="' + lang + '")', validation_status.STATUS_FATAL_ERROR, _('Required only one {element} for each language. Values found for @xml:lang="{lang}": {values}').format(lang=lang, element=elem_item_name, values='|'.join(values))))
@@ -1270,11 +1275,12 @@ class ArticleContentValidation(object):
     def package_files(self, pkg_path):
         _pkg_files = {}
         #from XML, find files
-        pdf_langs = [item[-6:-4] for item in self.article.package_files(pkg_path) if item.endswith('.pdf') and item[-7:-6] == '-']
+        article_pkg_files = self.article.package_files(pkg_path)
+        pdf_langs = [item[-6:-4] for item in article_pkg_files if item.endswith('.pdf') and item[-7:-6] == '-']
         if self.article.language is not None:
             filename = self.article.new_prefix + '.pdf'
             _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_INFO, _('PDF ({lang})').format(lang=self.article.language))
-            if not filename in self.article.package_files(pkg_path):
+            if not filename in article_pkg_files:
                 _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_ERROR, _('not found in the package'))
         for lang in self.article.trans_languages:
             if not lang in pdf_langs:
@@ -1284,7 +1290,7 @@ class ArticleContentValidation(object):
         #from files, find in XML
         inxml = [item.name_without_extension for item in self.article.href_files]
         inxml += [item.src for item in self.article.href_files]
-        for item in self.article.package_files(pkg_path):
+        for item in article_pkg_files:
             status = validation_status.STATUS_INFO if item.startswith(self.article.new_prefix) else validation_status.STATUS_FATAL_ERROR
             message = _('found in the package') if status == validation_status.STATUS_INFO else _('file name must start with ') + self.article.prefix
             _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
