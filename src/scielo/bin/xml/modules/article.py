@@ -1333,7 +1333,7 @@ class Article(ArticleXML):
         self.article_records = None
 
     def package_files(self, pkg_path):
-        files = [item for item in os.listdir(pkg_path) if item.startswith(self.prefix) and not item.endswith('.xml')]
+        files = [item for item in os.listdir(pkg_path) if item.startswith(self.new_prefix) and not item.endswith('.xml')]
         for hrefitem in self.href_files:
             file_location = hrefitem.file_location(pkg_path)
             if os.path.isfile(file_location):
