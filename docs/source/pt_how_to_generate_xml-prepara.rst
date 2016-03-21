@@ -58,7 +58,7 @@ Estes arquivos são gerados pelo programa `Title Manager <titlemanager.html>`_ o
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=SNAXZ1BaMM0&index=5&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <iframe width="854" height="480" src="https://www.youtube.com/embed/SNAXZ1BaMM0?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _estrutura-de-pastas:
@@ -87,7 +87,7 @@ Veja que dentro da pasta "markup_xml" foram inseridas duas pastas, no mesmo nív
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/watch?v=RLizVtt5Ca8&index=4&list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <iframe width="854" height="480" src="https://www.youtube.com/embed/RLizVtt5Ca8?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 .. _formato-scielo:
 
