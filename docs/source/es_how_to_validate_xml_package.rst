@@ -3,8 +3,8 @@
    :maxdepth: 2
 
 
-Como validar o pacote XML SPS (TRADUZIR)
-=============================
+Cómo validar el paquete XML SPS (TRADUZIR)
+===============================
 
 Use XPM to generate XML packages for SciELO and PMC.
 
