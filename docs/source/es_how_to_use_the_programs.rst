@@ -1,0 +1,17 @@
+
+Cómo usar los programas
+=======================
+
+`English <how_to_use_the_programs.html>`_ | `Português <pt_how_to_use_the_programs.html>`_ 
+
+
+.. toctree::
+    :maxdepth: 2
+
+    es_how_to_generate_sgml.rst
+    
+    es_how_to_generate_xml.rst
+    es_how_to_validate_xml_package.rst
+    
+    es_how_to_update_local_site.rst
+
