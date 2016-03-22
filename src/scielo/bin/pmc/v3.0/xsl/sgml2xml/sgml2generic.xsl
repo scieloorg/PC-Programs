@@ -79,7 +79,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<!--xsl:variable name="g" select="//*[name()!='equation' and .//graphic]"/>
 	<xsl:variable name="e" select="//equation[.//graphic]"/-->
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
-	<xsl:variable name="lang"><xsl:value-of select="node()/@xml:lang"/></xsl:variable>
+	<xsl:variable name="lang"><xsl:value-of select="node()/@language"/></xsl:variable>
 	<xsl:template match="*" mode="license-text">
 		<xsl:param name="lang" select="$lang"/>
 		<xsl:choose>
@@ -3546,9 +3546,9 @@ et al.</copyright-statement>
 	</xsl:template>
 	
 	<xsl:template match="extra-scielo/license">
-		<xsl:variable name="ccid"><xsl:value-of select="../license-type"/></xsl:variable>
+		<xsl:variable name="ccid"><xsl:value-of select="../license-type"/>/</xsl:variable>
 		<xsl:variable name="cversion"><xsl:value-of select="../license-version"/></xsl:variable>
-		<xsl:variable name="cccompl"><xsl:value-of select="../license-complement"/></xsl:variable>
+		<xsl:variable name="cccompl">/<xsl:value-of select="../license-complement"/></xsl:variable>
 		
 		<xsl:apply-templates select="." mode="license-element">
 			<xsl:with-param name="href" select="concat('http://creativecommons.org/licenses/',$ccid,$cversion,$cccompl)"/>
@@ -3739,24 +3739,32 @@ et al.</copyright-statement>
 	<xsl:template match="cpright">
 		<permissions>
 			<xsl:apply-templates select="." mode="copyright"/>
-			<xsl:apply-templates select="../licinfo" mode="license"/>
+			<xsl:choose>
+				<xsl:when test="../licinfo">
+					<xsl:apply-templates select="../licinfo" mode="license"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="../back/licenses| ../cc | ..//extra-scielo/license"/>
+				</xsl:otherwise>
+			</xsl:choose>
 			<xsl:apply-templates select="..//subdoc[@subarttp='translation']" mode="license-element"/>
 		</permissions>
 	</xsl:template>
 	
 	<xsl:template match="cpright" mode="copyright">
-		<copyright-statement><xsl:apply-templates select="*|text()" mode="text-only"/></copyright-statement>
+		<copyright-statement><xsl:apply-templates select="cpyear | cpholder | text()" mode="text-only"/></copyright-statement>
 		<xsl:if test="cpyear">
 			<copyright-year><xsl:value-of select="cpyear"/></copyright-year>
 		</xsl:if>
 		<xsl:if test="cpholder">
-			<copyright-holder><xsl:value-of select="cholder"/></copyright-holder>
+			<copyright-holder><xsl:value-of select="cpholder"/></copyright-holder>
 		</xsl:if>
 	</xsl:template>
+	
 	<xsl:template match="cpright//text()" mode="text-only">
 		<xsl:value-of select="."/>
 	</xsl:template>
-	<xsl:template match="cpright//*" mode="text-only">
+	<xsl:template match="cpright/*" mode="text-only">
 		<xsl:apply-templates select="*|text()" mode="text-only"/>
 	</xsl:template>
 	<xsl:template match="licinfo/@href">
