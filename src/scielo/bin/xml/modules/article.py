@@ -1214,9 +1214,11 @@ class ArticleXML(object):
                         _article_licenses[lang]['code-and-version'] = href[href.find('creativecommons.org/licenses/')+len('creativecommons.org/licenses/'):].lower()
                         if 'igo' in _article_licenses[lang]['code-and-version']:
                             _article_licenses[lang]['code-and-version'] = _article_licenses[lang]['code-and-version'][0:_article_licenses[lang]['code-and-version'].find('igo')+len('igo')]
-                        else:
+                        elif '/' in _article_licenses[lang]['code-and-version']:
                             items = _article_licenses[lang]['code-and-version'].split('/')
                             _article_licenses[lang]['code-and-version'] = items[0] + '/' + items[1]
+                        else:
+                            _article_licenses[lang]['code-and-version'] = None
                 _article_licenses[lang]['type'] = license_node.attrib.get('license-type')
                 _article_licenses[lang]['text'] = xml_utils.node_text(license_node.find('.//license-p'))
         return _article_licenses
