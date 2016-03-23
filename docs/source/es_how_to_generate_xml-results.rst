@@ -1,80 +1,85 @@
-.. pt_how_to_generate_xml-results:
+.. es_how_to_generate_xml-results:
 
-Generando el Archivo .xml (TRADUZIR PARA O ESPANHOL)
-====================================================
+Generando el Archivo .xml
+=========================
 
-(traduzir)
+Después de identificar todos los datos del documento .doc, el siguiente paso es generar el archivo .xml.
 
-Após a identificação de todos os dados do documento .doc, o próximo passo é gerar o arquivo .xml.
-
-Antes de qualquer coisa, salve o arquivo marcado clicando no botão "Markup: Salvar":
+Antes de todo, salve el archivo marcado haciendo un click en el botón "Markup: Salvar":
 
 .. image:: img/doc-mkp-salvar.jpg
    :align: center
 
 
-Em seguida clique no botão "Markup: Gerar o XML":
+Después haga un click  en el botón "Markup: Gerar o XML":
 
 .. image:: img/doc-mkp-gerarxml.jpg
    :align: center
 
 
-.. relatorios
+.. informes
 
-Informes (TRADUZIR PARA O ESPANHOL)
-===================================
-Ao gerar o arquivo .xml o programa Markup apresenta três relatórios: :ref:`report-arquivos`, :ref:`report-estilos` e :ref:`report-conteudo`.
-Abaixo a função de cada relatório apresentado.
+Informes
+========
+
+Al generar el archivo .xml el programa Markup presenta tres informes: :ref:`informe-archivos`, :ref:`informe-estilos` e :ref:`informe-contenido`.
+Abajo la función de cada informe presentado.
 
 
-.. _report-arquivos:
+.. _informe-archivos:
 
 Informes de Errores de los Archivos
 -----------------------------------
 
-Ao clicar em "Markup: Gerar o XML" o programa apresenta um Relatório com as informações das alterações feitas no documento.
+Al hacer un click en "Markup: Gerar o XML" el programa presenta un informe con las informaciones de las alteraciones hechas en el documento.
+
 
 .. image:: img/doc-mkp-report-name.jpg
    :height: 450px
 
-O resultado disso, é um relatório que apresenta as ações do programa ao gerar o XML a partir do arquivo .doc. O programa altera o nome do arquivo que, em .doc, era apresentado como "12-Artigo.doc" para ISSN-acronimo-volume-numero-paginação.xml e as imagens são extraídas do documento já com a nomeação convertida para o padrão SciELO.
+
+Lo resultado de eso, es un informe el cual presenta las acciones del programa al generar el XML desde el archivo .doc.
+
+El programa modifica el nombre del archivo que, en .doc, estaba presentado como "12-Artigo.doc" para "ISSN-acronimo-volume-numero-paginação.xml" y las imagenes son extraídas del documento yá con el nombre convertido para la recomiendación SciELO.
 
 
-.. _report-estilos:
+.. _informe-estilos:
 
 Informe de Estilos SciELO
 -------------------------
 
-Em seguida clique no botão ao lado "Relatório de Estilos SciELO" e verifique se há algum erro no documento:
+Después haga un click en el botón situado junto "Relatório de Estilos SciELO" y verifique si hay algun error en el documento.
+
 
 .. image:: img/doc-mkp-gerar-report-scielo.jpg
    :align: center
 
-O programa apresentará um relatório parecido com o que segue abaixo:
+El programa mostrará un informe que se parece con lo que sigue abajo:
 
 .. image:: img/doc-mkp-report-style.jpg
    :align: center
    :height: 450px
 
-Veja que o relatório de erros não apresenta nenhum erro. Isso porque o xml gerado está de acordo com a estrutura de estilos requerida.
+Ver que en el informe de errores no es presentado ningun error. Eso ocurre porque el xml generado está de acuerdo con la estructura de estilos solicitada.
 
 
-.. _report-conteudo:
+.. _informe-contenido:
 
 Informe de Errores de los Contenidos
 ------------------------------------
 
-Feita a verificação no Relatório de Estilos SciELO, o próximo passo é gerar o relatório de erros de dados/conteúdo.
-
-Esse relatório é exatamente o mesmo que o programa Package Maker gera. Portanto, para verificar o manual de uso para validação e verificação dos erros apresentados, vá para o projeto `Package Maker <pt_how_to_validate_xml_package.html>`_ e confira as funcionalidades dessa ferramenta.
+Hecha la verificación en el informe de estilos SciELO, el siguiente paso es generar el informe de errores de los datos/contenido.
 
 
-.. _relatorios-pastas:
+Ese informe es exatamente lo mismo que el programa Package Maker genera. Por lo tanto, para verificar el manual de uso para validación y verificación de errores presentados, entre en proyecto `Package Maker <es_how_to_validate_xml_package.html>`_ y confira las características de esa herramienta.
 
-Carpetas Generadas (TRADUZIR PARA O ESPANHOL)
-=============================================
 
-Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src" e "scielo_markup", conforme segue:
+.. _informe-carpetas:
+
+Carpetas Generadas
+==================
+
+Al generar el archivo .xml el programa Markup crea 6 carpetas en el mismo nivel que la carpeta "src" y "scielo_markup", como sigue abajo:
 
 .. image:: img/doc-mkp-pastas-geradas.jpg
    :align: center
@@ -83,47 +88,42 @@ Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src
 
 **carpeta de errores:**
 
-	Nessa pasta há o relatório de erros de cada um dos arquivos .xml.  O arquivo final .rep apresenta os possíveis erros de estilo e o final .contents de conteúdo. São os mesmos relatórios apresentados no programa de marcação.
+	En esa carpeta hay el informe de errores de cada uno de los archivos .xml. El archivo final '.rep' presenta los posibles errores de estilo y el archivo con el final '.contents' presenta los contenidos. Son los mismos informes presentados en el programa de marcación.
 
 
 **pmc_package:**
 
-	Para revistas que apresentam o título abreviado NLM, o programa retira os elementos de especificação SciELO e mantém apenas
-	os elementos necessários para envio ao PMC.
-	Os elementos que são retirados do documento XML para envio ao PMC são: detalhamento em afiliação, informação de financiamento
-	em <funding-group> e <mixed-citation>.
+	Para los periódicos que presentam el títutlo corto NLM, el programa retira los elementos de especificación SciELO y mantiene solo los elementos necesarios para el envio al PMC.
+	Los elementos que son retirados de lo documento XML para envio al PMC son: detallamento en afiliación, información de financiación en ``<funding-group>`` y ``<mixed-citation>``.
 
 
 **pmc_package_zips:**
 
-	Ao validar o pacote pmc_package o programa, automaticamente, zipa a pasta que está pronta para envio.
+	Al validar el paquete pmc_package el programa, automaticamente, comprime la carpeta que está pronta para envio.
 
 
 **scielo_package:**
 
-	No momento da validação do pacote XML o programa verifica as entidades (numéricas ou alfa-numéricas) que existem no documento
-	e, automaticamente, converte para o caractere correspondente, evitando futuros problemas de entidades. O ideal é utilizar os 
-	arquivos .xml validados nessa pasta em vez de utilizar os xmls do pacote.
+	En el momento de la validación del paquete XML, el programa verifica las entidades (numericas o alfa-numericas) que existen en el documento y, automaticamente, convierte para el caractere correspondiente, evitando futuros problemas en entidades. Lo ideal es usar los archivos .xml validados en esa carpeta en vez de usar los xmls del paquete.
 
 
 **scielo_package_zips:**
 
-	Ao validar o pacote scielo_package o programa, automaticamente, zipa a pasta já com a nomeação padrão SciELO que está pronta 
-	para envio.
+	Al validar el paquete scielo_package el programa, automaticamente, comprime la carpeta yá con el nombre predeterminado SciELO que está pronta para envio.
 
 
 **work:**
 
-	é uma pasta de arquivos temporários usadas para a geração do resultado. Ela pode ser apagada se desejado, mas também pode ser usada para fins de suporte.
+	Es una carpeta de archivos temporales usadas para la generación de los resultados. Esta carpeta se puede borrar si lo prefiere, pero también puede ser usada con finalidad de soporte.
 
-Essa estrutura de pastas é a mesma apresentada se o usuário utilizar o programa `Package Maker <pt_how_to_validate_xml_package.html>`_. Para verificar os relatórios apresentados, basta entrar na pasta "errors" e abrir o documento com extensão: ".contents.html".
+	Esa estructura de carpetas es la misma presentada si el usuario usar el programa `Package Maker <es_how_to_validate_xml_package.html>`_. Para verificar los informes presentados, entra en la carpeta "errors" y abre el documento con extensão: ".contents.html"
 
 
-.. _suporte-scielo
+.. _soporte-scielo
 
-Soporte SciELO (TRADUZIR PARA O ESPANHOL)
-=========================================
+Soporte SciELO
+==============
 
-Em caso de dúvidas com relação à utilização do programa Markup ou erros apresentados ao gerar o arquivo .xml, enviar e-mail para a lista de discussões SciELO-XML:
+En caso de dudas sobre lo uso del programa Markup o errores presentados al generar los archivos .xml, nos envíe un correo electrónico para la lista de discussion SciELO-XML:
 
 <scielo-xml@googlegroups.com>
