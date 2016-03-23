@@ -142,7 +142,7 @@ def statistics_display(validations_results, inline=True):
 
 
 def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):
-    if ENABLE_COMMENTS:
+    if ENABLE_COMMENTS is True:
         html_cell_content.append(_('why it is not a valid message?'))
     else:
         if _('why it is not a valid message?') in table_header:
@@ -164,17 +164,15 @@ def sheet_build(table_header, table_data, table_style='sheet', row_style=None, c
                 if len(row) == 1 and len(table_header) > 1:
                     # hidden tr
                     td_items.append('<td colspan="' + str(len(table_header)) + '" class="' + label + '-hidden-block">' + row.get(label, '') + '</td>')
-                elif len(table_header) == len(row):
+                elif len(table_header) <= len(row):
                     for label in table_header:
                         td_content = row.get(label, '')
                         td_style = None
-
                         if label == _('why it is not a valid message?'):
-                            if ENABLE_COMMENTS:
-                                if 'ERROR' in row.get('status', '') or 'WARNING' in row.get('status', ''):
-                                    td_content = '<textarea rows="5" cols="40"> </textarea>'
-                                else:
-                                    td_content = ' - '
+                            if 'ERROR' in row.get('status', '') or 'WARNING' in row.get('status', ''):
+                                td_content = '<textarea rows="5" cols="40"> </textarea>'
+                            else:
+                                td_content = ' - '
                         else:
                             # cell style
                             td_style = colums_styles.get(label)
@@ -187,7 +185,6 @@ def sheet_build(table_header, table_data, table_style='sheet', row_style=None, c
                                 td_content = format_html_data(td_content, width)
                                 if table_style == 'sheet':
                                     td_content = color_text(td_content)
-
                         td_items.append(tag('td', td_content, td_style))
 
                 # row style
@@ -231,7 +228,7 @@ def display_xml(value, width=40):
 def p_message(value, display_justification_input=True):
     style = get_message_style(value, '')
     justification_input = ''
-    if display_justification_input is True:
+    if display_justification_input is True and ENABLE_COMMENTS is True:
         if style in ['error', 'fatalerror', 'warning']:
             justification_input = tag('p', tag('textarea', ' ', attributes={'cols': '100', 'rows': '5'}))
     return tag('p', value, style) + justification_input
