@@ -51,7 +51,6 @@ sectitle;#FALSE#;#FALSE#
 p;#FALSE#;#FALSE#
 
 acontrib
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 et-al;#FALSE#;#FALSE#
@@ -71,9 +70,7 @@ zipcode;#FALSE#;#FALSE#
 email;#FALSE#;#FALSE#
 
 aiserial
-*sertitle;#FALSE#;#FALSE#
 sertitle;#FALSE#;#FALSE#
-*stitle;#FALSE#;#FALSE#
 stitle;#FALSE#;#FALSE#
 isstitle;#FALSE#;#FALSE#
 date;#FALSE#;#TRUE#
@@ -94,7 +91,6 @@ pubname;#FALSE#;#TRUE#
 notes;#FALSE#;#TRUE#
 
 amonog
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 et-al;#FALSE#;#FALSE#
@@ -339,7 +335,6 @@ imonog;#FALSE#;#FALSE#
 iiserial;#FALSE#;#FALSE#
 
 icontrib
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 et-al;#FALSE#;#FALSE#
@@ -352,14 +347,11 @@ ign
 
 iiserial
 isstitle;#FALSE#;#FALSE#
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 et-al;#FALSE#;#FALSE#
 medium;#FALSE#;#FALSE#
-*sertitle;#FALSE#;#FALSE#
 sertitle;#FALSE#;#FALSE#
-*stitle;#FALSE#;#FALSE#
 stitle;#FALSE#;#FALSE#
 city;#FALSE#;#TRUE#
 state;#FALSE#;#TRUE#
@@ -380,7 +372,6 @@ doi;#FALSE#;#TRUE#
 pubid;#FALSE#;#TRUE#
 
 imonog
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 et-al;#FALSE#;#FALSE#
@@ -487,9 +478,7 @@ orgdiv;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 
 oiserial
-*sertitle;#FALSE#;#FALSE#
 sertitle;#FALSE#;#FALSE#
-*stitle;#FALSE#;#FALSE#
 stitle;#FALSE#;#FALSE#
 isstitle;#FALSE#;#FALSE#
 date;#FALSE#;#TRUE#
@@ -569,7 +558,6 @@ pmonog;#FALSE#;#FALSE#
 piserial;#FALSE#;#FALSE#
 
 pcontrib
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 date;#FALSE#;#FALSE#
@@ -577,7 +565,6 @@ title;#FALSE#;#FALSE#
 subtitle;#FALSE#;#FALSE#
 
 piserial
-*sertitle;#FALSE#;#FALSE#
 sertitle;#FALSE#;#FALSE#
 volid;#FALSE#;#TRUE#
 issueno;#FALSE#;#TRUE#
@@ -589,7 +576,6 @@ doi;#FALSE#;#TRUE#
 pubid;#FALSE#;#TRUE#
 
 pmonog
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 date;#FALSE#;#FALSE#
@@ -793,7 +779,6 @@ viserial;#FALSE#;#FALSE#
 vmonog;#FALSE#;#FALSE#
 
 vcontrib
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 et-al;#FALSE#;#FALSE#
@@ -818,7 +803,6 @@ doi;#FALSE#;#TRUE#
 pubid;#FALSE#;#TRUE#
 
 vmonog
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 et-al;#FALSE#;#FALSE#
@@ -875,12 +859,6 @@ zipcode
 surname-fname
 
 *oauthor
-
-*author
-
-*sertitle
-
-*stitle
 
 doc
 author;#FALSE#;#TRUE#
