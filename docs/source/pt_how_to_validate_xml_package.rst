@@ -1,86 +1,81 @@
+.. _pt_como_validar_pacote_xml
 
-.. toctree::
-   :maxdepth: 2
-
-
-Como validar o pacote XML SPS (TRADUZIR)
+Como validar o pacote XML SPS
 =============================
 
-Use XPM to generate XML packages for SciELO and PMC.
+Package Maker - Como usar?
+--------------------------
 
+Para utilizar o programa Package Maker clique no meu Iniciar do Windows, procure a pasta do Programa Markup que foi istalado em sua máquina e com o mouse verifique os itens disponíveis na pasta.
+Clique no botão *XML Package Maker*
 
-How to use
-----------
-
-Use the Windows menu to open the program.
 
 .. image:: img/scielo_menu_xpm.png
-
-
 
 .. image:: img/xpm_gui.png
 
 
-Select the folder which contains XML package files
+Agora clique no botão "Choose Folder" para escolher a pasta que contém os arquivos que serão validados 
+
 
 .. image:: img/xpm_gui_selected_folder.png
 
 
 
-Press **XML Package Maker**.
+E clique em **XML Package Maker**.
 
 
-Results
--------
+Resultados
+----------
 
-* XML files for SciELO (scielo_package and/or scielo_package_zips folders)
-* XML files for PMC (pmc_package folder)
-* report files (errors folder)
+* Para arquivos XML SciELO (verifique a pasta scielo_package e/ou scielo_package_zips)
+* Para arquivos XML PMC (verifique a pasta pmc_package)
+* Para Relatório de arquivos (verifique a pasta errors)
 
-The output folder (0103-2070-ts-08-02_xml_package_maker_result) is generated in the same folder in which contains the input folder (0103-2070-ts-08-02)
+A pasta que é gerada pelo XPM "ISSN-acronimo-volume-numero_xml_package_maker_result" estará disponível no mesmo nível da pasta que foi utilizada para gerar o pacote:
 
 
 .. image:: img/xpm_result_folders.png
 
 
-Reports
--------
 
-After finishing the processing the reports are displayed in a Web browser.
+Relatórios
+----------
 
-Switch between the tabs.
+Depois de validar e gerar os pacotes os relatórios serão disponibilizados automaticamente em um Web Browser.
 
 
-Summary report
-..............
 
-Validations Statistics
-::::::::::::::::::::::
+Relatório Resumido
+..................
 
-Presents the total of fatal errors, errors, and warnings, found in the whole package.
+Estatísticas de Validação
+:::::::::::::::::::::::::
+
+É apresentado o total de Erros fatais (Fatal Errors), erros (Errors), e alertas (Warnings), encontrados em todo o pacote.
 
 FATAL ERRORS
-   represents errors related to Bibliometrics Indicators.
+   Representa os erros relacionados aos indicadores bibliométricos.
 
 ERRORS
-   represents other types of errors
+   Representa outros tipos de erros.
 
 WARNINGS
-   represents something that needs more attention
+   Representa algo que precisa de mais atenção.
 
 
 .. image:: img/xpm_report.png
 
 
-Detail report
-..............
+Relatório Detalhado
+...................
 
-Detail report - package validations
-:::::::::::::::::::::::::::::::::::
+Relatório Detalhado - Validações do Pacote
+::::::::::::::::::::::::::::::::::::::::::
 
-Fist of all, XPM validates some package's data:
+Primeiro de tudo O XPM valida alguns dados do pacote:
 
-- Some data must have same value in all the XML files, such as:
+- Elementos que apresentam o mesmo valor em todos os arquivos XML, tais como:
 
  * journal-title
  * journal id NLM
@@ -89,7 +84,7 @@ Fist of all, XPM validates some package's data:
  * issue label
  * issue pub date
 
-- Some data must have unique value in all the XML files, such as:
+-  Elementos que apresentam um valor único em cada arquivo XML, tais como:
 
  * doi
  * elocation-id, if applicable
@@ -97,86 +92,88 @@ Fist of all, XPM validates some package's data:
  * order (used to generated article PID)
 
 
-Example of fatal error because of different values for publisher-name. 
+Exemplo de Erros Fatais (Fatal Error) por apresentar valor diferente para o elemento ``<publisher-name>`` 
 
  .. image:: img/xml_reports__toc_fatal_error_required_equal_publisher.jpg
 
 
-Example of fatal error because of different values for pub-date. 
+Exemplo de Erros Fatais (Fatal Error) por apresentar valores diferentes em ``<pub-date>``
 
  .. image:: img/xml_reports_toc_fatal_error_required_equal_date.png
 
 
-Example of fatal error because unique value is required
+Exemplo de Erros Fatais (Fatal Error) pois é requerido um valor único
 
  .. image:: img/xml_reports_toc_fatal_error_unique.png.jpg
 
 
-Detail report - documents' validations
-::::::::::::::::::::::::::::::::::::::
+Relatório Detalhado - Validação do Documento
+::::::::::::::::::::::::::::::::::::::::::::
 
-Presents the documents in a table.
+O documento é apresentado em uma Tabela.
 
-The columns order, aop pid, toc section, @article-type are hightlighted because contains important data.
+As colunas 'order', 'aop pid', 'toc section', '@article-type' estão destacadas, pois contém dados importantes.
 
-The column **reports** contains **buttons** to open/close the detail reports of each document.
+A coluna **reports** possui **botões** para abrir/fechar o relatório detalhado de cada documento.
 
-Each row has the document's data
+Cada linha possui um dado do documento:
 
 .. image:: img/xpm_report_detail.png
 
 
-Detail report - Validations
-:::::::::::::::::::::::::::
+Relatório Detalhado - Validações
+::::::::::::::::::::::::::::::::
 
-Click on **Data Quality Control** to view the problems.
-The detail report is displayed below the row
-
+Clique em **Validação de Conteúdo" para verificar os problemas apresentados.
+O relatório detalhado é apresentado abaixo da linha.
 
 .. image:: img/xpm_report_detail_validations.png
 
 
-Folders/Files
-.............
+Arquivos/Pastas
+...............
 
-Displays the files/folders which are inputs and outputs.
+Apresenta os Arquivos e Pastas que foram gerados e validados.
 
 .. image:: img/xpm_report_folder.png
 
 
-Overview report
-...............
+Visão Geral do Pacote
+.....................
 
-Overview report - languages
-:::::::::::::::::::::::::::
+Visão Geral do Pacote - idiomas
+:::::::::::::::::::::::::::::::
 
-Displays the elements which contains @xml:lang. 
+Apresenta os elementos que contém o atributo de idioma ``@xml:lang``. 
 
 .. image:: img/xpm_report_overview_lang.png
 
-Overview report - dates
-:::::::::::::::::::::::
 
-Displays the dates found in the document: publication and history.
-Displays the spent time between received and accepted, accepted and published, accepted and the present date.
+Visão Geral do Pacote - dados
+:::::::::::::::::::::::::::::
+
+Apresenta os dados encontrados no documento: publicação e histórico.
+Apresenta o tempo esperado entre:  data de recebido e aceito, aceito e publicado, aceito e a data atual.
 
 .. image:: img/xpm_report_overview_date.png
 
 
-Overview report - affiliations
-::::::::::::::::::::::::::::::
+Visão Geral do Pacote - afiliações
+::::::::::::::::::::::::::::::::::
 
 
 .. image:: img/xpm_report_overview_aff.png
 
-Overview report - references
-::::::::::::::::::::::::::::
+
+Visão Geral do Pacote - Referências
+:::::::::::::::::::::::::::::::::::
+
 
 .. image:: img/xpm_report_overview_ref.png
 
 
-Sources report
-..............
+Relatórios Fonte
+................
 
 .. image:: img/xpm_report_sources.png
 
@@ -185,12 +182,3 @@ Sources report
 .. image:: img/xpm_report_sources_books.png
 
 .. image:: img/xpm_report_sources_others.png
-
-
-
-
-
-
-----------------
-
-Last update of this page: August, 2015
