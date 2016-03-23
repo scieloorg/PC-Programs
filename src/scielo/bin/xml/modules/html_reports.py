@@ -9,6 +9,9 @@ from . import validation_status
 from . import xml_utils
 
 
+ENABLE_COMMENTS = False
+
+
 def validations_table(results):
     r = ''
     if results is not None:
@@ -139,11 +142,19 @@ def statistics_display(validations_results, inline=True):
 
 
 def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):
+    if ENABLE_COMMENTS:
+        html_cell_content.append(_('why it is not a valid message?'))
+    else:
+        if _('why it is not a valid message?') in table_header:
+            table_header = [item for item in table_header if item != _('why it is not a valid message?')]
+    return sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content)
+
+
+def sheet_build(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):
     r = ''
     if not table_header is None:
         width = 70 if len(table_header) > 4 else int(float(140) / len(table_header))
         th = ''.join([tag('th', label, 'th') for label in table_header])
-        html_cell_content.append(_('why it is not a valid message?'))
         if len(table_data) == 0:
             tr_items = [tag('tr', ''.join(['<td>-</td>' for label in table_header]))]
         else:
@@ -159,10 +170,11 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_
                         td_style = None
 
                         if label == _('why it is not a valid message?'):
-                            if 'ERROR' in row.get('status', '') or 'WARNING' in row.get('status', ''):
-                                td_content = '<textarea rows="5" cols="40"> </textarea>'
-                            else:
-                                td_content = ' - '
+                            if ENABLE_COMMENTS:
+                                if 'ERROR' in row.get('status', '') or 'WARNING' in row.get('status', ''):
+                                    td_content = '<textarea rows="5" cols="40"> </textarea>'
+                                else:
+                                    td_content = ' - '
                         else:
                             # cell style
                             td_style = colums_styles.get(label)
