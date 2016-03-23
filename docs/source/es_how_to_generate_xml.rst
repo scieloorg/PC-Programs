@@ -1,5 +1,5 @@
 
-Como Producir Archivo XML Usando el Markup
+Como Producir Archivo XML Usando el Markup (TRADUZIR)
 ==========================================
 
 Este manual tem como objetivo auxiliar no processo de marcação de arquivos para geração de XML de acordo com SciELO Publishing Schema <http://docs.scielo.org/projects/scielo-publishing-schema>.

@@ -1,10 +1,7 @@
 .. _pt_como_validar_pacote_xml
 
-Como validar o pacote XML
-=========================
-
-Use o Programa XPM para gerar o pacote XML para SciELO e PMC.
-
+Como validar o pacote XML SPS
+=============================
 
 Package Maker - Como usar?
 --------------------------

@@ -1,11 +1,11 @@
 .. es_how_to_generate_xml-markup:
 
-==================
+===================
 Cómo usar el Markup
-==================
+===================
 
 Introducción
-==========
+============
 
 Este manual tiene como objetivo presentar el uso del programa de marcaje `Markup <markup.html>`_ 
 
@@ -13,7 +13,7 @@ Este manual tiene como objetivo presentar el uso del programa de marcaje `Markup
 .. _sugestao-id:
 
 Sugestión de Atribución de “ID”
-==============================
+===============================
 
 El atributo "ID" es usado para identificar algunos elementos, tornando posible establecer referencias cruzadas entre su llamada en el de correr del texto y el elemento en sí, como figuras, tablas, afiliaciones etc.
 Para composición del “ID” combine el prefijo del tipo de elemento y un número entero, como sigue:
