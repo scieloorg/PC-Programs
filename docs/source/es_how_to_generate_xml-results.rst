@@ -1,7 +1,7 @@
 .. pt_how_to_generate_xml-results:
 
-Gerando o Arquivo .xml
-======================
+Generando el Archivo .xml (TRADUZIR PARA O ESPANHOL)
+====================================================
 
 (traduzir)
 
@@ -21,16 +21,16 @@ Em seguida clique no botão "Markup: Gerar o XML":
 
 .. relatorios
 
-Relatórios
-==========
+Informes (TRADUZIR PARA O ESPANHOL)
+===================================
 Ao gerar o arquivo .xml o programa Markup apresenta três relatórios: :ref:`report-arquivos`, :ref:`report-estilos` e :ref:`report-conteudo`.
 Abaixo a função de cada relatório apresentado.
 
 
 .. _report-arquivos:
 
-Relatório de Erros de Arquivos
-------------------------------
+Informes de Errores de los Archivos
+-----------------------------------
 
 Ao clicar em "Markup: Gerar o XML" o programa apresenta um Relatório com as informações das alterações feitas no documento.
 
@@ -42,8 +42,8 @@ O resultado disso, é um relatório que apresenta as ações do programa ao gera
 
 .. _report-estilos:
 
-Relatório de Estilos SciELO
----------------------------
+Informe de Estilos SciELO
+-------------------------
 
 Em seguida clique no botão ao lado "Relatório de Estilos SciELO" e verifique se há algum erro no documento:
 
@@ -61,8 +61,8 @@ Veja que o relatório de erros não apresenta nenhum erro. Isso porque o xml ger
 
 .. _report-conteudo:
 
-Relatório de Erros de Conteúdo
-------------------------------
+Informe de Errores de los Contenidos
+------------------------------------
 
 Feita a verificação no Relatório de Estilos SciELO, o próximo passo é gerar o relatório de erros de dados/conteúdo.
 
@@ -71,8 +71,8 @@ Esse relatório é exatamente o mesmo que o programa Package Maker gera. Portant
 
 .. _relatorios-pastas:
 
-Pastas Geradas
-==============
+Carpetas Generadas (TRADUZIR PARA O ESPANHOL)
+=============================================
 
 Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src" e "scielo_markup", conforme segue:
 
@@ -81,7 +81,7 @@ Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src
    :height: 300px
 
 
-**pasta erros:**
+**carpeta de errores:**
 
 	Nessa pasta há o relatório de erros de cada um dos arquivos .xml.  O arquivo final .rep apresenta os possíveis erros de estilo e o final .contents de conteúdo. São os mesmos relatórios apresentados no programa de marcação.
 
@@ -121,8 +121,8 @@ Essa estrutura de pastas é a mesma apresentada se o usuário utilizar o program
 
 .. _suporte-scielo
 
-Suporte SciELO
-==============
+Soporte SciELO (TRADUZIR PARA O ESPANHOL)
+=========================================
 
 Em caso de dúvidas com relação à utilização do programa Markup ou erros apresentados ao gerar o arquivo .xml, enviar e-mail para a lista de discussões SciELO-XML:
 

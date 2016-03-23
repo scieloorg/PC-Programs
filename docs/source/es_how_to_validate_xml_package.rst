@@ -1,13 +1,13 @@
-.. _pt_como_validar_pacote_xml
+.. _es_como_validar_paquete_xml
 
-Como validar o pacote XML
-=========================
+Como validar el paquete XML
+===========================
 
 Use o Programa XPM para gerar o pacote XML para SciELO e PMC.
 
 
-Package Maker - Como usar?
---------------------------
+Package Maker - ¿Cómo usar?
+---------------------------
 
 Para utilizar o programa Package Maker clique no meu Iniciar do Windows, procure a pasta do Programa Markup que foi istalado em sua máquina e com o mouse verifique os itens disponíveis na pasta.
 Clique no botão *XML Package Maker*
@@ -42,18 +42,18 @@ A pasta que é gerada pelo XPM "ISSN-acronimo-volume-numero_xml_package_maker_re
 
 
 
-Relatórios
-----------
+Informes
+--------
 
 Depois de validar e gerar os pacotes os relatórios serão disponibilizados automaticamente em um Web Browser.
 
 
 
-Relatório Resumido
-..................
+Informes Resumidos
+.................
 
-Estatísticas de Validação
-:::::::::::::::::::::::::
+Estatísticas de Validaciones
+::::::::::::::::::::::::::::
 
 É apresentado o total de Erros fatais (Fatal Errors), erros (Errors), e alertas (Warnings), encontrados em todo o pacote.
 
@@ -70,11 +70,11 @@ WARNINGS
 .. image:: img/xpm_report.png
 
 
-Relatório Detalhado
-...................
+Informe Detallado
+.................
 
-Relatório Detalhado - Validações do Pacote
-::::::::::::::::::::::::::::::::::::::::::
+Informe Detallado - Validaciones del Paquete
+::::::::::::::::::::::::::::::::::::::::::::
 
 Primeiro de tudo O XPM valida alguns dados do pacote:
 
@@ -110,8 +110,8 @@ Exemplo de Erros Fatais (Fatal Error) pois é requerido um valor único
  .. image:: img/xml_reports_toc_fatal_error_unique.png.jpg
 
 
-Relatório Detalhado - Validação do Documento
-::::::::::::::::::::::::::::::::::::::::::::
+Informe Detallado - Validaciones del Documento
+::::::::::::::::::::::::::::::::::::::::::::::
 
 O documento é apresentado em uma Tabela.
 
@@ -124,7 +124,7 @@ Cada linha possui um dado do documento:
 .. image:: img/xpm_report_detail.png
 
 
-Relatório Detalhado - Validações
+Informe Detallado - Validaciones
 ::::::::::::::::::::::::::::::::
 
 Clique em **Validação de Conteúdo" para verificar os problemas apresentados.
@@ -133,27 +133,27 @@ O relatório detalhado é apresentado abaixo da linha.
 .. image:: img/xpm_report_detail_validations.png
 
 
-Arquivos/Pastas
-...............
+Archivos/Carpetas
+.................
 
 Apresenta os Arquivos e Pastas que foram gerados e validados.
 
 .. image:: img/xpm_report_folder.png
 
 
-Visão Geral do Pacote
-.....................
+Visión General de Paquete
+.........................
 
-Visão Geral do Pacote - idiomas
-:::::::::::::::::::::::::::::::
+Visión General de Paquete - idiomas
+:::::::::::::::::::::::::::::::::::
 
 Apresenta os elementos que contém o atributo de idioma ``@xml:lang``. 
 
 .. image:: img/xpm_report_overview_lang.png
 
 
-Visão Geral do Pacote - dados
-:::::::::::::::::::::::::::::
+Visión General de Paquete - datos
+:::::::::::::::::::::::::::::::::
 
 Apresenta os dados encontrados no documento: publicação e histórico.
 Apresenta o tempo esperado entre:  data de recebido e aceito, aceito e publicado, aceito e a data atual.
@@ -161,22 +161,22 @@ Apresenta o tempo esperado entre:  data de recebido e aceito, aceito e publicado
 .. image:: img/xpm_report_overview_date.png
 
 
-Visão Geral do Pacote - afiliações
-::::::::::::::::::::::::::::::::::
+Visión General de Paquete - afiliaciones
+::::::::::::::::::::::::::::::::::::::::
 
 
 .. image:: img/xpm_report_overview_aff.png
 
 
-Visão Geral do Pacote - Referências
-:::::::::::::::::::::::::::::::::::
+Visión General de Paquete - Citas bibliograficas
+::::::::::::::::::::::::::::::::::::::::::::::::
 
 
 .. image:: img/xpm_report_overview_ref.png
 
 
-Relatórios Fonte
-................
+Informes fonte
+..............
 
 .. image:: img/xpm_report_sources.png
 

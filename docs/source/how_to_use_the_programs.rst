@@ -12,6 +12,8 @@ How to use the programs
     
     how_to_generate_xml.rst
     how_to_validate_xml_package.rst
+    pt_how_to_validate_xml_package.rst
+    es_how_to_validate_xml_package.rst
     
     how_to_update_local_site.rst
 
