@@ -152,6 +152,7 @@ toctitle;Identifica o título da seção do sumário. Este item é obrigatório para a
 role;Identifica o papel do autor
 surname-fname;Identifica surname e fname de um autor (surname separador fname ou fname separador surname)
 fname-surname;Identifica fname e surname nesta ordem
+fname-spanish-surname;Identifica fname e surname espanhóis nesta ordem
 *oauthor;Identifica automaticamente apenas um oauthor
 *author;Identifica automaticamente apenas um author
 *sertitle;Identifica todos os títulos abreviados de periódico, a partir do texto selecionado.
