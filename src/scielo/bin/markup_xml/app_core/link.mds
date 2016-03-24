@@ -34,6 +34,9 @@ dateiso
 author
 role;rid;corresp;deceased;eqcontr
 
+aauthor
+role;rid
+
 oauthor
 role
 
