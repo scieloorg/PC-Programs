@@ -10,7 +10,9 @@ import article_utils
 SPS_MIN_DATE = datetime(2012, 06, 01)
 SPS_MIN_DATEISO = 20120601
 
-SPS_versions_expiration_dates = {'sps-1.3': '20160901',
+SPS_versions_expiration_dates = {
+                'sps-1.4': '20170401',
+                'sps-1.3': '20160901',
                 'sps-1.2': '20160301',
                 'sps-1.1': '20150901',
                 'sps-1.0': '20150301',
