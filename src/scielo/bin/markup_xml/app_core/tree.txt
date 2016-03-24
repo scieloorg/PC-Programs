@@ -149,6 +149,7 @@ corpauth;#FALSE#;#TRUE#
 
 author
 fname-surname;#FALSE#;#FALSE#
+fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -162,6 +163,7 @@ awarded
 orgname;#FALSE#;#FALSE#
 orgdiv;#FALSE#;#FALSE#
 fname-surname;#FALSE#;#FALSE#
+fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
@@ -448,6 +450,7 @@ notes
 
 oauthor
 fname-surname;#FALSE#;#FALSE#
+fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -659,6 +662,7 @@ sertitle
 
 sig
 fname-surname;#FALSE#;#FALSE#
+fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -686,6 +690,7 @@ subkey
 
 subresp
 fname-surname;#FALSE#;#FALSE#
+fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -999,6 +1004,7 @@ et-al;#FALSE#;#TRUE#
 
 pauthor
 fname-surname;#FALSE#;#FALSE#
+fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
@@ -1077,6 +1083,8 @@ alttitle
 alttext
 
 fname-surname
+
+fname-spanish-surname
 
 cpright
 cpyear;#FALSE#;#FALSE#
