@@ -1,4 +1,3 @@
-
 Cómo actualizar el sitio local (TRADUZIR)
 ------------------------------
 
