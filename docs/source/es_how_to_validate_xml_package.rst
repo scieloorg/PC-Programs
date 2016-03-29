@@ -23,6 +23,7 @@ Haga un click en el botón *XML Package Maker*
 Ahora haga un click en el botón "Choose Folder" y escoja la carpeta de archivos que será validada 
 
 
+
 .. image:: img/xpm_gui_selected_folder.png
 
 
