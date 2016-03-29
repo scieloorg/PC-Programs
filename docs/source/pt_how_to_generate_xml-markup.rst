@@ -219,7 +219,7 @@ O programa Markup não faz marcação automática de função de autor como, por
 .. _sigblock:
 
 Sig-block
-=======
+=========
 Geralmente arquivos Editoriais, Apresentações etc possuem ao final do texto a assinatura do autor ou editor.
 Para identificar a assinatura do autor, seja em imagem, seja em texto, é necessário selecionar a assinatura e identificar com a tag [sigblock]:
 
@@ -245,7 +245,8 @@ Abaixo o resultado da identificação de assinatura do autor/editor:
 .. _onbehalf:
 
 On Behalf
-========
+=========
+
 O elemento [on-behalf] é utilizado quando um autor exerce papel de representante de um grupo ou organização. 
 Para identificar esse dado, verifique se a informação do representante do grupo está na mesma linha do autor anterior. Exemplo:
 
@@ -269,6 +270,7 @@ Agora selecione o nome do grupo ou organização e identifique com a tag: [onbeh
 
 Contrib-ID
 ==========
+
 Autores que apresentam registro no ORCID ou no Lattes devem inserir o link de registro ao lado do nome, após o label do autor:
 
 .. image:: img/mkp-contrib-id.jpg
@@ -287,7 +289,7 @@ Na janela aberta pelo programa, selecione o tipo de registro do autor: se lattes
 
 
 
-.. _afiliação:
+.. _afiliacao:
 
 Afiliações
 ----------
@@ -985,7 +987,7 @@ Para notas de rodapé que apresentam suporte de entidade, instituição ou pesso
 
 
 Suporte com Dados de Financiamento
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Para notas de rodapé que apresentam dados de financiamento com número de contrato, selecione nota do tipo "Declaração ou negação de recebimento de financiamento em apoio à pesquisa na qual o artigo é baseado". Nesse caso, será preciso marcar os dados de financiamento com o elemento [funding]:
 
@@ -2103,6 +2105,7 @@ No nível de [subdoc], faça a marcação dos elementos que compõem a resposta 
 
 Errata
 ======
+
 Para marcar uma errata, verifique primeiramente se o arquivo está formatado corretamente conforme orientações abaixo:
 
 * 1ªlinha: DOI
@@ -2118,6 +2121,7 @@ Para marcar uma errata, verifique primeiramente se o arquivo está formatado cor
 
 Marcando a errata
 -----------------
+
 Abra a errata no Markup e identifique com o elemento [doc].
 Ao abrir o formulário, selecione o título do periódico e confira os metadados que são adicionados automaticamente.
 Complete os demais campos e, em [doctopic], selecione o valor "errata" e  clique em [OK]
@@ -2285,6 +2289,7 @@ O identificador eletrônico do documento deve ser inserido no campo [elocatid].
 
 Resenha
 =======
+
 As resenhas geralmente apresentam um dado a mais que os arquivos comuns: a referência bibliográfica do livro resenhado.
 A formatação do documento deve seguir a mesma orientação disponível em `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_ , incluindo-se referência bibliográfica do item resenhado antes do corpo do texto. 
 
@@ -2297,6 +2302,7 @@ Verifique modelo abaixo:
 
 Identificando Resenhas
 ----------------------
+
 Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e complete as informações. Em [doctopic] selecione o tipo "resenha (book review)". A marcação dos dados iniciais é semelhante às orientações anteriores, excetuando-se a marcação da referência do livro resenhado.
 
 Para marcar a referência do livro, selecione toda a referência e marque com o elemento [product]. Na janela aberta pelo programa, insera o tipo de referência bibliográfica em [prodtype]:
@@ -2357,6 +2363,7 @@ A marcação dos parágrafos deve ser feita pelo elemento [xmlbody], selecionand
 
 Press Releases
 ==============
+
 Por ser um texto de divulgação que visa dar mais visibilidade a um número ou artigo publicado em um periódico, o press realise não segue a mesma estrutura de um artigo científico. Dessa forma, não possue seção, número de DOI e, não há obrigatoriedade de inclusão de afiliação de autor.
 Uma vez aprovados, os Press Releases poderão ser formatados para uma marcação mais otimizada.
 
@@ -2373,6 +2380,7 @@ Uma vez aprovados, os Press Releases poderão ser formatados para uma marcação
 
 Identificando o Press Release
 -----------------------------
+
 Com o arquivo formatado, faça a identificação do documento pelo elemento [doc] e considere os seguintes itens para arquivo PR:
 
 * Nos campos 'volid' e 'issue' insira o número correspondente ao número que o Press Release está relacionado e em 'isidpart' insira a informação 'pr' qualificando o arquivo como um Press Release;
@@ -2405,14 +2413,14 @@ No campo 'reltp' selecione o valor 'press-release'; já em 'pid-doi' insira o n�
 .. _processos-manuais:
 
 Processos Manuais
-================
+=================
 
 O programa de marcação atende mais 80% das regras estabelecidas no SciELO Publishing Schema. 
 Há alguns dados que devem ser marcados manualmente, seja no próprio programa Markup, seja diretamente no arquivo xml gerado pelo programa.
 
 
 Afiliação com mais de uma instituição
-------------------------------------
+-------------------------------------
 O programa Markup não realiza marcação de afiliações com mais que uma instituição. Nesse caso, o dado será incluído diretamente no arquivo .xml.
 Abra o arquivo .xml em um editor de XML e inclua o elemento <aff> com um ID diferente do que já consta no documento:
 
