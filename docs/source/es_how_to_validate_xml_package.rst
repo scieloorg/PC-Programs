@@ -3,14 +3,16 @@
 Como validar el paquete XML
 ===========================
 
-Use o Programa XPM para gerar o pacote XML para SciELO e PMC.
+Usa el Paquete XPM para generar el paquete XML para SciELO y PMC.
 
 
 Package Maker - ¿Cómo usar?
 ---------------------------
 
-Para utilizar o programa Package Maker clique no meu Iniciar do Windows, procure a pasta do Programa Markup que foi istalado em sua máquina e com o mouse verifique os itens disponíveis na pasta.
-Clique no botão *XML Package Maker*
+Para usar el programa Package Maker haga un click en el menú inicio de Windows, busca la carpeta del programa Markup que fue instalado en su ordenador y con el ratón verifica los itens disponibles en la carpeta.
+
+Haga un click en el botón *XML Package Maker*
+
 
 
 .. image:: img/scielo_menu_xpm.png
@@ -18,24 +20,25 @@ Clique no botão *XML Package Maker*
 .. image:: img/xpm_gui.png
 
 
-Agora clique no botão "Choose Folder" para escolher a pasta que contém os arquivos que serão validados 
+Ahora haga un click en el botón "Choose Folder" y escoja la carpeta de archivos que será validada 
+
 
 
 .. image:: img/xpm_gui_selected_folder.png
 
 
-
-E clique em **XML Package Maker**.
+Haga un click en **XML Package Maker**.
 
 
 Resultados
 ----------
 
-* Para arquivos XML SciELO (verifique a pasta scielo_package e/ou scielo_package_zips)
-* Para arquivos XML PMC (verifique a pasta pmc_package)
-* Para Relatório de arquivos (verifique a pasta errors)
 
-A pasta que é gerada pelo XPM "ISSN-acronimo-volume-numero_xml_package_maker_result" estará disponível no mesmo nível da pasta que foi utilizada para gerar o pacote:
+* Para arquivos XML SciELO (verifica la carpeta scielo_package e/ou scielo_package_zips)
+* Para arquivos XML PMC (verifica la carpeta pmc_package)
+* Para Relatório de arquivos (verifica la carpeta errors)
+
+La carpeta que es generado por el XPM "ISSN-acronimo-volume-numero_xml_package_maker_result" estará disponible en lo mismo nivel de la carpeta que fue usada para generar el paquete:
 
 
 .. image:: img/xpm_result_folders.png
@@ -45,8 +48,7 @@ A pasta que é gerada pelo XPM "ISSN-acronimo-volume-numero_xml_package_maker_re
 Informes
 --------
 
-Depois de validar e gerar os pacotes os relatórios serão disponibilizados automaticamente em um Web Browser.
-
+Despues de validar y generar los paquetes, los informes serán disponiblizados automaticamente en web browser.
 
 
 Informes Resumidos
@@ -55,16 +57,16 @@ Informes Resumidos
 Estatísticas de Validaciones
 ::::::::::::::::::::::::::::
 
-É apresentado o total de Erros fatais (Fatal Errors), erros (Errors), e alertas (Warnings), encontrados em todo o pacote.
+Se presenta el total de errores fatales (Fatal Errors), errores (Errors), y advertencias (Warnings), que se encuentran en todo el paquete.
 
 FATAL ERRORS
-   Representa os erros relacionados aos indicadores bibliométricos.
+   Representa los errores relacionados con los indicadores bibliometricos.
 
 ERRORS
-   Representa outros tipos de erros.
+   Representa otros tipos de errores.
 
 WARNINGS
-   Representa algo que precisa de mais atenção.
+   Representa alguna cosa que necesita de más atención.
 
 
 .. image:: img/xpm_report.png
@@ -76,9 +78,11 @@ Informe Detallado
 Informe Detallado - Validaciones del Paquete
 ::::::::::::::::::::::::::::::::::::::::::::
 
-Primeiro de tudo O XPM valida alguns dados do pacote:
 
-- Elementos que apresentam o mesmo valor em todos os arquivos XML, tais como:
+Primeiro de todo, el programa XPM valida algunos datos del paquete:
+
+- Elementos que tienen el mismo valor en todos los archivos XML, tales como:
+
 
  * journal-title
  * journal id NLM
@@ -87,7 +91,7 @@ Primeiro de tudo O XPM valida alguns dados do pacote:
  * issue label
  * issue pub date
 
--  Elementos que apresentam um valor único em cada arquivo XML, tais como:
+-  Elementos que tienen un valor único para cada archivo XML, como por ejemplo:
 
  * doi
  * elocation-id, if applicable
@@ -95,17 +99,17 @@ Primeiro de tudo O XPM valida alguns dados do pacote:
  * order (used to generated article PID)
 
 
-Exemplo de Erros Fatais (Fatal Error) por apresentar valor diferente para o elemento ``<publisher-name>`` 
+Ejemplo de errores fatales (Fatal Error) que tienen un valor diferente para el elemento ``<publisher-name>``
 
  .. image:: img/xml_reports__toc_fatal_error_required_equal_publisher.jpg
 
 
-Exemplo de Erros Fatais (Fatal Error) por apresentar valores diferentes em ``<pub-date>``
+Ejemplo de Errores Fatales (Fatal Error) que tienen valores diferentes en ``<pub-date>``
 
  .. image:: img/xml_reports_toc_fatal_error_required_equal_date.png
 
 
-Exemplo de Erros Fatais (Fatal Error) pois é requerido um valor único
+Ejemplo de Errores Fatales (Fatal Error) ya que requiere un valor único
 
  .. image:: img/xml_reports_toc_fatal_error_unique.png.jpg
 
@@ -113,13 +117,14 @@ Exemplo de Erros Fatais (Fatal Error) pois é requerido um valor único
 Informe Detallado - Validaciones del Documento
 ::::::::::::::::::::::::::::::::::::::::::::::
 
-O documento é apresentado em uma Tabela.
+El documento se presenta en una tabla.
 
-As colunas 'order', 'aop pid', 'toc section', '@article-type' estão destacadas, pois contém dados importantes.
+Las columnas 'order', 'aop pid', 'toc section', '@article-type'  se destacan porque contiene datos importantes.
 
-A coluna **reports** possui **botões** para abrir/fechar o relatório detalhado de cada documento.
+La columna **reports** tiene **botones** para abrir/cerrar el informe detallado de cada documento.
 
-Cada linha possui um dado do documento:
+
+Cada linea tiene un dato en el documento:
 
 .. image:: img/xpm_report_detail.png
 
@@ -127,8 +132,9 @@ Cada linha possui um dado do documento:
 Informe Detallado - Validaciones
 ::::::::::::::::::::::::::::::::
 
-Clique em **Validação de Conteúdo" para verificar os problemas apresentados.
-O relatório detalhado é apresentado abaixo da linha.
+Haga un click en **Validación de Contenido** para verificar los problemas presentados.
+
+El informe detallado es presentado debajo de la linea.
 
 .. image:: img/xpm_report_detail_validations.png
 
@@ -136,7 +142,7 @@ O relatório detalhado é apresentado abaixo da linha.
 Archivos/Carpetas
 .................
 
-Apresenta os Arquivos e Pastas que foram gerados e validados.
+Muestra los archivos y carpetas que fueron generado y validados.
 
 .. image:: img/xpm_report_folder.png
 
@@ -147,7 +153,7 @@ Visión General de Paquete
 Visión General de Paquete - idiomas
 :::::::::::::::::::::::::::::::::::
 
-Apresenta os elementos que contém o atributo de idioma ``@xml:lang``. 
+Muestra los elementos que tienen el atributo de idioma ``@xml:lang``. 
 
 .. image:: img/xpm_report_overview_lang.png
 
@@ -155,8 +161,9 @@ Apresenta os elementos que contém o atributo de idioma ``@xml:lang``.
 Visión General de Paquete - datos
 :::::::::::::::::::::::::::::::::
 
-Apresenta os dados encontrados no documento: publicação e histórico.
-Apresenta o tempo esperado entre:  data de recebido e aceito, aceito e publicado, aceito e a data atual.
+Muestra los datos encontrados en el documento: publicación y historico.
+
+Muestra el tiempo de espera entre: Fecha recibido y aceptado, aceptado y publicado, aceptado, y la fecha actual.
 
 .. image:: img/xpm_report_overview_date.png
 
