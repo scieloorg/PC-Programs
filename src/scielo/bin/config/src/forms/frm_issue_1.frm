@@ -115,6 +115,7 @@ Begin VB.Form Issue1
          Begin VB.TextBox TxtIseqno 
             Height          =   285
             Left            =   4200
+            MaxLength       =   7
             TabIndex        =   6
             Top             =   480
             Width           =   975
@@ -568,7 +569,7 @@ End Sub
 Private Sub Posicionar(x As Double, Y As Double)
     Call Redimensionar(FramPer, x, Y, x, Y)
     Call Redimensionar(LabTitulo, x, Y, 1, 1)
-    Call Redimensionar(TxtSerTitle, x, Y, x, 1)
+    Call Redimensionar(TxtSertitle, x, Y, x, 1)
     Call Redimensionar(LabTitAbr, x, Y, 1, 1)
     Call Redimensionar(TxtStitle, x, Y, x, 1)
     Call Redimensionar(LabTitAlt, x, Y, 1, 1)
@@ -634,7 +635,7 @@ Sub OpenIssue(sertitle As String)
     MyMfnTitle = Serial_CheckExisting(sertitle)
     If isTitleFormCompleted(MyMfnTitle) Then
         
-        TxtSerTitle.Caption = Serial_TxtContent(MyMfnTitle, 100)
+        TxtSertitle.Caption = Serial_TxtContent(MyMfnTitle, 100)
         TxtPubl.text = Serial_TxtContent(MyMfnTitle, 480)
         Cidade = Serial_TxtContent(MyMfnTitle, 490)
         SiglaPeriodico = Serial_TxtContent(MyMfnTitle, 930)
@@ -647,7 +648,7 @@ Sub OpenIssue(sertitle As String)
         
         TxtISOStitle.Caption = Serial_TxtContent(MyMfnTitle, 151)
         TxtStitle.Caption = Serial_TxtContent(MyMfnTitle, 150)
-        TxtMEDLINEStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
+        TxtMedlineStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
         issn_id = Serial_TxtContent(MyMfnTitle, 400)
         
         Call serial_issn_get(MyMfnTitle, pissn, eissn)
@@ -665,7 +666,7 @@ Sub OpenIssue(sertitle As String)
         LabIssueIdPart.Caption = .getLabel("IssueIdPart")
         LabTitAbr.Caption = .getLabel("ser1_ShortTitle")
         LabISOStitle.Caption = .getLabel("ser1_ISOStitle")
-        LabMEDLINEStitle.Caption = .getLabel("ser4_MedlineStitle")
+        LabMedlineStitle.Caption = .getLabel("ser4_MedlineStitle")
         LabTitAlt.Caption = .getLabel("ser1_ParallelTitles")
         LabTitulo.Caption = .getLabel("ser1_Title")
         LabVol.Caption = .getLabel("Volume")
