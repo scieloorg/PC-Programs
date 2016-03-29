@@ -2283,7 +2283,7 @@ El identificador electrónico del documento debe ser inserido en el campo [eloca
 .. note:: Archivos Rolling Pass presentan elocation. De esa forma, no se debe llenar datos correspondientes a [fpage] y [lpage].
 
 
-.. _reseña:
+.. _resena:
 
 Reseña
 ======
@@ -2293,7 +2293,7 @@ El formateo del documento debe seguir la misma orientación disponible en `Forma
 
 Sigue modelo:
 
-.. image:: img/mkp-format-reseña.jpg
+.. image:: img/mkp-format-resenha.jpg
    :align: center
    :height: 500px
 
