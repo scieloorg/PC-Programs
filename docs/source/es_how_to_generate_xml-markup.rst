@@ -79,7 +79,7 @@ Al seleccionar la revista en el campo “collection/journal” el programa llena
 +===================+===============================================================================================+
 | license           | si no fuera insertado automáticamente, llenar con la URL de la licencia creative commons      |
 |                   | adoptada por la revistas. Consultar licencias en:                                             |
-|                   | http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.3-branch/tagset.html#license |
+|                   | http://docs.scielo.org/projects/scielo-publishing-schema/                                     |
 +-------------------+-----------------------------------------------------------------------------------------------+
 | volid             | Inserir volumen, si haya. Para Ahead of Print, no incluir volumen                             |
 +-------------------+-----------------------------------------------------------------------------------------------+
@@ -113,7 +113,7 @@ Al seleccionar la revista en el campo “collection/journal” el programa llena
 +-------------------+-----------------------------------------------------------------------------------------------+
 | order (in TOC)    | Incluir la orden del artículo en la tabla de contenido del fascículo. Debe tener, en el       |
 |                   | mínimo, dos dígitos. Por ejemplo, si el artículo fuera el primero de la tabla de contenido,   |
-|                   | llene este campo con **01** e así por adelante.                                               |
+|                   | llene este campo con **01** y así por adelante.                                               |
 +-------------------+-----------------------------------------------------------------------------------------------+
 | pagcount*         | Inserir el total de paginación. Para Ahead of Print, incluir el valor 1                       |
 +-------------------+-----------------------------------------------------------------------------------------------+
