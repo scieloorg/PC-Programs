@@ -358,7 +358,7 @@ End Sub
 
 Private Sub CmdDelete_Click()
     Dim resp As VbMsgBoxResult
-    Dim mfn As Long
+    Dim Mfn As Long
     
     'If Len(Trim(TxtSuppl.text)) > 0 Then
     '    If Len(Trim(TxtIssueno.text)) > 0 Then
@@ -368,11 +368,11 @@ Private Sub CmdDelete_Click()
     '    End If
     'End If
     If CheckIssueId Then
-        mfn = Issue0.issueDAO.getIssueMfnByIssueId(TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, ComboIssueIdPart.text, TxtIseqNo.text)
-        If mfn > 0 Then
+        Mfn = Issue0.issueDAO.getIssueMfnByIssueId(TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, ComboIssueIdPart.text, TxtIseqNo.text)
+        If Mfn > 0 Then
             resp = MsgBox(ConfigLabels.getLabel("MsgDeleteIssue"), vbYesNo + vbDefaultButton2)
             If resp = vbYes Then
-                If Issue0.issueDAO.deleteRecord(mfn) Then
+                If Issue0.issueDAO.deleteRecord(Mfn) Then
                     
                     TxtVolid.text = ""
                     TxtSupplVol.text = ""
@@ -489,7 +489,10 @@ End Sub
 
 Private Function CheckIssueId_Iseqno() As Boolean
     Dim retorno As Boolean
-
+    Dim n As String
+    
+    n = Mid(TxtIseqNo.text, 5)
+    
     If Len(Trim(TxtVolid.text)) > 0 Then
         retorno = True
     ElseIf Len(Trim(TxtIssueno.text)) > 0 Then
@@ -498,9 +501,11 @@ Private Function CheckIssueId_Iseqno() As Boolean
     
     If Not retorno Then MsgBox ConfigLabels.getLabel("MsgMissingIssueId")
     
-    If Len(Trim(TxtIseqNo.text)) < 5 Then
+    If Len(Trim(TxtIseqNo.text)) < 5 Or Len(Trim(TxtIseqNo.text)) > 7 Then
         retorno = False
     ElseIf Not (TxtIseqNo.text Like String(Len(TxtIseqNo.text), "#")) Then
+        retorno = False
+    ElseIf CInt(n) < 1 Or CInt(n) > 999 Then
         retorno = False
     End If
     
@@ -569,7 +574,7 @@ End Sub
 Private Sub Posicionar(x As Double, Y As Double)
     Call Redimensionar(FramPer, x, Y, x, Y)
     Call Redimensionar(LabTitulo, x, Y, 1, 1)
-    Call Redimensionar(TxtSertitle, x, Y, x, 1)
+    Call Redimensionar(TxtSerTitle, x, Y, x, 1)
     Call Redimensionar(LabTitAbr, x, Y, 1, 1)
     Call Redimensionar(TxtStitle, x, Y, x, 1)
     Call Redimensionar(LabTitAlt, x, Y, 1, 1)
@@ -635,7 +640,7 @@ Sub OpenIssue(sertitle As String)
     MyMfnTitle = Serial_CheckExisting(sertitle)
     If isTitleFormCompleted(MyMfnTitle) Then
         
-        TxtSertitle.Caption = Serial_TxtContent(MyMfnTitle, 100)
+        TxtSerTitle.Caption = Serial_TxtContent(MyMfnTitle, 100)
         TxtPubl.text = Serial_TxtContent(MyMfnTitle, 480)
         Cidade = Serial_TxtContent(MyMfnTitle, 490)
         SiglaPeriodico = Serial_TxtContent(MyMfnTitle, 930)
@@ -648,7 +653,7 @@ Sub OpenIssue(sertitle As String)
         
         TxtISOStitle.Caption = Serial_TxtContent(MyMfnTitle, 151)
         TxtStitle.Caption = Serial_TxtContent(MyMfnTitle, 150)
-        TxtMedlineStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
+        TxtMEDLINEStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
         issn_id = Serial_TxtContent(MyMfnTitle, 400)
         
         Call serial_issn_get(MyMfnTitle, pissn, eissn)
@@ -666,7 +671,7 @@ Sub OpenIssue(sertitle As String)
         LabIssueIdPart.Caption = .getLabel("IssueIdPart")
         LabTitAbr.Caption = .getLabel("ser1_ShortTitle")
         LabISOStitle.Caption = .getLabel("ser1_ISOStitle")
-        LabMedlineStitle.Caption = .getLabel("ser4_MedlineStitle")
+        LabMEDLINEStitle.Caption = .getLabel("ser4_MedlineStitle")
         LabTitAlt.Caption = .getLabel("ser1_ParallelTitles")
         LabTitulo.Caption = .getLabel("ser1_Title")
         LabVol.Caption = .getLabel("Volume")
