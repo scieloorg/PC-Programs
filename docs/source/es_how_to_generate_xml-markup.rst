@@ -57,7 +57,7 @@ Para composición del “ID” combine el prefijo del tipo de elemento y un núm
 
 
 
-.. _markup:
+.. _dados-basicos:
 
 Dados Básicos
 =============
@@ -212,7 +212,7 @@ El programa Markup no hace marcación automática de función de autor cómo, po
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/R8YYjXZSk1c?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <iframe width="640" height="360" src="https://www.youtube.com/embed/R8YYjXZSk1c?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _sigblock:
@@ -354,7 +354,7 @@ Cuando cliquear en [xmlabstr] el programa abrirá una ventana donde si debe sele
 
 **marcación:** 
 
-.. image:: img/doc-mkp-idioma-resumen.jpg
+.. image:: img/doc-mkp-idioma-resumo.jpg
    :height: 350px
    :width: 450px
    :align: center
@@ -390,13 +390,13 @@ Siga los mismos pasos descriptos para resumen sin sección:
 
 **Resultado**
 
-.. image:: img/doc-mkp-mkp-resumen.jpg
+.. image:: img/doc-mkp-mkp-resumo.jpg
    :align: center
 
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/v/FVTjDOIGV0Y" autostart="0" frameborder="0" allowfullscreen controls></iframe>
+   <iframe width="640" height="360" src="https://www.youtube.com/embed/FVTjDOIGV0Y?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _palabra-clave:
@@ -404,7 +404,7 @@ Siga los mismos pasos descriptos para resumen sin sección:
 Keywords
 ========
 
-El programa Markup presenta dos íconos para identificación de palabras-clave, [*kwdgrp] e [kwdgrp].
+El programa Markup presenta dos íconos para identificación de palabras-clave, [* kwdgrp] e [kwdgrp].
 El ícono [*kwdgrp], con asterisco, es utilizado para marcación automática de cada palabra-clave y también del título. Para eso, seleccione toda la información, incluso el título, e identifique los datos con el elemento [*kwdgrp].
 
 
@@ -466,7 +466,7 @@ En la secuencia, seleccione palabra por palabra y marque con el elemento [kwd]:
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/v/6sNTlHF8WdU" autostart="0" frameborder="0" allowfullscreen controls></iframe>
+   <iframe width="640" height="360" src="https://www.youtube.com/embed/6sNTlHF8WdU?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
 .. _historico:
@@ -500,7 +500,7 @@ Caso haya la fecha de revisado, selecciónela y marque con el elemento [revised]
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/w4Bw7dXpS0E?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+   <iframe width="640" height="360" src="https://www.youtube.com/embed/w4Bw7dXpS0E?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
    
 
 
@@ -896,7 +896,7 @@ Hay normas que permiten que las obras que referencian la misma autoría repetida
 
 Al hacer la marcación de [refs] el programa duplicará la referencia con previous de la siguiente forma:
 
-[ref id="r16" reftype="book"] [text-ref]______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015[/text-ref]. *______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015*[/ref]
+[ref id="r16" reftype="book"] [text-ref]______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015[/text-ref]. * ______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015*[/ref]
 
 .. note:: en referencias que presentan el elemento [text-ref], el dato a ser marcado deberá ser el que consta después del [/text-ref]. Nunca hacer la marcación de la referencia que consta en [text-ref][/text-ref].
 
@@ -1049,7 +1049,7 @@ Ya las notas, deberán estar en formato de nota de pie del Word con un espacio a
    :height: 300px
    :align: center
 
-Estando formateado correctamente, haga un clic con el mouse en cualquier párrafo y, en seguida, clique en [*fn].
+Estando formateado correctamente, haga un clic con el mouse en cualquier párrafo y, en seguida, clique en [* fn].
 
 .. image:: img/mkp-botao-fn.jpg
    :height: 300px
@@ -1090,7 +1090,7 @@ Seleccione apéndice por apéndice y marque con el elemento [app]
 
 .. note:: el id debe ser siempre único en el documento.
 
-Caso el apéndice sea una figura, tabla, cuadro etc, seleccione el título de apéndice y marque con el elemento [sectitle]. Utilicé los íconos fluctuantes (tabwrap, figgrp, *list, etc) del programa Markup para identificación del objeto que será marcado.
+Caso el apéndice sea una figura, tabla, cuadro etc, seleccione el título de apéndice y marque con el elemento [sectitle]. Utilicé los íconos fluctuantes (tabwrap, figgrp, * list, etc) del programa Markup para identificación del objeto que será marcado.
 
 **íconos fluctuantes**
 
@@ -1211,7 +1211,7 @@ Glosario
 Glosarios son incluidos en los documentos después de las referencias bibliográficas, en apéndices o cajas de texto. Para marcarlo, seleccione todos los ítems que la compone y marque con el elemento [glossary]. Seleccione todos los ítems nuevamente y marque con el elemento :ref:`lista-definición`. Sigue ejemplo de marcación de glosario presente después de las referencias bibliográficas:
 
 .. image:: img/doc-mkp-glossary-.jpg
-   :height: 200p
+   :height: 200px
    :align: center
 
 Seleccione todos los datos de glosario y marque con el elemento :ref:`lista-definicao`:
@@ -1950,7 +1950,7 @@ La traducción del documento debe ser simplificada:
 
 Vea el modelo:
 
-.. image:: img/mkp-doc-formateado.jpg
+.. image:: img/mkp-doc-formatado.jpg
    :height: 400px
    :width: 200px
 
