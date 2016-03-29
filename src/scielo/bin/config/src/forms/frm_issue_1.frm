@@ -115,6 +115,7 @@ Begin VB.Form Issue1
          Begin VB.TextBox TxtIseqno 
             Height          =   285
             Left            =   4200
+            MaxLength       =   7
             TabIndex        =   6
             Top             =   480
             Width           =   975
@@ -357,7 +358,7 @@ End Sub
 
 Private Sub CmdDelete_Click()
     Dim resp As VbMsgBoxResult
-    Dim mfn As Long
+    Dim Mfn As Long
     
     'If Len(Trim(TxtSuppl.text)) > 0 Then
     '    If Len(Trim(TxtIssueno.text)) > 0 Then
@@ -367,11 +368,11 @@ Private Sub CmdDelete_Click()
     '    End If
     'End If
     If CheckIssueId Then
-        mfn = Issue0.issueDAO.getIssueMfnByIssueId(TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, ComboIssueIdPart.text, TxtIseqNo.text)
-        If mfn > 0 Then
+        Mfn = Issue0.issueDAO.getIssueMfnByIssueId(TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, ComboIssueIdPart.text, TxtIseqNo.text)
+        If Mfn > 0 Then
             resp = MsgBox(ConfigLabels.getLabel("MsgDeleteIssue"), vbYesNo + vbDefaultButton2)
             If resp = vbYes Then
-                If Issue0.issueDAO.deleteRecord(mfn) Then
+                If Issue0.issueDAO.deleteRecord(Mfn) Then
                     
                     TxtVolid.text = ""
                     TxtSupplVol.text = ""
@@ -488,7 +489,10 @@ End Sub
 
 Private Function CheckIssueId_Iseqno() As Boolean
     Dim retorno As Boolean
-
+    Dim n As String
+    
+    n = Mid(TxtIseqNo.text, 5)
+    
     If Len(Trim(TxtVolid.text)) > 0 Then
         retorno = True
     ElseIf Len(Trim(TxtIssueno.text)) > 0 Then
@@ -497,9 +501,11 @@ Private Function CheckIssueId_Iseqno() As Boolean
     
     If Not retorno Then MsgBox ConfigLabels.getLabel("MsgMissingIssueId")
     
-    If Len(Trim(TxtIseqNo.text)) < 5 Then
+    If Len(Trim(TxtIseqNo.text)) < 5 Or Len(Trim(TxtIseqNo.text)) > 7 Then
         retorno = False
     ElseIf Not (TxtIseqNo.text Like String(Len(TxtIseqNo.text), "#")) Then
+        retorno = False
+    ElseIf CInt(n) < 1 Or CInt(n) > 999 Then
         retorno = False
     End If
     

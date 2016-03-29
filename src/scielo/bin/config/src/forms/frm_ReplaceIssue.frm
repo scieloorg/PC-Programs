@@ -41,6 +41,7 @@ Begin VB.Form FrmReplaceIssue
          Height          =   285
          Index           =   1
          Left            =   120
+         MaxLength       =   7
          TabIndex        =   27
          Top             =   480
          Width           =   1095
@@ -338,14 +339,14 @@ Private Sub Form_Load()
     End With
 End Sub
 
-Sub ReplaceIssue(journalKey As String, vol As TextBox, supplvol As TextBox, issueno As TextBox, Supplno As TextBox, ComboIdPart As ComboBox, IseqNo As TextBox)
+Sub ReplaceIssue(journalKey As String, vol As TextBox, supplvol As TextBox, issueno As TextBox, Supplno As TextBox, ComboIdPart As ComboBox, iseqno As TextBox)
     
-    MfnSource = Issue0.issueDAO.getIssueMfnByIssueId(journalKey, vol.text, supplvol.text, issueno.text, Supplno.text, ComboIdPart.text, IseqNo.text)
+    MfnSource = Issue0.issueDAO.getIssueMfnByIssueId(journalKey, vol.text, supplvol.text, issueno.text, Supplno.text, ComboIdPart.text, iseqno.text)
     
     Set SourceIssue = Issue0.issueDAO.returnIssue(MfnSource)
     
     If MfnSource > 0 Then
-        JOURNAL_KEY = SourceIssue.journal.issn
+        JOURNAL_KEY = SourceIssue.journal.ISSN
         TxtVolid(0).text = SourceIssue.volume
         TxtSupplVol(0).text = SourceIssue.vsuppl
         TxtIssueno(0).text = SourceIssue.number
@@ -359,7 +360,7 @@ Sub ReplaceIssue(journalKey As String, vol As TextBox, supplvol As TextBox, issu
             supplvol.text = SourceIssue.vsuppl
             issueno.text = SourceIssue.number
             Supplno.text = SourceIssue.suppl
-            IseqNo.text = SourceIssue.issueorder
+            iseqno.text = SourceIssue.issueorder
             ComboIdPart.text = SourceIssue.idPart
         End If
     Else
