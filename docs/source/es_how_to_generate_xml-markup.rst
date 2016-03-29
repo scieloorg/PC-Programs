@@ -2119,7 +2119,7 @@ Para marcar una errata, verifique primeramente si el archivo está formateado co
 * saltar 2 líneas
 * cuerpo del texto
 
-.. image:: img/mkp-Ejemplo-errata.jpg
+.. image:: img/mkp-exemplo-errata.jpg
    :height: 300px
    :align: center
 
@@ -2168,7 +2168,7 @@ Ahead Of Print
 
 El archivo Ahead Of Print (AOP) debe presentar formateo indicado en el ítem `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_. Como archivos en AOP no presentan sección, volumen, número y paginación, después del número de DOI dejar una línea en blanco y, en seguida, inserir el título del documento:
 
-.. image:: img/mkp-Ejemplo-ahead.jpg
+.. image:: img/mkp-exemplo-ahead.jpg
    :height: 300px
    :align: center
 
