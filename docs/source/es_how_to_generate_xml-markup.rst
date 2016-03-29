@@ -2293,7 +2293,7 @@ El formateo del documento debe seguir la misma orientación disponible en `Forma
 
 Sigue modelo:
 
-.. image:: img/mkp-format-reseña.jpg
+.. image:: img/mkp-format-resenha.jpg
    :align: center
    :height: 500px
 
