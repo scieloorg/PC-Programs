@@ -12,11 +12,11 @@ Este manual tiene como objetivo presentar el uso del programa de marcaje `Markup
 
 .. _sugestao-id:
 
-Sugestión de Atribución de “ID”
+Sugestión de Atribución de "ID"
 ===============================
 
 El atributo "ID" es usado para identificar algunos elementos, tornando posible establecer referencias cruzadas entre su llamada en el de correr del texto y el elemento en sí, como figuras, tablas, afiliaciones etc.
-Para composición del “ID” combine el prefijo del tipo de elemento y un número entero, como sigue:
+Para composición del "ID" combine el prefijo del tipo de elemento y un número entero, como sigue:
 
 +------------------------+---------------------------+---------+---------------------+
 | Elemento XML           | Descripción               | Prefijo | Ejemplo             |
@@ -71,7 +71,7 @@ Estando el archivo formateado de acuerdo con el manual `Preparación de Archivos
 
 Al cliquear en [doc] el programa abrirá un formulario para ser completado con los datos básicos del artículo:
 
-Al seleccionar la revista en el campo “collection/journal” el programa llenará algunos datos automáticamente, tales como: ISSNs, título abreviado, acrónimo, entre otros. Los demás datos serán llenados manualmente, de acuerdo con las orientaciones que sigue:
+Al seleccionar la revista en el campo "collection/journal" el programa llenará algunos datos automáticamente, tales como: ISSNs, título abreviado, acrónimo, entre otros. Los demás datos serán llenados manualmente, de acuerdo con las orientaciones que sigue:
 
 
 +-------------------+-----------------------------------------------------------------------------------------------+
@@ -156,7 +156,7 @@ Al cliquear en [Sí], el programa efectuará la marcación automática de los el
    :align: center
 
 
-.. note:: Caso el archivo no esté en el formateo recomendado en “Preparación de Archivos para el Programa Markup”, el programa 
+.. note:: Caso el archivo no esté en el formateo recomendado en "Preparación de Archivos para el Programa Markup", el programa 
           no identificará correctamente los elementos.
 
 
@@ -505,7 +505,7 @@ Caso haya la fecha de revisado, selecciónela y marque con el elemento [revised]
 Correspondencia
 ===============
 
-Con el elemento [corresp] es posible marcar los datos de correspondencia del autor. Ese elemento posee un subnivel para identificación del e-mail del autor. Seleccione toda la información de correspondencia y marque con el elemento [corresp]. Será presentada una ventana para marcación del ID de correspondencia que, en ese caso, debe ser “c” + el número de orden de la correspondencia.
+Con el elemento [corresp] es posible marcar los datos de correspondencia del autor. Ese elemento posee un subnivel para identificación del e-mail del autor. Seleccione toda la información de correspondencia y marque con el elemento [corresp]. Será presentada una ventana para marcación del ID de correspondencia que, en ese caso, debe ser "c" + el número de orden de la correspondencia.
 
 .. image:: img/doc-mkp-corresp-select.jpg
    :height: 300px
@@ -599,8 +599,8 @@ Para alterar el tipo de referencia haga un clíc en el elemento [ref], en seguid
 
 Recomiéndese la edición de "reftype" solamente **después** de marcar todos los elementos de la [ref], pues dependiendo de los elementos marcados el "reftype" será cambiado automáticamente por el Markup. 
 
-.. note:: Una referencia debe tener su tipología siempre basada en el su contenido y nunca en su suporte. Por ejemplo, una ley representa un documento legal, sin embargo el tipo de referencia es “legal-doc”, mismo que esté publicado en un jornal o sitio. Una referencia de artículo de una revista científica, mismo que publicado en un sitio posee el tipo “journal”. 
-          Es importante entender estos aspectos en las referencias para poder interpretar su tipología e sus elementos. Ni toda referencia que posee un enlace es una “webpage”, ni toda la referencia que posee un volumen es un “journal”, libros también pueden tener volúmenes.
+.. note:: Una referencia debe tener su tipología siempre basada en el su contenido y nunca en su suporte. Por ejemplo, una ley representa un documento legal, sin embargo el tipo de referencia es "legal-doc", mismo que esté publicado en un jornal o sitio. Una referencia de artículo de una revista científica, mismo que publicado en un sitio posee el tipo "journal". 
+          Es importante entender estos aspectos en las referencias para poder interpretar su tipología e sus elementos. Ni toda referencia que posee un enlace es una "webpage", ni toda la referencia que posee un volumen es un "journal", libros también pueden tener volúmenes.
 
 
 Adelante los tipos de referencia suportados por SciELO y la marcación de cada [ref].
@@ -708,7 +708,7 @@ Ex.:
 Book en press
 ^^^^^^^^^^^^^
 
-Libros finalizados, pero aún no publicados presentan la información "no prelo", "forthcomming" o "“in press”" normalmente al final de la referencia. En ese caso, la marcación será hecha conforme sigue:
+Libros finalizados, pero aún no publicados presentan la información "no prelo", "forthcomming" o ""in press"" normalmente al final de la referencia. En ese caso, la marcación será hecha conforme sigue:
 
 
    *CIRENO, F.; LUBAMBO, C. Estratégia eleitoral e eleiciones para Câmara dos Deputados no Brasil en 2006, no prelo.*
@@ -1224,7 +1224,7 @@ xmlbody
 
 Tenido formateado el cuerpo del texto de acuerdo con el ítem `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ y después de la marcación de las referencias bibliográficas, es posible iniciar la marcación del [xmlbody].
 
-Seleccione todo el cuerpo del texto y haga un clic en [xmlbody], confiar si secciones, subsecciones, citaciones etc las cuales son presentadas en la ventana abierta por el programa y, si necesario, corrija y haga un clic en “Aplicar”.
+Seleccione todo el cuerpo del texto y haga un clic en [xmlbody], confiar si secciones, subsecciones, citaciones etc las cuales son presentadas en la ventana abierta por el programa y, si necesario, corrija y haga un clic en "Aplicar".
 
 .. image:: img/doc-mkp-select-xmlbody.jpg
    :height: 300px
@@ -1236,7 +1236,7 @@ Seleccione todo el cuerpo del texto y haga un clic en [xmlbody], confiar si secc
    :width: 350px
    :align: center
 
-.. note:: Caso haya alguna información incorrecta, seleccione el ítem a ser corregido en la ventana, clique en el menú dropdown al lado del ícono “Corregir”, seleccione la opción correcta  y haga un clic en “Corregir”. Confiera nuevamente  y haga un clic en “Aplicar”.
+.. note:: Caso haya alguna información incorrecta, seleccione el ítem a ser corregido en la ventana, clique en el menú dropdown al lado del ícono "Corregir", seleccione la opción correcta  y haga un clic en "Corregir". Confiera nuevamente  y haga un clic en "Aplicar".
 
 
 Al cliquear en "Aplicar" el programa preguntará si las referencias en el cuerpo del texto obedecen el padrón de citación author-fecha. Si el documento presenta ese padrón, haga un clic en [Sí], caso contrario, haga un clic en [No].
@@ -2087,7 +2087,7 @@ En el nivel de [subdoc], haga la marcación de los elementos que componen la res
    :align: center
 
 
-.. note:: los datos como: afiliaciones y autores, objetos en el cuerpo del texto y referencias bibliográficas deben presentar IDs secuenciales, siguiendo la orden de la carta. Ejemplo, si la última afiliación de la carta fue “aff3”, en el documento de respuesta la primera afiliación será “aff4” etc.
+.. note:: los datos como: afiliaciones y autores, objetos en el cuerpo del texto y referencias bibliográficas deben presentar IDs secuenciales, siguiendo la orden de la carta. Ejemplo, si la última afiliación de la carta fue "aff3", en el documento de respuesta la primera afiliación será "aff4" etc.
 
 
 .. _errata:
