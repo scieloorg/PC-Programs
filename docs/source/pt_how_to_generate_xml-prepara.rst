@@ -117,8 +117,8 @@ Para otimizar o processo de marcação dos elementos básicos do arquivo, é nec
  * Separador de label e caption: dois-pontos e espaço ou espaço + hífen + espaço ou ponto + espaço;
  * Para tabelas codificadas, o cabeçalho deve estar em negrito;
  * A citação de autor/data no corpo do texto deve ser: sobrenome do autor, ano;
- * Para citação no sistema numérico no corpo do texto: "sup" e entre parênteses;
- * Notas de rodapé no corpo do texto podem estar em "sup", mas não estarão entre parênteses;
+ * Para citação no sistema numérico no corpo do texto: número entre parênteses e sobrescrito;
+ * Notas de rodapé no corpo do texto: se identificadas com número devem estar sobrescrito, mas não entre parênteses;
  * Citações (quote), recuo de 4 cm da margem esquerda;
 
 
