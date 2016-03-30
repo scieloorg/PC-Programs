@@ -80,7 +80,3 @@ Deleting a section
 3. Click on Save button
 
 
-
------
-
-Last update: Feb 7, 2014

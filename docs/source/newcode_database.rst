@@ -54,4 +54,3 @@ Institutions which can sponsor the articles
 +--+------------+
 
 
-.. include:: last_update.rst

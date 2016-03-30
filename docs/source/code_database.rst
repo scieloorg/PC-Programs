@@ -2,10 +2,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Code Database
+List of codes
 =============
-
-Its content is not customized and it is managed by `Code Manager <codemanager.html>`_ program by SciELO IT Team.
 
 
 acquisition priority
@@ -44,11 +42,11 @@ article status
 
 authidtp
 --------
-+-----+-----+
-|orcid|orcid|
-+-----+-----+
-|lattes|lattes|
-+-----+-----+
++------+--------+
+|orcid |orcid   |
++------+--------+
+|lattes| lattes |
++------+--------+
 
 blcktype
 --------

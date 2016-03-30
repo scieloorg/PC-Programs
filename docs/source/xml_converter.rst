@@ -158,6 +158,3 @@ Presents the status of the database after the conversion.
 .. image:: img/xc_reports_after.png
 
 
-----------------
-
-Last update of this page: December 2015

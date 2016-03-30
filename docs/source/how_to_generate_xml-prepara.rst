@@ -1,11 +1,7 @@
 .. _pt_how_to_generate_xml-prepara:
 
-===========================================
 How to prepare the files for Markup Program (TRADUZIR)
 ===========================================
-
-Introdução
-==========
  
 Antes de iniciar o processo de marcação, é necessário seguir alguns passos para preparação do arquivo que será marcado.
 Veja abaixo os requisitos para a marcação do documento.
@@ -22,7 +18,7 @@ Veja abaixo os requisitos para a marcação do documento.
 
 
 Arquivos de entrada para o Markup
-=================================
+---------------------------------
 
 Periódicos do www.scielo.org
 ............................
@@ -64,7 +60,7 @@ Estes arquivos são gerados pelo programa `Title Manager <titlemanager.html>`_ o
 .. _estrutura-de-pastas:
 
 Estrutura de pastas
-===================
+-------------------
 
 Antes de iniciar a marcação, é necessário garantir que a estrutura de pastas
 esteja como segue:
@@ -92,7 +88,7 @@ Veja que dentro da pasta "markup_xml" foram inseridas duas pastas, no mesmo nív
 .. _formato-scielo:
 
 Formatação do Arquivo
-=====================
+---------------------
 
 Para otimizar o processo de marcação dos elementos básicos do arquivo, é necessário seguir o padrão de formatação SciELO disponível abaixo:
 

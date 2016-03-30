@@ -55,6 +55,3 @@ Markup
 Use `Markup Program <markup.html>`_.
 
 
-----------------
-
-Last update of this page: August 2015

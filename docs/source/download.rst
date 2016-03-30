@@ -47,7 +47,3 @@ Select **xpm** to download the installer only for XPM (XML Package Maker).
 There will be the available versions of the programs.
 
 The installers which name has **-trial** can be changed any time. 
-
------
-
-Last update of this page: December, 2015

@@ -117,11 +117,3 @@ Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src
 Essa estrutura de pastas é a mesma apresentada se o usuário utilizar o programa `Package Maker <pt_how_to_validate_xml_package.html>`_. Para verificar os relatórios apresentados, basta entrar na pasta "errors" e abrir o documento com extensão: ".contents.html".
 
 
-.. _suporte-scielo
-
-Suporte SciELO
-==============
-
-Em caso de dúvidas com relação à utilização do programa Markup ou erros apresentados ao gerar o arquivo .xml, enviar e-mail para a lista de discussões SciELO-XML:
-
-<scielo-xml@googlegroups.com>

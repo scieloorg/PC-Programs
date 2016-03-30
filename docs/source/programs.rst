@@ -3,9 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+Programs
+========
 
-Programs for local server
--------------------------
+
+Local server
+------------
 
 .. toctree::
    :maxdepth: 1
@@ -14,10 +17,11 @@ Programs for local server
    titlemanager.rst
    converter.rst
    xml_exporter.rst   
+   xml_converter.rst
 
 
-Programs for desktop
---------------------
+Desktop
+-------
 
 .. toctree::
    :maxdepth: 1
@@ -25,9 +29,5 @@ Programs for desktop
    markup.rst
    parser.rst
    xml_package_maker.rst
-   xml_converter.rst
 
 
-----------------
-
-Last update of this page: Abril 2, 2014

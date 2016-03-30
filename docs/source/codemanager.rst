@@ -2,7 +2,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-
+============
 Code Manager
 ============
 
@@ -93,5 +93,4 @@ The new row will be displayed at the end of the list.
 3. Click on Save button.
 
 
-
-.. include:: last_update.rst
+\

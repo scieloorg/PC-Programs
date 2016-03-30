@@ -27,8 +27,5 @@ Use the Windows menu to open the program.
 
 
 
-
-----------------
-
-Last update of this page: Feb 6, 2014
+   issue_and_section_databases.rst
 
