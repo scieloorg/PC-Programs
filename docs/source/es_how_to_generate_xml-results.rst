@@ -119,11 +119,3 @@ Al generar el archivo .xml el programa Markup crea 6 carpetas en el mismo nivel 
 	Esa estructura de carpetas es la misma presentada si el usuario usar el programa `Package Maker <es_how_to_validate_xml_package.html>`_. Para verificar los informes presentados, entra en la carpeta "errors" y abre el documento con extensão: ".contents.html"
 
 
-.. _soporte-scielo
-
-Soporte SciELO
-==============
-
-En caso de dudas sobre lo uso del programa Markup o errores presentados al generar los archivos .xml, nos envíe un correo electrónico para la lista de discussion SciELO-XML:
-
-<scielo-xml@googlegroups.com>

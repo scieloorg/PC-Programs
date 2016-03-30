@@ -2,35 +2,30 @@
 Como atualizar o site local
 ===========================
 
-O fluxo de publicação usa arquivos SGML e/ou arquivos XML gerados no `Fluxo de publicação em SGML <workflow_sgml.html>`_ e/ou `Fluxo de publicação em XML <workflow_xml.html>`_ como entrada para o`site SciELO <http://docs.scielo.org/projects/scielo-site-windows/en/latest/>`_.
+O fluxo de publicação usa arquivos SGML e/ou arquivos XML como entrada para o site local segundo `site SciELO <http://docs.scielo.org/projects/scielo-site-windows/en/latest/>`_.
 
-Os dados dos arquivos SGML e XML podem ser publicados na mesma página web do SciELO.
+Os dados dos arquivos SGML e XML podem ser publicados no mesmo website do SciELO.
 
 
 Bases de dados title e issue
 ----------------------------
 
-As bases de dados issue e title devem ser atualizadas na `pasta serial <concepts.html#data-folder>`_.
+As bases de dados issue e title devem estar atualizadas na `pasta serial <concepts.html#data-folder>`_.
 
-Para atualizá-los, você pode usar a `Title Manager <titlemanager.html>`_.
-
-Se precisar substituir a Title Manager por outra aplicação, terá que executar programas específicos para atualizar as bases de dados.
-
-Outra opção é fazer uma cópia das bases de dados.
-
+Estas bases de dados são geridas pelo programa `Title Manager <titlemanager.html>`_ ou atualizadas pela aplicação Delorean quando a coleção é gerida pelo SciELO Manager.
 
 
 Arquivos SGML e/ou XML
 ----------------------
 
-Na  `pasta serial <concepts.html#data-folder>`_, deve incluir as pastas/arquivos resultantes do fluxo de `marcação em SGML <workflow_markup_sgml.html>`_ e/ou do fluxo de `marcação em XML <workflow_markup_xml.html>`_.
+Na `pasta serial <concepts.html#data-folder>`_, deve incluir as pastas/arquivos resultantes do fluxo de marcação em SGML e/ou do fluxo de marcação em XML.
 
-Para SGML, os arquivos são:
+Para SGML, os arquivos que contém os artigos ficam em:
 
 * serial/<acron>/<volnum>/markup 
 * serial/<acron>/<volnum>/body
 
-Para XML, os arquivos são:
+Para XML, os arquivos que contém os artigos ficam em:
 
 * ??/<acron>/<volnum>/markup_xml/scielo_package
  
@@ -47,9 +42,5 @@ Use `XML Converter <xml_converter.html>`_ para gerar a *pasta base* dos arquivos
 GeraPadrao
 ----------
 
-Execuar o scritpt `GeraPadrao.bat <http://docs.scielo.org/projects/scielo-site-windows/en/latest/howtogerapadrao.html#gerapadrao-bat>`_ para gerar a página `Web SciELO <http://docs.scielo.org/projects/scielo-site-windows/en/latest/>`_.
+Executar o scritpt `GeraPadrao.bat <http://docs.scielo.org/projects/scielo-site-windows/en/latest/howtogerapadrao.html#gerapadrao-bat>`_ para gerar o site local.
 
-
-------------
-
-Última atualização da página: agosto de 2015

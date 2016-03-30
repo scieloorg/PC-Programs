@@ -14,6 +14,3 @@ Installation
     howtoinstall.rst
     howtoupdate.rst
 
-----------------
-
-Last update of this page: Abril 2, 2014

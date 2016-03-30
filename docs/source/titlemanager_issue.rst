@@ -343,7 +343,3 @@ Deleting issue
 .. note:: This option only delete the record of the issue database. This action will not be reflected immediately on the website. 
 
 
-
------
-
-Last update: Feb 7, 2014

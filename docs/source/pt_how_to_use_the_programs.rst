@@ -1,3 +1,4 @@
+
 Como usar os programas
 ======================
 
@@ -5,12 +6,11 @@ Como usar os programas
 
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
-    pt_how_to_generate_sgml.rst
+    pt_how_to_work_with_sgml.rst
     
-    pt_how_to_generate_xml.rst
-    pt_how_to_validate_xml_package.rst
+    pt_how_to_work_with_xml.rst
     
     pt_how_to_update_local_site.rst
 

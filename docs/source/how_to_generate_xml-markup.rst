@@ -245,7 +245,7 @@ Abaixo o resultado da identificação de assinatura do autor/editor:
 .. _onbehalf:
 
 On Behalf
-========
+=========
 O elemento [on-behalf] é utilizado quando um autor exerce papel de representante de um grupo ou organização. 
 Para identificar esse dado, verifique se a informação do representante do grupo está na mesma linha do autor anterior. Exemplo:
 
