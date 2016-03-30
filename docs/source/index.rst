@@ -23,6 +23,6 @@ Welcome to SciELO PC Programs' documentation!
     code_database.rst
     
 
-
+    faq-scielo-xml.rst
     support.rst
 
