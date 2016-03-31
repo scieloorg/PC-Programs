@@ -6,6 +6,23 @@ from datetime import datetime
 import fs_utils
 
 
+def filename_language_suffix(filename):
+    name, ext = os.path.splitext(filename)
+    parts = name.split('-')
+    suffix = parts[-1]
+    lang = None
+    if len(suffix) == 2:
+        if not suffix[0].isdigit() and not suffix[1].isdigit():
+            lang = suffix
+    return lang
+
+
+def new_name_for_pdf_filename(pdf_filename):
+    lang_suffix = filename_language_suffix(pdf_filename)
+    if lang_suffix is not None:
+        return lang_suffix + '_' + pdf_filename.replace('-' + lang_suffix + '.pdf', '.pdf')
+
+
 class DocumentFiles(object):
 
     def __init__(self, xml_filename, report_path, wrk_path):
@@ -205,31 +222,19 @@ class IssueFiles(object):
                         shutil.copy(self.xml_path + '/' + f, path['img'])
                         msg.append('  ' + f + ' => ' + path['img'])
                 elif ext == 'pdf':
-                    pdf_filename = f
-                    if not pdf_filename.replace('.pdf', '.xml') in xml_files:
-                        pdf_filename = self.fix_pdf_name(f, xml_content)
-                    if os.path.isfile(path[ext] + '/' + pdf_filename):
-                        os.unlink(path[ext] + '/' + pdf_filename)
-                    shutil.copyfile(self.xml_path + '/' + f, path[ext] + '/' + pdf_filename)
-                    msg.append('  ' + f + ' => ' + path[ext] + '/' + pdf_filename)
+                    pdf_filenames = [f]
+                    new_pdf_filename = new_name_for_pdf_filename(pdf_filename)
+                    if new_pdf_filename is not None:
+                        pdf_filenames.append(new_pdf_filename)
+                    for pdf_filename in pdf_filenames:
+                        if os.path.isfile(path[ext] + '/' + pdf_filename):
+                            os.unlink(path[ext] + '/' + pdf_filename)
+                        shutil.copyfile(self.xml_path + '/' + f, path[ext] + '/' + pdf_filename)
+                        msg.append('  ' + f + ' => ' + path[ext] + '/' + pdf_filename)
                 else:
                     shutil.copy(self.xml_path + '/' + f, path[ext])
                     msg.append('  ' + f + ' => ' + path[ext])
         return '\n'.join(['<p>' + item + '</p>' for item in msg])
-
-    def fix_pdf_name(self, filename, xml_content):
-        new_name = filename
-        if not filename in xml_content:
-            prefix = filename[0:-len('-??.pdf')]
-
-            n = filename[0:-(len('.pdf'))]
-            n = n[-3:]
-            if n.startswith('-'):
-                lang = n[1:]
-                if not lang.isdigit():
-                    new_name = lang + '_' + prefix + '.pdf'
-                    print(new_name)
-        return new_name
 
     def save_reports(self, report_path):
         if not self.base_reports_path == report_path:
