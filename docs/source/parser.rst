@@ -105,5 +105,4 @@ In this case, the user must go back to Markup program, make corrections, then re
 .. image:: img/parser_error1.jpg
 
 
-.. include:: last_update.rst
 

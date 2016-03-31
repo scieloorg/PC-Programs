@@ -6,13 +6,11 @@ How to use the programs
 
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
-    how_to_generate_sgml.rst
+    how_to_work_with_sgml.rst
     
-    how_to_generate_xml.rst
-    how_to_validate_xml_package.rst
-    
+    how_to_work_with_xml.rst
     
     how_to_update_local_site.rst
 

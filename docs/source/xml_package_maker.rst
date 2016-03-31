@@ -204,9 +204,3 @@ Sources report
 .. image:: img/xpm_report_sources_others.png
 
 
-
-
-
-----------------
-
-Last update of this page: December 2015

@@ -6,7 +6,7 @@
 Welcome to SciELO PC Programs' documentation!
 =============================================
 
-**SciELO PC Programs** is a set of tools of SciELO Methodology, to manage journals, issues and articles data, in order to publish on the website (`SciELO Site <http://docs.scielo.org/projects/scielo-site/en/latest/>`_).
+**SciELO PC Programs** is a set of programs of SciELO Methodology to register journals, issues and articles data to publish scientific articles on a `SciELO Website <http://docs.scielo.org/projects/scielo-site/en/latest/>`_.
 
 
 .. toctree::
@@ -17,20 +17,12 @@ Welcome to SciELO PC Programs' documentation!
     programs.rst
 
     how_to_use_the_programs.rst
-
-    markup_tags.rst
     
-    databases_isis.rst
-
-    concepts.rst
-
+    faq-scielo-xml.rst
     support.rst
 
-    faq-scielo-xml.rst
+    concepts.rst
+    code_database.rst
+    
 
 
-
-
-----------------
-
-Last update of this page: Abril 2, 2014
