@@ -1,7 +1,7 @@
 .. _como-generar-archivos-sgml:
 
-Flujo de trabajo con archivos HTML / DTD article y text
-=======================================================
+¿Cómo Producir y Validar Archivos HTML / DTD article y text?
+============================================================
 
 .. toctree::
    :maxdepth: 1

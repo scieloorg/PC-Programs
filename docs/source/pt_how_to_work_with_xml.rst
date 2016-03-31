@@ -1,9 +1,9 @@
 
-Fluxo de trabalho com artigos em XML
-====================================
+Como Produzir e Validar Artigos em XML?
+=======================================
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     pt_how_to_generate_xml.rst
 
