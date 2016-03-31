@@ -1252,6 +1252,8 @@ class ArticleContentValidation(object):
                 hreflocation = 'file:///' + file_location
                 if hrefitem.is_image:
                     display = html_reports.image(hreflocation)
+                else:
+                    display = html_reports.link(hreflocation, hrefitem.src)
                 if len(status_message) == 0:
                     status_message.append((validation_status.STATUS_INFO, ''))
                 href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}
