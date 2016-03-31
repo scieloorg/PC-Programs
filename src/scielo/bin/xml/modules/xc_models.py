@@ -1244,16 +1244,6 @@ class DBManager(object):
             #utils.display_message(journal_title)
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
-    def search_journal(self, pissn, eissn, journal_title):
-        expr = self.search_journal_expr(pissn, eissn, journal_title)
-        result = []
-        if expr is not None:
-            result = self.db_isis.get_records(self.title_db_filename, expr)
-            if len(result) == 0:
-                self.update_db_copy(self.src_title_db_filename, self.title_db_filename, self.title_fst_filename)
-                result = self.db_isis.get_records(self.title_db_filename, expr)
-        return result
-
     def search_issue_expr(self, issue_id, pissn, eissn, acron=None):
         _expr = []
         if pissn is not None:
@@ -1264,17 +1254,20 @@ class DBManager(object):
             _expr.append(acron)
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
-    def search_issue(self, issue_label, pissn, eissn):
-        expr = self.search_issue_expr(issue_label, pissn, eissn)
-        result = []
-        if expr is not None:
-            result = self.db_isis.get_records(self.issue_db_filename, expr)
-            d_copy = fs_utils.last_modified_datetime(self.issue_db_filename + '.mst')
-            d_source = fs_utils.last_modified_datetime(self.src_issue_db_filename + '.mst')
-            diff = d_source - d_copy
-            if len(result) == 0 or diff.days > 0 or (diff.days == 0 and diff.seconds > 0):
-                self.update_db_copy(self.src_issue_db_filename, self.issue_db_filename, self.issue_fst_filename)
-                result = self.db_isis.get_records(self.issue_db_filename, expr)
+    def update_and_search(self, db, expr, source_db, fst_filename):
+        updated = False
+        if os.path.isfile(db + '.mst'):
+            result = self.db_isis.get_records(db, expr)
+            if len(result) == 0:
+                d_copy = fs_utils.last_modified_datetime(db + '.mst')
+                d_source = fs_utils.last_modified_datetime(source_db + '.mst')
+                diff = d_source - d_copy
+                updated = not (diff.days > 0 or (diff.days == 0 and diff.seconds > 0))
+        if not updated:
+            self.update_db_copy(source_db, db, fst_filename)
+        result = self.db_isis.get_records(db, expr)
+        if len(result) > 0:
+            result = result[0]
         return result
 
     def get_issue_models(self, journal_title, issue_label, p_issn, e_issn):
@@ -1307,19 +1300,18 @@ class DBManager(object):
             return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, self.local_web_app_path)
 
     def find_journal_record(self, journal_title, print_issn, e_issn):
-        record = None
-        records = self.search_journal(print_issn, e_issn, journal_title)
-
-        if len(records) > 0:
-            record = records[0]
-        return record
+        records = None
+        expr = self.search_journal_expr(pissn, eissn, journal_title)
+        if expr is not None:
+            records = self.update_and_search(self.title_db_filename, expr, self.src_title_db_filename, self.title_fst_filename)
+        return records
 
     def find_i_record(self, issue_label, print_issn, e_issn):
-        i_record = None
-        issues_records = self.search_issue(issue_label, print_issn, e_issn)
-        if len(issues_records) > 0:
-            i_record = issues_records[0]
-        return i_record
+        records = None
+        expr = self.search_issue_expr(issue_label, print_issn, e_issn)
+        if expr is not None:
+            records = self.update_and_search(self.issue_db_filename, expr, self.src_issue_db_filename, self.issue_fst_filename)
+        return records
 
 
 class JournalsList(object):
