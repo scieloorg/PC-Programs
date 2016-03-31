@@ -1291,36 +1291,36 @@ class ArticleContentValidation(object):
         inxml = [item.name_without_extension for item in self.article.href_files]
         inxml += [item.src for item in self.article.href_files]
         for item in article_pkg_files:
+            fname, ext = os.path.splitext(item)
             status = validation_status.STATUS_INFO if item.startswith(self.article.new_prefix) else validation_status.STATUS_FATAL_ERROR
             message = _('found in the package') if status == validation_status.STATUS_INFO else _('file name must start with ') + self.article.prefix
             _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
 
             status = validation_status.STATUS_INFO
             message = None
-            if item in inxml:
+            if '"' + item + '"' in inxml:
                 message = _('found in XML')
             elif item == self.article.new_prefix + '.pdf':
                 message = None
-            elif item.endswith('.pdf'):
-                lang = item[len(self.article.new_prefix):]
-                if lang.startswith('-'):
-                    lang = lang[1:3]
-                    if lang in self.article.trans_languages:
-                        message = _('found sub-article({lang}) in XML').format(lang=lang)
-                    elif lang in self.article.language:
+            elif ext == '.pdf':
+                suffix = filename_language_suffix(fname)
+                if suffix is None:
+                    message = _('not found in XML')
+                    status = validation_status.STATUS_ERROR
+                else:
+                    if suffix in self.article.trans_languages:
+                        message = _('found sub-article({lang}) in XML').format(lang=suffix)
+                    elif suffix == self.article.language:
                         status = validation_status.STATUS_ERROR
-                        message = _('PDF ({lang})').format(lang=lang) + _(' must not have -{lang} in PDF name').format(lang=lang)
+                        message = _('PDF ({lang})').format(lang=suffix) + _(' must not have -{lang} in PDF name').format(lang=suffix)
                     else:
-                        status = validation_status.STATUS_ERROR
-                        message = _('not found sub-article({lang}) in XML').format(lang=lang)
-            else:
-                if '.' in item:
-                    without_extension = item[0:item.rfind('.')]
-                    if '"' + without_extension + '"' in inxml:
-                        message = _('found in XML')
-                    elif not item.endswith('.jpg'):
-                        status = validation_status.STATUS_ERROR
-                        message = _('not found in XML')
+                        status = validation_status.STATUS_WARNING
+                        message = _('not found sub-article({lang}) in XML').format(lang=suffix)
+            elif '"' + fname + '"' in inxml:
+                message = _('found in XML')
+            elif not ext == '.jpg':
+                status = validation_status.STATUS_ERROR
+                message = _('not found in XML')
             if message is not None:
                 _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
         items = []
