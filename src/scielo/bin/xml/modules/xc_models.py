@@ -1301,7 +1301,7 @@ class DBManager(object):
 
     def find_journal_record(self, journal_title, print_issn, e_issn):
         records = None
-        expr = self.search_journal_expr(pissn, eissn, journal_title)
+        expr = self.search_journal_expr(print_issn, e_issn, journal_title)
         if expr is not None:
             records = self.update_and_search(self.title_db_filename, expr, self.src_title_db_filename, self.title_fst_filename)
         return records
