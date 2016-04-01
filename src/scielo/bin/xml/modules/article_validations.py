@@ -1298,8 +1298,8 @@ class ArticleContentValidation(object):
                 _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_ERROR, _('not found in the package'))
 
         #from files, find in XML
-        inxml = [item.name_without_extension for item in self.article.href_files]
-        inxml += [item.src for item in self.article.href_files]
+        href_items_in_xml = [item.name_without_extension for item in self.article.href_files]
+        href_items_in_xml += [item.src for item in self.article.href_files]
         for item in article_pkg_files:
             fname, ext = os.path.splitext(item)
             status = validation_status.STATUS_INFO if item.startswith(self.article.new_prefix) else validation_status.STATUS_FATAL_ERROR
@@ -1308,7 +1308,7 @@ class ArticleContentValidation(object):
 
             status = validation_status.STATUS_INFO
             message = None
-            if '"' + item + '"' in inxml:
+            if item in href_items_in_xml:
                 message = _('found in XML')
             elif item == self.article.new_prefix + '.pdf':
                 message = None
@@ -1326,11 +1326,12 @@ class ArticleContentValidation(object):
                     else:
                         status = validation_status.STATUS_WARNING
                         message = _('not found sub-article({lang}) in XML').format(lang=suffix)
-            elif '"' + fname + '"' in inxml:
+            elif fname in href_items_in_xml:
                 message = _('found in XML')
             elif not ext == '.jpg':
                 status = validation_status.STATUS_ERROR
                 message = _('not found in XML')
+                print(item)
             if message is not None:
                 _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
         items = []
