@@ -2758,7 +2758,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</colgroup>
 			<xsl:apply-templates select="thead"></xsl:apply-templates>
 			<xsl:choose>
-				<xsl:when test="tbody//xref">
+				<xsl:when test="tbody//td//*">
 					<xsl:apply-templates select="tbody"/>
 				</xsl:when>
 				<xsl:otherwise>
