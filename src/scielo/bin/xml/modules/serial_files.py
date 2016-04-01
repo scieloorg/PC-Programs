@@ -223,7 +223,7 @@ class IssueFiles(object):
                         msg.append('  ' + f + ' => ' + path['img'])
                 elif ext == 'pdf':
                     pdf_filenames = [f]
-                    new_pdf_filename = new_name_for_pdf_filename(pdf_filename)
+                    new_pdf_filename = new_name_for_pdf_filename(f)
                     if new_pdf_filename is not None:
                         pdf_filenames.append(new_pdf_filename)
                     for pdf_filename in pdf_filenames:

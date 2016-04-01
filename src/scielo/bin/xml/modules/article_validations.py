@@ -13,6 +13,7 @@ import article
 import html_reports
 import institutions_service
 import fs_utils
+from serial_files import filename_language_suffix
 
 
 MIN_IMG_DPI = 300
@@ -780,9 +781,16 @@ class ArticleContentValidation(object):
                     msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
                     r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
             else:
-                status = validation_status.STATUS_INFO
-                r.append((_('normalized aff checked'), validation_status.STATUS_VALID, _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])))
                 self.article.normalized_affiliations[aff.id] = norm_aff
+                status = validation_status.STATUS_VALID
+                if aff.norgname is not None:
+                    if aff.norgname != norm_aff.norgname:
+                        status = validation_status.STATUS_FATAL_ERROR
+                if status == validation_status.STATUS_VALID:
+                    message = _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])
+                else:
+                    message = _('Use {right} instead of {wrong}').format(right=norm_aff.norgname, wrong=aff.norgname)
+                r.append(('aff/institution/[@content-type="normalized"]', status, message))
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
             i = 0
