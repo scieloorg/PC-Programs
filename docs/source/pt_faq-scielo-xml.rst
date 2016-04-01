@@ -49,7 +49,7 @@ Para um maior entendimento sobre o SciELO PS, consulte  a documentação detalha
 
 O guia de uso dos elementos e atributos do SciELO Publishing Schema descreve o estilo de marcação adotado pelo projeto SciELO para a submissão de documentos no formato XML. Essa documentação é composta pela DTD JATS 1.0 + especificações PMC + Estilo SciELO, que são regras que especializam aspectos da especificação. Verificar em:
 
-<http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/tagset.html>
+<http://docs.scielo.org/projects/scielo-publishing-schema/>
 
 
 

@@ -1,9 +1,9 @@
 
-Flujo de trabajo con los archivos XML
-=====================================
+¿Cómo Producir y Validar los Archivos XML?
+==========================================
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     es_how_to_generate_xml.rst
     

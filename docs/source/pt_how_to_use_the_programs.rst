@@ -6,7 +6,7 @@ Como usar os programas
 
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     pt_how_to_work_with_sgml.rst
     
