@@ -9,8 +9,12 @@ How to use the programs
     :maxdepth: 1
 
     how_to_work_with_sgml.rst
+.. toctree::
+    :maxdepth: 1
     
     how_to_work_with_xml.rst
+.. toctree::
+    :maxdepth: 1
     
     how_to_update_local_site.rst
 

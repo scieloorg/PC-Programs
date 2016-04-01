@@ -1,33 +1,34 @@
 .. _preguntas-scielo-frecuentes:
 
-Preguntas Frecuentes Sobre la Adopción de XML
-=============================================
+Preguntas Frecuentes Acerca de la Adopción de XML
+=================================================
 
 SPS
 ---
 
 .. _eventos-scielo:
 
-1. Donde puedo encuentrar las presentaciones de las reuniones sobre la producción de archivos XML y el “Processo de Adoção do novo Sistema de Marcação de texto completo”?
+1. Donde puedo encontrar las presentaciones de las reuniones sobre la producción de archivos XML y el “Processo de Adoção do novo Sistema de Marcação de texto completo”?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Las presentaciones de todas las reuniones realizadas desde 2012, sobre el “Processo de Adoção do novo Sistema de Marcação de texto completo do SciELO” están disponibles en el sitio SciELO Eventos:
+Las presentaciones de todas las reuniones realizadas desde 2012, sobre el “Processo de Adoção do novo Sistema de Marcação de texto completo do SciELO” están disponibles en el sitio SciELO Eventos (sólo en portugués):
+
  <http://eventos.scielo.org/>
 
 
 
 .. _sobre-xml:
 
-2. ¿Cómo podemos tener más informaciones sobre el XML?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2. ¿Cómo podemos tener más datos sobre el XML?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-En las reuniones con editores de periódicos SciELO fueron realizadas presentaciones y se proporcionó aclaraciones sobre las principais características  del XML (eXtensible Markup Language). Las presentaciones están disponibles en: 
+En las reuniones con editores de revistas de SciELO Brasil fueron realizadas presentaciones y se proporcionó aclaraciones sobre las principales características  del XML (eXtensible Markup Language). Las presentaciones están disponibles en: 
 
 <http://eventos.scielo.org/>
 
-Además de las presentaciones en reuniones, fue publicado un post en el blog "SciELO em Perspectiva" aclarando las principais raziones de la adopción de este linguaje de marcaje. Consulte en:
+Además de las presentaciones en reuniones, fue publicado un post en el blog "SciELO en Perspectiva" aclarando las principales razones de la adopción de este lenguaje de marcaje. Consulte en:
 
-<http://blog.scielo.org/blog/2014/04/04/xml-porque/#.U1j4tT95iig>
+<http://blog.scielo.org/es/2014/04/04/porque-xml>
  
 
 .. _xml-scielo:
@@ -36,7 +37,7 @@ Además de las presentaciones en reuniones, fue publicado un post en el blog "Sc
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 El archivo XML que SciELO necesita debe estar en conformidad con SciELO Publishing Schema (SciELO PS).
-Para una compreensi[on mayor sobre SciELO PS, consulte la documentaci[on detallada disponibles en?
+Para una compreensión mayor sobre SciELO PS, consulte la documentación detallada disponibles en?
 
 <http://docs.scielo.org/projects/scielo-publishing-schema/>
 
@@ -62,19 +63,19 @@ Proceso Editorial
 5. Con ese nuevo proceso de producción de las revistas en XML, la diagramación del periódico impreso será cambiado?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-La diagramación de lo impreso podrá continuar de la misma forma como es realizado actualmente.
+La diagramación del impreso podrá continuar de la misma forma como es realizado actualmente.
 
 
 
 .. _reuso-xml:
 
-6 . Puedo usar los archivos XML en la pagina de mi revista?
+6 . Puedo usar los archivos XML en la página de mi revista?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sí. El editor puede disponiblizar el archivo xml no apenas en la página SciELO, sino también en su propio sitio web.
+Sí. El editor puede tener el archivo xml no apenas en la página SciELO, sino también en su propio sitio web.
 
 
-Tecnologia / Herramientas
+Tecnología / Herramientas
 -------------------------
 
 
@@ -92,35 +93,35 @@ Aún no tenemos mecanismos eficaces para reproducir archivos XML con la estructu
 
 .. _marcacion-xml:
 
-8. SciELO ofrece algun software para auxiliar los editores en la producción de los artículos en XML?
+8. SciELO ofrece algún software para auxiliar a los editores en la producción de los artículos en XML?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-SciELO desarrolló algunas herramientas de validacción de XML de acuedo con SciELO Publishing Schema. Si el editor no tiene ninguna herramienta para la generación de XML, es posible usar lo programa de marcación y producción de XML, bien como las herramientas de validación usadas en el proceso de producción y publicación de acuerdo con SciELO PS (ver iten :ref:`herramientas-scielo`).
+SciELO desarrolló algunas herramientas de validación de XML de acuedo con SciELO Publishing Schema. Si el editor no tiene ninguna herramienta para la generación de XML, es posible usar el programa de marcación (Markup) y producción de XML, así como las herramientas de validación usadas en el proceso de producción y publicación de acuerdo con SciELO PS (ver ítem 10 :ref:`herramientas-scielo`).
 El programa de marcación, desarrollado por SciELO, funciona sólo en Windows, o sea, no hay posibilidad de usar el programa con diferentes sistemas operativos como Linux, por ejemplo.
 
 El Markup es un plug-in de Word, que está disponible en:
 
 <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/download.html>
 
-Las informaciones sobre los programas y herramientas usadas están disponibles en:
+Los datos sobre los programas y herramientas usadas están disponibles en:
 
 <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/>
 
 
 .. _manual-marcacion:
 
-9. Existe algun manual de instrucción para la utilización de ese programa?
+9. Existe algún manual de instrucción para la utilización de ese programa?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sí, verifique la documentación online de instrucciones de uso del programa Markup disponiblizada en:
+Sí, verifique la documentación online de instrucciones de uso del programa Markup disponible en:
 
-<http://docs.scielo.org/projects/scielo-pc-programs/en/latest/pt_how_to_generate_xml.html>
+<http://docs.scielo.org/projects/scielo-pc-programs/en/latest/es_how_to_generate_xml.html>
 
 
 .. _herramientas-scielo:
 
-10. Existe algún programa donde puedo verificar si mi archivo XML está en conformidad con lo que es solicitado por SciELO?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10. Hay algún programa donde puedo verificar si mi archivo XML está en conformidad con lo que es solicitado por SciELO?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sí. SciELO desarroló dos herramientas que ayudan en la validación de lo archivo .xml. Verifica abajo los programas disponibles:
 
@@ -139,10 +140,10 @@ StyleChecker: es una herramienta Web que proporciona un informe detallado sobre 
 
 .. _exemplos-xml:
 
-11 . SciELO disponibliza modelos de archivos XML compatibles con las especificaciones de SciELO PS?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+11 . SciELO tiene modelos de archivos XML compatibles con las especificaciones de SciELO PS?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sí. Para recibir modelos de archivos XML es necesário enviar un correo electrónico para scielo@scielo.org y solicita el envío de estos documentos.
+Sí. Para recibir modelos de archivos XML es necesario enviar un correo electrónico para scielo@scielo.org y solicita el envío de estos documentos.
 
 
 
@@ -152,10 +153,10 @@ Producción de XML por colaboradores externos
 
 .. _colaboradores-externos:
 
-12. Hay colaboradores que ofrecen servicios de producción de XML de acuerdo con el estándar SciELO? ¿Cómo puedo encuentrar eses colaboradores?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12. Hay colaboradores que ofrecen servicios de producción de XML de acuerdo con el estándar SciELO? ¿Cómo puedo encontrar eses colaboradores?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sí. Existen colaboradores que son certificados por SciELO y que ofrecen servicioss de producción de archivos XML en conformidad con SciELO Publishing Schema. Es posible verificar los contactos de estos colaboradores en el enlace abajo::
+Sí. Existen colaboradores que son certificados por SciELO y que ofrecen servicios de producción de archivos XML en conformidad con SciELO Publishing Schema. Es posible verificar los contactos de estos colaboradores en el enlace abajo::
 
 <http://www.scielo.org/php/level.php?lang=pt&component=56&item=58>
 
@@ -170,8 +171,8 @@ Publicación en SciELO Brasil
 13 . ¿Como es el proceso de certificación SciELO Brasil para la producción de XML?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Los colabores externos que tienen la intención de ofrecer los servicios de marcación de textos en XML en conformidad con SciELO PS deben someter lo material producido a una evaluación inicial. Mientras tanto, la muestra debe seguir el estándar SciELO y todos los archivos deben haber sido validados por las herramientas Package Maker y StyleChecker. 
-Para Obtener más informaciones sobre la certificación SciELO, verifique los requisitos disponíbles en el sítio SciELO.org:
+Los colaboradores externos que tienen la intención de ofrecer los servicios de marcación de textos en XML en conformidad con SciELO PS deben someter el material producido a una evaluación inicial. Mientras tanto, la prueba debe seguir el estándar SciELO y todos los archivos deben haber sido validados por las herramientas Package Maker y StyleChecker. 
+Para obtener más datos sobre la certificación SciELO, verifique los requisitos disponibles en el sitio SciELO.org:
 
 <http://www.scielo.org/php/level.php?lang=pt&component=56&item=59>
 
@@ -182,7 +183,7 @@ Para Obtener más informaciones sobre la certificación SciELO, verifique los re
 14 . SciELO podrá recibir archivos XML de colaboradores no externos?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lo colaborador que decide ofrecer servicios de marcación de textos en XML en conformidad con SciELO Publishing Schema, deberá enviar a nosotros un paquete de muestra con al menos 5 archivos para una evaluación inicial. Una vez aprobados, el colaborador será evaluada periodicamente, cada seis meses. Para obtener más informaciones sobre la certificación SciELO, verifica el enlace disponible abajo:
+El colaborador que decide ofrecer servicios de marcación de textos en XML en conformidad con SciELO Publishing Schema, deberá enviar a nosotros un paquete de prueba con al menos 5 archivos para una evaluación inicial. Una vez aprobados, el colaborador será evaluado periódicamente, cada seis meses. Para obtener más información sobre la certificación SciELO, verifica el enlace disponible abajo:
 
 <http://www.scielo.org/php/level.php?lang=pt&component=56&item=59>
 
@@ -199,15 +200,15 @@ Mientas tanto, antes que envien el paquete para SciELO, deberán enviar a nosotr
 15 . He producido mi archivo .xml, puedo enviar a SciELO para comprobar?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Usa en primeiro lugar las herramientas de validación (ver item :ref:`herramientas-scielo`)
-Si puede identificar y/o corrigir los problemas presentados, debe consultar o enviar sus preguntas a la lista de discussión scielo-xml@googlegroups.com, la cual será respondida dentro de las 72 horas.
+Usa en primero lugar las herramientas de validación (ver ítem 10 :ref:`herramientas-scielo`)
+Si puede identificar y/o corregir los problemas presentados, debe consultar o enviar sus preguntas a la lista de discusión scielo-xml@googlegroups.com, la cual será contestada en 72 horas.
 
 
 
 .. _plazo-scielo:
 
-16. ¿Cual es lo plazo para mi fascículo estar disponible en el sitio SciELO?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16. ¿Cuál es lo plazo para mi número estar disponible en el sitio SciELO?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-El plazo para la publicación en el sitio es de 10 a 15 días, teniendo en cuenta el último correo electrónico de confirmación de recepción del paquete de datos.
-Este plazo tiene en cuenta el tiempo de verificación de lo material recibido, las correcciones necesarias y tiempo de procesamiento.
+El plazo para la publicación en el sitio es de 10 a 15 días, considera el último correo electrónico de confirmación de recepción del paquete de datos.
+Este plazo tiene en cuenta el tiempo de análisis del material recibido, las correcciones necesarias y tiempo de procesamiento.
