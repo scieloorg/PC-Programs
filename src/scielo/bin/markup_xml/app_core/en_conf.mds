@@ -20,6 +20,9 @@ msgSure,Are you sure?
 msgSureExit,Do you want to exit?
 msgQuestionApplyAutomaticMarkupToTheTemplate,Is the document according to the template?
 msgAutomatic,Do you wish to use the automatic markup of references?
+msgAutomaticAutomata2,Automata2 is available only for Vancouver standard. This journal follows %STANDARD%."
+msgAutomaticUnidentifiedStandard,"The standard adopted by the journal is unknown. Unable to execute the automatica markup." 
+msgAutomaticSelectStandard,"The standard adopted by the journal is unknown. Select the standard adopted by the journal, if you intend to use the automatic markup for the references." 
 msgAutomaticErr,%JOURNAL% has no automatic markup %LABEL% for references. %FILE% not found.
 msgDefaultDirectories,Verify the 'html.dot' and/or 'normal.dot' files.
 msgExit1,Save on TXT format and use the Parser now.
