@@ -20,6 +20,9 @@ msgSure,Deseja continuar?
 msgSureExit,Deseja sair?
 msgQuestionApplyAutomaticMarkupToTheTemplate,O documento está de acordo com o modelo para efetuar a marcação automática?
 msgAutomatic,Você deseja usar a marcação automática de referências?
+msgAutomaticAutomata2,"Automata2 está disponível somente para a norma Vancouver. Esta revista adota %STANDARD%."
+msgAutomaticUnidentifiedStandard,"A norma adotada pelo periódico é desconhecida do programa. Não é possível executar a marcação automática." 
+msgAutomaticSelectStandard,"A norma adotada pelo periódico é desconhecida do programa. Selecione a norma adotada pelo periódico, se vai usar a marcação automática para as referências." 
 msgAutomaticErr,%JOURNAL% não possui marcação automática %LABEL% para as refrerências. %FILE% não encontrado.
 msgDefaultDirectories,Verifique existência de 'html.dot'/'normal.dot'.
 msgExit1,Salvar em TXT e usar o Parser agora.

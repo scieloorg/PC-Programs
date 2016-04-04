@@ -20,6 +20,9 @@ msgSure,Usted esta seguro?
 msgSureExit,Usted quiere salir?
 msgQuestionApplyAutomaticMarkupToTheTemplate,El documento está de acuerdo con el modelo?
 msgAutomatic,Usted desea usar la marcación automática de citas?
+msgAutomaticAutomata2,"Automata2 está disponible solamente para el estándar Vancouver. Esta revista adopta %STANDARD%."
+msgAutomaticUnidentifiedStandard,"El estándar adoptado por la revista es desconocido. No es posible ejecutar la marcación automática." 
+msgAutomaticSelectStandard,"El estándar adoptado por la revista es desconocido. Seleccione el estándar adoptado por la revista, si va a usar la marcación automática para las citas bibliográficas." 
 msgAutomaticErr,%JOURNAL% no tiene marcación automática %LABEL% para las citas. %FILE% no fue encontrado.
 msgDefaultDirectories,Asegure que existe el archivo 'html.dot'/'normal.dot'.
 msgExit1,Guardar en TXT y usar el Parser.
