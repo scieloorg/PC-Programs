@@ -736,7 +736,24 @@ def normalize_references_item(item):
         item = fix_mixed_citation_label(item)
         item = fix_book_data(item)
         item = fix_mixed_citation_ext_link(item)
+        item = fix_source(item)
     return item
+
+
+def fix_source(content):
+    if '<source' in content and '<mixed-citation' in content:
+        source = content[content.find('<source'):]
+        if '</source>' in source:
+            source = source[0:source.find('</source>')]
+            source = source[source.find('>')+1:]
+            mixed_citation = content[content.find('<mixed-citation'):]
+            if '</mixed-citation>' in mixed_citation:
+                mixed_citation = mixed_citation[0:mixed_citation.find('</mixed-citation>')]
+                mixed_citation = mixed_citation[mixed_citation.find('>')+1:]
+                s = source.replace(':', ': ')
+                if not source in mixed_citation and s in mixed_citation:
+                    content = content.replace(source, s)
+    return content
 
 
 def normalize_references(content):
