@@ -156,6 +156,7 @@ surname;#FALSE#;#FALSE#
 role;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 authorid;#TRUE#;#TRUE#
+onbehalf;#FALSE#;#FALSE#
 
 authorid
 
