@@ -1331,7 +1331,7 @@ class ArticleContentValidation(object):
             elif not ext == '.jpg':
                 status = validation_status.STATUS_ERROR
                 message = _('not found in XML')
-                print(item)
+
             if message is not None:
                 _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
         items = []

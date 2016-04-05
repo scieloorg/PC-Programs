@@ -1,7 +1,8 @@
-﻿4.0.091 trial - 09/03/2016
-==========================
+﻿4.0.091 - 05/04/2016
+====================
 - XPM
   - (bug) Fix message of missing image which href value has no extension
+  - (bug) Fix issues related to PDF as supplementary-material if it is in translation
   - (improvement) generate PMC XML only with article (en) or sub-article (en), but preserving the metadata in other languages.
   - (improvement) improve message of required normalized aff
   - (new) inform dpi, height and width of images
@@ -24,6 +25,9 @@
   - (new) New element: sub-article(not translation)//aff
   - (new) New elements: copyright, copyright-year, copyright-holder, permissions
   - (new) Validations of copyright, copyright-year, copyright-holder, permissions
+  - (new) New country: Kosovo (KV)
+  - (new) Insert new SPS version: 1.4
+  - (new) Validate if source and year are present in mixed-citation
 
 4.0.091 trial - 04/02/2016
 ==========================
