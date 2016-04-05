@@ -428,14 +428,10 @@ def resize_jpg(large_jpg_filename, jpg_filename):
         basewidth = 300
         img = Image.open(large_jpg_filename)
         if basewidth < img.size[0]:
-            print('--')
-            print(img.size)
             wpercent = (basewidth/float(img.size[0]))
             hsize = int((float(img.size[1])*float(wpercent)))
             img = img.resize((basewidth, hsize), Image.ANTIALIAS)
-            print(img.size)
             img.save(jpg_filename)
-            print(jpg_filename)
 
 
 def generate_new_name(doc, param_acron='', original_xml_name=''):

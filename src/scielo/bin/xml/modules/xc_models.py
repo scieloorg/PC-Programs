@@ -36,10 +36,6 @@ def author_tag(is_person, is_analytic_author):
 
 
 def title_issns(record):
-    print('title_issns()')
-    for tag in ['400', '35', '935', '435', ]:
-        print(tag)
-        print(record.get(tag))
     issn_items = registered_issn_items(record.get('435'))
     if issn_items is None:
         issn_items = {}
@@ -50,16 +46,10 @@ def title_issns(record):
         if issn_type is None:
             issn_type = 'UNKNOWN_ISSN_TYPE'
         issn_items[issn_type] = issn
-    print('issns:')
-    print(issn_items)
     return issn_items
 
 
 def issue_issns(record):
-    print('issue_issns()')
-    for tag in ['35', '935', '435', ]:
-        print(tag)
-        print(record.get(tag))
     issn_items = registered_issn_items(record.get('435'))
     if issn_items is None:
         issn_items = {}
@@ -68,8 +58,6 @@ def issue_issns(record):
             issn = record.get('35')
         issn_type = 'UNKNOWN_ISSN_TYPE'
         issn_items[issn_type] = issn
-    print('issns:')
-    print(issn_items)
     return issn_items
 
 

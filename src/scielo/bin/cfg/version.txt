@@ -1,7 +1,8 @@
-﻿4.0.091 trial - 09/03/2016
-==========================
+﻿4.0.091 - 05/04/2016
+====================
 - Title Manager
   - (new) Include new status to journal history
+  - (new) Sequential number of issue order must be 1 to 999
   - (improvement) Present the journal list sorted by "status" 
 - Markup
   - (new) normaff of subdoc (sub-article//aff) which is not translation
@@ -10,10 +11,24 @@
   - (new) new values for authid (@contrib-id-type): scopus and researchid
   - (new) New element: subdoc(not translation)//normaff
   - (new) New elements: cpright, cpyear, cpholder, licinfo for objects (fig, tabwrap, etc)
+  - (new) Ask the standard adopted by the journal if this information is not available
+  - (new) New country: Kosovo (KV)
+  - (new) New element: fname-spanish-surname for automatic identification of author names
   - (improvement) remove exceding values for subarttp (sub-article/@article-type)
   - (improvement) generate XML with ext-link-type="scielo-pid" instead of ext-link-type="pid" 
+  - (bug) Present article validations report
+  - (bug) Fix automatic markup of reference when the standard was not informed
+  - (bug) Automata for Vancouver in doc DTD must identify suppl instead of supplement
+  - (bug) Fix generation of uri in tables
+  - (bug) Fix automatic DOI identification (Spain uses ##.#####, instead of ##.####)
+  - (bug) Fix identification of image filename when the image source is a Web address
+- Markup (article and text DTD)
+  - (bug) Accept a01 instead of aff1 for article and text DTD
+  - (bug) author has different attributes
+  - (bug) Remove the *author, *stitle, *sertitle button
 - XPM
   - (bug) Fix message of missing image which href value has no extension
+  - (bug) Fix issues related to PDF as supplementary-material if it is in translation
   - (improvement) generate PMC XML only with article (en) or sub-article (en), but preserving the metadata in other languages.
   - (improvement) improve message of required normalized aff
   - (new) inform dpi, height and width of images
@@ -36,11 +51,15 @@
   - (new) New element: sub-article(not translation)//aff
   - (new) New elements: copyright, copyright-year, copyright-holder, permissions
   - (new) Validations of copyright, copyright-year, copyright-holder, permissions
+  - (new) New country: Kosovo (KV)
+  - (new) Insert new SPS version: 1.4
+  - (new) Validate if source and year are present in mixed-citation
 - XC
   - (improvement) check also if sub-article//subject is a registered TOC section
   - (new) save in database the sub-article(not translation)//aff
   - (new) Handle corrections as aop
   - (bug) Fix presentation of aop report (Conversion tab)
+  - (bug) Create issue and title database if there is none
  
 4.0.091 trial - 04/02/2016
 ==========================

@@ -26,7 +26,6 @@ def is_similar(text, items, min_rate=0.8):
     if not isinstance(items, list):
         items = [items]
     highiest_rate, most_similar_items = most_similar(similarity(items, text, min_rate))
-    print([highiest_rate, most_similar_items])
     return (highiest_rate > min_rate)
 
 
@@ -97,17 +96,10 @@ def valid_formula_min_max_height(values, percent=0.25):
     r = int(m * percent)
     _min = m - r
     _max = m + r
-    print(m)
-    print(r)
-    print(_min)
-    print(_max)
     if _min < 16:
         m = 16 + r
     if _max > 200:
         m = 200 - r
-    print(m - r)
-    print(m + r)
-
     return (m - r, m + r)
 
 
