@@ -954,6 +954,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>
+			<xsl:if test="onbehalf">
+				<on-behalf-of>
+					<xsl:value-of select="onbehalf"/>
+				</on-behalf-of>
+			</xsl:if>
 		</contrib>
 		<xsl:copy-of select="../..//aff[@id=$author_rid]/role"/>
 		<xsl:copy-of select="../..//normaff[@id=$author_rid]/role"/>
