@@ -300,26 +300,22 @@ class ArticleValidationReport(object):
     def display_item(self, item):
         return html_reports.p_message(item, False)
 
-    def validations(self, display_all):
+    def validations(self, display_all_message_types):
         items, performance = self.article_validation.validations
-
-        if not display_all:
-            #items = [(label, status, msg) for label, status, msg in items if status != validation_status.STATUS_OK]
-            new_items = []
-            for item in items:
-                if item is not None:
-                    if len(item) != 3:
-                        utils.debugging('article_reports.validations()')
-                        utils.debugging(item)
-                    else:
-                        label, status, msg = item
-                        if status != validation_status.STATUS_OK:
-                            new_items.append((label, status, msg))
-            items = new_items
+        items = [item for item in items if item is not None]
+        new_items = []
+        for item in [item for item in items if len(item) == 3]:
+            label, status, msg = item
+            if display_all_message_types:
+                new_items.append((label, status, msg))
+            else:
+                if status != validation_status.STATUS_OK:
+                    new_items.append((label, status, msg))
+        items = new_items
 
         r = html_reports.validations_table(items)
 
-        r += self.references(display_all)
+        r += self.references(display_all_message_types)
 
         if len(r) > 0:
             r = html_reports.tag('div', r, 'article-messages')
@@ -505,7 +501,7 @@ def article_data_and_validations_report(journal, article, new_name, package_path
             content.append(article_display_report.issue_header)
             content.append(article_display_report.article_front)
 
-        content.append(article_validation_report.validations(is_sgml_generation))
+        content.append(article_validation_report.validations(display_all_message_types=False))
         content.append(article_display_report.table_tables)
         content.append(sheet_data.files_and_href(package_path))
 
