@@ -26,9 +26,11 @@
   - (bug) Accept a01 instead of aff1 for article and text DTD
   - (bug) author has different attributes
   - (bug) Remove the *author, *stitle, *sertitle button
+  - (bug) Enable onbehalf in author element
 - XPM
   - (bug) Fix message of missing image which href value has no extension
   - (bug) Fix issues related to PDF as supplementary-material if it is in translation
+  - (bug) Use images from src folder instead of images gotten from Word
   - (improvement) generate PMC XML only with article (en) or sub-article (en), but preserving the metadata in other languages.
   - (improvement) improve message of required normalized aff
   - (new) inform dpi, height and width of images
