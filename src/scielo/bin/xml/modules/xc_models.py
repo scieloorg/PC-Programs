@@ -1256,6 +1256,8 @@ class DBManager(object):
         result = self.db_isis.get_records(db, expr)
         if len(result) > 0:
             result = result[0]
+        else:
+            result = None
         return result
 
     def get_issue_models(self, journal_title, issue_label, p_issn, e_issn):

@@ -730,13 +730,13 @@ def pack_article_files(doc_files_info, dest_path, href_files_list):
     href_names = []
 
     for curr, new in href_files_list:
-        curr_name, ext = os.path.splitext(curr)
-        new_name, ext = os.path.splitext(new)
+        curr_href, ext = os.path.splitext(curr)
+        new_href, ext = os.path.splitext(new)
 
-        href_names.append(curr_name)
-        found = [f for f in src_files if f.startswith(curr_name + '.') and not f.endswith('.xml')]
+        href_names.append(curr_href)
+        found = [f for f in src_files if f.startswith(curr_href + '.') and not f.endswith('.xml')]
         for f in found:
-            dest_name = f.replace(curr_name, new_name)
+            dest_name = f.replace(curr_href, new_href)
             if os.path.isfile(src_path + '/' + dest_name):
                 r_href_files_list.append((dest_name, dest_name))
                 shutil.copyfile(src_path + '/' + dest_name, dest_path + '/' + dest_name)
