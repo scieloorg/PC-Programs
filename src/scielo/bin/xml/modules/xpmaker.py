@@ -726,7 +726,7 @@ def pack_article_files(doc_files_info, dest_path, href_files_list):
     else:
         os.makedirs(dest_path)
 
-    src_files = os.listdir(src_path)
+    src_files = [f for f in os.listdir(src_path) if not f.endswith('.xml')]
     href_names = []
 
     for curr, new in href_files_list:
@@ -734,7 +734,7 @@ def pack_article_files(doc_files_info, dest_path, href_files_list):
         new_name, ext = os.path.splitext(new)
 
         href_names.append(curr_name)
-        found = [f for f in src_files if f.startswith(curr_name + '.')]
+        found = [f for f in src_files if f.startswith(curr_name + '.') and not f.endswith('.xml')]
         for f in found:
             dest_name = f.replace(curr_name, new_name)
             if os.path.isfile(src_path + '/' + dest_name):

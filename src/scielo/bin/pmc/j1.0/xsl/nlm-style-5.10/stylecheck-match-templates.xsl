@@ -41,16 +41,21 @@
            "Abstract" 
 		  5) If manuscript, do not allow attributes.
         -->
-	<xsl:template match="abstract">
+	 <xsl:template match="abstract">
 		<xsl:call-template name="check-abstract-content"/>
 		<xsl:call-template name="check-abstract-type"/>
 		<xsl:call-template name="empty-element-check"/>
 		<!--<xsl:call-template name="abstract-title-test"/>-->
 		<xsl:call-template name="abstract-sec-test"/>
 		<xsl:call-template name="article-pi-check"/>
-		<xsl:if test="$stream='manuscript'">
+	 <!--=======================================-->  
+	   <!--Removed this test, KP 2015-11-03
+	   Manuscript to follow PMC rules-->
+	<!--=======================================--> 
+		<!--<xsl:if test="$stream='manuscript'">
 			<xsl:call-template name="abstract-attribute-test"/>
-		</xsl:if>
+		</xsl:if>-->
+	<!--=======================================--> 
 		<xsl:apply-templates select="." mode="output"/>
 	</xsl:template>
 
@@ -174,7 +179,9 @@
       <xsl:call-template name="product-to-article-type-check"/>
       <xsl:call-template name="article-type-to-product-check"/>
       <xsl:call-template name="article-type-to-related-article-check"/>
-		<xsl:call-template name="article-release-delay-check"/>
+   	<xsl:call-template name="article-release-delay-check"/>
+   	<xsl:call-template name="collection-content-check"/>
+   	<xsl:call-template name="correction-content-check"/>
 		<xsl:if test="$stream='manuscript'">
 			<xsl:call-template name="manuscript-pi-test"/>
          <xsl:call-template name="ms-floats-group-test"/>
@@ -233,7 +240,8 @@
         3) needs at least on heading subj-group
 		  4) article must have an fpage or elocation-id
 		  5) manuscript may not have most citation info
-		  6) manuscript may not have more than one abstract
+		  6) manuscript may have more than one abstract
+		  (change on 2015-11-03 KP)
      -->
 	<xsl:template match="article-meta">
 		<xsl:call-template name="empty-element-check"/>
@@ -254,7 +262,7 @@
 				</xsl:when>
 				<xsl:when test="$stream='manuscript'">
 					<xsl:call-template name="ms-article-meta-content-test"/>
-					<xsl:call-template name="ms-article-meta-abstract-test"/>
+					<!--<xsl:call-template name="ms-article-meta-abstract-test"/>-->
 					<!--	<xsl:call-template name="ms-article-id-test"/>  -->
 				</xsl:when>
 			</xsl:choose>
@@ -1696,11 +1704,12 @@
          </xsl:call-template>
       </xsl:if>
 
-      <xsl:if test="local-name(.) = 'msup'
+   <!-- BECK - turning off mathml-subsup-fence-check
+	  <xsl:if test="local-name(.) = 'msup'
          or local-name(.) = 'msub'
          or local-name(.) = 'msubsup'">
          <xsl:call-template name="mathml-subsup-fence-check"/>   
-      </xsl:if>
+      </xsl:if>  -->
 
       <xsl:if test="local-name(.) = 'mfrac'
          or local-name(.) = 'mroot'
@@ -2418,12 +2427,13 @@
 			<xsl:call-template name="ms-extended-data-sec-test"/>
       	</xsl:if>
       
-      <xsl:choose>
+     <!-- As of 2015-07-21 we no longer enforce @sec-type values on first level sections.
+	  <xsl:choose>
          <xsl:when test="$stream='book' or $stream='rrn'"/>
          <xsl:otherwise>
             <xsl:call-template name="sec-type-check"/>
          </xsl:otherwise>
-      </xsl:choose>
+      </xsl:choose> -->
               
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
@@ -2617,10 +2627,12 @@
    <!-- *********************************************************** -->
    <!-- Match: string-name
         1) cannot be empty 
+        2) must not have multiple name components
      -->
    <!-- *********************************************************** -->
    <xsl:template match="string-name">
       <xsl:call-template name="empty-element-check"/>
+   	<xsl:call-template name="string-name-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
 		</xsl:template>
    
@@ -3020,9 +3032,15 @@
    <!-- *********************************************************** -->
    <xsl:template match="title-group">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:if test="$stream='manuscript'">
+      <!--======================================================-->
+      <!--Removed this test, overhaul of manuscript
+         stylecheck rules KP 2015-11-03-->
+      <!--Manuscript to follow PMC rules-->
+      <!--======================================================-->
+		<!--<xsl:if test="$stream='manuscript'">
 			<xsl:call-template name="ms-title-group-check"/>
-			</xsl:if>
+			</xsl:if>-->
+      <!--======================================================-->
 		
       <xsl:apply-templates select="." mode="output"/>
 
