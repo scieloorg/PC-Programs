@@ -54,7 +54,8 @@ def update_pkg_files_report(d, k, status, message):
         d[k] = {}
     if not status in d[k].keys():
         d[k][status] = []
-    d[k][status].append(message)
+    if not message in d[k][status]:
+        d[k][status].append(message)
     return d
 
 
