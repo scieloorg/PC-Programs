@@ -84,6 +84,25 @@ def replace_mimetypes(content, path):
     return r
 
 
+def get_graphic_info(text):
+    elem_id = ''
+    elem_name = ''
+    if ' id="' in text:
+        elem_id = text[text.rfind(' id="') + len(' id="'):]
+        elem_id = elem_id[:elem_id.find('"')]
+        text = text[:text.rfind(' id="')]
+    if '<' in text:
+        while text.rfind('<') == text.rfind('</') and '<' in text:
+            text = text[:text.rfind('<')]
+    if '<' in text:
+        elem_name = text[text.rfind('<') + 1:]
+        if '>' in elem_name:
+            elem_name = elem_name[:elem_name.find('>')]
+        if ' ' in elem_name:
+            elem_name = elem_name[:elem_name.find(' ')]
+    return (elem_name, elem_id)
+
+
 class SGMLXML(object):
 
     def __init__(self, sgmxml_filename, sgmlxml_content, xml_name, src_path):
@@ -134,12 +153,14 @@ class SGMLXML(object):
         return xml_content
 
     def fix_graphic_hrefs_and_files(self, html_img_items, html_img_path):
-        print(html_img_items)
         # for each graphic in sgml.xml, replace href="?xmlname" by href="image in src or image in work/html"
         self.content = self.content.replace('<graphic href="?' + self.xml_name, '--FIXHREF--<graphic href="?' + self.xml_name)
         parts = self.content.split('--FIXHREF--')
         new_parts = []
         i = 0
+        counter = 0
+        self.matches = []
+        self.no_match = []
         for part in parts:
             if part.startswith('<graphic href="?' + self.xml_name):
                 graphic = part[0:part.find('>')]
@@ -148,20 +169,29 @@ class SGMLXML(object):
                     # remove <graphic *> e </graphic>, mantendo o restante de item
                     part = part.replace(graphic, '')
                 else:
-                    href = graphic[graphic.find('?')+1:]
+                    href = graphic[graphic.find('?'):]
                     if '"' in href:
                         href = href[:href.find('"')]
                     if '&quot;' in href:
                         href = href[:href.find('&quot;')]
                     # image from src_path
-                    new_href = self.get_image_from_src(parts[i - 1])
+                    elem_name, elem_id = get_graphic_info(parts[i - 1])
+                    if elem_id == '':
+                        counter += 1
+                        elem_id = str(counter)
+                    new_href, valid_href_items = self.get_graphic_href(elem_name, elem_id)
+                    source = 'src'
                     if new_href is None:
                         # image from work/html
                         if os.path.isfile(html_img_path + '/' + html_img_href):
                             new_href = self.xml_name + html_img_href.replace('image', '')
                             shutil.copyfile(html_img_path + '/' + html_img_href, self.src_path + '/' + new_href)
-                    if new_href is not None:
+                            source = 'html'
+                    if new_href is None:
+                        self.no_match.append((elem_name, elem_id, source, ', '.join(valid_href_items)))
+                    else:
                         part = part.replace(graphic, graphic.replace(href, new_href))
+                        self.matches.append((elem_name, elem_id, source, new_href))
             i += 1
             new_parts.append(part)
         self.content = ''.join(new_parts)
@@ -176,24 +206,39 @@ class SGMLXML(object):
             html_img_path = html_images_path(html_filename)
             self.fix_graphic_hrefs_and_files(html_img_files, html_img_path)
 
-    def get_image_from_src(self, text):
-        elem_id = ''
-        href_and_id = None
-        if ' id="' in text:
-            elem_id = text[text.rfind(' id="') + len(' id="'):]
-            elem_id = elem_id[:elem_id.find('"')]
-            href_and_id = self.xml_name + elem_id
-        new_href = None
-        if href_and_id is not None:
-            items = [item for item in os.listdir(self.src_path) if item.startswith(href_and_id + '.') and not item.endswith('.pdf')]
-            hd_img = [item for item in items if item.endswith('.tiff') or item.endswith('.tif')]
-            if len(hd_img) == 0:
-                hd_img = [item for item in items if item.endswith('.eps')]
-            if len(hd_img) == 0:
-                hd_img = items
-            if len(hd_img) > 0:
-                new_href = hd_img[0]
-        return new_href
+    def get_graphic_href(self, elem_name, elem_id):
+        i = 0
+        while not elem_id[i].isdigit():
+            i += 1
+        n = str(int(elem_id[i:]))
+
+        prefixes = [elem_name[0], elem_name[0:3]]
+        if elem_name == 'equation':
+            prefixes.append('frm')
+            prefixes.append('form')
+            prefixes.append('eq')
+        elif not elem_name in ['tabwrap', 'equation', 'figgrp']:
+            prefixes.append('img')
+            prefixes.append('image')
+
+        files = [self.xml_name]
+        if 'v' in self.xml_name and self.xml_name.startswith('a'):
+            files.append(self.xml_name[:self.xml_name.find('v')])
+        found = []
+        valid_href_items = []
+        for name in files:
+            for elem_name in prefixes:
+                for elem_id in [n, '0' + n]:
+                    for ext in ['.tiff', '.tif', '.eps', '.jpg']:
+                        href = name + elem_name + elem_id + ext
+                        valid_href_items.append(href)
+                        if os.path.isfile(self.src_path + '/' + href):
+                            found.append(href)
+        if len(found) > 0:
+            new_href = found[0]
+        else:
+            new_href = None
+        return (new_href, valid_href_items)
 
 
 def rename_embedded_img_href(content, xml_name, new_href_list):
@@ -637,7 +682,7 @@ def generate_curr_and_new_href_list(xml_name, new_name, href_list):
             attach_name = attach_id
             if '.' in href:
                 attach_name += href[href.rfind('.'):]
-        new = new_name + '-' + attach_type + attach_name
+        new = new_name + '-' + attach_type + attach_name.replace('image', '').replace('img', '')
         r.append((href, new))
     return list(set(r))
 
@@ -903,7 +948,7 @@ def xml_status(content, label):
 
 def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
-
+    sgml_graphic_href_info = None
     #xml_status(content, 'original')
     content = xml_utils.complete_entity(content)
     register_log('convert_entities_to_chars')
@@ -918,6 +963,8 @@ def normalize_xml_content(doc_files_info, content, version):
         # old content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
         sgmlxml = SGMLXML(doc_files_info.xml_filename, content, doc_files_info.xml_name, doc_files_info.xml_path)
         content = sgmlxml.generate_xml(version, doc_files_info.html_filename)
+        sgml_graphic_href_info = (sgmlxml.matches, sgmlxml.no_match)
+
         #xml_status(content, 'sgml normalized')
 
     xml, e = xml_utils.load_xml(content)
@@ -943,7 +990,7 @@ def normalize_xml_content(doc_files_info, content, version):
         content = remove_styles_off_content(content)
         content = xml_utils.pretty_print(content)
 
-    return (content, replaced_entities_report)
+    return (content, replaced_entities_report, sgml_graphic_href_info)
 
 
 def remove_xmllang_off(content, element_name):
@@ -1055,7 +1102,7 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     packed_files_report = ''
     content = fs_utils.read_file(doc_files_info.xml_filename)
 
-    content, replaced_entities_report = normalize_xml_content(doc_files_info, content, version)
+    content, replaced_entities_report, sgml_graphic_href_info = normalize_xml_content(doc_files_info, content, version)
 
     doc_files_info.new_xml_path = scielo_pkg_path
     doc, doc_files_info, curr_and_new_href_list, content = normalize_package_name(doc_files_info, acron, content)
@@ -1067,6 +1114,15 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
         related_packed, href_packed, not_found = pack_article_files(doc_files_info, scielo_pkg_path, curr_and_new_href_list)
 
         packed_files_report = generate_packed_files_report(doc_files_info, scielo_pkg_path, related_packed, href_packed, curr_and_new_href_list, not_found)
+
+        if sgml_graphic_href_info is not None:
+            matches, no_match = sgml_graphic_href_info
+            if len(no_match) > 0:
+                table_header = [_('element'), _('id'), _('source'), _('expected values for @href')]
+                packed_files_report += '\n' * 2 + _('doc//graphic/@href files were not found') + '\n' + utils.RSTTable(table_header, no_match).rst_table
+            if len(matches) > 0:
+                table_header = [_('element'), _('id'), _('source'), _('@href')]
+                packed_files_report += '\n' * 2 + _('doc//graphic/@href files were found') + '\n' + utils.RSTTable(table_header, matches).rst_table
 
     pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc.tree is None))
 

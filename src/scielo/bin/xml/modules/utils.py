@@ -130,3 +130,39 @@ def hightlight_equal(sentence1, sentence2):
 def repl(matchobj):
     return matchobj.group(0).replace(matchobj.group(1), u'')
 
+
+class RSTTable(object):
+
+    def __init__(self, table_header, table_data):
+        self.table_data = table_data
+        self.table_header = table_header
+
+    @property
+    def columns_width(self):
+        col_width = [len(h) for h in self.table_header]
+        for row in self.table_data:
+            for i, col in zip(range(len(row)), row):
+                if len(col) > col_width[i]:
+                    col_width[i] = len(col)
+        return col_width
+
+    @property
+    def rst_table(self):
+        separator = '+'
+        for w in self.columns_width:
+            separator += '-' * (w + 2) + '+'
+        t = []
+        t.append(separator)
+        r = '|'
+        for i, c in zip(range(len(self.table_header)), self.table_header):
+            r += ' ' + c + ' ' * (self.columns_width[i] + 2 - len(c) - 1) + '|'
+        t.append(r)
+        t.append(separator)
+
+        for row in self.table_data:
+            r = '|'
+            for i, c in zip(range(len(row)), row):
+                r += ' ' + c + ' ' * (self.columns_width[i] + 2 - len(c) - 1) + '|'
+            t.append(r)
+            t.append(separator)
+        return '\n'.join(t)

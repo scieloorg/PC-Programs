@@ -335,9 +335,9 @@ h5 {
 }
 
 td img {
-  max-width: 200px;
-  max-height: 200px;
-  
+  max-width: 40%;
+  min-height: 16px;
+  max-height: 300px;
 }
 
 .delete {
