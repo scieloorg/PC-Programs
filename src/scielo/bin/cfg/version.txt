@@ -1,4 +1,4 @@
-﻿4.0.091 - 05/04/2016
+﻿4.0.091 - 07/04/2016
 ====================
 - Title Manager
   - (new) Include new status to journal history
@@ -22,6 +22,7 @@
   - (bug) Fix generation of uri in tables
   - (bug) Fix automatic DOI identification (Spain uses ##.#####, instead of ##.####)
   - (bug) Fix identification of image filename when the image source is a Web address
+  - (bug) Fix generation of image files from Markup: use images from src folder instead of embedded images in Word
 - Markup (article and text DTD)
   - (bug) Accept a01 instead of aff1 for article and text DTD
   - (bug) author has different attributes
