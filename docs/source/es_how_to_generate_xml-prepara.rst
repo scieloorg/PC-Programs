@@ -95,7 +95,7 @@ Para optimizar el proceso de marcaje de los elementos básicos do archivo, es ne
 
 **Instrucción para formateo de datos básicos del artículo:**
 
- * Línea 1: inserir número de DOI (solamente si presente), caso no exista dejar línea en blanco;
+ * Línea 1: inserir número de DOI (solamente si presente), caso no exista empezar por la sección;
  * Línea 2: inserir la sección de la tabla de contenido (si ausente, dejar línea en blanco);
  * Línea 3: Título del artículo;
  * Líneas siguientes: Títulos traducidos del archivo;
