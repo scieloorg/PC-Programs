@@ -30,6 +30,7 @@ def validate_element_is_found_in_mixed_citation(element_name, element_content, m
             element_content = [element_content]
         for item in element_content:
             _element_content = xml_utils.remove_tags(item)
+
             if not _element_content in _mixed:
                 comp = utils.hightlight_equal(_element_content, _mixed)
                 r.append(
@@ -1534,7 +1535,7 @@ class ReferenceContentValidation(object):
     @property
     def ext_link(self):
         r = []
-        if self.reference.ext_link is not None and self.reference.mixed_citation is not None:
+        if len(self.reference.ext_link) > 0 and self.reference.mixed_citation is not None:
             if not '<ext-link' in self.reference.mixed_citation:
                 r.append(('ext-link', validation_status.STATUS_WARNING, _('Identify the links in mixed-citation with the ext-link element.')))
         return r

@@ -215,7 +215,7 @@ def break_words(value, width=40):
 
 def display_xml(value, width=40):
     if '<' in value or '>' in value:
-        value = xml_utils.pretty_print(value)
+        value = xml_utils.format_text_as_xml(value)
     #value = break_words(value, width)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')

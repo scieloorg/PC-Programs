@@ -950,6 +950,7 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
     sgml_graphic_href_info = None
     #xml_status(content, 'original')
+
     content = xml_utils.complete_entity(content)
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
@@ -980,15 +981,13 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('publication-type="web"', 'publication-type="webpage"')
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
-        content = content.replace('<institution content-type="normalized"/>', '')
-        content = content.replace('<institution content-type="normalized"></institution>', '')
-        content = xml_utils.normalize_spaces(content)
-        content = content.replace('> :', '>:')
-        content = content.replace('<institution content-type="normalized"/>', '')
-        content = content.replace('<institution content-type="normalized"></institution>', '')
+        content = xml_utils.remove_exceeding_spaces_in_all_tags(content)
+        content = content.replace('> :', '>: ')
         content = normalize_references(content)
         content = remove_styles_off_content(content)
         content = xml_utils.pretty_print(content)
+        content = content.replace('<institution content-type="normalized"/>', '')
+        content = content.replace('<institution content-type="normalized"></institution>', '')
 
     return (content, replaced_entities_report, sgml_graphic_href_info)
 
