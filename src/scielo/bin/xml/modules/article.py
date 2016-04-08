@@ -1782,7 +1782,11 @@ class ReferenceXML(object):
     @property
     def ext_link(self):
         if self.element_citation is not None:
-            return self.element_citation.findtext('.//ext-link')
+            items = []
+            for item in self.element_citation.findall('.//ext-link'):
+                if item is not None:
+                    items.append(xml_utils.node_text(item).strip())
+            return items
 
     @property
     def _comments(self):

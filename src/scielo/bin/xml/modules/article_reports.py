@@ -208,32 +208,38 @@ class ArticleDisplayReport(object):
 
     @property
     def tables(self):
-        r = html_reports.tag('p', 'Tables:', 'label')
-        for t in self.article.tables:
-            header = html_reports.tag('h3', t.id)
-            table_data = ''
-            table_data += html_reports.display_labeled_value('label', t.label, 'label')
-            table_data += html_reports.display_labeled_value('caption',  t.caption, 'label')
-            table_data += html_reports.tag('p', 'table-wrap/table (xml)', 'label')
-            table_data += html_reports.tag('div', html_reports.format_html_data(t.table), 'xml')
-            if t.table:
-                table_data += html_reports.tag('p', 'table-wrap/table', 'label')
-                table_data += html_reports.tag('div', t.table, 'element-table')
-            if t.graphic:
-                #table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
-                table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.image('file:///' + self.xml_path), 'value')
-            r += header + html_reports.tag('div', table_data, 'block')
+        r = '<!-- no tables -->'
+        if len(self.article.tables) > 0:
+            r = html_reports.tag('p', 'Tables:', 'label')
+
+            for t in self.article.tables:
+                print(t)
+                header = html_reports.tag('h3', t.id)
+                table_data = ''
+                table_data += html_reports.display_labeled_value('label', t.label, 'label')
+                table_data += html_reports.display_labeled_value('caption',  t.caption, 'label')
+                table_data += html_reports.tag('p', 'table-wrap/table (xml)', 'label')
+                table_data += html_reports.tag('div', html_reports.format_html_data(t.table), 'xml')
+                if t.table:
+                    table_data += html_reports.tag('p', 'table-wrap/table', 'label')
+                    table_data += html_reports.tag('div', t.table, 'element-table')
+                if t.graphic:
+                    #table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
+                    table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.image('file:///' + self.xml_path), 'value')
+                r += header + html_reports.tag('div', table_data, 'block')
         return r
 
     @property
     def table_tables(self):
-        r = html_reports.tag('p', 'Tables:', 'label')
-        for t in self.article.tables:
-            if t.table:
-                table_data = ''
-                table_data += html_reports.display_labeled_value('label', t.label, 'label')
-                table_data += html_reports.tag('div', t.table, 'element-table')
-                r += html_reports.tag('div', table_data, 'block')
+        r = '<!-- no tables -->'
+        if len(self.article.tables) > 0:
+            r = html_reports.tag('p', 'Tables:', 'label')
+            for t in self.article.tables:
+                if t.table:
+                    table_data = ''
+                    table_data += html_reports.display_labeled_value('label', t.label, 'label')
+                    table_data += html_reports.tag('div', t.table, 'element-table')
+                    r += html_reports.tag('div', table_data, 'block')
         return r
 
     @property
