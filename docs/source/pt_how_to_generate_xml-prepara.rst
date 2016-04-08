@@ -130,5 +130,8 @@ Exemplo:
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="854" height="480" src="https://www.youtube.com/embed/kaYRu-bkhBE?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 .. note:: As imagens dos artigos devem estar disponíveis no arquivo .doc, preferencialmente em formato .jpeg e .png.
