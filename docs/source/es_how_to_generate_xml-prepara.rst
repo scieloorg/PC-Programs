@@ -127,5 +127,8 @@ Ejemplo:
    :align: center
 
 
+.. raw:: html
+
+   <iframe width="854" height="480" src="https://www.youtube.com/embed/kaYRu-bkhBE?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 .. note:: Las imágenes de los artículos deben estar disponibles en el archivo .doc, preferencialmente en formato .jpeg y .png.
