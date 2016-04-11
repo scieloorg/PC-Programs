@@ -62,7 +62,6 @@ code {
     font-size: 7pt;
     font-family: Courier;
     word-wrap:break-word;
-    width: 10%;
 }
 h1 {
     text-align: center;
@@ -87,7 +86,7 @@ h5 {
     font-size: 7pt;
     font-family: Courier;
     word-wrap:break-word;
-    width: 15%;
+    width: 20%;
 }
 .validation {
    border: 1px dotted #8B85AB;
@@ -103,7 +102,7 @@ h5 {
    font-size: 10pt;
    color: black;
    vertical-align: top;
-   width:30%; 
+   width:20%; 
    word-wrap:break-word;
 } 
 .td_status {
@@ -131,7 +130,7 @@ h5 {
    color: black;
    vertical-align: top;
    word-wrap:break-word;
-   width:10%;  
+   width:20%;  
 } 
 .fatalerror .td_label {
    border: 1px solid gray;

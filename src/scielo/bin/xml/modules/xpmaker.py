@@ -971,8 +971,6 @@ def normalize_xml_content(doc_files_info, content, version):
     xml, e = xml_utils.load_xml(content)
     if xml is not None:
         #content = remove_xmllang_off_article_title(content)
-        content = remove_xmllang_off(content, 'article-title')
-        content = remove_xmllang_off(content, 'source')
         content = content.replace('&amp;amp;', '&amp;')
         content = content.replace('&amp;#', '&#')
         content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
@@ -981,11 +979,12 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('publication-type="web"', 'publication-type="webpage"')
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
-        content = xml_utils.remove_exceeding_spaces_in_all_tags(content)
+        content = xml_utils.pretty_print(content)
+        content = remove_xmllang_off(content, 'article-title')
+        content = remove_xmllang_off(content, 'source')
         content = content.replace('> :', '>: ')
         content = normalize_references(content)
         content = remove_styles_off_content(content)
-        content = xml_utils.pretty_print(content)
         content = content.replace('<institution content-type="normalized"/>', '')
         content = content.replace('<institution content-type="normalized"></institution>', '')
 
@@ -1056,7 +1055,7 @@ def get_curr_and_new_href_list(doc_files_info, doc):
 
 def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
     register_log('pack_xml_file')
-    #content = xml_utils.replace_doctype(content, xml_versions.DTDFiles('scielo', version).doctype)
+    content = content.replace(xml_versions.DTDFiles('scielo', version).local, xml_versions.DTDFiles('scielo', version).remote)
     fs_utils.write_file(new_xml_filename, content)
 
     if do_incorrect_copy:

@@ -1375,6 +1375,16 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=c:\src\scielo\bin\xml\locale\es_ES\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\bin\xml\locale\es_ES\LC_MESSAGES\xpm-xc.po
+  Flags=0000000010000010
+end
+item: Install File
+  Source=c:\src\scielo\bin\xml\locale\es_ES\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\bin\xml\locale\es_ES\LC_MESSAGES\xpm-xc.mo
+  Flags=0000000010000010
+end
+item: Install File
   Source=c:\src\scielo\bin\xml\locale\es\LC_MESSAGES\xpm-xc.po
   Destination=%PROGDIR%\bin\xml\locale\es\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
@@ -1720,28 +1730,28 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.8\nlm-stylechecker.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.8\nlm-stylechecker.xsl
+  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\nlm-stylechecker.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\nlm-stylechecker.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.8\stylecheck-named-tests.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.8\stylecheck-named-tests.xsl
+  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-named-tests.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-named-tests.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.8\stylecheck-match-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.8\stylecheck-match-templates.xsl
+  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-match-templates.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-match-templates.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.8\stylecheck-helper-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.8\stylecheck-helper-templates.xsl
+  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-helper-templates.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-helper-templates.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.8\style-reporter.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.8\style-reporter.xsl
+  Source=c:\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\style-reporter.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\style-reporter.xsl
   Flags=0000000010000010
 end
 item: Install File

@@ -17,6 +17,8 @@ DOCTYPE = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishin
 XPM_FILES = {}
 XPM_FILES['scielo3.0'] = {}
 XPM_FILES['scielo3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_LOCAL_PATH}journalpublishing3.dtd">'
+XPM_FILES['scielo3.0']['local'] = 'journalpublishing3.dtd'
+XPM_FILES['scielo3.0']['remote'] = 'http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd'
 XPM_FILES['scielo3.0']['dtd_path'] = PMC_PATH + '/v3.0/dtd/'
 XPM_FILES['scielo3.0']['css'] = PMC_PATH + '/v3.0/xsl/web/plus'
 XPM_FILES['scielo3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/scielo-style/stylechecker.xsl'
@@ -26,6 +28,8 @@ XPM_FILES['scielo3.0']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/xml2pmc.xs
 
 XPM_FILES['pmc3.0'] = {}
 XPM_FILES['pmc3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_LOCAL_PATH}journalpublishing3.dtd">'
+XPM_FILES['pmc3.0']['local'] = 'journalpublishing3.dtd'
+XPM_FILES['pmc3.0']['remote'] = 'http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd'
 XPM_FILES['pmc3.0']['dtd_path'] = PMC_PATH + '/v3.0/dtd'
 XPM_FILES['pmc3.0']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
 XPM_FILES['pmc3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
@@ -35,6 +39,8 @@ XPM_FILES['pmc3.0']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
 
 XPM_FILES['scielo1.0'] = {}
 XPM_FILES['scielo1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_LOCAL_PATH}JATS-journalpublishing1.dtd">'
+XPM_FILES['scielo1.0']['local'] = 'JATS-journalpublishing1.dtd'
+XPM_FILES['scielo1.0']['remote'] = 'http://jats.nlm.nih.gov/publishing/1.0/JATS-journalpublishing1.dtd'
 XPM_FILES['scielo1.0']['dtd_path'] = PMC_PATH + '/j1.0/dtd/jats1.0'
 XPM_FILES['scielo1.0']['css'] = XPM_FILES['scielo3.0']['css']
 XPM_FILES['scielo1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
@@ -44,6 +50,8 @@ XPM_FILES['scielo1.0']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/xml2pmc.xs
 
 XPM_FILES['pmc1.0'] = {}
 XPM_FILES['pmc1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_LOCAL_PATH}JATS-journalpublishing1.dtd">'
+XPM_FILES['pmc1.0']['local'] = 'JATS-journalpublishing1.dtd'
+XPM_FILES['pmc1.0']['remote'] = 'http://jats.nlm.nih.gov/publishing/1.0/JATS-journalpublishing1.dtd'
 XPM_FILES['pmc1.0']['dtd_path'] = PMC_PATH + '/j1.0/dtd/jats1.0'
 XPM_FILES['pmc1.0']['css'] = XPM_FILES['pmc3.0']['css']
 XPM_FILES['pmc1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.10/nlm-stylechecker.xsl'
@@ -87,3 +95,10 @@ class DTDFiles(object):
     def xsl_output(self):
         return self.data['xsl_output']
 
+    @property
+    def local(self):
+        return self.data['local']
+
+    @property
+    def remote(self):
+        return self.data['remote']
