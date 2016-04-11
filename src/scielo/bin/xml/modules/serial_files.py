@@ -198,8 +198,7 @@ class IssueFiles(object):
     def copy_files_to_local_web_app(self):
         msg = ['\n']
         msg.append('copying files from ' + self.xml_path)
-        print('copy_files_to_local_web_app')
-        print(self.xml_path)
+
         path = {}
         path['pdf'] = self.web_path + '/bases/pdf/' + self.relative_issue_path
         path['xml'] = self.web_path + '/bases/xml/' + self.relative_issue_path

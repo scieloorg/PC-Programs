@@ -1053,13 +1053,21 @@ def get_curr_and_new_href_list(doc_files_info, doc):
     return add_extension(curr_and_new_href_list, doc_files_info.xml_path)
 
 
-def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
+def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False, is_db_generation=False):
     register_log('pack_xml_file')
-    content = content.replace(xml_versions.DTDFiles('scielo', version).local, xml_versions.DTDFiles('scielo', version).remote)
+    if is_db_generation:
+        #local
+        content = content.replace('"' + xml_versions.DTDFiles('scielo', version).remote + '"', '"' + xml_versions.DTDFiles('scielo', version).local + '"')
+    else:
+        #remote
+        content = content.replace('"' + xml_versions.DTDFiles('scielo', version).local + '"', '"' + xml_versions.DTDFiles('scielo', version).remote + '"')
+
     fs_utils.write_file(new_xml_filename, content)
 
     if do_incorrect_copy:
         shutil.copyfile(new_xml_filename, new_xml_filename.replace('.xml', '_incorrect.xml'))
+    elif os.path.isfile(new_xml_filename.replace('.xml', '_incorrect.xml')):
+        os.unlink(new_xml_filename.replace('.xml', '_incorrect.xml'))
 
 
 def normalize_package_name(doc_files_info, acron, content):
@@ -1096,7 +1104,7 @@ def apply_normalized_package_name(doc, doc_files_info, content):
     return (curr_and_new_href_list, content)
 
 
-def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
+def make_article_package(doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
     packed_files_report = ''
     content = fs_utils.read_file(doc_files_info.xml_filename)
 
@@ -1122,7 +1130,7 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
                 table_header = [_('element'), _('id'), _('source'), _('@href')]
                 packed_files_report += '\n' * 2 + _('doc//graphic/@href files were found') + '\n' + utils.RSTTable(table_header, matches).rst_table
 
-    pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc.tree is None))
+    pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc.tree is None), is_db_generation)
 
     fs_utils.write_file(doc_files_info.err_filename, replaced_entities_report + packed_files_report)
 
@@ -1173,7 +1181,7 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     return r
 
 
-def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron):
+def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
 
     if len(xml_files) > 0:
         path = os.path.dirname(xml_files[0])
@@ -1197,7 +1205,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         item_label = str(index) + n + ': ' + doc_files_info.xml_name
         utils.display_message(item_label)
 
-        doc, doc_files_info = make_article_package(doc_files_info, scielo_pkg_path, version, acron)
+        doc, doc_files_info = make_article_package(doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
 
         doc_items[doc_files_info.xml_name] = doc
         doc_files_info_items[doc_files_info.xml_name] = doc_files_info
@@ -1299,7 +1307,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     if len(xml_files) == 0:
         utils.display_message(_('No files to process'))
     else:
-        articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
+        articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
 
         pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path)
 
@@ -1431,11 +1439,11 @@ def get_pkg_items(xml_filenames, report_path):
     return r
 
 
-def make_packages(path, acron, version='1.0'):
+def make_packages(path, acron, version='1.0', is_db_generation=False):
     path = fs_utils.fix_path(path)
     xml_files, results_path = get_xml_package_folders_info(path)
     if len(xml_files) > 0:
-        pack_and_validate(xml_files, results_path, acron, version)
+        pack_and_validate(xml_files, results_path, acron, version, is_db_generation)
     utils.display_message('finished')
 
 
