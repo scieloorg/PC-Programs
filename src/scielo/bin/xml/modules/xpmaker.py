@@ -110,6 +110,8 @@ class SGMLXML(object):
         self.xml_name = xml_name
         self.src_path = src_path
         self.sgmxml_filename = sgmxml_filename
+        self.matches = []
+        self.no_match = []
 
     def generate_xml(self, version, html_filename):
         #content = fix_uppercase_tag(content)
@@ -159,8 +161,6 @@ class SGMLXML(object):
         new_parts = []
         i = 0
         counter = 0
-        self.matches = []
-        self.no_match = []
         for part in parts:
             if part.startswith('<graphic href="?' + self.xml_name):
                 graphic = part[0:part.find('>')]
