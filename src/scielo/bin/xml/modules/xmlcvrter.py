@@ -158,7 +158,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
     xml_filenames = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
-    articles, doc_file_info_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron')
+    articles, doc_file_info_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron', is_db_generation=True)
     return (articles, doc_file_info_items)
 
 

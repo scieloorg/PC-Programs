@@ -1,4 +1,9 @@
-﻿4.0.091 - 11/04/2016
+﻿4.0.091 - 12/04/2016
+====================
+- Markup/XML
+  - (bug) Fix error in generation of XML of documents without graphics
+
+4.0.091 - 11/04/2016
 ====================
 - Title Manager
   - (new) Include new status to journal history
