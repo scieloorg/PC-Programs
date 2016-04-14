@@ -4,6 +4,21 @@
  contain the root `toctree` directive.
 
 
+=============
+How to update
+=============
+
+**Only if** you are **updating the local server**, some issues must be considerated before updating.
+
+.. code_and_title_error:
+
+Before updating the programs for the local server
+-------------------------------------------------
+
+1. Be sure **where** the programs (**bin folder**) are installed. E.g.: c:\\scielo.
+2. Be sure **where** the data (**serial folder**) are stored. E.g.: c:\\scielo.
+3. Only some files in **code folder** will be updated. Be sure you have  **your code folder** in **serial** before updating. DO NOT copy **serial** contents after updating. But in case you have done it, reinstall the programs again.
+
 
 How to install
 ==============

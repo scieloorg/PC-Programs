@@ -8,6 +8,16 @@ Title Manager
 Desktop Application (Visual Basic), used in the `Local server <concepts.html#local-server>`_, to manage the databases: title, issue and section, it means, respectively the data of journals, their issues and sections of the table of contents.
 
 
+Prevent installation errors
+---------------------------
+
+:ref:`Read "Before updating the programs for the local server" <code_and_title_error>`
+
+.. warning::
+
+   If Title Manager does not open properly, reinstall the programs.
+
+
 Opening the program
 -------------------
 
