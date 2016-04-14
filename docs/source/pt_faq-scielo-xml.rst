@@ -97,7 +97,7 @@ Ainda não temos mecanismos eficaz para produzir arquivos XML com a estrutura re
 
 O SciELO desenvolveu algumas ferramentas para validação do XML segundo SciELO Publishing Schema. Caso o editor não possua nenhuma ferramenta para a geração de XML, poderá usar os programas de marcação e produção do XML, bem como, ferramentas de validação utilizadas no processo de produção e publicação segundo SciELO PS (ver item :ref:`ferramentas-scielo`). 
 O programa de Marcação, desenvolvido por SciELO, funciona apenas em Windows, ou seja, não há a possibilidade de utilizar o programa com diferentes sistemas operacionais como Linux, por exemplo. 
-Ele é um pug-in do word, o qual encontra-se disponível em:
+Ele é um suplemento do Word, o qual encontra-se disponível em:
 
 <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/download.html>
 
@@ -138,7 +138,7 @@ StyleChecker: é uma ferramenta web que fornece relatório detalhado sobre a con
 
 .. _exemplos-xml:
 
-11 . SciELO disponibiliza modelos de arquivos XML compatívies com as especificações de SciELO PS?
+11 . SciELO disponibiliza modelos de arquivos XML compatíveis com as especificações de SciELO PS?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sim. Para receber modelos de arquivos em XML é necessário enviar e-mail para scielo@scielo.org solicitando o envio desses documentos.
@@ -152,7 +152,7 @@ Produção de XML por terceiros
 .. _prestadores:
 
 12. Existem empresas que prestam serviços de produção de XML conforme o padrão requisitado por SciELO? Como posso localizar essas empresas?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sim. Existem algumas empresas parceiras que são certificadas pelo SciELO e que prestam serviços de produção de arquivos XML segundo o SciELO Publishing Schema. Disponibilizamos o contato dessas empresas em:
 <http://www.scielo.org/php/level.php?lang=pt&component=56&item=58>

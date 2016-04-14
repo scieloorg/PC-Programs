@@ -6,12 +6,6 @@
 Download
 ========
 
-Download by FTP
-
-- server: ftp.scielo.br
-- user: produtos-scielo
-- password: produtos@scielo
-
 
 Open your Web browser and write the address:
 
@@ -22,12 +16,16 @@ ftp://ftp.scielo.br
 
 Inform the username and password
 
+  - user: produtos-scielo
+  - password: produtos@scielo
+
+
   .. image:: img/howtoinstall_download2.png
 
 
-Select the folder of the corresponding installer.
+Select the folder according to the programs you want to install.
 
-  * article_text_markup: Markup for HTML files (article and text DTD)
+  * article_text_markup: Markup for SGML/HTML files (article and text DTD)
   * xml_markup: Markup to generate SciELO XML (doc DTD)
   * xpm: XML Package Maker
 
@@ -35,15 +33,7 @@ Select the folder of the corresponding installer.
   .. image:: img/howtoinstall_download3.png
 
 
-Select **article_text_markup** to download the installer to work with Markup on HTML files, using article and text DTD.
+Select the installer file according to the version you want to install.
 
 
-Select **xml_markup** to download the installer to work with Markup to generate XML. Note: this installer includes XPM (XML Package Maker).
-
-
-Select **xpm** to download the installer only for XPM (XML Package Maker).
-
-
-There will be the available versions of the programs.
-
-The installers which name has **-trial** can be changed any time. 
+.. note:: The installers which name has **-trial** can be updated any time. 

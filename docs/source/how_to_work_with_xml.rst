@@ -1,4 +1,5 @@
 
+=========================
 Workflow of the XML Files
 =========================
 
@@ -10,4 +11,4 @@ Workflow of the XML Files
     
     how_to_validate_xml_package.rst
     
-    faq-scielo-xml.rst
+    pt_faq-scielo-xml.rst

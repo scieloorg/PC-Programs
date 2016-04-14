@@ -4,28 +4,22 @@
  contain the root `toctree` directive.
 
 
-Requirements
-============
-
-- JAVA
-- PYTHON 2.7.x
-- Pillow (http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.exe)
-
-Add the `Java and Python paths to PATH (environment variable) <howtoinstall_path.html>`_
-
-
 
 How to install
 ==============
 
-1. Download the `installer <download.html>`_
-2. Check the `Requirements`_
-3. Run the installer
+1. Check if you have installed the :ref:`Requirements`. 
+2. `Test the requirements are correctly installed <howtoinstall_path.html#test_requirements>`_
+3. Download the `installer <download.html>`_
+4. Run the installer
+
+
+
 4. Follow the instructions given in each screen
 
 .. attention:: Use a drive in which the user can have full permissions. 
 
-.. warning:: DO NOT use names with spaces or with diacrits
+.. warning:: DO NOT use names with spaces or diacrits
 
 
 5. Complete the data of the installation
@@ -45,7 +39,7 @@ How to install
 
   - Markup: program to identify the bibliographic elements in the articles/texts
   - Markup - Automata files (optional): examples of files for automatic markup
-  - XML Converter: program to load XML files into the database
+
 
 7. For local server installation, set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
 
