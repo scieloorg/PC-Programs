@@ -56,6 +56,7 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
 
     tmp_dir = tempfile.mkdtemp()
     temp_result_filename = tmp_dir + '/' + os.path.basename(result_filename)
+    temp_xml_filename = create_temp_xml_filename(xml_filename)
 
     if not os.path.isdir(os.path.dirname(result_filename)):
         os.makedirs(os.path.dirname(result_filename))
@@ -63,7 +64,7 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
         if os.path.isfile(f):
             os.unlink(f)
 
-    cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+    cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + temp_xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     cmd = cmd.encode(encoding=sys.getfilesystemencoding())
     os.system(cmd)
 
@@ -127,3 +128,18 @@ def xml_validate(xml_filename, result_filename, doctype=None):
             pass
     register_log('xml_validate: fim')
     return not validation_status.STATUS_ERROR in result.upper()
+
+
+def create_temp_xml_filename(xml_filename):
+    temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
+    fs_utils.write_file(temp_filename, remove_doctype(xml_filename))
+    return temp_filename
+
+
+def remove_doctype(xml_filename):
+    content = fs_utils.read_file(xml_filename)
+    if '<!DOCTYPE ' in content:
+        doctype = content[content.find('<!DOCTYPE'):]
+        doctype = doctype[:doctype.find('>')+1]
+        content = content.replace(doctype, '')
+    return content

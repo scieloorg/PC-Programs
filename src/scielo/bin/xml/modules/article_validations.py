@@ -25,11 +25,12 @@ MAX_IMG_HEIGHT = 2625
 def validate_element_is_found_in_mixed_citation(element_name, element_content, mixed_citation):
     r = []
     if element_content is not None:
-        _mixed = xml_utils.remove_tags(mixed_citation)
+        _mixed = xml_utils.remove_tags(mixed_citation).replace('  ', ' ')
         if not isinstance(element_content, list):
             element_content = [element_content]
+
         for item in element_content:
-            _element_content = xml_utils.remove_tags(item)
+            _element_content = xml_utils.remove_tags(item).replace('  ', ' ')
 
             if not _element_content in _mixed:
                 comp = utils.hightlight_equal(_element_content, _mixed)
