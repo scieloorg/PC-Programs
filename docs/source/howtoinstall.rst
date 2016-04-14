@@ -3,21 +3,24 @@
  You can adapt this file completely to your liking, but it should at least
  contain the root `toctree` directive.
 
+.. how_to_update:
 
 =============
 How to update
 =============
 
-**Only if** you are **updating the local server**, some issues must be considerated before updating.
+Before updating
+---------------
+1. Be sure **where** the programs (**bin folder**) are installed. E.g.: c:\\scielo.
+2. Be sure **where** the data (**serial folder**) are stored. E.g.: c:\\scielo.
 
 .. code_and_title_error:
 
-Before updating the programs for the local server
--------------------------------------------------
+Before updating the programs on the local server
+------------------------------------------------
 
-1. Be sure **where** the programs (**bin folder**) are installed. E.g.: c:\\scielo.
-2. Be sure **where** the data (**serial folder**) are stored. E.g.: c:\\scielo.
-3. Only some files in **code folder** will be updated. Be sure you have  **your code folder** in **serial** before updating. DO NOT copy **serial** contents after updating. But in case you have done it, reinstall the programs again.
+Only some files in **code folder** will be updated. Be sure you have  **your code folder** in **serial** before updating. DO NOT copy **serial** contents after updating. But in case you have done it, reinstall the programs again.
+
 
 
 How to install
@@ -27,10 +30,7 @@ How to install
 2. `Test the requirements are correctly installed <howtoinstall_path.html#test_requirements>`_
 3. Download the `installer <download.html>`_
 4. Run the installer
-
-
-
-4. Follow the instructions given in each screen
+5. Follow the instructions given in each screen
 
 .. attention:: Use a drive in which the user can have full permissions. 
 
