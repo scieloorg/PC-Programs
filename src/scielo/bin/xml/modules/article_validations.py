@@ -66,7 +66,8 @@ def evaluate_tiff(img_filename, min_height=None, max_height=None):
     if tiff_im is not None:
         errors = []
         info = []
-        info.append('{dpi} dpi'.format(dpi=tiff_im.info.get('dpi')[0]))
+        _dpi = _('unknown') if tiff_im.info is None else tiff_im.info.get('dpi')[0]
+        info.append('{dpi} dpi'.format(dpi=_dpi))
         info.append(_('height: {height} pixels').format(height=tiff_im.size[1]))
         info.append(_('width: {width} pixels').format(width=tiff_im.size[0]))
 
