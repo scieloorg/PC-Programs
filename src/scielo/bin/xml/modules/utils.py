@@ -86,7 +86,10 @@ def is_tiff(img_filename):
 def tiff_image(img_filename):
     if is_tiff(img_filename):
         if os.path.isfile(img_filename):
-            return Image.open(img_filename)
+            try:
+                return Image.open(img_filename)
+            except:
+                return None
 
 
 def valid_formula_min_max_height(values, percent=0.25):
