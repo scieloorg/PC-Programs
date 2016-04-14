@@ -1,4 +1,7 @@
 
+
+.. how_to_use_the_programs:
+
 How to use the programs
 =======================
 

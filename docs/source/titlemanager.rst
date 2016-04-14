@@ -26,6 +26,5 @@ Use the Windows menu to open the program.
    titlemanager_issue.rst
 
 
-
    issue_and_section_databases.rst
 
