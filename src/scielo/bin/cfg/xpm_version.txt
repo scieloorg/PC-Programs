@@ -1,5 +1,12 @@
 ﻿4.0.091 - 11/04/2016
 ====================
+15/04/2016
+----------
+- XPM
+  - (bug) Fix problems with XML files located in a path which has diacritics.
+
+4.0.091 - 11/04/2016
+====================
 - XPM
   - (bug) Fix message of missing image which href value has no extension
   - (bug) Fix issues related to PDF as supplementary-material if it is in translation
