@@ -14,6 +14,11 @@ THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 JAVA_PATH = 'java'
 JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
+TMP_DIR = THIS_LOCATION + '/../../tmp'
+
+
+if not os.path.isdir(TMP_DIR):
+    os.makedirs(TMP_DIR)
 
 
 log_items = []
@@ -54,31 +59,25 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     register_log('xml_transform: inicio')
     error = False
 
-    tmp_dir = tempfile.mkdtemp()
-    temp_result_filename = tmp_dir + '/' + os.path.basename(result_filename)
-    temp_xml_filename = create_temp_xml_filename(xml_filename)
+    temp_result_filename = TMP_DIR + '/' + os.path.basename(result_filename)
 
     if not os.path.isdir(os.path.dirname(result_filename)):
         os.makedirs(os.path.dirname(result_filename))
     for f in [result_filename, temp_result_filename]:
         if os.path.isfile(f):
             os.unlink(f)
-
-    cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + temp_xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+    tmp_xml_filename = create_temp_xml_filename(xml_filename)
+    cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + tmp_xml_filename + '" "' + xsl_filename + '" ' + format_parameters(parameters)
     cmd = cmd.encode(encoding=sys.getfilesystemencoding())
     os.system(cmd)
-
     if not os.path.exists(temp_result_filename):
         fs_utils.write_file(temp_result_filename, validation_status.STATUS_ERROR + ': transformation error.\n' + cmd)
         error = True
     shutil.move(temp_result_filename, result_filename)
 
-    if os.path.isdir(tmp_dir):
-        try:
-            shutil.rmtree(tmp_dir)
-        except:
-            pass
+    fs_utils.delete_file_or_folder(tmp_xml_filename)
     register_log('xml_transform: fim')
+
     return (not error)
 
 
@@ -92,8 +91,7 @@ def xml_validate(xml_filename, result_filename, doctype=None):
         validation_type = '--validate'
 
     bkp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
-    tmp_dir = tempfile.mkdtemp()
-    temp_result_filename = tmp_dir + '/' + os.path.basename(result_filename)
+    temp_result_filename = TMP_DIR + '/' + os.path.basename(result_filename)
     if os.path.isfile(result_filename):
         os.unlink(result_filename)
     if not os.path.isdir(os.path.dirname(result_filename)):
@@ -121,25 +119,11 @@ def xml_validate(xml_filename, result_filename, doctype=None):
 
     shutil.move(temp_result_filename, result_filename)
     shutil.move(bkp_xml_filename, xml_filename)
-    if os.path.isdir(tmp_dir):
-        try:
-            shutil.rmtree(tmp_dir)
-        except:
-            pass
     register_log('xml_validate: fim')
     return not validation_status.STATUS_ERROR in result.upper()
 
 
 def create_temp_xml_filename(xml_filename):
-    temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
-    fs_utils.write_file(temp_filename, remove_doctype(xml_filename))
-    return temp_filename
-
-
-def remove_doctype(xml_filename):
-    content = fs_utils.read_file(xml_filename)
-    if '<!DOCTYPE ' in content:
-        doctype = content[content.find('<!DOCTYPE'):]
-        doctype = doctype[:doctype.find('>')+1]
-        content = content.replace(doctype, '')
-    return content
+    tmp_filename = TMP_DIR + '/' + os.path.basename(xml_filename)
+    shutil.copyfile(xml_filename, tmp_filename)
+    return tmp_filename
