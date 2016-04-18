@@ -3,68 +3,119 @@
  You can adapt this file completely to your liking, but it should at least
  contain the root `toctree` directive.
 
+.. how_to_update:
 
-Requirements
-============
+=============
+How to update
+=============
 
-- JAVA
-- PYTHON 2.7.x
-- Pillow (http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.exe)
-
-Add the `Java and Python paths to PATH (environment variable) <howtoinstall_path.html>`_
-
+Before updating
+---------------
+1. Be sure **where** the programs (**bin folder**) are installed. E.g.: c:\\scielo.
+2. Be sure **where** the data (**serial folder**) are stored. E.g.: c:\\scielo.
 
 
+.. code_and_title_error:
+
+
+Before updating Title Manager and Code Manager 
+----------------------------------------------
+
+Only some files in **code folder** will be updated. Be sure you have  **your code folder** in **serial** before updating. DO NOT copy **serial** contents after updating. But in case you have done it, reinstall the programs again.
+
+
+.. how_to_install:
+
+
+==============
 How to install
 ==============
 
-1. Download the `installer <download.html>`_
-2. Check the `Requirements`_
-3. Run the installer
-4. Follow the instructions given in each screen
+XML Package Maker
+-----------------
+1. Check if you have installed the :ref:`Requirements`. 
+2. `Test the requirements are correctly installed <howtoinstall_path.html#test_requirements>`_
+3. Download the `installer <download.html>`_
+4. Run the installer.
+5. Configure the location of the application
 
-.. attention:: Use a drive in which the user can have full permissions. 
-
-.. warning:: DO NOT use names with spaces or with diacrits
+.. image:: img/howtoinstall_xpm.png
 
 
-5. Complete the data of the installation
+SciELO PC Programs
+------------------
+
+1. Check if you have installed the :ref:`Requirements`. 
+2. `Test the requirements are correctly installed <howtoinstall_path.html#test_requirements>`_
+3. Download the `installer <download.html>`_
+4. Run the installer.
+
+5. Configure:
+
+ * Application name
+ * Website **url**
+ * **bin** folder location (DO NOT use diacritics)
+ * **serial** folder location (DO NOT use diacritics)
 
 .. image:: img/installation_setup.jpg
 
 
-6. Select the programs you want to install in your computer, according to the purpose of the computer:
+6. Select the programs you want to install in your computer, according to the purpose:
 
-- Local server (only one installation)
+- Local server (only one computer)
 
-  - Title Manager: program to manage journal and issues data
+  - Title Manager: program to manage journals and issues databases
   - Converter: program to load the marked documents into the database
-  - XML SciELO: (optional) program to create XML format for PubMed and ISI
+  - XML SciELO: (optional) program to create XML format for PubMed
 
-- Desktop Computer (one or more installations)
+- Desktop Computer (one or more computer)
 
   - Markup: program to identify the bibliographic elements in the articles/texts
   - Markup - Automata files (optional): examples of files for automatic markup
-  - XML Converter: program to load XML files into the database
 
-7. For local server installation, set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
+
+.. image:: img/howtoinstall_programs.png
+
+
+================
+How to configure
+================
+
+Converter, Title Manager, Code Manager
+--------------------------------------
+
+Set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
 
   Check if the variable already exists. 
   If it does not, click New and enter the value.
 
   .. image:: img/installation_setup_bap.jpg
 
-8. If you install as administrator, the menu of the application will be created only for the Administrator user. 
+
+XML Converter
+-------------
+
+Edit the file corresponding to **c:\\scielo\\bin\\scielo_paths.ini**, the line:
+
+.. code::
+
+  SCI_LISTA_SITE=c:\\home\\scielo\www\\proc\\scilista.lst
+
+Change **c:\\home\\scielo\\www** to the location of local SciELO Website. E.g.: **c:\\var\\www\\scielo**
+
+
+Application menu
+----------------
+
+Sometimes the menu of the application will be created only for the Administrator user. 
+
+.. code::
 
   C:\\Documents and Settings\\Administrador\\Menu Iniciar\\Programas
 
-So, copy the SciELO folder to All Users folder
+In this case, copy the SciELO folder to All Users folder, to all users have the menu.
+
+.. code::
 
   C:\\Documents and Settings\\All Users\\Menu Iniciar\\Programas
-
-
-
-----------------
-
-Last update of this page: August, 2015
 

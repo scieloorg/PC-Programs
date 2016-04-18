@@ -1,4 +1,7 @@
 
+
+.. how_to_use_the_programs:
+
 How to use the programs
 =======================
 
@@ -6,15 +9,17 @@ How to use the programs
 
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 3
 
     how_to_work_with_sgml.rst
+
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 3
     
-    how_to_work_with_xml.rst
+    pt_how_to_work_with_xml.rst
+
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     
     how_to_update_local_site.rst
 

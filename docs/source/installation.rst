@@ -10,7 +10,8 @@ Installation
 .. toctree::
     :maxdepth: 2
 
+    howtoinstall_path.rst
     download.rst
-    howtoinstall.rst
-    howtoupdate.rst
 
+    howtoinstall.rst
+    

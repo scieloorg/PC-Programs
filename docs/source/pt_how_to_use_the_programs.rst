@@ -6,7 +6,7 @@ Como usar os programas
 
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     pt_how_to_generate_sgml.rst
 .. toctree::
@@ -18,3 +18,5 @@ Como usar os programas
     
     pt_how_to_update_local_site.rst
 
+.. toctree::
+    :maxdepth: 2  

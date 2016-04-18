@@ -6,7 +6,7 @@ Cómo usar los programas
 
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     es_how_to_generate_sgml.rst
 .. toctree::

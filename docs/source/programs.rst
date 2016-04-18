@@ -6,9 +6,12 @@
 Programs
 ========
 
+.. _local-server:
 
-Local server
-------------
+Databases Managers (Local server)
+---------------------------------
+
+Programs to manage journals, issues and articles databases.
 
 .. toctree::
    :maxdepth: 1
@@ -16,12 +19,17 @@ Local server
    codemanager.rst
    titlemanager.rst
    converter.rst
-   xml_exporter.rst   
    xml_converter.rst
+   xml_exporter.rst   
 
 
-Desktop
--------
+
+.. _desktop:
+
+Markup and Validators (Desktop)
+-------------------------------
+
+Programs to generate and validate SGML/HTML or XML files.
 
 .. toctree::
    :maxdepth: 1
@@ -29,5 +37,4 @@ Desktop
    markup.rst
    parser.rst
    xml_package_maker.rst
-
 

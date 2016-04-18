@@ -1,9 +1,21 @@
+
+============
+Requirements
+============
+
+- JAVA
+- PYTHON 2.7.x
+- Pillow (http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.exe)
+
+Add Java and Python paths to PATH (environment variable).
+
+
 .. _add-paths:
 
 How to add Java and Python paths to Path
 ========================================
 
-After downloading the file PYTHON 2.7.x and JAVA you have to open the System Configuration.
+After downloading the file PYTHON and JAVA you have to open the System Configuration.
 
 Use a shortcut to open that window is: Windows + Pause Break key.
 
@@ -20,8 +32,8 @@ Then click on **Properties**.
 
 
 
-Computer System Configuration
------------------------------
+**Computer System Configuration**
+
 
 .. image:: img/howtoinstall_path_variavel.jpg
 
@@ -48,6 +60,11 @@ It means, insert the character ";" and complete with the JAVA path.
 
 .. image:: img/howtoinstall_path_edit-path-insert2.jpg
 
+
+.. test_requirements:
+
+How to test the requirements are correctly installed
+====================================================
 
 Make sure that this procedure was done correctly using a **NEW** window of DOS terminal. Do not use any which is already open. 
 Open a **NEW** window of DOS terminal and type:

@@ -5,7 +5,9 @@
 List of codes
 =============
 
-
+.. toctree::
+    :maxdepth: 1
+    
 acquisition priority
 --------------------
 +-+-----------------------------------------+

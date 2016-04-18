@@ -40,6 +40,7 @@ Or, to execute Package Maker via command line, open the terminal and go to the f
 Then type: 
 
 .. code::
+
     python xml_package_maker.py <xml_package_folder>
 
 .. image:: img/mkp-pm-cmd.jpg
