@@ -4,11 +4,14 @@ Workflow of the XML Files
 =========================
 
 
-.. toctree::
-    :maxdepth: 1
+`Español <es_how_to_work_with_xml.html>`_ 
 
-    how_to_generate_xml.rst
+
+.. toctree::
+    :maxdepth: 2
+
+    pt_how_to_generate_xml.rst
     
-    how_to_validate_xml_package.rst
+    pt_how_to_validate_xml_package.rst
     
     pt_faq-scielo-xml.rst

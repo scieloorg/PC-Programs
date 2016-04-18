@@ -9,14 +9,14 @@ How to use the programs
 
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
 
     how_to_work_with_sgml.rst
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
     
-    how_to_work_with_xml.rst
+    pt_how_to_work_with_xml.rst
 
 .. toctree::
     :maxdepth: 2

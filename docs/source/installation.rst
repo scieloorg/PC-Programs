@@ -14,5 +14,4 @@ Installation
     download.rst
 
     howtoinstall.rst
-    howtoupdate.rst
-
+    

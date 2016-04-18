@@ -1,4 +1,6 @@
 
+.. es_how_to_generate_xml:
+
 ===========================================
 Cómo Producir Archivos XML Usando el Markup
 ===========================================

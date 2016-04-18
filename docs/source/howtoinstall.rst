@@ -14,16 +14,20 @@ Before updating
 1. Be sure **where** the programs (**bin folder**) are installed. E.g.: c:\\scielo.
 2. Be sure **where** the data (**serial folder**) are stored. E.g.: c:\\scielo.
 
+
 .. code_and_title_error:
 
-Before updating the programs on the local server
-------------------------------------------------
+
+Before updating Title Manager and Code Manager 
+----------------------------------------------
 
 Only some files in **code folder** will be updated. Be sure you have  **your code folder** in **serial** before updating. DO NOT copy **serial** contents after updating. But in case you have done it, reinstall the programs again.
 
 
 .. how_to_install:
 
+
+==============
 How to install
 ==============
 
@@ -35,7 +39,7 @@ XML Package Maker
 4. Run the installer.
 5. Configure the location of the application
 
-.. image:: img/howtoinstall_programs.jpg
+.. image:: img/howtoinstall_xpm.png
 
 
 SciELO PC Programs
@@ -70,13 +74,15 @@ SciELO PC Programs
   - Markup - Automata files (optional): examples of files for automatic markup
 
 
-.. image:: img/howtoinstall_programs.jpg
+.. image:: img/howtoinstall_programs.png
 
 
-Specifics configurations
-^^^^^^^^^^^^^^^^^^^^^^^^
+================
+How to configure
+================
 
-**Converter**
+Converter, Title Manager, Code Manager
+--------------------------------------
 
 Set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
 
@@ -86,22 +92,30 @@ Set OS23470a to the environment variable BAP, by accessing the Windows menu: Con
   .. image:: img/installation_setup_bap.jpg
 
 
-**XML Converter**
+XML Converter
+-------------
 
-Edit the file corresponding to c:\\scielo\\bin\\scielo_paths.ini, the line:
+Edit the file corresponding to **c:\\scielo\\bin\\scielo_paths.ini**, the line:
 
-SCI_LISTA_SITE=c:\home\scielo\www\proc\scilista.lst
+.. code::
 
-Change "c:\home\scielo\www" to the location of local SciELO Website. E.g.: "c:\var\www\scielo" 
+  SCI_LISTA_SITE=c:\\home\\scielo\www\\proc\\scilista.lst
+
+Change **c:\\home\\scielo\\www** to the location of local SciELO Website. E.g.: **c:\\var\\www\\scielo**
 
 
-**Create the application menu**
+Application menu
+----------------
 
 Sometimes the menu of the application will be created only for the Administrator user. 
+
+.. code::
 
   C:\\Documents and Settings\\Administrador\\Menu Iniciar\\Programas
 
 In this case, copy the SciELO folder to All Users folder, to all users have the menu.
+
+.. code::
 
   C:\\Documents and Settings\\All Users\\Menu Iniciar\\Programas
 

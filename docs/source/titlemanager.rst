@@ -11,7 +11,11 @@ Desktop Application (Visual Basic), used in the `Local server <concepts.html#loc
 Prevent installation errors
 ---------------------------
 
-:ref:`Read "Before updating the programs for the local server" <code_and_title_error>`
+Read: 
+
+  `How to update <howtoinstall.html>`_
+
+
 
 .. warning::
 
