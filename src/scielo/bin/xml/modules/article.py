@@ -534,7 +534,7 @@ class ArticleXML(object):
                 if item['ext-link-type'] == 'scielo-pid':
                     item['ext-link-type'] = 'pid'
                 item['id'] = rel.attrib.get('id')
-                if not item['related-article-type'] in ['corrected-article', 'press-release']:
+                if not item['related-article-type'] in ['corrected-article', 'press-release', 'retracted-article']:
                     item['id'] = ''.join([c for c in item['id'] if c.isdigit()])
                 item['xml'] = xml_utils.node_xml(rel)
                 r.append(item)
@@ -1171,9 +1171,7 @@ class ArticleXML(object):
 
     @property
     def is_article_press_release(self):
-        r = False
-        types = [related.get('related-article-type') for related in self.related_articles if not related.get('related-article-type') in ['corrected-article', 'press-release']]
-        return (len(types) > 0)
+        return self.article_type == 'in-brief' and len(self.related_articles) > 0
 
     @property
     def illustrative_materials(self):
