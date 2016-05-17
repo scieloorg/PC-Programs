@@ -980,8 +980,10 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
         content = xml_utils.pretty_print(content)
-        content = remove_xmllang_off(content, 'article-title')
-        content = remove_xmllang_off(content, 'source')
+        #content = remove_xmllang_off(content, 'article-title')
+        #content = remove_xmllang_off(content, 'source')
+        content = remove_xmllang_off_article_title_alt(content)
+        content = remove_xmllang_off_source_alt(content)
         content = content.replace('> :', '>: ')
         content = normalize_references(content)
         content = remove_styles_off_content(content)
@@ -1000,6 +1002,17 @@ def remove_xmllang_off_article_title_alt(content):
         new = []
         for item in content.replace('<article-title ', '<article-title~BREAK~').split('~BREAK~'):
             if item.strip().startswith('xml:lang') and '</article-title>' in item:
+                item = item[item.find('>'):]
+            new.append(item)
+        content = ''.join(new)
+    return content
+
+
+def remove_xmllang_off_source_alt(content):
+    if '<source ' in content:
+        new = []
+        for item in content.replace('<source ', '<source~BREAK~').split('~BREAK~'):
+            if item.strip().startswith('xml:lang') and '</source>' in item:
                 item = item[item.find('>'):]
             new.append(item)
         content = ''.join(new)
