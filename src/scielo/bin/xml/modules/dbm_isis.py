@@ -456,6 +456,78 @@ class IsisDAO(object):
         IDFile(content_formatter).save(id_filename, records)
 
 
+class IsisDB(object):
+
+    def __init__(self, cisis, db_filename, fst_filename):
+        self.cisis = cisis
+        self.db_filename = db_filename
+        self.fst_filename = fst_filename
+
+    def save_records(self, records):
+        temp_file = NamedTemporaryFile(delete=False)
+        temp_file.close()
+        IDFile().save(temp_file.name, records)
+        self.cisis.id2i(temp_file.name, self.db_filename)
+        os.unlink(temp_file.name)
+        self.update_indexes()
+
+    def update_indexes(self):
+        if self.fst_filename is not None:
+            self.cisis.generate_indexes(self.db_filename, self.fst_filename, self.db_filename)
+
+    def append_records(self, records):
+        path = os.path.dirname(self.db_filename)
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        temp_file = NamedTemporaryFile(delete=False)
+        temp_file.close()
+        IDFile().save(temp_file.name, records)
+        self.cisis.append_id_to_master(temp_file.name, self.db_filename, False)
+        os.unlink(temp_file.name)
+        self.update_indexes()
+
+    def save_id_records(self, id_filename):
+        self.cisis.id2i(id_filename, self.db_filename)
+        self.update_indexes()
+
+    def append_id_records(self, id_filename):
+        self.cisis.append_id_to_master(id_filename, self.db_filename, False)
+        self.update_indexes()
+
+    def get_records(self, expr=None):
+        temp_dir = None
+        if expr is None:
+            base = self.db_filename
+        else:
+            temp_dir = mkdtemp().replace('\\', '/')
+            base = temp_dir + '/' + os.path.basename(self.db_filename)
+            self.cisis.search(self.db_filename, expr, base)
+
+        r = []
+        id_filename = base + '.id'
+        if os.path.isfile(base + '.mst'):
+            self.cisis.i2id(base, id_filename)
+            r = IDFile().read(id_filename)
+
+        if temp_dir is not None:
+            try:
+                fs_utils.delete_file_or_folder(temp_dir)
+            except:
+                pass
+        if os.path.isfile(id_filename):
+            try:
+                os.unlink(id_filename)
+            except:
+                pass
+        return r
+
+    def get_id_records(self, id_filename):
+        return IDFile().read(id_filename)
+
+    def save_id(self, id_filename, records, content_formatter=None):
+        IDFile(content_formatter).save(id_filename, records)
+
+
 def run_command(cmd):
     if isinstance(cmd, unicode):
         #print(cmd)
