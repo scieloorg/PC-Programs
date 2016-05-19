@@ -142,10 +142,109 @@ class InputForm(object):
         self.tkFrame.quit()
 
 
+class IssueAssets(object):
+
+    def __init__(self, issue_path):
+        self.issue_path = issue_path
+        self.serial_path = os.path.dirname(os.path.dirname(issue_path))
+        folders = issue_path.split('/')
+        self.acron = folders[-2]
+        self.issueid = folders[-1]
+        self.pubmed_path = issue_path + '/PubMed'
+        if not os.path.isdir(self.pubmed_path):
+            os.makedirs(self.pubmed_path)
+        self.articles_db_filename = issue_path + '/base/' + self.issueid
+
+
+class ArticleDB(object):
+
+    def __init__(self, ucisis, issue_assets):
+        self.articles_db = None
+        if os.path.isfile(issue_assets.articles_db_filename + '.mst'):
+            self.articles_db = dbm_isis.IsisDB(ucisis, issue_assets.articles_db_filename, './articles.fst')
+
+    @property
+    def article_pid_items(self):
+        items = {}
+        if self.articles_db is not None:
+            h_records = self.articles_db.get_records('tp=i')
+            issn_id = h_records[0].get('35')
+            pid = '0'*4 + h_records[0].get('36')[4:]
+            issue_pid = h_records[0].get('36')[:4] + pid[-4:]
+            h_records = self.articles_db.get_records('tp=h')
+            for item in h_records:
+                a_pid = '0'*5 + item.get('121')
+                items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
+        return items
+
+
+class ArticlesFiles(object):
+
+    def __init__(self, path, from_date):
+        self.path = path
+        self.from_date = from_date
+
+    @property
+    def selected_xml_files(self):
+        files = {}
+        start_date = self.from_date
+        if start_date is None:
+            start_date = '0'
+        for item in [item for item in os.listdir(self.path) if item.endswith('.xml')]:
+            xml, e = xml_utils.load_xml(os.path.join(self.path, item))
+            a = article.Article(xml, item)
+            if int(a.epub_dateiso) >= int(start_date):
+                files[item] = xml_utils.node_xml(a.tree.find('.'))
+        return files
+
+    @property
+    def suffix(self):
+        return '' if self.from_date is None else self.from_date + '-' + str(utils.now()[0])
+
+
+class PubMedXMLMaker(object):
+
+    def __init__(self, articles_files, article_db, issue_assets, xsl_filename):
+        self.issue_assets = issue_assets
+        self.articles_files = articles_files
+        self.article_db = article_db
+        self.xsl_filename = xsl_filename
+
+    @property
+    def pubmed_filename(self):
+        return os.path.join(self.issue_assets.pubmed_path, self.issue_assets.acron + self.issue_assets.issueid + self.articles_files.suffix + '.xml')
+
+    @property
+    def temp_xml_filename(self):
+        temp_filename = self.pubmed_filename[:-4] + 'tmp.xml'
+        xml_content = '<?xml version="1.0" encoding="utf-8"?>\n'
+        xml_content += '<root>'
+        xml_content += self.articles_filenames_xml_content
+        xml_content += self.articles_pids_xml_content
+        xml_content += '</root>'
+        fs_utils.write_file(temp_filename, xml_content)
+        return temp_filename
+
+    @property
+    def articles_filenames_xml_content(self):
+        return '<article-set>' + ''.join(['<article-item filename="' + filename + '">' + item + '</article-item>' for filename, item in self.articles_files.selected_xml_files.items()]) + '</article-set>'
+
+    @property
+    def articles_pids_xml_content(self):
+        return '<pid-set>' + ''.join(['<pid filename="' + k + '">' + v + '</pid>' for k, v in self.article_db.article_pid_items.items()]) + '</pid-set>'
+
+    def execute_procedures(self):
+        self.build_pubmed_xml()
+        import webbrowser
+        webbrowser.open('file:///' + self.pubmed_filename, new=2)
+        # validate
+        # envia ftp
+
+    def build_pubmed_xml(self):
+        java_xml_utils.xml_transform(self.temp_xml_filename, self.xsl_filename, self.pubmed_filename)
+
+
 def call_execute_pubmed_procedures(args):
-    config = xc_config.XMLConverterConfiguration(CURRENT_PATH + '/../scielo_paths.ini')
-    global ucisis
-    ucisis = dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660))
 
     script, path, issue_path, from_date = read_inputs(args)
 
@@ -166,22 +265,17 @@ def call_execute_pubmed_procedures(args):
             utils.display_message('\n'.join(messages))
 
     if path is not None:
-        _from_date = None
-        if from_date is not None:
-            if from_date != '':
-                _from_date = from_date
-
-        pubmed_path = issue_path + '/PubMed'
-        if not os.path.isdir(pubmed_path):
-            os.makedirs(pubmed_path)
-        folders = issue_path.split('/')
-        acron = folders[-1]
-        issueid = folders[-2]
-        execute_pubmed_procedures(path, pubmed_path, acron, issueid, _from_date)
+        config = xc_config.XMLConverterConfiguration(CURRENT_PATH + '/../../scielo_paths.ini')
+        ucisis = dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660))
+        issue_assets = IssueAssets(issue_path)
+        article_db = ArticleDB(ucisis, issue_assets)
+        articles_files = ArticlesFiles(path, from_date)
+        pubmed_xml_maker = PubMedXMLMaker(articles_files, article_db, issue_assets, CURRENT_PATH + '/../../pmc/v3.0/xsl/xml2pubmed/xml2pubmed.xsl')
+        pubmed_xml_maker.execute_procedures()
 
 
 def read_inputs(args):
-    args = [arg.decode(encoding=sys.getfilesystemencoding()) for arg in args]
+    #args = [arg.decode(encoding=sys.getfilesystemencoding()) for arg in args]
     from_date = None
     if len(args) == 3:
         script, path, issue_path = args
@@ -202,75 +296,3 @@ def read_form_inputs(default_path=None):
     tk_root.mainloop()
     tk_root.focus_set()
     return form.valid_xml_folder
-
-
-def execute_pubmed_procedures(path, pubmed_path, acron, issueid, from_date):
-    articles_xml_content = create_article_set_xml_content(select_xml_files(path, from_date))
-    articles_pids_xml_content = create_articles_pids_xml_content(pubmed_path, issueid)
-
-    pubmed_filename = generate_pubmed_filename(pubmed_path, acron, issueid, from_date)
-    build_pubmed_xml(articles_xml_content, articles_pids_xml_content, pubmed_filename)
-    # validate
-    # envia ftp
-
-
-def generate_pubmed_filename(pubmed_path, acron, issueid, from_date):
-    suffix = '' if from_date is None else from_date + '-' + utils.now()[0]
-    return os.path.join(pubmed_path, acron + issueid + suffix + '.xml')
-
-
-def select_xml_files(path, from_date):
-    files = []
-    if from_date is None:
-        from_date = 0
-    for item in [item for item in os.listdir(path) if item.endswith('.xml')]:
-        xml, e = xml_utils.load_xml(os.path.join(path, item))
-        a = article.Article(xml)
-        if int(a.epub_dateiso) >= int(from_date):
-            files.append(xml_utils.node_xml(a.find('.')))
-    return files
-
-
-def create_article_set_xml_content(files):
-    return '<article-set>' + ''.join(files) + '</article-set>'
-
-
-def temp_xml_filename(pubmed_filename, article_set_xml_content, articles_pids_xml_content):
-    temp_filename = pubmed_filename[:-4] + 'tmp.xml'
-    xml_content = '<?xml encoding="utf-8"?>\n'
-    xml_content += '<root>'
-    xml_content += article_set_xml_content
-    xml_content += articles_pids_xml_content
-    xml_content += '</root>'
-    fs_utils.write_file(temp_filename, xml_content)
-    return temp_filename
-
-
-def article_pid_items(articles_db_filename):
-    articles_db = dbm_isis.IsisDB(ucisis, articles_db_filename, './articles.fst')
-
-    items = {}
-    h_records = articles_db.get_records('tp=i')
-    issn_id = h_records[0].get('35')
-
-    pid = '0'*4 + h_records[0].get('36')[4:]
-
-    issue_pid = h_records[0].get('36')[:4] + pid[-4:]
-    h_records = articles_db.get_records('tp=h')
-    for item in h_records:
-        a_pid = '0'*5 + item.get('121')
-
-        items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
-    return items
-
-
-def create_articles_pids_xml_content(article_pid_items):
-    articles_db_filename = os.path.dirname(pubmed_path) + '/base/' + issueid
-    for k, v in article_pid_items(articles_db_filename):
-        print(k)
-
-
-def build_pubmed_xml(article_set_xml_content, articles_pids_xml_content, pubmed_filename):
-    temp_filename = temp_xml_filename(pubmed_filename, article_set_xml_content, articles_pids_xml_content)
-    java_xml_utils.xml_transform(temp_filename, xsl_filename, pubmed_filename)
-

@@ -2,8 +2,33 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
 	<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/ -->
 
+	<!-- 
+	<!DOCTYPE ArticleSet PUBLIC "-//NLM//DTD PubMed 2.4//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/static/PubMed.dtd">
+
+	-->
+	<xsl:output 
+		doctype-public="-//NLM//DTD PubMed 2.4//EN" 
+		doctype-system="http://www.ncbi.nlm.nih.gov/entrez/query/static/PubMed.dtd" 
+		encoding="UTF-8" method="xml" omit-xml-declaration="no" version="1.0"
+		indent="yes" xml:space="default" 
+	/>
+	<xsl:variable name="pid_list" select="//pid-set//pid"/>
+	
+	<xsl:template match="/">
+		<ArticleSet>
+			<xsl:apply-templates select=".//article-set//article-item"></xsl:apply-templates>	
+		</ArticleSet>
+	</xsl:template>
+	
+	<xsl:template match="article-item">
+		<xsl:variable name="f" select="@filename"/>
+		<xsl:apply-templates select="article">
+			<xsl:with-param name="pid" select="$pid_list[@filename=$f]"></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:template>
 
 	<xsl:template match="article">
+		<xsl:param name="pid"/>
 		<Article>
 			<Journal>
 				<xsl:apply-templates select="." mode="scielo-xml-publisher_name"/>
@@ -22,7 +47,7 @@
 
 			<xsl:apply-templates select=".//article-meta/fpage|.//article-meta/lpage"/>
 			<ELocationID EIdType="pii">
-				<xsl:apply-templates select=".//article-meta/article-id[@specific-use='scielo-pid']" mode="scielo-xml-pii"/>
+				<xsl:value-of select="$pid"/>
 			</ELocationID>
 			<xsl:apply-templates
 				select="@xml:lang|.//sub-article[@article-type='translation']/@xml:lang"
@@ -79,9 +104,19 @@
 
 	<xsl:template match="*" mode="scielo-xml-abstract">
 		<Abstract>
+			<xsl:if test="@xml:lang='en'">
+				<xsl:apply-templates select=".//abstract"
+					mode="scielo-xml-content-abstract"/>
+			</xsl:if>
+			
 			<xsl:apply-templates select=".//*[contains(name(),'abstract') and @xml:lang='en']"
 				mode="scielo-xml-content-abstract"/>
+			<xsl:apply-templates select=".//sub-article[@xml:lang='en' and @article-type='translation']//*[contains(name(),'abstract') and @xml:lang='en']"
+				mode="scielo-xml-content-abstract"/>
 		</Abstract>
+	</xsl:template>
+	<xsl:template match="text()" mode="scielo-xml-content-abstract">
+		[<xsl:value-of select="."/>]
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-content-abstract">
 		<xsl:apply-templates select="*|text()" mode="scielo-xml-content-abstract"/>
