@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink">
 	<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/ -->
 
 	<!-- 
@@ -7,7 +7,7 @@
 
 	-->
 	<xsl:output 
-		doctype-public="-//NLM//DTD PubMed 2.4//EN" 
+		doctype-public="-//NLM//DTD PubMed 2.6//EN" 
 		doctype-system="http://www.ncbi.nlm.nih.gov/entrez/query/static/PubMed.dtd" 
 		encoding="UTF-8" method="xml" omit-xml-declaration="no" version="1.0"
 		indent="yes" xml:space="default" 
@@ -26,7 +26,7 @@
 			<xsl:with-param name="pid" select="$pid_list[@filename=$f]"></xsl:with-param>
 		</xsl:apply-templates>
 	</xsl:template>
-
+	
 	<xsl:template match="article">
 		<xsl:param name="pid"/>
 		<Article>
@@ -63,7 +63,7 @@
 					<xsl:apply-templates select=".//front//collab" mode="scielo-xml-author"/>
 				</AuthorList>
 			</xsl:if>
-			<PublicationType/>
+			<PublicationType><xsl:apply-templates select="." mode="scielo-xml-publication-type"/></PublicationType>
 			<ArticleIdList>
 				<ArticleId IdType="pii">
 					<xsl:apply-templates select=".//article-meta/article-id[@specific-use='previous-pid']" mode="scielo-xml-pii"/>
@@ -79,11 +79,90 @@
 				</History>
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-abstract"/>
+			<xsl:if test="@article-type='correction' or @article-type='retraction'">
+				<xsl:apply-templates select="." mode="scielo-xml-objects"></xsl:apply-templates>
+			</xsl:if>
 		</Article>
 	</xsl:template>
+	<xsl:template match="article[@article-type='correction' or @article-type='retraction']" mode="scielo-xml-object">
+		<Object>
+			<xsl:attribute name="Type"><xsl:choose>
+				<xsl:when test="@article-type='correction'">Erratum</xsl:when>
+				<xsl:when test="@article-type='retraction'">Retraction</xsl:when>
+			</xsl:choose></xsl:attribute>
+			<Param Name="type"><xsl:choose>
+				<xsl:when test="@ext-link-type='doi'"><xsl:value-of select="@ext-link-type"/></xsl:when>
+				<xsl:otherwise>pii</xsl:otherwise>
+			</xsl:choose></Param>
+			<Param Name="id"><xsl:value-of select="@xlink:href"/></Param>
+		</Object>
+	</xsl:template>
+	<xsl:template match="article[@article-type='correction' or @article-type='retraction']" mode="scielo-xml-objects">
+		<ObjectList>
+			<xsl:apply-templates select=".//related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object"></xsl:apply-templates>
+		</ObjectList>
+	</xsl:template>
+	<xsl:template match="article[@article-type='case-report']" mode="scielo-xml-publication-type">Case Reports</xsl:template>
+	<xsl:template match="article[@article-type='research-article']" mode="scielo-xml-publication-type">Journal Article</xsl:template>
+	<xsl:template match="article[@article-type='corrected-article']" mode="scielo-xml-publication-type">Corrected and Republished Article</xsl:template>
+	<xsl:template match="article[@article-type='correction']" mode="scielo-xml-publication-type">Published Erratum</xsl:template>
+	<xsl:template match="article[@article-type='editorial']" mode="scielo-xml-publication-type">Editorial</xsl:template>
+	<xsl:template match="article[@article-type='letter']" mode="scielo-xml-publication-type">Letter</xsl:template>
+	<xsl:template match="article[@article-type='retraction']" mode="scielo-xml-publication-type">Retraction of Publication</xsl:template>
+	<xsl:template match="article[@article-type='article-review']" mode="scielo-xml-publication-type">Review</xsl:template>
+	
+	<xsl:template match="article" mode="scielo-xml-publication-type">
+		<xsl:choose>
+			<xsl:when test="./article-meta//ext-link[@ext-link-type='ClinicalTrial']">Clinical Trial</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+	<!-- 
+		case-report 	relato, descrição ou estudo de caso - pesquisas especiais que despertam interesse informativo.
+		correction 	errata - corrige erros apresentados em artigos após sua publicação online/impressa.
+		editorial 	editorial - uma declaração de opiniões, crenças e políticas do editor do periódico, geralmente sobre assuntos de significado científico de interesse da comunidade científica ou da sociedade.
+		letter 	cartas - comunicação entre pessoas ou instituições através de cartas. Geralmente comentando um trabalho publicado
+		research-article 	artigo original - abrange pesquisas, experiências clínicas ou cirúrgicas ou outras contribuições originais.
+		retraction 	retratação - a retratação de um artigo científico é um instrumento para corrigir o registro acadêmico publicado equivocadamente, por plágio, por exemplo.
+		review-article 	são avaliações críticas sistematizadas da literatura sobre determinado assunto.
+		
+		article-commentary 	comentários - uma nota crítica ou esclarecedora, escrita para discutir, apoiar ou debater um artigo ou outra apresentação anteriormente publicada. Pode ser um artigo, carta, editorial, etc. Estas publicações podem aparecer como comentário, comentário editorial, ponto de vista, etc.
+		book-review 	resenha - análise críticas de livros e outras monografias.
+		brief-report 	comunicação breve sobre resultados de uma pesquisa.
+		in-brief 	press release - comunicação breve de linguagem jornalística sobre um artigo ou tema.
+		other 	Outro tipo de documento. Pode ser considerado adendo, anexo, discussão, artigo de preocupação, introdução entre outros.
+		rapid-communication 	comunicação breve sobre atualização de investigação ou outra notícia.
+		reply 	resposta a carta ou ao comentário, geralmente é usado pelo autor original fazendo outros comentários a respeito dos comentários anteriores
+		translation 	tradução. Utilizado para artigos que apresentam tradução de um artigo produzid
+		-->
+	<!-- 
+	Addresses
+	Bibliography
+	Clinical Conference
+	Congresses
+	Consensus Development Conference
+	Consensus Development Conference, NIH
+	Festschrift
+	Guideline
+	Interview	
+	Journal Article
+	Lectures
+	Meta-Analysis
+	News
+	Newspaper Article
+	Observational Study
+	Patient Education Handout
+	Practice Guideline	
+	
+	Review
+	Video-Audio Media
+	Webcasts
+	-->
 	<xsl:template match="*" mode="scielo-xml-title">
 		<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/#publisherhelp.ArticleTitle_O -->
 		<xsl:element name="ArticleTitle">
+			<xsl:if test="@xml:lang='en'">
+				<xsl:apply-templates select=".//article-meta//title-group/article-title"/>
+			</xsl:if>
 			<xsl:apply-templates select=".//article-meta//title-group/article-title[@xml:lang='en']"/>
 			<xsl:apply-templates select=".//article-meta//title-group/trans-title-group[@xml:lang='en']/trans-title"/>
 			<xsl:apply-templates select=".//sub-article//article-title[@xml:lang='en']"/></xsl:element>
@@ -100,8 +179,8 @@
 			<xsl:value-of select="translate(.,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
 		</Language>
 	</xsl:template>
-
-
+	
+	
 	<xsl:template match="*" mode="scielo-xml-abstract">
 		<Abstract>
 			<xsl:if test="@xml:lang='en'">
@@ -115,8 +194,33 @@
 				mode="scielo-xml-content-abstract"/>
 		</Abstract>
 	</xsl:template>
+	<xsl:template match="related-article[@related-article-type='corrected-article']" mode="label">corrects</xsl:template>
+	<xsl:template match="related-article[@related-article-type='retracted-article']" mode="label">retracts</xsl:template>
+	<xsl:template match="*[@article-type='correction' or @article-type='retraction']" mode="scielo-xml-abstract">
+		<Abstract><xsl:apply-templates select=".//related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="related-article-abstract"></xsl:apply-templates></Abstract>
+	</xsl:template>
+	<xsl:template match="related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="related-article-abstract">
+		[This <xsl:apply-templates select="." mode="label"/> the article <xsl:value-of select="@ext-link-type"/>: <xsl:value-of select="@xlink:href"/>]
+	</xsl:template>
+	<xsl:template match="*" mode="scielo-xml-content-abstract">
+		<xsl:apply-templates select="sec|text()"  mode="scielo-xml-content-abstract"/>
+	</xsl:template>
+	<xsl:template match="*/sec" mode="scielo-xml-content-abstract">
+		<AbstractText>
+			<xsl:attribute name="Label"><xsl:apply-templates select="title"/></xsl:attribute>
+			<xsl:apply-templates select="p"/>
+		</AbstractText>
+	</xsl:template>
+	<!-- 
+		<Abstract>
+<AbstractText Label="OBJECTIVE">To assess the effects...</AbstractText>
+<AbstractText Label="METHODS">Patients attending lung...</AbstractText>
+<AbstractText Label="RESULTS">Twenty-five patients...</AbstractText>
+<AbstractText Label="CONCLUSIONS">The findings suggest...</AbstractText>
+</Abstract>
+		-->
 	<xsl:template match="text()" mode="scielo-xml-content-abstract">
-		[<xsl:value-of select="."/>]
+		<xsl:value-of select="."/>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-content-abstract">
 		<xsl:apply-templates select="*|text()" mode="scielo-xml-content-abstract"/>
@@ -232,12 +336,28 @@
 	<xsl:template match="contrib" mode="scielo-xml-author">
 
 		<Author>
-			<xsl:apply-templates select="name|xref[@ref-type='aff'][1]"/>
+			<xsl:apply-templates select="name"/>
+			<xsl:choose>
+				<xsl:when test="count(xref[@ref-type='aff'])=1">
+					<xsl:apply-templates select="xref[@ref-type='aff']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="xref[@ref-type='aff']" mode="multiple-aff"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 			<!--xsl:if test="not(@affiliation_code)">
 						<xsl:apply-templates select="ancestor::record/affiliation/occ"/>
 					</xsl:if-->
+			<xsl:apply-templates select="contrib-id"></xsl:apply-templates>
 		</Author>
 
+	</xsl:template>
+	<xsl:template match="contrib-id">
+		<Identifier Source="{@contrib-id-type}"><xsl:value-of select="."/></Identifier>
+	</xsl:template>
+	<xsl:template match="contrib-id[@contrib-id-type='orcid' and not(contains(.,'orcid.org'))]">
+		<Identifier Source="{@contrib-id-type}">http://orcid.org/<xsl:value-of select="."/></Identifier>
 	</xsl:template>
 	<xsl:template match="article-title/text()">
 		<xsl:value-of select="."/>
@@ -284,7 +404,15 @@
 			<xsl:apply-templates select="../../..//aff[@id = $code]" mode="scielo-xml-text"/>
 		</Affiliation>
 	</xsl:template>
-
+	<xsl:template match="xref[@ref-type='aff']  | aff-id " mode="multiple-aff">
+		<xsl:variable name="code" select="@rid"/>
+		<AffiliationInfor>
+			<Affiliation>
+				<xsl:apply-templates select="../../..//aff[@id = $code]" mode="scielo-xml-text"/>
+			</Affiliation>
+		</AffiliationInfor>
+	</xsl:template>
+	
 	<xsl:template match="institution[@content-type='original']" mode="scielo-xml-text"></xsl:template>
 	<xsl:template match="aff" mode="scielo-xml-text">
 		<xsl:apply-templates select="*[name()!='label']" mode="scielo-xml-text"/>
@@ -306,4 +434,13 @@
 	<xsl:template match="article-id" mode="scielo-xml-pii">
 		<xsl:value-of select="."/>
 	</xsl:template>
+	
+	<xsl:template match="italic | bold | sup | sub">
+		<xsl:apply-templates></xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="article[@article-type='other' or @article-type='book-review']">
+	</xsl:template>
+	
+	
 </xsl:stylesheet>

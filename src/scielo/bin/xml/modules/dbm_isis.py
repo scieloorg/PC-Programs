@@ -218,11 +218,15 @@ class IDFile(object):
 class CISIS(object):
 
     def __init__(self, cisis_path):
-        cisis_path = cisis_path.replace('\\', '/')
+        self.cisis_path = None
         if os.path.exists(cisis_path):
             self.cisis_path = cisis_path
-        else:
-            utils.debbuging('Invalid cisis path: ' + cisis_path)
+
+    @property
+    def is_available(self):
+        cmd = self.cisis_path + '/mx what > ./status'
+        run_command(cmd)
+        return open('./status', 'r').read().startswith('CISIS')
 
     def crunchmf(self, mst_filename, wmst_filename):
         cmd = self.cisis_path + '/crunchmf ' + mst_filename + ' ' + wmst_filename
@@ -319,6 +323,10 @@ class UCISIS(object):
     def __init__(self, cisis1030, cisis1660):
         self.cisis1030 = cisis1030
         self.cisis1660 = cisis1660
+
+    @property
+    def is_available(self):
+        return self.cisis1660.is_available or self.cisis1030.is_available
 
     def cisis(self, mst_filename):
         if os.path.isfile(mst_filename + '.mst'):

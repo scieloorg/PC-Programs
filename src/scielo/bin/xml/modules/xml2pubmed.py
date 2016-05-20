@@ -19,6 +19,29 @@ global ucisis
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 
+def find_xml_files(path, files={}):
+    for item in os.listdir(path):
+        if os.path.isfile(item):
+            if item.endswith('.xml'):
+                if not item in files.keys():
+                    files[item] = []
+                files[item].append(path + '/' + item)
+        elif os.path.isdir(path + '/' + item):
+            files = find_xml_files(path + '/' + item, files)
+    return files
+
+
+def find_xml_files_folders(path, folders=[]):
+    for item in os.listdir(path):
+        if os.path.isdir(path + '/' + item):
+            xml_files = [f for f in os.listdir(path + '/' + item) if f.endswith('.xml')]
+            if len(xml_files) > 0:
+                folders.append(path + '/' + item)
+            else:
+                folders = find_xml_files_folders(path + '/' + item, folders)
+    return folders
+
+
 class InputForm(object):
 
     def __init__(self, tkFrame, default_path):
@@ -30,6 +53,8 @@ class InputForm(object):
         self.issue_path = None
         self.acron = None
         self.issueid = None
+        self.from_date = None
+        self.selected_issue_folder = None
 
         if default_path is None:
             self.default_path = CURRENT_PATH
@@ -50,14 +75,7 @@ class InputForm(object):
         self.tkFrame.label_frame_buttons.pack(fill="both", expand="yes")
 
         #
-        self.tkFrame.label_xml_folder = Tkinter.Label(self.tkFrame.label_frame_xml_folder, text=_('SciELO XML folder:'), font="Verdana 12 bold")
-        self.tkFrame.label_xml_folder.pack(side='left')
-        self.tkFrame.input_xml_folder = Tkinter.Label(self.tkFrame.label_frame_xml_folder, width=50, bd=1, bg='gray')
-        self.tkFrame.input_xml_folder.pack(side='left')
-        self.tkFrame.button_choose_xml_folder = Tkinter.Button(self.tkFrame.label_frame_xml_folder, text=_('choose folder'), command=self.select_xml_folder)
-        self.tkFrame.button_choose_xml_folder.pack()
-
-        self.tkFrame.label_issue_folder = Tkinter.Label(self.tkFrame.label_frame_issue_folder, text=_('issue folder:'), font="Verdana 12 bold")
+        self.tkFrame.label_issue_folder = Tkinter.Label(self.tkFrame.label_frame_issue_folder, text=_('issue folder (located in serial folder):'), font="Verdana 12 bold")
         self.tkFrame.label_issue_folder.pack(side='left')
         self.tkFrame.input_issue_folder = Tkinter.Label(self.tkFrame.label_frame_issue_folder, width=50, bd=1, bg='gray')
         self.tkFrame.input_issue_folder.pack(side='left')
@@ -80,17 +98,6 @@ class InputForm(object):
 
         #self.collection_name = None
 
-    def select_xml_folder(self):
-        from tkFileDialog import askdirectory
-        if self.selected_xml_folder is not None:
-            self.default_path = self.selected_xml_folder
-        self.selected_xml_folder = askdirectory(parent=self.tkFrame, initialdir=self.default_path, title=_('Select the SciELO XML folder'))
-        self.tkFrame.input_xml_folder.config(text=self.selected_xml_folder)
-        if self.selected_xml_folder is None:
-            self.selected_xml_folder = ''
-        else:
-            self.display_message(self.selected_xml_folder, '#EAFDE6')
-
     def select_issue_folder(self):
         from tkFileDialog import askdirectory
         if self.selected_issue_folder is not None:
@@ -107,44 +114,33 @@ class InputForm(object):
             self.tkFrame.label_message.config(text=msg, bg=color)
             self.tkFrame.label_message.update_idletasks()
 
-    def validate_xml_folder(self):
-        if self.selected_xml_folder != '':
-            if os.path.isdir(self.selected_xml_folder):
-                if len([item for item in os.listdir(self.selected_xml_folder) if item.endswith('.xml')]) > 0:
-                    self.valid_xml_folder = self.selected_xml_folder
-
     def validate_issue_folder(self):
-        self.acron = None
-        self.issueid = None
         if self.selected_issue_folder != '':
             if os.path.isdir(self.selected_issue_folder):
                 if '/serial/' in self.selected_issue_folder.lower():
                     path = self.selected_issue_folder[self.selected_issue_folder.find('/serial/') + len('/serial/'):]
                     folders = path.split('/')
                     if len(folders) == 2:
-                        self.acron, self.issueid = folders
                         self.issue_path = self.selected_issue_folder
 
     def ok(self):
-        self.validate_xml_folder()
         self.validate_issue_folder()
         self.from_date = self.tkFrame.input_from_date.get()
-        if self.valid_xml_folder is None:
-            self.display_message(_('Select a folder which contains the SPS XML Files.'), '#CE3B67')
-        elif self.issue_path is None:
+        print(self.from_date)
+        if self.issue_path is None:
             self.display_message(_('Select the issue folder (serial/<acron>/<issue number>).'), '#CE3B67')
         else:
             self.tkFrame.quit()
 
     def cancel(self):
-        self.valid_xml_folder = None
         self.issue_path = None
         self.tkFrame.quit()
 
 
-class IssueAssets(object):
+class IssueStuff(object):
 
-    def __init__(self, issue_path):
+    def __init__(self, ucisis, issue_path, from_date):
+        self.ucisis = ucisis
         self.issue_path = issue_path
         self.serial_path = os.path.dirname(os.path.dirname(issue_path))
         folders = issue_path.split('/')
@@ -154,65 +150,118 @@ class IssueAssets(object):
         if not os.path.isdir(self.pubmed_path):
             os.makedirs(self.pubmed_path)
         self.articles_db_filename = issue_path + '/base/' + self.issueid
-
-
-class ArticleDB(object):
-
-    def __init__(self, ucisis, issue_assets):
-        self.articles_db = None
-        if os.path.isfile(issue_assets.articles_db_filename + '.mst'):
-            self.articles_db = dbm_isis.IsisDB(ucisis, issue_assets.articles_db_filename, './articles.fst')
+        self.from_date = from_date
 
     @property
-    def article_pid_items(self):
-        items = {}
+    def articles_db(self):
+        return ArticlesDB(self.ucisis, self.articles_db_filename)
+
+    @property
+    def articles_files(self):
         if self.articles_db is not None:
-            h_records = self.articles_db.get_records('tp=i')
+            return ArticlesFiles(self.issue_path, self.articles_db.articles(self.from_date))
+
+
+class ArticlesDB(object):
+
+    def __init__(self, ucisis, db_filename):
+        self.isis_db = None
+        if os.path.isfile(db_filename + '.mst'):
+            self.isis_db = dbm_isis.IsisDB(ucisis, db_filename, db_filename + '.fst')
+        else:
+            print('Not found: ' + db_filename)
+
+    def articles(self, from_date=None):
+        items = {}
+        int_from_date = 0
+
+        if from_date is not None:
+            if from_date == '':
+                int_from_date = 0
+            else:
+                int_from_date = int(from_date)
+
+        if self.isis_db is not None:
+            h_records = self.isis_db.get_records()
+            h_records = [record for record in h_records if record.get('706') in 'ih']
+
             issn_id = h_records[0].get('35')
             pid = '0'*4 + h_records[0].get('36')[4:]
             issue_pid = h_records[0].get('36')[:4] + pid[-4:]
-            h_records = self.articles_db.get_records('tp=h')
+
             for item in h_records:
-                a_pid = '0'*5 + item.get('121')
-                items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
+                if item.get('706') == 'h':
+                    a_date = 0
+                    if item.get('223') is not None:
+                        a_date = int(item.get('223'))
+                    if int_from_date <= a_date:
+                        a_pid = '0'*5 + item.get('121')
+                        items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
+        return items
+
+    def old_articles(self, from_date=None):
+        items = {}
+        _from_date = 0
+        if from_date is not None:
+            _from_date = int(from_date)
+
+        if self.isis_db is not None:
+            h_records = self.isis_db.get_records('tp=i')
+            issn_id = h_records[0].get('35')
+            pid = '0'*4 + h_records[0].get('36')[4:]
+            issue_pid = h_records[0].get('36')[:4] + pid[-4:]
+            h_records = self.db.get_records('tp=h')
+
+            for item in h_records:
+                a_date = 0
+                if item.get('223') is not None:
+                    a_date = int(item.get('223'))
+                if _from_date <= a_date:
+                    a_pid = '0'*5 + item.get('121')
+                    items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
         return items
 
 
 class ArticlesFiles(object):
 
-    def __init__(self, path, from_date):
-        self.path = path
-        self.from_date = from_date
+    def __init__(self, issue_path, selected_pids):
+        self.issue_path = issue_path
+        self.selected_pids = selected_pids
 
     @property
     def selected_xml_files(self):
         files = {}
-        start_date = self.from_date
-        if start_date is None:
-            start_date = '0'
-        for item in [item for item in os.listdir(self.path) if item.endswith('.xml')]:
-            xml, e = xml_utils.load_xml(os.path.join(self.path, item))
-            a = article.Article(xml, item)
-            if int(a.epub_dateiso) >= int(start_date):
-                files[item] = xml_utils.node_xml(a.tree.find('.'))
+        for filename in self.selected_pids.keys():
+            for xml_folder_path in self.xml_folder_paths:
+                if filename in os.listdir(xml_folder_path):
+                    xml, e = xml_utils.load_xml(os.path.join(xml_folder_path, filename))
+                    a = article.Article(xml, filename)
+                    files[filename] = xml_utils.node_xml(a.tree.find('.'))
+                    break
         return files
 
     @property
-    def suffix(self):
-        return '' if self.from_date is None else self.from_date + '-' + str(utils.now()[0])
+    def xml_folder_paths(self):
+        xml_path_list = []
+        for path in [self.issue_path + '/base_xml/base_source', self.issue_path + '/markup_xml/scielo_package']:
+            if os.path.isdir(path):
+                if len([item for item in os.listdir(path) if item.endswith('.xml')]) > 0:
+                    xml_path_list.append(path)
+        if len(xml_path_list) == 0:
+            xml_path_list = find_xml_files_folders(self.issue_path)
+        return xml_path_list
 
 
 class PubMedXMLMaker(object):
 
-    def __init__(self, articles_files, article_db, issue_assets, xsl_filename):
-        self.issue_assets = issue_assets
-        self.articles_files = articles_files
-        self.article_db = article_db
+    def __init__(self, issue_stuff, xsl_filename):
+        self.issue_stuff = issue_stuff
         self.xsl_filename = xsl_filename
 
     @property
     def pubmed_filename(self):
-        return os.path.join(self.issue_assets.pubmed_path, self.issue_assets.acron + self.issue_assets.issueid + self.articles_files.suffix + '.xml')
+        suffix = '' if self.issue_stuff.from_date is None else self.issue_stuff.from_date + '-' + str(utils.now()[0])
+        return os.path.join(self.issue_stuff.pubmed_path, self.issue_stuff.acron + self.issue_stuff.issueid + suffix + '.xml')
 
     @property
     def temp_xml_filename(self):
@@ -227,16 +276,20 @@ class PubMedXMLMaker(object):
 
     @property
     def articles_filenames_xml_content(self):
-        return '<article-set>' + ''.join(['<article-item filename="' + filename + '">' + item + '</article-item>' for filename, item in self.articles_files.selected_xml_files.items()]) + '</article-set>'
+        return '<article-set>' + ''.join(['<article-item filename="' + filename + '">' + item + '</article-item>' for filename, item in self.issue_stuff.articles_files.selected_xml_files.items()]) + '</article-set>'
 
     @property
     def articles_pids_xml_content(self):
-        return '<pid-set>' + ''.join(['<pid filename="' + k + '">' + v + '</pid>' for k, v in self.article_db.article_pid_items.items()]) + '</pid-set>'
+        return '<pid-set>' + ''.join(['<pid filename="' + k + '">' + v + '</pid>' for k, v in self.issue_stuff.articles_files.selected_pids.items()]) + '</pid-set>'
 
     def execute_procedures(self):
         self.build_pubmed_xml()
-        import webbrowser
-        webbrowser.open('file:///' + self.pubmed_filename, new=2)
+
+        if os.path.isfile(self.pubmed_filename):
+            import webbrowser
+            webbrowser.open('file:///' + self.pubmed_filename, new=2)
+            print(self.pubmed_filename)
+
         # validate
         # envia ftp
 
@@ -246,42 +299,49 @@ class PubMedXMLMaker(object):
 
 def call_execute_pubmed_procedures(args):
 
-    script, path, issue_path, from_date = read_inputs(args)
+    script, issue_path, from_date = read_inputs(args)
 
-    if path is None:
+    if issue_path is None:
         # GUI
-        path, issue_path, from_date = read_form_inputs()
-    else:
-        errors = xml_utils.is_valid_xml_path(path)
-        if len(errors) > 0:
-            messages = []
-            messages.append('\n===== ATTENTION =====\n')
-            messages.append('ERROR: ' + _('Incorrect parameters'))
-            messages.append('\n' + _('Usage') + ':')
-            messages.append('python ' + script + ' <xml_src>')
-            messages.append(_('where') + ':')
-            messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
-            messages.append('\n'.join(errors))
-            utils.display_message('\n'.join(messages))
+        issue_path, from_date = read_form_inputs()
 
-    if path is not None:
+    errors = []
+    if issue_path is None:
+        errors.append('ERROR: ' + _('Incorrect parameters'))
+        errors.append('\n' + _('Usage') + ':')
+        errors.append('python ' + script + ' <issue_path>')
+        errors.append(_('where') + ':')
+        errors.append('  <issue_path> = ' + _('issue folder in serial folder'))
+
+    if not os.path.isdir(issue_path):
+        errors.append(_('issue path is not a folder'))
+
+    if len(errors) == 0:
         config = xc_config.XMLConverterConfiguration(CURRENT_PATH + '/../../scielo_paths.ini')
         ucisis = dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660))
-        issue_assets = IssueAssets(issue_path)
-        article_db = ArticleDB(ucisis, issue_assets)
-        articles_files = ArticlesFiles(path, from_date)
-        pubmed_xml_maker = PubMedXMLMaker(articles_files, article_db, issue_assets, CURRENT_PATH + '/../../pmc/v3.0/xsl/xml2pubmed/xml2pubmed.xsl')
-        pubmed_xml_maker.execute_procedures()
+
+        if ucisis.is_available:
+            issue_stuff = IssueStuff(ucisis, issue_path, from_date)
+
+            pubmed_xml_maker = PubMedXMLMaker(issue_stuff, CURRENT_PATH + '/../../pmc/v3.0/xsl/xml2pubmed/xml2pubmed.xsl')
+            pubmed_xml_maker.execute_procedures()
+        else:
+            errors.append(_('cisis expected'))
+
+    if len(errors) > 0:
+        utils.display_message('\n'.join(errors))
 
 
 def read_inputs(args):
-    #args = [arg.decode(encoding=sys.getfilesystemencoding()) for arg in args]
+    args = [arg.decode(encoding=sys.getfilesystemencoding()).replace('\\', '/') for arg in args]
+    script = None
+    issue_path = None
     from_date = None
-    if len(args) == 3:
-        script, path, issue_path = args
-    elif len(args) == 4:
-        script, path, issue_path, from_date = args
-    return (script, path, issue_path, from_date)
+    if len(args) == 2:
+        script, issue_path = args
+    elif len(args) == 3:
+        script, issue_path, from_date = args
+    return (script, issue_path, from_date)
 
 
 def read_form_inputs(default_path=None):
@@ -295,4 +355,4 @@ def read_form_inputs(default_path=None):
 
     tk_root.mainloop()
     tk_root.focus_set()
-    return form.valid_xml_folder
+    return (form.issue_path, form.from_date)
