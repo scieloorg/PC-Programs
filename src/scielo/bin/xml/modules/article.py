@@ -1536,6 +1536,19 @@ class Article(ArticleXML):
         return article_utils.format_dateiso(self.article_pub_date)
 
     @property
+    def pub_date(self):
+        if self.epub_date is not None:
+            return self.epub_date
+        elif self.epub_ppub_date is not None:
+            return self.epub_ppub_date
+        elif self.collection_date is not None:
+            return self.collection_date
+
+    @property
+    def pub_dateiso(self):
+        return article_utils.format_dateiso(self.pub_date)
+
+    @property
     def pub_date_year(self):
         pubdate = self.article_pub_date
         if pubdate is None:
