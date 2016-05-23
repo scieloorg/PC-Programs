@@ -141,14 +141,14 @@ Seleccione la revista en el campo "collection/journal", el programa llenará alg
 Front
 =====
 
-Tiendo llenado todos los campos, al cliquear en [Ok] será abierta una ventana preguntando si el documento está en el formateo adecuada para efectuar la marcación automática:
+Una vez que se completó el llenado del formulario, al hacer clic en [Ok] se abrirá una ventana preguntando si el documento tiene el formato adecuado para efectuar la marcación automática:
 
 .. image:: img/doc-mkp-mkp-automatic.jpg
    :height: 450px
    :align: center
 
 
-Al cliquear en [Sí], el programa efectuará la marcación automática de los elementos básicos del documento.
+Al hacer clic en [Sí], el programa realizará la marcación automática de los elementos básicos del documento.
 
 .. image:: img/doc-mkp-mkp--auto.jpg
    :height: 400px
@@ -156,7 +156,7 @@ Al cliquear en [Sí], el programa efectuará la marcación automática de los el
    :align: center
 
 
-.. note:: Caso el archivo no esté en el formateo recomendado en "Preparación de Archivos para el Programa Markup", el programa 
+.. note:: Cuando el archivo no tenga el formato recomendado en "Preparación de Archivos para el Programa Markup", el programa 
           no identificará correctamente los elementos.
 
 
