@@ -7,16 +7,16 @@ Cómo usar el Markup
 Introducción
 ============
 
-Este manual tiene como objetivo presentar el uso del programa de marcaje `Markup <markup.html>`_ 
+Este manual tiene como objetivo presentar el uso del programa de marcación `Markup <markup.html>`_ 
 
 
 .. _sugestao-id:
 
-Sugestión de Atribución de "ID"
-===============================
+Recomendaciones para asignar el atributo "ID"
+=============================================
 
-El atributo "ID" es usado para identificar algunos elementos, tornando posible establecer referencias cruzadas entre su llamada en el de correr del texto y el elemento en sí, como figuras, tablas, afiliaciones etc.
-Para composición del "ID" combine el prefijo del tipo de elemento y un número entero, como sigue:
+El atributo "ID" se usa para identificar algunos elementos como figuras, tablas, afiliaciones, etc. Este atributo permite establecer referencias cruzadas entre la mención del elemento en el texto y el elemento en sí. 
+Para determinar el "ID" de un elemento, combine el prefijo del tipo de elemento y un número entero como se muestra a continuación:
 
 +------------------------+---------------------------+---------+---------------------+
 | Elemento XML           | Descripción               | Prefijo | Ejemplo             |
@@ -34,7 +34,7 @@ Para composición del "ID" combine el prefijo del tipo de elemento y un número 
 +------------------------+---------------------------+---------+---------------------+
 | def-list               | Lista de Definiciones     | d       | d1, d2, ...         |
 +------------------------+---------------------------+---------+---------------------+
-| disp-formula           | Equaciones                | e       | e1, e2, ...         |
+| disp-formula           | Ecuaciones                | e       | e1, e2, ...         |
 +------------------------+---------------------------+---------+---------------------+
 | fig                    | Figuras                   | f       | f1, f2, ...         |
 +------------------------+---------------------------+---------+---------------------+
