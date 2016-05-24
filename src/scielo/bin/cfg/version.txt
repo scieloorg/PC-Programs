@@ -2,6 +2,10 @@
 ======
 - XC: 
   - (bug): retraction considered errornously as press release (#2236)
+- PubMed XML Generator
+  - (new) Update the PubMed XML according to "new rules" of PubMed (errata, mult aff, etc)
+  - (bug) Fix limitation of quantity of authors
+
 
 4.0.091 - 11/04/2016
 ====================
