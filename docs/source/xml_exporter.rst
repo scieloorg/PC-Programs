@@ -154,16 +154,25 @@ Double clicking on c:\\scielo\\bin\\xml\\xml_pubmed.py
   .. image:: img/xml2pubmed_window.png
 
 
+
+Select the issue folder
+
+
   .. image:: img/xml2pubmed_chose_folder.png
 
+
+Only if issue is published on batches, such aop or rolling pass, you should inform **from date** to generate XML for the article published from this date to the current date. 
+
+
+  .. image:: img/xml2pubmed_from_date.png
+
+
+
+Click on OK button
 
   .. image:: img/xml2pubmed_chosen_folder.png
 
 
-
-Optional *from date* which select the articles published from this date to current date. It must be used for issues that are published on batches, such as aop and rolling pass.
-
-  .. image:: img/xml2pubmed_from_date.png
 
 
 The program will generate the XML file for articles which has epub date (publication date of ahead) between 20160510 and the current date.
@@ -178,7 +187,7 @@ Or execute it on a terminal:
   .. image:: img/xml2pubmed_terminal.png
 
 
-Optionally informing the date from which
+Optionally informing the **from date**
 
   .. image:: img/xml2pubmed_terminal_from_date.png
 
