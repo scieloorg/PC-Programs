@@ -163,23 +163,24 @@ Select the issue folder
 
 Only if issue is published on batches, such aop or rolling pass, you should inform **from date** to generate XML for the article published from this date to the current date. 
 
+Then click on OK button.
+
+According to the example, the program will create the file: v:\scielo\serial\rsp\v48n5\PubMed\rsp-v48n5-20160510-20160523.xml, containing articles which have epub date between 20160510 and the current date.
+
 
   .. image:: img/xml2pubmed_from_date.png
 
 
 
-Click on OK button
+If it is not an issue published on batches, click on OK button. According to the example, the program will create the file: v:\scielo\serial\rsp\v48n5\PubMed\rsp-v48n5.xml.
+
 
   .. image:: img/xml2pubmed_chosen_folder.png
 
 
 
 
-The program will generate the XML file for articles which has epub date (publication date of ahead) between 20160510 and the current date.
 
-Example:
-
-The name of the XML file will be rsp-v48n5-20160510-20160523.xml.
 
 
 Or execute it on a terminal:
