@@ -1448,29 +1448,29 @@ Figuras
 
 Al hacer la marcación de [xmlbody] el programa identifica automáticamente las imágenes con el elemento "graphic". 
 
-Para marcar el grupo de datos de la figura, seleccione la imagen, su leyenda (label y caption) y fuente, se haya y marque con el elemento [figgrp].
+Para marcar el grupo de datos de la figura, seleccione la imagen, su leyenda (label y caption) y la fuente si existe, marque la selección con el elemento [figgrp].
 
 .. image:: img/doc-mkp-select-fig.jpg
    :height: 400px
    :align: center
 
-* Llene el "id" de la figura en la ventana abierta por el programa.
+* Llene el "id" de la figura en la ventana que abre el programa.
 
 .. image:: img/doc-mkp-id-fig.jpg
    :height: 200px
    :align: center
 
-Certifíquese de que el ID de figura es único en el documento.
+Cerciórese que el ID de la figura es único en el documento.
 
 
 .. image:: img/doc-mkp-fig-incomp.jpg
    :height: 400px
    :align: center
 
-.. note:: la marcación completa de figura es de extrema  importancia. Si la figura no fuera marcada con el elemento [figgrp]  y sus respectivos datos, el programa no generará el elemento [fig] correspondiente en el documento.
+.. note:: La marcación completa de la figura es de extrema importancia. Si la figura no fuera marcada con el elemento [figgrp] y sus respectivos datos, el programa no generará el elemento [fig] correspondiente en el documento.
 
 
-* Después de la marcación de [figgrp], caso la imagen presente información de fuente, seleccione el dato y marque con el elemento [attrib]:
+* Después de la marcación de [figgrp], en caso que la imagen presente información de fuente, seleccione el dato y márquelo con el elemento [attrib]:
 
 .. image:: img/doc-mkp-attrib-fig.jpg
    :height: 400px
@@ -1484,7 +1484,7 @@ Certifíquese de que el ID de figura es único en el documento.
 
 
 
-.. note:: la marcación de label y caption será automática se esté de acuerdo con las instrucciones dadas en `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_, con label y caption bajo la imagen en el archivo .doc. La información de fuente debe estar arriba de la imagen.
+.. note:: La marcación de label y caption será automática si el formato conforme con las instrucciones dadas en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_, con label y caption debajo de la imagen en el archivo .doc. La información de fuente debe estar arriba de la imagen.
 
 
 .. _tabla:
