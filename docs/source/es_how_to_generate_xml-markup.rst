@@ -1319,13 +1319,13 @@ En algunos casos, la marcación automática no identifica la sección correctame
 
 .. _xref:
 
-Referencia Cruzada de Referencias Bibliográficas
+Referencia cruzada de referencias bibliográficas
 ------------------------------------------------
 
-Referencias en el sistema autor-fecha serán identificados automáticamente en el cuerpo del texto solamente si el apellido del autor y la fecha estén marcados en las Referencias Bibliográficas y, sólo si el apellido del autor esté presente en el cuerpo del texto igual al que fue marcado en [Refs].
-Hay algunos casos que el programa Markup no irá a hacer la marcación automática de [xref] del documento. Ex.:
+Las referencias con el patrón autor-fecha serán identificados automáticamente en el cuerpo del texto sólo si el apellido del autor y la fecha están marcados en las *referencias bibliográficas*, y sólo si el apellido del autor está presente en el cuerpo del texto igual al que fue marcado en [refs].
+En algunos casos que el programa Markup no realizará la marcación automática de [xref] en el documento. Ej.:
 
-**Citaciones de autor**
+**Citas de autor**
 
 
 *Apellido del autor + "in press" o derivados:*
@@ -1341,30 +1341,30 @@ Hay algunos casos que el programa Markup no irá a hacer la marcación automáti
   :height: 150px
   :align: center
 
-Para identificar el [xref] de las citaciones que no fueron marcadas automáticamente, primeramente verifique cual el ID de la referencia bibliográfica no identificada, en seguida seleccione la citación deseada y marque con el elemento [xref].
+Para identificar el [xref] de las citas que no fueron marcadas automáticamente, primero identifique el ID de la *referencia bibliográfica* no identificada, enseguida seleccione la cita deseada y márquela con el elemento [xref].
 
 .. image:: img/doc-mkp-xref-manual.jpg
    :height: 300px
    :align: center
 
 
-Llene solo los campos "ref-type" y "rid". En "ref-type", seleccione el tipo de referencia cruzada que será hecho, en ese caso "Referencia Bibliográfica", en seguida indique el ID correspondiente a la referencia bibliográfica citada. Confiera y haga un clic en [Continuar].
+Llene sólo los campos "ref-type" y "rid". En "ref-type", seleccione el tipo de referencia cruzada que corresponda, en este caso "Referencia bibliográfica", enseguida indique el ID correspondiente a la referencia bibliográfica citada. Verifique y de clic en [Continuar].
 
 .. image:: img/doc-mkp-xref-manual-refs.jpg
    :height: 180px
    :align: center
 
-.. note:: No insiera enlace en el dato a ser marcado.
+.. note:: No inserte hipervínculos en el dato a ser marcado.
 
 
-**Llamada de Cuadros, Ecuaciones e Cajas de Texto:**
+**Llamadas de cuadros, ecuaciones y cajas de texto:**
 
-La marcación de las referencias cruzadas de cuadros, ecuaciones y Cajas de texto sigue las mismas etapas descriptas en referencias bibliográficas.
+La marcación de las referencias cruzadas en cuadros, ecuaciones y cajas de texto sigue las mismas etapas descritas en las referencias bibliográficas.
 
 
 **Cuadro:**
 
-Seleccione [ref-type] del tipo figura e indique la secuencia del ID en el documento para este elemento.
+Seleccione [ref-type] de tipo "Figura" e indique la secuencia del ID en el documento para este elemento.
 
 .. image:: img/doc-mkp-chart.jpg
    :height: 100px
@@ -1379,7 +1379,7 @@ Seleccione [ref-type] del tipo figura e indique la secuencia del ID en el docume
 
 **Ecuaciones:**
 
-Seleccione [ref-type] del tipo ecuación e indique la secuencia del ID en el documento para este elemento.
+Seleccione [ref-type] de tipo "Fórmula" e indique la secuencia del ID en el documento para este elemento.
 
 
 .. image:: img/doc-mkp-eq-man.jpg
@@ -1393,9 +1393,9 @@ Seleccione [ref-type] del tipo ecuación e indique la secuencia del ID en el doc
    :align: center
 
 
-**Caja de Texto:**
+**Caja de texto:**
 
-Seleccione [ref-type] del tipo Caja de texto e indique la secuencia del ID en el documento para este elemento.
+Seleccione [ref-type] de tipo "Caja de texto o barra lateral" e indique la secuencia del ID en el documento para este elemento.
 
 .. image:: img/doc-mkp-box-man.jpg
    :height: 280px
