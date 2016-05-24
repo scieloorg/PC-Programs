@@ -336,7 +336,7 @@ En el campo "icountry" seleccione el país de la institución mayor (orgname), e
 Resúmenes
 =========
 
-Los resúmenes deben ser identificados manualmente. Para marcación de resúmenes simples (sin secciones) e para los resúmenes estructurados (con secciones) utilizar el elemento [xmlabstr]. En la marcación, seleccione el título del resumen y el texto y, en seguida, marque con el elemento [xmlabstr].
+Los resúmenes deben ser identificados manualmente. Para la marcación de resúmenes simples (sin secciones) y para los resúmenes estructurados (con secciones) utilice el elemento [xmlabstr]. En la marcación, seleccione el título del resumen y el texto, en seguida marque con el elemento [xmlabstr].
 
 Resumen sin Sección:
 --------------------
@@ -348,7 +348,7 @@ Resumen sin Sección:
    :align: center
 
 
-Cuando cliquear en [xmlabstr] el programa abrirá una ventana donde si debe seleccionar el idioma del resumen marcado:
+Cuando haga clic en [xmlabstr] el programa abrirá una ventana donde debe seleccionar el idioma del resumen marcado:
 
 
 **marcación:** 
@@ -365,13 +365,13 @@ Cuando cliquear en [xmlabstr] el programa abrirá una ventana donde si debe sele
    :align: center
 
 
-Ya en resúmenes estructurados, el programa también marcará cada sección del resumen y sus respectivos párrafos.
+En resúmenes estructurados, el programa también marcará cada sección del resumen y sus respectivos párrafos.
 
 
 Resumen con Sección:
 --------------------
 
-Siga los mismos pasos descriptos para resumen sin sección:
+Siga los mismos pasos descritos para resumen sin sección:
 
 
 **seleccionando:** 
