@@ -270,17 +270,17 @@ Seleccione el nombre del grupo o institución e identifique con el elemento: [on
 Contrib-ID
 ==========
 
-Autores que presentan registro en el ORCID o en el Lattes deben inserir el link de registro al lado del nombre, después el label del autor:
+Los autores que presentan su registro en ORCID o en Lattes deben insertar el link de registro al lado de su nombre, justo después de la etiqueta del autor:
 
 .. image:: img/mkp-contrib-id.jpg
    :height: 230px
    :align: center
 
-Al hacer la marcación de [doc] el programa identificará automáticamente todos los datos iniciales del documento, inclusive marcará en [author] el link de registro.
-Aún que el programa incluya el link en el elemento [author], será necesario completar la marcación de ese dado.
+Al hacer la marcación con [doc] el programa identificará automáticamente todos los datos iniciales del documento, inclusive marcará el link de registro en [author].
+Aunque el programa incluya el link en el elemento [author], será necesario completar la marcación de ese dato.
 
-Para eso, entre en el nivel de [autor], seleccione el link del autor  y haga un clic en [author-id].
-En la ventana abierta por el programa, seleccione el tipo de registro del autor: si lattes o ORCID  y haga un clic en [Continuar]
+Para eso, vaya al nivel de [autor], seleccione el link del autor y haga clic en [author-id].
+En la ventana abierta por el programa, seleccione el tipo de registro del autor: lattes u ORCID y haga clic en [Continuar]
 
 .. image:: img/mkp-marcando-id-contrib.jpg
    :height: 230px
