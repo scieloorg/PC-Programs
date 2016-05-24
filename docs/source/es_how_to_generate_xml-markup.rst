@@ -1233,9 +1233,9 @@ xmlbody
 =======
 
 
-Tenido formateado el cuerpo del texto de acuerdo con el ítem `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ y después de la marcación de las referencias bibliográficas, es posible iniciar la marcación del [xmlbody].
+Con el cuerpo del texto formateado de acuerdo con las instrucciones de `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ y después de haber realizado la marcación de referencias bibliográficas, es posible iniciar con la marcación de [xmlbody].
 
-Seleccione todo el cuerpo del texto y haga un clic en [xmlbody], confiar si secciones, subsecciones, citaciones etc las cuales son presentadas en la ventana abierta por el programa y, si necesario, corrija y haga un clic en "Aplicar".
+Seleccione todo el cuerpo del texto y de clic en el botón [xmlbody], verificar las secciones, subsecciones, citas, etc. presentadas en la ventana que abre el programa, y si es necesario corrija y de clic en "Aplicar".
 
 .. image:: img/doc-mkp-select-xmlbody.jpg
    :height: 300px
@@ -1247,37 +1247,37 @@ Seleccione todo el cuerpo del texto y haga un clic en [xmlbody], confiar si secc
    :width: 350px
    :align: center
 
-.. note:: Caso haya alguna información incorrecta, seleccione el ítem a ser corregido en la ventana, clique en el menú dropdown al lado del ícono "Corregir", seleccione la opción correcta  y haga un clic en "Corregir". Confiera nuevamente  y haga un clic en "Aplicar".
+.. note:: En caso que alguna información sea incorrecta, seleccione el ítem a ser corregido en la ventana, seleccione la opción correcta en el menú desplegable al lado del botón "Corregir", de clic en "Corregir". Verifique nuevamente  y de clic en "Aplicar".
 
 
-Al cliquear en "Aplicar" el programa preguntará si las referencias en el cuerpo del texto obedecen el padrón de citación author-fecha. Si el documento presenta ese padrón, haga un clic en [Sí], caso contrario, haga un clic en [No].
+Al dar clic en "Aplicar" el programa preguntará si las referencias en el cuerpo del texto se ajustan al patrón de citación autor-fecha. Si el documento presenta este patrón, de clic en [Sí], en caso contrario de clic en [No].
 
 
 .. image:: img/doc-mkp-refs-padrao.jpg
    :height: 300px
    :align: center
 
-**Sistema author-fecha**
+**Patrón autor-fecha**
 
 .. image:: img/doc-mkp-ref-author.jpg
    :height: 200px
    :align: center
 
-**Sistema numérico**
+**Patrón numérico**
 
 .. image:: img/doc-mkp-ref-num.jpg
    :height: 250px
    :align: center
 
 
-Es a partir del formateo del documento indicado en el `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ que el programa marca automáticamente secciones, subsecciones, párrafos, referencias de autores en el cuerpo del texto, llamadas de figuras y tablas, ecuaciones en línea etc.
+Es a partir del documento formateado de acuerdo con las instrucciones de `Preaparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ que el programa marca automáticamente secciones, subsecciones, párrafos, referencias de autores en el cuerpo del texto, llamadas a figuras y tablas, ecuaciones en línea etc.
 
 .. image:: img/doc-mkp-complete.jpg
    :height: 300px
    :width: 200px
    :align: center
 
-Verifique se los datos fueron marcados correctamente y complete la marcación de los elementos que aún no fueron identificados en el documento.
+Verifique si los datos fueron marcados correctamente y complete la marcación de los elementos que no fueron identificados en el documento.
 
 
 .. raw:: html
