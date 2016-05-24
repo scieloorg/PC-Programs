@@ -1419,7 +1419,7 @@ Seleccione [ref-type] de tipo "Caja de texto o barra lateral" e indique la secue
 Párrafos
 --------
 
-Los párrafos son marcados automáticamente en el cuerpo del texto al hacer la identificación de [xmlbody]. Caso el programa no tenga marcado un párrafo o caso la marcación automática tenga identificado un párrafo con el elemento incorrecto, es posible hacer la marcación manual de ese dato. Para eso, seleccione el párrafo deseado, verifique se el párrafo pertenece a alguna sección o subsección y encuentre el elemento [p] en los niveles de [sec] o [subsec].
+Los párrafos son marcados automáticamente en el cuerpo del texto al hacer la identificación de [xmlbody]. En caso que el programa no haya marcado un párrafo o que la marcación automática haya identificado un párrafo con el elemento incorrecto, es posible realizar la marcación manual de ese dato. Para ello, seleccione el párrafo deseado, verifique si el párrafo pertenece a alguna sección o subsección y ubique el elemento [p] dentro los niveles de [sec] o [subsec].
 
 
 .. image:: img/doc-mkp-subsec-p.jpg
