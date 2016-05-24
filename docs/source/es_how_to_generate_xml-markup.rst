@@ -169,15 +169,15 @@ Después de la marcación automática es necesario completar la marcación de lo
 Doctitle
 --------
 
-Confiera el idioma inserido en [doctitle] para títulos traducidos y, si necesario, corrija.
-Para corregir, seleccione el elemento "incorrecta" y haga un clic en el  "lápiz" para editar los atributos:
+Verifique que el idioma insertado en [doctitle] para títulos traducidos sea correcto, si es necesario corrija.
+Para corregir, seleccione el elemento incorrecto y haga clic en el ícono del "lápiz" para editar los atributos:
 
 
 .. image:: img/doc-mkp-language-doctitle.jpg
    :height: 400px
    :align: center
 
-Haga el mismo para los demás títulos traducidos.
+Realice el mismo procedimiento para los demás títulos traducidos.
 
 
 .. _autores:
