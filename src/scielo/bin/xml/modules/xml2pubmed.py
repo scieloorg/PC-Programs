@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import sys
+import shutil
 import Tkinter
 
 from __init__ import _
@@ -126,7 +127,6 @@ class InputForm(object):
     def ok(self):
         self.validate_issue_folder()
         self.from_date = self.tkFrame.input_from_date.get()
-        print(self.from_date)
         if self.issue_path is None:
             self.display_message(_('Select the issue folder (serial/<acron>/<issue number>).'), '#CE3B67')
         else:
@@ -149,12 +149,18 @@ class IssueStuff(object):
         self.pubmed_path = issue_path + '/PubMed'
         if not os.path.isdir(self.pubmed_path):
             os.makedirs(self.pubmed_path)
+        self.temp_path = issue_path + '/TMP'
+        if not os.path.isdir(self.temp_path):
+            os.makedirs(self.temp_path)
         self.articles_db_filename = issue_path + '/base/' + self.issueid
         self.from_date = from_date
+        self.tmp_db_filename = self.temp_path + '/pubmed_tmp_' + self.issueid
+        shutil.copyfile(self.articles_db_filename + '.mst', self.tmp_db_filename + '.mst')
+        shutil.copyfile(self.articles_db_filename + '.xrf', self.tmp_db_filename + '.xrf')
 
     @property
     def articles_db(self):
-        return ArticlesDB(self.ucisis, self.articles_db_filename)
+        return ArticlesDB(self.ucisis, self.tmp_db_filename)
 
     @property
     def articles_files(self):
@@ -165,9 +171,11 @@ class IssueStuff(object):
 class ArticlesDB(object):
 
     def __init__(self, ucisis, db_filename):
+
         self.isis_db = None
         if os.path.isfile(db_filename + '.mst'):
-            self.isis_db = dbm_isis.IsisDB(ucisis, db_filename, db_filename + '.fst')
+            self.isis_db = dbm_isis.IsisDB(ucisis, db_filename, CURRENT_PATH + '/articles.fst')
+            self.isis_db.update_indexes()
         else:
             print('Not found: ' + db_filename)
 
@@ -182,8 +190,8 @@ class ArticlesDB(object):
                 int_from_date = int(from_date)
 
         if self.isis_db is not None:
-            h_records = self.isis_db.get_records()
-            h_records = [record for record in h_records if record.get('706') in 'ih']
+            h_records = self.isis_db.get_records('tp=i or tp=h')
+            #h_records = [record for record in h_records if record.get('706') in 'ih']
 
             issn_id = h_records[0].get('35')
             pid = '0'*4 + h_records[0].get('36')[4:]
@@ -191,34 +199,12 @@ class ArticlesDB(object):
 
             for item in h_records:
                 if item.get('706') == 'h':
-                    a_date = 0
+                    a_date = utils.now()[0]
                     if item.get('223') is not None:
                         a_date = int(item.get('223'))
                     if int_from_date <= a_date:
                         a_pid = '0'*5 + item.get('121')
                         items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
-        return items
-
-    def old_articles(self, from_date=None):
-        items = {}
-        _from_date = 0
-        if from_date is not None:
-            _from_date = int(from_date)
-
-        if self.isis_db is not None:
-            h_records = self.isis_db.get_records('tp=i')
-            issn_id = h_records[0].get('35')
-            pid = '0'*4 + h_records[0].get('36')[4:]
-            issue_pid = h_records[0].get('36')[:4] + pid[-4:]
-            h_records = self.db.get_records('tp=h')
-
-            for item in h_records:
-                a_date = 0
-                if item.get('223') is not None:
-                    a_date = int(item.get('223'))
-                if _from_date <= a_date:
-                    a_pid = '0'*5 + item.get('121')
-                    items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
         return items
 
 
@@ -260,12 +246,12 @@ class PubMedXMLMaker(object):
 
     @property
     def pubmed_filename(self):
-        suffix = '' if self.issue_stuff.from_date is None else self.issue_stuff.from_date + '-' + str(utils.now()[0])
-        return os.path.join(self.issue_stuff.pubmed_path, self.issue_stuff.acron + self.issue_stuff.issueid + suffix + '.xml')
+        suffix = '' if self.issue_stuff.from_date is None else '-' + self.issue_stuff.from_date + '-' + str(utils.now()[0])
+        return os.path.join(self.issue_stuff.pubmed_path, self.issue_stuff.acron + '-' + self.issue_stuff.issueid + suffix + '.xml')
 
     @property
     def temp_xml_filename(self):
-        temp_filename = self.pubmed_filename[:-4] + 'tmp.xml'
+        temp_filename = self.issue_stuff.temp_path + '/pubmed_tmp_' + os.path.basename(self.pubmed_filename)
         xml_content = '<?xml version="1.0" encoding="utf-8"?>\n'
         xml_content += '<root>'
         xml_content += self.articles_filenames_xml_content
@@ -290,11 +276,17 @@ class PubMedXMLMaker(object):
             webbrowser.open('file:///' + self.pubmed_filename, new=2)
             print(self.pubmed_filename)
 
+        self.clean_temporary_files()
         # validate
         # envia ftp
 
     def build_pubmed_xml(self):
         java_xml_utils.xml_transform(self.temp_xml_filename, self.xsl_filename, self.pubmed_filename)
+
+    def clean_temporary_files(self):
+        for item in os.listdir(self.issue_stuff.temp_path):
+            if item.startswith('pubmed_'):
+                os.unlink(self.issue_stuff.temp_path + '/' + item)
 
 
 def call_execute_pubmed_procedures(args):
@@ -304,9 +296,10 @@ def call_execute_pubmed_procedures(args):
     if issue_path is None:
         # GUI
         issue_path, from_date = read_form_inputs()
+        script = 'exit'
 
     errors = []
-    if issue_path is None:
+    if issue_path is None and script != 'exit':
         errors.append('ERROR: ' + _('Incorrect parameters'))
         errors.append('\n' + _('Usage') + ':')
         errors.append('python ' + script + ' <issue_path>')

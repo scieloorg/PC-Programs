@@ -16,7 +16,11 @@
 	
 	<xsl:template match="/">
 		<ArticleSet>
-			<xsl:apply-templates select=".//article-set//article-item"></xsl:apply-templates>	
+			<xsl:apply-templates select=".//article-set//article-item">
+				<xsl:sort select="article//article-meta/pub-date[@pub-type='epub']/month" order="ascending" data-type="number"/>
+				<xsl:sort select="article//article-meta/pub-date[@pub-type='epub']/day" order="ascending" data-type="number"/>
+				<xsl:sort select="article//article-meta/fpage" order="ascending" data-type="number"/>
+			</xsl:apply-templates>	
 		</ArticleSet>
 	</xsl:template>
 	
