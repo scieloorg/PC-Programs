@@ -293,10 +293,10 @@ En la ventana abierta por el programa, seleccione el tipo de registro del autor:
 Afiliaciones
 ------------
 
-El programa Markup hace la identificación solo del grupo de datos de cada afiliación con el elemento [normaff], o sea, la marcación detallada de las afiliaciones no es hecha automáticamente.
-Complete la marcación de las afiliaciones identificando: institución mayor [orgname], división 1 [orgdiv1], división 2 [orgdiv2], ciudad [city], estado [state] (eses 4 últimos, si presentes) y el país [country].
+El programa Markup hace la identificación del grupo de datos de cada afiliación con el elemento [normaff], la marcación detallada de las afiliaciones no se realiza automáticamente.
+Complete la marcación de las afiliaciones identificando: institución mayor [orgname], división 1 [orgdiv1], división 2 [orgdiv2], ciudad [city], estado [state] (los 4 últimos, si están presentes) y el país [country].
 
-Para hacer la identificación de los elementos arriba, va al nivel inferior del elemento [normaff] y haga la marcación detallada de cada afiliación.
+Para hacer la identificación de los elementos arriba mencionados, vaya al nivel inferior del elemento [normaff] y haga la marcación detallada de cada afiliación.
 
 
 .. image:: img/doc-mkp-detalhamento-aff.jpg
@@ -304,7 +304,7 @@ Para hacer la identificación de los elementos arriba, va al nivel inferior del 
    :align: center
 
 
-En la sequencia, será necesario verificar se la institución marcada y su país correspondiente, posee forma normalizada por SciELO. Para eso, seleccione el elemento [normaff]  y haga un clic en el "lápiz" para editar los atributos. El programa abrirá una ventana para la normalización de los elementos indicados en los campos en blanco.
+En la secuencia, será necesario verificar si la institución marcada y su país poseen forma normalizada por SciELO. Para eso, seleccione el elemento [normaff] y haga clic en el ícono del "lápiz" para editar los atributos. El programa abrirá una ventana para consultar la normalización de los elementos que se indiquen en los campos en blanco.
 
 
 .. image:: img/doc-mkp-normalizacao-aff.jpg
@@ -313,7 +313,7 @@ En la sequencia, será necesario verificar se la institución marcada y su país
 
 
 
-En el campo "icountry" seleccione el país de la institución mayor (orgname), en seguida haga un clíc en "find" para encontrar la institución normalizada. Al hacer ese procedimiento, el programa Markup consultará nuestra base de datos de instituciones normalizadas y verificará si la institución seleccionada consta en la lista.
+En el campo "icountry" seleccione el país de la institución mayor (orgname), en seguida haga clic en "find" para buscar la institución normalizada. Al hacer ese procedimiento, el programa Markup consultará nuestra base de datos de instituciones normalizadas y verificará si la institución seleccionada se encuentra en la lista.
 
 
 .. image:: img/doc-mkp-normalizadas.jpg
@@ -328,7 +328,7 @@ En el campo "icountry" seleccione el país de la institución mayor (orgname), e
 
 
 
-.. note:: Haga la búsqueda por el idioma de origen de la institución, excepto para lenguas no latinas, cuando la consulta deberá ser hecha en inglés. Caso la institución no exista en la lista del Markup, seleccione el elemento "No match found"  y haga un clic en [OK].
+.. note:: Realice la búsqueda de la institución con su nombre en el idioma de origen, excepto para lenguas no latinas, cuando la consulta deberá ser hecha en inglés. Cuando la institución no exista en la lista del Markup, seleccione el elemento "No match found" y haga clic en [OK].
 
 
 .. _resumen:
