@@ -185,16 +185,16 @@ Realice el mismo procedimiento para los demás títulos traducidos.
 Autores
 -------
 
-Algunos autores presentan más que 1 label al lado del nombre, sin embargo el programa no hace la marcación automática de más que 1 label. De esa forma, seleccione el label del autor y marque con el elemento [xref].
+Algunos autores presentan más de una etiqueta al lado de su nombre, pero el programa solamente hace la marcación automática de una etiqueta. Entonces, es necesario seleccionar las demás etiquetas que se presenten y marcarlas con el elemento [xref].
 
 
 .. image:: img/doc-mkp-xref-label.jpg
    :height: 300px
    :align: center
 
-Por si tratar de referencia cruzada (xref) de afiliación, el tipo de xref (ref-type) seleccionado fue el "affiliation" y el rid (relacionado al ID) "aff3" para relacionar el label 3 a la afiliación correspondiente.
+Por tratarse de una referencia cruzada (xref) de afiliación, el tipo de xref (ref-type) seleccionado fue "affiliation" y el rid (relacionado al ID) "aff3" para relacionar la etiqueta 3 con la afiliación correspondiente.
 
-El programa Markup no hace marcación automática de función de autor cómo, por ejemplo, el cargo ejercido. Para eso, es necesario seleccionar el dato que consta al lado del nombre del autor, ir para el nivel inferior del elemento [author] e identificar ese dato con el elemento [role].
+El programa Markup no hace marcación automática de la función del autor, entendiéndose como el cargo ejercido. Para marcarlo, es necesario seleccionar el dato que aparece al lado del nombre del autor, ir al nivel inferior del elemento [author] e identificar ese dato con el elemento [role].
 
 .. image:: img/doc-mkp-role-author.jpg
    :height: 230px
@@ -206,8 +206,7 @@ El programa Markup no hace marcación automática de función de autor cómo, po
    :align: center
 
 
-.. note:: el programa no identifica automáticamente símbolos o letras como label, la cual debe ser marcada manualmente, observándose 
-          el tipo de referencia cruzada a ser incluida.
+.. note:: El programa no identifica automáticamente símbolos o letras como etiqueta, por lo que deben marcarse manualmente, observando el tipo de referencia cruzada a ser incluida.
 
 
 .. raw:: html
