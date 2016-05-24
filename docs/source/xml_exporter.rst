@@ -165,14 +165,14 @@ Only if issue is published on batches, such aop or rolling pass, you should info
 
 Then click on OK button.
 
-According to the example, the program will create the file: v:\scielo\serial\rsp\v48n5\PubMed\rsp-v48n5-20160510-20160523.xml, containing articles which have epub date between 20160510 and the current date.
+According to the example, the program will create the file: v:\\scielo\\serial\\rsp\\v48n5\\PubMed\\rsp-v48n5-20160510-20160523.xml, containing articles which have epub date between 20160510 and the current date.
 
 
   .. image:: img/xml2pubmed_from_date.png
 
 
 
-If it is not an issue published on batches, click on OK button. According to the example, the program will create the file: v:\scielo\serial\rsp\v48n5\PubMed\rsp-v48n5.xml.
+If it is not an issue published on batches, click on OK button. According to the example, the program will create the file: v:\\scielo\\serial\\rsp\\v48n5\\PubMed\\rsp-v48n5.xml.
 
 
   .. image:: img/xml2pubmed_chosen_folder.png
