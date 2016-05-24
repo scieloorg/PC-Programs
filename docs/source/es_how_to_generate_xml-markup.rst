@@ -1287,15 +1287,15 @@ Verifique si los datos fueron marcados correctamente y complete la marcación de
 
 .. _sección:
 
-Secciones y Subsecciones
+Secciones y subsecciones
 ------------------------
 
-Después de la marcación automática del [xmlbody], certifíquese de que los tipos de secciones fueron seleccionados correctamente.
+Después de la marcación automática de [xmlbody], cerciórese que los tipos de secciones fueron asignados correctamente.
 
 .. image:: img/doc-mkp-section-combinada.jpg
    :align: center
 
-En algunos casos, la marcación automática no identifica la sección correctamente. En esos casos, seleccione la sección, haga un clic en el lápiz "Editar Atributos" y indique el tipo correcto de sección.
+En algunos casos, la marcación automática no identifica la sección correctamente. En esos casos, seleccione la sección, de clic en el lápiz "Editar Atributos" e indique el tipo correcto de sección.
 
 .. image:: img/doc-mkp-sec-compost.jpg
    :height: 250px
@@ -1308,7 +1308,7 @@ En algunos casos, la marcación automática no identifica la sección correctame
    :height: 200px
    :align: center
 
-.. note:: En el menú dropdown las secciones combinadas son precedidas por asterisco
+.. note:: En el menú desplegable las secciones combinadas inician con un asterisco.
 
 
 
