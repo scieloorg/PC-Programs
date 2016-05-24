@@ -246,8 +246,8 @@ Sigue el resultado de la identificación de asignatura del autor/editor:
 On Behalf
 =========
 
-El elemento [on-behalf] es utilizado cuando un autor ejerce papel de representante de un grupo o institución. 
-Para identificar ese dato, verifique se la información del representante del grupo está en la misma línea del autor anterior. Ejemplo:
+El elemento [on-behalf] se utiliza cuando un autor ejerce el papel de representante de un grupo o de una institución. 
+Para identificar ese dato, verifique que la información del representante del grupo se encuentre en la misma línea del nombre del autor. Ejemplo:
 
 
     Fernando Augusto Proietti :sup:`2`  Interdisciplinary HTLV Research Group
