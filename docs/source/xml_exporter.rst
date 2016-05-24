@@ -133,4 +133,52 @@ The program will generate the XML file for articles which has ahpdate (publicati
 
 The name of the XML file will be hcsm2014nahead20140100-20140228.xml.
 
+.. pcprograms documentation master file, created by
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+
+
+SciELO XML to PubMed XML
+========================
+
+Program to export XML to PubMed, according to http://www.ncbi.nlm.nih.gov/books/NBK3828/, using SciELO XML (SciELO Publishing Schema).
+    
+
+How to execute
+--------------
+
+Double clicking on c:\\scielo\\bin\\xml\\xml_pubmed.py
+
+
+  .. image:: img/xml2pubmed_window.png
+
+
+  .. image:: img/xml2pubmed_chose_folder.png
+
+
+  .. image:: img/xml2pubmed_chosen_folder.png
+
+
+
+Optional *from date* which select the articles published from this date to current date. It must be used for issues that are published on batches, such as aop and rolling pass.
+
+  .. image:: img/xml2pubmed_from_date.png
+
+
+The program will generate the XML file for articles which has epub date (publication date of ahead) between 20160510 and the current date.
+
+Example:
+
+The name of the XML file will be rsp-v48n5-20160510-20160523.xml.
+
+
+Or execute it on a terminal:
+
+  .. image:: img/xml2pubmed_terminal.png
+
+
+Optionally informing the date from which
+
+  .. image:: img/xml2pubmed_terminal_from_date.png
 

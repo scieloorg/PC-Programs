@@ -307,10 +307,9 @@ class CISIS(object):
 
             cmd = self.cisis_path + '/mx ' + mst_filename + ' +control now > ' + temp_file.name.replace('\\', '/')
             run_command(cmd)
-            #print(cmd)
+            ##print(cmd)
             if os.path.isfile(temp_file.name):
                 s = open(temp_file.name, 'r').read()
-                #print(s)
                 try:
                     os.unlink(temp_file.name)
                 except:
@@ -538,6 +537,6 @@ class IsisDB(object):
 
 def run_command(cmd):
     if isinstance(cmd, unicode):
-        #print(cmd)
+        ##print(cmd)
         cmd = cmd.encode(encoding=sys.getfilesystemencoding())
     os.system(cmd)

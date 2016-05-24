@@ -16,7 +16,11 @@
 	
 	<xsl:template match="/">
 		<ArticleSet>
-			<xsl:apply-templates select=".//article-set//article-item"></xsl:apply-templates>	
+			<xsl:apply-templates select=".//article-set//article-item">
+				<xsl:sort select="article//article-meta/pub-date[@pub-type='epub']/month" order="ascending" data-type="number"/>
+				<xsl:sort select="article//article-meta/pub-date[@pub-type='epub']/day" order="ascending" data-type="number"/>
+				<xsl:sort select="article//article-meta/fpage" order="ascending" data-type="number"/>
+			</xsl:apply-templates>	
 		</ArticleSet>
 	</xsl:template>
 	
@@ -38,7 +42,7 @@
 				<xsl:apply-templates select="." mode="scielo-xml-issue_no"/>
 				<xsl:apply-templates select="." mode="scielo-xml-publishing_dateiso"/>
 			</Journal>
-			<xsl:if test="article-id[@specific-use='previous-pid']">
+			<xsl:if test=".//article-meta/article-id[@specific-use='previous-pid']">
 				<Replaces IdType="pii">
 					<xsl:apply-templates select=".//article-meta/article-id[@specific-use='previous-pid']" mode="scielo-xml-pii"/>
 				</Replaces>
@@ -66,7 +70,14 @@
 			<PublicationType><xsl:apply-templates select="." mode="scielo-xml-publication-type"/></PublicationType>
 			<ArticleIdList>
 				<ArticleId IdType="pii">
-					<xsl:apply-templates select=".//article-meta/article-id[@specific-use='previous-pid']" mode="scielo-xml-pii"/>
+					<xsl:choose>
+						<xsl:when test=".//article-meta/article-id[@specific-use='previous-pid']">
+							<xsl:apply-templates select=".//article-meta/article-id[@specific-use='previous-pid']" mode="scielo-xml-pii"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$pid"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</ArticleId>
 				<ArticleId IdType="doi">
 					<xsl:value-of select=".//front//article-id[@pub-id-type='doi']"/>
@@ -79,16 +90,15 @@
 				</History>
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-abstract"/>
-			<xsl:if test="@article-type='correction' or @article-type='retraction'">
-				<xsl:apply-templates select="." mode="scielo-xml-objects"></xsl:apply-templates>
-			</xsl:if>
+			<xsl:apply-templates select="." mode="scielo-xml-objects"/>
 		</Article>
 	</xsl:template>
-	<xsl:template match="article[@article-type='correction' or @article-type='retraction']" mode="scielo-xml-object">
+	<xsl:template match="related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object">
+		<xsl:param name="article_type"/>
 		<Object>
 			<xsl:attribute name="Type"><xsl:choose>
-				<xsl:when test="@article-type='correction'">Erratum</xsl:when>
-				<xsl:when test="@article-type='retraction'">Retraction</xsl:when>
+				<xsl:when test="$article_type='correction'">Erratum</xsl:when>
+				<xsl:when test="$article_type='retraction'">Retraction</xsl:when>
 			</xsl:choose></xsl:attribute>
 			<Param Name="type"><xsl:choose>
 				<xsl:when test="@ext-link-type='doi'"><xsl:value-of select="@ext-link-type"/></xsl:when>
@@ -97,9 +107,13 @@
 			<Param Name="id"><xsl:value-of select="@xlink:href"/></Param>
 		</Object>
 	</xsl:template>
+	<xsl:template match="article" mode="scielo-xml-objects">
+	</xsl:template>
 	<xsl:template match="article[@article-type='correction' or @article-type='retraction']" mode="scielo-xml-objects">
 		<ObjectList>
-			<xsl:apply-templates select=".//related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object"></xsl:apply-templates>
+			<xsl:apply-templates select=".//related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object">
+				<xsl:with-param name="article_type"><xsl:value-of select="@article-type"/></xsl:with-param>
+			</xsl:apply-templates>
 		</ObjectList>
 	</xsl:template>
 	<xsl:template match="article[@article-type='case-report']" mode="scielo-xml-publication-type">Case Reports</xsl:template>
@@ -248,20 +262,18 @@
 		</Issn>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-volume_id">
-		<Volume>
-			<xsl:apply-templates select=".//front//volume"/>
-			<xsl:if test="substring(.//front//issue,1,5)='Suppl'">
-				<xsl:value-of select=".//front//issue"/>
-			</xsl:if>
-		</Volume>
+		<xsl:variable name="volume"><xsl:apply-templates select=".//front//volume"/>
+		<xsl:if test="substring(.//front//issue,1,5)='Suppl'">
+			<xsl:value-of select=".//front//issue"/>
+		</xsl:if></xsl:variable>
+		<xsl:if test="$volume!=''">
+			<Volume><xsl:value-of select="$volume"/></Volume>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-issue_no">
-		<Issue>
-			<xsl:if test=".//front//issue!='00'">
-				<xsl:value-of select=".//front//issue"/>
-
+			<xsl:if test=".//front//issue!='00' and .//front//issue!=''">
+				<Issue><xsl:value-of select=".//front//issue"/></Issue>
 			</xsl:if>
-		</Issue>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-publishing_dateiso">
 		<xsl:choose>
