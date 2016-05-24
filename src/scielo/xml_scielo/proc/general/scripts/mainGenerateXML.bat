@@ -107,6 +107,11 @@ echo Generating XML
 %MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'call scripts\generateXML.bat %MX% %DATABASE_DESTINATION% ',v1,' ',v2,' ',v3,' ',v4,' ',v5/ fi" now> temp\generateXML4scilista.bat
 call temp\generateXML4scilista.bat
 
+if not "%1"=="PUBMED" goto END
+if not exist ..\..\..\bin\xml\xml_pubmed.py goto END
+%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'python ..\..\..\bin\xml\xml_pubmed.py %Serial_Directory%\',v1,'\',v2,' ',v4,' ',v5/ fi" now> temp\xml_pubmed.bat
+call temp\xml_pubmed.bat
+
 goto END
 
 :ERROR

@@ -139,7 +139,7 @@ class InputForm(object):
 
 class IssueStuff(object):
 
-    def __init__(self, ucisis, issue_path, from_date):
+    def __init__(self, ucisis, issue_path, from_date, final_date):
         self.ucisis = ucisis
         self.issue_path = issue_path
         self.serial_path = os.path.dirname(os.path.dirname(issue_path))
@@ -154,6 +154,11 @@ class IssueStuff(object):
             os.makedirs(self.temp_path)
         self.articles_db_filename = issue_path + '/base/' + self.issueid
         self.from_date = from_date
+        if self.from_date is None:
+            self.from_date = 0
+        self.final_date = final_date
+        if self.final_date is None:
+            self.final_date = utils.now()[0]
         self.tmp_db_filename = self.temp_path + '/pubmed_tmp_' + self.issueid
         shutil.copyfile(self.articles_db_filename + '.mst', self.tmp_db_filename + '.mst')
         shutil.copyfile(self.articles_db_filename + '.xrf', self.tmp_db_filename + '.xrf')
@@ -165,7 +170,7 @@ class IssueStuff(object):
     @property
     def articles_files(self):
         if self.articles_db is not None:
-            return ArticlesFiles(self.issue_path, self.articles_db.articles(self.from_date))
+            return ArticlesFiles(self.issue_path, self.articles_db.articles(self.from_date, self.final_date))
 
 
 class ArticlesDB(object):
@@ -179,16 +184,17 @@ class ArticlesDB(object):
         else:
             print('Not found: ' + db_filename)
 
-    def articles(self, from_date=None):
+    def articles(self, from_date=None, final_date=None):
         items = {}
         int_from_date = 0
+        int_final_date = int(utils.now()[0])
 
         if from_date is not None:
-            if from_date == '':
-                int_from_date = 0
-            else:
+            if from_date != '':
                 int_from_date = int(from_date)
-
+        if final_date is not None:
+            if final_date != '':
+                int_final_date = int(final_date)
         if self.isis_db is not None:
             h_records = self.isis_db.get_records('tp=i or tp=h')
             #h_records = [record for record in h_records if record.get('706') in 'ih']
@@ -202,7 +208,7 @@ class ArticlesDB(object):
                     a_date = utils.now()[0]
                     if item.get('223') is not None:
                         a_date = int(item.get('223'))
-                    if int_from_date <= a_date:
+                    if int_from_date <= a_date <= int_final_date:
                         a_pid = '0'*5 + item.get('121')
                         items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
         return items
@@ -246,8 +252,8 @@ class PubMedXMLMaker(object):
 
     @property
     def pubmed_filename(self):
-        suffix = '' if self.issue_stuff.from_date is None else '-' + self.issue_stuff.from_date + '-' + str(utils.now()[0])
-        return os.path.join(self.issue_stuff.pubmed_path, self.issue_stuff.acron + '-' + self.issue_stuff.issueid + suffix + '.xml')
+        suffix = '' if self.issue_stuff.from_date is None else self.issue_stuff.from_date + '-' + self.issue_stuff.final_date
+        return os.path.join(self.issue_stuff.pubmed_path, self.issue_stuff.acron + self.issue_stuff.issueid + suffix + '.xml')
 
     @property
     def temp_xml_filename(self):
@@ -276,12 +282,21 @@ class PubMedXMLMaker(object):
             webbrowser.open('file:///' + self.pubmed_filename, new=2)
             print(self.pubmed_filename)
 
+        self.validate_pubmed_xml()
+
         self.clean_temporary_files()
         # validate
         # envia ftp
 
     def build_pubmed_xml(self):
         java_xml_utils.xml_transform(self.temp_xml_filename, self.xsl_filename, self.pubmed_filename)
+
+    def validate_pubmed_xml(self):
+        if java_xml_utils.xml_validate(self.pubmed_filename, self.pubmed_filename + '.err'):
+            os.unlink(self.pubmed_filename + '.err')
+            print('Validates fine')
+        else:
+            print('Validation error: ' + self.pubmed_filename + '.err')
 
     def clean_temporary_files(self):
         for item in os.listdir(self.issue_stuff.temp_path):
@@ -291,12 +306,13 @@ class PubMedXMLMaker(object):
 
 def call_execute_pubmed_procedures(args):
 
-    script, issue_path, from_date = read_inputs(args)
+    script, issue_path, from_date, final_date = read_inputs(args)
 
     if issue_path is None:
         # GUI
         issue_path, from_date = read_form_inputs()
         script = 'exit'
+        final_date = utils.now()[0]
 
     errors = []
     if issue_path is None and script != 'exit':
@@ -314,7 +330,7 @@ def call_execute_pubmed_procedures(args):
         ucisis = dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660))
 
         if ucisis.is_available:
-            issue_stuff = IssueStuff(ucisis, issue_path, from_date)
+            issue_stuff = IssueStuff(ucisis, issue_path, from_date, final_date)
 
             pubmed_xml_maker = PubMedXMLMaker(issue_stuff, CURRENT_PATH + '/../../pmc/v3.0/xsl/xml2pubmed/xml2pubmed.xsl')
             pubmed_xml_maker.execute_procedures()
@@ -330,11 +346,14 @@ def read_inputs(args):
     script = None
     issue_path = None
     from_date = None
+    final_date = None
     if len(args) == 2:
         script, issue_path = args
     elif len(args) == 3:
         script, issue_path, from_date = args
-    return (script, issue_path, from_date)
+    elif len(args) == 4:
+        script, issue_path, from_date, final_date = args
+    return (script, issue_path, from_date, final_date)
 
 
 def read_form_inputs(default_path=None):
@@ -349,3 +368,4 @@ def read_form_inputs(default_path=None):
     tk_root.mainloop()
     tk_root.focus_set()
     return (form.issue_path, form.from_date)
+
