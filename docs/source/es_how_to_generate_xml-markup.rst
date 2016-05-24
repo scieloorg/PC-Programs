@@ -7,16 +7,16 @@ Cómo usar el Markup
 Introducción
 ============
 
-Este manual tiene como objetivo presentar el uso del programa de marcaje `Markup <markup.html>`_ 
+Este manual tiene como objetivo presentar el uso del programa de marcación `Markup <markup.html>`_ 
 
 
 .. _sugestao-id:
 
-Sugestión de Atribución de "ID"
-===============================
+Recomendaciones para asignar el atributo "ID"
+=============================================
 
-El atributo "ID" es usado para identificar algunos elementos, tornando posible establecer referencias cruzadas entre su llamada en el de correr del texto y el elemento en sí, como figuras, tablas, afiliaciones etc.
-Para composición del "ID" combine el prefijo del tipo de elemento y un número entero, como sigue:
+El atributo "ID" se usa para identificar algunos elementos como figuras, tablas, afiliaciones, etc. Este atributo permite establecer referencias cruzadas entre la mención del elemento en el texto y el elemento en sí. 
+Para determinar el "ID" de un elemento, combine el prefijo del tipo de elemento y un número entero como se muestra a continuación:
 
 +------------------------+---------------------------+---------+---------------------+
 | Elemento XML           | Descripción               | Prefijo | Ejemplo             |
@@ -34,7 +34,7 @@ Para composición del "ID" combine el prefijo del tipo de elemento y un número 
 +------------------------+---------------------------+---------+---------------------+
 | def-list               | Lista de Definiciones     | d       | d1, d2, ...         |
 +------------------------+---------------------------+---------+---------------------+
-| disp-formula           | Equaciones                | e       | e1, e2, ...         |
+| disp-formula           | Ecuaciones                | e       | e1, e2, ...         |
 +------------------------+---------------------------+---------+---------------------+
 | fig                    | Figuras                   | f       | f1, f2, ...         |
 +------------------------+---------------------------+---------+---------------------+
@@ -59,81 +59,81 @@ Para composición del "ID" combine el prefijo del tipo de elemento y un número 
 
 .. _dados-basicos:
 
-Dados Básicos
+Datos Básicos
 =============
 
-Estando el archivo formateado de acuerdo con el manual `Preparación de Archivos para el Programa Markup <es_how_to_generate_xml-prepara.html>`_ y abierto en el programa `Markup <markup.html>`_, seleccione el elemento [doc]:
+Estando el archivo del documento formateado de acuerdo con las indicaciones del manual `Preparación de Archivos para el Programa Markup <es_how_to_generate_xml-prepara.html>`_ , abra el documento en el programa `Markup <markup.html>`_ y seleccione el elemento [doc]:
 
 .. image:: img/doc-mkp-formulario.jpg
    :height: 400px
    :align: center
 
 
-Al cliquear en [doc] el programa abrirá un formulario para ser completado con los datos básicos del artículo:
+Al hacer clic en [doc] el programa abrirá un formulario para ser completado con los datos básicos del artículo:
 
-Al seleccionar la revista en el campo "collection/journal" el programa llenará algunos datos automáticamente, tales como: ISSNs, título abreviado, acrónimo, entre otros. Los demás datos serán llenados manualmente, de acuerdo con las orientaciones que sigue:
+Seleccione la revista en el campo "collection/journal", el programa llenará algunos datos automáticamente como ISSNs, título abreviado, acrónimo, entre otros. Los demás datos deberán llenarse manualmente de acuerdo con las siguientes indicaciones:
 
 
 +-------------------+-----------------------------------------------------------------------------------------------+
 | Campo             | Descripción                                                                                   |
 +===================+===============================================================================================+
-| license           | si no fuera insertado automáticamente, llenar con la URL de la licencia creative commons      |
-|                   | adoptada por la revistas. Consultar licencias en:                                             |
+| license           | Si no se inserta automáticamente, llene con la URL de la licencia creative commons            |
+|                   | adoptada por la revista. Consulte las licencias en:                                           |
 |                   | http://docs.scielo.org/projects/scielo-publishing-schema/                                     |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| volid             | Inserir volumen, si haya. Para Ahead of Print, no incluir volumen                             |
+| volid             | Inserte volumen, si lo hay. Para Ahead of Print, no incluya volumen                           |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| supplvol          | Caso sea un suplemento de volumen incluir su parte o número correspondiente.                  |
-|                   | **Ejemplo: vol.12 supl.A**, llene con **A**, en este campo                                    |
+| supplvol          | Cuando se trate de un suplemento de volumen incluya su parte o número correspondiente.        |
+|                   | **Ejemplo: vol.12 supl.A**, llene con **A**, este campo                                       |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| issueno           | Entre con el número del fascículo. Caso sea un artículo publicado en ahead of                 |
-|                   | print, insiera ahead en este campo                                                            |
+| issueno           | Ingrese el número del fascículo. Cuando se trate de un artículo publicado en ahead of         |
+|                   | print, inserte ahead en este campo                                                            |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| supplno           | Caso sea un suplemento de fascículo incluir su parte o número                                 |
+| supplno           | En caso de que sea un suplemento de fascículo incluya su parte o número                       |
 |                   | correspondiente. **Ejemplo: n.37, supl.A**, llene con **A** en este campo                     |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| isidpart          | Usar en casos de press release, incluyendo la sigla pr                                        |
+| isidpart          | Úselo en casos de press release, incluya la sigla pr                                          |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| dateiso           | Fecha de publicación formada por año, mes e día **(YYYYMMDD)**. Llenar siempre                |
-|                   | con el último mes de la periodicidad. Por Ejemplo, si la revista es bimensual                 |
-|                   | llenar **20140600**. Use **00** para mes y día en los casos en que no haya su                 |
-|                   | identificación. **Ejemplo: 20140000**.                                                        |
+| dateiso           | Fecha de publicación formada por año, mes y día **(YYYYMMDD)**. Llene siempre                 |
+|                   | con el último mes de la periodicidad. Por ejemplo, si la revista es bimensual                 |
+|                   | escriba **20140600**. Use **00** para mes y día cuando no se cuente con esta                  |
+|                   | información. **Ejemplo: 20140000**.                                                           |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| month/season      | Entre el mes o mes inicial barra final, en inglés (tres letras) y punto,                      |
+| month/season      | Ingrese el mes o mes inicial/mes final, en inglés (tres letras) y punto,                      |
 |                   | excepto para May, June y July. **Ej.: May/June, July/Aug.**                                   |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| fpage             | Primera página del documento. Para artículo en Ahead of Print, incluir 00                     |
+| fpage             | Primera página del documento. Para artículo en Ahead of Print, incluya 00                     |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| @seq              | Para artículos que inician en la misma página de un artículo anterior, incluir la             |
+| @seq              | Para artículos que inician en la misma página de un artículo anterior, incluya la             |
 |                   | secuencia con letra                                                                           |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| lpage             | Inserir la última página del documento.                                                       |
+| lpage             | Ingrese la última página del documento.                                                       |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| elocatid          | Incluir identificación electrónica del documento. En este caso no llenar fpage y lpage        |
+| elocatid          | Incluya la identificación electrónica del documento. En este caso no llenar fpage y lpage     |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| order (in TOC)    | Incluir la orden del artículo en la tabla de contenido del fascículo. Debe tener, en el       |
-|                   | mínimo, dos dígitos. Por ejemplo, si el artículo fuera el primero de la tabla de contenido,   |
-|                   | llene este campo con **01** y así por adelante.                                               |
+| order (in TOC)    | Incluya el orden del artículo en la tabla de contenido del fascículo. Debe tener, como        |
+|                   | mínimo dos dígitos. Por ejemplo, si el artículo fuera el primero de la tabla de contenido,    |
+|                   | llene este campo con **01** y así en adelante.                                                |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| pagcount*         | Inserir el total de paginación. Para Ahead of Print, incluir el valor 1                       |
+| pagcount*         | Inserte las páginas totales del artículo. Para Ahead of Print, escriba el valor 1             |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| doctopic*         | Informar el tipo de documento a ser marcado. Por ejemplo: artículo original, reseña,          | 
-|                   | carta, comentario etc. En el caso de Ahead Of Print, incluir siempre el tipo artículo         |
+| doctopic*         | Indique el tipo de documento que se va a marcar. Por ejemplo: artículo original, reseña,      | 
+|                   | carta, comentario etc. En el caso de Ahead Of Print, incluya siempre el tipo artículo         |
 |                   | original, excepto para errata                                                                 |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| language*         | Informe el idioma principal del texto a ser marcado                                           |
+| language*         | Seleccione el idioma principal del texto a ser marcado                                        |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| version*          | Identifica la versión de la DTD usada en el proceso de marcaje (La versión actual es 4.0)     |
+| version*          | Identifique la versión de la DTD usada en el proceso de marcación (La versión actual es 4.0)  |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| artdate (rolling) | Obligatorio completar con la fecha **YYYYMMDD** cuando fuera un artículo rolling pass.        |
+| artdate (rolling) | Es obligatorio escribir la fecha **YYYYMMDD** cuando se trate de un artículo rolling pass.    |
 |                   | Rolling pass es un modelo publicación dónde la revista publica sus artículos en un volumen    |
-|                   | único la medida en que estos quedan listos                                                    |
+|                   | único conforme estos quedan listos                                                            |
 +-------------------+-----------------------------------------------------------------------------------------------+
 | ahpdate           | Indicar la fecha de publicación de un artículo publicado en ahead of print                    |
 +-------------------+-----------------------------------------------------------------------------------------------+
 
 
-.. note:: Los campos que presentan un asterisco al lado, son campos obligatorios.
+.. note:: Los campos que tienen un asterisco al lado, son obligatorios.
 
 
 .. _front:
@@ -141,14 +141,14 @@ Al seleccionar la revista en el campo "collection/journal" el programa llenará 
 Front
 =====
 
-Tiendo llenado todos los campos, al cliquear en [Ok] será abierta una ventana preguntando si el documento está en el formateo adecuada para efectuar la marcación automática:
+Una vez que se completó el llenado del formulario, al hacer clic en [Ok] se abrirá una ventana preguntando si el documento tiene el formato adecuado para efectuar la marcación automática:
 
 .. image:: img/doc-mkp-mkp-automatic.jpg
    :height: 450px
    :align: center
 
 
-Al cliquear en [Sí], el programa efectuará la marcación automática de los elementos básicos del documento.
+Al hacer clic en [Sí], el programa realizará la marcación automática de los elementos básicos del documento.
 
 .. image:: img/doc-mkp-mkp--auto.jpg
    :height: 400px
@@ -156,7 +156,7 @@ Al cliquear en [Sí], el programa efectuará la marcación automática de los el
    :align: center
 
 
-.. note:: Caso el archivo no esté en el formateo recomendado en "Preparación de Archivos para el Programa Markup", el programa 
+.. note:: Cuando el archivo no tenga el formato recomendado en "Preparación de Archivos para el Programa Markup", el programa 
           no identificará correctamente los elementos.
 
 
