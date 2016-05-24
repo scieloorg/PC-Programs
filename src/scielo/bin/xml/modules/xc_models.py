@@ -3,6 +3,7 @@
 import os
 import shutil
 from datetime import datetime
+import csv
 
 from __init__ import _
 import validation_status
@@ -11,7 +12,7 @@ import xml_utils
 import fs_utils
 from utils import how_similar
 from article import Issue, PersonAuthor, Article, Journal
-from attributes import ROLE, DOCTOPIC, doctopic_label
+import attributes
 from dbm_isis import IDFile
 import article_utils
 import serial_files
@@ -639,6 +640,7 @@ class IssueModels(object):
 
             # section
             fixed_sectitle = None
+            article_section = article.toc_section
             if article.toc_section is None:
                 results.append(('section', validation_status.STATUS_FATAL_ERROR, _('Required')))
             else:
@@ -661,10 +663,10 @@ class IssueModels(object):
 
             # @article-type
             _sectitle = article_section if fixed_sectitle is None else fixed_sectitle
-            import attributes
-            for item in attributes.validate_article_type_and_section(article.article_type, _sectitle, len(article.abstracts) > 0):
-                results.append(item)
-            article.section_code = section_code
+            if _sectitle is not None:
+                for item in attributes.validate_article_type_and_section(article.article_type, _sectitle, len(article.abstracts) > 0):
+                    results.append(item)
+                article.section_code = section_code
         return (html_reports.tag('div', html_reports.validations_table(results)))
 
 
@@ -1314,7 +1316,6 @@ class JournalsList(object):
             os.makedirs(CURRENT_PATH + '/../../markup')
         fs_utils.get_downloaded_data(url, downloaded_filename)
 
-        import csv
         self._journals = {}
         with open(downloaded_filename, 'rb') as csvfile:
             spamreader = csv.reader(csvfile, delimiter='\t')
