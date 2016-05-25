@@ -403,24 +403,24 @@ Siga los mismos pasos descritos para resumen sin sección:
 Keywords
 ========
 
-El programa Markup presenta dos íconos para identificación de palabras-clave, [* kwdgrp] e [kwdgrp].
-El ícono [*kwdgrp], con asterisco, es utilizado para marcación automática de cada palabra-clave y también del título. Para eso, seleccione toda la información, incluso el título, e identifique los datos con el elemento [*kwdgrp].
+El programa Markup cuenta con dos elementos para la identificación de palabras-clave, [*kwdgrp] y [kwdgrp].
+El elemento [*kwdgrp], con asterisco, se usa para la marcación automática de cada palabra-clave y también del título. Para hacerlo, seleccione toda la información, incluyendo el título, e identifique los datos con el elemento [*kwdgrp].
 
 
 Marcación Automática:
 ---------------------
 
-**seleccionando:**
+**Seleccionando:**
  
 .. image:: img/doc-mkp-select-kwd.jpg
    :height: 300px
    :align: center
 
 
-En la ventana abierta por el programa, seleccione el idioma de las palabras-clave marcadas:
+En la ventana que abre el programa, seleccione el idioma de las palabras-clave marcadas:
 
 
-**marcación:** 
+**Marcación:** 
 
 .. image:: img/doc-mkp-mkp-kwd.jpg
    :height: 300px
@@ -437,10 +437,10 @@ En la ventana abierta por el programa, seleccione el idioma de las palabras-clav
 Marcación Manual:
 -----------------
 
-Caso la marcación automática no ocurra conforme el esperado, si puede marcar el grupo de palabras-clave manualmente. Seleccione el grupo de palabras-clave y marque con el elemento [kwdgrp].
+Si el resultado de la marcación automática no es el esperado, puede marcar el grupo de palabras-clave manualmente. Seleccione el grupo de palabras-clave y marque con el elemento [kwdgrp].
 
 
-**marcación:**
+**Marcación:**
 
 .. image:: img/doc-mkp-selection-kwd-s.jpg
    :height: 350px
@@ -448,14 +448,14 @@ Caso la marcación automática no ocurra conforme el esperado, si puede marcar e
 
 
 
-En seguida, haga la marcación de ítem por ítem. Por lo tanto, seleccione el título de las palabras-clave e identifique con el elemento [sectitle]:
+En seguida, haga la marcación de ítem por ítem. A continuación, seleccione el título de las palabras-clave e identifíquelo con el elemento [sectitle]:
 
 .. image:: img/doc-mkp-sec-kwd.jpg
    :height: 300px
    :align: center
 
 
-En la secuencia, seleccione palabra por palabra y marque con el elemento [kwd]:
+En la secuencia, seleccione palabra por palabra y márquela con el elemento [kwd]:
 
 .. image:: img/doc-mkp-kwd-kwd.jpg
    :height: 300px
