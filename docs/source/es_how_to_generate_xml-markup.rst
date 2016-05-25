@@ -674,7 +674,7 @@ Utilizada para referenciar informes técnicos, normalmente de autoría instituci
 Patent
 ^^^^^^
 
-Utilizada para referenciar patentes; la patente representa un título de propiedad que confiere a su titular el derecho de impedir terceros exploraren su creación. Ej.:
+Utilizada para referenciar patentes; la patente representa un título de propiedad que confiere a su titular el derecho de impedir que terceros exploten su creación. Ej.:
 
 
    *SCHILLING, C.; DOS SANTOS, J. Method and Device for Linking at Least Two Adjoinig Work Pieces by Friction Welding, U.S. Patent WO/2001/036144, 2005.*
@@ -693,8 +693,8 @@ Utilizada para referenciar patentes; la patente representa un título de propied
 Book
 ^^^^
 
-Utilizada para referenciar libros o parte de ellos (capítulos, tomos, series etc), manuales, guías, catálogos, enciclopedias, diccionarios entre otros.
-Ex.: 
+Utilizada para referenciar libros o parte de ellos (capítulos, tomos, series, etc), manuales, guías, catálogos, enciclopedias y diccionarios entre otros.
+Ej.: 
 
    *LORD, A. B. The singer of tales. 4th. Cambridge: Harvard University Press, 1981.*
 
@@ -712,10 +712,10 @@ Ex.:
 
 .. _libro-inpress:
 
-Book en press
+Book in press
 ^^^^^^^^^^^^^
 
-Libros finalizados, pero aún no publicados presentan la información "no prelo", "forthcomming" o ""in press"" normalmente al final de la referencia. En ese caso, la marcación será hecha conforme sigue:
+Libros terminados pero que todavía no se publican. Presentan la información "no prelo", "forthcomming" o "in press" normalmente al final de la referencia. En este caso, la marcación se realizará de la siguiente manera:
 
 
    *CIRENO, F.; LUBAMBO, C. Estratégia eleitoral e eleiciones para Câmara dos Deputados no Brasil en 2006, no prelo.*
