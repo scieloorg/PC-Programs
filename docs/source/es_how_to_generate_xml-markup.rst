@@ -908,32 +908,32 @@ Para identificación de referencias con ese tipo de dato, seleccione los guiones
 Marcación Automática
 --------------------
 
-El programa Markup dispone de una funcionalidad que optimiza el proceso de marcación de las referencias bibliográficas que siguen la norma Vancouver. Caso haya adaptaciones en la norma, el programa no hará la marcación correctamente.
+El programa Markup dispone de una funcionalidad que optimiza el proceso de marcación de las referencias bibliográficas que siguen la norma Vancouver. Cuando se hayan hecho adaptaciones a la norma, el programa no hará la marcación correctamente.
 
 
-**Seleccione todas as referencias**
+**Seleccione todas las referencias**
 
 .. image:: img/doc-mkp-automata-select.jpg
    :align: center
 
 
-**Clique en el ícono "Markup: Marcación Automática 2"**
+**Haga clic en el ícono "Markup: Marcación Automática 2"**
 
 .. image:: img/doc-mkp-automata.jpg
    :align: center
 
 
-Vea que todas las referencias fueran marcadas automáticamente y de forma detallada.
+Observe que todas las referencias fueron marcadas automáticamente y de forma detallada.
 
 .. image:: img/doc-mkp-ref-mkup-automata.jpg
    :align: center
 
 
-A pesar del programa hacer la marcación automática de las referencias, será necesario analizar atentamente referencia por referencia afín de verificar si algún dato no fue o fue marcado incorrectamente.
-Si hubiera algún error a ser corregido, entre en el nivel de [ref] en "Barras de Herramientas Personalizadas" e haga las correcciones e/o incluya las marcaciones faltantes.
+Aunque el programa marca automáticamente las referencias, será necesario revisar cuidadosamente referencia por referencia para verificar si se marcaron todos los elementos de la referencia y si se hizo correctamente.
+Si se requiere alguna corrección, ingrese en el nivel de [ref] en "Barras de Herramientas Personalizadas" y realice las correcciones necesarias y/o complete las marcaciones faltantes.
 
-.. note:: el uso de la marcación automática en referencias solo es posible caso as referencias bibliográficas estén de acuerdo con la norma Vancouver, siguiéndola literalmente. 
-          Para las demás normas tal funcionalidad no está disponible.
+.. note:: El uso de la marcación automática en referencias solo es posible cuando las referencias bibliográficas estén de acuerdo con la norma Vancouver, siguiéndola literalmente. 
+          Para las demás normas esta funcionalidad no está disponible.
 
 
 
