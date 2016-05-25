@@ -771,10 +771,10 @@ En las referencias que siguen, su tipo deberá ser cambiado manualmente de [book
 
 .. _ley:
 
-legal-doc
+Legal-doc
 ^^^^^^^^^
 
-Utilizada para referenciar documentos jurídicos, incluyen datos acerca de legislación y  jurisprudencia. Ej.:
+Utilizada para referenciar documentos jurídicos, incluye información sobre legislación y jurisprudencia. Ej.:
 
 
    *Brasil. Portaria en el 1169/GM en 15 de junho de 2004. Institui a Política Nacional de Atención Cardiovascular de Alta Complexidade, e dá outras providencias. Diário Oficial 2004; seción 1, n.115, p.57.*
@@ -789,7 +789,7 @@ Utilizada para referenciar documentos jurídicos, incluyen datos acerca de legis
 Newspaper
 ^^^^^^^^^
 
-Utilizada para referenciar publicaciones seriadas sin cuño científico, como magazines e jornales. Ex.:
+Utilizada para referenciar publicaciones seriadas sin carácter científico, como revistas y periódicos. Ej.:
 
 
    *TAVARES de ALMEIDA, M. H. "Mais do que meros rótulos". Artigo publicado no Jornal Folha de S. Paulo, en el día 25/02/2006, na coluna Opinião, p. A. 3.*
