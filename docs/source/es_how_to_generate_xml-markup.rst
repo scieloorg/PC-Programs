@@ -586,8 +586,8 @@ El programa marcará todas las referencias seleccionadas con el elemento [ref]. 
 Tipos de Referencias
 --------------------
 
-A partir de la marcación hecha, algunos tipos de referencia serán alterados automáticamente sin intervención manual (ex.: tesis, conferencia, informes, patente y artículo de revista); ya para los demás casos, será necesario el cambio manual.
-Para alterar el tipo de referencia haga un clíc en el elemento [ref], en seguida, en el lápiz "Editar Atributos" y en "reftype" para seleccionar el tipo correcto.
+A partir de la marcación hecha, algunos tipos de referencia serán modificados automáticamente, sin intervención manual (ej.: tesis, conferencia, informe, patente y artículo de revista); en los demás casos, será necesario el cambio manual.
+Para modificar manualmente el tipo de referencia haga clic en el elemento [ref], en seguida otro clic en el ícono "lápiz", en "reftype" seleccione el tipo correcto.
 
 .. image:: img/doc-mkp-edit-ref-type.jpg
    :height: 400px
@@ -600,13 +600,13 @@ Para alterar el tipo de referencia haga un clíc en el elemento [ref], en seguid
    :align: center
 
 
-Recomiéndese la edición de "reftype" solamente **después** de marcar todos los elementos de la [ref], pues dependiendo de los elementos marcados el "reftype" será cambiado automáticamente por el Markup. 
+Se recomienda editar "reftype" solamente **después** de marcar todos los elementos de la [ref], pues dependiendo de los elementos marcados el "reftype" será cambiado automáticamente por el programa Markup. 
 
-.. note:: Una referencia debe tener su tipología siempre basada en el su contenido y nunca en su suporte. Por ejemplo, una ley representa un documento legal, sin embargo el tipo de referencia es "legal-doc", mismo que esté publicado en un jornal o sitio. Una referencia de artículo de una revista científica, mismo que publicado en un sitio posee el tipo "journal". 
-          Es importante entender estos aspectos en las referencias para poder interpretar su tipología e sus elementos. Ni toda referencia que posee un enlace es una "webpage", ni toda la referencia que posee un volumen es un "journal", libros también pueden tener volúmenes.
+.. note:: Una referencia debe tener su tipología siempre basada en su contenido y nunca en su soporte. Por ejemplo, una ley representa un documento legal y el tipo de referencia es "legal-doc", independientemente de que esté publicado en un periódico o en un sitio web. Una referencia de artículo de una revista científica, aunque se haya publicado en un sitio web, posee el tipo "journal". 
+        Es importante entender estos aspectos en las referencias para poder interpretar su tipología y sus elementos. Ni toda referencia que posee un enlace es una "webpage", ni toda la referencia que posee un volumen es un "journal", los libros también pueden tener volúmenes.
 
 
-Adelante los tipos de referencia suportados por SciELO y la marcación de cada [ref].
+A continuación los tipos de referencia soportados por SciELO y la marcación de cada [ref].
 
 
 .. _tese:
