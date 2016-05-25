@@ -1699,14 +1699,14 @@ El resultado debe ser:
 Listas
 ------
 
-Para identificar listas seleccione todos los ítems y marque con el elemento [*list]. Seleccione el tipo de lista en la ventana abierta por el programa:
+Para identificar listas seleccione todos los ítems y márquelos con el elemento [*list]. Seleccione el tipo de lista en la ventana que abre el programa:
 
 .. image:: img/doc-mkp-list-type.jpg
    :height: 400px
    :width: 380px
    :align: center
 
-Verifique los tipos posibles de lista en :ref:`elemento-list` y seleccione el tipo más adecuado:
+Verifique los posibles tipos de lista en :ref:`elemento-list` y seleccione el más adecuado:
 
 .. image:: img/doc-mkp-list.jpg
    :height: 250px
@@ -1720,32 +1720,32 @@ Verifique los tipos posibles de lista en :ref:`elemento-list` y seleccione el ti
    <iframe width="560" height="315" src="https://www.youtube.com/embed/6697hJl4H7M?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
-.. note:: el programa Markup no hace la marcación de sublistas. Para verificar como marcar sublistas, consulte la documentación "Markup_90_O_que_ha_novo.pdf" ítem "Procesos Manuales".
+.. note:: El programa Markup no realiza la marcación de sublistas. Para saber como marcar sublistas, consulte la documentación "Markup_90_O_que_ha_novo.pdf" sección "Processos Manuais".
 
 
 .. _elemento-list:
 
 El atributo ``@list-type`` especifica el prefijo a ser utilizado en el marcador de la lista. Los valores posibles son:
 
-+----------------+-------------------------------------------------------------------+
-| Valor          | Descripción                                                       |
-+================+===================================================================+
-| order          | Lista ordenada, cuyo prefijo utilizado es un número o letra       |
-|                | dependiendo del estilo.                                           |
-+----------------+-------------------------------------------------------------------+
-| bullet         | Lista desordenada, cuyo prefijo utilizado es un punto, barra o    |
-|                | otro símbolo.                                                     |
-+----------------+-------------------------------------------------------------------+
-| alpha-lower    | Lista ordenada, cuyo prefijo es un carácter alfabético minúsculo. |
-+----------------+-------------------------------------------------------------------+
-| alpha-upper    | Lista ordenada, cuyo prefijo es un carácter alfabético mayúsculo. |
-+----------------+-------------------------------------------------------------------+
-| roman-lower    | Lista ordenada, cuyo prefijo es un numeral romano minúsculo.      |
-+----------------+-------------------------------------------------------------------+
-| roman-upper    | Lista ordenada, cuyo prefijo es un numeral romano mayúsculo.      |
-+----------------+-------------------------------------------------------------------+
-| simple         | Lista simples, sin prefijo en los ítems.                          |
-+----------------+-------------------------------------------------------------------+
++----------------+----------------------------------------------------------------------+
+| Valor          | Descripción                                                          |
++================+======================================================================+
+| order          | Lista ordenada, cuyo prefijo utilizado es un número o letra          |
+|                | dependiendo del estilo.                                              |
++----------------+----------------------------------------------------------------------+
+| bullet         | Lista desordenada, cuyo prefijo utilizado es un punto, barra u       |
+|                | otro símbolo.                                                        |
++----------------+----------------------------------------------------------------------+
+| alpha-lower    | Lista ordenada, cuyo prefijo es un carácter alfabético en minúscula. |
++----------------+----------------------------------------------------------------------+
+| alpha-upper    | Lista ordenada, cuyo prefijo es un carácter alfabético en mayúscula. |
++----------------+----------------------------------------------------------------------+
+| roman-lower    | Lista ordenada, cuyo prefijo es un número romano en minúscula.       |
++----------------+----------------------------------------------------------------------+
+| roman-upper    | Lista ordenada, cuyo prefijo es un número romano en mayúscula.       |
++----------------+----------------------------------------------------------------------+
+| simple         | Lista simple, sin prefijo en los ítems.                              |
++----------------+----------------------------------------------------------------------+
 
 
 .. _lista-definición:
