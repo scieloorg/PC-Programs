@@ -473,7 +473,7 @@ En la secuencia, seleccione palabra por palabra y márquela con el elemento [kwd
 History
 =======
 
-El elemento [hist] es utilizado para marcar el histórico del documento. Seleccione todo el dato de histórico y marque con el elemento [hist]:
+El elemento [hist] es utilizado para marcar el histórico del documento. Seleccione todos los datos históricos que presente el documento y marque con el elemento [hist]:
 
 
 .. image:: img/doc-mkp-hist-select.jpg
@@ -482,15 +482,14 @@ El elemento [hist] es utilizado para marcar el histórico del documento. Selecci
 
 
 
-Seleccione la fecha de recibido y marque con el elemento [received]. Confiera la fecha ISO indicada en el campo dateiso y corrija, se necesario. La estructura de la fecha ISO esperada es:
-AÑO MES DÍA. 
+Seleccione la fecha de recibido y marque con el elemento [received]. Compruebe que la fecha ISO indicada en el campo dateiso es correcta, corrija si es necesario. La estructura de la fecha ISO esperada es: AÑO MES DÍA. 
 
 .. image:: img/doc-mkp-received.jpg
    :height: 350px
    :align: center
 
 
-Caso haya la fecha de revisado, selecciónela y marque con el elemento [revised]. Haga el mismo para la fecha de acepto; seleccionando el elemento [accepted]. Confiera la fecha ISO indicada en el campo dateiso y corrija, se necesario.
+Cuando exista la fecha de revisado, selecciónela y marque con el elemento [revised]. Haga lo mismo para la fecha de aceptado, seleccionando el elemento [accepted]. Verifique la fecha ISO indicada en el campo dateiso, corrija si es necesario.
 
 .. image:: img/doc-mkp-accepted.jpg
    :height: 350px
