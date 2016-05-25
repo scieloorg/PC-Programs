@@ -1492,56 +1492,56 @@ Cerciórese que el ID de la figura es único en el documento.
 Tablas
 ------
 
-Las tablas pueden ser presentadas como imagen o en texto. Las tablas que están como imagen deben presentar el label, caption y notas (esa última, si haya) en texto, para que todos los elementos sean marcados.
-Las tablas deben estar, preferencialmente, en formato texto, usándose figuras para tablas complexas (con células mescladas, símbolos, fórmulas, imágenes etc).
+Las tablas pueden ser presentadas como imagen o texto. Las tablas presentadas como imagen deben contener label, caption y notas en texto (sólo si existen), para que todos los elementos sean marcados.
+Las tablas deben estar, de preferencia en formato texto, utilizando figuras para tablas complejas (con celdas combinadas, símbolos, fórmulas, imágenes etc).
 
 
-Tablas en Imagen
+Tablas en imagen
 ^^^^^^^^^^^^^^^^
 
-Al hacer la marcación de [xmlbody] el programa identifica automáticamente el "graphic" de la tabla. Seleccione todos los datos de la tabla (imagen, label, caption y notas de pie, si haya) y marque con el elemento [tabwrap].
+Al realizar la marcación de [xmlbody] el programa identifica automáticamente el "graphic" de la tabla. Seleccione todos los datos de la tabla (imagen, label, caption y notas al pie si existen) y márquelos con el elemento [tabwrap].
 
-Mismo estando en la forma de figura, el ID del elemento deberá ser el indicado para tablas (t1, t2, t3 ...). Certifíquese que el ID de tabla es único en el documento.
+Del mismo modo que en las figuras, el ID del elemento deberá ser el indicado para tablas (t1, t2, t3 ...). Cerciórese que el ID de tabla es único en el documento.
 
 .. image:: img/doc-mkp-select-tableimg.jpg
    :height: 450px
    :width: 300px
    :align: center
 
-* Llene el "ID" de la tabla en la ventana abierta por el programa.
+* Llene el "ID" de la tabla en la ventana que abre el programa.
 
 .. image:: img/doc-mkp-id-figimg.jpg
    :align: center
 
-Certifíquese que el id de la tabla es único en el documento.
+Cerciórese que el ID de la tabla es único en el documento.
 
 .. image:: img/doc-mkp-tabimg.jpg
    :height: 450px
    :width: 300px
    :align: center
 
-.. note:: el programa hace la marcación automática de label, caption y notas de pie de tabla.
+.. note:: El programa realiza la marcación automática de label, caption y notas al pie de tabla.
 
 
 Tablas en Texto
 ^^^^^^^^^^^^^^^
 
-El programa también codifica tablas en texto. Para eso, seleccione toda la información de tabla (label, caption, cuerpo de la tabla y notas de pie, se hay) y marque con el elemento [tabwrap].
+El programa también codifica tablas en texto. Para ello, seleccione toda la información de tabla (label, caption, cuerpo de la tabla y notas al pie si existen) y márquela con el elemento [tabwrap].
 
 .. image:: img/doc-mkp-select-tab-text.jpg
    :height: 350px
    :align: center
 
 
-.. note:: el encabezamiento de las columnas de la tabla debe estar en negrita. Ese formateo es esencial para que el programa consiga hacer la identificación correcta de [thead] y los elementos que lo compone.
+.. note:: El encabezado de las columnas de la tabla debe estar en negritas. El formateo es esencial para que el programa pueda identificar de forma correcta el [thead] y los elementos que lo componen.
 
-* Llene "id" de la tabla en la ventana abierta por el programa.
+* Llene el "ID" de la tabla en la ventana que abre el programa.
 
 .. image:: img/doc-mkp-id-tabtext.jpg
    :height: 200px
    :align: center
 
-Certifíquese de que el id de tabla es único en el documento.
+Cerciórese que el ID de la tabla es único en el documento.
 
 
 .. image:: img/doc-mkp-tabcomplete.jpg
@@ -1550,7 +1550,7 @@ Certifíquese de que el id de tabla es único en el documento.
    :align: center
 
 
-.. note:: Tablas irregulares, con células mescladas o con tamaños extensos posiblemente presentarán problemas de marcación. En ese caso algunos elementos deberán ser identificados manualmente por medio del programa Markup o en el XML cuando este fuera generado.
+.. note:: Las tablas irregulares, con celdas combinadas o de gran tamaño posiblemente presenten problemas de marcación. En ese caso algunos elementos deberán ser identificados manualmente por medio del programa Markup o en el XML cuando se haya generado.
 
 
 .. _ecuación:
