@@ -1825,32 +1825,32 @@ Haga lo mismo con los demás términos y definiciones.
 
 .. _material-suplementar:
 
-Material Suplementar
---------------------
+Material suplementario
+----------------------
 
-La marcación de materiales suplementares debe ser hecha por el elemento [supplmat]. La indicación de Material suplementar puede estar en línea, como un párrafo "suelto" en el documento o como apéndice.
+La marcación de materiales suplementarios debe ser hecha con el elemento [supplmat]. El material suplementario puede estar en línea, como un párrafo "suelto" en el documento o como apéndice.
 
 
 .. _suplemento-en-párrafo:
 
-Objeto Suplementar en [xmlbody]
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Material suplementario en [xmlbody]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Seleccione todo el dato de material suplementar, incluyendo label y caption, si haya, y marque con el elemento [supplmat]:
+Seleccione todo contenido del material suplementario, incluyendo label y caption si existe, y márquelo con el elemento [supplmat]:
 
 .. image:: img/doc-mkp-suppl-f.jpg
    :height: 300px
    :align: center
 
 
-En la ventana abierta por el programa, llene el campo de "id", lo cual deberá ser único en el documento, y el campo "href" con el nombre del archivo .doc:
+En la ventana que abre el programa, llene el campo de "id", el cual deberá ser único en el documento, y el campo "href" con el nombre del archivo .doc:
 
 
 .. image:: img/doc-mkp-supplfig.jpg
    :height: 200px
    :align: center
 
-En la secuencia, haga la marcación del label del material suplementar. Seleccione todo el grupo de datos de la figura y marque con el elemento [figgrp]. La marcación deberá ser como sigue:
+Después realice la marcación de label del material suplementario. Seleccione todos los datos de la figura y márquelos con el elemento [figgrp]. La marcación deberá quedar conforme al siguiente ejemplo:
 
 .. image:: img/doc-mkp-suppl2.jpg
    :height: 300px
@@ -1859,16 +1859,16 @@ En la secuencia, haga la marcación del label del material suplementar. Seleccio
 
 .. _suplemento-en-línea:
 
-Material Suplementar en Línea
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Material suplementario en línea
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Seleccione la información de material suplementar y marque con el elemento [supplmat]:
+Seleccione la información del material suplementario y márquela con el elemento [supplmat]:
 
 .. image:: img/doc-mkp-selectms.jpg
    :height: 180px
    :align: center
 
-En la ventana abierta por el programa, llene el campo de "id", lo cual deberá ser único en el documento, y el campo "href" con el nombre del pdf suplementar exactamente como consta en la carpeta "src".
+En la ventana que abre el programa, llene el campo de "id", el cual deberá ser único en el documento, y el campo "href" con el nombre del PDF del material suplementario exactamente como esta en la carpeta "src".
 
 .. image:: img/doc-mkp-camposms.jpg
    :height: 200px
@@ -1880,22 +1880,22 @@ La marcación deberá ser:
 .. image:: img/doc-nkp-supple.jpg
    :align: center
 
-.. note:: Antes de iniciar la marcación de material suplementar certifíquese de que el PDF suplementar fue incluido en la carpeta "src" comentado en `Estructura de Carpetas <es_how_to_generate_xml-prepara.html#estrutura-de-pastas>`_.
+.. note:: Antes de iniciar la marcación de material suplementario cerciórese que el PDF del material suplementario se encuentra en la carpeta "src" como esta descrito en `Estructura de carpetas <es_how_to_generate_xml-prepara.html#estrutura-de-pastas>`_.
 
 
 .. _suplemento-en-apéndice:
 
-Material Suplementar en Apéndice
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Material suplementario como apéndice
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Marcase, primeramente, el objeto con el elemento [appgrp] y en seguida con los elementos de [app]. 
+Primero se debe marcar el material suplementario con el elemento [appgrp] y enseguida el elemento [app].
 
 .. image:: img/doc-mkp-suppl-appo.jpg
   :height: 400px
   :width: 350px
   :align: center
 
-Seleccione nuevamente todo el dato de material suplementar y marque con el elemento [app]. En seguida, marque el label del material con el elemento [sectitle]:
+Seleccione nuevamente todo el contenido del material suplementario y márquelo con el elemento [app]. Enseguida, marque el label del material con el elemento [sectitle]:
 
 .. image:: img/doc-mkp-suppl-app.jpg
    :height: 400px
@@ -1903,7 +1903,7 @@ Seleccione nuevamente todo el dato de material suplementar y marque con el eleme
    :align: center
 
 
-Seleccione el material suplementar y marque con el elemento [supplmat]:
+Seleccione el material suplementario y márquelo con el elemento [supplmat]:
 
 .. image:: img/doc-mkp-app-suuol.jpg
    :height: 400px
@@ -1911,7 +1911,7 @@ Seleccione el material suplementar y marque con el elemento [supplmat]:
    :align: center
    
 
-Después de la marcación de [supplmat] marque el objeto del material con las tags fluctuantes:
+Después de la marcación de [supplmat] marque el objeto del material con las etiquetas flotantes:
 
 .. image:: img/doc-mkp-suppl4.jpg
    :height: 400px
