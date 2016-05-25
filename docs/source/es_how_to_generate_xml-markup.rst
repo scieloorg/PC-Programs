@@ -561,9 +561,9 @@ Para encontrar la URL del ensayo clínico haga una búsqueda en internet por el 
 Referencias
 ===========
 
-As referencias bibliográficas son marcadas elemento por elemento y su formato original es mantenido para presentación en el sitio del SciELO.
+Las referencias bibliográficas son marcadas elemento por elemento y su formato original se conserva para su presentación en el sitio SciELO.
 
-El programa marcará todas las referencias seleccionadas con el elemento [ref] del tipo [book]. El cambio del tipo de referencia será manual o automática, dependiendo del tipo de elemento marcado, conforme será observado más adelante.
+El programa marcará todas las referencias seleccionadas con el elemento [ref]. Inicialmente todas tendrán el tipo [book], el cambio del tipo de referencia será manual o automático dependiendo del tipo de elemento marcado, como se verá más adelante.
 
 
 .. image:: img/doc-mkp-select-refs-mkp.jpg
