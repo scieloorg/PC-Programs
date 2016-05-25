@@ -536,19 +536,19 @@ Archivos que presentan información de ensayo clínico con número de registro, 
    :align: center
 
 
-En la ventana abierta por el programa, llene el campo de URL de la base de datos donde el Ensayo fue indexado y el campo "ctdbid" seleccionando la base correspondiente:
+En la ventana que abre el programa, llene el campo "cturl" con la URL de la base de datos donde el Ensayo fue indexado y el campo "ctdbid" seleccionando la base correspondiente:
 
 .. image:: img/doc-mkp-clinicaltr.jpg
    :height: 300px
    :align: center
 
-Para encontrar la URL del ensayo clínico haga una búsqueda en la internet por el número de registro para llenar el atributo conforme ejemplo que sigue.
+Para encontrar la URL del ensayo clínico haga una búsqueda en internet por el número de registro. Llenar los atributos conforme al siguiente ejemplo:
 
 .. image:: img/doc-mkp-ensaio.jpg
    :height: 80px
    :align: center
 
-.. note:: Comúnmente la información de Ensayo clínico está posicionada bajo los resúmenes o palabras-clave.
+.. note:: Es común que la información de Ensayo clínico se encuentre posicionada después de los resúmenes o palabras-clave.
 
 
 .. raw:: html
