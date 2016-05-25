@@ -1638,16 +1638,16 @@ Cuando la caja de texto presente una figura, tabla, lista etc, también es posib
 
 .. _verso:
 
-Marcación de Versos
+Marcación de versos
 -------------------
 
-Para identificar versos o poemas en el cuerpo del texto, seleccione toda la información, inclusive título y autoría, si haya, y marque con el elemento [versegrp]: 
+Para identificar versos o poemas en el cuerpo del texto, seleccione toda la información, incluyendo el título y autoría si existe, y márquela con el elemento [versegrp]: 
 
 .. image:: img/doc-mkp-selectverse.jpg
    :height: 150px
    :align: center
 
-El programa identificará cada línea como [verseline]. Caso el poema presente título, excluya la marcación de verseline, seleccione el título y marque con el elemento [label]. La autoría del poema debe ser marcada con el elemento [attrib].
+El programa identificará cada línea como [verseline]. En caso que el poema presente título, elimine la marcación de [verseline], seleccione el título y márquelo con el elemento [label]. La autoría del poema debe ser marcada con el elemento [attrib].
 
 .. image:: img/doc-mkp-versee.jpg
    :height: 150px
