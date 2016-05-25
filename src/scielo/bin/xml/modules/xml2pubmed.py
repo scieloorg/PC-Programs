@@ -154,11 +154,7 @@ class IssueStuff(object):
             os.makedirs(self.temp_path)
         self.articles_db_filename = issue_path + '/base/' + self.issueid
         self.from_date = from_date
-        if self.from_date is None:
-            self.from_date = 0
         self.final_date = final_date
-        if self.final_date is None:
-            self.final_date = utils.now()[0]
         self.tmp_db_filename = self.temp_path + '/pubmed_tmp_' + self.issueid
         shutil.copyfile(self.articles_db_filename + '.mst', self.tmp_db_filename + '.mst')
         shutil.copyfile(self.articles_db_filename + '.xrf', self.tmp_db_filename + '.xrf')
@@ -196,7 +192,7 @@ class ArticlesDB(object):
             if final_date != '':
                 int_final_date = int(final_date)
         if self.isis_db is not None:
-            h_records = self.isis_db.get_records('tp=i or tp=h')
+            h_records = self.isis_db.get_records('tp=i or tp=o or tp=h')
             #h_records = [record for record in h_records if record.get('706') in 'ih']
 
             issn_id = h_records[0].get('35')
@@ -204,10 +200,9 @@ class ArticlesDB(object):
             issue_pid = h_records[0].get('36')[:4] + pid[-4:]
 
             for item in h_records:
-                if item.get('706') == 'h':
-                    a_date = utils.now()[0]
-                    if item.get('223') is not None:
-                        a_date = int(item.get('223'))
+                if item.get('706') == 'o':
+                    a_date = int(item.get('91'))
+                elif item.get('706') == 'h':
                     if int_from_date <= a_date <= int_final_date:
                         a_pid = '0'*5 + item.get('121')
                         items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
