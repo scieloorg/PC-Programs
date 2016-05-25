@@ -418,11 +418,11 @@
 	</xsl:template>
 	<xsl:template match="xref[@ref-type='aff']  | aff-id " mode="multiple-aff">
 		<xsl:variable name="code" select="@rid"/>
-		<AffiliationInfor>
+		<AffiliationInfo>
 			<Affiliation>
 				<xsl:apply-templates select="../../..//aff[@id = $code]" mode="scielo-xml-text"/>
 			</Affiliation>
-		</AffiliationInfor>
+		</AffiliationInfo>
 	</xsl:template>
 	
 	<xsl:template match="institution[@content-type='original']" mode="scielo-xml-text"></xsl:template>
