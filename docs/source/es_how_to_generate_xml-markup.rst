@@ -803,7 +803,7 @@ Utilizada para referenciar publicaciones seriadas sin carácter científico, com
 Database
 ^^^^^^^^ 
 
-Utilizada para referenciar bases y bancos de datos. Ex.:
+Utilizada para referenciar bases y bancos de datos. Ej.:
 
 
 	*IPEADATA. Disponivel em: http://www.ipeadata.gov.br.  Acesso em: 12 fev. 2010.*
@@ -822,7 +822,7 @@ Utilizada para referenciar bases y bancos de datos. Ex.:
 Software
 ^^^^^^^^
 
-Utilizada para referenciar un software, un programa de computador. Ex.:
+Utilizada para referenciar un software, un programa de computadora. Ej.:
 
 
 	*Nelson KN. Comprehensive body composition software [computer program on disk]. Release 1.0 for DOS. Champaign (IL): Human Kinetics, c1997. 1 computer disk: color, 3 1/2 in.*
