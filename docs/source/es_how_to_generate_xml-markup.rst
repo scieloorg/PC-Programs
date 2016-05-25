@@ -507,14 +507,14 @@ Cuando exista la fecha de revisado, selecciónela y marque con el elemento [revi
 Correspondencia
 ===============
 
-Con el elemento [corresp] es posible marcar los datos de correspondencia del autor. Ese elemento posee un subnivel para identificación del e-mail del autor. Seleccione toda la información de correspondencia y marque con el elemento [corresp]. Será presentada una ventana para marcación del ID de correspondencia que, en ese caso, debe ser "c" + el número de orden de la correspondencia.
+Los datos de correspondencia del autor se marcan con el elemento [corresp]. Este elemento posee un subnivel para identificar el e-mail del autor. Seleccione toda la información de correspondencia y marque con el elemento [corresp]. Se presentará una ventana para marcar el ID de correspondencia, en este caso debe ser "c" + el número de orden de la correspondencia.
 
 .. image:: img/doc-mkp-corresp-select.jpg
    :height: 300px
    :align: center
 
 
-Seleccione el e-mail del autor correspondiente y marque con el elemento [email]. Suba un nivel para marcar el próximo elemento.
+Seleccione el e-mail que corresponda al autor y marque con el elemento [email]. Suba un nivel para continuar la marcación del siguiente elemento.
 
 .. image:: img/doc-mkp-email-corresp.jpg
    :height: 300px
