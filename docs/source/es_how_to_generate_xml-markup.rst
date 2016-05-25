@@ -734,7 +734,7 @@ Libros terminados pero que todavía no se publican. Presentan la información "n
 Book Chapter
 ^^^^^^^^^^^^
 
-División de un libro (título del capítulo e sus respectivos autores, si haya, seguido del título del libro y sus autores) numerado o no
+Capítulo de libro (título del capítulo y sus respectivos autores, si los tiene, seguido del título del libro y sus autores) numerado o no.
 
 
    *Lastres, H.M.M.; Ferraz, J.C. Economia da información, do conhecimento e do aprendizado. In: Lastres, H.M.M.; Albagli, S. (Org.). Informaciónn e globalización na era do conhecimento. Rio de Janeiro: Campus, 1999. p.27-57.*
@@ -746,10 +746,10 @@ División de un libro (título del capítulo e sus respectivos autores, si haya,
 
 .. _revista:
 
-journal
+Journal
 ^^^^^^^
 
-Utilizada para referenciar publicaciones seriadas científicas, como revistas, boletins y jornales, editadas en unidades sucesivas, con designación numéricas e/o cronológicas y destinada a ser continuada indefinidamente. Al marcar [arttile-title] el programa cambiará el tipo de referencia para [journal]. Ex.:
+Utilizada para referenciar publicaciones seriadas científicas, como revistas, boletines y periódicos, editadas en unidades sucesivas, con designación numérica y/o cronológica y destinada a ser continuada indefinidamente. Al marcar [arttitle] el programa cambiará el tipo de referencia a [journal]. Ej.:
 
 
    *Cardinalli, I. (2011). A saúde e a doença mental segundo a fenombrenologia existencial. Revista da Associación Brasileira de Daseinsanalyse, São Paulo, 16, 98-114.*
@@ -765,7 +765,8 @@ Utilizada para referenciar publicaciones seriadas científicas, como revistas, b
 
 
 
-En las referencias que siguen, su tipo deberá ser cambiado manualmente de [book] para el tipo correspondiente.
+
+En las referencias que siguen, su tipo deberá ser cambiado manualmente de [book] al tipo que le corresponda.
 
 
 .. _ley:
