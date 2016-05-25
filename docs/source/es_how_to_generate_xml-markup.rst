@@ -1666,16 +1666,16 @@ El programa identificará cada línea como [verseline]. En caso que el poema pre
 
 .. _citación:
 
-Citaciones Directas
--------------------
+Citas textuales
+---------------
 
-Las citaciones son marcadas automáticamente en el cuerpo del texto, al hacer la marcación de [xmlbody], desde que esté con el formateo adecuado.
+Las citas son marcadas automáticamente en el cuerpo del texto, al realizar la marcación de [xmlbody], siempre que estén con el formateo adecuado.
 
 .. image:: img/mkp-doc-quoteok.jpg
    :height: 200px
    :align: center
 
-Caso el programa no haga la marcación automática, seleccione la citación deseada y en seguida marque con el elemento [quote]:
+Cuando el programa no realice la marcación automática, seleccione la cita deseada y márquela con el elemento [quote]:
 
 .. image:: img/doc-mkp-quotee.jpg
    :height: 300px
