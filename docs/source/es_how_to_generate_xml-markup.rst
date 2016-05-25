@@ -1558,23 +1558,23 @@ Cerciórese que el ID de la tabla es único en el documento.
 Ecuaciones
 ----------
 
-Hay dos tipos de ecuaciones que el programa suporta: las ecuaciones en línea (en medio a un párrafo) y as ecuaciones en párrafo.
+Hay dos tipos de ecuaciones soportadas por el programa: las ecuaciones en línea (en medio de un párrafo) y las ecuaciones en párrafo.
 
 **Ecuación en línea**
 
-Las ecuaciones en línea deben ser inseridas en el párrafo como imagen. La marcación es hecha automáticamente por el programa al hacer la identificación de [xmlbody].
+Las ecuaciones en línea deben ser insertadas en el párrafo como imagen. La marcación es hecha automáticamente por el programa al hacer la identificación de [xmlbody].
 
 .. image:: img/doc-mkp-eqline.jpg
    :height: 200px
    :align: center
 
-Si el programa no hiciera la marcación automática de la ecuación en línea, es posible hacer la marcación manualmente. Para eso seleccione la ecuación en línea y haga un clic en el elemento [graphic].
+Si el programa no hiciera la marcación automática de la ecuación en línea, es posible hacer la marcación manualmente. Para ello seleccione la ecuación en línea y márquela en el elemento [graphic].
 
 .. image:: img/doc-mkp=eqline-man.jpg
    :height: 250px
    :align: center
 
-En el campo "href" insiera el nombre del archivo:
+En el campo "href" se agrega el nombre del archivo:
 
 .. image:: img/doc-mkp-eq-line-href.jpg
    :height: 200px
@@ -1588,19 +1588,19 @@ El resultado será:
 
 **Ecuaciones**
 
-Las ecuaciones disponibles como párrafos deben ser identificadas con el elemento [equation]
+Las ecuaciones presentadas como párrafos deben ser identificadas con el elemento [equation]
 
 .. image:: img/doc-mkp-eq1.jpg
    :height: 200px
    :align: center
 
-Llene el "id" de la ecuación en la ventana abierta por el programa. Certifíquese de que el id de la ecuación es único en el documento.
+Llene el "ID" de la ecuación en la ventana que abre el programa. Cerciórese que el id de la ecuación es único en el documento.
 
 .. image:: img/doc-mkp-eq2.jpg
    :height: 200px
    :align: center
 
-Al hacer la marcación de la ecuación, el programa identifica el elemento [equation]. Caso haya información de número de la ecuación, márquelo con el elemento [label].
+Al realizar la marcación de la ecuación, el programa identifica el elemento [equation]. En caso que exista información del número de la ecuación, márquela con el elemento [label].
 
 .. image:: img/doc-mkp-eq3.jpg
    :height: 200px
