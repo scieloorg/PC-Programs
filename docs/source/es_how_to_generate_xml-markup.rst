@@ -614,7 +614,7 @@ A continuación los tipos de referencia soportados por SciELO y la marcación de
 Thesis
 ^^^^^^
 
-Utilizada para referenciar monografías, tesis para obtención de un grado académico, tales como libre-docencia, doctorado, maestría etc. La seleción del elemento [thesgrp] determinará el cambio del tipo de [book] para [thesis]. Ex:
+Utilizada para referenciar monografías, tesis para obtención de un grado académico, tales como libre-docencia, doctorado, maestría etc. La seleción del elemento [thesgrp] determinará el cambio del tipo de referencia de [book] a [thesis]. Ej:
 
 
    *PINHEIRO, Fernanda Domingos. A defesa da liberdade: libertos e livres de cor nos tribunais do Antigo Regime portugues (Mariana e Lisboa, 1720-1819). Tese de doutorado, Departamento de História, Instituto de Filosofia e Ciencias Humanas, Universidade Estadual de Campinas, 2013*
@@ -634,7 +634,7 @@ Utilizada para referenciar monografías, tesis para obtención de un grado acad�
 
 Confproc
 ^^^^^^^^
-Utilizada para referenciar documentos relacionados a eventos: atas, anales, convenciones, conferencias entre otros. Al marcar el elemento [confgrp] el programa cambiará el tipo de referencia para [confproc]. Ex.:
+Utilizada para referenciar documentos relacionados a eventos: actas, anales, convenciones y conferencias entre otros. Al marcar el elemento [confgrp] el programa cambiará el tipo de referencia a [confproc]. Ej.:
 
 
    *FABRE, C. Interpretation of nominal compounds: combining domain-independent and domain-specific information. In: INTERNATIONAL CONFERENCE ON COMPUTATIONAL LINGUISTICS (COLING), 16, 1996, Stroudsburg. Proceedings... Stroudsburg: Association of Computational Linguistics, 1996. v.1, p.364-369.*
@@ -656,7 +656,7 @@ Utilizada para referenciar documentos relacionados a eventos: atas, anales, conv
 Report
 ^^^^^^
 
-Utilizada para referenciar informes técnicos, normalmente de autoría institucional. Al marcar el elemento [reportid] el programa cambiará el tipo de referencia para [report]. Ex.:
+Utilizada para referenciar informes técnicos, normalmente de autoría institucional. Al marcar el elemento [reportid] el programa cambiará el tipo de referencia a [report]. Ej.:
 
 
    *AMES, A.; MACHADO, F.; RENNÓ, L. R. SAMUELS, D.; SMITH, A.E.; ZUCCO, C. The Brazilian Electoral Panel Studies (BEPS): Brazilian Public Opinion in the 2010 Presidential Elections. Technical Note No. IDB-TN-508, Inter-American Debelopment Bank, Department of Research and Chief Economist, 2013.*
@@ -666,7 +666,7 @@ Utilizada para referenciar informes técnicos, normalmente de autoría instituci
    :height: 250px
    :align: center
 
-.. note:: En los casos en que no haya número de informe, el cambio del tipo de referencia deberá ser hecha manualmente.
+.. note:: En los casos en que no haya número de informe, el cambio del tipo de referencia deberá realizarse manualmente.
 
 
 .. _patente:
