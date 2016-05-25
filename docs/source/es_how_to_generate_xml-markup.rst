@@ -1608,28 +1608,28 @@ Al realizar la marcación de la ecuación, el programa identifica el elemento [e
 
 .. _Caja-de-texto:
 
-Caja de Texto
--------------
+Cajas de texto
+--------------
 
-Las Cajas de texto pueden presentar figuras, ecuaciones, listas, glosarios o un texto. Para marcar ese elemento, seleccione toda la información de Caja de texto, inclusive el label y caption, y marque con [*boxedtxt]:
+Las cajas de texto pueden presentar figuras, ecuaciones, listas, glosarios o un texto. Para marcar este elemento, seleccione toda la información de la caja de texto incluyendo el label y caption, y márquela con [*boxedtxt]:
 
 .. image:: img/doc-mkp-boxselect.jpg
    :height: 300px
    :align: center
 
-Llene el campo de ID de la Caja de texto en la ventana abierta por el programa después de la selección de [*boxedtxt]. Certifíquese de que el id de boxed-text es único en el documento.
+Llene el campo de ID de la caja de texto en la ventana que abre el programa, después de la selección de [*boxedtxt]. Cerciórese que el ID de boxed-text es único en el documento.
 
 .. image:: img/doc-mkp-id-bxt.jpg
    :height: 200px
    :align: center
 
-Utilizando [*boxedtxt] el programa hace la marcación automática de título de la Caja de texto y también de los párrafos:
+Utilizando [*boxedtxt] el programa realiza la marcación automática del título de la caja de texto y también de los párrafos:
 
 .. image:: img/doc-mkp-resultboxed.jpg
    :height: 400px
    :align: center
 
-Caso la Caja de texto presente una figura, tabla, listas etc, es posible también utilizar el elemento [*boxedtxt] y después hacer la marcación de los objetos a través de las tags fluctuantes del programa.
+Cuando la caja de texto presente una figura, tabla, lista etc, también es posible utilizar el elemento [*boxedtxt] y después marcar estos elementos utilizando las etiquetas flotantes del programa.
 
 .. raw:: html
 
