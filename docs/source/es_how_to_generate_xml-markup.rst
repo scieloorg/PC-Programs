@@ -1750,23 +1750,23 @@ El atributo ``@list-type`` especifica el prefijo a ser utilizado en el marcador 
 
 .. _lista-definición:
 
-Lista de Definición
--------------------
+Listas de definiciones
+----------------------
 
-Para marcar listas de definiciones seleccione todos los dados, inclusive el título si haya, y marque con el elemento [*deflist]
+Para marcar listas de definiciones seleccione todos los datos, incluyendo el título si existe, y márquelos con el elemento [*deflist]
 
 .. image:: img/doc-mkp-deflistselect.jpg
    :height: 300px
    :align: center
 
-En la ventana abierta por el programa, llene el campo de "id" de la lista. Certifíquese de que el id es único en el documento.
+En la ventana que abre el programa, llene el campo de "id" de la lista. Cerciórese que el id es único en el documento.
 
 .. image:: img/doc-mkp-def-selec.jpg
    :height: 200px
    :align: center
 
 
-Confirme el título de la lista de definición y en seguida la marcación del título:
+Confirme la identificación del título de la lista de definiciones y enseguida la marcación del mismo:
 
 .. image:: img/doc-mkp-question-def.jpg
    :height: 150px
@@ -1778,49 +1778,49 @@ Confirme el título de la lista de definición y en seguida la marcación del t�
    :align: center
 
 
-Al finalizar, verifique si la marcación automática de cada termo de la lista de definición están de acuerdo con el modelo que sigue.
+Al finalizar, verifique si la marcación automática de cada término de la lista de definiciones está conforme al siguiente ejemplo.
 
 .. image:: img/doc-mkp-deflist.jpg
    :height: 300px
    :align: center
 
-.. note:: el programa hace la marcación automática de cada ítem de la lista de definiciones apenas se la lista esté con el formateo requerido por SciELO: con el termo en negrita, guion como separador y la definición del termo sin formateo.
+.. note:: El programa realiza la marcación automática de cada ítem de la lista de definiciones sólo sí la lista está con el formato requerido por SciELO: el término en negritas, guión como separador y la definición del término sin formato.
 
-Caso el programa no haga la marcación automática de la lista de definiciones, es posible identificar los elementos manualmente.
+Cuando el programa no realice la marcación automática de la lista de definiciones, es posible identificar los elementos manualmente.
 
-* Seleccione toda la lista de definiciones y marque con el elemento [deflist], sin asterisco:
+* Seleccione toda la lista de definiciones y márquelas con el elemento [deflist], sin asterisco:
 
 .. image:: img/doc-mkp-mandef1.jpg
    :height: 300px
    :align: center
 
 
-* Marque el título con el elemento [sectitle] (solo si hay la información de título):
+* Marque el título con el elemento [sectitle] (solo si existe la información de título):
 
 .. image:: img/doc-mkp-defsect.jpg
    :height: 250px
    :align: center
 
-* Seleccione el termo y la definición y marque con el elemento [defitem]:
+* Seleccione el término y la definición y márquelos con el elemento [defitem]:
 
 .. image:: img/doc-mkp-defitem.jpg
    :height: 250px
    :align: center
 
-* Seleccione solo el termo y marque con el elemento [term]:
+* Seleccione solo el término y márquelo con el elemento [term]:
 
 .. image:: img/doc-mkp-term.jpg
    :height: 80px
    :align: center
 
-* El próximo paso será seleccionar la definición e identificar con el elemento [def]:
+* El próximo paso será seleccionar la definición y marcarla con el elemento [def]:
 
 .. image:: img/mkp-doc-def.jpg
    :height: 200px
    :align: center
 
 
-Haga el mismo para los demás termos y definiciones.
+Haga lo mismo con los demás términos y definiciones.
 
 
 .. _material-suplementar:
