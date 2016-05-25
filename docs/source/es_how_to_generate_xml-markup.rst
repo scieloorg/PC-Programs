@@ -841,7 +841,7 @@ Utilizada para referenciar un software, un programa de computadora. Ej.:
 Webpage
 ^^^^^^^
 
-Utilizada para referenciar, páginas web o información contenidas en blogs, twiter, facebook, listas de discusión entre otros. 
+Utilizada para referenciar, páginas web o información contenida en blogs, twiter, facebook y listas de discusión entre otros. 
 
 **Ejemplo 1**
 
