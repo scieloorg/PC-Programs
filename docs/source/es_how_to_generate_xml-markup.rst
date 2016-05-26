@@ -2368,50 +2368,51 @@ La marcación de los párrafos se debe hacer con el elemento [xmlbody], seleccio
 Press Release
 =============
 
-Por ser un texto de divulgación que visa dar más visibilidad a un número o artículo publicado en una revista, el press realise no sigue la misma estructura de un artículo científico. De esa manera, no posee sección, número de DOI e, no hay obligatoriedad de inclusión de afiliación de autor.
-Una vez aprobados, los Press Releases podrán ser formateados para una marcación más optimizada.
+Por ser un texto de divulgación que utiliza para dar más visibilidad a un fascículo o artículo publicado en una revista, el press realise no sigue la misma estructura de un artículo científico. Por lo tanto, no posee sección, número de DOI, y no es obligatorio incluir la afiliación del autor.
+Una vez aprobados los 'Press Releases' podrán ser formateados para una marcación más optimizada.
 
-* 1ª línea del archivo: correspondiente al número de DOI, debe quedar en blanco;
-* 2ª línea del archivo: correspondiente a la sección del documento, debe quedar en blanco;
-* 3ª línea del archivo: insiera el título del Press Release;
-* 4ª línea del archivo: saltar;
-* 5ª línea del archivo: Insiera el nombre del autor del Press Release;
-* 6ª línea del archivo: saltar;
-* 7ª línea del archivo: inserir afiliación (caso no exista, dejar línea en blanco);
-* 8ª línea del archivo: saltar
-* Insiera el texto del archivo Press Release, incluyendo la asignatura del autor (asignatura, si hay).
+* 1ª línea del documento: Correspondiente al número de DOI, debe quedar en blanco.
+* 2ª línea del documento: Correspondiente a la sección del documento, debe quedar en blanco.
+* 3ª línea del documento: Agregue el título del Press Release.
+* 4ª línea del documento: Saltar.
+* 5ª línea del documento: Agregue el nombre del autor del Press Release.
+* 6ª línea del documento: Saltar.
+* 7ª línea del documento: Agregar la afiliación, si no existe dejar la línea en blanco.
+* 8ª línea del documento: Saltar.
+* Agregue el texto del documento Press Release, incluyendo la firma del autor si existe.
 
 
-Identificando el Press Release
-------------------------------
+Marcar el Press Release
+-----------------------
 
-Con el archivo formateado, haga la identificación del documento por el elemento [doc] y considere los siguientes ítems:
+Con el documento previamente formateado, realice la marcación del documento con el elemento [doc] y considere los siguientes valores:
 
-* En los campos 'volid' y 'issue' insiera el número correspondiente al número que el Press Release está relacionado y en 'isidpart' insiera la información 'pr' cualificando el archivo como un Press Release;
-* en [doctopic] seleccione el tipo "Press Release";
-* Caso el Press Release esté relacionado a un número, insiera la información "00001" en el campo [order] para que el Press Release sea posicionado correctamente en la tabla de contenido de la revista; caso el Press Release sea de artículo, apenas insiera la información "01".
+* En los campos 'volid' y 'issue' ponga los datos correspondientes al fascículo con el que esta relacionado el Press Release y en 'isidpart' ponga el valor 'pr' que identifica al documento como un Press Release.
+* En el campo de [doctopic] seleccione el tipo "press release".
+* Cuando el Press Release esté relacionado con un fascículo, ponga el valor "00001" en el campo [order] para que el Press Release sea posicionado correctamente en la tabla de contenido de la revista.
+* Cuando el Press Release sea de un artículo, ponga sólo el valor "01".
 
 .. image:: img/mkp-form-press-release.jpg
    :align: center
 
 
-Al cliquear en [OK] el programa marcará automáticamente todos los datos iniciales, saltando el número de DOI y los demás datos que el Press Release no presenta.
+Al dar clic en [OK] el programa marcará automáticamente todos los datos iniciales, omitiendo el número de DOI y los demás datos no presentes en el Press Release.
 
-Complete los demás datos del Press Relase como: [xref] de autores, normalización de afiliaciones (esos dos últimos, se hay), cuerpo del texto con el elemento [xmlbody] y identificación de asignatura de autor con el elemento [sigblock].
+Complete los demás datos del Press Relase como: [xref] de autores, normalización de afiliaciones (si existen), cuerpo del texto con el elemento [xmlbody] y la marcación de la firma del autor con el elemento [sigblock].
 
 .. image:: img/mkp-press-release.jpg
    :align: center
 
 
-Caso el Press Release esté relacionado a un artículo específico, será necesario relacionarlo al artículo divulgado.
-Insiera el cursor del mouse después del elemento [doc]  y haga un clic en el elemento [related]. En la secuencia, llene los campos 'reltp' (tipo de relación) y 'pid-doi'.
-En el campo 'reltp' seleccione el valor 'press-release'; ya en 'pid-doi' insiera el número de DOI del artículo relacionado.
+En caso que el Press Release esté relacionado a un artículo específico, será necesario relacionarlo al artículo divulgado.
+Ponga el cursor del mouse después del elemento [doc]  y de clic en el elemento [related]. Después llene los campos 'reltp' (tipo de relación) y 'pid-doi'.
+En el campo 'reltp' seleccione 'press-release' y en 'pid-doi' ponga el número de DOI del artículo relacionado.
 
 .. image:: img/mkp-related-press-release.jpg
    :align: center
 
 
-.. note:: la identificación por el elemento [related] debe ser realizada apenas para Press Releases relacionado a un "artículo".
+.. note:: La marcación del el elemento [related] sólo se realizará en Press Releases relacionados a un "artículo".
 
 
 .. _procesos-manuales:
