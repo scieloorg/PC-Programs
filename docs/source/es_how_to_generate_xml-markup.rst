@@ -1067,13 +1067,13 @@ Al hacer clic en [*fn] el programa realizará la marcación automática de [xref
 Apéndices
 =========
 
-La marcación de apéndices, anexos y materiales suplementares debe ser hecha por el elemento [appgrp]:
+La marcación de apéndices, anexos y material suplementario debe ser hecha con el elemento [appgrp]:
 
 .. image:: img/doc-mkp-element-app.jpg
    :height: 100px
    :align: center
 
-Seleccione todo el grupo de apéndice, incluso el título, si haya,  y haga un clic en [appgrp]:
+Seleccione todo el grupo de apéndice, incluso el título, si lo tiene, y haga clic en [appgrp]:
 
 
 .. image:: img/doc-mkp-app.jpg
@@ -1087,17 +1087,17 @@ Seleccione apéndice por apéndice y marque con el elemento [app]
    :height: 300px
    :align: center
 
-.. note:: el id debe ser siempre único en el documento.
+.. note:: El ID debe ser siempre único en el documento.
 
-Caso el apéndice sea una figura, tabla, cuadro etc, seleccione el título de apéndice y marque con el elemento [sectitle]. Utilicé los íconos fluctuantes (tabwrap, figgrp, * list, etc) del programa Markup para identificación del objeto que será marcado.
+Cuando el apéndice sea una figura, tabla, cuadro etc, seleccione el título de apéndice y marque con el elemento [sectitle]. Utilice los íconos flotantes (tabwrap, figgrp, * list, etc) del programa Markup para identificar el objeto que será marcado.
 
-**íconos fluctuantes**
+**Íconos flotantes**
 
 .. image:: img/doc-mkp-tags-flutuantes.jpg
    :height: 100px
    :align: center
 
-Ejemplo, seleccione la figura con su respectivo label e caption y marque con el elemento [figgrp]
+Ejemplo, seleccione la figura con su respectivo label y caption y marque con el elemento [figgrp]
 
 .. image:: img/doc-mkp-app-fig1.jpg
    :height: 300px
@@ -1124,7 +1124,7 @@ Para apéndices que presentan párrafos, seleccione el título del apéndice y m
    :align: center
 
 
-Seleccione el párrafo y marque con el elemento [p]
+A continuación, seleccione el párrafo y marque con el elemento [p]
 
 .. image:: img/doc-mkp-sectitle-app-paragrafo2.jpg
    :height: 300px
