@@ -2291,38 +2291,38 @@ El identificador electrónico del documento debe ser agregado en el campo [eloca
 
 .. _resena:
 
-Reseña
-======
+Reseñas
+=======
 
-Las reseñas generalmente presentan un dado a más que los archivos comunes: la referencia bibliográfica del libro reseñado.
-El formateo del documento debe seguir la misma orientación disponible en `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ , incluyéndose referencia bibliográfica del ítem reseñado antes del cuerpo del texto. 
+Las reseñas generalmente presentan un dato más que los documentos comunes: la referencia bibliográfica del libro reseñado.
+El formato del documento debe seguir instrucciones disponibles en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ , incluyendo la referencia bibliográfica del documento reseñado antes del cuerpo del texto. 
 
-Sigue modelo:
+Ejemplo:
 
 .. image:: img/mkp-format-resenha.jpg
    :align: center
    :height: 500px
 
 
-Identificando Reseñas
----------------------
+Marcando Reseñas
+----------------
 
-Con el archivo formateado, haga la identificación del documento por el elemento [doc] y complete los datos. En [doctopic] seleccione el tipo "reseña (book review)". La marcación de los datos iniciales es parecida a las orientaciones anteriores, exceptuándose la marcación de la referencia del libro reseñado.
+Con el documento previamente formateado, realice la marcación de documento con el elemento [doc] y complete los datos. En el campo [doctopic] seleccione "reseña (book review)". La marcación de los datos iniciales es similar a las instrucciones anteriores, excepto por la marcación de la referencia del libro reseñado.
 
-Para marcar la referencia del libro, seleccione toda la referencia y marque con el elemento [product]. En la ventana abierta por el programa, insiera el tipo de referencia bibliográfica en [prodtype]:
+Para marcar la referencia del libro, seleccione la referencia completa y márquela con el elemento [product]. En la ventana que abre el programa, seleccione el tipo de referencia bibliográfica en [prodtype]:
 
 .. image:: img/mkp-product.jpg
    :align: center
 
-En la secuencia, haga la marcación de la referencia usando los elementos presentados en el programa:
+Después realice la marcación de la referencia usando los elementos presentados del nivel [prodtype]:
 
 .. image:: img/mkp-product-reference.jpg
    :align: center
 
-Finalice la marcación del archivo y genere el XML.
+Termine la marcación del archivo y genere el XML.
 
 
-.. note:: el programa no presenta todos los elementos para marcación de referencia bibliográfica en el elemento [product]. Marque apenas los datos de la referencia con los elementos disponibles en el programa.
+.. note:: El programa no muestra todos los elementos para la marcación de referencias bibliográficas en el elemento [product]. Marque solo los datos de la referencia con los elementos disponibles en el nivel [prodtype].
 
 
 .. _formato-corto:
