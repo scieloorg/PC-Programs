@@ -953,10 +953,10 @@ Después de la marcación del grupo de referencias, baje un nivel en [ref], sele
 
 .. _nota-de-pie:
 
-Notas de Pie
+Notas al Pie
 ============
 
-As notas de pie pueden aparecer antes del cuerpo del texto o después. No hay una posición fija dentro del archivo .doc. Mientras tanto, es necesario evaluar la nota indicada, pues dependiendo del tipo de nota inserida en fn-type, el programa genera el archivo .xml con información de notas de autores en ``<front>`` o en ``<back>``. Para más información acerca de los tipos de nota consulte la documentación de SPS en <http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.2-branch/tagset.html#notas-de-autor> y<http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.2-branch/tagset.html#notas-gerais>.
+Las notas al pie pueden aparecer antes del cuerpo del texto o después. No hay una posición fija dentro del archivo .doc. En cualquier caso, es necesario evaluar la nota indicada, pues dependiendo del tipo de nota que se seleccione en fn-type, el programa genera el archivo .xml con información de notas de autores en ``<front>`` o en ``<back>``. Para más información acerca de los tipos de nota consulte la documentación de SPS en <http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.2-branch/tagset.html#notas-de-autor> y<http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.2-branch/tagset.html#notas-gerais>.
 
 Seleccione la nota y marque con el elemento [fngrp].
 
@@ -965,7 +965,7 @@ Seleccione la nota y marque con el elemento [fngrp].
    :align: center
 
 
-Caso la nota presente un título o un símbolo, seleccione la información y marque con el elemento [label]:
+Cuando la nota presente un título o un símbolo, seleccione la información y marque con el elemento [label]:
 
 .. image:: img/doc-mkp-fn-label-con.jpg
    :height: 200px
