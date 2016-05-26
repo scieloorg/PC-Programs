@@ -1141,10 +1141,10 @@ A continuación, seleccione el párrafo y marque con el elemento [p]
 Agradecimientos
 ===============
 
-La sección de agradecimiento, generalmente, encontrase entre el final del cuerpo del texto e las referencias bibliográficas. Para marcación automática de los elementos de agradecimiento seleccione todo el texto, incluso su título, y marque con el elemento [ack]. 
+La sección de agradecimientos, generalmente se encuentra entre el final del cuerpo del texto y las referencias bibliográficas. Para la marcación automática de los elementos de agradecimiento seleccione todo el texto, incluso su título, y marque con el elemento [ack]. 
 
 
-**seleccionando [ack]**
+**Seleccionando [ack]**
 
 .. image:: img/doc-mkp-ack-nofunding.jpg
    :height: 200px
@@ -1163,13 +1163,13 @@ La sección de agradecimiento, generalmente, encontrase entre el final del cuerp
    <iframe width="560" height="315" src="https://www.youtube.com/embed/sxZlGq4vwhk?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
-Comúnmente los agradecimientos presentan datos de financiamiento, con número de contracto y institución financiadora. Cuando presentes, marque los datos con el elemento [funding].
+Comúnmente los agradecimientos presentan datos de financiamiento, con número de contrato e institución financiadora. Cuando estén presentes estos datos, márquelos con el elemento [funding].
 
 .. image:: img/doc-mkp-nivel-inf-ack.jpg
    :height: 200px
    :align: center
 
-Seleccione el primero conjunto de institución y número de contravto y marque con el elemento [award]:
+Seleccione el primer conjunto de institución y número de contrato y marque con el elemento [award]:
 
 .. image:: img/doc-mkp-select-1-award-ack.jpg
    :height: 200px
@@ -1181,7 +1181,7 @@ Seleccione la institución financiadora y marque con el elemento [fundsrc]:
    :height: 200px
    :align: center
 
-.. note:: Caso haya más que una institución financiadora para el mismo número de contracto, seleccione cada institución en un [fundsrc]
+.. note:: Si hay más de una institución financiadora para el mismo número de contrato, seleccione cada institución con un [fundsrc]
 
 
 Marque el número de contracto con el elemento [contract]:
@@ -1190,7 +1190,7 @@ Marque el número de contracto con el elemento [contract]:
    :height: 200px
    :align: center
 
-Cuando hubiera más de una institución financiadora y número de contrato, marcar conforme sigue:
+Cuando haya más de una institución financiadora y número de contrato, marque como se muestra a continuación:
 
 .. image:: img/doc-mkp-ack-finaliz.jpg
    :height: 230px
