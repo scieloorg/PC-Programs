@@ -1036,25 +1036,25 @@ Si la nota al pie presenta más de una institución financiadora y número de co
 
 .. _fn-automatico:
 
-Notas de Pie - Identificación Automática
-========================================
+Identificación automática de notas al pie
+=========================================
 
-Para notas de pie que están posicionadas al fin de cada página en el documento, con formateo de notas de pie del Word, es posible hacer la marcación automática del número referenciado en el documento y su nota respectiva.
+Para notas al pie que están posicionadas al final de cada página en el documento, con formateo de notas al pie de Word, es posible hacer la marcación automática del número referenciado en el documento y su nota respectiva.
 
-Las llamadas de nota de pie en el cuerpo del texto deberán estar con un formateo simple: en formato numérico y sobrescrito.
-Ya las notas, deberán estar en formato de nota de pie del Word con un espacio antes de la nota.
+Las llamadas de nota al pie en el cuerpo del texto deberán tener un formateo simple: formato numérico y superíndice.
+Las notas deberán estar en formato de nota al pie de Word con un espacio antes de la nota.
 
 .. image:: img/mkp-espaco-fn.jpg
    :height: 300px
    :align: center
 
-Estando formateado correctamente, haga un clic con el mouse en cualquier párrafo y, en seguida, clique en [* fn].
+Ya con el formato correcto, haga clic con el mouse en cualquier párrafo, y en seguida haga clic en [* fn].
 
 .. image:: img/mkp-botao-fn.jpg
    :height: 300px
    :align: center
 
-Al cliquear en [*fn] el programa hará la marcación automática de [xref] en el cuerpo del texto y también de la nota al pie de la página.
+Al hacer clic en [*fn] el programa realizará la marcación automática de [xref] en el cuerpo del texto y también de la nota al pie de la página.
 
 .. image:: img/mkp-nota-automatico.jpg
    :height: 300px
