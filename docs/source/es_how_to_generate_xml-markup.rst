@@ -2240,9 +2240,9 @@ En el campo [ahpdate] ponga la misma fecha que en [dateiso]. Después de llenar 
 
 Publicación continua (Rolling Pass)    
 ===================================
-El archivo Rolling Pass debe presentar el formateo indicado en el ítem `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_. 
+El archivo de Rolling Pass debe estar formateado de acuerdo a las instrucciones de `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_. 
 
-Antes de llenar el formulario para Rolling Pass, se debe saber el formato de publicación adoptado por la revista, los cuales pueden ser:
+Antes de llenar el formulario de Rolling Pass, se debe saber el formato de publicación adoptado por la revista, el cual puede ser:
 
 **Volumen y número**
 
@@ -2262,7 +2262,7 @@ Antes de llenar el formulario para Rolling Pass, se debe saber el formato de pub
    :height: 50px
 
 
-El campo [order] es compuesto por una orden que determinará la sección dos archivos y también la orden de publicación. Mientras tanto, primeramente defina cada centena para una sección, por ejemplo:
+El campo [order] es compuesto por un orden que determinará la sección de los archivos y también el orden de publicación. Por lo tanto, primero defina una centena para cada sección, por ejemplo:
 
 * Editorials: 0100
 * Original Articles: 0200
@@ -2270,16 +2270,23 @@ El campo [order] es compuesto por una orden que determinará la sección dos arc
 * Letter to the Author: 0400
    …
 
-Los artículos deberán presentar un ID único dentro de su sección.
+Los artículos deberán presentar un ID único dentro de su sección. Por lo que es recomendable crear una plantilla que muestre el ID utilizando, ejemplo:
 
-El identificador electrónico del documento debe ser inserido en el campo [elocatid].
+**Original Articles**
+
+* 1234-5678-rctb-v10-0239.xml 0100
+* 1234-5678-rctb-v10-0328.xml 0101
+* **1234-5678-rctb-v10-0356.xml 0102**
+* ...
+
+El identificador electrónico del documento debe ser agregado en el campo [elocatid].
 
 .. image:: img/rp-formulario.jpg
    :height: 300px
    :align: center
 
 
-.. note:: Archivos Rolling Pass presentan elocation. De esa forma, no se debe llenar datos correspondientes a [fpage] y [lpage].
+.. note:: Los archivos Rolling Pass presentan elocation. Por ello no se debe llenar datos correspondientes a [fpage] y [lpage].
 
 
 .. _resena:
