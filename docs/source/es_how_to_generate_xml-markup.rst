@@ -975,10 +975,10 @@ Cuando la nota presente un título o un símbolo, seleccione la información y m
 Tipos de notas
 --------------
 
-Soporte sin Información de Financiamiento
+Soporte sin información de financiamiento
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Para notas de pie que presentan soporte de entidades, institución o persona física sin dado de financiamiento y número de contracto, seleccione la nota del tipo "Pesquisa en la cual el artículo es basado fue apoyado por alguna entidad":
+Para notas al pie que presentan soporte de entidades, institución o persona física sin datos de financiamiento ni número de contrato, seleccione la nota del tipo "Investigación en la cual el artículo fue basado fue apoyado por alguna entidad":
 
 
 .. image:: img/doc-mkp-fn-supp.jpg
@@ -991,38 +991,38 @@ Para notas de pie que presentan soporte de entidades, institución o persona fí
    <iframe width="560" height="315" src="https://www.youtube.com/embed/a_b9uzylEUU?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 
-Soporte con datos de Financiamiento
+Soporte con datos de financiamiento
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Para notas de pie que presentan datos de financiamiento con número de contracto, seleccione nota del tipo "Declaración o negación de recibimiento de financiamiento en apoyo a la pesquisa cuyo el artículo es basado". En ese caso, será preciso marcar los datos de financiamiento con el elemento [funding]:
+Para notas al pie que presentan datos de financiamiento con número de contrato, seleccione nota del tipo "Declaración o negación de recibimiento de financiamiento en apoyo a la investigación en la que el artículo es basado". En ese caso, será preciso marcar los datos de financiamiento con el elemento [funding]:
 
 .. image:: img/doc-mkp-select-fn-fdiscl.jpg
    :height: 300px
    :align: center
 
 
-El próximo paso será seleccionar el primero grupo de institución financiadora + el número de contracto y marcar con el elemento [award].
+El siguiente paso es seleccionar el primer grupo de institución financiadora + el número de contrato y marcar con el elemento [award].
 
 .. image:: img/doc-mkp-award-select.jpg
    :height: 200px
    :align: center
 
 
-En seguida, seleccione la institución financiadora y marque con el elemento [fundsrc]:
+A continuación, seleccione la institución financiadora y marque con el elemento [fundsrc]:
 
 .. image:: img/doc-mkp-fund-source-fn.jpg
    :height: 200px
    :align: center
 
 
-Seleccione cada número de contracto y marque con el elemento [contract]:
+Seleccione cada número de contrato y marque con el elemento [contract]:
 
 .. image:: img/doc-mkp-contract-fn.jpg
    :height: 300px
    :align: center
 
 
-Caso la nota de pie presente más que una institución financiadora y número de contracto, haga la marcación conforme el ejemplo:
+Si la nota al pie presenta más de una institución financiadora y número de contrato, haga la marcación conforme al siguiente ejemplo:
 
 .. image:: img/doc-mkp-mkp-fn-fund-2.jpg
    :height: 300px
