@@ -1207,13 +1207,13 @@ Cuando haya más de una institución financiadora y número de contrato, marque 
 Glosario
 ========
 
-Glosarios son incluidos en los documentos después de las referencias bibliográficas, en apéndices o cajas de texto. Para marcarlo, seleccione todos los ítems que la compone y marque con el elemento [glossary]. Seleccione todos los ítems nuevamente y marque con el elemento :ref:`lista-definición`. Sigue ejemplo de marcación de glosario presente después de las referencias bibliográficas:
+Los glosarios son incluidos en los documentos después de las referencias bibliográficas, en apéndices o cajas de texto. Para marcarlo, seleccione todos los ítems que lo componen y marque con el elemento [glossary]. Seleccione todos los ítems nuevamente y marque con el elemento :ref:`lista-definición`. Sigue ejemplo de marcación de glosario presente después de las referencias bibliográficas:
 
 .. image:: img/doc-mkp-glossary-.jpg
    :height: 200px
    :align: center
 
-Seleccione todos los datos de glosario y marque con el elemento :ref:`lista-definicao`:
+Seleccione todos los datos de glosario y marque con el elemento :ref:`lista-definición`:
 
 .. image:: img/doc-mkp-select-gdef.jpg
    :height: 200px
