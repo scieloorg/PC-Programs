@@ -2110,13 +2110,13 @@ Realice la marcación de la respuesta del documento, con los elementos en nivel 
 Errata
 ======
 
-Para marcar una errata, verifique primeramente si el archivo está formateado correctamente conforme orientaciones que siguen:
+Para marcar una errata, primero verifique que el archivo éste formateado correctamente de acuerdo a las siguientes instrucciones:
 
-* 1ªlínea: DOI
-* 2ªlínea: Sección "Errata" o "Erratum"
-* 3ªlínea: título "Errata" o "Erratum" (de acuerdo con el PDF)
-* saltar 2 líneas
-* cuerpo del texto
+* 1ª línea: DOI
+* 2ª línea: Sección "Errata" o "Erratum"
+* 3ª línea: Título "Errata" o "Erratum" (de acuerdo al PDF)
+* Saltar 2 líneas
+* Cuerpo del texto
 
 .. image:: img/mkp-exemplo-errata.jpg
    :height: 300px
@@ -2126,38 +2126,38 @@ Para marcar una errata, verifique primeramente si el archivo está formateado co
 Marcando la errata
 ------------------
 
-Abra la errata en el Markup y marque con el elemento [doc].
-Al abrir el formulario, seleccione el título de la revista y confiera los metadatos que son adicionados automáticamente.
-Complete los demás campos y, en [doctopic], seleccione el valor "errata" y  clique en [OK]
-El programa marcará automáticamente los elementos básicos de la errata como: sección, número de DOI y título:
+Abra la errata en el programa Markup y márquela con el elemento [doc].
+Al abrir el formulario, seleccione el título de la revista y verifique los metadatos que son llenados de forma automática.
+Complete los demás campos, y en el campo [doctopic] seleccione "errata" y de clic en [OK]
+El programa marcará automáticamente los elementos básicos de la errata como: sección, número DOI y título:
 
 .. image:: img/mkp-formulario-errata.jpg
    :height: 350px
    :align: center
 
-Para finalizar la marcación de la errata, verifique si todos los elementos fueron identificados correctamente y siga con la marcación.
-Seleccione el cuerpo del texto y marque con el elemento [xmlbody]:
+Para finalizar la marcación de la errata, verifique que todos los elementos fueron identificados correctamente y continué con la marcación.
+Seleccione el cuerpo del texto y márquelo con el elemento [xmlbody]:
 
 .. image:: img/mkp-xmlbody-errata.jpg
    :height: 350px
    :align: center
 
 
-Insiera el cursor del mouse antes del elemento [toctitle],  y haga un clic en [related].
-En la ventana abierta por el programa, llene los campos: [reltp] 'tipo de relación' con el valor "corrected-article" y [pid-doi] ' número del PID o DOI relacionado' con el número de DOI del artículo que será corregido  y haga un clic en [Continuar]:
+Ponga el cursor del mouse antes del elemento [toctitle],  y de un clic en [related].
+En la ventana que abre el programa, llene los campos: [reltp] (tipo de relación) con el valor "corrected-article" y [pid-doi] (número PID o DOI relacionado) con el número DOI del artículo que será corregido y de clic en [Continuar]:
  
 .. image:: img/mkp-related-campos.jpg
    :height: 200px
    :align: center
 
-El programa inserta el elemento [related] lo cual hará enlace con el artículo que presenta error:
+El programa inserta el elemento [related], el cual enlazará al artículo que presenta el error:
 
 .. image:: img/mkp-resultado-related.jpg
    :height: 300px
    :align: center
 
 
-.. note:: la versión más reciente del programa Markup acepta los tipos: DOI, PID, SciELO-PID y SciELO-AID.
+.. note:: La versión más reciente del programa Markup acepta los tipos: DOI, PID, SciELO-PID y SciELO-AID.
 
 
 .. _ahead:
