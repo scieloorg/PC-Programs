@@ -2412,35 +2412,35 @@ En el campo 'reltp' seleccione el valor 'press-release'; ya en 'pid-doi' insiera
 Procesos Manuales
 =================
 
-El programa de marcación atiende más 80% de las reglas establecidas en el SciELO Publishing Schema. 
-Hay algunos datos que deben ser marcados manualmente, sea en el propio programa Markup, sea directamente en el archivo xml generado por el programa.
+El programa de marcación atiende más del 80% de las reglas establecidas en el SciELO Publishing Schema. 
+Hay algunos datos que deben ser marcados manualmente, ya sea en el propio programa Markup o directamente en el archivo xml generado por el programa.
 
 
 Afiliación con más de una institución
 -------------------------------------
 
-El programa Markup no realiza marcación de afiliaciones con más que una institución. En ese caso, el dato será incluido directamente en el archivo .xml.
-Abra el archivo .xml en un editor de XML y incluya el elemento <aff> con un ID diferente del que ya consta en el documento:
+El programa Markup no realiza marcación de afiliaciones con más de una institución. Si se tiene este caso, los datos deben ser incluidos directamente en el archivo .xml.
+Abra el archivo .xml en un editor de XML e incluya el elemento <aff> con un ID diferente del que ya consta en el documento:
 
 .. image:: img/mkp-aff-xml-id.jpg
    :align: center
 
-.. note:: la afiliación incluida manualmente no debe presentar <label> y <institution content-type="original">, ya que sus datos para presentación en el sitio ya están disponibles en la afiliación marcada en el programa.
+.. note:: La afiliación incluida manualmente no debe presentar <label> ni <institution content-type="original">, ya que sus datos para presentación en el sitio ya están disponibles en la afiliación marcada en el programa.
 
 
-Verifique la segunda institución de la afiliación original y copie para la afiliación nueva haciendo la marcación del dato con el elemento <institution content-type="orgname"> y <institution content-type="normalized">:
+Verifique la segunda institución de la afiliación original y cópiela en la afiliación nueva haciendo la marcación del dato con el elemento <institution content-type="orgname"> e <institution content-type="normalized">:
 
 .. image:: img/mkp-aff-id-xml-norm.jpg
    :align: center
 
-Caso esa institución tenga divisiones, haga la marcación del dato conforme las demás ya hechas en el documento.
+Cuando esa institución tenga divisiones, haga la marcación del dato conforme las demás ya hechas en el documento.
 En seguida, marque su país correspondiente con el elemento <country country="xx">:
 
 .. image:: img/mkp-xml-aff-complete.jpg
    :align: center
 
-El próximo paso será relacionar esa afiliación <aff id="affx"> con el autor correspondiente.
-Considerando que el autor no presenta más que un label, insiera el elemento <xref> cerrado:
+El siguiente paso será relacionar esa afiliación <aff id="affx"> con el autor correspondiente.
+Considerando que el autor no presenta más que un label, inserte el elemento <xref> cerrado:
 
 .. image:: img/mkp-xref-fechada.jpg
    :align: center
