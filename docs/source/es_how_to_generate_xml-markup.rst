@@ -2165,37 +2165,37 @@ El programa inserta el elemento [related], el cual enlazará al artículo que pr
 Ahead Of Print
 ==============
 
-El archivo Ahead Of Print (AOP) debe presentar formateo indicado en el ítem `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_. Como archivos en AOP no presentan sección, volumen, número y paginación, después del número de DOI dejar una línea en blanco y, en seguida, inserir el título del documento:
+El archivo "Ahead Of Print" (AOP) debe estar formateado de acuerdo a las instrucciones de `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_. Como los archivos en AOP no presentan sección, volumen, número y paginación, después del número de DOI de debe dejar una línea en blanco, y enseguida agregar el título del documento:
 
 .. image:: img/mkp-exemplo-ahead.jpg
    :height: 300px
    :align: center
 
-En el formulario para Ahead Of Print, se debe inserir el valor "00" para los campos: [fpage], [lpage], [volumen] y [issue].
+En el formulario para Ahead Of Print, se debe poner el valor "00" en los campos: [fpage], [lpage], [volumen] e [issue].
 
-En [dateiso] insiera la fecha de publicación completa: Año+Mes+Día; ya en el campo [season], insiera el mes de publicación.
-El total de página, [pagcount*], para archivos AOP debe ser siempre "1":
+En [dateiso] ponga la fecha de publicación completa: Año+Mes+Día, y en el campo [season] ponga el mes de publicación.
+El total de páginas [pagcount*], para archivos AOP siempre debe ser "1":
 
 .. image:: img/aop-vol-pag-counts.jpg
    :height: 300px
    :align: center
 
 
-Seleccione el valor "artículo original" para el campo [doctopic].
+En el campo [doctopic] seleccione el valor "artículo original".
 
-En el campo [order] debe ser inserido 5 dígitos que obedezcan a una regla SciELO descripta a seguir:
+En el campo [order] se deben poner 5 dígitos que obedezcan a la siguiente regla de SciELO:
 
-Para la construcción del ID de AOP será utilizado una parte de la numeración del lote y otra de la orden del documento.
+Para construir el ID para AOP se utilizará una parte de la numeración del fascículo y otra del orden del documento.
 
-*1 - Copie los tres primeros dígitos del lote*
+*1 - Copie los tres primeros dígitos del fascículo*
 
-Ejemplo lote de la bjmbr número 7 de 2015 = lote 0715 **usar: 071**
+Ejemplo el fascículo de la bjmbr número 7 del 2015 = fascículo 0715 **usar: 071**
 
-*2- Insiera los dos últimos dígitos que representarán la cantidad de artículos en el lote.*
+*2- Agregue los dos últimos dígitos que representarán la cantidad de artículos en el fascículo.*
 
 
 +------------------------------------------------------------+
-|        Ejemplo lote bjmbr 0715 possui 5 artículos:         |
+|     Ejemplo el fascículo bjmbr 0715 tiene 5 artículos:     |
 +=========================================+==================+
 | 1414-431X-bjmbr-1414-431X20154135.xml   |  -> **usar: 01** |
 +-----------------------------------------+------------------+
@@ -2209,9 +2209,9 @@ Ejemplo lote de la bjmbr número 7 de 2015 = lote 0715 **usar: 071**
 +-----------------------------------------+------------------+
 
 
-El campo order deberá presentar el valor de order de la siguiente forma:
+El campo order deberá presentar el valor de la siguiente forma:
 
-**3 primeros dígitos del lote + 2 dígitos de la cantidad del lote**
+**3 primeros dígitos del fascículo + 2 dígitos de la cantidad del fascículo**
 
 Archivo 1:
 
@@ -2226,19 +2226,19 @@ Archivo 2:
 etc.
 
 
-En [ahpdate] insiera la misma fecha que consta en [dateiso]. Después de llenar todos los datos, haga un clic en [Ok].
+En el campo [ahpdate] ponga la misma fecha que en [dateiso]. Después de llenar todos los datos, de clic en [Ok].
 
 .. image:: img/doc-preench-aop.jpg
    :height: 300px
    :align: center
 
 
-.. note:: al generar el archivo .xml el programa inserirá automáticamente el elemento <subject> con el valor "Articles", conforme recomendado por el SciELO PS.
+.. note:: Al generar el archivo .xml el programa agregara automáticamente el elemento <subject> con el valor "Articles", de acuerdo a las recomendaciones del SciELO PS.
 
 
 .. _rolling-pass:
 
-Publicación Continua (Rolling Pass)    
+Publicación continua (Rolling Pass)    
 ===================================
 El archivo Rolling Pass debe presentar el formateo indicado en el ítem `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_. 
 
