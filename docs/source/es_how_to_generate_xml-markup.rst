@@ -1921,65 +1921,65 @@ Después de la marcación de [supplmat] marque el objeto del material con las et
 
 .. _sub-article:
 
-Sub-article
-===========
+Subdocumentos
+=============
 
-Traducción
-----------
+Traducciones
+------------
 
-Archivos traducidos presentan un formateo específico:
+Los documentos traducidos presentan un formato específico:
 
-1. El archivo de idioma principal debe seguir el formateo indicado en `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_
-2. Después de la última información del archivo principal – aún en el mismo .doc o .docx - insiera la traducción del archivo.
+1. El documento del idioma principal debe seguir el formato indicado en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_
+2. Después de la última información en el documento principal y dentro del mismo .doc o .docx, agregue la traducción del documento.
 
 La traducción del documento debe ser simplificada:
 
-1. Inserir apenas las informaciones que presentan traducción, por ejemplo:
-    a. Sección - si hay traducción;
-    b. Autores y Afiliaciones - apenas si hay afiliación traducida;
-    c. Resúmenes – si hay traducción;
-    d. Palabras-clave - si hay traducción;
-    e. Correspondencia - si hay traducción;
-    f. Notas de autor o del archivo - si hay traducción;
+1. Agregar sólo la información que presente traducción, por ejemplo:
+    a. Sección - si existe su traducción
+    b. Autores y afiliaciones - Sólo si existe afiliación traducida
+    c. Resúmenes – si existe su traducción
+    d. Palabras clave - si existe su traducción
+    e. Correspondencia - si existe su traducción
+    f. Notas de autor o del archivo - si existe su traducción
     g. Cuerpo del texto.
     
-2. Título es mandatorio;
-3. No inserir nuevamente referencias bibliográficas;
-4. Mantener las citaciones bibliográficas en el cuerpo del texto conforme constan en el PDF.
+2. El título es obligatorio;
+3. No agregar nuevamente referencias bibliográficas;
+4. Mantener las citaciones bibliográficas en el cuerpo del texto de acuerdo con el PDF.
 
-Vea el modelo:
+Vea el siguiente ejemplo:
 
 .. image:: img/mkp-doc-formatado.jpg
    :height: 400px
    :width: 200px
 
 
-Identificando Archivos con Traduciones
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Marcando documentos con traducciones
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Con el archivo formateado, haga la identificación del documento por el elemento [doc] y complete las informaciones.
-La marcación del archivo de idioma principal no cambia, siga las orientaciones anteriores para la marcación de los elementos.
+Con el documento formateado, marque el documento con el elemento [doc] y complete la información.
+La marcación del documento con el idioma principal no cambia, siga las instrucciones anteriores para la marcación de los elementos.
 
 .. image:: img/mkp-subdoc-fechadoc.jpg
    :align: center
 
 
-.. note:: es fundamental que el último elemento del archivo como un todo sea el elemento [/doc]. 
+.. note:: Es fundamental que el último elemento del documento completo sea el elemento [/doc]. 
 
 
-Finalizada la marcación del archivo de idioma principal seleccione toda la traducción y marque con el elemento [subdoc].
-En la ventana abierta por el programa, llene los campos a seguir: 
+Una vez finalizada la marcación del documento con el idioma principal seleccione toda la traducción y márquela con el elemento [subdoc].
+En la ventana que abre el programa, llene los siguientes campos: 
 
-* ID            - Identificador único del archivo: S + nº de orden;
-* subarttp - seleccionar el tipo de artículo: "traducción";
-* language - idioma de la traducción del archivo.
+* id       - Identificador único del documento: S + nº secuencial
+* subarttp - Seleccionar el tipo de artículo: "translation"
+* language - Idioma de la traducción del documento
 
 .. image:: img/mkp-subdoc-inicio.jpg
    :height: 300px
    :width: 600px
    :align: center
 
-En el nivel de [subdoc], haga la marcación de los elementos que componen la traducción del documento:
+Realice la marcación de la traducción del documento, con los elementos en nivel de [subdoc]:
 
 
 .. image:: img/mkp-subdoc-nivel.jpg
@@ -1988,50 +1988,50 @@ En el nivel de [subdoc], haga la marcación de los elementos que componen la tra
    :align: center
 
 
-.. note::  el programa Markup no hace la identificación automática del archivo traducido.
+.. note::  El programa Markup no realiza la marcación automática del documento traducido.
 
 
-Afiliación traduzida
+Afiliación traducida
 ^^^^^^^^^^^^^^^^^^^^
 
-La marcación de afiliación traducida no sigue el padrón de marcación del artículo de idioma principal.
+La marcación de una afiliación traducida es diferente de a la marcación del documento en el idioma principal.
 Las afiliaciones traducidas no deben presentar datos detallados. 
-En [subdoc] seleccione la afiliación traducida y marque con el elemento [afftrans]:
+Seleccione la afiliación traducida y márquela con el elemento [afftrans] del nivel [subdoc]:
 
 .. image:: img/mkp-afftrans.jpg
    :height: 300px
    :align: center
 
-Después de la marcación de los datos iniciales de la traducción, siga con la marcación del cuerpo del texto.
+Después haber marcado de los datos iniciales de la traducción, continué con la marcación del cuerpo del texto.
 
 
-.. attention:: el ID de los autores y afiliaciones deben ser únicos. Por lo tanto, no inserir el mismo ID del idioma principal.
+.. attention:: El ID de los autores y afiliaciones deben ser únicos. Por lo tanto, no debe poner el mismo ID del idioma principal.
 
 
-Identificando 'body' de traducción
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Marcando 'body' de la traducción
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-La marcación del cuerpo del texto sigue la misma orientación anterior. Seleccione todo el cuerpo del texto y marque con el elemento [xmlbody] del nivel [subdoc]. 
+La marcación del cuerpo del texto sigue la mismas instrucciones anteriores. Seleccione todo el cuerpo del texto y márquelo con el elemento [xmlbody] del nivel [subdoc]. 
 
-El programa hará la marcación automática de las referencias cruzadas en el cuerpo del texto insiriendo el 'rid" correspondiente al 'id' de las referencias bibliográficas marcadas en el artículo principal.
+El programa realizara la marcación automática de las referencias cruzadas en el cuerpo del texto agregando el 'rid" correspondiente al 'id' de las referencias bibliográficas marcadas en el documento principal.
 
 .. image:: img/mkp-body-trans.jpg
    :height: 300px
    :align: center
 
 
-Mantenga los RIDs inseridos automáticamente.
-Figuras, Tablas, Ecuaciones, Apéndices etc deben presentar ID diferente del inserido en el archivo principal.
-Para eso, dé continuidad en los IDs. Por ejemplo:
+Mantenga los RIDs agregados automáticamente.
+Figuras, tablas, ecuaciones, apéndices etc deben presentar un ID diferente a los del documento principal.
+Para ello, dé continuidad a los IDs, por ejemplo:
 
 
-**Artículo principal presenta 2 figuras:**
+**El documento principal presenta 2 figuras:**
 
 .. image:: img/mkp-fig-id-ingles.jpg
    :height: 350px
    :align: center
 
-.. note:: el ID de la última figura es 'f2'.
+.. note:: El ID de la última figura es 'f2'.
 
 
 **En el artículo traducido también hay 2 figuras:**
@@ -2040,69 +2040,69 @@ Para eso, dé continuidad en los IDs. Por ejemplo:
    :height: 350px
    :align: center
 
-Vea que fue dado secuencia en los IDs de las figuras.
-Considere la regla para: Autores y sus respectivas afiliaciones, figuras, tablas, Cajas de texto, ecuaciones, apéndices etc.
+Observe como la secuencia es continua en los IDs de las figuras.
+Considere esta regla para: autores y sus respectivas afiliaciones, figuras, tablas, cajas de texto, ecuaciones, apéndices etc.
 
 
-.. note:: Caso haya más de una traducción en el artículo, márquelas separadamente con el elemento [subdoc].
+.. note:: Cuando exista más de una traducción en el artículo, marque cada una con el elemento [subdoc].
 
 
 .. _carta-respuesta:
 
-Carta y Respuesta
+Carta y respuesta
 -----------------
 
-Carta y respuesta también deben estar en un único archivo .doc o .docx.
+La carta y su respuesta también deben estar en un único archivo .doc o .docx.
 
-1. La carta debe seguir el formateo indicado en `Formateo del Archivo <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_
-2. Después de la última información de la carta - aún en el mismo .doc o .docx - insiera la respuesta del archivo.
+1. La carta debe seguir el formato indicado en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_
+2. Después de la última información de la carta y dentro del mismo .doc o .docx, agregue la respuesta del documento.
 
-La respuesta debe estar en el mismo documento que la carta. Verifique cuales son los datos que deben estar presentes en la respuesta:
+La respuesta debe estar en el mismo documento que la carta. A continuación se muestran cuales son los datos que deben estar presentes en la respuesta:
 
-1. Inserir sección;
-2. Autores y Afiliaciones, si hay;
-3. Correspondencia, si hay;
-4. Notas de autor o del archivo, si hay;
-5. Título es mandatorio;
-6. Referencias Bibliográficas, si la respuesta presentar.
+1. Agregar sección
+2. Autores y afiliaciones si existen
+3. Correspondencia si existe
+4. Notas de autor o del archivo si existen
+5. El título es obligatorio
+6. Referencias bibliográficas, si están presentes en la respuesta
 
-Vea el modelo:
+Observe el siguiente ejemplo:
 
 [imagen]
 
 
-Identificando Carta y Respuesta
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Marcando carta y respuesta
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Con el archivo formateado, haga la identificación del documento por el elemento [doc] y complete los datos. Obs.: en [doctopic] seleccione el tipo "carta". 
-La marcación de la carta no cambia, siga as orientaciones anteriores para la identificación de los elementos.
+Con el archivo formateado, marque el documento con el elemento [doc] y complete la información. Obs.: En [doctopic] seleccione el tipo "carta". 
+La marcación de la carta no cambia, siga las instrucciones anteriores para la marcación de los elementos.
 
 .. image:: img/mkp-formulario-carta.jpg
    :height: 450px
    :align: center
 
-.. note:: es fundamental que el último elemento del archivo como un todo sea el elemento [/doc]. 
+.. note:: Es fundamental que el último elemento del documento completo sea el elemento [/doc].
 
 
-Finalizada la marcación de la carta, seleccione toda la respuesta y marque con el elemento [subdoc].
-En la ventana abierta por el programa, incluya los campos: 
+Una vez finalizada la marcación de la carta, seleccione toda el contenido de la respuesta y márquelo con el elemento [subdoc].
+En la ventana que abre el programa, llene los siguientes campos: 
 
-* ID       - Identificador único del archivo: S + nº de orden;
-* subarttp - seleccionar el tipo de artículo: "reply";
-* language - idioma de la respuesta de la carta.
+* id       - Identificador único del documento: S + nº secuencial
+* subarttp - Seleccionar el tipo de artículo: "reply"
+* language - Idioma de la respuesta a la carta.
 
 .. image:: img/mkp-resposta-form.jpg
    :align: center
 
-.. note::  el programa Markup no hace la identificación automática de la respuesta.
+.. note::  El programa Markup no realiza la marcación automática de la respuesta.
 
-En el nivel de [subdoc], haga la marcación de los elementos que componen la respuesta del documento:
+Realice la marcación de la respuesta del documento, con los elementos en nivel de [subdoc]:
 
 .. image:: img/mkp-dados-basicos-resposta.jpg
    :align: center
 
 
-.. note:: los datos como: afiliaciones y autores, objetos en el cuerpo del texto y referencias bibliográficas deben presentar IDs secuenciales, siguiendo la orden de la carta. Ejemplo, si la última afiliación de la carta fue "aff3", en el documento de respuesta la primera afiliación será "aff4" etc.
+.. note:: Los datos como: afiliaciones y autores, objetos en el cuerpo del texto y referencias bibliográficas deben presentar IDs secuenciales, siguiendo el orden de la carta. Ejemplo, si la última afiliación de la carta fue "aff3", en el documento de la respuesta la primer afiliación será "aff4" etc.
 
 
 .. _errata:
