@@ -2327,14 +2327,14 @@ Termine la marcación del archivo y genere el XML.
 
 .. _formato-corto:
 
-Artículos en Formato Corto
+Artículos en formato corto
 ==========================
 
-El formato corto de marcación es utilizado sólo en los casos de inserción de números retrospectivos en la colección de la revista.
-El archivo en el formato corto tendrá los datos básicos del documento (título del artículo, autores, afiliación, sección, resumen, palabras-clave y las referencias completas).
-El cuerpo del texto de un archivo en el formato corto debe ser suprimido, sustituyendo el texto por dos párrafos:
+La marcación en formato corto es utilizada sólo en los casos de inclusión de números retrospectivos en la colección de la revista.
+El documento en formato corto tendrá los datos básicos del documento (título del artículo, autores, afiliaciones, sección, resumen, palabras clave y las referencias completas).
+El cuerpo del texto de un documento en formato corto debe ser eliminado, sustituyendo el texto por los párrafos:
 
-   *Texto completo disponible apenas en PDF.*
+   *Texto completo disponible sólo en PDF.*
 
    *Full text available only in PDF format.*
 
@@ -2343,24 +2343,24 @@ El cuerpo del texto de un archivo en el formato corto debe ser suprimido, sustit
    :height: 200px
 
 
-Identificando Formato Corto
----------------------------
+Marcando formato corto
+----------------------
 
-Con el archivo formateado, haga la identificación del documento por el elemento [doc] y complete los datos iniciales de acuerdo con los datos del archivo. 
+Con el documento previamente formateado, realice la marcación del documento con el elemento [doc] y complete los datos iniciales de acuerdo con los datos del documento. 
 
-La marcación de archivos en el formato corto no exige una orden de marcación entre referencias bibliográficas y [xmlbody].
-Haga la marcación de referencias bibliográficas de acuerdo con la orientación del ítem :ref:`_referencias`:
+En la marcación de archivos en el formato corto no es necesario seguir orden para la marcación de referencias bibliográficas y [xmlbody].
+Realice la marcación de referencias bibliográficas de acuerdo con las instrucciones de :ref:`_referencias`:
 
 .. image:: img/mkp-abrev-refs.jpg
    :align: center
 
-La marcación de los párrafos debe ser hecha por el elemento [xmlbody], seleccionando los dos párrafos y cliqueando en [xmlbody]:
+La marcación de los párrafos se debe hacer con el elemento [xmlbody], seleccionando los párrafos y dando clic en [xmlbody]:
 
 .. image:: img/mkp-xmlbody-abrev.jpg
    :align: center
 
 
-.. note:: la única información que no será marcada en el archivo de 'Formato Corto' será el cuerpo del texto, lo cual estará disponible en el PDF.
+.. note:: La única información que no será marcada en los documentos en 'Formato corto' será el cuerpo del texto, el cual estará disponible en el PDF.
 
 
 .. _press-release:
