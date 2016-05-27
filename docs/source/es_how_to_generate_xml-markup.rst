@@ -2631,8 +2631,8 @@ Inserte un nuevo elemento <fig> con <label>, <caption> y <title> justo abajo aba
 Autores sin label
 -----------------
 
-Algunos autores no presentan label en autor y en afiliación. Para marcar el dato, haga la marcación tradicional del autor en el programa Markup e insiera en afiliación el ID de cada autor.
-Después de generar el archivo .xml del documento, ábralo en un editor de XML e insiera la <xref> cerrada de cada autor.
+Algunos autores no presentan label en autor y en afiliación. Para marcar el dato, haga la marcación tradicional del autor en el programa Markup e inserte en afiliación el ID de cada autor.
+Después de generar el archivo .xml del documento, ábralo en un editor de XML e inserte la <xref> cerrada de cada autor.
 
 .. image:: img/mkp-author-sem-label.jpg
    :align: center
