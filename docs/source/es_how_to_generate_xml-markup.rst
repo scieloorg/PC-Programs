@@ -2493,37 +2493,37 @@ Para corregir, excluya el valor "x-ms-wmv" y insiera apenas "wmv" que es el form
 Identificación de sublistas
 ---------------------------
 
-El programa Markup no hace la identificación de sublistas, mientras tanto es necesario utilizar un editor de XML para ajustar los ítems de sublista.
+El programa Markup no hace la identificación de sublistas, por lo que es necesario utilizar un editor de XML para ajustar los ítems de sublista.
 Hay dos métodos para la marcación manual de sublistas:
 
 Método 1:
 ^^^^^^^^^
 
-Aun en el programa Markup, seleccione toda la lista y marque con el elemento [*list] y genere el archivo .xml.
-Con el archivo .xml generado, encuentre la lista y haga la siguiente alteración:
+En el programa Markup, seleccione toda la lista y márquela con el elemento [*list], genere el archivo .xml.
+Con el archivo .xml generado, localice la lista y realice lo siguiente:
 
-Primeramente, encuentre los ítems de sublista:
+Primero, identifique los ítems de sublista:
 
 .. image:: img/mkp-itensublist.jpg
    :align: center
 
-Adicione el elemento <list> arriba del primero ítem <list-item> de la sublista:
+Adicione el elemento <list> arriba del primer ítem <list-item> de la sublista:
 
 .. image:: img/mkp-sub-lista.jpg
    :align: center
 
-Recorte el elemento </list-item> que consta arriba del elemento <list> de la sublista:
+Recorte el elemento </list-item> que está arriba del elemento <list> de la sublista:
 
 .. image:: img/mkp-recort-listitem.jpg
    :align: center
 
-Pegue el elemento </list-item> recortado luego después del elemento </list> de la sublista:
+Pegue el elemento </list-item> recortado justo después del elemento </list> de la sublista:
 
 .. image:: img/mkp-cola-list-item.jpg
    :align: center
 
 
-Caso la sublista presente un marcador diferente del inserido en la lista, es posible adicionar el atributo @list-type na tag <list> de la sublista y inserir algún de los valores que sigue:
+Si la sublista presenta un marcador diferente del insertado en la lista, es posible adicionar el atributo @list-type en la  tag <list> de la sublista e insertar alguno de los valores siguientes:
 
 * order
 * bullet
@@ -2537,15 +2537,15 @@ Caso la sublista presente un marcador diferente del inserido en la lista, es pos
 Método 2:
 ^^^^^^^^^
 
-Caso la lista y sublista no tengan sido marcadas en el programa Markup, es posible que al generar el archivo .xml la lista tenga sido identificada como párrafos.
-Por lo tanto, será necesario hacer la identificación manual de la lista y de la sublista.
+Cuando la lista y la sublista no hayan sido marcadas en el programa Markup, es posible que al generar el archivo .xml la lista haya sido identificada como párrafos.
+Entonces será necesario hacer la identificación manual de la lista y de la sublista.
 
-Primeramente, borre todos los párrafos de la lista y sublista y marque todos los ítems con el elemento <list> acrecentando el atributo @list-type= con el valor correspondiente al marcador de la lista:
+Primeramente, borre todos los párrafos de la lista y sublista y marque todos los ítems con el elemento <list> adicionando el atributo @list-type= con el valor correspondiente al marcador de la lista:
 
 .. image:: img/mkp-manual-list.jpg
    :align: center
 
-Insiera el elemento <list-item> y <p> para cada ítem de la lista:
+Inserte los elementos <list-item> y <p> para cada ítem de la lista:
 
 .. image:: img/mkp-list-sem-sublist.jpg
    :align: center
@@ -2555,19 +2555,19 @@ Marque los ítems de la sublista:
 .. image:: img/mkp-itensublist.jpg
    :align: center
 
-Adicione un elemento <list> antes del primero elemento <list-item> de la sublista:
+Adicione un elemento <list> antes del primer elemento <list-item> de la sublista:
 
 .. image:: img/mkp-sub-lista.jpg
    :align: center
 
 
-Recorte el elemento </list-item> que consta antes del elemento <list> de la sublista:
+Recorte el elemento </list-item> que está antes del elemento <list> de la sublista:
 
 .. image:: img/mkp-recort-listitem.jpg
    :align: center
 
 
-Ahora, pegue el elemento </list-item> recortado luego después de </list> de la sublista:
+Ahora, pegue el elemento </list-item> recortado justo después del elemento </list> de la sublista:
 
 .. image:: img/mkp-cola-list-item.jpg
    :align: center
