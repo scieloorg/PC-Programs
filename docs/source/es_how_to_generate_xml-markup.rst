@@ -2450,42 +2450,42 @@ Salve el documento .xml y valide el archivo.
 
 .. _media:
 
-Tipo de Media
--------------
+Multimedia
+----------
 
-El programa Markup hace también la identificación de medias como: 
+El programa Markup hace también la identificación de medios como: 
 
-* Vídeos
-* audios
-* Peliculas
+* Videos
+* Audios
+* Películas
 * Animaciones
 
-Desde que sus archivos estén disponibles en la carpeta "src" con el mismo nombre del archivo .doc, acrecentado de guion y el ID de la media. Ejemplo:
+Los archivos deben estar disponibles en la carpeta "src" con el mismo nombre del archivo .doc, adicionando un guión y el ID del medio. Ejemplo:
 
       *Artículo12-m1.wmv*
 
-La marcación de la media en el cuerpo del texto debe ser hecha a través del elemento [media]. En la ventana abierta por el programa, llene los campos "id" y "href".
-En el campo "id" insiera el prefijo "m" + el número de orden de la media. Ejemplo: m1.
+La marcación de elementos multimedia en el cuerpo del texto debe ser hecha con el elemento [media]. En la ventana que abre el programa, llene los campos "id" y "href".
+En el campo "id" inserte el prefijo "m" + el número de orden del medio. Ejemplo: m1.
 
-Ya en "href" insiera el nombre de la media con la extensión: "Artículo12-m1.wmv".
+En "href" inserte el nombre del medio con su extensión: "Artículo12-m1.wmv".
 
 .. image:: img/mkp-tpmedia.jpg
    :align: center
 
-Hecho eso, genere en archivo .xml.
+Hecho lo anterior, genere el archivo .xml.
 
-Con el archivo .xml generado verifique se hay errores y corrija, se necesario, los atributos que cualifican el tipo de media.
+Una vez generado el archivo .xml, verifique los atributos que identifican el tipo de medio, si hay errores corrija.
 El Programa presenta los atributos:
 
-* mime-subtype - especifica el tipo de media como "video" o "application".
-* mimetype     - especifica el formato de la media.
+* mime-subtype - especifica el tipo de medio como "video" o "application".
+* mimetype     - especifica el formato del medio.
 
-Es posible que el programa insiera valores incorrectos en los atributos mencionados arriba. Ejemplo:
+Es posible que el programa inserte valores incorrectos en los atributos mencionados arriba. Ejemplo:
 
 .. image:: img/mkp-mime-subtype.jpg
    :align: center
 
-Para corregir, excluya el valor "x-ms-wmv" y insiera apenas "wmv" que es el formato del video. Caso el atributo @mimetype presente valor diferente de "application" o "video", corrija el dato.
+Para corregir, borre el valor "x-ms-wmv" e inserte solamente "wmv" que es el formato del video. Cuando el atributo @mimetype presente un valor diferente de "application" o "video", corrija el dato.
 
 
 .. _sublista:
