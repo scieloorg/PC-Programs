@@ -2579,48 +2579,48 @@ Ahora, pegue el elemento </list-item> recortado justo después del elemento </li
 Leyendas Traducidas
 -------------------
 
-El Programa Markup no hace la marcación de figuras o tablas con leyendas traducidas. Para hacer la marcación es necesario utilizar un editor de XML. Verifique la marcación de leyendas de tablas y de figuras que sigue:
+El Programa Markup no hace la marcación de leyendas traducidas en figuras o tablas. Para hacer la marcación es necesario utilizar un editor de XML. Verifique la marcación de leyendas de tablas y de figuras que sigue:
 
 **Tablas**
 
 Abra el archivo .xml en un editor de su preferencia y localice la tabla que presenta la leyenda traducida.
 
-Insiera el elemento <table-wrap-group> envolviendo toda la tabla, desde <table-wrap>:
+Inserte el elemento <table-wrap-group> envolviendo toda la tabla, desde <table-wrap>:
 
 .. image:: img/mkp-tab-wrap-g-legend.jpg
    :align: center
 
-Borre el @id="xx" de <table-wrap> y insiera el atributo de idioma @xml:lang="xx" con la sigla correspondiente al idioma principal de la tabla. En seguida, insiera un @id único para el <table-wrap-group>:
+Borre el @id="xx" de <table-wrap> e inserte el atributo de idioma @xml:lang="xx" con la sigla correspondiente al idioma principal de la tabla. En seguida, inserte un @id único para el <table-wrap-group>:
 
 .. image:: img/mkp-tab-legend-ids.jpg
    :align: center
 
 
-Insiera un novo elemento <table-wrap> con <label>, <caption> y <title> luego después de <table-wrap-group> con el atributo de idioma @xml:lang="xx" correspondiente al idioma de la traducción. E insiera la leyenda traducida en <title>:
+Inserte un nuevo elemento <table-wrap> con <label>, <caption> y <title> justo después de <table-wrap-group> con el atributo de idioma @xml:lang="xx" correspondiente al idioma de la traducción. E inserte la leyenda traducida en <title>:
 
 .. image:: img/mkp-legenda-trans-tab.jpg
    :align: center
 
 
-.. note:: Para tablas codificadas el proceso es lo mismo.
+.. note:: Para tablas codificadas el proceso es el mismo.
 
 
 **Figuras**
 
 Abra el archivo .xml en un editor de su preferencia y localice la figura que presenta la leyenda traducida.
 
-Insiera el elemento <fig-group> envolviendo toda la figura, desde <fig>:
+Inserte el elemento <fig-group> envolviendo toda la figura, desde <fig>:
 
 .. image:: img/mkp-fig-legend.jpg
    :align: center
 
-Borre el @id="xx" de <fig> e insiera el atributo de idioma @xml:lang="xx" con la sigla correspondiente al idioma principal de la figura. En seguida, insiera un @id único para el <fig-group>:
+Borre el @id="xx" de <fig> e inserte el atributo de idioma @xml:lang="xx" con la sigla correspondiente al idioma principal de la figura. En seguida, inserte un @id único para el <fig-group>:
 
 .. image:: img/mkp-fig-group-trans.jpg
    :align: center
 
 
-Insiera un nuevo elemento <fig> con <label>, <caption> y <title> logo abaixo de <fig-group> con el atributo de idioma @xml:lang="xx" correspondiente al idioma de la traducción. E insiera la leyenda traducida en <title>:
+Inserte un nuevo elemento <fig> con <label>, <caption> y <title> justo abajo abaixo de <fig-group> con el atributo de idioma @xml:lang="xx" correspondiente al idioma de la traducción. E inserte la leyenda traducida en <title>:
 
 .. image:: img/mkp-fig-legend-traduzida.jpg
    :align: center
