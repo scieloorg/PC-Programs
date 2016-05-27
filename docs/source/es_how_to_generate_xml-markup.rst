@@ -888,7 +888,7 @@ Utilizada para referenciar tipos no previstos por SciELO. Ej.:
 "Previous" en referencias
 =========================
 
-Hay normas que permiten que las obras que referencian la misma autoría repetidamente, sean sustituidas por un guion equivalente a seis espacios. Ex.:
+Hay normas que permiten que las obras que referencian la misma autoría repetidamente, sean sustituidas por un guión bajo repetido seis posiciones continuas. Ex.:
 
 
 *______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight [Internet]. Washington: FiercePharma; 2015.*
@@ -897,9 +897,9 @@ Al hacer la marcación de [refs] el programa duplicará la referencia con previo
 
 [ref id="r16" reftype="book"] [text-ref]______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015[/text-ref]. * ______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight &#91;Internet&#93;. Washington: FiercePharma; 2015*[/ref]
 
-.. note:: en referencias que presentan el elemento [text-ref], el dato a ser marcado deberá ser el que consta después del [/text-ref]. Nunca hacer la marcación de la referencia que consta en [text-ref][/text-ref].
+.. note:: En referencias que presentan el elemento [text-ref], la información que se marca debe ser la que está después del [/text-ref]. Nunca hacer la marcación de la referencia que está entre [text-ref] y [/text-ref].
 
-Para identificación de referencias con ese tipo de dato, seleccione los guiones e identifique con el elemento [*authors] con asterisco. El programa recuperará el nombre del autor previamente marcado e hará la identificación automática del grupo de autores, identificando el apellido y el primero nombre.
+Para la identificación de referencias con ese tipo de dato, seleccione los guiones e identifique con el elemento [*authors] con asterisco. El programa recuperará el nombre del autor previamente marcado y hará la identificación automática del grupo de autores, identificando el apellido y el primer nombre.
 
 
 
