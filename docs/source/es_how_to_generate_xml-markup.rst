@@ -169,15 +169,15 @@ Después de la marcación automática es necesario completar la marcación de lo
 Doctitle
 --------
 
-Confiera el idioma inserido en [doctitle] para títulos traducidos y, si necesario, corrija.
-Para corregir, seleccione el elemento "incorrecta" y haga un clic en el  "lápiz" para editar los atributos:
+Verifique que el idioma insertado en [doctitle] para títulos traducidos sea correcto, si es necesario corrija.
+Para corregir, seleccione el elemento incorrecto y haga clic en el ícono del "lápiz" para editar los atributos:
 
 
 .. image:: img/doc-mkp-language-doctitle.jpg
    :height: 400px
    :align: center
 
-Haga el mismo para los demás títulos traducidos.
+Realice el mismo procedimiento para los demás títulos traducidos.
 
 
 .. _autores:
@@ -185,16 +185,16 @@ Haga el mismo para los demás títulos traducidos.
 Autores
 -------
 
-Algunos autores presentan más que 1 label al lado del nombre, sin embargo el programa no hace la marcación automática de más que 1 label. De esa forma, seleccione el label del autor y marque con el elemento [xref].
+Algunos autores presentan más de una etiqueta al lado de su nombre, pero el programa solamente hace la marcación automática de una etiqueta. Entonces, es necesario seleccionar las demás etiquetas que se presenten y marcarlas con el elemento [xref].
 
 
 .. image:: img/doc-mkp-xref-label.jpg
    :height: 300px
    :align: center
 
-Por si tratar de referencia cruzada (xref) de afiliación, el tipo de xref (ref-type) seleccionado fue el "affiliation" y el rid (relacionado al ID) "aff3" para relacionar el label 3 a la afiliación correspondiente.
+Por tratarse de una referencia cruzada (xref) de afiliación, el tipo de xref (ref-type) seleccionado fue "affiliation" y el rid (relacionado al ID) "aff3" para relacionar la etiqueta 3 con la afiliación correspondiente.
 
-El programa Markup no hace marcación automática de función de autor cómo, por ejemplo, el cargo ejercido. Para eso, es necesario seleccionar el dato que consta al lado del nombre del autor, ir para el nivel inferior del elemento [author] e identificar ese dato con el elemento [role].
+El programa Markup no hace marcación automática de la función del autor, entendiéndose como el cargo ejercido. Para marcarlo, es necesario seleccionar el dato que aparece al lado del nombre del autor, ir al nivel inferior del elemento [author] e identificar ese dato con el elemento [role].
 
 .. image:: img/doc-mkp-role-author.jpg
    :height: 230px
@@ -206,8 +206,7 @@ El programa Markup no hace marcación automática de función de autor cómo, po
    :align: center
 
 
-.. note:: el programa no identifica automáticamente símbolos o letras como label, la cual debe ser marcada manualmente, observándose 
-          el tipo de referencia cruzada a ser incluida.
+.. note:: El programa no identifica automáticamente símbolos o letras como etiqueta, por lo que deben marcarse manualmente, observando el tipo de referencia cruzada a ser incluida.
 
 
 .. raw:: html
@@ -247,8 +246,8 @@ Sigue el resultado de la identificación de asignatura del autor/editor:
 On Behalf
 =========
 
-El elemento [on-behalf] es utilizado cuando un autor ejerce papel de representante de un grupo o institución. 
-Para identificar ese dato, verifique se la información del representante del grupo está en la misma línea del autor anterior. Ejemplo:
+El elemento [on-behalf] se utiliza cuando un autor ejerce el papel de representante de un grupo o de una institución. 
+Para identificar ese dato, verifique que la información del representante del grupo se encuentre en la misma línea del nombre del autor. Ejemplo:
 
 
     Fernando Augusto Proietti :sup:`2`  Interdisciplinary HTLV Research Group
@@ -271,17 +270,17 @@ Seleccione el nombre del grupo o institución e identifique con el elemento: [on
 Contrib-ID
 ==========
 
-Autores que presentan registro en el ORCID o en el Lattes deben inserir el link de registro al lado del nombre, después el label del autor:
+Los autores que presentan su registro en ORCID o en Lattes deben insertar el link de registro al lado de su nombre, justo después de la etiqueta del autor:
 
 .. image:: img/mkp-contrib-id.jpg
    :height: 230px
    :align: center
 
-Al hacer la marcación de [doc] el programa identificará automáticamente todos los datos iniciales del documento, inclusive marcará en [author] el link de registro.
-Aún que el programa incluya el link en el elemento [author], será necesario completar la marcación de ese dado.
+Al hacer la marcación con [doc] el programa identificará automáticamente todos los datos iniciales del documento, inclusive marcará el link de registro en [author].
+Aunque el programa incluya el link en el elemento [author], será necesario completar la marcación de ese dato.
 
-Para eso, entre en el nivel de [autor], seleccione el link del autor  y haga un clic en [author-id].
-En la ventana abierta por el programa, seleccione el tipo de registro del autor: si lattes o ORCID  y haga un clic en [Continuar]
+Para eso, vaya al nivel de [autor], seleccione el link del autor y haga clic en [author-id].
+En la ventana abierta por el programa, seleccione el tipo de registro del autor: lattes u ORCID y haga clic en [Continuar]
 
 .. image:: img/mkp-marcando-id-contrib.jpg
    :height: 230px
@@ -294,10 +293,10 @@ En la ventana abierta por el programa, seleccione el tipo de registro del autor:
 Afiliaciones
 ------------
 
-El programa Markup hace la identificación solo del grupo de datos de cada afiliación con el elemento [normaff], o sea, la marcación detallada de las afiliaciones no es hecha automáticamente.
-Complete la marcación de las afiliaciones identificando: institución mayor [orgname], división 1 [orgdiv1], división 2 [orgdiv2], ciudad [city], estado [state] (eses 4 últimos, si presentes) y el país [country].
+El programa Markup hace la identificación del grupo de datos de cada afiliación con el elemento [normaff], la marcación detallada de las afiliaciones no se realiza automáticamente.
+Complete la marcación de las afiliaciones identificando: institución mayor [orgname], división 1 [orgdiv1], división 2 [orgdiv2], ciudad [city], estado [state] (los 4 últimos, si están presentes) y el país [country].
 
-Para hacer la identificación de los elementos arriba, va al nivel inferior del elemento [normaff] y haga la marcación detallada de cada afiliación.
+Para hacer la identificación de los elementos arriba mencionados, vaya al nivel inferior del elemento [normaff] y haga la marcación detallada de cada afiliación.
 
 
 .. image:: img/doc-mkp-detalhamento-aff.jpg
@@ -305,7 +304,7 @@ Para hacer la identificación de los elementos arriba, va al nivel inferior del 
    :align: center
 
 
-En la sequencia, será necesario verificar se la institución marcada y su país correspondiente, posee forma normalizada por SciELO. Para eso, seleccione el elemento [normaff]  y haga un clic en el "lápiz" para editar los atributos. El programa abrirá una ventana para la normalización de los elementos indicados en los campos en blanco.
+En la secuencia, será necesario verificar si la institución marcada y su país poseen forma normalizada por SciELO. Para eso, seleccione el elemento [normaff] y haga clic en el ícono del "lápiz" para editar los atributos. El programa abrirá una ventana para consultar la normalización de los elementos que se indiquen en los campos en blanco.
 
 
 .. image:: img/doc-mkp-normalizacao-aff.jpg
@@ -314,7 +313,7 @@ En la sequencia, será necesario verificar se la institución marcada y su país
 
 
 
-En el campo "icountry" seleccione el país de la institución mayor (orgname), en seguida haga un clíc en "find" para encontrar la institución normalizada. Al hacer ese procedimiento, el programa Markup consultará nuestra base de datos de instituciones normalizadas y verificará si la institución seleccionada consta en la lista.
+En el campo "icountry" seleccione el país de la institución mayor (orgname), en seguida haga clic en "find" para buscar la institución normalizada. Al hacer ese procedimiento, el programa Markup consultará nuestra base de datos de instituciones normalizadas y verificará si la institución seleccionada se encuentra en la lista.
 
 
 .. image:: img/doc-mkp-normalizadas.jpg
@@ -329,7 +328,7 @@ En el campo "icountry" seleccione el país de la institución mayor (orgname), e
 
 
 
-.. note:: Haga la búsqueda por el idioma de origen de la institución, excepto para lenguas no latinas, cuando la consulta deberá ser hecha en inglés. Caso la institución no exista en la lista del Markup, seleccione el elemento "No match found"  y haga un clic en [OK].
+.. note:: Realice la búsqueda de la institución con su nombre en el idioma de origen, excepto para lenguas no latinas, cuando la consulta deberá ser hecha en inglés. Cuando la institución no exista en la lista del Markup, seleccione el elemento "No match found" y haga clic en [OK].
 
 
 .. _resumen:
