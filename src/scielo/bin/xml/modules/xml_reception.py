@@ -86,6 +86,8 @@ class DownloadedItem(object):
 class ReceptionConfiguration(object):
 
     def __init__(self, config_filename):
+        self.config_filename = config_filename
+
         config = ConfigParser.ConfigParser()
         config.read(config_filename)
 
@@ -98,6 +100,13 @@ class ReceptionConfiguration(object):
         self.control_path = config.get('ORGANIZER', 'control_path')
 
     @property
+    def status(self):
+        config = ConfigParser.ConfigParser()
+        config.read(self.config_filename)
+        s = config.get('RECEPTION', 'status')
+        return s if s in ['ON', 'OFF'] else 'ON'
+
+    @property
     def is_valid(self):
         return all([self.ftp_server, os.path.isfile(self.accounts_filename), self.ftp_folder, self.download_path, self.serial_path, self.unidentified_path, self.control_path])
 
@@ -105,23 +114,10 @@ class ReceptionConfiguration(object):
 class Accounts(object):
 
     def __init__(self, config_filename):
-        self.info = {}
+        self.items = {}
         for line in open(config_filename, 'r').readlines():
             k, v = line.strip().split('\t')
-            self.info[k] = v
-
-
-class Downloader(object):
-
-    def __init__(self, ftp_server, ftp_accounts, ftp_folder, download_path):
-        self.ftp_server = ftp_server
-        self.ftp_accounts = ftp_accounts
-        self.ftp_folder = ftp_folder
-        self.download_path = download_path
-
-    def download(self):
-        for account, key in self.ftp_accounts.info.items():
-            ftp_service.download_files(self.ftp_server, account, key, self.ftp_folder, self.download_path)
+            self.items[k] = v
 
 
 class Reception(object):
@@ -184,16 +180,18 @@ class Organizer(object):
 def execute_download_and_extraction(config_filename):
     config = ReceptionConfiguration(config_filename)
     if config.is_valid:
-
-        reception = Reception(config.control_path, config.download_path)
-
-        if not os.path.isdir(reception.download_path):
-            os.makedirs(reception.download_path)
-
-        downloader = Downloader(config.ftp_server, Accounts(config.accounts_filename), config.ftp_folder, reception.download_path)
-        downloader.download()
-
+        print('running')
         organizer = Organizer(config.serial_path, config.unidentified_path)
-        organizer.organize(reception)
+        while config.status == 'ON':
+            accounts = Accounts(config.accounts_filename)
+
+            if len(accounts.items) > 0:
+                reception = Reception(config.control_path, config.download_path)
+                if not os.path.isdir(reception.download_path):
+                    os.makedirs(reception.download_path)
+                for account, key in accounts.items.items():
+                    ftp_service.download_files(config.ftp_server, account, key, config.ftp_folder, reception.download_path)
+                organizer.organize(reception)
+        print('stopped')
     else:
         print('configuration problem')
