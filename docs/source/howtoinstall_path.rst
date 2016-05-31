@@ -78,6 +78,41 @@ Expected:
 .. image:: img/howtoinstall_path_conferir-python.jpg
 
 
+Then check Pillow:
+
+Continue in the DOS terminal or Open a **NEW** window and type:
+
+
+.. code-block:: code
+ 
+ 	python
+ 	import PIL
+ 	exit()
+ 	
+
+
+Expected:
+
+
+.. code-block:: code
+
+	Python 2.7.8 (default, Jun 30 2014, 16:03:49) [MSC v.1500 32 bit (Intel)] on win32
+	Type "help", "copyright", "credits" or "license" for more information.
+	>>> import PIL
+	>>> exit()
+
+
+If you have a message similar to:
+
+.. code-block:: code
+
+	Traceback (most recent call last):
+	  File "<stdin>", line 1, in <module>
+	ImportError: No module named PIL
+	
+Install Pillow. If you have Python 32bits, Pillow must be 32 bits too. If you have Python 64 bits, use Pillow 64 bits.
+
+
 Then check Java:
 
 .. code-block:: code
