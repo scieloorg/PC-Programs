@@ -90,6 +90,23 @@ def extract_package(pkg_file, pkg_work_path):
     return r
 
 
+def unzip(compressed_filename, destination_path):
+    """
+    Extract files to destination_path from compressed files that are in compressed_path
+    """
+    r = False
+
+    if os.path.isfile(compressed_filename):
+        if files_extractor.is_compressed_file(compressed_filename):
+            if not os.path.isdir(destination_path):
+                os.makedirs(destination_path)
+            # delete content of destination path
+            # create tempdir
+            # extract in tempdir
+            r = files_extractor.extract_file(compressed_filename, destination_path)
+    return r
+
+
 def fix_path(path):
     path = path.replace('\\', '/')
     if path.endswith('/'):

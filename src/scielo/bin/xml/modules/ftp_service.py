@@ -40,32 +40,47 @@ class FTPService(object):
     def download_files_of_subdir(self, local_path, path_in_ftp_server, delete_path_in_ftp_server=False):
         levels = len(path_in_ftp_server.split('/'))
         downloaded_files = []
-        # go to ftp directory
-        register_action('go to ' + path_in_ftp_server)
-        r = self.ftp.cwd(path_in_ftp_server)
-        register_action(r)
 
-        # download files
-        files_or_folders = self.ftp.nlst()
-        register_action('Files/Folders to download:\n' + '\n'.join(files_or_folders) + '\n' + str(len(files_or_folders)) + ' files/folders')
-        for item in files_or_folders:
-            if item.endswith('.zip') or item.endswith('.tgz'):
-                # must be a file
-                downloaded_file = self.download_and_delete_file(local_path, item)
-                if len(downloaded_file) > 0:
-                    downloaded_files.append(downloaded_file)
-            else:
-                # supposed to be a folder
-                downloaded_files += self.download_files_of_subdir(local_path, item, False)
+        exist_ftp_folder = False
+        if '/' in path_in_ftp_server:
+            exist_ftp_folder = True
+        else:
+            if path_in_ftp_server in self.ftp.nlst():
+                exist_ftp_folder = True
 
-        # up level
-        for i in range(0, levels):
-            r = self.ftp.cwd('..')
-            register_action(r)
+        if exist_ftp_folder:
+            # go to ftp directory
+            try:
+                register_action('try to go to ' + path_in_ftp_server)
+                r = self.ftp.cwd(path_in_ftp_server)
+                register_action(r)
 
-        if delete_path_in_ftp_server:
-            r = self.ftp.rmd(path_in_ftp_server)
-        register_action(r)
+                # download files
+                files_or_folders = self.ftp.nlst()
+                register_action('Files/Folders to download:\n' + '\n'.join(files_or_folders) + '\n' + str(len(files_or_folders)) + ' files/folders')
+                for item in files_or_folders:
+                    if item.endswith('.zip') or item.endswith('.tgz'):
+                        # must be a file
+                        downloaded_file = self.download_and_delete_file(local_path, item)
+                        if len(downloaded_file) > 0:
+                            downloaded_files.append(downloaded_file)
+                    else:
+                        # supposed to be a folder
+                        downloaded_files += self.download_files_of_subdir(local_path, item, False)
+
+                # up level
+                for i in range(0, levels):
+                    r = self.ftp.cwd('..')
+                    register_action(r)
+
+                if delete_path_in_ftp_server:
+                    r = self.ftp.rmd(path_in_ftp_server)
+                register_action(r)
+            except:
+                register_action('not found: ' + path_in_ftp_server)
+        else:
+            register_action('not found: ' + path_in_ftp_server)
+
         return downloaded_files
 
     def download_and_delete_file(self, local_path, file):
@@ -116,3 +131,12 @@ class FTPService(object):
 
         register_action(r)
         return items_in_ftp
+
+
+def download_files(ftp_server, user, password, ftp_folder, destination_path):
+    ftp = FTPService(ftp_server, user, password)
+    if not os.path.isdir(destination_path):
+        os.makedirs(destination_path)
+    files = ftp.download_files(destination_path, ftp_folder)
+    log = ftp.registered_actions
+    return (files, log)
