@@ -2,6 +2,8 @@
 
 import os
 import shutil
+import time
+from datetime import datetime
 import ConfigParser
 
 import ftp_service
@@ -93,22 +95,25 @@ class ReceptionConfiguration(object):
 
         self.ftp_server = config.get('FTP', 'server')
         self.accounts_filename = config.get('FTP', 'users')
-        self.ftp_folder = 'entrega'
+        self.ftp_folder = config.get('FTP', 'folder')
         self.download_path = config.get('RECEPTION', 'download_path')
         self.serial_path = config.get('ORGANIZER', 'serial_path')
         self.unidentified_path = config.get('ORGANIZER', 'unidentified_path')
         self.control_path = config.get('ORGANIZER', 'control_path')
+        self.status_file = config.get('RECEPTION', 'status')
+        self.frequency = int(config.get('RECEPTION', 'frequency'))
+        self.weekdays = config.get('RECEPTION', 'weekdays').split(',')
+        self.hours_range = config.get('RECEPTION', 'hours_range').split('-')
+        self.start_hour = int(self.hours_range[0])
+        self.end_hour = int(self.hours_range[1])
 
-    @property
     def status(self):
-        config = ConfigParser.ConfigParser()
-        config.read(self.config_filename)
-        s = config.get('RECEPTION', 'status')
+        s = open(self.status_file).read().strip()
         return s if s in ['ON', 'OFF'] else 'ON'
 
     @property
     def is_valid(self):
-        return all([self.ftp_server, os.path.isfile(self.accounts_filename), self.ftp_folder, self.download_path, self.serial_path, self.unidentified_path, self.control_path])
+        return all([self.ftp_server, os.path.isfile(self.status_file), os.path.isfile(self.accounts_filename), self.ftp_folder, self.download_path, self.serial_path, self.unidentified_path, self.control_path])
 
 
 class Accounts(object):
@@ -124,26 +129,47 @@ class Reception(object):
 
     def __init__(self, control_path, download_path):
         self.date_and_time = utils.now()
-        self.control_path = control_path + '/' + self.year_month_day_folders
-        if not os.path.isdir(self.control_path):
-            os.makedirs(self.control_path)
-        self.filename = self.control_path + '/' + self.hour + '.log'
+        self._filename = control_path + '/' + self.day_month_folders + '/' + self.fname + '.csv'
         self._download_path = download_path
 
     def register(self, downloaded, destination):
-        fs_utils.append_file(self.filename, ' '.join(utils.now()) + ' | ' + downloaded + ' | ' + destination)
+        fs_utils.append_file(self.filename, '\t'.join([utils.now()[0], utils.now()[1], downloaded, destination]))
+
+    @property
+    def filename(self):
+        if not os.path.isfile(self._filename):
+            p = os.path.dirname(self._filename)
+            if not os.path.isdir(p):
+                os.makedirs(p)
+        return self._filename
+
+    @property
+    def dateiso(self):
+        return self.date_and_time[0]
 
     @property
     def hour(self):
         return self.date_and_time[1][:2]
 
     @property
-    def year_month_day_folders(self):
-        return self.date_and_time[0][:4] + '/' + self.date_and_time[0][4:6] + '/' + self.date_and_time[0][6:]
+    def dateiso_hour(self):
+        return self.dateiso + '-' + self.hour
+
+    @property
+    def dateiso_time(self):
+        return self.dateiso + '-' + self.date_and_time[1]
+
+    @property
+    def fname(self):
+        return self.dateiso + '-' + self.hour
+
+    @property
+    def day_month_folders(self):
+        return self.dateiso[6:] + '/' + self.dateiso[4:6]
 
     @property
     def download_path(self):
-        return self._download_path + '/' + '_'.join(self.date_and_time)
+        return self._download_path + '/' + self.hour
 
 
 class Organizer(object):
@@ -155,26 +181,33 @@ class Organizer(object):
     def organize(self, reception):
         for f in os.listdir(reception.download_path):
             downloaded_item = DownloadedItem(f)
-
-            dest_path = self.destination_path if downloaded_item.is_identified else self.unidentified_path
-            issue_path = dest_path + '/' + downloaded_item.folder
-
-            date_path = issue_path + '/' + '-'.join(reception.date_and_time)
-
-            download_path = date_path + '/zip'
-            extracted_path = date_path + '/unzip'
-
-            if not os.path.isdir(extracted_path):
-                os.makedirs(extracted_path)
-
-            if fs_utils.unzip(self.reception_path + '/' + f, extracted_path):
-                if not os.path.isdir(download_path):
-                    os.makedirs(download_path)
-                shutil.copy(self.reception_path + '/' + f, download_path)
-                if os.path.isfile(download_path + '/' + f):
-                    reception.register(f, extracted_path)
-                    os.unlink(self.reception_path + '/' + f)
+            folders = self.get_folders(downloaded_item, reception)
+            for item in folders:
+                if not os.path.isdir(item):
+                    os.makedirs(item)
+            if fs_utils.unzip(reception.download_path + '/' + f, folders[1]):
+                shutil.copy(reception.download_path + '/' + f, folders[0])
+                if os.path.isfile(reception.download_path + '/' + f):
+                    reception.register(f, folders[1])
+                    os.unlink(reception.download_path + '/' + f)
         fs_utils.delete_file_or_folder(reception.download_path)
+
+    def get_folders(self, downloaded_item, reception):
+        if downloaded_item.is_identified:
+            fullpath = '/'.join([self.destination_path, downloaded_item.folder, reception.dateiso_time])
+        else:
+            fullpath = '/'.join([self.unidentified_path, reception.dateiso_hour, downloaded_item.alternative_issueid])
+
+        return [fullpath + '/zip', fullpath + '/unzip']
+
+
+def receive_and_organize(config, organizer):
+    accounts = Accounts(config.accounts_filename)
+    if len(accounts.items) > 0:
+        reception = Reception(config.control_path, config.download_path)
+        for account, key in accounts.items.items():
+            ftp_service.download_files(config.ftp_server, account, key, config.ftp_folder, reception.download_path)
+    organizer.organize(reception)
 
 
 def execute_download_and_extraction(config_filename):
@@ -182,16 +215,24 @@ def execute_download_and_extraction(config_filename):
     if config.is_valid:
         print('running')
         organizer = Organizer(config.serial_path, config.unidentified_path)
-        while config.status == 'ON':
-            accounts = Accounts(config.accounts_filename)
 
-            if len(accounts.items) > 0:
-                reception = Reception(config.control_path, config.download_path)
-                if not os.path.isdir(reception.download_path):
-                    os.makedirs(reception.download_path)
-                for account, key in accounts.items.items():
-                    ftp_service.download_files(config.ftp_server, account, key, config.ftp_folder, reception.download_path)
-                organizer.organize(reception)
+        while config.status() == 'ON':
+            sleep = 0
+            if str(datetime.today().weekday()) in config.weekdays:
+                h = int(utils.now()[1][0:2])
+                if config.start_hour <= h <= config.end_hour:
+                    receive_and_organize(config, organizer)
+                    sleep = 60*config.frequency
+                elif h < config.start_hour:
+                    sleep = 60*60*(config.start_hour - h)
+                elif h > config.end_hour:
+                    sleep = 60*60*(24 - h + config.start_hour)
+            else:
+                # volta em 24h
+                sleep = 60*60*24
+            if sleep > 0:
+                print(sleep)
+            time.sleep(sleep)
         print('stopped')
     else:
         print('configuration problem')
