@@ -190,7 +190,10 @@ class Organizer(object):
                 if os.path.isfile(reception.download_path + '/' + f):
                     reception.register(f, folders[1])
                     os.unlink(reception.download_path + '/' + f)
-        fs_utils.delete_file_or_folder(reception.download_path)
+        try:
+            fs_utils.delete_file_or_folder(reception.download_path)
+        except:
+            pass
 
     def get_folders(self, downloaded_item, reception):
         if downloaded_item.is_identified:
@@ -205,8 +208,16 @@ def receive_and_organize(config, organizer):
     accounts = Accounts(config.accounts_filename)
     if len(accounts.items) > 0:
         reception = Reception(config.control_path, config.download_path)
-        for account, key in accounts.items.items():
-            ftp_service.download_files(config.ftp_server, account, key, config.ftp_folder, reception.download_path)
+        for items in accounts.items.items():
+            account = None
+            key = None
+            folder = 'entrega'
+            if len(items) == 2:
+                account, key = items
+            elif len(items) == 3:
+                account, key, folder = items
+            if account is not None:
+                ftp_service.download_files(config.ftp_server, account, key, folder, reception.download_path)
     organizer.organize(reception)
 
 
