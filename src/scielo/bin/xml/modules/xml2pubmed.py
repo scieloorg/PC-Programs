@@ -192,7 +192,7 @@ class ArticlesDB(object):
             if final_date != '':
                 int_final_date = int(final_date)
         if self.isis_db is not None:
-            h_records = self.isis_db.get_records('tp=i or tp=o or tp=h')
+            h_records = self.isis_db.get_records('tp=i or tp=h')
             #h_records = [record for record in h_records if record.get('706') in 'ih']
 
             issn_id = h_records[0].get('35')
@@ -203,6 +203,7 @@ class ArticlesDB(object):
                 if item.get('706') == 'o':
                     a_date = int(item.get('91'))
                 elif item.get('706') == 'h':
+                    a_date = int(item.get('223', 0))
                     if int_from_date <= a_date <= int_final_date:
                         a_pid = '0'*5 + item.get('121')
                         items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
@@ -272,10 +273,10 @@ class PubMedXMLMaker(object):
     def execute_procedures(self):
         self.build_pubmed_xml()
 
-        if os.path.isfile(self.pubmed_filename):
-            import webbrowser
-            webbrowser.open('file:///' + self.pubmed_filename, new=2)
-            print(self.pubmed_filename)
+        #if os.path.isfile(self.pubmed_filename):
+        #    import webbrowser
+        #    webbrowser.open('file:///' + self.pubmed_filename.replace('\\', '/'), new=2)
+        #    print(self.pubmed_filename)
 
         self.validate_pubmed_xml()
 
