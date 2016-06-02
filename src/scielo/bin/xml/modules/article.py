@@ -362,7 +362,7 @@ class ArticleXML(object):
             if self.tree is not None:
                 for xref_parent_node in self.tree.findall('.//*[xref]'):
                     xref_nodes = {}
-                    for xref_node in xref_parent_node.findall('xref'):
+                    for xref_node in xref_parent_node.findall('.//xref'):
                         xref_type = xref_node.attrib.get('ref-type')
                         if not xref_type in xref_nodes.keys():
                             xref_nodes[xref_type] = []
