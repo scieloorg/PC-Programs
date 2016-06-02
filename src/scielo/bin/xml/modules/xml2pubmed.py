@@ -20,27 +20,46 @@ global ucisis
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 
-def find_xml_files(path, files={}):
+def find_xml_files_folders(path, folders=[]):
     for item in os.listdir(path):
-        if os.path.isfile(item):
-            if item.endswith('.xml'):
-                if not item in files.keys():
-                    files[item] = []
-                files[item].append(path + '/' + item)
-        elif os.path.isdir(path + '/' + item):
-            files = find_xml_files(path + '/' + item, files)
+        folder = path + '/' + item
+        if os.path.isdir(folder):
+            xml_files = [f for f in os.listdir(folder) if f.endswith('.xml')]
+            if len(xml_files) > 0:
+                folders.append(folder)
+            folders = find_xml_files_folders(folder, folders)
+    return folders
+
+
+def find_xml_files(filenames, folders):
+    files = {}
+    for filename in filenames:
+        for xml_folder_path in folders:
+            if filename in os.listdir(xml_folder_path):
+                files[filename] = os.path.join(xml_folder_path, filename)
+                break
     return files
 
 
-def find_xml_files_folders(path, folders=[]):
-    for item in os.listdir(path):
-        if os.path.isdir(path + '/' + item):
-            xml_files = [f for f in os.listdir(path + '/' + item) if f.endswith('.xml')]
-            if len(xml_files) > 0:
-                folders.append(path + '/' + item)
-            else:
-                folders = find_xml_files_folders(path + '/' + item, folders)
-    return folders
+def find_xml_files_in_alternative(filenames, main_path, found_files={}):
+    for item in os.listdir(main_path):
+        if os.path.isfile(main_path + '/' + item):
+            if item in filenames:
+                if not item in found_files.keys():
+                    found_files[item] = main_path + '/' + item
+
+        elif os.path.isdir(main_path + '/' + item):
+            found_files = find_xml_files_in_alternative(filenames, main_path + '/' + item, found_files)
+    return found_files
+
+
+def load_articles(filenames):
+    files = {}
+    for filename, f in filenames.items():
+        xml, e = xml_utils.load_xml(f)
+        a = article.Article(xml, filename)
+        files[filename] = xml_utils.node_xml(a.tree.find('.'))
+    return files
 
 
 class InputForm(object):
@@ -156,17 +175,25 @@ class IssueStuff(object):
         self.from_date = from_date
         self.final_date = final_date
         self.tmp_db_filename = self.temp_path + '/pubmed_tmp_' + self.issueid
+        self.pubmed_folder_in_serial = self.serial_path + '/PubMed'
+        self.pubmed_folder_in_acron = self.serial_path + '/' + self.acron + '/PubMed'
         shutil.copyfile(self.articles_db_filename + '.mst', self.tmp_db_filename + '.mst')
         shutil.copyfile(self.articles_db_filename + '.xrf', self.tmp_db_filename + '.xrf')
+        self._articles_meta = None
+        self._articles_files = None
 
     @property
-    def articles_db(self):
-        return ArticlesDB(self.ucisis, self.tmp_db_filename)
+    def articles_metadata(self):
+        if self._articles_meta is None:
+            self._articles_meta = ArticlesDB(self.ucisis, self.tmp_db_filename).articles(self.from_date, self.final_date)
+        return self._articles_meta
 
     @property
     def articles_files(self):
-        if self.articles_db is not None:
-            return ArticlesFiles(self.issue_path, self.articles_db.articles(self.from_date, self.final_date))
+        if self._articles_files is None:
+            if self.articles_metadata is not None:
+                self._articles_files = ArticlesFiles(self.issue_path, self.articles_metadata)
+        return self._articles_files
 
 
 class ArticlesDB(object):
@@ -199,6 +226,9 @@ class ArticlesDB(object):
             pid = '0'*4 + h_records[0].get('36')[4:]
             issue_pid = h_records[0].get('36')[:4] + pid[-4:]
 
+            unmatched = []
+            matched = []
+
             for item in h_records:
                 if item.get('706') == 'o':
                     a_date = int(item.get('91'))
@@ -207,6 +237,12 @@ class ArticlesDB(object):
                     if int_from_date <= a_date <= int_final_date:
                         a_pid = '0'*5 + item.get('121')
                         items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
+                        matched.append(a_date)
+                    else:
+                        unmatched.append(a_date)
+
+            if len(matched) > 0:
+                print(str(len(matched)) + ' items')
         return items
 
 
@@ -217,26 +253,25 @@ class ArticlesFiles(object):
         self.selected_pids = selected_pids
 
     @property
-    def selected_xml_files(self):
-        files = {}
-        for filename in self.selected_pids.keys():
-            for xml_folder_path in self.xml_folder_paths:
-                if filename in os.listdir(xml_folder_path):
-                    xml, e = xml_utils.load_xml(os.path.join(xml_folder_path, filename))
-                    a = article.Article(xml, filename)
-                    files[filename] = xml_utils.node_xml(a.tree.find('.'))
-                    break
-        return files
+    def selected_articles(self):
+        found = find_xml_files(self.selected_pids.keys(), self.standard_xml_folder_paths)
+        if len(found) < len(self.selected_pids.keys()):
+            failed = [item for item in self.selected_pids.keys() if not item in found.keys()]
+            found = find_xml_files_in_alternative(failed, self.issue_path, found)
+            failed = [item for item in failed if not item in found.keys()]
+
+            if len(failed) > 0:
+                print('Not found: ')
+                print('\n'.join(failed))
+        return load_articles(found)
 
     @property
-    def xml_folder_paths(self):
+    def standard_xml_folder_paths(self):
         xml_path_list = []
         for path in [self.issue_path + '/base_xml/base_source', self.issue_path + '/markup_xml/scielo_package']:
             if os.path.isdir(path):
                 if len([item for item in os.listdir(path) if item.endswith('.xml')]) > 0:
                     xml_path_list.append(path)
-        if len(xml_path_list) == 0:
-            xml_path_list = find_xml_files_folders(self.issue_path)
         return xml_path_list
 
 
@@ -245,6 +280,7 @@ class PubMedXMLMaker(object):
     def __init__(self, issue_stuff, xsl_filename):
         self.issue_stuff = issue_stuff
         self.xsl_filename = xsl_filename
+        self.debug = False
 
     @property
     def pubmed_filename(self):
@@ -264,11 +300,11 @@ class PubMedXMLMaker(object):
 
     @property
     def articles_filenames_xml_content(self):
-        return '<article-set>' + ''.join(['<article-item filename="' + filename + '">' + item + '</article-item>' for filename, item in self.issue_stuff.articles_files.selected_xml_files.items()]) + '</article-set>'
+        return '<article-set>' + ''.join(['<article-item filename="' + filename + '">' + item + '</article-item>' for filename, item in self.issue_stuff.articles_files.selected_articles.items()]) + '</article-set>'
 
     @property
     def articles_pids_xml_content(self):
-        return '<pid-set>' + ''.join(['<pid filename="' + k + '">' + v + '</pid>' for k, v in self.issue_stuff.articles_files.selected_pids.items()]) + '</pid-set>'
+        return '<pid-set>' + ''.join(['<pid filename="' + k + '">' + v + '</pid>' for k, v in sorted(self.issue_stuff.articles_files.selected_pids.items())]) + '</pid-set>'
 
     def execute_procedures(self):
         self.build_pubmed_xml()
@@ -278,9 +314,13 @@ class PubMedXMLMaker(object):
         #    webbrowser.open('file:///' + self.pubmed_filename.replace('\\', '/'), new=2)
         #    print(self.pubmed_filename)
 
-        self.validate_pubmed_xml()
+        valid = self.validate_pubmed_xml()
+        if valid:
+            shutil.copyfile(self.pubmed_filename, self.issue_stuff.pubmed_folder_in_acron + '/' + os.path.basename(self.pubmed_filename))
+            shutil.copyfile(self.pubmed_filename, self.issue_stuff.pubmed_folder_in_serial + '/' + os.path.basename(self.pubmed_filename))
 
-        self.clean_temporary_files()
+        if self.debug is False and valid:
+            self.clean_temporary_files()
         # validate
         # envia ftp
 
@@ -288,11 +328,14 @@ class PubMedXMLMaker(object):
         java_xml_utils.xml_transform(self.temp_xml_filename, self.xsl_filename, self.pubmed_filename)
 
     def validate_pubmed_xml(self):
+        r = False
         if java_xml_utils.xml_validate(self.pubmed_filename, self.pubmed_filename + '.err'):
             os.unlink(self.pubmed_filename + '.err')
+            r = True
             print('Validates fine')
         else:
             print('Validation error: ' + self.pubmed_filename + '.err')
+        return r
 
     def clean_temporary_files(self):
         for item in os.listdir(self.issue_stuff.temp_path):
@@ -302,13 +345,14 @@ class PubMedXMLMaker(object):
 
 def call_execute_pubmed_procedures(args):
 
-    script, issue_path, from_date, final_date = read_inputs(args)
+    script, issue_path, from_date, final_date, debug = read_inputs(args)
 
     if issue_path is None:
         # GUI
         issue_path, from_date = read_form_inputs()
         script = 'exit'
         final_date = utils.now()[0]
+        debug = False
 
     errors = []
     if issue_path is None and script != 'exit':
@@ -329,6 +373,7 @@ def call_execute_pubmed_procedures(args):
             issue_stuff = IssueStuff(ucisis, issue_path, from_date, final_date)
 
             pubmed_xml_maker = PubMedXMLMaker(issue_stuff, CURRENT_PATH + '/../../pmc/v3.0/xsl/xml2pubmed/xml2pubmed.xsl')
+            pubmed_xml_maker.debug = debug
             pubmed_xml_maker.execute_procedures()
         else:
             errors.append(_('cisis expected'))
@@ -343,13 +388,17 @@ def read_inputs(args):
     issue_path = None
     from_date = None
     final_date = None
+    debug = False
+    if '--debug' in args:
+        debug = True
+        args = [item for item in args if item != '--debug']
     if len(args) == 2:
         script, issue_path = args
     elif len(args) == 3:
         script, issue_path, from_date = args
     elif len(args) == 4:
         script, issue_path, from_date, final_date = args
-    return (script, issue_path, from_date, final_date)
+    return (script, issue_path, from_date, final_date, debug)
 
 
 def read_form_inputs(default_path=None):

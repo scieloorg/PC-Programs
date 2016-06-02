@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:xlink="http://www.w3.org/1999/xlink" exclude-result-prefixes="xlink">
 	<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/ -->
 
 	<!-- 
@@ -13,7 +13,7 @@
 		indent="yes" xml:space="default" 
 	/>
 	<xsl:variable name="pid_list" select="//pid-set//pid"/>
-	
+
 	<xsl:template match="/">
 		<ArticleSet>
 			<xsl:apply-templates select=".//article-set//article-item">
@@ -295,9 +295,23 @@
 		</xsl:choose>
 
 	</xsl:template>
-	<xsl:template match="pub-date/@pub-type | @date-type">
+	<xsl:template match="@date-type">
 		<xsl:choose>
-			<xsl:when test=".='epub'">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
+			<xsl:when test=".='ppub'">ppublish</xsl:when>
+			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
+			<xsl:when test=".='collection'">ppublish</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="pub-date/@pub-type">
+		<xsl:comment><xsl:value-of select="."/></xsl:comment>
+		<xsl:choose>
+			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
 			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
 			<xsl:when test=".='collection'">ppublish</xsl:when>
@@ -307,7 +321,7 @@
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="pub-date|date[@date-type='rev-recd']"> </xsl:template>
-	<xsl:template match="pub-date|date[@date-type!='rev-recd']">
+	<xsl:template match="date[@date-type!='rev-recd']">
 		<PubDate>
 			<xsl:attribute name="PubStatus">
 				<xsl:apply-templates select="@*"/>
@@ -317,6 +331,24 @@
 			<xsl:apply-templates select="day"/>
 		</PubDate>
 	</xsl:template>
+	<xsl:template match="pub-date">
+		
+		<PubDate>
+			<xsl:attribute name="PubStatus">
+				<xsl:apply-templates select="@pub-type"/>
+			</xsl:attribute>
+			<xsl:apply-templates select="year"/>
+			<xsl:choose>
+				<xsl:when test="count(..//pub-date)=1 and @pub-type='epub' and not(../issue) and not(../volume)"></xsl:when>
+				<xsl:when test="month='Jan-Dec' or season='Jan-Dec'"></xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="month|season"/>
+					<xsl:apply-templates select="day"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</PubDate>
+	</xsl:template>
+	
 	<xsl:template match="month|season">
 		<Month>
 			<xsl:value-of select="."/>
