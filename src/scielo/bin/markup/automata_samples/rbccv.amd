@@ -1,0 +1,80 @@
+ocitat
+o1
+o5
+o1;o2;T;no;" "
+o2;o3;NT;ocontrib;"."
+o2;o4;NT;ocontrib;". In:"
+o2;o5;NT;omonog;"."
+o3;o5;NT;oiserial;"."
+o3;o5;NT;oiserial;")."
+o4;o5;NT;omonog;"."
+
+ocontrib
+oc1
+oc6
+oc1;oc1;NT;oauthor;","
+oc1;oc2;NT;oauthor;" "
+oc1;oc3;NT;oauthor;"&"
+oc1;oc4;NT;oauthor;". In:"
+oc1;oc4;NT;oauthor;"-"
+oc1;oc6;NT;oauthor;". In:"
+oc2;oc4;T;et-al;". -";","
+oc3;oc4;NT;oauthor;"-"
+oc4;oc5;T;title;":"
+oc4;oc6;T;title;".";":"
+oc4;oc6;T;title;". In:"
+oc5;oc6;T;subtitle;"."
+oc5;oc6;T;subtitle;". In:"
+
+oauthor
+oa1
+oa3
+oa1;oa2;T;surname;" "
+oa2;oa3;T;fname;" ";","
+oa2;oa3;T;fname;",";"&","."
+oa2;oa3;T;fname;"&";":"
+oa2;oa3;T;fname;". In:";",","-"
+oa2;oa3;T;fname;"-";"et-al","&",","
+
+oiserial
+oi1
+oi6
+oi1;oi2;NT;stitle;" "
+oi1;oi3;T;sertitle;" "
+oi2;oi4;T;date;"; "
+oi3;oi4;T;date;"; "
+oi4;oi5;T;volid;": "
+oi5;oi6;T;pages;"."
+
+stitle
+s1
+s2
+s1;s1;T;ign;" "
+s1;s2;T;ign;" "
+
+omonog
+om1
+om8
+om1;om1;NT;oauthor;","
+om1;om2;NT;oauthor;" "
+om1;om3;NT;oauthor;"&"
+om1;om4;NT;oauthor;","
+om1;om5;NT;oauthor;"-"
+om1;om5;NT;oauthor;" "
+om2;om4;T;et-al;",";"&"
+om2;om5;T;et-al;". -";",","&"
+om3;om4;NT;oauthor;","
+om3;om5;NT;oauthor;"-"
+om4;om5;T;ign;".";" "
+om5;om6;T;title;":"
+om5;om7;T;title;".";":"
+om6;om7;T;subtitle;"."
+om7;om8;T;ign;"."
+
+thesis
+th1
+th5
+th1;th2;T;degree;"]"
+th2;th3;T;city;":"
+th3;th4;T;ign;","
+th4;th5;T;date;"."

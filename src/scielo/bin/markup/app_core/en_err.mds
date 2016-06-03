@@ -1,0 +1,519 @@
+00101;Error. Recommendable to exit from the Markup program;frmArticle;ComboBox_IssueId_Change
+
+00102;Error. Recommendable to exit from the Markup program;frmArticle;ComboBox_Version_Change
+
+00103;Error. Recommendable to exit from the Markup program;frmArticle;CommandButton_Cancel_Click
+
+00104;Error. Recommendable to exit from the Markup program;frmArticle;CommandButton_Ok_Click
+
+00105;Error. Recommendable to exit from the Markup program;frmArticle;UserForm_Terminate
+
+00106;Error. Recommendable to exit from the Markup program;frmArticle;VerifyFrmArticle
+
+00107;Error. Recommendable to exit from the Markup program;frmArticle;VerifyDateValue
+
+00108;Error. Recommendable to exit from the Markup program;frmArticle;VerifyPII
+
+00109;Error. Recommendable to exit from the Markup program;frmArticle;VerifyORDER
+
+00110;Error. Recommendable to exit from the Markup program;frmArticle;VerifyVOLID
+
+00111;Error. Recommendable to exit from the Markup program;frmArticle;VerifyISSUENO
+
+00112;Error. Recommendable to exit from the Markup program;frmArticle;VerifyDATEISO
+
+00113;Error. Recommendable to exit from the Markup program;frmArticle;VerifySUPPLVOL
+
+00114;Error. Recommendable to exit from the Markup program;frmArticle;VerifySUPLLNO
+
+00115;Error. Recommendable to exit from the Markup program;frmArticle;VerifyTOCCODE
+
+00116;Error. Recommendable to exit from the Markup program;frmArticle;VerifyLANGUAGE
+
+00117;Error. Recommendable to exit from the Markup program;frmArticle;VerifyTYPE
+
+00118;Error. Recommendable to exit from the Markup program;frmArticle;VerifySTATUS
+
+00119;Error. Recommendable to exit from the Markup program;frmArticle;VerifyVERSION
+
+00120;Error. Recommendable to exit from the Markup program;frmArticle;VerifyDOCTOPIC
+
+00121;Error. Recommendable to exit from the Markup program;frmArticle;VerifyCCODE
+
+00122;Error. Recommendable to exit from the Markup program;frmArticle;VerifySTITLE
+
+00123;Error. Recommendable to exit from the Markup program;frmArticle;VerifySECCODE
+
+00124;Error. Recommendable to exit from the Markup program;frmArticle;VerifyISSN
+
+00125;Error. Recommendable to exit from the Markup program;frmArticle;VerifyPAGES
+
+00201;Error. Recommendable to exit from the Markup program;frmAttribute;CommandButton_Cancel_Click
+
+00202;Error. Recommendable to exit from the Markup program;frmAttribute;CommandButton_Ok_Click
+
+00203;Error. Recommendable to exit from the Markup program;frmAttribute;UserForm_Terminate
+
+00204;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyFrmAttribute
+
+00205;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyTB_A1
+
+00206;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyTB_A2
+
+00207;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyTB_A3
+
+00208;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyCB_A1
+
+00209;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyCB_A2
+
+00210;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyCB_A3
+
+00211;Error. Recommendable to exit from the Markup program;frmAttribute;TestAttribute
+
+00212;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyDateValue
+
+00213;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyDATEISO
+
+00214;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyROLE
+
+00215;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyRID
+
+00216;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyTYPE
+
+00217;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyLANGUAGE
+
+00218;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyID
+
+00219;Error. Recommendable to exit from the Markup program;frmAttribute;VerifySCHEME
+
+00220;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyFROM
+
+00221;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyTO
+
+00222;Error. Recommendable to exit from the Markup program;frmAttribute;VerifySTANDARD
+
+00223;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyCOUNT
+
+00224;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyNO
+
+00225;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyORGNAME
+
+00226;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyTB_A4
+
+00227;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyTB_A5
+
+00228;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyORGDIV1
+
+00229;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyORGDIV2
+
+00230;Error. Recommendable to exit from the Markup program;frmAttribute;VerifyORGDIV3
+
+00301;Error. Recommendable to exit from the Markup program;frmConfig;CommandButton_cancel_Click
+
+00302;Error. Recommendable to exit from the Markup program;frmConfig;CommandButton_clear_Click
+
+00303;Error. Recommendable to exit from the Markup program;frmConfig;CommandButton_OK_Click
+
+00304;Error. Recommendable to exit from the Markup program;frmConfig;CommandButton_record_Click
+
+00305;Error. Recommendable to exit from the Markup program;frmConfig;UserForm_Initialize
+
+00306;Error. Recommendable to exit from the Markup program;frmConfig;UserForm_Terminate
+
+00307;Error. Recommendable to exit from the Markup program;frmConfig;VerifyFrmConfig
+
+00308;Error. Recommendable to exit from the Markup program;frmConfig;SetGlobalValues
+
+00401;Error. Recommendable to exit from the Markup program;frmReferenceMarkup;Form_Load
+
+00402;Error. Recommendable to exit from the Markup program;frmReferenceMarkup;FirstChoice_Click
+
+00403;Error. Recommendable to exit from the Markup program;frmReferenceMarkup;LastChoice_Click
+
+00404;Error. Recommendable to exit from the Markup program;frmReferenceMarkup;Markup_Click
+
+00405;Error. Recommendable to exit from the Markup program;frmReferenceMarkup;NextChoice_Click
+
+00406;Error. Recommendable to exit from the Markup program;frmReferenceMarkup;PreviousChoice_Click
+
+00407;Error. Recommendable to exit from the Markup program;frmReferenceMarkup;Undo_Click
+
+00408;Error. Recommendable to exit from the Markup program;frmReferenceMarkup;UserForm_Terminate
+
+10101;Error. Recommendable to exit from the Markup program;AutoMacros;AutoExec
+
+10102;Error. Recommendable to exit from the Markup program;AutoMacros;AutoOpen
+
+10103;Error. Recommendable to exit from the Markup program;AutoMacros;Delete_AddIn
+
+10104;Error. Recommendable to exit from the Markup program;AutoMacros;AutoClose
+
+10201;Error. Recommendable to exit from the Markup program;MainModule;Main
+
+10202;Error. Recommendable to exit from the Markup program;MainModule;SubStartMarkup
+
+10203;Error. Recommendable to exit from the Markup program;MainModule;SubStop
+
+10204;Error. Recommendable to exit from the Markup program;MainModule;SubChange
+
+10205;Error. Recommendable to exit from the Markup program;MainModule;SubDelete
+
+10206;Error. Recommendable to exit from the Markup program;MainModule;SubAutomatic
+
+10207;Error. Recommendable to exit from the Markup program;MainModule;SubElse
+
+10208;Error. Recommendable to exit from the Markup program;MainModule;SubHelp
+
+10209;Error. Recommendable to exit from the Markup program;MainModule;SubDown
+
+10210;Error. Recommendable to exit from the Markup program;MainModule;SubUp
+
+10211;Error. Recommendable to exit from the Markup program;MainModule;MainConfig
+
+10301;Error. Recommendable to exit from the Markup program;ReferenceMarkup;Markup
+
+10302;Error. Recommendable to exit from the Markup program;ReferenceMarkup;ShowResults
+
+20101;Error. Recommendable to exit from the Markup program;AllResultsTables;Index
+
+20102;Error. Recommendable to exit from the Markup program;AllResultsTables;Count
+
+20103;Error. Recommendable to exit from the Markup program;AllResultsTables;Class_Initialize
+
+20104;Error. Recommendable to exit from the Markup program;AllResultsTables;AddNew
+
+20105;Error. Recommendable to exit from the Markup program;AllResultsTables;Load
+
+20106;Error. Recommendable to exit from the Markup program;AllResultsTables;GetNext
+
+20107;Error. Recommendable to exit from the Markup program;AllResultsTables;GetCurrent
+
+20108;Error. Recommendable to exit from the Markup program;AllResultsTables;GetPrev
+
+20109;Error. Recommendable to exit from the Markup program;AllResultsTables;GetFirst
+
+20110;Error. Recommendable to exit from the Markup program;AllResultsTables;GetLast
+
+20111;Error. Recommendable to exit from the Markup program;AllResultsTables;GetItem
+
+20112;Error. Recommendable to exit from the Markup program;AllResultsTables;Clean
+
+20113;Error. Recommendable to exit from the Markup program;AllResultsTables;Class_Terminate
+
+20201;Error. Recommendable to exit from the Markup program;clsAttribute;InsertValue
+
+20202;Error. Recommendable to exit from the Markup program;clsAttribute;ReturnCount
+
+20301;Error. Recommendable to exit from the Markup program;clsAttrList;InsertAttr
+
+20302;Error. Recommendable to exit from the Markup program;clsAttrList;ReturnCount
+
+20303;Error. Recommendable to exit from the Markup program;clsAttrList;LoadAttributes
+
+20501;Error. Recommendable to exit from the Markup program;clsAutoMarkupList;LoadAutomata
+
+20601;Error. Recommendable to exit from the Markup program;clsBar;SetName
+
+20602;Error. Recommendable to exit from the Markup program;clsBar;SetUpLevel
+
+20603;Error. Recommendable to exit from the Markup program;clsBar;GetName
+
+20604;Error. Recommendable to exit from the Markup program;clsBar;GetUpLevel
+
+20605;Error. Recommendable to exit from the Markup program;clsBar;InsertButton
+
+20606;Error. Recommendable to exit from the Markup program;clsBar;LenListOfButton
+
+20701;Error. Recommendable to exit from the Markup program;clsButton;SetTag
+
+20702;Error. Recommendable to exit from the Markup program;clsButton;SetShortTag
+
+20703;Error. Recommendable to exit from the Markup program;clsButton;SetColor
+
+20704;Error. Recommendable to exit from the Markup program;clsButton;SetRepetitive
+
+20705;Error. Recommendable to exit from the Markup program;clsButton;SetAttrib
+
+20706;Error. Recommendable to exit from the Markup program;clsButton;SetDownLevel
+
+20707;Error. Recommendable to exit from the Markup program;clsButton;GetTag
+
+20708;Error. Recommendable to exit from the Markup program;clsButton;GetShortTag
+
+20709;Error. Recommendable to exit from the Markup program;clsButton;GetColor
+
+20710;Error. Recommendable to exit from the Markup program;clsButton;GetRepetitive
+
+20711;Error. Recommendable to exit from the Markup program;clsButton;GetAttrib
+
+20712;Error. Recommendable to exit from the Markup program;clsButton;GetDownLevel
+
+20801;Error. Recommendable to exit from the Markup program;clsConfig;GetResponsible
+
+20802;Error. Recommendable to exit from the Markup program;clsConfig;SetResponsible
+
+20803;Error. Recommendable to exit from the Markup program;clsConfig;GetLanguage
+
+20804;Error. Recommendable to exit from the Markup program;clsConfig;SetLanguage
+
+20805;Error. Recommendable to exit from the Markup program;clsConfig;SetFirstHour
+
+20806;Error. Recommendable to exit from the Markup program;clsConfig;GetFirstHour
+
+20807;Error. Recommendable to exit from the Markup program;clsConfig;SetLastHour
+
+20808;Error. Recommendable to exit from the Markup program;clsConfig;GetLastHour
+
+20809;Error. Recommendable to exit from the Markup program;clsConfig;GetMarkupTime
+
+20810;Error. Recommendable to exit from the Markup program;clsConfig;LoadPublicValues
+
+20901;Error. Recommendable to exit from the Markup program;clsErr;DisplayErr
+
+20902;Error. Recommendable to exit from the Markup program;clsErr;BuildErrLog
+
+21001;Error. Recommendable to exit from the Markup program;clsErrList;LoadErr
+
+21002;Error. Recommendable to exit from the Markup program;clsErrList;LastExit
+
+21003;Error. Recommendable to exit from the Markup program;clsErrList;BuildLog
+
+21101;Error. Recommendable to exit from the Markup program;clsInterface;ShowFrmArticle
+
+21102;Error. Recommendable to exit from the Markup program;clsInterface;EndFrmArticle
+
+21103;Error. Recommendable to exit from the Markup program;clsInterface;SetFrmArticle
+
+21104;Error. Recommendable to exit from the Markup program;clsInterface;ExitFrmArticle
+
+21105;Error. Recommendable to exit from the Markup program;clsInterface;SetDefaultValueAbbrArticle
+
+21106;Error. Recommendable to exit from the Markup program;clsInterface;ShowFrmAttribute
+
+21107;Error. Recommendable to exit from the Markup program;clsInterface;EndFrmAttribute
+
+21108;Error. Recommendable to exit from the Markup program;clsInterface;ExitFrmAttribute
+
+21109;Error. Recommendable to exit from the Markup program;clsInterface;SetDefaultValueAbbrAttribute
+
+21110;Error. Recommendable to exit from the Markup program;clsInterface;ShowFrmConfig
+
+21111;Error. Recommendable to exit from the Markup program;clsInterface;EndFrmConfig
+
+21112;Error. Recommendable to exit from the Markup program;clsInterface;BuildMarkupBar
+
+21113;Error. Recommendable to exit from the Markup program;clsInterface;DestroyMarkupBar
+
+21114;Error. Recommendable to exit from the Markup program;clsInterface;DisableWordBars
+
+21115;Error. Recommendable to exit from the Markup program;clsInterface;EnableWordBars
+
+21201;Error. Recommendable to exit from the Markup program;clsIssue;InsertSec
+
+21202;Error. Recommendable to exit from the Markup program;clsIssue;ReturnCount
+
+21301;Error. Recommendable to exit from the Markup program;clsIssueList;InsertIssue
+
+21302;Error. Recommendable to exit from the Markup program;clsIssueList;ReturnCount
+
+21303;Error. Recommendable to exit from the Markup program;clsIssueList;LoadIssue
+
+21401;Error. Recommendable to exit from the Markup program;clsLink;InsertAttr
+
+21402;Error. Recommendable to exit from the Markup program;clsLink;ReturnCount
+
+21501;Error. Recommendable to exit from the Markup program;clsListBar;InsertBar
+
+21502;Error. Recommendable to exit from the Markup program;clsListBar;LenListOfBar
+
+21503;Error. Recommendable to exit from the Markup program;clsListBar;LoadBars
+
+21504;Error. Recommendable to exit from the Markup program;clsListBar;CreateBars
+
+21505;Error. Recommendable to exit from the Markup program;clsListBar;KillBars
+
+21506;Error. Recommendable to exit from the Markup program;clsListBar;EnableBar
+
+21507;Error. Recommendable to exit from the Markup program;clsListBar;DisableBar
+
+21508;Error. Recommendable to exit from the Markup program;clsListBar;MoveBarDefault
+
+21509;Error. Recommendable to exit from the Markup program;clsListBar;MoveBarTop
+
+21510;Error. Recommendable to exit from the Markup program;clsListBar;BuildTempFile
+
+21511;Error. Recommendable to exit from the Markup program;clsListBar;LoadTempFile
+
+21601;Error. Recommendable to exit from the Markup program;clsLkList;InsertLink
+
+21602;Error. Recommendable to exit from the Markup program;clsLkList;ReturnCount
+
+21603;Error. Recommendable to exit from the Markup program;clsLkList;LoadLink
+
+21701;Error. Recommendable to exit from the Markup program;clsMarkup;InsertTag
+
+21702;Error. Recommendable to exit from the Markup program;clsMarkup;DeleteTag
+
+21703;Error. Recommendable to exit from the Markup program;clsMarkup;FormatText
+
+21704;Error. Recommendable to exit from the Markup program;clsMarkup;BuildStartTag
+
+21705;Error. Recommendable to exit from the Markup program;clsMarkup;BuildFinishTag
+
+21706;Error. Recommendable to exit from the Markup program;clsMarkup;DisableScreen
+
+21707;Error. Recommendable to exit from the Markup program;clsMarkup;EnableScreen
+
+21708;Error. Recommendable to exit from the Markup program;clsMarkup;ChangeAttribute
+
+21709;Error. Recommendable to exit from the Markup program;clsMarkup;VerifyHierarchy
+
+21710;Error. Recommendable to exit from the Markup program;clsMarkup;BuildLog
+
+21711;Error. Recommendable to exit from the Markup program;clsMarkup;UpLevel
+
+21712;Error. Recommendable to exit from the Markup program;clsMarkup;DownLevel
+
+21713;Error. Recommendable to exit from the Markup program;clsMarkup;DisplayBar
+
+21714;Error. Recommendable to exit from the Markup program;clsMarkup;VerifyDocumentHTMLFormat
+
+21715;Error. Recommendable to exit from the Markup program;clsMarkup;ChangeSTAGO_TAGC
+
+21716;Error. Recommendable to exit from the Markup program;clsMarkup;ChangeFields
+
+21717;Error. Recommendable to exit from the Markup program;clsMarkup;ChangeHtmlMarkup
+
+21718;Error. Recommendable to exit from the Markup program;clsMarkup;ChangeEntity
+
+21719;Error. Recommendable to exit from the Markup program;clsMarkup;FindTag
+
+21720;Error. Recommendable to exit from the Markup program;clsMarkup;FindText
+
+21721;Error. Recommendable to exit from the Markup program;clsMarkup;TestExistTag
+
+21722;Error. Recommendable to exit from the Markup program;clsMarkup;TestExistFloat
+
+21723;Error. Recommendable to exit from the Markup program;clsMarkup;TestFatherTag
+
+21724;Error. Recommendable to exit from the Markup program;clsMarkup;TestOwnSisterTag
+
+21801;Error. Recommendable to exit from the Markup program;clsToken;GetTokens
+
+22001;Error. Recommendable to exit from the Markup program;ResultsTable;Count
+
+22002;Error. Recommendable to exit from the Markup program;ResultsTable;AddNew
+
+22003;Error. Recommendable to exit from the Markup program;ResultsTable;GetItem
+
+22004;Error. Recommendable to exit from the Markup program;ResultsTable;Clean
+
+22005;Error. Recommendable to exit from the Markup program;ResultsTable;Class_Terminate
+
+22101;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let Element
+
+22102;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get Element
+
+22103;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let SubElement
+
+22104;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get SubElement
+
+22105;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let StartPos
+
+22106;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get StartPos
+
+22107;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let EndPos
+
+22108;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get EndPos
+
+22109;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let Level
+
+22110;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get Level
+
+22111;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let Terminal
+
+22112;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get Terminal
+
+22113;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let AbsSTAGStartPos
+
+22114;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get AbsSTAGStartPos
+
+22115;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let AbsSTAGEndPos
+
+22116;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get AbsSTAGEndPos
+
+22117;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let AbsETAGStartPos
+
+22118;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get AbsETAGStartPos
+
+22119;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Let AbsETAGEndPos
+
+22120;Error. Recommendable to exit from the Markup program;ResultsTableEntry;Get AbsETAGEndPos
+
+22201;Error. Recommendable to exit from the Markup program;Tag;Let Symbol
+
+22202;Error. Recommendable to exit from the Markup program;Tag;Get Symbol
+
+22203;Error. Recommendable to exit from the Markup program;Tag;Let Name
+
+22204;Error. Recommendable to exit from the Markup program;Tag;Get Name
+
+22205;Error. Recommendable to exit from the Markup program;Tag;Let Attributes
+
+22301;Error. Recommendable to exit from the Markup program;TagsTable;Count
+
+22302;Error. Recommendable to exit from the Markup program;TagsTable;AddNew
+
+22303;Error. Recommendable to exit from the Markup program;TagsTable;GetItem
+
+22304;Error. Recommendable to exit from the Markup program;TagsTable;Clean
+
+22305;Error. Recommendable to exit from the Markup program;TagsTable;Class_Terminate
+
+40001;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;InsertTag
+
+40002;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;DeleteTag
+
+40003;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;FormatText
+
+40004;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;BuildStartTag
+
+40005;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;BuildFinishTag
+
+40006;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;DisableScreen
+
+40007;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;EnableScreen
+
+40008;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;ChangeAttribute
+
+40009;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;VerifyHierarchy
+
+40010;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;BuildLog
+
+40011;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;UpLevel
+
+40012;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;DownLevel
+
+40013;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;DisplayBar
+
+40014;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;VerifyDocumentHTMLFormat
+
+40015;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;ChangeSTAGO_TAGC
+
+40016;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;ChangeFields
+
+40017;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;ChangeHtmlMarkup
+
+40018;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;ChangeEntity
+
+40019;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;FindTag
+
+40020;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;FindText
+
+40021;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;TestExistTag
+
+40022;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;TestExistFloat
+
+40023;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;TestFatherTag
+
+40024;ERRO. Recommendable to exit from the Markup program;clsMarkupRange;TestOwnSisterTag

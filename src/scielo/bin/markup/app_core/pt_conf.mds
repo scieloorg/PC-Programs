@@ -1,0 +1,114 @@
+directory,C:\Scielo\Bin\Markup\
+prg_name,markup.prg
+parser,C:\Scielo\Bin\SGMLPars\parser.exe
+fileAttrib,pt_attb.mds
+fileBar,pt_bars.mds
+fileIssue,pt_issue.mds
+fileTemp,pt_temp.mds
+fileLink,link.mds
+fileErr,pt_err.mds
+fileAutomata,automata.mds
+fileTagsAutomata,pt_
+msgInvalid,Dado Invalido
+msgType,Tipo de dado invalido
+msgSelection,Selecione o texto para marcação
+msgInserting,Erro inserindo a tag
+msgEditingAttr,Tag não tem atributos para editar
+msgDeleting,Erro apagando a tag. Selecione o texto
+msgOpenFile,Abra somente um arquivo
+msgSure,Deseja continuar?
+msgSureExit,Deseja sair?
+msgQuestionApplyAutomaticMarkupToTheTemplate,O documento está de acordo com o modelo para efetuar a marcação automática?
+msgAutomatic,Você deseja usar a marcação automática de referências?
+msgAutomaticAutomata2,"Automata2 está disponível somente para a norma Vancouver. Esta revista adota %STANDARD%."
+msgAutomaticUnidentifiedStandard,"A norma adotada pelo periódico é desconhecida do programa. Não é possível executar a marcação automática." 
+msgAutomaticSelectStandard,"A norma adotada pelo periódico é desconhecida do programa. Selecione a norma adotada pelo periódico, se vai usar a marcação automática para as referências." 
+msgAutomaticErr,%JOURNAL% não possui marcação automática %LABEL% para as refrerências. %FILE% não encontrado.
+msgDefaultDirectories,Verifique existência de 'html.dot'/'normal.dot'.
+msgExit1,Salvar em TXT e usar o Parser agora.
+msgExit2,Salvar em TXT e usar o Parser depois.
+msgExit3,Sair sem salvar em TXT.
+msgGenerateXML,Gerando arquivos XML. Aguarde.
+msgAutomataFileError, Não foi possível reconhecer a estrutura da referência.
+titleAttribute,Inserindo Atributo
+titleTag,Inserindo tag
+titleDelete,Apagando tag
+titleOpenFile,Abrindo arquivo
+titleFinish,Sair da Marcação
+titleStart,Iniciar a Marcação
+titleConfig,Configuração da Marcação
+titleErr,Erro
+tooltipsDown,Nível Inferior
+tooltipsUp,Nível Superior
+MainModule,MainModule.Main
+BarMarkup,Markup
+STAGO,[
+ETAGO,[/
+TAGC,]
+SLASH,/
+entitySTAGO,&#091;
+entityTAGC,&#093;
+logExtent,log
+txtExtent,txt
+TagSize,11
+tagConf0,article
+tagConf1,textfileAttrib
+textOK,Continuar
+textCANCEL,Cancelar
+textClear,Limpar
+textWrite,Gravar em arquivo
+titlefrmArticle,Markup DTD-SciELO
+titleFields,Campos do Config
+titlefrmAttribute,Inserindo atributo
+titlefrmConfig,Configuração da Marcação
+titleLanguage,Idioma da Marcação
+titleResponsible,Responsável pela Marcação
+optionEnglish,inglês
+optionSpanish,espanhol
+optionPortuguese,português
+buttonStop,Sair da Marcação
+buttonChange,Editar atributos
+buttonDelete,Apagar a tag
+buttonAutomatic,Marcação Automática
+buttonAutomaticWS,Marcação Automática 2
+buttonAutomaticStyles,Marcação Automática 3
+buttonHelp,Ajuda
+doDebug,no
+buttonParser,Verificar a marcação
+buttonGenerateXML,Gerar o XML
+buttonFilesAndDTDReport,Relatório de erros de arquivos/DTD
+buttonXMLValidate,Relatório de estilos SciELO
+buttonContentXMLValidate,Relatório de erros de conteúdo
+buttonXMLPreview,Visualizar texto completo SciELO
+buttonPMCValidate,Relatório de estilos PMC
+buttonPMCPreview,Visualizar texto completo PMC
+buttonViewMarkup,Visualizar texto com marcação
+buttonSave,Salvar
+buttonCleanForm,Limpar formulário
+msgBeforExiting1,Salvar e usar o parser
+msgBeforExiting2,Salvar e gerar XML
+msgBeforExiting3,Salvar e sair
+msgBeforExiting4,Sair sem salvar
+msgAutomaticStyles,Os elementos serão marcados de acordo com os estilos. Continuar?
+msgQuestionBibrXrefPattern,As referências bibliográficas no texto seguem o padrão autor ... data?
+timer,999999999
+msgDoOrRedoHyperlinksBetweenTextAndBibliography,"Refazer os links das referências?"
+msgFormXMLBody,"Verifique a identificação das partes no texto completo. Corrija se necessário, selecionando os itens da lista, escolhendo o rótulo que o identifica e clicando no botão Corrigir."
+buttonChange2,Corrigir
+msg_new_structure,"Para gerar arquivos XML, os arquivos marcados devem estar em markup_xml\scielo_markup e os outros arquivos em markup_xml\src"
+msg_ref_as_journal,O atributo reftype de ref será automaticamente preenchido com "journal". Ajuste o valor de reftype caso a referência não for de periódico.
+msg_help_doc_license,"URL de Licença Creative Commons, ex.: http://creativecommons.org/licenses/by/3.0/ "
+msg_help_doc_issueno,"Entre com o número do fascículo. Caso seja um artigo publicado em ahead of print, entre ahead neste campo"
+msg_help_doc_supplvol,"Quando há somente o volume e é um suplemento, entre com o rótulo do suplemento. Ex.: para Suplemento A, entrar com A, para Suplemento 1, entrar 1. Use 0 para identificar um suplemento que não tem um rótulo."
+msg_help_doc_supplno,"Quando há o número do fascículo e é um suplemento, entre com o rótulo do suplemento. Ex.: para Suplemento A, entrar com A, para Suplemento 1, entrar 1. Use 0 para identificar um suplemento que não tem um rótulo."
+msg_help_doc_idpart,"Quando há alguma identificação além de volume, número e suplementos, usa-se este campo para identificá-lo. Por exemplo, press release com o valor pr."
+msg_help_doc_order,"Incluir a ordem do artigo no sumário do fascículo. Deve ter, no mínimo, dois dígitos. Por exemplo, se o artigo for o primeiro do sumário, preencha este campo com 01 e assim por diante."
+msg_help_doc_season,"Entre o mês ou mês inicial barra final, em inglês (tres letras) e ponto, exceto para May, June e July. Ex.: May/June, July/Aug."
+msg_help_doc_dateiso,"Data de publicação formada por ano, mês e dia (YYYYMMDD). Preencher sempre com o último mês da periodicidade. Por exemplo, se o periódico é bimestral preencher 20140600. Use 00 para mês e dia nos casos em não haja sua identificação. Exemplo: 20140000."
+msg_help_doc_elocatid,"Quando não há a página do impresso, usar a página eletrônica"
+msg_help_doc_fpage_seq,"Obrigatório completar quando há um mesmo valor de primeira página (fpage) para mais de um documento, usando uma letra a, b, c, ..."
+msg_help_doc_ahpdate,"Obrigatório completar quando é um artigo ahead of print e quando este artigo foi um ahead of print, ou seja quando ele for incluido em um fascículo regular. Usar data em formato YYYYMMDD."
+msg_help_doc_ahppid,"Este campo é preenchido com o identificador do ahead of print. Esta informação será preenchida pela equipe SciELO"
+msg_help_doc_artdate,"Obrigatório completar com a data YYYYMMDD quando for um artigo rolling pass. Rolling pass é um modelo publicação onde o periódico publica seus artigos num volume único a medida em que estes ficam prontos."
+msg_mark_references,"Marque as referências antes de marcar o texto"
+msg_help_doc_sps,"Obrigatório completar com a versão de SPS."

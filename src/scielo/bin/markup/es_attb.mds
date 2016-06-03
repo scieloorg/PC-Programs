@@ -1,0 +1,184 @@
+ccode
+brazilian journal of chemical engineering;brazilian journal of genetics;brazilian journal of medical and biological research;brazilian journal of physics;Comisión Nacional de Investigación Científica y Tecnológica;dados - revista de ciências sociais;scielo/bireme;InfoMed;journal of the brazilian chemical society;journal of the brazilian computer society;memórias do instituto oswaldo cruz;revista brasileira de ciência do solo;revista brasileira de geociências;revista do instituto de medicina tropical de são paulo;revista de saúde pública
+bjce;bjg;bjmbr;bjp;conicyt;dados;br1.1;infomed;jbchs;jbcos;mioc;rbcs;rbgeo;rimtsp;rsp
+
+doctopic
+artículo original (research article);resumen (abstract);comentario (comments);informe de caso (case report);ensayos clínicos (clinical trials);editorial;material editorial (discusión, opinión, entrevista, ...);errata (corrections);carta (letter);press release (in brief);artículo de revisión (review article);reseña (book review);retractación o rectificación de lo qué fue anteriormente publicado (retraction);notas de investigación / resultados de pesquisa (brief report);comunicación breve (atualizaciones / novedades) (brief communication);informe técnico;otro
+oa;ab;co;cr;ct;ed;em;er;le;pr;ra;rc;re;rn;sc;tr;zz
+
+language
+Español;Inglés;Portugués;Africano;Alemán;Arabe;Búlgaro;Chino;Coreano;Dinamarqués;Eslovaco;Esperanto;Francés;Griego;Hebreo;Hindú;Holandés;Húngaro;Indonesio;Interlingua;Interlingue;Italiano;Japonés;Latín;Noruego;Polaco;Rumano;Ruso;Sánscrito;Servo-Croata;Slovenian;Sueco;Tcheco;Turco;Ucrano;Urdú;Otros;Gallego;Vasco;Catalán
+es;en;pt;af;de;ar;bg;zh;ko;da;sk;eo;fr;gr;he;hi;nl;hu;in;ia;ie;it;ja;la;no;pl;ro;ru;sa;sh;sn;sv;cs;tr;uk;ur;zz;gl;eu;ca
+
+illustrative material type
+sin material ilustrativo;figura;gráfico;mapa;tabla
+nd;ilus;gra;map;tab
+
+version
+3.1;4.0
+3.1;4.0
+
+toccode
+title;sectitle
+1;2
+
+role
+No definido;coordinador;inventor;editor;organizador;traductor
+nd;coord;inventor;ed;org;tr
+
+scheme
+Ningun Descriptor;Descriptores en Ciencia de la Salud
+nd;decs
+
+keyword priority level
+principal;secundaria
+m;s
+
+standard
+iso 690/87 - international standard organization;nbr 6023/89 - associação nacional de normas técnicas;other standard;the vancouver group - uniform requirements for manuscripts submitted to biomedical journals;American Psychological Association
+iso690;nbr6023;other;vancouv;apa
+
+id
+No definido
+nd
+
+rid
+No definido
+nd
+
+dateiso
+00000000
+00000000
+
+count
+0
+0
+
+pages
+0-0
+0-0
+
+from
+00000000
+00000000
+
+to
+00000000
+00000000
+
+sponsor
+No definido
+nd
+
+no
+0
+0
+
+orgname
+nd
+nd
+
+orgdiv1
+nd
+nd
+
+orgdiv2
+nd
+nd
+
+orgdiv3
+nd
+nd
+
+ctdbid
+CT - Clinicaltrials.gov;ACTR - Australian Clinical Trials Registry;ISRCTN - International Standard Randomised Controlled Trial Number Register;NTR - Nederlands Trial Register;UMIN - University Hospital Medical Information Network;ChiCTR - Chinese Clinical Trial Register
+CT;ACTR;ISRCTN;NTR;UMIN;ChiCTR
+
+country
+Andorra;Emiratos Arabes Unidos;Afganistán;Antigua;Albania;Antillas Neerlandesas;Angola;Antarctica;Argentina;Samoa Americana;Austria;Australia;Barbados;Bangladesh;Bélgica;Bulgaria;Bahrein;Burundi;Bermudas;Brunei;Bolivia;Brasil;Bahamas;Bután;Birmania;Isla Bouvet;Botswana;RSS de Bielorrusia;Bélice;Canadá;República Centroáfrica;Congo;Suiza;Costa de Marfil;Chile;Camerún;China;Colombia;Costa Rica;Checoslovaquia;Cuba;Islas de Cabo Verde;Chipre;Alemania, República Democrática;Alemania, República Federal;Dinamarca;República Dominicana;Argelia;Ecuador;Egipto;Sahara Occidental;España;Etiopía;Finlandia;Fiji; Islas Malvinas (Falkland);Francia;Gabón;Reino Unido;Guinea Ecuatorial;Granada;Guiana Francesa;Ghana;Gibraltar;Groenlandia;Guinea;Guadalupe;Grecia;Guatemala;Guam;Guinea Bissau;Guyana;Hong Kong;Honduras;Haití;Hungría;Alto Volta;Indonesia;Irlanda;Israel;India;Irak;Irán;Islandia;Italia;Jamaica;Jordania;Japón;Korea, Democratic People's;Kenia;Kampuchea Democrática;Islas Comoras;Corea, República Democrática Popular;Corea, República de;Kuwait;Islas Caimán;Laos;Líbano;Santa Lucía;Lao People's Democratic;Liechtenstein;Sri Lanka;Liberia;Lesotho;Luxemburgo;Libia;Marruecos;Mónaco;Madagascar;Islas Midway;Malí;Mongolia;Macao;Martinica;Mauritania;Montserrat;Malta;Mauricio;Maldivas;Malawi;México;Malasia;Mozambique;Namibia;Nueva Caledonia;Níger;Isla Norfolk;Nigeria;Nuevas Hébridas;Nicaragua;Países Bajos;Noruega;Nepal;Terra de Maud Dronning;Nauru;Isla Niue;Nueva Zelandia;Omán;Panamá;Islas del Pacífico (Territorio en fideicomiso);Perú;Polinesia Francesa;Papua Nueva Guinea;Filipinas;Pakistán;Polonia;S. Pedro y Miguelón;Islas Pitcairn;Puerto Rico;Portugal;Islas diversas del Pacífico (US);Paraguay;Qatar;Reunión;Rumania;Rwanda;Arabia Saudita;Islas Salomón Británico;Seychelles;Sudán;Suecia;Singapur;Santa Elena;Islas Svalbard y Jan Mayen;Sikkim;Sierra Leona;San Marino;Senegal;Somalía;Suriname;Sto. Tomé y Príncipe;URSS;El Salvador;Siria;Swazilandia;Islas Turcos y Caicos;Chad;Togo;Tailandia;Islas Tokelau;Túnez;Tonga;Turquía;Trinidad y Tobago;Taiwán;Tanzania, Rep. Unida;RSS de Ucrania;Uganda;United States Pacific;Estados Unidos;Uruguay;Ciudad del Vaticano;San Vicente;Venezuela;Islas Vírgenes Británicas;Vietnam;Vanuatu;Islas Wallis y Futuna;Isla Wake;Samoa Ocidental;Yemen Democrático;Yemen;Yugoslavia;Sudáfrica;Zambia;Zaire;Islas Cocos (Keeling);Islas Cook;Islas Canton y Enderbury;Isla de Navidad;Dominica;Islas Feroe;Islas Heard y Mc Donald;Isla Johnston;San Cristóbal-Nieves-Anguila;No definido
+AD;AE;AF;AG;AL;AN;AO;AQ;AR;AS;AT;AU;BB;BD;BE;BG;BH;BI;BM;BN;BO;BR;BS;BT;BU;BV;BW;BY;BZ;CA;CF;CG;CH;CI;CL;CM;CN;CO;CR;CS;CU;CV;CY;DD;DE;DK;DO;DZ;EC;EG;EH;ES;ET;FI;FJ;FK;FR;GA;GB;GC;GD;GF;GH;GI;GL;GN;GP;GR;GT;GU;GW;GY;HK;HN;HT;HU;HV;ID;IE;IL;IN;IQ;IR;IS;IT;JM;JO;JP;KD;KE;KH;KM;KP;KR;KW;KY;LA;LB;LC;LD;LI;LK;LR;LS;LU;LY;MA;MC;MG;MI;ML;MN;MO;MQ;MR;MS;MT;MU;MV;MW;MX;MY;MZ;NA;NC;NE;NF;NG;NH;NI;NL;NO;NP;NQ;NR;NU;NZ;OM;PA;PC;PE;PF;PG;PH;PK;PL;PM;PN;PR;PT;PU;PY;QA;RE;RO;RW;SA;SB;SC;SD;SE;SG;SH;SJ;SK;SL;SM;SN;SO;SR;ST;SU;SV;SY;SZ;TC;TD;TG;TH;TK;TN;TO;TR;TT;TW;TZ;UA;UG;UP;US;UY;VA;VC;VE;VG;VN;VU;WF;WK;WS;YD;YE;YU;ZA;ZM;ZR;CC;CK;CT;CX;DM;FO;HM;JT;KN;nd
+
+deposid
+Unicamp;Unifesp;Unesp;USP;ITA;UFSCar
+1;2;3;4;5;6
+
+entrdate
+
+
+
+embdate
+
+
+
+source
+
+
+
+reltype
+- choose one of the options below -;-- objects --;video;audio;table;figure;other object;-- sources --;book;chapter;database;article;press release;other source;-- related types --;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other related type
+unknown;unknown-object;vi;au;table;figure;other-object;unknown-source;book;chapter;database;article;pr;other-source;unknown-related-type;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other-related-type
+
+cturl
+
+
+
+ftype
+audiograma;cardiograma;cartoon;cuadro;estructura química;dendrograma;diagrama;dibujo;demostración (exihibit);gráfico;ilustración;mapa;imagen médica;otro;fotografía;fotomicrografía;lámina;polisomnograma;esquema;diagrama de flujo
+audiogram;cardiogram;cartoon;chart;chemical structure;dendrogram;diagram;drawing;exihibit;graphic;illustration;map;medical image;other;photo;photomicrograph;plate;polysomnogram;schema;workflow
+
+lictype
+acceso abierto;no definido
+open-access;nd
+
+href
+
+
+
+pubtype
+publicación electrónica;publicación impresa
+epub;ppub
+
+hcomment
+no se puede comentar;se puede comentar
+0;1
+
+filename
+
+
+
+ref-type
+afiliación;Apendice;Notas de autor;Referencia bibliográfica;Caja de texto o barra lateral;Contribución;Autor correspondiente;Fórmula;Figura;Nota de pie de página;Listado;Otro;Material suplementario;Tabla
+aff;app;author-notes;bibr;boxed-text;contrib;corresp;disp-formula;fig;fn;list;other;supplementary-material;table
+
+sec-type
+indefinido;Materiales y Metodologías;* Resultados y Discusión;* Resultados y Conclusiones;* Resultados, Discusión, Conclusiones;Informes de casos;Conclusiones o comentarios;Discusiones o interpretaciones;Introducción o sinopsis;Materiales;Métodos/Metodología/Procedimientos;Resultados/Declaración de descobiertas;Temas/Participantes/Pacientes;Materiales suplementares
+nd;materials|methods;results|discussion;results|conclusions;results|discussion|conclusions;cases;conclusions;discussion;intro;materials;methods;results;subjects;supplementary-material
+
+listtype
+Lista ordenada. Caracter del prefijo es un número o letra dependiendo del estilo;Lista no-ordenada. Caracter del prefijo es un caracter especial;Lista ordenada. Caracter del prefijo es un caracter alfabético en minúscula;Lista ordenada. Caracter del prefijo es un caracter alfabético en mayúscula;Lista ordenada. Caracter del prefijo es un numeral romano en caja baja;Lista ordenada. Caracter del prefijo es un numeral romano en caja alta;Lista simple (ningun prefijo)
+order;bullet;alpha-lower;alpha-upper;roman-lower;roman-upper;simple
+
+fntype
+Abreviaciones;Información de comunicado;Información de comunicación;Declaración de conflito de interese;Información de correspondencia;Afiliación vigente del autor;Persona se morrió desde la escritura del artículo;Autor ejerce el ról de editor;Contribución igualitaria en la creación del documento;Declaración o o negación de recibimiento de financiamiento en el apoyo de la investigación en la cual el artículo es basado;Autor ausente (sabático o otro);Otro tipo de nota;Otro tipo de nota relacionada ao autor;Autor fue un investigador para el artículo;Dirección vigente del autor;Presentado en evento;Presentador del material;Afiliación del autor anterior;Colaborador fue un miembro del grupo de estudio para la investigación;Indica o describe el material suplementar para el artículo;Investigación en la cual el artículo fue basado fue apoyado por alguna entidad. 
+abbr;com;con;conflict;corresp;current-aff;deceased;edited-by;equal;financial-disclosure;on-leave;other;author;participating-researchers;present-address;presented-at;presented-by;previously-at;study-group-members;supplementary-material;supported-by
+
+blcktype
+indefinido;Agradecimientos
+nd;ack
+
+corresp
+no;sí
+n;y
+
+eqcontr
+não informado;no;sí
+nd;n;y
+
+deceased
+no;sí
+n;y
+
+ctrbidtp
+ORCID
+ORCID
+

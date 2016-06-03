@@ -1,0 +1,212 @@
+abnt6023;Agrupa os elementos de bibliografia segundo a norma NBR 6023/89 da ABNT
+abstract;Identifica o resumo do artigo
+accepted;Identifica a data de aceitação do artigo
+acitat;Identifica uma referência bibliográfica
+acontrib;Agrupa elementos de contribuição
+ack;Agrupa os elementos de agradecimentos
+aff;Identifica a afiliação do autor
+afftrans;Identifica em subdoc a afiliação do autor
+aiserial;Agrupa elementos de série
+amonog;Agrupa os elementos de monografia
+anonym;Identifica autoria anônima
+apa;Agrupa os elementos de bibliografia segundo a norma APA
+app;Identifica um apêndice
+article;Identifica o artigo
+authgrp;Agrupa autores
+author;Agrupa elementos de autor individual
+back;Identifica a parte posterior ao corpo do texto
+bbibcom;Agrupa os elementos do back
+bibcom;Agrupa elementos do front
+body;Identifica o corpo do documento sem detalhes
+caption;Identifica uma legenda
+cited;Identifica a data em que o documento foi acessado
+city;Identifica uma cidade
+cltrial;Agrupa elementos de ensaios clínicos
+coltitle;Identifica o título de uma coleção
+colvolid;Identifica o volume de uma coleção
+confgrp;Agrupa os elementos de uma conferência
+confname;Identifica o nome da conferência
+contract;Identifica o número do projeto ou contrato fornecido pela instituição financiadora
+corpauth;Identifica autor corporativo
+country;Identifica o país
+ctreg;Identifica o número do registro do ensaio clínico
+date;Identifica a data relacionada ao contexto (publicação, conferência, registro de patente, etc)
+degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc
+deposit;Agrupa os elementos de um repositório
+doi;Identifica o DOI
+dperiod;Identifica o período de tempo tratado no conteúdo do documento
+edition;Identifica o número da edição
+elocatid;Identifica elocation-id
+email;Identifica o endereço eletrônico do autor
+equation;Agrupa elementos de equação
+et-al;Indica que há autores não mencionados
+extent;Identifica a extensão do documento
+figgrp;Agrupa os elementos de uma figura
+figgrps;Identifica figuras compostas (Fig 1A, 1B,...)
+fname;Identifica os primeiros nomes de um autor individual
+fngrp;Agrupa os elementos de uma nota de rodapé
+front;Identifica a parte anterior ao corpo do documento
+graphic;Identifica uma imagem
+hist;Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão)
+icitat;Identifica uma referência bibliográfica
+icontrib;Agrupa os elementos de contribuição
+ign;Texto ignorado pela marcação
+iiserial;Agrupa os elementos de uma série
+imonog;Agrupa os elementos de monografia
+inpress;Identifica que o documento está em processo de publicação
+isbn;Identifica o Internacional Standard Book Number (ISBN)
+isdesig;Identifica as datas principais de uma coleção como, por exemplo, a data inicial da coleção
+iso690;Agrupa os elementos de bibliografia segundo a norma ISO 690/87
+issn;Identifica o Internacional Standard Serial  Number (ISSN)
+isstitle;Identifica o título de um fascículo
+issueno;Identifica o número de um fascículo
+keygrp;Agrupa as palavras-chave
+keyword;Identifica uma palavra-chave
+label;Identifica um rótulo
+li;Identifica um item da lista
+license;Identifica o texto da licença
+licensep;Identifica um parágrafo da licença
+licenses;Agrupa os elementos de licença
+*list;Identifica automaticamente uma lista
+list;Identifica uma lista
+medium;Identifica o formato da mídia em que o documento está sendo publicado ou editado
+mmlmath;Idetifica Math (MathML 2.0 Tag Set)
+no;Identifica um número
+notes;Identifica notas
+oauthor;Agrupa os elemntos de autor individual
+ocitat;Identifica uma referência bibliográfica
+ocontrib;Agrupa os elementos de contribuição
+ocorpaut;Identifica uma autor corporativo
+oiserial;Agrupa os elementos de série
+omonog;Agrupa os elementos de monografia
+orgdiv;Identifica a divisão da instituição
+orgname;Identifica onde foi registrada a patente
+other;Agrupa os elementos de bibliografia que não seguem as normas adotadas
+othinfo;Agrupa os elementos que não estão identificados pelos demais elementos de uma referência
+p;Identifica parágrafo
+pages;Identifica a paginação
+part;Identifica a parte do volume ou fascículo
+patent;Identifica o número da patente
+patgrp;Agrupa os dados de patente
+pcitat;Identifica uma referência bibliográfica
+pcontrib;Agrupa os elementos de contribuição
+piserial;Agrupa os elementos de série
+pmonog;Agrupa os elementos de monografia
+previous;Identifica que o autor é o mesmo da referência anterior
+projname;Identifica o nome do projeto
+pubname;Identifica a editora
+received;Identifica a data em que o artigo foi recebido pelo processo de revisão por pares
+related;Identifica documentos relacionados
+report;Agrupa elementos de projeto
+revised;Identifica a data de revisão do artigo pelo processo de revisão por pares
+response;Agrupa os elementos de resposta relacionada ao artigo
+rsponsor;Identifica a instituição financiadora ou patrocinadora
+sciname;Identifica nomes científicos
+sec;Identifica uma seção
+sectitle;Identifica o título da subseção
+sertitle;Identifica o título de um periódico
+sponsor;Identifica a instituição financiadora ou patrocinadora
+state;Identifica um estado/região
+stitle;Identifica um título abreviado
+subart;Identifica o texto que é uma tradução do artigo ou um texto relacionado ao artigo
+subkey;Identifica o qualificador da palavras-chave
+subresp;Identifica as responsabilidades secundárias
+subsec;Identifica a sub-seção
+subtitle;Identifica um subtítulo
+suppl;Identifica um suplemento
+surname;Identifica o sobrenome de um autor individual
+tabwrap;Agrupa os elementos de uma tabela
+texmath;Tex Math Equation
+text;Identifica o texto
+thesgrp;Agrupa os elementos de uma dissertação ou tese acadêmica
+thesis;Agrupa os elementos de uma dissertação ou tese acadêmica
+title;Identifica o título
+titlegrp;Agrupa os títulos
+tome;Identifica o tomo
+tp;Identifica o tipo de publicação
+update;Identifica uma informação de atualização
+uri;Identifica um uri
+url;Identifica o endereço eletrônico do documento
+vancouv;Agrupa os elementos de bibliografia segundo a norma Vancouver
+vcitat;Identifica uma referência bibliográfica
+vcontrib;Agrupa os elementos de contribuição
+version;Identifica a versão
+viserial;Agrupa os elementos de série
+vmonog;Agrupa os elementos de monografia
+volid;Identifica o volume
+vstitle;Identifica o título abreviado na norma Vancouver
+vtitle;Agrupa os elementos de título na norma Vancouver
+xmlbody;Identifica o corpo do documento com detalhes
+xref;Identifica uma referência cruzada
+zipcode;Código de endereçamento postal
+glossary;Identifica um glossário
+deflist;Identifica uma lista de definições
+*deflist;Identifica automaticamente uma lista de definições
+defitem;Identifica um item da lista de definições
+term;Identifica um termo
+def;Identifica a definição do termo
+pubid;Identifica um id de qualquer tipo de base de dados externa, tal como DOI, pmid (PubMed), pmcid (PMC), etc
+onbehalf;Identifica a instituição que o autor representa. Example: John Smith on behalf of Instituition ABCD
+xmlabstr;Identifica um resumo com seções
+toctitle;Identifica o título da seção do sumário. Este item é obrigatório para a geração do XML.
+role;Identifica o papel do autor
+surname-fname;Identifica surname e fname de um autor (surname separador fname ou fname separador surname)
+fname-surname;Identifica fname e surname nesta ordem
+fname-spanish-surname;Identifica fname e surname espanhóis nesta ordem
+*oauthor;Identifica automaticamente apenas um oauthor
+*author;Identifica automaticamente apenas um author
+*sertitle;Identifica todos os títulos abreviados de periódico, a partir do texto selecionado.
+*stitle;Identifica todos os títulos do periódico, a partir do texto selecionado.
+kwdgrp;Agrupa as palavras chaves de um idioma
+*kwdgrp;Identifica automaticamente todas as palavras chaves
+kwd;Identifica una palabra clave
+funding;Agrupa os dados de um financiamento
+award;Agrupa número de contrato e fontes de financiamento
+fundsrc;Identifica a fonte de financiamento
+doctitle;Identifica o título do documento
+cc;Agrupa os dados da licença Creative Commons
+docresp;Agrupa os dados de resposta
+subdoc;Agrupa os dados dos sub-documentos
+doc;Agrupa os dados de um documento (geração de XML)
+refs;Group the references
+ref;Group the reference elements
+cauthor;Identify corporative author
+doctit;Identify the document title in a reference
+arttitle;Identifica o título do artigo em uma referência
+chptitle;Identifica o capítulo em uma referência
+*source;Identify automatically the document source (book title, journal title, etc)
+source;Identify the document source (book title, journal title, etc)
+reportid;Identify the number or name of the report
+letterto;Identify the recipient of the letter
+found-at;Identify the location of the letter
+patentno;Identify the number of the patent
+moreinfo;Identify any other information to which there is no tag to identify it. Use the descript attribute to describe the data
+*authors;Identifica automaticamente um grupo de autores da referência
+authors;Agrupa os autores da referência
+pauthor;Identify a (person) author
+*pauthor;Identify automatically a (person) author: surname and fname
+normaff;Identify normalized affiliation
+orgdiv1;Identify organization division 1
+orgdiv2;Identify organization division 2
+orgdiv3;Identify organization division 3
+text-ref;Identify the original form of the reference
+publoc;Identifica o local da editora
+*publoc-pubname;Identifica automaticamente o local e o nome da editora
+*pubname-publoc;Identifica automaticamente o nome da editora e de seu local
+*fn;Identifica automaticamente todos as notas de rodapé e seus links
+boxedtxt;Identifica uma caixa de texto
+*boxedtxt;Identifica automaticamente uma caixa de texto
+appgrp;Identifica um grupo de apêndices
+series;Identifica seriada
+versegrp;Identifica canção, poema, verso
+versline;Identifica líneas de canção, poema, verso
+attrib;Identifica informação relacionada com a origem de uma citação, poesia, ou similar.
+alttext;Identifica um texto alternativo para descrever uma imagem.
+alttitle;Identifica um título alternativo do documento
+element;Identifica quaisquer elementos de XML
+elemattr;Identifica quaisquer attributos de XML
+authorid;Identify um identificador único para o autor
+cpright;Agrupa declaração, ano e detentor dos direitos autorais
+cpdate;Identifica ano dos direitos autorais
+cpholder;Identifica o detentor dos direitos autorais
+licinfo;Identifica licença

@@ -1,4 +1,0 @@
-param,open
-param,winword.exe
-param,"/ld:\scielo-34\bin\markup\markup.prg"
-param,"C:\Program Files (x86)\Microsoft Office\Office12"
