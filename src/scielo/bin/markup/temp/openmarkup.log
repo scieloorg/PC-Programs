@@ -1,0 +1,4 @@
+path start=c:\arquivos de programas\microsoft office\office11\winword.exe
+f=winword.exe
+p=c:\arquivos de programas\microsoft office\office11\winword.exe
+ShellExecute open winword.exe /l\\tsclient\roberta\github.com\scieloorg\PC-Programs\src\scielo\bin\markup_xml\markup.prg c:\arquivos de programas\microsoft office\office11\winword.exe 1
