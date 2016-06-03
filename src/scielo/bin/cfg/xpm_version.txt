@@ -1,5 +1,13 @@
 ﻿4.0.091 - 11/04/2016
 ====================
+03/06/2016
+----------
+- XPM:
+  - (bug) Fix problem as identifying the xref ranges. It happened when there were xref in serveral levels of XML tree. (#2264)
+  - (bug) Fix unexpected error because of article-title that has @xml:lang and xref. 
+
+4.0.091 - 11/04/2016
+====================
 15/04/2016
 ----------
 - XPM
