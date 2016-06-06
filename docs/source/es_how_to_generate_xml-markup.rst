@@ -59,19 +59,19 @@ Para determinar el "ID" de un elemento, combine el prefijo del tipo de elemento 
 
 .. _dados-basicos:
 
-Datos Básicos
+Datos básicos
 =============
 
-Estando el archivo del documento formateado de acuerdo con las indicaciones del manual `Preparación de Archivos para el Programa Markup <es_how_to_generate_xml-prepara.html>`_ , abra el documento en el programa `Markup <markup.html>`_ y seleccione el elemento [doc]:
+Estando el archivo del documento formateado de acuerdo con las indicaciones del manual `Preparación de archivos para el Programa Markup <es_how_to_generate_xml-prepara.html>`_ , abra el documento en el programa `Markup <markup.html>`_ y seleccione el elemento [doc]:
 
 .. image:: img/doc-mkp-formulario.jpg
    :height: 400px
    :align: center
 
 
-Al hacer clic en [doc] el programa abrirá un formulario para ser completado con los datos básicos del artículo:
+Al hacer clic en [doc] el programa abrirá un formulario, complete los datos básicos del artículo:
 
-Seleccione la revista en el campo "collection/journal", el programa llenará algunos datos automáticamente como ISSNs, título abreviado, acrónimo, entre otros. Los demás datos deberán llenarse manualmente de acuerdo con las siguientes indicaciones:
+Localice la revista en el campo "collection/journal" y selecciónela, el programa llenará algunos datos automáticamente como ISSNs, título abreviado, acrónimo, entre otros. Los demás datos deberán llenarse manualmente de acuerdo con las siguientes indicaciones:
 
 
 +-------------------+-----------------------------------------------------------------------------------------------+
@@ -89,10 +89,10 @@ Seleccione la revista en el campo "collection/journal", el programa llenará alg
 | issueno           | Ingrese el número del fascículo. Cuando se trate de un artículo publicado en ahead of         |
 |                   | print, inserte ahead en este campo                                                            |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| supplno           | En caso de que sea un suplemento de fascículo incluya su parte o número                       |
-|                   | correspondiente. **Ejemplo: n.37, supl.A**, llene con **A** en este campo                     |
+| supplno           | Cuando se trate de un suplemento un suplemento de fascículo incluya su parte o número         |
+|                   | correspondiente. **Ejemplo: n.37, supl.A**, llene con **A** este campo                        |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| isidpart          | Úselo en casos de press release, incluya la sigla pr                                          |
+| isidpart          | Use este campo cuando se trate de un press release, incluya la sigla pr                       |
 +-------------------+-----------------------------------------------------------------------------------------------+
 | dateiso           | Fecha de publicación formada por año, mes y día **(YYYYMMDD)**. Llene siempre                 |
 |                   | con el último mes de la periodicidad. Por ejemplo, si la revista es bimensual                 |
@@ -129,7 +129,7 @@ Seleccione la revista en el campo "collection/journal", el programa llenará alg
 |                   | Rolling pass es un modelo publicación dónde la revista publica sus artículos en un volumen    |
 |                   | único conforme estos quedan listos                                                            |
 +-------------------+-----------------------------------------------------------------------------------------------+
-| ahpdate           | Indicar la fecha de publicación de un artículo publicado en ahead of print                    |
+| ahpdate           | Indique la fecha de publicación de un artículo publicado en ahead of print                    |
 +-------------------+-----------------------------------------------------------------------------------------------+
 
 
@@ -156,8 +156,7 @@ Al hacer clic en [Sí], el programa realizará la marcación automática de los 
    :align: center
 
 
-.. note:: Cuando el archivo no tenga el formato recomendado en "Preparación de Archivos para el Programa Markup", el programa 
-          no identificará correctamente los elementos.
+.. note:: Si el archivo no tiene el formato recomendado en "Preparación de Archivos para el Programa Markup", el programa no identificará correctamente los elementos.
 
 
 
@@ -185,16 +184,16 @@ Realice el mismo procedimiento para los demás títulos traducidos.
 Autores
 -------
 
-Algunos autores presentan más de una etiqueta al lado de su nombre, pero el programa solamente hace la marcación automática de una etiqueta. Entonces, es necesario seleccionar las demás etiquetas que se presenten y marcarlas con el elemento [xref].
+Algunos autores presentan más de una referencia al lado de su nombre, pero el programa solamente hace la marcación automática de una referencia. Entonces, es necesario seleccionar las demás referencias que se presenten y marcarlas con el elemento [xref].
 
 
 .. image:: img/doc-mkp-xref-label.jpg
    :height: 300px
    :align: center
 
-Por tratarse de una referencia cruzada (xref) de afiliación, el tipo de xref (ref-type) seleccionado fue "affiliation" y el rid (relacionado al ID) "aff3" para relacionar la etiqueta 3 con la afiliación correspondiente.
+Por tratarse de una referencia cruzada (xref) de afiliación, el tipo de xref (ref-type) seleccionado fue "affiliation" y el rid (relacionado al ID) "aff3" para relacionar la referencia 3 con la afiliación correspondiente.
 
-El programa Markup no hace marcación automática de la función del autor, entendiéndose como el cargo ejercido. Para marcarlo, es necesario seleccionar el dato que aparece al lado del nombre del autor, ir al nivel inferior del elemento [author] e identificar ese dato con el elemento [role].
+El programa Markup no realiza la marcación automática de la función del autor, entendiéndose función como el cargo ejercido. Para marcarlo, es necesario seleccionar el dato que aparece al lado del nombre del autor, ir al nivel inferior del elemento [author] y marcar ese dato con el elemento [role].
 
 .. image:: img/doc-mkp-role-author.jpg
    :height: 230px
@@ -206,7 +205,7 @@ El programa Markup no hace marcación automática de la función del autor, ente
    :align: center
 
 
-.. note:: El programa no identifica automáticamente símbolos o letras como etiqueta, por lo que deben marcarse manualmente, observando el tipo de referencia cruzada a ser incluida.
+.. note:: El programa no identifica automáticamente símbolos o letras como elemento [label], deben marcarse manualmente observando el tipo de referencia cruzada a ser incluida.
 
 
 .. raw:: html
@@ -219,26 +218,26 @@ El programa Markup no hace marcación automática de la función del autor, ente
 Sig-block
 =========
 
-Generalmente archivos Editoriales, Presentaciones etc. poseen al final del texto la asignatura del autor o editor.
-Para identificar la asignatura del autor, sea en imagen, sea en texto, es necesario seleccionar la asignatura e identificar con el elemento [sigblock]:
+Generalmente archivos Editoriales, Presentaciones etc. poseen al final del texto la firma del autor o editor.
+Para identificar la firma del autor, sea en imagen o en texto, es necesario seleccionar la firma y marcarla con el elemento [sigblock]:
 
 .. image:: img/mkp-sigblock-select.jpg
    :height: 200px
    :align: center
 
-Seleccione apenas la asignatura e identifique con el elemento [sig]:
+Seleccione sólo la firma y márquela con el elemento [sig]:
 
 .. image:: img/mkp-sigblock-sig.jpg
    :height: 180px
    :align: center
 
-Sigue el resultado de la identificación de asignatura del autor/editor:
+El resultado de la marcación de la firma del autor/editor será:
 
 .. image:: img/mkp-result-sigblock.jpg
    :height: 150px
    :align: center
 
-.. note:: Algunas asignaturas presentan al lado del nombre del autor su cargo o función. Para la identificación de [sig], no considerar la función.
+.. note:: Algunas firmas presentan al lado del nombre del autor su cargo o función. Para la identificación de [sig], no considerar la función.
 
 
 .. _onbehalf:
@@ -247,7 +246,7 @@ On Behalf
 =========
 
 El elemento [on-behalf] se utiliza cuando un autor ejerce el papel de representante de un grupo o de una institución. 
-Para identificar ese dato, verifique que la información del representante del grupo se encuentre en la misma línea del nombre del autor. Ejemplo:
+Para marcar este dato, verifique que la información del representante del grupo se encuentre en la misma línea del nombre del autor. Ejemplo:
 
 
     Fernando Augusto Proietti :sup:`2`  Interdisciplinary HTLV Research Group
@@ -260,7 +259,7 @@ El programa identificará el autor "Fernando Augusto Proietti" de la siguiente m
    :align: center
 
 
-Seleccione el nombre del grupo o institución e identifique con el elemento: [onbehalf]:
+Seleccione el nombre del grupo o institución y márquelo con el elemento: [onbehalf]:
 
 .. image:: img/mkp-tag-onbehalf.jpg
    :height: 150px
@@ -270,7 +269,7 @@ Seleccione el nombre del grupo o institución e identifique con el elemento: [on
 Contrib-ID
 ==========
 
-Los autores que presentan su registro en ORCID o en Lattes deben insertar el link de registro al lado de su nombre, justo después de la etiqueta del autor:
+Para los autores que presentan su registro en ORCID o en Lattes se debe incluir el link de registro al lado de su nombre, justo como se muestra en el ejemplo:
 
 .. image:: img/mkp-contrib-id.jpg
    :height: 230px
@@ -279,8 +278,8 @@ Los autores que presentan su registro en ORCID o en Lattes deben insertar el lin
 Al hacer la marcación con [doc] el programa identificará automáticamente todos los datos iniciales del documento, inclusive marcará el link de registro en [author].
 Aunque el programa incluya el link en el elemento [author], será necesario completar la marcación de ese dato.
 
-Para eso, vaya al nivel de [autor], seleccione el link del autor y haga clic en [author-id].
-En la ventana abierta por el programa, seleccione el tipo de registro del autor: lattes u ORCID y haga clic en [Continuar]
+Para hacerlo, vaya al nivel de [autor], seleccione el link del autor y haga clic en [author-id].
+En la ventana que abre el programa, seleccione el tipo de registro del autor: lattes u ORCID y haga clic en [Continuar]
 
 .. image:: img/mkp-marcando-id-contrib.jpg
    :height: 230px
@@ -293,10 +292,10 @@ En la ventana abierta por el programa, seleccione el tipo de registro del autor:
 Afiliaciones
 ------------
 
-El programa Markup hace la identificación del grupo de datos de cada afiliación con el elemento [normaff], la marcación detallada de las afiliaciones no se realiza automáticamente.
+El programa Markup hace la marcación del grupo de datos de cada afiliación con el elemento [normaff], la marcación detallada de las afiliaciones no se realiza automáticamente.
 Complete la marcación de las afiliaciones identificando: institución mayor [orgname], división 1 [orgdiv1], división 2 [orgdiv2], ciudad [city], estado [state] (los 4 últimos, si están presentes) y el país [country].
 
-Para hacer la identificación de los elementos arriba mencionados, vaya al nivel inferior del elemento [normaff] y haga la marcación detallada de cada afiliación.
+Para hacer la marcación de los elementos arriba mencionados, vaya al nivel inferior del elemento [normaff] y realice la marcación detallada de cada afiliación.
 
 
 .. image:: img/doc-mkp-detalhamento-aff.jpg
@@ -304,7 +303,7 @@ Para hacer la identificación de los elementos arriba mencionados, vaya al nivel
    :align: center
 
 
-En la secuencia, será necesario verificar si la institución marcada y su país poseen forma normalizada por SciELO. Para eso, seleccione el elemento [normaff] y haga clic en el ícono del "lápiz" para editar los atributos. El programa abrirá una ventana para consultar la normalización de los elementos que se indiquen en los campos en blanco.
+En la secuencia, será necesario verificar si la institución marcada y su país poseen forma normalizada por SciELO. Para eso, seleccione el elemento [normaff] y haga clic en el ícono del "lápiz" para editar sus atributos. El programa abrirá una ventana para consultar la normalización de los elementos que se indiquen en los campos en blanco.
 
 
 .. image:: img/doc-mkp-normalizacao-aff.jpg
@@ -313,7 +312,7 @@ En la secuencia, será necesario verificar si la institución marcada y su país
 
 
 
-En el campo "icountry" seleccione el país de la institución mayor (orgname), en seguida haga clic en "find" para buscar la institución normalizada. Al hacer ese procedimiento, el programa Markup consultará nuestra base de datos de instituciones normalizadas y verificará si la institución seleccionada se encuentra en la lista.
+En el campo "icountry" seleccione el país de la institución mayor (orgname), en seguida haga clic en "find" para buscar la institución normalizada. Al hacer este procedimiento, el programa Markup consultará la base de datos SciELO de instituciones normalizadas y verificará si la institución seleccionada se encuentra en la lista.
 
 
 .. image:: img/doc-mkp-normalizadas.jpg
@@ -328,7 +327,7 @@ En el campo "icountry" seleccione el país de la institución mayor (orgname), e
 
 
 
-.. note:: Realice la búsqueda de la institución con su nombre en el idioma de origen, excepto para lenguas no latinas, cuando la consulta deberá ser hecha en inglés. Cuando la institución no exista en la lista del Markup, seleccione el elemento "No match found" y haga clic en [OK].
+.. note:: Realice la búsqueda de la institución con su nombre en el idioma de origen, cuando se trate de lenguas no latinas la consulta deberá realizarse en inglés. Si la institución no existe en la lista del Markup, seleccione el elemento "No match found" y haga clic en [OK].
 
 
 .. _resumen:
@@ -336,12 +335,12 @@ En el campo "icountry" seleccione el país de la institución mayor (orgname), e
 Resúmenes
 =========
 
-Los resúmenes deben ser identificados manualmente. Para la marcación de resúmenes simples (sin secciones) y para los resúmenes estructurados (con secciones) utilice el elemento [xmlabstr]. En la marcación, seleccione el título del resumen y el texto, en seguida marque con el elemento [xmlabstr].
+Los resúmenes deben ser marcados manualmente. Para marcar resúmenes simples (sin secciones) y resúmenes estructurados (con secciones) utilice el elemento [xmlabstr]. En la marcación, seleccione el título del resumen y el texto, en seguida márquelo con el elemento [xmlabstr].
 
-Resumen sin Sección:
+Resumen sin sección:
 --------------------
 
-**seleccionando:** 
+**Seleccionando:**
 
 .. image:: img/doc-mkp-select-abstract-s.jpg
    :height: 350px
@@ -351,7 +350,7 @@ Resumen sin Sección:
 Cuando haga clic en [xmlabstr] el programa abrirá una ventana donde debe seleccionar el idioma del resumen marcado:
 
 
-**marcación:** 
+*Marcación:**
 
 .. image:: img/doc-mkp-idioma-resumo.jpg
    :height: 350px
@@ -368,19 +367,19 @@ Cuando haga clic en [xmlabstr] el programa abrirá una ventana donde debe selecc
 En resúmenes estructurados, el programa también marcará cada sección del resumen y sus respectivos párrafos.
 
 
-Resumen con Sección:
+Resumen con sección:
 --------------------
 
-Siga los mismos pasos descritos para resumen sin sección:
+Siga los mismos pasos descritos para los resúmenes sin sección:
 
 
-**seleccionando:** 
+**Seleccionando:**
 
 .. image:: img/doc-mkp-select-abstract.jpg
    :align: center
 
 
-**marcación:**
+**Marcación:**
 		  
 .. image:: img/doc-mkp-idioma-abstract.jpg
    :height: 400px
@@ -404,10 +403,10 @@ Keywords
 ========
 
 El programa Markup cuenta con dos elementos para la identificación de palabras-clave, [*kwdgrp] y [kwdgrp].
-El elemento [*kwdgrp], con asterisco, se usa para la marcación automática de cada palabra-clave y también del título. Para hacerlo, seleccione toda la información, incluyendo el título, e identifique los datos con el elemento [*kwdgrp].
+El elemento [*kwdgrp], con asterisco, se usa para la marcación automática de cada palabra-clave y también del título. Para hacerlo, seleccione toda la información, incluyendo el título y marque los datos con el elemento [*kwdgrp].
 
 
-Marcación Automática:
+Marcación automática:
 ---------------------
 
 **Seleccionando:**
@@ -434,10 +433,10 @@ En la ventana que abre el programa, seleccione el idioma de las palabras-clave m
 
 
 
-Marcación Manual:
+Marcación manual:
 -----------------
 
-Si el resultado de la marcación automática no es el esperado, puede marcar el grupo de palabras-clave manualmente. Seleccione el grupo de palabras-clave y marque con el elemento [kwdgrp].
+Si el resultado de la marcación automática no es el esperado, puede marcar el grupo de palabras-clave manualmente. Seleccione el grupo de palabras-clave y márquelas con el elemento [kwdgrp].
 
 
 **Marcación:**
@@ -448,7 +447,7 @@ Si el resultado de la marcación automática no es el esperado, puede marcar el 
 
 
 
-En seguida, haga la marcación de ítem por ítem. A continuación, seleccione el título de las palabras-clave e identifíquelo con el elemento [sectitle]:
+En seguida, realice la marcación ítem por ítem. A continuación, seleccione el título de las palabras-clave y márquelo con el elemento [sectitle]:
 
 .. image:: img/doc-mkp-sec-kwd.jpg
    :height: 300px
@@ -473,7 +472,7 @@ En la secuencia, seleccione palabra por palabra y márquela con el elemento [kwd
 History
 =======
 
-El elemento [hist] es utilizado para marcar el histórico del documento. Seleccione todos los datos históricos que presente el documento y marque con el elemento [hist]:
+El elemento [hist] es utilizado para marcar el histórico del documento. Seleccione todos los datos históricos que presente el documento y márquelos con el elemento [hist]:
 
 
 .. image:: img/doc-mkp-hist-select.jpg
@@ -482,14 +481,14 @@ El elemento [hist] es utilizado para marcar el histórico del documento. Selecci
 
 
 
-Seleccione la fecha de recibido y marque con el elemento [received]. Compruebe que la fecha ISO indicada en el campo dateiso es correcta, corrija si es necesario. La estructura de la fecha ISO esperada es: AÑO MES DÍA. 
+Seleccione la fecha de recibido y márquela con el elemento [received]. Compruebe que la fecha ISO indicada en el campo dateiso es correcta, corrija si es necesario. La estructura de la fecha ISO esperada es: AÑO MES DÍA.
 
 .. image:: img/doc-mkp-received.jpg
    :height: 350px
    :align: center
 
 
-Cuando exista la fecha de revisado, selecciónela y marque con el elemento [revised]. Haga lo mismo para la fecha de aceptado, seleccionando el elemento [accepted]. Verifique la fecha ISO indicada en el campo dateiso, corrija si es necesario.
+Cuando exista la fecha de revisado, selecciónela y márquela con el elemento [revised]. Haga lo mismo para la fecha de aceptado, seleccionando el elemento [accepted]. Verifique la fecha ISO indicada en el campo dateiso, corrija si es necesario.
 
 .. image:: img/doc-mkp-accepted.jpg
    :height: 350px
@@ -507,7 +506,7 @@ Cuando exista la fecha de revisado, selecciónela y marque con el elemento [revi
 Correspondencia
 ===============
 
-Los datos de correspondencia del autor se marcan con el elemento [corresp]. Este elemento posee un subnivel para identificar el e-mail del autor. Seleccione toda la información de correspondencia y marque con el elemento [corresp]. Se presentará una ventana para marcar el ID de correspondencia, en este caso debe ser "c" + el número de orden de la correspondencia.
+Los datos de correspondencia del autor se marcan con el elemento [corresp]. Este elemento posee un subnivel para marcar el e-mail del autor. Seleccione toda la información de correspondencia y marque con el elemento [corresp]. Se presentará una ventana para marcar el ID de correspondencia, en este caso debe ser "c" + el número de orden de la correspondencia.
 
 .. image:: img/doc-mkp-corresp-select.jpg
    :height: 300px
@@ -526,23 +525,23 @@ Seleccione el e-mail que corresponda al autor y marque con el elemento [email]. 
 
 .. _ensayo-clinico:
 
-Ensayo Clínico
+Ensayo clínico
 ==============
 
-Archivos que presentan información de ensayo clínico con número de registro, deben ser marcados con el elemento [cltrial]:
+Archivos que presentan información de ensayo clínico con número de registro, deben marcarse con el elemento [cltrial]:
 
 .. image:: img/doc-mkp-tag-cltrial.jpg
    :height: 150px
    :align: center
 
 
-En la ventana que abre el programa, llene el campo "cturl" con la URL de la base de datos donde el Ensayo fue indexado y el campo "ctdbid" seleccionando la base correspondiente:
+En la ventana que abre el programa, llene el campo "cturl" con la URL de la base de datos donde el Ensayo fue indexado y en el campo "ctdbid" seleccione la base correspondiente:
 
 .. image:: img/doc-mkp-clinicaltr.jpg
    :height: 300px
    :align: center
 
-Para encontrar la URL del ensayo clínico haga una búsqueda en internet por el número de registro. Llenar los atributos conforme al siguiente ejemplo:
+Para encontrar la URL del ensayo clínico haga una búsqueda en internet por el número de registro. Llene los atributos conforme al siguiente ejemplo:
 
 .. image:: img/doc-mkp-ensaio.jpg
    :height: 80px
@@ -583,11 +582,11 @@ El programa marcará todas las referencias seleccionadas con el elemento [ref]. 
 
 .. _tipos-de-referencias:
 
-Tipos de Referencias
+Tipos de referencias
 --------------------
 
-A partir de la marcación hecha, algunos tipos de referencia serán modificados automáticamente, sin intervención manual (ej.: tesis, conferencia, informe, patente y artículo de revista); en los demás casos, será necesario el cambio manual.
-Para modificar manualmente el tipo de referencia haga clic en el elemento [ref], en seguida otro clic en el ícono "lápiz", en "reftype" seleccione el tipo correcto.
+A partir de la marcación realizada, algunos tipos de referencia serán modificados automáticamente, sin intervención manual (ej.: tesis, conferencia, informe, patente y artículo de revista); en los demás casos, será necesario cambiarlo manualmente.
+Para modificar manualmente el tipo de referencia haga clic en el elemento [ref], en seguida otro clic en el ícono del "lápiz", en "reftype" seleccione el tipo correcto.
 
 .. image:: img/doc-mkp-edit-ref-type.jpg
    :height: 400px
@@ -600,21 +599,21 @@ Para modificar manualmente el tipo de referencia haga clic en el elemento [ref],
    :align: center
 
 
-Se recomienda editar "reftype" solamente **después** de marcar todos los elementos de la [ref], pues dependiendo de los elementos marcados el "reftype" será cambiado automáticamente por el programa Markup. 
+Se recomienda editar "reftype" solamente **después** de marcar todos los elementos de la [ref], ya que dependiendo de los elementos marcados el "reftype" será cambiado automáticamente por el programa Markup. 
 
-.. note:: Una referencia debe tener su tipología siempre basada en su contenido y nunca en su soporte. Por ejemplo, una ley representa un documento legal y el tipo de referencia es "legal-doc", independientemente de que esté publicado en un periódico o en un sitio web. Una referencia de artículo de una revista científica, aunque se haya publicado en un sitio web, posee el tipo "journal". 
-        Es importante entender estos aspectos en las referencias para poder interpretar su tipología y sus elementos. Ni toda referencia que posee un enlace es una "webpage", ni toda la referencia que posee un volumen es un "journal", los libros también pueden tener volúmenes.
+.. note:: Una referencia debe tener su tipología siempre basada en su contenido y nunca en su soporte. Por ejemplo, una ley representa un documento legal y el tipo de referencia es "legal-doc", independientemente de que esté publicado en un periódico o en un sitio web. Una referencia de artículo de una revista científica, aunque se haya publicado en un sitio web, es de tipo "journal". 
+        Es importante entender estos aspectos en las referencias para poder interpretar su tipología y sus elementos. Ni toda referencia que posee un enlace es una "webpage", ni toda referencia que posee un volumen es un "journal", los libros también pueden tener volúmenes.
 
 
-A continuación los tipos de referencia soportados por SciELO y la marcación de cada [ref].
+A continuación se describen los tipos de referencia soportados por SciELO y la marcación de cada [ref].
 
 
 .. _tese:
 
-Thesis
+thesis
 ^^^^^^
 
-Utilizada para referenciar monografías, tesis para obtención de un grado académico, tales como libre-docencia, doctorado, maestría etc. La seleción del elemento [thesgrp] determinará el cambio del tipo de referencia de [book] a [thesis]. Ej:
+Se usa para referenciar monografías, tesis para obtención de un grado académico, tales como libre-docencia, doctorado, maestría etc. La marcación con el elemento [thesgrp] determinará el cambio del tipo de referencia de [book] a [thesis]. Ej:
 
 
    *PINHEIRO, Fernanda Domingos. A defesa da liberdade: libertos e livres de cor nos tribunais do Antigo Regime portugues (Mariana e Lisboa, 1720-1819). Tese de doutorado, Departamento de História, Instituto de Filosofia e Ciencias Humanas, Universidade Estadual de Campinas, 2013*
@@ -632,9 +631,9 @@ Utilizada para referenciar monografías, tesis para obtención de un grado acad�
 
 .. _conferencia:
 
-Confproc
+confproc
 ^^^^^^^^
-Utilizada para referenciar documentos relacionados a eventos: actas, anales, convenciones y conferencias entre otros. Al marcar el elemento [confgrp] el programa cambiará el tipo de referencia a [confproc]. Ej.:
+Se usa para referenciar documentos relacionados a eventos: actas, anales, convenciones y conferencias entre otros. Al marcar el elemento [confgrp] el programa cambiará el tipo de referencia a [confproc]. Ej.:
 
 
    *FABRE, C. Interpretation of nominal compounds: combining domain-independent and domain-specific information. In: INTERNATIONAL CONFERENCE ON COMPUTATIONAL LINGUISTICS (COLING), 16, 1996, Stroudsburg. Proceedings... Stroudsburg: Association of Computational Linguistics, 1996. v.1, p.364-369.*
@@ -653,10 +652,10 @@ Utilizada para referenciar documentos relacionados a eventos: actas, anales, con
 
 .. _relatorio:
 
-Report
+report
 ^^^^^^
 
-Utilizada para referenciar informes técnicos, normalmente de autoría institucional. Al marcar el elemento [reportid] el programa cambiará el tipo de referencia a [report]. Ej.:
+Se usa para referenciar informes técnicos, normalmente de autoría institucional. Al marcar el elemento [reportid] el programa cambiará el tipo de referencia a [report]. Ej.:
 
 
    *AMES, A.; MACHADO, F.; RENNÓ, L. R. SAMUELS, D.; SMITH, A.E.; ZUCCO, C. The Brazilian Electoral Panel Studies (BEPS): Brazilian Public Opinion in the 2010 Presidential Elections. Technical Note No. IDB-TN-508, Inter-American Debelopment Bank, Department of Research and Chief Economist, 2013.*
@@ -671,10 +670,10 @@ Utilizada para referenciar informes técnicos, normalmente de autoría instituci
 
 .. _patente:
 
-Patent
+patent
 ^^^^^^
 
-Utilizada para referenciar patentes; la patente representa un título de propiedad que confiere a su titular el derecho de impedir que terceros exploten su creación. Ej.:
+Se usa para referenciar patentes; la patente representa un título de propiedad que confiere a su titular el derecho de impedir que terceros exploten su creación. Ej.:
 
 
    *SCHILLING, C.; DOS SANTOS, J. Method and Device for Linking at Least Two Adjoinig Work Pieces by Friction Welding, U.S. Patent WO/2001/036144, 2005.*
@@ -690,10 +689,10 @@ Utilizada para referenciar patentes; la patente representa un título de propied
 
 .. _libro:
 
-Book
+book
 ^^^^
 
-Utilizada para referenciar libros o parte de ellos (capítulos, tomos, series, etc), manuales, guías, catálogos, enciclopedias y diccionarios entre otros.
+Se usa para referenciar libros o parte de ellos (capítulos, tomos, series, etc), manuales, guías, catálogos, enciclopedias y diccionarios entre otros.
 Ej.: 
 
    *LORD, A. B. The singer of tales. 4th. Cambridge: Harvard University Press, 1981.*
@@ -712,10 +711,10 @@ Ej.:
 
 .. _libro-inpress:
 
-Book in press
-^^^^^^^^^^^^^
+Libro en impresión
+^^^^^^^^^^^^^^^^^^
 
-Libros terminados pero que todavía no se publican. Presentan la información "no prelo", "forthcomming" o "in press" normalmente al final de la referencia. En este caso, la marcación se realizará de la siguiente manera:
+Libros terminados pero que todavía no se publican presentan la información "en imprenta", "no prelo", "forthcomming" o "in press" normalmente al final de la referencia. En este caso, la marcación se realizará de la siguiente manera:
 
 
    *CIRENO, F.; LUBAMBO, C. Estratégia eleitoral e eleiciones para Câmara dos Deputados no Brasil en 2006, no prelo.*
@@ -731,8 +730,8 @@ Libros terminados pero que todavía no se publican. Presentan la información "n
 
 .. _capitulo-de-libro:
 
-Book Chapter
-^^^^^^^^^^^^
+Capitulo de libro
+^^^^^^^^^^^^^^^^^
 
 Capítulo de libro (título del capítulo y sus respectivos autores, si los tiene, seguido del título del libro y sus autores) numerado o no.
 
@@ -746,10 +745,10 @@ Capítulo de libro (título del capítulo y sus respectivos autores, si los tien
 
 .. _revista:
 
-Journal
+journal
 ^^^^^^^
 
-Utilizada para referenciar publicaciones seriadas científicas, como revistas, boletines y periódicos, editadas en unidades sucesivas, con designación numérica y/o cronológica y destinada a ser continuada indefinidamente. Al marcar [arttitle] el programa cambiará el tipo de referencia a [journal]. Ej.:
+Se usa para referenciar publicaciones seriadas científicas, como revistas, boletines y periódicos, editadas en unidades sucesivas, con designación numérica y/o cronológica y destinada a ser continuada indefinidamente. Al marcar [arttitle] el programa cambiará el tipo de referencia a [journal]. Ej.:
 
 
    *Cardinalli, I. (2011). A saúde e a doença mental segundo a fenombrenologia existencial. Revista da Associación Brasileira de Daseinsanalyse, São Paulo, 16, 98-114.*
@@ -771,10 +770,10 @@ En las referencias que siguen, su tipo deberá ser cambiado manualmente de [book
 
 .. _ley:
 
-Legal-doc
+legal-doc
 ^^^^^^^^^
 
-Utilizada para referenciar documentos jurídicos, incluye información sobre legislación y jurisprudencia. Ej.:
+Se usa para referenciar documentos jurídicos, incluye información sobre legislación y jurisprudencia. Ej.:
 
 
    *Brasil. Portaria en el 1169/GM en 15 de junho de 2004. Institui a Política Nacional de Atención Cardiovascular de Alta Complexidade, e dá outras providencias. Diário Oficial 2004; seción 1, n.115, p.57.*
@@ -786,10 +785,10 @@ Utilizada para referenciar documentos jurídicos, incluye información sobre leg
 
 .. _jornal:
 
-Newspaper
+newspaper
 ^^^^^^^^^
 
-Utilizada para referenciar publicaciones seriadas sin carácter científico, como revistas y periódicos. Ej.:
+Se usa para referenciar publicaciones seriadas sin carácter científico, como revistas y periódicos. Ej.:
 
 
    *TAVARES de ALMEIDA, M. H. "Mais do que meros rótulos". Artigo publicado no Jornal Folha de S. Paulo, en el día 25/02/2006, na coluna Opinião, p. A. 3.*
@@ -800,10 +799,10 @@ Utilizada para referenciar publicaciones seriadas sin carácter científico, com
 
 .. _base-de-dados:
 
-Database
+database
 ^^^^^^^^ 
 
-Utilizada para referenciar bases y bancos de datos. Ej.:
+Se usa para referenciar bases y bancos de datos. Ej.:
 
 
 	*IPEADATA. Disponivel em: http://www.ipeadata.gov.br.  Acesso em: 12 fev. 2010.*
@@ -819,10 +818,10 @@ Utilizada para referenciar bases y bancos de datos. Ej.:
 
 .. _software:
 
-Software
+software
 ^^^^^^^^
 
-Utilizada para referenciar un software, un programa de computadora. Ej.:
+Se usa para referenciar un software, un programa de computadora. Ej.:
 
 
 	*Nelson KN. Comprehensive body composition software [computer program on disk]. Release 1.0 for DOS. Champaign (IL): Human Kinetics, c1997. 1 computer disk: color, 3 1/2 in.*
@@ -838,10 +837,10 @@ Utilizada para referenciar un software, un programa de computadora. Ej.:
 
 .. _web:
 
-Webpage
+webpage
 ^^^^^^^
 
-Utilizada para referenciar, páginas web o información contenida en blogs, twiter, facebook y listas de discusión entre otros. 
+Se usa para referenciar, páginas web o información contenida en blogs, twiter, facebook y listas de discusión entre otros.
 
 **Ejemplo 1**
 
@@ -866,10 +865,10 @@ Utilizada para referenciar, páginas web o información contenida en blogs, twit
 
 .. _otro:
 
-Other
+other
 ^^^^^
 
-Utilizada para referenciar tipos no previstos por SciELO. Ej.:
+Se usa para referenciar tipos no previstos por SciELO. Ej.:
 
 
    *INAC. Grupo Nacional de Canto e Dança da República Popular de Moçambique. Maputo, [s.d.].*
@@ -888,7 +887,7 @@ Utilizada para referenciar tipos no previstos por SciELO. Ej.:
 "Previous" en referencias
 =========================
 
-Hay normas que permiten que las obras que referencian la misma autoría repetidamente, sean sustituidas por un guión bajo repetido seis posiciones continuas. Ex.:
+Hay normas que permiten que las obras que referencian la misma autoría repetidamente, sean sustituidas por una linea de seis guiones bajos continuos. Ej.:
 
 
 *______. Another one bites the dust: Merck cans hep C fighter Victrelis as new meds take flight [Internet]. Washington: FiercePharma; 2015.*
@@ -899,13 +898,13 @@ Al hacer la marcación de [refs] el programa duplicará la referencia con previo
 
 .. note:: En referencias que presentan el elemento [text-ref], la información que se marca debe ser la que está después del [/text-ref]. Nunca hacer la marcación de la referencia que está entre [text-ref] y [/text-ref].
 
-Para la identificación de referencias con ese tipo de dato, seleccione los guiones e identifique con el elemento [*authors] con asterisco. El programa recuperará el nombre del autor previamente marcado y hará la identificación automática del grupo de autores, identificando el apellido y el primer nombre.
+Para la identificación de referencias con ese tipo de dato, seleccione los guiones e identifique con el elemento [*authors] con asterisco. El programa recuperará el nombre del autor previamente marcado y hará la marcación automática del grupo de autores, marcando el apellido y el primer nombre.
 
 
 
 .. _automata:
 
-Marcación Automática
+Marcación automática
 --------------------
 
 El programa Markup dispone de una funcionalidad que optimiza el proceso de marcación de las referencias bibliográficas que siguen la norma Vancouver. Cuando se hayan hecho adaptaciones a la norma, el programa no hará la marcación correctamente.
@@ -929,10 +928,10 @@ Observe que todas las referencias fueron marcadas automáticamente y de forma de
    :align: center
 
 
-Aunque el programa marca automáticamente las referencias, será necesario revisar cuidadosamente referencia por referencia para verificar si se marcaron todos los elementos de la referencia y si se hizo correctamente.
+Aunque el programa marca automáticamente las referencias, será necesario revisar cuidadosamente referencia por referencia para verificar si se marcaron todos los elementos de la referencia correctamente.
 Si se requiere alguna corrección, ingrese en el nivel de [ref] en "Barras de Herramientas Personalizadas" y realice las correcciones necesarias y/o complete las marcaciones faltantes.
 
-.. note:: El uso de la marcación automática en referencias solo es posible cuando las referencias bibliográficas estén de acuerdo con la norma Vancouver, siguiéndola literalmente. 
+.. note:: El uso de la marcación automática en referencias sólo es posible cuando las referencias bibliográficas estén de acuerdo con la norma Vancouver, siguiéndola literalmente. 
           Para las demás normas esta funcionalidad no está disponible.
 
 
@@ -941,7 +940,7 @@ Si se requiere alguna corrección, ingrese en el nivel de [ref] en "Barras de He
 
 Referencia numérica
 -------------------
-Algunas revistas presentan referencias bibliográficas numeradas, las cuales son referenciadas así en el cuerpo del texto. El número correspondiente a la referencia tambiém debe ser marcado.
+Algunas revistas presentan referencias bibliográficas numeradas, las cuales son referenciadas así en el cuerpo del texto. El número correspondiente a la referencia también debe ser marcado.
 Después de la marcación del grupo de referencias, baje un nivel en [ref], seleccione el número de la referencia y marque con el elemento [label]:
 
 .. image:: img/label-ref-num.jpg
@@ -953,19 +952,19 @@ Después de la marcación del grupo de referencias, baje un nivel en [ref], sele
 
 .. _nota-de-pie:
 
-Notas al Pie
+Notas al pie
 ============
 
-Las notas al pie pueden aparecer antes del cuerpo del texto o después. No hay una posición fija dentro del archivo .doc. En cualquier caso, es necesario evaluar la nota indicada, pues dependiendo del tipo de nota que se seleccione en fn-type, el programa genera el archivo .xml con información de notas de autores en ``<front>`` o en ``<back>``. Para más información acerca de los tipos de nota consulte la documentación de SPS en <http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.2-branch/tagset.html#notas-de-autor> y<http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.2-branch/tagset.html#notas-gerais>.
+Las notas al pie pueden aparecer antes del cuerpo del texto o después. No hay una posición fija dentro del archivo .doc. En cualquier caso, es necesario evaluar la nota, ya que dependiendo del tipo de nota que se seleccione en fn-type, el programa genera el archivo .xml con información de notas de autores en ``<front>`` o en ``<back>``. Para más información acerca de los tipos de nota consulte la documentación de SPS en <http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.2-branch/tagset.html#notas-de-autor> y<http://docs.scielo.org/projects/scielo-publishing-schema/es_BR/1.2-branch/tagset.html#notas-gerais>.
 
-Seleccione la nota y marque con el elemento [fngrp].
+Seleccione la nota y márquela con el elemento [fngrp].
 
 .. image:: img/doc-mkp-select-fn-contri.jpg
    :height: 350px
    :align: center
 
 
-Cuando la nota presente un título o un símbolo, seleccione la información y marque con el elemento [label]:
+Cuando la nota presente un título o un símbolo, seleccione la información y márquela con el elemento [label]:
 
 .. image:: img/doc-mkp-fn-label-con.jpg
    :height: 200px
@@ -994,7 +993,7 @@ Para notas al pie que presentan soporte de entidades, institución o persona fí
 Soporte con datos de financiamiento
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Para notas al pie que presentan datos de financiamiento con número de contrato, seleccione nota del tipo "Declaración o negación de recibimiento de financiamiento en apoyo a la investigación en la que el artículo es basado". En ese caso, será preciso marcar los datos de financiamiento con el elemento [funding]:
+Para notas al pie que presentan datos de financiamiento con número de contrato, seleccione nota del tipo "Declaración o o negación de recibimiento de financiamiento en el apoyo de la investigación en la cual el artículo es basado". En ese caso, será preciso marcar los datos de financiamiento con el elemento [funding]:
 
 .. image:: img/doc-mkp-select-fn-fdiscl.jpg
    :height: 300px
@@ -1008,14 +1007,14 @@ El siguiente paso es seleccionar el primer grupo de institución financiadora + 
    :align: center
 
 
-A continuación, seleccione la institución financiadora y marque con el elemento [fundsrc]:
+A continuación, seleccione la institución financiadora y márquela con el elemento [fundsrc]:
 
 .. image:: img/doc-mkp-fund-source-fn.jpg
    :height: 200px
    :align: center
 
 
-Seleccione cada número de contrato y marque con el elemento [contract]:
+Seleccione cada número de contrato y márquelo con el elemento [contract]:
 
 .. image:: img/doc-mkp-contract-fn.jpg
    :height: 300px
@@ -1039,7 +1038,7 @@ Si la nota al pie presenta más de una institución financiadora y número de co
 Identificación automática de notas al pie
 =========================================
 
-Para notas al pie que están posicionadas al final de cada página en el documento, con formateo de notas al pie de Word, es posible hacer la marcación automática del número referenciado en el documento y su nota respectiva.
+Para notas al pie que están posicionadas al final de cada página en el documento, con el formato de notas al pie de Word, es posible hacer la marcación automática del número referenciado en el documento y su nota respectiva.
 
 Las llamadas de nota al pie en el cuerpo del texto deberán tener un formateo simple: formato numérico y superíndice.
 Las notas deberán estar en formato de nota al pie de Word con un espacio antes de la nota.
@@ -1124,7 +1123,7 @@ Para apéndices que presentan párrafos, seleccione el título del apéndice y m
    :align: center
 
 
-A continuación, seleccione el párrafo y marque con el elemento [p]
+A continuación, seleccione el párrafo y márquelo con el elemento [p]
 
 .. image:: img/doc-mkp-sectitle-app-paragrafo2.jpg
    :height: 300px
@@ -1190,7 +1189,7 @@ Marque el número de contracto con el elemento [contract]:
    :height: 200px
    :align: center
 
-Cuando haya más de una institución financiadora y número de contrato, marque como se muestra a continuación:
+Cuando haya más de una institución financiadora y número de contrato, márquelas como se muestra a continuación:
 
 .. image:: img/doc-mkp-ack-finaliz.jpg
    :height: 230px
@@ -1207,13 +1206,13 @@ Cuando haya más de una institución financiadora y número de contrato, marque 
 Glosario
 ========
 
-Los glosarios son incluidos en los documentos después de las referencias bibliográficas, en apéndices o cajas de texto. Para marcarlo, seleccione todos los ítems que lo componen y marque con el elemento [glossary]. Seleccione todos los ítems nuevamente y marque con el elemento :ref:`lista-definición`. Sigue ejemplo de marcación de glosario presente después de las referencias bibliográficas:
+Los glosarios son incluidos en los documentos después de las referencias bibliográficas, en apéndices o cajas de texto. Para marcarlo, seleccione todos los ítems que lo componen y márquelos con el elemento [glossary]. Seleccione todos los ítems nuevamente y márquelos con el elemento :ref:`lista-definición`. El siguiente es un ejemplo de marcación de un glosario localizado después de las referencias bibliográficas:
 
 .. image:: img/doc-mkp-glossary-.jpg
    :height: 200px
    :align: center
 
-Seleccione todos los datos de glosario y marque con el elemento :ref:`lista-definición`:
+Seleccione todos los datos del glosario y márquelos con el elemento :ref:`lista-definición`:
 
 .. image:: img/doc-mkp-select-gdef.jpg
    :height: 200px
@@ -1235,7 +1234,7 @@ xmlbody
 
 Con el cuerpo del texto formateado de acuerdo con las instrucciones de `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ y después de haber realizado la marcación de referencias bibliográficas, es posible iniciar con la marcación de [xmlbody].
 
-Seleccione todo el cuerpo del texto y de clic en el botón [xmlbody], verificar las secciones, subsecciones, citas, etc. presentadas en la ventana que abre el programa, y si es necesario corrija y de clic en "Aplicar".
+Seleccione todo el cuerpo del texto y haga clic en el botón [xmlbody], verifique las secciones, subsecciones, citas, etc. presentadas en la ventana que abre el programa, y si es necesario corrija y haga clic en "Aplicar".
 
 .. image:: img/doc-mkp-select-xmlbody.jpg
    :height: 300px
@@ -1247,10 +1246,10 @@ Seleccione todo el cuerpo del texto y de clic en el botón [xmlbody], verificar 
    :width: 350px
    :align: center
 
-.. note:: En caso que alguna información sea incorrecta, seleccione el ítem a ser corregido en la ventana, seleccione la opción correcta en el menú desplegable al lado del botón "Corregir", de clic en "Corregir". Verifique nuevamente  y de clic en "Aplicar".
+.. note:: En caso que alguna información sea incorrecta, seleccione el ítem a ser corregido en la ventana, seleccione la opción correcta en el menú desplegable al lado del botón "Corregir", haga clic en "Corregir". Verifique nuevamente  y haga clic en "Aplicar".
 
 
-Al dar clic en "Aplicar" el programa preguntará si las referencias en el cuerpo del texto se ajustan al patrón de citación autor-fecha. Si el documento presenta este patrón, de clic en [Sí], en caso contrario de clic en [No].
+Al dar clic en "Aplicar" el programa preguntará si las referencias en el cuerpo del texto se ajustan al patrón de citación autor-fecha. Si el documento presenta este patrón, haga clic en [Sí], en caso contrario haga clic en [No].
 
 
 .. image:: img/doc-mkp-refs-padrao.jpg
@@ -1270,7 +1269,7 @@ Al dar clic en "Aplicar" el programa preguntará si las referencias en el cuerpo
    :align: center
 
 
-Es a partir del documento formateado de acuerdo con las instrucciones de `Preaparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ que el programa marca automáticamente secciones, subsecciones, párrafos, referencias de autores en el cuerpo del texto, llamadas a figuras y tablas, ecuaciones en línea etc.
+Es a partir del documento formateado de acuerdo con las instrucciones de `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ que el programa marca automáticamente secciones, subsecciones, párrafos, referencias de autores en el cuerpo del texto, llamadas a figuras y tablas, ecuaciones en línea etc.
 
 .. image:: img/doc-mkp-complete.jpg
    :height: 300px
@@ -1295,7 +1294,7 @@ Después de la marcación automática de [xmlbody], cerciórese que los tipos de
 .. image:: img/doc-mkp-section-combinada.jpg
    :align: center
 
-En algunos casos, la marcación automática no identifica la sección correctamente. En esos casos, seleccione la sección, de clic en el lápiz "Editar Atributos" e indique el tipo correcto de sección.
+En algunos casos, la marcación automática no identifica la sección correctamente. En esos casos, seleccione la sección, haga clic en el ícono del "lápiz" "Editar Atributos" e indique el tipo correcto de sección.
 
 .. image:: img/doc-mkp-sec-compost.jpg
    :height: 250px
@@ -1322,7 +1321,7 @@ En algunos casos, la marcación automática no identifica la sección correctame
 Referencia cruzada de referencias bibliográficas
 ------------------------------------------------
 
-Las referencias con el patrón autor-fecha serán identificados automáticamente en el cuerpo del texto sólo si el apellido del autor y la fecha están marcados en las *referencias bibliográficas*, y sólo si el apellido del autor está presente en el cuerpo del texto igual al que fue marcado en [refs].
+Las referencias con el patrón autor-fecha serán identificadas automáticamente en el cuerpo del texto sólo si el apellido del autor y la fecha están marcados en las *referencias bibliográficas*, y sólo si el apellido del autor está presente en el cuerpo del texto igual al que fue marcado en [refs].
 En algunos casos que el programa Markup no realizará la marcación automática de [xref] en el documento. Ej.:
 
 **Citas de autor**
@@ -1348,7 +1347,7 @@ Para identificar el [xref] de las citas que no fueron marcadas automáticamente,
    :align: center
 
 
-Llene sólo los campos "ref-type" y "rid". En "ref-type", seleccione el tipo de referencia cruzada que corresponda, en este caso "Referencia bibliográfica", enseguida indique el ID correspondiente a la referencia bibliográfica citada. Verifique y de clic en [Continuar].
+Llene sólo los campos "ref-type" y "rid". En "ref-type", seleccione el tipo de referencia cruzada que corresponda, en este caso "Referencia bibliográfica", enseguida indique el ID correspondiente a la referencia bibliográfica citada. Verifique y haga clic en [Continuar].
 
 .. image:: img/doc-mkp-xref-manual-refs.jpg
    :height: 180px
@@ -1359,7 +1358,7 @@ Llene sólo los campos "ref-type" y "rid". En "ref-type", seleccione el tipo de 
 
 **Llamadas de cuadros, ecuaciones y cajas de texto:**
 
-La marcación de las referencias cruzadas en cuadros, ecuaciones y cajas de texto sigue las mismas etapas descritas en las referencias bibliográficas.
+La marcación de las referencias cruzadas en cuadros, ecuaciones y cajas de texto sigue el mismo procedimiento descrito en las referencias bibliográficas.
 
 
 **Cuadro:**
@@ -1484,7 +1483,7 @@ Cerciórese que el ID de la figura es único en el documento.
 
 
 
-.. note:: La marcación de label y caption será automática si el formato conforme con las instrucciones dadas en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_, con label y caption debajo de la imagen en el archivo .doc. La información de fuente debe estar arriba de la imagen.
+.. note:: La marcación de label y caption será automática si el formato está de acuerdo con las instrucciones dadas en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_, con label y caption debajo de la imagen en el archivo .doc. La información de fuente debe estar arriba de la imagen.
 
 
 .. _tabla:
@@ -1550,7 +1549,7 @@ Cerciórese que el ID de la tabla es único en el documento.
    :align: center
 
 
-.. note:: Las tablas irregulares, con celdas combinadas o de gran tamaño posiblemente presenten problemas de marcación. En ese caso algunos elementos deberán ser identificados manualmente por medio del programa Markup o en el XML cuando se haya generado.
+.. note:: Las tablas irregulares, con celdas combinadas o de gran tamaño posiblemente presenten problemas de marcación. En ese caso algunos elementos deberán ser identificados manualmente por medio del programa Markup o editando directamente el XML cuando se haya generado.
 
 
 .. _ecuación:
@@ -1568,7 +1567,7 @@ Las ecuaciones en línea deben ser insertadas en el párrafo como imagen. La mar
    :height: 200px
    :align: center
 
-Si el programa no hiciera la marcación automática de la ecuación en línea, es posible hacer la marcación manualmente. Para ello seleccione la ecuación en línea y márquela en el elemento [graphic].
+Si el programa no hiciera la marcación automática de la ecuación en línea, es posible hacer la marcación manualmente. Para ello seleccione la ecuación en línea y márquela con el elemento [graphic].
 
 .. image:: img/doc-mkp=eqline-man.jpg
    :height: 250px
@@ -1647,7 +1646,7 @@ Para identificar versos o poemas en el cuerpo del texto, seleccione toda la info
    :height: 150px
    :align: center
 
-El programa identificará cada línea como [verseline]. En caso que el poema presente título, elimine la marcación de [verseline], seleccione el título y márquelo con el elemento [label]. La autoría del poema debe ser marcada con el elemento [attrib].
+El programa identificará cada línea como [verseline]. En caso de que el poema presente título, elimine la marcación de [verseline], seleccione el título y márquelo con el elemento [label]. La autoría del poema debe ser marcada con el elemento [attrib].
 
 .. image:: img/doc-mkp-versee.jpg
    :height: 150px
@@ -1669,7 +1668,7 @@ El programa identificará cada línea como [verseline]. En caso que el poema pre
 Citas textuales
 ---------------
 
-Las citas son marcadas automáticamente en el cuerpo del texto, al realizar la marcación de [xmlbody], siempre que estén con el formateo adecuado.
+Las citas son marcadas automáticamente en el cuerpo del texto, al realizar la marcación de [xmlbody], siempre que estén con el formato adecuado.
 
 .. image:: img/mkp-doc-quoteok.jpg
    :height: 200px
@@ -1994,7 +1993,7 @@ Realice la marcación de la traducción del documento, con los elementos en nive
 Afiliación traducida
 ^^^^^^^^^^^^^^^^^^^^
 
-La marcación de una afiliación traducida es diferente de a la marcación del documento en el idioma principal.
+La marcación de una afiliación traducida es diferente a la marcación del documento en el idioma principal.
 Las afiliaciones traducidas no deben presentar datos detallados. 
 Seleccione la afiliación traducida y márquela con el elemento [afftrans] del nivel [subdoc]:
 
@@ -2002,7 +2001,7 @@ Seleccione la afiliación traducida y márquela con el elemento [afftrans] del n
    :height: 300px
    :align: center
 
-Después haber marcado de los datos iniciales de la traducción, continué con la marcación del cuerpo del texto.
+Después de haber marcado los datos iniciales de la traducción, continue con la marcación del cuerpo del texto.
 
 
 .. attention:: El ID de los autores y afiliaciones deben ser únicos. Por lo tanto, no debe poner el mismo ID del idioma principal.
@@ -2013,7 +2012,7 @@ Marcando 'body' de la traducción
 
 La marcación del cuerpo del texto sigue la mismas instrucciones anteriores. Seleccione todo el cuerpo del texto y márquelo con el elemento [xmlbody] del nivel [subdoc]. 
 
-El programa realizara la marcación automática de las referencias cruzadas en el cuerpo del texto agregando el 'rid" correspondiente al 'id' de las referencias bibliográficas marcadas en el documento principal.
+El programa realizará la marcación automática de las referencias cruzadas en el cuerpo del texto agregando el 'rid" correspondiente al 'id' de las referencias bibliográficas marcadas en el documento principal.
 
 .. image:: img/mkp-body-trans.jpg
    :height: 300px
@@ -2057,7 +2056,7 @@ La carta y su respuesta también deben estar en un único archivo .doc o .docx.
 1. La carta debe seguir el formato indicado en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_
 2. Después de la última información de la carta y dentro del mismo .doc o .docx, agregue la respuesta del documento.
 
-La respuesta debe estar en el mismo documento que la carta. A continuación se muestran cuales son los datos que deben estar presentes en la respuesta:
+La respuesta debe estar en el mismo documento que la carta. A continuación se muestran los datos que deben estar presentes en la respuesta:
 
 1. Agregar sección
 2. Autores y afiliaciones si existen
@@ -2074,8 +2073,8 @@ Observe el siguiente ejemplo:
 Marcando carta y respuesta
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Con el archivo formateado, marque el documento con el elemento [doc] y complete la información. Obs.: En [doctopic] seleccione el tipo "carta". 
-La marcación de la carta no cambia, siga las instrucciones anteriores para la marcación de los elementos.
+Con el archivo formateado, marque el documento con el elemento [doc] y complete la información.
+Obs.: En [doctopic] seleccione el tipo "carta". La marcación de la carta no cambia, siga las instrucciones anteriores para la marcación de los elementos.
 
 .. image:: img/mkp-formulario-carta.jpg
    :height: 450px
@@ -2084,7 +2083,7 @@ La marcación de la carta no cambia, siga las instrucciones anteriores para la m
 .. note:: Es fundamental que el último elemento del documento completo sea el elemento [/doc].
 
 
-Una vez finalizada la marcación de la carta, seleccione toda el contenido de la respuesta y márquelo con el elemento [subdoc].
+Una vez finalizada la marcación de la carta, seleccione todo el contenido de la respuesta y márquelo con el elemento [subdoc].
 En la ventana que abre el programa, llene los siguientes campos: 
 
 * id       - Identificador único del documento: S + nº secuencial
@@ -2102,7 +2101,7 @@ Realice la marcación de la respuesta del documento, con los elementos en nivel 
    :align: center
 
 
-.. note:: Los datos como: afiliaciones y autores, objetos en el cuerpo del texto y referencias bibliográficas deben presentar IDs secuenciales, siguiendo el orden de la carta. Ejemplo, si la última afiliación de la carta fue "aff3", en el documento de la respuesta la primer afiliación será "aff4" etc.
+.. note:: Los datos como: afiliaciones y autores, objetos en el cuerpo del texto y referencias bibliográficas deben presentar IDs secuenciales, siguiendo el orden de la carta. Ejemplo, si la última afiliación de la carta fue "aff3", en el documento de la respuesta la primera afiliación será "aff4" etc.
 
 
 .. _errata:
@@ -2128,14 +2127,13 @@ Marcando la errata
 
 Abra la errata en el programa Markup y márquela con el elemento [doc].
 Al abrir el formulario, seleccione el título de la revista y verifique los metadatos que son llenados de forma automática.
-Complete los demás campos, y en el campo [doctopic] seleccione "errata" y de clic en [OK]
-El programa marcará automáticamente los elementos básicos de la errata como: sección, número DOI y título:
+Complete los demás campos, y en el campo [doctopic] seleccione "errata" y haga clic en [OK]. El programa marcará automáticamente los elementos básicos de la errata como: sección, número DOI y título:
 
 .. image:: img/mkp-formulario-errata.jpg
    :height: 350px
    :align: center
 
-Para finalizar la marcación de la errata, verifique que todos los elementos fueron identificados correctamente y continué con la marcación.
+Para finalizar la marcación de la errata, verifique que todos los elementos fueron identificados correctamente y continue con la marcación.
 Seleccione el cuerpo del texto y márquelo con el elemento [xmlbody]:
 
 .. image:: img/mkp-xmlbody-errata.jpg
@@ -2143,8 +2141,8 @@ Seleccione el cuerpo del texto y márquelo con el elemento [xmlbody]:
    :align: center
 
 
-Ponga el cursor del mouse antes del elemento [toctitle],  y de un clic en [related].
-En la ventana que abre el programa, llene los campos: [reltp] (tipo de relación) con el valor "corrected-article" y [pid-doi] (número PID o DOI relacionado) con el número DOI del artículo que será corregido y de clic en [Continuar]:
+Ponga el cursor del mouse antes del elemento [toctitle],  y haga clic en [related].
+En la ventana que abre el programa, llene los campos: [reltp] (tipo de relación) con el valor "corrected-article" y [pid-doi] (número PID o DOI relacionado) con el número DOI del artículo que será corregido y haga clic en [Continuar]:
  
 .. image:: img/mkp-related-campos.jpg
    :height: 200px
@@ -2165,7 +2163,7 @@ El programa inserta el elemento [related], el cual enlazará al artículo que pr
 Ahead Of Print
 ==============
 
-El archivo "Ahead Of Print" (AOP) debe estar formateado de acuerdo a las instrucciones de `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_. Como los archivos en AOP no presentan sección, volumen, número y paginación, después del número de DOI de debe dejar una línea en blanco, y enseguida agregar el título del documento:
+El archivo "Ahead Of Print" (AOP) debe estar formateado de acuerdo a las instrucciones de `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_. Como los archivos en AOP no presentan sección, volumen, número y paginación, después del número de DOI debe dejar una línea en blanco, y enseguida agregar el título del documento:
 
 .. image:: img/mkp-exemplo-ahead.jpg
    :height: 300px
@@ -2189,7 +2187,7 @@ Para construir el ID para AOP se utilizará una parte de la numeración del fasc
 
 *1 - Copie los tres primeros dígitos del fascículo*
 
-Ejemplo el fascículo de la bjmbr número 7 del 2015 = fascículo 0715 **usar: 071**
+Ejemplo el fascículo de la revista Brazilian Journal of Medical and Biological Research (bjmbr) número 7 del 2015 = fascículo 0715 **usar: 071**
 
 *2- Agregue los dos últimos dígitos que representarán la cantidad de artículos en el fascículo.*
 
@@ -2226,14 +2224,14 @@ Archivo 2:
 etc.
 
 
-En el campo [ahpdate] ponga la misma fecha que en [dateiso]. Después de llenar todos los datos, de clic en [Ok].
+En el campo [ahpdate] ponga la misma fecha que en [dateiso]. Después de llenar todos los datos, haga clic en [Ok].
 
 .. image:: img/doc-preench-aop.jpg
    :height: 300px
    :align: center
 
 
-.. note:: Al generar el archivo .xml el programa agregara automáticamente el elemento <subject> con el valor "Articles", de acuerdo a las recomendaciones del SciELO PS.
+.. note:: Al generar el archivo .xml el programa agregará automáticamente el elemento <subject> con el valor "Articles", de acuerdo a las recomendaciones del SciELO PS.
 
 
 .. _rolling-pass:
@@ -2262,13 +2260,13 @@ Antes de llenar el formulario de Rolling Pass, se debe saber el formato de publi
    :height: 50px
 
 
-El campo [order] es compuesto por un orden que determinará la sección de los archivos y también el orden de publicación. Por lo tanto, primero defina una centena para cada sección, por ejemplo:
+El campo [order] esta compuesto por el orden, que se determina por la sección a la que pertenecen los documentos y el orden de publicación. Por lo tanto, primero defina una centena para cada sección, por ejemplo:
 
 * Editorials: 0100
 * Original Articles: 0200
 * Review Article: 0300
 * Letter to the Author: 0400
-   …
+* ...
 
 Los artículos deberán presentar un ID único dentro de su sección. Por lo que es recomendable crear una plantilla que muestre el ID utilizando, ejemplo:
 
@@ -2295,7 +2293,7 @@ Reseñas
 =======
 
 Las reseñas generalmente presentan un dato más que los documentos comunes: la referencia bibliográfica del libro reseñado.
-El formato del documento debe seguir instrucciones disponibles en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ , incluyendo la referencia bibliográfica del documento reseñado antes del cuerpo del texto. 
+El formato del documento debe seguir instrucciones disponibles en `Preparación de archivos <es_how_to_generate_xml-prepara.html#formatacao-do-archivo>`_ , incluyendo la referencia bibliográfica del documento reseñado antes del cuerpo del texto.
 
 Ejemplo:
 
@@ -2368,8 +2366,8 @@ La marcación de los párrafos se debe hacer con el elemento [xmlbody], seleccio
 Press Release
 =============
 
-Por ser un texto de divulgación que utiliza para dar más visibilidad a un fascículo o artículo publicado en una revista, el press realise no sigue la misma estructura de un artículo científico. Por lo tanto, no posee sección, número de DOI, y no es obligatorio incluir la afiliación del autor.
-Una vez aprobados los 'Press Releases' podrán ser formateados para una marcación más optimizada.
+Por ser un texto de divulgación que se utiliza para dar más visibilidad a un fascículo o artículo publicado en una revista, el press release no sigue la misma estructura de un artículo científico. Por lo tanto, no posee sección, número de DOI, y no es obligatorio incluir la afiliación del autor.
+Una vez aprobados los 'Press Releases' podrán ser formateados para una marcación optimizada.
 
 * 1ª línea del documento: Correspondiente al número de DOI, debe quedar en blanco.
 * 2ª línea del documento: Correspondiente a la sección del documento, debe quedar en blanco.
@@ -2387,8 +2385,8 @@ Marcar el Press Release
 
 Con el documento previamente formateado, realice la marcación del documento con el elemento [doc] y considere los siguientes valores:
 
-* En los campos 'volid' y 'issue' ponga los datos correspondientes al fascículo con el que esta relacionado el Press Release y en 'isidpart' ponga el valor 'pr' que identifica al documento como un Press Release.
-* En el campo de [doctopic] seleccione el tipo "press release".
+* En los campos 'volid' y 'issue' ponga los datos correspondientes al fascículo con el que está relacionado el Press Release y en 'isidpart' ponga el valor 'pr' que identifica al documento como un Press Release.
+* En el campo [doctopic] seleccione el tipo "press release".
 * Cuando el Press Release esté relacionado con un fascículo, ponga el valor "00001" en el campo [order] para que el Press Release sea posicionado correctamente en la tabla de contenido de la revista.
 * Cuando el Press Release sea de un artículo, ponga sólo el valor "01".
 
@@ -2404,20 +2402,20 @@ Complete los demás datos del Press Relase como: [xref] de autores, normalizaci�
    :align: center
 
 
-En caso que el Press Release esté relacionado a un artículo específico, será necesario relacionarlo al artículo divulgado.
-Ponga el cursor del mouse después del elemento [doc]  y de clic en el elemento [related]. Después llene los campos 'reltp' (tipo de relación) y 'pid-doi'.
+En caso de que el Press Release esté relacionado a un artículo específico, será necesario relacionarlo al artículo divulgado.
+Ponga el cursor del mouse después del elemento [doc]  y haga clic en el elemento [related]. Después llene los campos 'reltp' (tipo de relación) y 'pid-doi'.
 En el campo 'reltp' seleccione 'press-release' y en 'pid-doi' ponga el número de DOI del artículo relacionado.
 
 .. image:: img/mkp-related-press-release.jpg
    :align: center
 
 
-.. note:: La marcación del el elemento [related] sólo se realizará en Press Releases relacionados a un "artículo".
+.. note:: La marcación del elemento [related] sólo se realizará en Press Releases relacionados a un "artículo".
 
 
 .. _procesos-manuales:
 
-Procesos Manuales
+Procesos manuales
 =================
 
 El programa de marcación atiende más del 80% de las reglas establecidas en el SciELO Publishing Schema. 
@@ -2483,7 +2481,7 @@ En "href" inserte el nombre del medio con su extensión: "Artículo12-m1.wmv".
 Hecho lo anterior, genere el archivo .xml.
 
 Una vez generado el archivo .xml, verifique los atributos que identifican el tipo de medio, si hay errores corrija.
-El Programa presenta los atributos:
+El programa presenta los atributos:
 
 * mime-subtype - especifica el tipo de medio como "video" o "application".
 * mimetype     - especifica el formato del medio.
@@ -2493,7 +2491,7 @@ Es posible que el programa inserte valores incorrectos en los atributos menciona
 .. image:: img/mkp-mime-subtype.jpg
    :align: center
 
-Para corregir, borre el valor "x-ms-wmv" e inserte solamente "wmv" que es el formato del video. Cuando el atributo @mimetype presente un valor diferente de "application" o "video", corrija el dato.
+Para corregir, borre el valor "x-ms-wmv" e inserte solamente "wmv", que es el formato del video. Cuando el atributo @mimetype presente un valor diferente de "application" o "video", corrija el dato.
 
 
 .. _sublista:
@@ -2501,7 +2499,7 @@ Para corregir, borre el valor "x-ms-wmv" e inserte solamente "wmv" que es el for
 Identificación de sublistas
 ---------------------------
 
-El programa Markup no hace la identificación de sublistas, por lo que es necesario utilizar un editor de XML para ajustar los ítems de sublista.
+El programa Markup no hace la identificación de sublistas, por lo que es necesario utilizar un editor de XML para ajustar los ítems de la sublista.
 Hay dos métodos para la marcación manual de sublistas:
 
 Método 1:
@@ -2584,10 +2582,10 @@ Ahora, pegue el elemento </list-item> recortado justo después del elemento </li
 
 .. _leyenda-traducida:
 
-Leyendas Traducidas
+Leyendas traducidas
 -------------------
 
-El Programa Markup no hace la marcación de leyendas traducidas en figuras o tablas. Para hacer la marcación es necesario utilizar un editor de XML. Verifique la marcación de leyendas de tablas y de figuras que sigue:
+El programa Markup no hace la marcación de leyendas traducidas en figuras o tablas. Para hacer la marcación es necesario utilizar un editor de XML. Verifique la marcación de leyendas de tablas y de figuras que sigue:
 
 **Tablas**
 
@@ -2604,7 +2602,7 @@ Borre el @id="xx" de <table-wrap> e inserte el atributo de idioma @xml:lang="xx"
    :align: center
 
 
-Inserte un nuevo elemento <table-wrap> con <label>, <caption> y <title> justo después de <table-wrap-group> con el atributo de idioma @xml:lang="xx" correspondiente al idioma de la traducción. E inserte la leyenda traducida en <title>:
+Inserte un nuevo elemento <table-wrap> con <label>, <caption> y <title> justo después de <table-wrap-group> con el atributo de idioma @xml:lang="xx" correspondiente al idioma de la traducción. Inserte la leyenda traducida en <title>:
 
 .. image:: img/mkp-legenda-trans-tab.jpg
    :align: center
@@ -2628,7 +2626,7 @@ Borre el @id="xx" de <fig> e inserte el atributo de idioma @xml:lang="xx" con la
    :align: center
 
 
-Inserte un nuevo elemento <fig> con <label>, <caption> y <title> justo abajo abaixo de <fig-group> con el atributo de idioma @xml:lang="xx" correspondiente al idioma de la traducción. E inserte la leyenda traducida en <title>:
+Inserte un nuevo elemento <fig> con <label>, <caption> y <title> justo abajo de <fig-group> con el atributo de idioma @xml:lang="xx" correspondiente al idioma de la traducción. Inserte la leyenda traducida en <title>:
 
 .. image:: img/mkp-fig-legend-traduzida.jpg
    :align: center
