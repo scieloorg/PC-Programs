@@ -336,7 +336,7 @@ En el campo "icountry" seleccione el país de la institución mayor (orgname), e
 Resúmenes
 =========
 
-Los resúmenes deben ser identificados manualmente. Para marcación de resúmenes simples (sin secciones) e para los resúmenes estructurados (con secciones) utilizar el elemento [xmlabstr]. En la marcación, seleccione el título del resumen y el texto y, en seguida, marque con el elemento [xmlabstr].
+Los resúmenes deben ser identificados manualmente. Para la marcación de resúmenes simples (sin secciones) y para los resúmenes estructurados (con secciones) utilice el elemento [xmlabstr]. En la marcación, seleccione el título del resumen y el texto, en seguida marque con el elemento [xmlabstr].
 
 Resumen sin Sección:
 --------------------
@@ -348,7 +348,7 @@ Resumen sin Sección:
    :align: center
 
 
-Cuando cliquear en [xmlabstr] el programa abrirá una ventana donde si debe seleccionar el idioma del resumen marcado:
+Cuando haga clic en [xmlabstr] el programa abrirá una ventana donde debe seleccionar el idioma del resumen marcado:
 
 
 **marcación:** 
@@ -365,13 +365,13 @@ Cuando cliquear en [xmlabstr] el programa abrirá una ventana donde si debe sele
    :align: center
 
 
-Ya en resúmenes estructurados, el programa también marcará cada sección del resumen y sus respectivos párrafos.
+En resúmenes estructurados, el programa también marcará cada sección del resumen y sus respectivos párrafos.
 
 
 Resumen con Sección:
 --------------------
 
-Siga los mismos pasos descriptos para resumen sin sección:
+Siga los mismos pasos descritos para resumen sin sección:
 
 
 **seleccionando:** 
@@ -403,24 +403,24 @@ Siga los mismos pasos descriptos para resumen sin sección:
 Keywords
 ========
 
-El programa Markup presenta dos íconos para identificación de palabras-clave, [* kwdgrp] e [kwdgrp].
-El ícono [*kwdgrp], con asterisco, es utilizado para marcación automática de cada palabra-clave y también del título. Para eso, seleccione toda la información, incluso el título, e identifique los datos con el elemento [*kwdgrp].
+El programa Markup cuenta con dos elementos para la identificación de palabras-clave, [*kwdgrp] y [kwdgrp].
+El elemento [*kwdgrp], con asterisco, se usa para la marcación automática de cada palabra-clave y también del título. Para hacerlo, seleccione toda la información, incluyendo el título, e identifique los datos con el elemento [*kwdgrp].
 
 
 Marcación Automática:
 ---------------------
 
-**seleccionando:**
+**Seleccionando:**
  
 .. image:: img/doc-mkp-select-kwd.jpg
    :height: 300px
    :align: center
 
 
-En la ventana abierta por el programa, seleccione el idioma de las palabras-clave marcadas:
+En la ventana que abre el programa, seleccione el idioma de las palabras-clave marcadas:
 
 
-**marcación:** 
+**Marcación:** 
 
 .. image:: img/doc-mkp-mkp-kwd.jpg
    :height: 300px
@@ -437,10 +437,10 @@ En la ventana abierta por el programa, seleccione el idioma de las palabras-clav
 Marcación Manual:
 -----------------
 
-Caso la marcación automática no ocurra conforme el esperado, si puede marcar el grupo de palabras-clave manualmente. Seleccione el grupo de palabras-clave y marque con el elemento [kwdgrp].
+Si el resultado de la marcación automática no es el esperado, puede marcar el grupo de palabras-clave manualmente. Seleccione el grupo de palabras-clave y marque con el elemento [kwdgrp].
 
 
-**marcación:**
+**Marcación:**
 
 .. image:: img/doc-mkp-selection-kwd-s.jpg
    :height: 350px
@@ -448,14 +448,14 @@ Caso la marcación automática no ocurra conforme el esperado, si puede marcar e
 
 
 
-En seguida, haga la marcación de ítem por ítem. Por lo tanto, seleccione el título de las palabras-clave e identifique con el elemento [sectitle]:
+En seguida, haga la marcación de ítem por ítem. A continuación, seleccione el título de las palabras-clave e identifíquelo con el elemento [sectitle]:
 
 .. image:: img/doc-mkp-sec-kwd.jpg
    :height: 300px
    :align: center
 
 
-En la secuencia, seleccione palabra por palabra y marque con el elemento [kwd]:
+En la secuencia, seleccione palabra por palabra y márquela con el elemento [kwd]:
 
 .. image:: img/doc-mkp-kwd-kwd.jpg
    :height: 300px
@@ -473,7 +473,7 @@ En la secuencia, seleccione palabra por palabra y marque con el elemento [kwd]:
 History
 =======
 
-El elemento [hist] es utilizado para marcar el histórico del documento. Seleccione todo el dato de histórico y marque con el elemento [hist]:
+El elemento [hist] es utilizado para marcar el histórico del documento. Seleccione todos los datos históricos que presente el documento y marque con el elemento [hist]:
 
 
 .. image:: img/doc-mkp-hist-select.jpg
@@ -482,15 +482,14 @@ El elemento [hist] es utilizado para marcar el histórico del documento. Selecci
 
 
 
-Seleccione la fecha de recibido y marque con el elemento [received]. Confiera la fecha ISO indicada en el campo dateiso y corrija, se necesario. La estructura de la fecha ISO esperada es:
-AÑO MES DÍA. 
+Seleccione la fecha de recibido y marque con el elemento [received]. Compruebe que la fecha ISO indicada en el campo dateiso es correcta, corrija si es necesario. La estructura de la fecha ISO esperada es: AÑO MES DÍA. 
 
 .. image:: img/doc-mkp-received.jpg
    :height: 350px
    :align: center
 
 
-Caso haya la fecha de revisado, selecciónela y marque con el elemento [revised]. Haga el mismo para la fecha de acepto; seleccionando el elemento [accepted]. Confiera la fecha ISO indicada en el campo dateiso y corrija, se necesario.
+Cuando exista la fecha de revisado, selecciónela y marque con el elemento [revised]. Haga lo mismo para la fecha de aceptado, seleccionando el elemento [accepted]. Verifique la fecha ISO indicada en el campo dateiso, corrija si es necesario.
 
 .. image:: img/doc-mkp-accepted.jpg
    :height: 350px
@@ -508,14 +507,14 @@ Caso haya la fecha de revisado, selecciónela y marque con el elemento [revised]
 Correspondencia
 ===============
 
-Con el elemento [corresp] es posible marcar los datos de correspondencia del autor. Ese elemento posee un subnivel para identificación del e-mail del autor. Seleccione toda la información de correspondencia y marque con el elemento [corresp]. Será presentada una ventana para marcación del ID de correspondencia que, en ese caso, debe ser "c" + el número de orden de la correspondencia.
+Los datos de correspondencia del autor se marcan con el elemento [corresp]. Este elemento posee un subnivel para identificar el e-mail del autor. Seleccione toda la información de correspondencia y marque con el elemento [corresp]. Se presentará una ventana para marcar el ID de correspondencia, en este caso debe ser "c" + el número de orden de la correspondencia.
 
 .. image:: img/doc-mkp-corresp-select.jpg
    :height: 300px
    :align: center
 
 
-Seleccione el e-mail del autor correspondiente y marque con el elemento [email]. Suba un nivel para marcar el próximo elemento.
+Seleccione el e-mail que corresponda al autor y marque con el elemento [email]. Suba un nivel para continuar la marcación del siguiente elemento.
 
 .. image:: img/doc-mkp-email-corresp.jpg
    :height: 300px
@@ -537,19 +536,19 @@ Archivos que presentan información de ensayo clínico con número de registro, 
    :align: center
 
 
-En la ventana abierta por el programa, llene el campo de URL de la base de datos donde el Ensayo fue indexado y el campo "ctdbid" seleccionando la base correspondiente:
+En la ventana que abre el programa, llene el campo "cturl" con la URL de la base de datos donde el Ensayo fue indexado y el campo "ctdbid" seleccionando la base correspondiente:
 
 .. image:: img/doc-mkp-clinicaltr.jpg
    :height: 300px
    :align: center
 
-Para encontrar la URL del ensayo clínico haga una búsqueda en la internet por el número de registro para llenar el atributo conforme ejemplo que sigue.
+Para encontrar la URL del ensayo clínico haga una búsqueda en internet por el número de registro. Llenar los atributos conforme al siguiente ejemplo:
 
 .. image:: img/doc-mkp-ensaio.jpg
    :height: 80px
    :align: center
 
-.. note:: Comúnmente la información de Ensayo clínico está posicionada bajo los resúmenes o palabras-clave.
+.. note:: Es común que la información de Ensayo clínico se encuentre posicionada después de los resúmenes o palabras-clave.
 
 
 .. raw:: html
