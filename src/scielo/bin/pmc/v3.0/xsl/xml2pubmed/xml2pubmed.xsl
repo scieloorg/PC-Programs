@@ -179,13 +179,15 @@
 			</xsl:if>
 			<xsl:apply-templates select=".//article-meta//title-group/article-title[@xml:lang='en']"/>
 			<xsl:apply-templates select=".//article-meta//title-group/trans-title-group[@xml:lang='en']/trans-title"/>
-			<xsl:apply-templates select=".//sub-article//article-title[@xml:lang='en']"/></xsl:element>
+			<xsl:apply-templates select=".//sub-article[@xml:lang='en']//article-title"/>
+			<xsl:apply-templates select=".//sub-article//article-title[@xml:lang='en']"/>
+		</xsl:element>
 			<xsl:if test="@xml:lang != 'en'">
 				<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/#publisherhelp.VernacularTitle_O -->
 				<xsl:element name="VernacularTitle">
 					<xsl:apply-templates select=".//article-meta//title-group//article-title"/>
 				</xsl:element>
-		</xsl:if>
+			</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="@xml:lang" mode="scielo-xml-languages">
@@ -217,6 +219,9 @@
 		[This <xsl:apply-templates select="." mode="label"/> the article <xsl:value-of select="@ext-link-type"/>: <xsl:value-of select="@xlink:href"/>]
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-content-abstract">
+		<xsl:apply-templates select="*|text()" mode="scielo-xml-content-abstract"/>
+	</xsl:template>
+	<xsl:template match="*[sec]" mode="scielo-xml-content-abstract">
 		<xsl:apply-templates select="sec|text()"  mode="scielo-xml-content-abstract"/>
 	</xsl:template>
 	<xsl:template match="*/sec" mode="scielo-xml-content-abstract">
@@ -235,9 +240,6 @@
 		-->
 	<xsl:template match="text()" mode="scielo-xml-content-abstract">
 		<xsl:value-of select="."/>
-	</xsl:template>
-	<xsl:template match="*" mode="scielo-xml-content-abstract">
-		<xsl:apply-templates select="*|text()" mode="scielo-xml-content-abstract"/>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-publisher_name">
 		<PublisherName>
@@ -308,7 +310,6 @@
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="pub-date/@pub-type">
-		<xsl:comment><xsl:value-of select="."/></xsl:comment>
 		<xsl:choose>
 			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
 			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
@@ -332,7 +333,6 @@
 		</PubDate>
 	</xsl:template>
 	<xsl:template match="pub-date">
-		
 		<PubDate>
 			<xsl:attribute name="PubStatus">
 				<xsl:apply-templates select="@pub-type"/>
