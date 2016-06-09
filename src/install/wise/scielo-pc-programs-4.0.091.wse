@@ -4075,422 +4075,422 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\automata.mds
+  Source=c:\src\scielo\bin\markup\automata_samples\automata.mds
   Destination=%PROGDIR%\bin\markup\automata_samples\automata.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rcefac.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rcefac.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rcefac.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rcbc.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rcbc.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rcbc.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbmet.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbmet.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbmet.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbme.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbme.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbme.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbhh.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbhh.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbhh.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbgo.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbgo.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbgo.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbfis.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbfis.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbfis.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbf.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbf.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbf.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rarv.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rarv.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rarv.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\prod.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\prod.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\prod.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\physis.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\physis.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\physis.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\paz.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\paz.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\paz.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\jvb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\jvb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\jvb.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\jecn.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\jecn.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\jecn.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\jbpneu.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\jbpneu.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\jbpneu.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\eagri.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\eagri.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\eagri.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\cr.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\cr.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\cr.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\coluna.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\coluna.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\coluna.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\clin.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\clin.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\clin.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\ciedu.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\ciedu.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\ciedu.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\ci.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\ci.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\ci.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\cagro.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\cagro.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\cagro.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bjps.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bjps.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bjps.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bjorl.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bjorl.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bjorl.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bjoce.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bjoce.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bjoce.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\aob.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\aob.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\aob.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\aa.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\aa.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\aa.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rpc.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rpc.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rpc.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\sn.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\sn.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\sn.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rprs.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rprs.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rprs.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\spmj.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\spmj.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\spmj.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\spm.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\spm.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\spm.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\sa.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\sa.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\sa.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rsp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rsp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rsp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rsbmt.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rsbmt.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rsbmt.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rpsp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rpsp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rpsp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rousp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rousp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rousp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rimtsp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rimtsp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rimtsp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rhc.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rhc.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rhc.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\resp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\resp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\resp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbcsoc.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbcsoc.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbcsoc.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbccv.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbccv.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbccv.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbbio.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbbio.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbbio.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\ramb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\ramb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\ramb.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\qn.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\qn.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\qn.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\pob.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\pob.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\pob.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\mioc.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\mioc.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\mioc.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\mana.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\mana.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\mana.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\jbchs.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\jbchs.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\jbchs.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\gmb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\gmb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\gmb.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\es.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\es.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\es.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\csp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\csp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\csp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\brag.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\brag.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\brag.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bjvras.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bjvras.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bjvras.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bjmbr.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bjmbr.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bjmbr.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bjm.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bjm.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bjm.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bjce.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bjce.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bjce.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\abmvz.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\abmvz.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\abmvz.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\abc.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\abc.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\abc.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\aabc.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\aabc.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\aabc.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rsocp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rsocp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rsocp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rn.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rn.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rn.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbz.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbz.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbz.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rbb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rbb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rbb.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\rb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\rb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\rb.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\pvb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\pvb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\pvb.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\ptp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\ptp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\ptp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\pab.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\pab.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\pab.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\fb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\fb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\fb.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\epsic.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\epsic.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\epsic.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\ep.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\ep.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\ep.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\ecler.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\ecler.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\ecler.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\cta.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\cta.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\cta.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\csc.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\csc.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\csc.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bwho.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bwho.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bwho.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\bjid.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\bjid.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\bjid.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\babt.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\babt.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\babt.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\anp.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\anp.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\anp.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\ag.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\ag.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\ag.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\acb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\acb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\acb.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\abem.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\abem.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\abem.amd
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata_samples\abb.amd
+  Source=c:\src\scielo\bin\markup\automata_samples\abb.amd
   Destination=%PROGDIR%\bin\markup\automata_samples\abb.amd
   Flags=0000000010001010
 end
@@ -5471,417 +5471,417 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\p.mds
+  Source=c:\src\scielo\bin\markup\p.mds
   Destination=%PROGDIR%\bin\markup\p.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\journal-standard.txt
+  Source=c:\src\scielo\bin\markup\journal-standard.txt
   Destination=%PROGDIR%\bin\markup\journal-standard.txt
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\en_issue.mds
+  Source=c:\src\scielo\bin\markup\en_issue.mds
   Destination=%PROGDIR%\bin\markup\en_issue.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\en_temp.mds
+  Source=c:\src\scielo\bin\markup\en_temp.mds
   Destination=%PROGDIR%\bin\markup\en_temp.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\pt_issue.mds
+  Source=c:\src\scielo\bin\markup\pt_issue.mds
   Destination=%PROGDIR%\bin\markup\pt_issue.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\pt_temp.mds
+  Source=c:\src\scielo\bin\markup\pt_temp.mds
   Destination=%PROGDIR%\bin\markup\pt_temp.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\es_issue.mds
+  Source=c:\src\scielo\bin\markup\es_issue.mds
   Destination=%PROGDIR%\bin\markup\es_issue.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\es_temp.mds
+  Source=c:\src\scielo\bin\markup\es_temp.mds
   Destination=%PROGDIR%\bin\markup\es_temp.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\tables\sgm2win2.txt
+  Source=c:\src\scielo\bin\markup\app_core\tables\sgm2win2.txt
   Destination=%PROGDIR%\bin\markup\app_core\tables\sgm2win2.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\temp\donotdelete.txt
+  Source=c:\src\scielo\bin\markup\temp\donotdelete.txt
   Destination=%PROGDIR%\bin\markup\temp\donotdelete.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\PubMed.sh
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\PubMed.sh
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\PubMed.sh
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\PubMed.py
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\PubMed.py
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\PubMed.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\PubMed.bat
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\PubMed.bat
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\PubMed.bat
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\Marcador.jar
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\Marcador.jar
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\Marcador.jar
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\Lucene.jar
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\Lucene.jar
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\Lucene.jar
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\lucene-core-2.3.2.jar
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\lucene-core-2.3.2.jar
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\lucene-core-2.3.2.jar
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\lucene-core-2.3.1.jar
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\lucene-core-2.3.1.jar
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\lucene-core-2.3.1.jar
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\lucene-core-2.2.0.jar
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\lucene-core-2.2.0.jar
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\lucene-core-2.2.0.jar
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\livros.txt
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\livros.txt
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\livros.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\FOLLibrary.jar
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\FOLLibrary.jar
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\FOLLibrary.jar
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\dom4j-1.6.1.jar
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\dom4j-1.6.1.jar
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\dom4j-1.6.1.jar
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\artigos.txt
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\artigos.txt
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\artigos.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\validfileformat.mds
+  Source=c:\src\scielo\bin\markup\app_core\validfileformat.mds
   Destination=%PROGDIR%\bin\markup\app_core\validfileformat.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\start.mds
+  Source=c:\src\scielo\bin\markup\start.mds
   Destination=%PROGDIR%\bin\markup\start.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\zeus.jar
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\zeus.jar
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\zeus.jar
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\pt_err.mds
+  Source=c:\src\scielo\bin\markup\app_core\pt_err.mds
   Destination=%PROGDIR%\bin\markup\app_core\pt_err.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\Readme.txt
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\Readme.txt
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\Readme.txt
   Flags=0000000010000010
 end
 remarked item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata.dll
+  Source=c:\src\scielo\bin\markup\automata.dll
   Destination=%SYS32%\automata.dll
   Flags=0001000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\automata.dll
+  Source=c:\src\scielo\bin\markup\automata.dll
   Destination=%PROGDIR%\bin\markup\automata.dll
   Flags=0001000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\default.mds
+  Source=c:\src\scielo\bin\markup\default.mds
   Destination=%PROGDIR%\bin\markup\default.mds
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\en_attb.mds
+  Source=c:\src\scielo\bin\markup\en_attb.mds
   Destination=%PROGDIR%\bin\markup\en_attb.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\tree_en.txt
+  Source=c:\src\scielo\bin\markup\app_core\tree_en.txt
   Destination=%PROGDIR%\bin\markup\app_core\tree_en.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\en_conf.mds
+  Source=c:\src\scielo\bin\markup\app_core\en_conf.mds
   Destination=%PROGDIR%\bin\markup\app_core\en_conf.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\en_err.mds
+  Source=c:\src\scielo\bin\markup\app_core\en_err.mds
   Destination=%PROGDIR%\bin\markup\app_core\en_err.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\python.cfg
+  Source=c:\src\scielo\bin\markup\python.cfg
   Destination=%PROGDIR%\bin\markup\python.cfg
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\vancouv.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\vancouv.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\vancouv.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\iso690.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\iso690.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\iso690.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\apa.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\apa.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\apa.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\nbr6023_ref.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\nbr6023_ref.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\nbr6023_ref.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\nbr6023.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\nbr6023.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\nbr6023.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\es_tgref.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\es_tgref.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\es_tgref.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\pt_tgref.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\pt_tgref.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\pt_tgref.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\en_tgref.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\en_tgref.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\en_tgref.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\en_tgabnt.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\en_tgabnt.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\en_tgabnt.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\en_tgother.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\en_tgother.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\en_tgother.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\en_tgvanc.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\en_tgvanc.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\en_tgvanc.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\en_tgapa.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\en_tgapa.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\en_tgapa.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\attb.mds
+  Source=c:\src\scielo\bin\markup\app_core\attb.mds
   Destination=%PROGDIR%\bin\markup\app_core\attb.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\es_attb.mds
+  Source=c:\src\scielo\bin\markup\es_attb.mds
   Destination=%PROGDIR%\bin\markup\es_attb.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\tree_es.txt
+  Source=c:\src\scielo\bin\markup\app_core\tree_es.txt
   Destination=%PROGDIR%\bin\markup\app_core\tree_es.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\es_conf.mds
+  Source=c:\src\scielo\bin\markup\app_core\es_conf.mds
   Destination=%PROGDIR%\bin\markup\app_core\es_conf.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\es_err.mds
+  Source=c:\src\scielo\bin\markup\app_core\es_err.mds
   Destination=%PROGDIR%\bin\markup\app_core\es_err.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\es_tgabnt.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\es_tgabnt.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\es_tgabnt.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\es_tgother.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\es_tgother.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\es_tgother.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\es_tgvanc.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\es_tgvanc.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\es_tgvanc.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\es_tgapa.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\es_tgapa.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\es_tgapa.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\formatInUse.mds
+  Source=c:\src\scielo\bin\markup\app_core\formatInUse.mds
   Destination=%PROGDIR%\bin\markup\app_core\formatInUse.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\link.mds
+  Source=c:\src\scielo\bin\markup\app_core\link.mds
   Destination=%PROGDIR%\bin\markup\app_core\link.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\Markup.exe
+  Source=c:\src\scielo\bin\markup\Markup.exe
   Destination=%PROGDIR%\bin\markup\Markup.exe
   Flags=0000000010000011
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\markup.prg
+  Source=c:\src\scielo\bin\markup\markup.prg
   Destination=%PROGDIR%\bin\markup\markup.prg
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\pt_attb.mds
+  Source=c:\src\scielo\bin\markup\pt_attb.mds
   Destination=%PROGDIR%\bin\markup\pt_attb.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata2\abnt6023.xsl
+  Source=c:\src\scielo\bin\markup\app_modules\automata2\abnt6023.xsl
   Destination=%PROGDIR%\bin\markup\app_modules\automata2\abnt6023.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata2\iso.xsl
+  Source=c:\src\scielo\bin\markup\app_modules\automata2\iso.xsl
   Destination=%PROGDIR%\bin\markup\app_modules\automata2\iso.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata2\MarcaAutomaticamente.bat
+  Source=c:\src\scielo\bin\markup\app_modules\automata2\MarcaAutomaticamente.bat
   Destination=%PROGDIR%\bin\markup\app_modules\automata2\MarcaAutomaticamente.bat
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata2\other.xsl
+  Source=c:\src\scielo\bin\markup\app_modules\automata2\other.xsl
   Destination=%PROGDIR%\bin\markup\app_modules\automata2\other.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata2\vancouv.xsl
+  Source=c:\src\scielo\bin\markup\app_modules\automata2\vancouv.xsl
   Destination=%PROGDIR%\bin\markup\app_modules\automata2\vancouv.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata2\refs.xsl
+  Source=c:\src\scielo\bin\markup\app_modules\automata2\refs.xsl
   Destination=%PROGDIR%\bin\markup\app_modules\automata2\refs.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\tree.txt
+  Source=c:\src\scielo\bin\markup\app_core\tree.txt
   Destination=%PROGDIR%\bin\markup\app_core\tree.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\tree_pt.txt
+  Source=c:\src\scielo\bin\markup\app_core\tree_pt.txt
   Destination=%PROGDIR%\bin\markup\app_core\tree_pt.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\pt_tgabnt.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\pt_tgabnt.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\pt_tgabnt.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\pt_tgother.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\pt_tgother.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\pt_tgother.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\Visualizador.bat
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\Visualizador.bat
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\Visualizador.bat
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\test.html
+  Source=c:\src\scielo\bin\markup\test.html
   Destination=%PROGDIR%\bin\markup\test.html
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\pt_tgvanc.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\pt_tgvanc.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\pt_tgvanc.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\automata1\pt_tgapa.amd
+  Source=c:\src\scielo\bin\markup\app_modules\automata1\pt_tgapa.amd
   Destination=%PROGDIR%\bin\markup\app_modules\automata1\pt_tgapa.amd
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_core\pt_conf.mds
+  Source=c:\src\scielo\bin\markup\app_core\pt_conf.mds
   Destination=%PROGDIR%\bin\markup\app_core\pt_conf.mds
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\db\_w7v.cfs
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\db\_w7v.cfs
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\db\_w7v.cfs
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\db\_5.cfs
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\db\_5.cfs
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\db\_5.cfs
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\db\_2.cfs
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\db\_2.cfs
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\db\_2.cfs
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\db\segments_e
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\db\segments_e
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\db\segments_e
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\db\segments_7
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\db\segments_7
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\db\segments_7
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\db\segments_1sfw
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\db\segments_1sfw
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\db\segments_1sfw
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\markup_xml\app_modules\refIdentifier\db\segments.gen
+  Source=c:\src\scielo\bin\markup\app_modules\refIdentifier\db\segments.gen
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\db\segments.gen
   Flags=0000000010000010
 end
