@@ -862,17 +862,24 @@ def fix_book_data(item):
 
 
 def fix_mixed_citation_ext_link(ref):
+    replacements = {}
     if '<ext-link' in ref and '<mixed-citation>' in ref:
-        mixed_citation = ref[ref.find('<mixed-citation>')+len('<mixed-citation>'):ref.find('</mixed-citation>')]
+        mixed_citation = ref[ref.find('<mixed-citation>'):]
+        mixed_citation = mixed_citation[:mixed_citation.find('</mixed-citation>')+len('</mixed-citation>')]
         new_mixed_citation = mixed_citation
         if not '<ext-link' in mixed_citation:
-            for ext_link in ref.replace('<ext-link', '~BREAK~<ext-link').split('~BREAK~'):
-                if ext_link.startswith('<ext-link'):
-                    if '</ext-link>' in ext_link:
-                        ext_link = ext_link[0:ext_link.find('</ext-link>')+len('</ext-link>')]
-                        content = ext_link[ext_link.find('>')+1:]
-                        content = content[0:content.find('</ext-link>')]
-                        new_mixed_citation = new_mixed_citation.replace(content, ext_link)
+            for ext_link_item in ref.replace('<ext-link', '~BREAK~<ext-link').split('~BREAK~'):
+                if ext_link_item.startswith('<ext-link'):
+                    if '</ext-link>' in ext_link_item:
+                        ext_link_element = ext_link_item[0:ext_link_item.find('</ext-link>')+len('</ext-link>')]
+                        ext_link_content = ext_link_element[ext_link_element.find('>')+1:]
+                        ext_link_content = ext_link_content[0:ext_link_content.find('</ext-link>')]
+                        if '://' in ext_link_content:
+                            urls = ext_link_content.split('://')
+                            if not ' ' in urls[0]:
+                                replacements[ext_link_content] = ext_link_element
+            for ext_link_content, ext_link_element in replacements.items():
+                new_mixed_citation = new_mixed_citation.replace(ext_link_content, ext_link_element)
             if new_mixed_citation != mixed_citation:
                 ref = ref.replace(mixed_citation, new_mixed_citation)
     return ref
@@ -895,7 +902,7 @@ def fix_mixed_citation_label(item):
                 changed = label + sep + changed
             if mixed_citation != changed:
                 if mixed_citation in item:
-                    item = item.replace(mixed_citation, changed)
+                    item = item.replace('<mixed-citation>' + mixed_citation + '</mixed-citation>', '<mixed-citation>' + changed + '</mixed-citation>')
                 else:
                     print('Unable to insert label to mixed_citation')
                     print('mixed-citation:')
