@@ -137,7 +137,13 @@ Function returnIssue(Mfn As Long, Optional format As String) As ClsIssue
         issue.issueCover = isis.UsePft(Mfn, " v97")
         issue.markupDone = isis.UsePft(Mfn, " v200")
         
-        Call issn_get(Mfn, issue.pissn, issue.eissn)
+        
+        Dim pissn As String
+        Dim eissn As String
+        
+        Call issn_get(Mfn, pissn, eissn)
+        issue.pissn = pissn
+        issue.eissn = eissn
         
         
         issue.status = isis.UsePft(Mfn, " v42")
@@ -473,12 +479,14 @@ Sub issn_get(Mfn As Long, ByRef pissn As String, ByRef eissn As String)
     v435 = isis.UsePft(Mfn, "(v435+|%|)")
     If Len(v435) > 0 Then
         issns = Split(v435, "%")
-        For i = 0 To UBound(issns) - 1
-            issn_type = Split(issns(i), "^t")
-            If issn_type(1) = "ONLIN" Then
-                eissn = issn_type(0)
-            Else
-                pissn = issn_type(0)
+        For i = 0 To UBound(issns)
+            If Len(issns(i)) > 0 Then
+                issn_type = Split(issns(i), "^t")
+                If issn_type(1) = "ONLIN" Then
+                    eissn = issn_type(0)
+                Else
+                    pissn = issn_type(0)
+                End If
             End If
         Next
     End If
