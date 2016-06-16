@@ -126,12 +126,14 @@ Sub serial_issn_get(Mfn As Long, ByRef pissn As String, ByRef eissn As String)
         End If
     Else
         issns = Split(v435, "%")
-        For i = 0 To UBound(issns) - 1
-            issn_type = Split(issns(i), "^t")
-            If issn_type(1) = "ONLIN" Then
-                eissn = issn_type(0)
-            Else
-                pissn = issn_type(0)
+        For i = 0 To UBound(issns)
+            If Len(issns(i)) > 0 Then
+                issn_type = Split(issns(i), "^t")
+                If issn_type(1) = "ONLIN" Then
+                    eissn = issn_type(0)
+                Else
+                    pissn = issn_type(0)
+                End If
             End If
         Next
     End If
