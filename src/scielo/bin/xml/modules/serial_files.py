@@ -52,13 +52,11 @@ class DocumentFiles(object):
             os.makedirs(report_path)
         self.dtd_report_filename = report_path + '/' + report_name + '.dtd.txt'
         self.style_report_filename = report_path + '/' + report_name + '.rep.html'
-
         self.pmc_dtd_report_filename = report_path + '/' + report_name + '.pmc.dtd.txt'
         self.pmc_style_report_filename = report_path + '/' + report_name + '.pmc.rep.html'
-
         self.err_filename = report_path + '/' + report_name + '.err.txt'
-
         self.data_report_filename = report_path + '/' + report_name + '.contents.html'
+        self.images_report_filename = report_path + '/' + report_name + '.images.html'
 
     def clean(self):
         delete_files([self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename])

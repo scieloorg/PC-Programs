@@ -334,9 +334,11 @@ h5 {
 }
 
 td img {
-  max-width: 40%;
-  min-height: 16px;
+  height: auto;
+  width: auto;
+  min-height: 40px;
   max-height: 300px;
+  max-width: 80%;
 }
 
 .delete {
@@ -628,4 +630,25 @@ td img {
   padding: 10pt;
   width: 30%;
   float: right;
+}
+
+.compare_ {
+  padding: 10px;
+  background-color: #E3CBC9;
+}
+.compare_inline {
+  padding: 10px;
+  background-color: #E3CBC9;
+}
+.compare_equation {
+  padding: 10px;
+  background-color: #E7E4D3;
+}
+.compare_figgrp {
+  padding: 10px;
+  background-color: #E7807B;
+}
+.compare_tabwrap {
+  padding: 10px;
+  background-color: #FF9985;
 }
