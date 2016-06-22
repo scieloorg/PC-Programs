@@ -814,7 +814,7 @@ class ArticlesPkgReport(object):
             utils.display_message(item_label)
 
             if xml_name in selected_names:
-                report_content = article_reports.article_data_and_validations_report(self.journal, doc, new_name, pkg_path, self.is_db_generation, is_xml_generation)
+                report_content = article_reports.article_data_and_validations_report(self.journal, doc, new_name, pkg_path, doc_files_info.images_report_filename, self.is_db_generation, is_xml_generation)
                 data_validations = ValidationsResults(report_content)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
                 if is_xml_generation:

@@ -1,5 +1,5 @@
 # coding=utf-8
-
+import os
 from datetime import datetime
 
 from __init__ import _
@@ -58,7 +58,7 @@ class ArticleDisplayReport(object):
     def article_body(self):
         r = ''
         r += self.sections
-        r += self.formulas
+        #r += self.formulas
         r += self.tables
         return html_reports.tag('h2', 'article/body') + html_reports.tag('div', r, 'article-data')
 
@@ -184,7 +184,7 @@ class ArticleDisplayReport(object):
     def formulas(self):
         r = html_reports.tag('p', 'disp-formulas:', 'label')
         for item in self.article.formulas:
-            r += html_reports.tag('p', item)
+            r += html_reports.tag('p', item, 'code')
         return r
 
     @property
@@ -213,7 +213,7 @@ class ArticleDisplayReport(object):
             r = html_reports.tag('p', 'Tables:', 'label')
 
             for t in self.article.tables:
-                print(t)
+                #print(t)
                 header = html_reports.tag('h3', t.id)
                 table_data = ''
                 table_data += html_reports.display_labeled_value('label', t.label, 'label')
@@ -488,7 +488,7 @@ class ArticleSheetData(object):
         return (t_header, ['aff xml'], r)
 
 
-def article_data_and_validations_report(journal, article, new_name, package_path, is_db_generation, is_sgml_generation):
+def article_data_and_validations_report(journal, article, new_name, package_path, images_generation_report_filename, is_db_generation, is_sgml_generation):
     if article.tree is None:
         sheet_data = None
         article_display_report = None
@@ -501,20 +501,18 @@ def article_data_and_validations_report(journal, article, new_name, package_path
         article_validation_report = ArticleValidationReport(article_validation)
 
         content = []
-        #FIXME
-
         if is_sgml_generation:
             content.append(article_display_report.issue_header)
             content.append(article_display_report.article_front)
-
-        content.append(article_validation_report.validations(display_all_message_types=False))
-        content.append(article_display_report.table_tables)
-        content.append(sheet_data.files_and_href(package_path))
-
-        if is_sgml_generation:
-            content.append(article_display_report.article_body)
             content.append(article_display_report.article_back)
-
+            content.append(article_display_report.article_body)
+            if os.path.isfile(images_generation_report_filename):
+                content.append(open(images_generation_report_filename, 'r').read())
+            content.append(article_validation_report.validations(display_all_message_types=False))
+        else:
+            content.append(article_validation_report.validations(display_all_message_types=False))
+            content.append(article_display_report.table_tables)
+            content.append(sheet_data.files_and_href(package_path))
         content = html_reports.join_texts(content)
 
     return content

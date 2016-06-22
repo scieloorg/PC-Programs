@@ -118,7 +118,7 @@ def register_log(text):
 
 
 def find_graphic_parent(text):
-    print('\nfind_graphic_parent:')
+    #print('\nfind_graphic_parent:')
     elem_id = ''
     elem_name = ''
     if ' id="' in text:
@@ -139,11 +139,11 @@ def find_graphic_parent(text):
         if patch.find('</' + elem_name + '>') >= 0 or tag_end.endswith('/'):
             elem_name = ''
             elem_id = ''
-        print((elem_name, elem_id))
+        #print((elem_name, elem_id))
     else:
         print('No element id')
         print(text.encode('utf-8'))
-    print('---')
+    #print('---')
 
     return (elem_name, elem_id)
 
@@ -366,9 +366,6 @@ class SGMLXML(object):
             self.element_and_graphic_no_match.append((elem_name, elem_id, source, ', '.join(possible_href_items)))
         else:
             self.element_and_graphic_matches.append((elem_name, elem_id, source, new_href))
-        print('new_href:')
-        print(new_href)
-        print('')
         return (elem_name, elem_id, new_href, alternative_id)
 
     def generate_xml_images(self):
@@ -412,11 +409,7 @@ class SGMLXML(object):
         possible_href_items = []
 
         possibilities, alternative_id = get_components_of_new_href(elem_name, elem_id, alternative_id)
-        print('')
-        print('get_new_graphic_href_from_src_folder:')
-        print((elem_name, elem_id))
-        print(possibilities)
-        print('')
+
         for name in filenames:
             for possibility in possibilities:
                 elem_id, prefixes = possibility
@@ -472,65 +465,6 @@ def href_attach_type(parent_tag, tag):
         attach_type = 'g'
     return attach_type
 
-
-    
-
-
-
-    
-
-    
-
-def __pack_article_files(doc_files_info, dest_path, href_files_list):
-    register_log('pack_article_files: inicio')
-    src_path = doc_files_info.xml_path
-    xml_name = doc_files_info.xml_name
-    new_name = doc_files_info.new_name
-
-    r_related_files_list = []
-    r_href_files_list = []
-    r_not_found = []
-
-    register_log('pack_article_files: get_related_files')
-    related_files_list = get_related_files(src_path, xml_name)
-
-    if not os.path.isdir(dest_path):
-        os.makedirs(dest_path)
-
-    register_log('pack_article_files: related_files_list')
-    for f in related_files_list:
-        r_related_files_list += pack_file_extended(src_path, dest_path, f, f.replace(xml_name, new_name))
-
-    register_log('pack_article_files: href_files_list')
-    for curr, new in href_files_list:
-        s = pack_file_extended(src_path, dest_path, curr, new)
-        if len(s) == 0:
-            r_not_found.append((curr, new))
-        else:
-            r_href_files_list += s
-
-    register_log('pack_article_files: serial_files.delete_files')
-    serial_files.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
-    register_log('pack_article_files: fim')
-    return (r_related_files_list, r_href_files_list, r_not_found)
-
-
-    
-
-def pack_file_extended(src_path, dest_path, curr, new):
-    register_log('pack_file_extended: inicio')
-    r = []
-    c = curr if not '.' in curr else curr[0:curr.rfind('.')]
-    n = new if not '.' in new else new[0:new.rfind('.')]
-    found = [f for f in os.listdir(src_path) if (f == curr or f.startswith(c + '.') or f.startswith(c + '-')) and not f.endswith('.sgm.xml') and not f.endswith('.replaced.txt') and not f.endswith('.xml.bkp')]
-    for f in found:
-        shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(c, n))
-        r.append((f, f.replace(c, n)))
-    register_log('pack_file_extended: fim')
-    return r
-
-
-    
 
 def message_file_list(label, file_list):
     return '\n' + label + ': ' + str(len(file_list)) + '\n' + '\n'.join(sorted(file_list))
@@ -689,32 +623,6 @@ def remove_styles_off_tagged_content(tag, content):
     return ''.join(parts).replace(open_tag + ' ', ' ' + open_tag).replace(' ' + close_tag, close_tag + ' ')
 
 
-def get_related_files(path, name):
-    return [f for f in os.listdir(path) if (f.startswith(name + '.') or f.startswith(name + '-')) and not f.startswith('.sgm.xml')]
-
-
-def get_not_found(path, href_list):
-    not_found = []
-    for href in href_list:
-        if not os.path.isfile(path + '/' + href_list):
-            not_found.append(href)
-    return not_found
-
-
-def get_not_found_extended(path, href_list):
-    not_found = []
-    for href in href_list:
-        if not os.path.isfile(path + '/' + href_list):
-            if '.' in href:
-                t = href[0:href.rfind('.')]
-            else:
-                t = href
-            found = [f for f in os.listdir(path) if f.startswith(t)]
-            if len(found) == 0:
-                not_found.append(href)
-    return not_found
-
-
 def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     if result_filename == xml_filename:
         shutil.copyfile(xml_filename, xml_filename + '.bkp')
@@ -765,10 +673,9 @@ class ArticlePkgMaker(object):
         self.replacements_href_files_items = []
         self.replacements_not_found_href_files_items = []
         self.href_names = []
+        self.version_info = xml_versions.DTDFiles('scielo', version)
 
     def make_article_package(self):
-        packed_files_report = ''
-
         self.normalize_xml_content()
         self.normalize_package_name()
 
@@ -777,14 +684,13 @@ class ArticlePkgMaker(object):
             #pkg_reports.display_report(self.doc_files_info.new_xml_filename)
         else:
             self.pack_article_files()
-
             self.text_messages.append(self.generate_packed_files_report())
 
-        pack_xml_file(content, version, self.doc_files_info.new_xml_filename, (doc.tree is None), is_db_generation)
+        self.pack_article_xml_file()
 
-        fs_utils.write_file(self.doc_files_info.err_filename, replaced_entities_report + packed_files_report)
+        fs_utils.write_file(self.doc_files_info.err_filename, '\n'.join(self.text_messages))
 
-        return (doc, self.doc_files_info)
+        return (self.doc, self.doc_files_info)
 
     def normalize_xml_content(self):
         register_log('normalize_xml_content')
@@ -829,12 +735,12 @@ class ArticlePkgMaker(object):
         reports = []
         if len(sgmlxml.element_and_graphic_no_match) > 0:
             reports.append(self.get_graphic_elements_reports(sgmlxml.element_and_graphic_no_match, _('doc//graphic/@href files were not found')))
-        if len(sgmlxml.element_and_graphic_matches) > 0:
-            reports.append(self.get_graphic_elements_reports(sgmlxml.element_and_graphic_matches, _('doc//graphic/@href files were found')))
-        reports.append(self.get_images_comparison_report(sgmlxml.images_src_and_src_html, sgmlxml.src_path, sgmlxml.sgmlhtml.src_html_img_path))
-        html_reports.save(self.doc_files_info.images_report_filename, _('Images Generation Report'), ''.join(reports))
+        #if len(sgmlxml.element_and_graphic_matches) > 0:
+        #    reports.append(self.get_graphic_elements_reports(sgmlxml.element_and_graphic_matches, _('doc//graphic/@href files were found')))
+        #reports.append(self.get_images_comparison_report(sgmlxml.images_src_and_src_html, sgmlxml.src_path, sgmlxml.sgmlhtml.src_html_img_path))
+        #html_reports.save(self.doc_files_info.images_report_filename, '', ''.join(reports))
 
-    def get_graphic_elements_reports(items, title):
+    def get_graphic_elements_reports(self, items, title):
         reports = []
         if len(items) > 0:
             table_header = [_('element'), _('id'), _('source'), _('expected values for @href')]
@@ -846,39 +752,45 @@ class ArticlePkgMaker(object):
             reports.append(html_reports.sheet(table_header, table_data))
         return ''.join(reports)
 
-    def get_images_comparison_report(images_info, src_path, src_html_img_path):
+    def get_images_comparison_report(self, images_info, src_path, src_html_img_path):
 
         rows = []
-        rows.append(html_reports.tag('p', _('The images are presented in their natural dimensions and in the same order they are found in the Markup document.')))
+        rows.append(html_reports.tag('h2', _('Images Generation from Markup to Package')))
+        rows.append(html_reports.tag('p', _('The images are presented in their original dimensions and in the same order they are found in the Markup document.')))
         rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in the package.')))
 
         for elem_name, elem_id, html_new_href, new_href in images_info:
 
-            label = elem_name + ' ' + elem_id
-            if label.strip() != '':
-                label = new_href + ' (' + label + ')'
-            else:
-                label = new_href
+            new_href_name, ext = os.path.splitext(new_href)
+
+            element_label = elem_name + ' ' + elem_id
+            element_label = element_label.strip()
+            if element_label != '':
+                element_label = ' (' + element_label + ')'
+
             elem = elem_name
 
             if not elem in ['tabwrap', 'figgrp', 'equation']:
                 elem = 'inline'
 
-            rows.append(html_reports.tag('h3', label))
+            rows.append('<div class="compare_images">')
 
             href = src_html_img_path + '/' + html_new_href
             original = html_reports.link(href, html_reports.image(href))
-            rows.append(html_reports.tag('h4', _('image in Markup')))
+            rows.append(html_reports.tag('h4', new_href + ' ' + element_label + _(' extracted from .doc')))
             rows.append('<div class="compare_' + elem + '">')
             rows.append(original)
             rows.append('</div>')
 
             href = src_path + '/' + new_href.replace('.tiff', '.jpg').replace('.tif', '.jpg')
             generated = html_reports.link(href, html_reports.image(href))
-            rows.append(html_reports.tag('h4', _('image in the package')))
+
+            rows.append(html_reports.tag('h4', replacements.get(new_href_name, '') + element_label + _(' in src folder')))
             rows.append('<div class="compare_' + elem + '">')
             rows.append(generated)
             rows.append('</div>')
+            rows.append('</div>')
+
         return ''.join(rows)
 
     def normalize_package_name(self):
@@ -993,12 +905,11 @@ class ArticlePkgMaker(object):
 
         register_log('pack_article_files: fim')
 
-    def pack_article_href_files(self, src_files, href_names):
+    def pack_article_href_files(self, src_files):
         register_log('pack_article_href_files: inicio')
 
         self.replacements_href_files_items = []
         self.replacements_not_found_href_files_items = []
-
         for curr, new in self.href_replacement_items:
             curr_name, curr_ext = os.path.splitext(curr)
             new_name, new_ext = os.path.splitext(new)
@@ -1062,21 +973,21 @@ class ArticlePkgMaker(object):
 
         return '\n'.join(log)
 
-    def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False, is_db_generation=False):
-        register_log('pack_xml_file')
-        if is_db_generation:
+    def pack_article_xml_file(self):
+        register_log('pack_article_xml_file')
+        if self.is_db_generation:
             #local
-            content = content.replace('"' + xml_versions.DTDFiles('scielo', version).remote + '"', '"' + xml_versions.DTDFiles('scielo', version).local + '"')
+            self.content = self.content.replace('"' + self.version_info.remote + '"', '"' + self.version_info.local + '"')
         else:
             #remote
-            content = content.replace('"' + xml_versions.DTDFiles('scielo', version).local + '"', '"' + xml_versions.DTDFiles('scielo', version).remote + '"')
+            self.content = self.content.replace('"' + self.version_info.local + '"', '"' + self.version_info.remote + '"')
 
-        fs_utils.write_file(new_xml_filename, content)
+        fs_utils.write_file(self.doc_files_info.new_xml_filename, self.content)
 
-        if do_incorrect_copy:
-            shutil.copyfile(new_xml_filename, new_xml_filename.replace('.xml', '_incorrect.xml'))
-        elif os.path.isfile(new_xml_filename.replace('.xml', '_incorrect.xml')):
-            os.unlink(new_xml_filename.replace('.xml', '_incorrect.xml'))
+        if self.doc.tree is None:
+            shutil.copyfile(self.doc_files_info.new_xml_filename, self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml'))
+        elif os.path.isfile(self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml')):
+            os.unlink(self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml'))
 
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
@@ -1098,7 +1009,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         utils.display_message(item_label)
 
         article_pkg_maker = ArticlePkgMaker(doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
-        doc, doc_files_info = article_pkg_maker.make_article_package(doc_files_info)
+        doc, doc_files_info = article_pkg_maker.make_article_package()
 
         package.add(doc_files_info, doc)
 
@@ -1306,29 +1217,6 @@ def get_xml_package_folders_info(input_pkg_path):
             if not os.path.isdir(results_path):
                 os.makedirs(results_path)
     return (xml_files, results_path)
-
-
-def get_article(xml_filename):
-    xml, e = xml_utils.load_xml(xml_filename)
-    return article.Article(xml, os.path.basename(xml_filename).replace('.xml', '')) if xml is not None else None
-
-
-def get_articles(xml_path):
-    r = {}
-    for xml_filename in os.listdir(xml_path):
-        if xml_filename.endswith('.xml'):
-            r[xml_filename.replace('.xml', '')] = get_article(xml_path + '/' + xml_filename)
-    return r
-
-
-def get_pkg_items(xml_filenames, report_path):
-    r = []
-    for xml_filename in xml_filenames:
-        doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
-        doc_files_info.new_xml_filename = xml_filename
-        doc_files_info.new_xml_path = os.path.dirname(xml_filename)
-        r.append((get_article(doc_files_info.new_xml_filename), doc_files_info))
-    return r
 
 
 def make_packages(path, acron, version='1.0', is_db_generation=False):

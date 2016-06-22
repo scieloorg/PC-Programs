@@ -653,3 +653,9 @@ td img {
   padding: 10px;
   background-color: #FF9985;
 }
+.compare_images {
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 5px;
+}
