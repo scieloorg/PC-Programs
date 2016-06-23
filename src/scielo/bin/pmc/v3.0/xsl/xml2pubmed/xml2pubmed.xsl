@@ -13,19 +13,30 @@
 		indent="yes" xml:space="default" 
 	/>
 	<xsl:variable name="pid_list" select="//pid-set//pid"/>
-
+	<xsl:variable name="articles" select="//article-item"/>
+	
 	<xsl:template match="/">
 		<ArticleSet>
-			<xsl:apply-templates select=".//article-set//article-item">
+			<xsl:apply-templates select="//pid-set//pid"/>
+			<!--xsl:apply-templates select=".//article-set//article-item">
 				<xsl:sort select="article//article-meta/pub-date[@pub-type='epub']/month" order="ascending" data-type="number"/>
 				<xsl:sort select="article//article-meta/pub-date[@pub-type='epub']/day" order="ascending" data-type="number"/>
 				<xsl:sort select="article//article-meta/fpage" order="ascending" data-type="number"/>
-			</xsl:apply-templates>	
+			</xsl:apply-templates-->	
+			
 		</ArticleSet>
+	</xsl:template>
+	
+	<xsl:template match="pid">
+		<xsl:variable name="f" select="@filename"/>
+		<xsl:apply-templates select="$articles[@filename=$f]/article">
+			<xsl:with-param name="pid" select="."></xsl:with-param>
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template match="article-item">
 		<xsl:variable name="f" select="@filename"/>
+		<xsl:comment><xsl:value-of select="$f"/></xsl:comment>
 		<xsl:apply-templates select="article">
 			<xsl:with-param name="pid" select="$pid_list[@filename=$f]"></xsl:with-param>
 		</xsl:apply-templates>
@@ -445,19 +456,22 @@
 	<xsl:template match="xref[@ref-type='aff']  | aff-id ">
 		<xsl:variable name="code" select="@rid"/>
 		<Affiliation>
-			<xsl:apply-templates select="../../..//aff[@id = $code]" mode="scielo-xml-text"/>
+			<xsl:apply-templates select="../../..//aff[@id = $code]/institution[@content-type='original']" mode="scielo-xml-text"/>
 		</Affiliation>
 	</xsl:template>
 	<xsl:template match="xref[@ref-type='aff']  | aff-id " mode="multiple-aff">
 		<xsl:variable name="code" select="@rid"/>
 		<AffiliationInfo>
 			<Affiliation>
-				<xsl:apply-templates select="../../..//aff[@id = $code]" mode="scielo-xml-text"/>
+				<xsl:apply-templates select="../../..//aff[@id = $code]/institution[@content-type='original']" mode="scielo-xml-text"/>
 			</Affiliation>
 		</AffiliationInfo>
 	</xsl:template>
 	
-	<xsl:template match="institution[@content-type='original']" mode="scielo-xml-text"></xsl:template>
+	<xsl:template match="institution[@content-type='original']" mode="scielo-xml-text">
+		<xsl:apply-templates select="*|text()"/>
+	</xsl:template>
+	
 	<xsl:template match="aff" mode="scielo-xml-text">
 		<xsl:apply-templates select="*[name()!='label']" mode="scielo-xml-text"/>
 	</xsl:template>
@@ -483,7 +497,7 @@
 		<xsl:apply-templates></xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="article[@article-type='other' or @article-type='book-review']">
+	<xsl:template match="article[@article-type='book-review']">
 	</xsl:template>
 	
 	
