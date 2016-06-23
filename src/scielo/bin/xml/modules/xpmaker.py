@@ -69,7 +69,7 @@ def format_last_part(fpage, seq, elocation_id, order, doi, issn):
     return r
 
 
-def get_href(graphic):
+def get_href_content(graphic):
     href = graphic[graphic.find('?'):]
     if '"' in href:
         href = href[:href.find('"')]
@@ -117,8 +117,8 @@ def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
-def find_graphic_parent(text):
-    #print('\nfind_graphic_parent:')
+def get_previous_element_which_has_id_attribute(text):
+    #print('\nget_previous_element_which_has_id_attribute:')
     elem_id = ''
     elem_name = ''
     if ' id="' in text:
@@ -150,13 +150,9 @@ def find_graphic_parent(text):
 
 class SGMLHTML(object):
 
-    def __init__(self, xml_name, src_path, html_filename):
+    def __init__(self, xml_name, html_filename):
         self.xml_name = xml_name
-        self.src_path = src_path
         self.html_filename = html_filename
-        self.src_html_img_path = os.path.dirname(src_path) + '/src_html_images'
-        if not os.path.isdir(self.src_html_img_path):
-            os.makedirs(self.src_html_img_path)
 
     @property
     def html_content(self):
@@ -183,15 +179,8 @@ class SGMLHTML(object):
                 break
         return path
 
-    def get_new_graphic_href_from_html_folder(self, html_img_href):
-        new_href = None
-        if os.path.isfile(self.html_img_path + '/' + html_img_href):
-            new_href = self.xml_name + html_img_href.replace('image', '')
-            shutil.copyfile(self.html_img_path + '/' + html_img_href, self.src_html_img_path + '/' + new_href)
-        return new_href
-
     @property
-    def images(self):
+    def unknown_href_items(self):
         #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
         #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
         html_content = self.html_content
@@ -263,20 +252,20 @@ class SGMLXML(object):
 
     def __init__(self, sgmxml_filename, sgmlxml_content, xml_name, src_path, html_filename):
         self.sgml_content = sgmlxml_content
-        self.sgmlhtml = SGMLHTML(xml_name, src_path.replace('/src', '/work/htmlimages'), html_filename)
+        self.sgmlhtml = SGMLHTML(xml_name, html_filename)
         self.xml_name = xml_name
         self.src_path = src_path
         self.sgmxml_filename = sgmxml_filename
-        self.element_and_graphic_matches = []
-        self.element_and_graphic_no_match = []
-        self.images_src_and_src_html = []
+        self.sorted_graphics_replaced_by_src_files = []
+        self.graphics_replaced_by_src_files = {}
+        self.xml_content = None
 
     def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
         register_log('SGMLXML.generate_xml')
         self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
         self.insert_mml_namespace()
-        self.generate_xml_images()
+        self.identify_unknown_href_items()
         self.replace_fontsymbols()
 
         for style in ['italic', 'bold', 'sup', 'sub']:
@@ -295,8 +284,7 @@ class SGMLXML(object):
                 xml = xml_utils.is_xml_well_formed(self.sgml_content)
 
         if xml is not None:
-            self.sgml_content = java_xml_utils.xml_content_transform(self.sgml_content, xml_versions.xsl_sgml2xml(version))
-            self.replace_mimetypes()
+            return java_xml_utils.xml_content_transform(self.sgml_content, xml_versions.xsl_sgml2xml(version))
 
     def insert_mml_namespace(self):
         if '>' in self.sgml_content:
@@ -307,37 +295,6 @@ class SGMLXML(object):
                 main_tag = main_tag[:main_tag.find('>')]
                 if '<' + main_tag + ' ':
                     self.sgml_content = self.sgml_content.replace('<' + main_tag + ' ', '<' + main_tag + ' xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
-
-    def replace_mimetypes(self):
-        r = self.sgml_content
-        if 'mimetype="replace' in self.sgml_content:
-            self.sgml_content = self.sgml_content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
-            self.sgml_content = self.sgml_content.replace('mime-subtype="replace"', '_~BREAK~MIME_')
-            r = ''
-            for item in self.sgml_content.split('_~BREAK~MIME_'):
-                if item.startswith('MIME:'):
-                    f = item[5:]
-                    f = f[0:f.rfind('"')]
-                    result = ''
-                    if os.path.isfile(self.src_path + '/' + f):
-                        result = mime.guess_type(self.src_path + '/' + f)
-                    else:
-                        url = urllib.pathname2url(f)
-                        result = mime.guess_type(url)
-                    try:
-                        result = result[0]
-                        if '/' in result:
-                            m, ms = result.split('/')
-                            r += 'mimetype="' + m + '" mime-subtype="' + ms + '"'
-                        else:
-                            pass
-                    except:
-                        pass
-                else:
-                    r += item
-        else:
-            utils.debugging('.............')
-        self.sgml_content = r
 
     def replace_fontsymbols(self):
         if self.sgml_content.find('<fontsymbol>') > 0:
@@ -350,32 +307,15 @@ class SGMLXML(object):
                 self.sgml_content = self.sgml_content.replace(item, html_fontsymbol_items[i])
                 i += 1
 
-    def find_new_href(self, graphic, previous_text, alternative_id, html_new_href):
-        elem_name, elem_id = find_graphic_parent(previous_text)
-
-        # image from src_path
-        new_href, possible_href_items, alternative_id = self.get_new_graphic_href_from_src_folder(elem_name, elem_id, alternative_id)
-        source = 'src'
-        if new_href is None:
-            # image from work/html
-            new_href = html_new_href
-            shutil.copyfile(self.sgmlhtml.src_html_img_path + '/' + new_href, self.src_path + '/' + new_href)
-            source = 'html'
-
-        if new_href is None:
-            self.element_and_graphic_no_match.append((elem_name, elem_id, source, ', '.join(possible_href_items)))
-        else:
-            self.element_and_graphic_matches.append((elem_name, elem_id, source, new_href))
-        return (elem_name, elem_id, new_href, alternative_id)
-
-    def generate_xml_images(self):
+    def identify_unknown_href_items(self):
         self.sgml_content = self.sgml_content.replace('href=&quot;?', 'href="?')
         self.sgml_content = self.sgml_content.replace('"">', '">')
         self.sgml_content = self.sgml_content.replace('href=""?', 'href="?')
-        self.images_src_and_src_html = []
+        self.sorted_graphics_replaced_by_src_files = []
+        self.graphics_replaced_by_src_files = {}
         if self.sgml_content.find('href="?' + self.xml_name) > 0:
             # for each graphic in sgml.xml, replace href="?xmlname" by href="image in src or image in work/html"
-            html_img_items = self.sgmlhtml.images
+            html_unknown_href_items = self.sgmlhtml.unknown_href_items
 
             self.sgml_content = self.sgml_content.replace('<graphic href="?' + self.xml_name, '--FIXHREF--<graphic href="?' + self.xml_name)
             parts = self.sgml_content.split('--FIXHREF--')
@@ -385,31 +325,37 @@ class SGMLXML(object):
             for part in parts:
                 if part.startswith('<graphic href="?' + self.xml_name):
                     graphic = part[0:part.find('>')]
-                    html_img_href = html_img_items[i - 1]
-                    if html_img_href == 'None':
+                    html_href = html_unknown_href_items[i - 1]
+                    if html_href == 'None':
                         # remove <graphic *> e </graphic>, mantendo o restante de item
                         part = part.replace(graphic, '')
                     else:
-                        href = get_href(graphic)
-                        html_new_href = self.sgmlhtml.get_new_graphic_href_from_html_folder(html_img_href)
-                        elem_name, elem_id, new_href, alternative_id = self.find_new_href(graphic, parts[i - 1], alternative_id, html_new_href)
+                        href = get_href_content(graphic)
+                        elem_name, elem_id = get_previous_element_which_has_id_attribute(parts[i - 1])
+                        src_href, possible_href_names, alternative_id = self.find_href_file_in_src_folder(elem_name, elem_id, alternative_id)
+                        new_href = src_href
+                        if new_href is None and html_href is not None:
+                            if os.path.isfile(self.sgmlhtml.html_img_path + '/' + html_href):
+                                new_href = self.doc_files_info.xml_name + html_href.replace('image', '')
+                                shutil.copyfile(self.sgmlhtml.html_img_path + '/' + html_href, self.src_path + '/' + new_href)
+                        if src_href is not None:
+                            self.graphics_replaced_by_src_files[src_href] = (elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
+                            self.sorted_graphics_replaced_by_src_files.append(self.graphics_replaced_by_src_files[src_href])
                         if new_href is not None:
                             part = part.replace(graphic, graphic.replace(href, new_href))
-                        self.images_src_and_src_html.append([elem_name, elem_id, html_new_href, new_href])
                 i += 1
                 new_parts.append(part)
             self.sgml_content = ''.join(new_parts)
 
-    def get_new_graphic_href_from_src_folder(self, elem_name, elem_id, alternative_id):
+    def find_href_file_in_src_folder(self, elem_name, elem_id, alternative_id):
         filenames = [self.xml_name]
         if 'v' in self.xml_name and self.xml_name.startswith('a'):
             filenames.append(self.xml_name[:self.xml_name.find('v')])
 
         found = []
-        possible_href_items = []
+        possible_href_names = []
 
         possibilities, alternative_id = get_components_of_new_href(elem_name, elem_id, alternative_id)
-
         for name in filenames:
             for possibility in possibilities:
                 elem_id, prefixes = possibility
@@ -423,14 +369,11 @@ class SGMLXML(object):
                     for number in [n, '0' + n]:
                         for ext in ['.tiff', '.tif', '.eps', '.jpg']:
                             href = name + prefix + number + ext
-                            possible_href_items.append(href)
+                            possible_href_names.append(href)
                             if os.path.isfile(self.src_path + '/' + href):
                                 found.append(href)
-        if len(found) > 0:
-            new_href = found[0]
-        else:
-            new_href = None
-        return (new_href, list(set(possible_href_items)), alternative_id)
+        new_href = None if len(found) == 0 else found[0]
+        return (new_href, list(set(possible_href_names)), alternative_id)
 
 
 def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
@@ -570,9 +513,6 @@ def xml_status(content, label):
         print(e)
 
 
-    
-
-
 def remove_xmllang_off_article_title_alt(content):
     if '<article-title ' in content:
         new = []
@@ -668,12 +608,15 @@ class ArticlePkgMaker(object):
         self.content = fs_utils.read_file(doc_files_info.xml_filename)
         self.text_messages = []
         self.doc = None
-        self.href_replacement_items = []
+        self.local_href_items = []
         self.replacements_related_files_items = []
         self.replacements_href_files_items = []
         self.replacements_not_found_href_files_items = []
-        self.href_names = []
+        self.local_href_names = []
         self.version_info = xml_versions.DTDFiles('scielo', version)
+        self.sgmlxml = None
+        #self.sorted_graphics_replaced_by_src_files = []
+        #self.graphics_replaced_by_src_files = {}
 
     def make_article_package(self):
         self.normalize_xml_content()
@@ -728,36 +671,48 @@ class ArticlePkgMaker(object):
             self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
 
     def normalize_sgmlxml(self):
-        sgmlxml = SGMLXML(self.doc_files_info.xml_filename, self.content, self.doc_files_info.xml_name, self.doc_files_info.xml_path, self.doc_files_info.html_filename)
-        sgmlxml.generate_xml(self.version)
-        self.content = sgmlxml.sgml_content
+        self.sgmlxml = SGMLXML(self.doc_files_info.xml_filename, self.content, self.doc_files_info.xml_name, self.doc_files_info.xml_path, self.doc_files_info.html_filename)
+        self.content = self.sgmlxml.generate_xml(self.version)
 
-        reports = []
-        if len(sgmlxml.element_and_graphic_no_match) > 0:
-            reports.append(self.get_graphic_elements_reports(sgmlxml.element_and_graphic_no_match, _('doc//graphic/@href files were not found')))
-        #if len(sgmlxml.element_and_graphic_matches) > 0:
-        #    reports.append(self.get_graphic_elements_reports(sgmlxml.element_and_graphic_matches, _('doc//graphic/@href files were found')))
-        #reports.append(self.get_images_comparison_report(sgmlxml.images_src_and_src_html, sgmlxml.src_path, sgmlxml.sgmlhtml.src_html_img_path))
-        #html_reports.save(self.doc_files_info.images_report_filename, '', ''.join(reports))
-
-    def get_graphic_elements_reports(self, items, title):
-        reports = []
-        if len(items) > 0:
-            table_header = [_('element'), _('id'), _('source'), _('expected values for @href')]
-            table_data = []
-            for item in items:
-                elem_name, elem_id, source, new_href = item
-                table_data.append({_('element'): elem_name, _('id'): elem_id, _('source'): source, _('expected values for @href'): new_href})
-            reports.append(html_reports.tag('h3', title))
-            reports.append(html_reports.sheet(table_header, table_data))
-        return ''.join(reports)
+    def replace_mimetypes(self):
+        r = self.content
+        if 'mimetype="replace' in self.content:
+            self.content = self.content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
+            self.content = self.content.replace('mime-subtype="replace"', '_~BREAK~MIME_')
+            r = ''
+            for item in self.content.split('_~BREAK~MIME_'):
+                if item.startswith('MIME:'):
+                    f = item[5:]
+                    f = f[0:f.rfind('"')]
+                    result = ''
+                    if os.path.isfile(self.src_path + '/' + f):
+                        result = mime.guess_type(self.src_path + '/' + f)
+                    else:
+                        url = urllib.pathname2url(f)
+                        result = mime.guess_type(url)
+                    try:
+                        result = result[0]
+                        if '/' in result:
+                            m, ms = result.split('/')
+                            r += 'mimetype="' + m + '" mime-subtype="' + ms + '"'
+                        else:
+                            pass
+                    except:
+                        pass
+                else:
+                    r += item
+        else:
+            utils.debugging('.............')
+        self.content = r
 
     def get_images_comparison_report(self, images_info, src_path, src_html_img_path):
-
+        #self.local_href_items
+        #self.sgmlxml.sorted_graphics_replaced_by_src_files = []
+        #self.sgmlxml.graphics_replaced_by_src_files = {}
         rows = []
-        rows.append(html_reports.tag('h2', _('Images Generation from Markup to Package')))
+        rows.append(html_reports.tag('h2', _('Images extracted from Markup')))
+        rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in "src" folder.')))
         rows.append(html_reports.tag('p', _('The images are presented in their original dimensions and in the same order they are found in the Markup document.')))
-        rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in the package.')))
 
         for elem_name, elem_id, html_new_href, new_href in images_info:
 
@@ -796,26 +751,14 @@ class ArticlePkgMaker(object):
     def normalize_package_name(self):
         register_log('normalize_package_name')
         self.doc_files_info.new_xml_path = self.scielo_pkg_path
-
         xml, e = xml_utils.load_xml(self.content)
         self.doc = article.Article(xml, self.doc_files_info.xml_name)
         self.doc_files_info.new_name = self.doc_files_info.xml_name
-
         if self.doc.tree is not None:
             if self.doc_files_info.is_sgmxml:
                 self.doc_files_info.new_name = self.generate_doc_files_info_new_name()
-            self.get_href_replacement_items()
-            changed = False
-            if len(self.href_replacement_items) > 0:
-                for current, new in self.href_replacement_items:
-                    if current != new:
-                        utils.display_message(current + ' => ' + new)
-                        self.content = self.content.replace('href="' + current, 'href="' + new)
-                        changed = True
-            if changed:
-                xml, e = xml_utils.load_xml(self.content)
-                self.doc = article.Article(xml, self.doc_files_info.xml_name)
-                self.doc.new_prefix = self.doc_files_info.new_name
+            self.replace_href_items()
+        self.doc.new_prefix = self.doc_files_info.new_name
         self.doc_files_info.new_xml_filename = self.doc_files_info.new_xml_path + '/' + self.doc_files_info.new_name + '.xml'
 
     def generate_doc_files_info_new_name(self):
@@ -843,14 +786,24 @@ class ArticlePkgMaker(object):
         r = '-'.join([part for part in parts if part is not None and not part == ''])
         return r
 
-    def get_href_replacement_items(self):
+    def replace_href_items(self):
         href_items = [href for href in self.doc.hrefs if href.is_internal_file]
         if self.doc_files_info.is_sgmxml:
             for href in href_items:
-                self.href_replacement_items.append((href.src, self.get_new_href(href)))
+                self.local_href_items.append((href.src, self.get_new_href(href)))
         else:
             for href in href_items:
-                self.href_replacement_items.append((href.src, self.add_extension(href.src, href.src)))
+                self.local_href_items.append((href.src, self.add_extension(href.src, href.src)))
+        changed = False
+        if len(self.local_href_items) > 0:
+            for current, new in self.local_href_items:
+                if current != new:
+                    utils.display_message(current + ' => ' + new)
+                    self.content = self.content.replace('href="' + current, 'href="' + new)
+                    changed = True
+        if changed:
+            xml, e = xml_utils.load_xml(self.content)
+            self.doc = article.Article(xml, self.doc_files_info.xml_name)
 
     def get_new_href(self, href):
         href_type = href_attach_type(href.parent.tag, href.element.tag)
@@ -892,7 +845,7 @@ class ArticlePkgMaker(object):
         self.replacements_related_files_items = []
         self.replacements_href_files_items = []
         self.replacements_not_found_href_files_items = []
-        self.href_names = []
+        self.local_href_names = []
 
         self.eliminate_old_package_files()
 
@@ -910,11 +863,15 @@ class ArticlePkgMaker(object):
 
         self.replacements_href_files_items = []
         self.replacements_not_found_href_files_items = []
-        for curr, new in self.href_replacement_items:
+
+        #self.sgmlxml.sorted_graphics_replaced_by_src_files
+        #self.sgmlxml.graphics_replaced_by_src_files
+
+        for curr, new in self.local_href_items:
             curr_name, curr_ext = os.path.splitext(curr)
             new_name, new_ext = os.path.splitext(new)
 
-            self.href_names.append(curr_name)
+            self.local_href_names.append(curr_name)
             curr_variations = [f for f in src_files if f.startswith(curr_name + '.')]
 
             for f in curr_variations:
@@ -939,7 +896,7 @@ class ArticlePkgMaker(object):
                 shutil.copyfile(self.doc_files_info.xml_path + '/' + f, self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name))
             elif f.startswith(self.doc_files_info.xml_name + '-'):
                 item, ext = os.path.splitext(f)
-                if not item in self.href_names:
+                if not item in self.local_href_names:
                     self.replacements_related_files_items.append((f, f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)))
                     shutil.copyfile(self.doc_files_info.xml_path + '/' + f, self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name))
         register_log('pack_article_related_files: fim')
@@ -968,7 +925,7 @@ class ArticlePkgMaker(object):
 
         log.append(message_file_list(_('Total of related files'), format(self.replacements_related_files_items)))
         log.append(message_file_list(_('Total of files in package'), format(self.replacements_href_files_items)))
-        log.append(message_file_list(_('Total of @href in XML'), format(self.href_replacement_items)))
+        log.append(message_file_list(_('Total of @href in XML'), format(self.local_href_items)))
         log.append(message_file_list(_('Total of @href not found in package'), format(self.replacements_not_found_href_files_items)))
 
         return '\n'.join(log)
