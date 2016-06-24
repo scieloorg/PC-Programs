@@ -8,20 +8,24 @@ from mimetypes import MimeTypes
 import zipfile
 import re
 
+try:
+    from PIL import Image
+    IMG_CONVERTER = True
+except Exception as e:
+    IMG_CONVERTER = False
+
 from __init__ import _
 import validation_status
 import utils
 import fs_utils
 import java_xml_utils
 import html_reports
-
 import article
 import serial_files
 import xml_utils
 import xml_versions
 import xpchecker
 import pkg_reports
-
 import symbols
 
 
@@ -32,6 +36,67 @@ log_items = []
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 DISPLAY_REPORT = True
+
+
+def complete_number(number, q=5):
+    number = '0'*q + number
+    return number[-q:]
+
+
+def format_last_part(fpage, seq, elocation_id, order, doi, issn):
+    #utils.debugging((fpage, seq, elocation_id, order, doi, issn))
+    r = None
+    if r is None:
+        if fpage is not None:
+            r = complete_number(fpage)
+            if seq is not None:
+                r += '-' + seq
+            if r == '00000':
+                r = None
+    if r is None:
+        if elocation_id is not None:
+            r = elocation_id
+    if r is None:
+        if doi is not None:
+            doi = doi[doi.find('/')+1:]
+            if issn in doi:
+                doi = doi[doi.find(issn) + len(issn):]
+            doi = doi.replace('.', '_').replace('-', '_')
+            r = doi
+    if r is None:
+        if order is not None:
+            r = complete_number(order)
+    return r
+
+
+def get_href_content(graphic):
+    href = graphic[graphic.find('?'):]
+    if '"' in href:
+        href = href[:href.find('"')]
+    if '&quot;' in href:
+        href = href[:href.find('&quot;')]
+    return href
+
+
+def get_components_of_new_href(elem_name, elem_id, alternative_id):
+    prefixes = []
+    possibilities = []
+    if elem_name == 'equation':
+        prefixes.append('frm')
+        prefixes.append('form')
+        prefixes.append('eq')
+        possibilities.append((elem_id, prefixes))
+    elif elem_name in ['tabwrap', 'equation', 'figgrp']:
+        prefixes.append(elem_name[0])
+        prefixes.append(elem_name[0:3])
+        possibilities.append((elem_id, prefixes))
+    else:
+        prefixes.append('img')
+        prefixes.append('image')
+        alternative_id += 1
+        alt_id = str(alternative_id)
+        possibilities.append((alt_id, prefixes))
+    return (possibilities, alternative_id)
 
 
 def xpm_version():
@@ -52,506 +117,267 @@ def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
-def replace_mimetypes(content, path):
-    r = content
-    if 'mimetype="replace' in content:
-        content = content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
-        content = content.replace('mime-subtype="replace"', '_~BREAK~MIME_')
-        r = ''
-        for item in content.split('_~BREAK~MIME_'):
-            if item.startswith('MIME:'):
-                f = item[5:]
-                f = f[0:f.rfind('"')]
-                result = ''
-                if os.path.isfile(path + '/' + f):
-                    result = mime.guess_type(path + '/' + f)
-                else:
-                    url = urllib.pathname2url(f)
-                    result = mime.guess_type(url)
-                try:
-                    result = result[0]
-                    if '/' in result:
-                        m, ms = result.split('/')
-                        r += 'mimetype="' + m + '" mime-subtype="' + ms + '"'
-                    else:
-                        pass
-                except:
-                    pass
-            else:
-                r += item
-    else:
-        utils.debugging('.............')
-    return r
-
-
-def get_graphic_info(text):
+def get_previous_element_which_has_id_attribute(text):
+    #print('\nget_previous_element_which_has_id_attribute:')
     elem_id = ''
     elem_name = ''
     if ' id="' in text:
-        elem_id = text[text.rfind(' id="') + len(' id="'):]
+        patch = text[text.rfind(' id="') + len(' id="'):]
+
+        elem_id = patch
         elem_id = elem_id[:elem_id.find('"')]
-        text = text[:text.rfind(' id="')]
-    if '<' in text:
-        while text.rfind('<') == text.rfind('</') and '<' in text:
-            text = text[:text.rfind('<')]
-    if '<' in text:
-        elem_name = text[text.rfind('<') + 1:]
-        if '>' in elem_name:
-            elem_name = elem_name[:elem_name.find('>')]
+
+        tag_end = patch
+        if '>' in tag_end:
+            tag_end = tag_end[:tag_end.find('>')]
+
+        elem_name = text[:text.rfind(' id="')]
+        elem_name = elem_name[elem_name.rfind('<')+1:]
         if ' ' in elem_name:
             elem_name = elem_name[:elem_name.find(' ')]
+
+        if patch.find('</' + elem_name + '>') >= 0 or tag_end.endswith('/'):
+            elem_name = ''
+            elem_id = ''
+        #print((elem_name, elem_id))
+    #else:
+    #    print('No element id')
+    #    print(text.encode('utf-8'))
+    #print('---')
+
     return (elem_name, elem_id)
+
+
+class SGMLHTML(object):
+
+    def __init__(self, xml_name, html_filename):
+        self.xml_name = xml_name
+        self.html_filename = html_filename
+
+    @property
+    def html_content(self):
+        content = fs_utils.read_file(self.html_filename, sys.getfilesystemencoding())
+        if not '<html' in content.lower():
+            c = content
+            for c in content:
+                if ord(c) == 0:
+                    break
+            content = content.replace(c, '')
+        return content
+
+    @property
+    def html_img_path(self):
+        path = None
+
+        html_path = os.path.dirname(self.html_filename)
+        html_name = os.path.basename(self.html_filename)
+        html_name, ext = os.path.splitext(html_name)
+
+        for item in os.listdir(html_path):
+            if os.path.isdir(html_path + '/' + item) and item.startswith(html_name):
+                path = html_path + '/' + item
+                break
+        return path
+
+    @property
+    def unknown_href_items(self):
+        #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
+        #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
+        html_content = self.html_content
+        if 'href=&quot;?' in html_content:
+            html_content = html_content.replace('href=&quot;?', 'href="?')
+        #if '“' in html_content:
+        #    html_content = html_content.replace('“', '"')
+        #if '”' in html_content:
+        #    html_content = html_content.replace('”', '"')
+        _items = html_content.replace('href="?', 'href="?--~BREAK~FIXHREF--FIXHREF').split('--~BREAK~FIXHREF--')
+        items = [item for item in _items if item.startswith('FIXHREF')]
+        img_src = []
+        for item in items:
+            if 'src="' in item:
+                src = item[item.find('src="') + len('src="'):]
+                src = src[0:src.find('"')]
+                if '/' in src:
+                    src = src[src.find('/') + 1:]
+                if len(src) > 0:
+                    img_src.append(src)
+            else:
+                img_src.append('None')
+        return img_src
+
+    def get_fontsymbols(self):
+        r = []
+        html_content = self.html_content
+        if '[fontsymbol]' in html_content.lower():
+            for style in ['italic', 'sup', 'sub', 'bold']:
+                html_content = html_content.replace('<' + style + '>', '[' + style + ']')
+                html_content = html_content.replace('</' + style + '>', '[/' + style + ']')
+
+            html_content = html_content.replace('[fontsymbol]'.upper(), '[fontsymbol]')
+            html_content = html_content.replace('[/fontsymbol]'.upper(), '[/fontsymbol]')
+            html_content = html_content.replace('[fontsymbol]', '~BREAK~[fontsymbol]')
+            html_content = html_content.replace('[/fontsymbol]', '[/fontsymbol]~BREAK~')
+
+            html_fontsymbol_items = [item for item in html_content.split('~BREAK~') if item.startswith('[fontsymbol]')]
+            for item in html_fontsymbol_items:
+                item = item.replace('[fontsymbol]', '').replace('[/fontsymbol]', '')
+                item = item.replace('<', '~BREAK~<').replace('>', '>~BREAK~')
+                item = item.replace('[', '~BREAK~[').replace(']', ']~BREAK~')
+                parts = [part for part in item.split('~BREAK~') if not part.endswith('>') and not part.startswith('<')]
+
+                new = ''
+                for part in parts:
+                    if part.startswith('['):
+                        new += part
+                    else:
+
+                        for c in part:
+                            _c = c.strip()
+                            if _c.isdigit() or _c == '':
+                                n = c
+                            else:
+                                try:
+                                    n = symbols.get_symbol(c)
+                                except:
+                                    n = '?'
+                            new += n
+                for style in ['italic', 'sup', 'sub', 'bold']:
+                    new = new.replace('[' + style + ']', '<' + style + '>')
+                    new = new.replace('[/' + style + ']', '</' + style + '>')
+                r.append(new)
+        return r
 
 
 class SGMLXML(object):
 
-    def __init__(self, sgmxml_filename, sgmlxml_content, xml_name, src_path):
-        self.content = sgmlxml_content
+    def __init__(self, sgmxml_filename, sgmlxml_content, xml_name, src_path, html_filename):
+        self.sgml_content = sgmlxml_content
+        self.sgmlhtml = SGMLHTML(xml_name, html_filename)
         self.xml_name = xml_name
         self.src_path = src_path
         self.sgmxml_filename = sgmxml_filename
-        self.matches = []
-        self.no_match = []
+        self.sorted_graphic_href_items = []
+        self.src_folder_graphics = []
+        self.xml_content = None
 
-    def generate_xml(self, version, html_filename):
+    def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
-        register_log('normalize_sgmlxml')
-        self.content = xml_utils.remove_doctype(self.content)
-        if '>' in self.content:
-            self.content = self.content[:self.content.rfind('>') + 1]
-        if 'mml:' in self.content and not 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' in self.content:
-            if '</' in self.content:
-                main_tag = self.content[self.content.rfind('</') + 2:]
-                main_tag = main_tag[:main_tag.find('>')]
-                if '<' + main_tag + ' ':
-                    self.content = self.content.replace('<' + main_tag + ' ', '<' + main_tag + ' xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
-
-        #embedded_tables = get_html_tables(html_content)
-        #content = replace_tables_in_sgmlxml(content, embedded_tables)
-        html_content = read_html(html_filename)
-        self.fix_images(html_filename, html_content)
-        self.content = replace_fontsymbols(self.content, html_content)
+        register_log('SGMLXML.generate_xml')
+        self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
+        self.insert_mml_namespace()
+        self.identify_unknown_href_items()
+        self.replace_fontsymbols()
 
         for style in ['italic', 'bold', 'sup', 'sub']:
             s = '<' + style + '>'
             e = '</' + style + '>'
-            self.content = self.content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
+            self.sgml_content = self.sgml_content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
 
-        xml = xml_utils.is_xml_well_formed(self.content)
+        xml = xml_utils.is_xml_well_formed(self.sgml_content)
         if xml is None:
-            xml_fixer = xml_utils.XMLContent(self.content)
+            xml_fixer = xml_utils.XMLContent(self.sgml_content)
             xml_fixer.fix()
-            if not xml_fixer.content == self.content:
-                self.content = xml_fixer.content
+            if not xml_fixer.content == self.sgml_content:
+                self.sgml_content = xml_fixer.content
                 utils.debugging(self.sgmxml_filename)
-                fs_utils.write_file(self.sgmxml_filename, self.content)
-                xml = xml_utils.is_xml_well_formed(self.content)
+                fs_utils.write_file(self.sgmxml_filename, self.sgml_content)
+                xml = xml_utils.is_xml_well_formed(self.sgml_content)
 
-        if xml is None:
-            xml_content = self.content
-        else:
-            xml_content = java_xml_utils.xml_content_transform(self.content, xml_versions.xsl_sgml2xml(version))
-            xml_content = replace_mimetypes(xml_content, self.src_path)
-        return xml_content
+        if xml is not None:
+            return java_xml_utils.xml_content_transform(self.sgml_content, xml_versions.xsl_sgml2xml(version))
 
-    def fix_graphic_hrefs_and_files(self, html_img_items, html_img_path):
-        # for each graphic in sgml.xml, replace href="?xmlname" by href="image in src or image in work/html"
-        self.content = self.content.replace('<graphic href="?' + self.xml_name, '--FIXHREF--<graphic href="?' + self.xml_name)
-        parts = self.content.split('--FIXHREF--')
-        new_parts = []
-        i = 0
-        counter = 0
-        for part in parts:
-            if part.startswith('<graphic href="?' + self.xml_name):
-                graphic = part[0:part.find('>')]
-                html_img_href = html_img_items[i - 1]
-                if html_img_href == 'None':
-                    # remove <graphic *> e </graphic>, mantendo o restante de item
-                    part = part.replace(graphic, '')
-                else:
-                    href = graphic[graphic.find('?'):]
-                    if '"' in href:
-                        href = href[:href.find('"')]
-                    if '&quot;' in href:
-                        href = href[:href.find('&quot;')]
-                    # image from src_path
-                    elem_name, elem_id = get_graphic_info(parts[i - 1])
-                    if elem_id == '':
-                        counter += 1
-                        elem_id = str(counter)
-                    new_href, valid_href_items = self.get_graphic_href(elem_name, elem_id)
-                    source = 'src'
-                    if new_href is None:
-                        # image from work/html
-                        if os.path.isfile(html_img_path + '/' + html_img_href):
-                            new_href = self.xml_name + html_img_href.replace('image', '')
-                            shutil.copyfile(html_img_path + '/' + html_img_href, self.src_path + '/' + new_href)
-                            source = 'html'
-                    if new_href is None:
-                        self.no_match.append((elem_name, elem_id, source, ', '.join(valid_href_items)))
-                    else:
-                        part = part.replace(graphic, graphic.replace(href, new_href))
-                        self.matches.append((elem_name, elem_id, source, new_href))
-            i += 1
-            new_parts.append(part)
-        self.content = ''.join(new_parts)
+    def insert_mml_namespace(self):
+        if '>' in self.sgml_content:
+            self.sgml_content = self.sgml_content[:self.sgml_content.rfind('>') + 1]
+        if 'mml:' in self.sgml_content and not 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' in self.sgml_content:
+            if '</' in self.sgml_content:
+                main_tag = self.sgml_content[self.sgml_content.rfind('</') + 2:]
+                main_tag = main_tag[:main_tag.find('>')]
+                if '<' + main_tag + ' ':
+                    self.sgml_content = self.sgml_content.replace('<' + main_tag + ' ', '<' + main_tag + ' xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
 
-    def fix_images(self, html_filename, html_content):
-        self.content = self.content.replace('href=&quot;?', 'href="?')
-        self.content = self.content.replace('"">', '">')
-        self.content = self.content.replace('href=""?', 'href="?')
-
-        if self.content.find('href="?' + self.xml_name) > 0:
-            html_img_files = get_embedded_images_in_html(html_content)
-            html_img_path = html_images_path(html_filename)
-            self.fix_graphic_hrefs_and_files(html_img_files, html_img_path)
-
-    def get_graphic_href(self, elem_name, elem_id):
-        i = 0
-        while not elem_id[i].isdigit():
-            i += 1
-        n = str(int(elem_id[i:]))
-
-        prefixes = [elem_name[0], elem_name[0:3]]
-        if elem_name == 'equation':
-            prefixes.append('frm')
-            prefixes.append('form')
-            prefixes.append('eq')
-        elif not elem_name in ['tabwrap', 'equation', 'figgrp']:
-            prefixes.append('img')
-            prefixes.append('image')
-
-        files = [self.xml_name]
-        if 'v' in self.xml_name and self.xml_name.startswith('a'):
-            files.append(self.xml_name[:self.xml_name.find('v')])
-        found = []
-        valid_href_items = []
-        for name in files:
-            for elem_name in prefixes:
-                for elem_id in [n, '0' + n]:
-                    for ext in ['.tiff', '.tif', '.eps', '.jpg']:
-                        href = name + elem_name + elem_id + ext
-                        valid_href_items.append(href)
-                        if os.path.isfile(self.src_path + '/' + href):
-                            found.append(href)
-        if len(found) > 0:
-            new_href = found[0]
-        else:
-            new_href = None
-        return (new_href, valid_href_items)
-
-
-def rename_embedded_img_href(content, xml_name, new_href_list):
-    new = content
-    content = content.replace('<graphic href=&quot;?', '<graphic href="?')
-    content = content.replace('<graphic href="?', '--FIXHREF--<graphic href="?')
-    sgmlxml_graphic_element = content.split('--FIXHREF--')
-
-    if len(new_href_list) == (len(sgmlxml_graphic_element) - 1):
-        new = ''
-        i = 0
-        for item in sgmlxml_graphic_element:
-            if item.startswith('<graphic href="?'):
-                after_href_value = item[item.find('?'):]
-                find_aspas = after_href_value.find('"')
-                find_quote = after_href_value.find('&quot;')
-                chosen = sorted([e for e in [find_aspas, find_quote] if e > 0])
-                if len(chosen) > 0:
-                    after_href_value = after_href_value[chosen[0]:]
-                new_href_item = new_href_list[i]
-                if new_href_item == 'None':
-                    # remove <graphic *> e </graphic>, mantendo o restante de item
-                    item = item[item.find('>')+1:]
-                    if '</graphic>' in item:
-                        # isto é, not '/>' in item
-                        item = item[0:item.find('</graphic>')] + after_href_value[after_href_value.find('</graphic>')+len('</graphic>'):]
-                    new += item
-                else:
-                    if new_href_item.startswith('image'):
-                        utils.debugging(new_href_item)
-                        new_href_item = new_href_item.replace('image', '')
-                        utils.debugging(new_href_item)
-                    new += '<graphic href="' + xml_name + new_href_item + after_href_value
+    def replace_fontsymbols(self):
+        if self.sgml_content.find('<fontsymbol>') > 0:
+            html_fontsymbol_items = self.sgmlhtml.get_fontsymbols()
+            c = self.sgml_content.replace('<fontsymbol>', '~BREAK~<fontsymbol>')
+            c = c.replace('</fontsymbol>', '</fontsymbol>~BREAK~')
+            items = [item for item in c.split('~BREAK~') if item.startswith('<fontsymbol>') and item.endswith('</fontsymbol>')]
+            i = 0
+            for item in items:
+                self.sgml_content = self.sgml_content.replace(item, html_fontsymbol_items[i])
                 i += 1
-            else:
-                new += item
-    return new
 
+    def identify_unknown_href_items(self):
+        self.sgml_content = self.sgml_content.replace('href=&quot;?', 'href="?')
+        self.sgml_content = self.sgml_content.replace('"">', '">')
+        self.sgml_content = self.sgml_content.replace('href=""?', 'href="?')
+        self.sorted_graphic_href_items = []
+        self.src_folder_graphics = []
+        if self.sgml_content.find('href="?' + self.xml_name) > 0:
+            # for each graphic in sgml.xml, replace href="?xmlname" by href="image in src or image in work/html"
+            html_unknown_href_items = self.sgmlhtml.unknown_href_items
 
-def html_images_path(html_filename):
-    html_img_path = None
+            self.sgml_content = self.sgml_content.replace('<graphic href="?' + self.xml_name, '--FIXHREF--<graphic href="?' + self.xml_name)
+            parts = self.sgml_content.split('--FIXHREF--')
+            new_parts = []
+            i = 0
+            alternative_id = 0
+            for part in parts:
+                if part.startswith('<graphic href="?' + self.xml_name):
+                    graphic = part[0:part.find('>')]
+                    html_href = html_unknown_href_items[i - 1]
+                    if html_href == 'None':
+                        # remove <graphic *> e </graphic>, mantendo o restante de item
+                        part = part.replace(graphic, '')
+                    else:
+                        href = get_href_content(graphic)
+                        elem_name, elem_id = get_previous_element_which_has_id_attribute(parts[i - 1])
+                        src_href, possible_href_names, alternative_id = self.find_href_file_in_src_folder(elem_name, elem_id, alternative_id)
+                        renamed_href = src_href
+                        if src_href is not None:
+                            self.src_folder_graphics.append(src_href)
+                        if renamed_href is None and html_href is not None:
+                            if os.path.isfile(self.sgmlhtml.html_img_path + '/' + html_href):
+                                renamed_href = self.xml_name + html_href.replace('image', '')
+                                shutil.copyfile(self.sgmlhtml.html_img_path + '/' + html_href, self.src_path + '/' + renamed_href)
 
-    html_path = os.path.dirname(html_filename)
-    html_name = os.path.basename(html_filename)
-    html_name, ext = os.path.splitext(html_name)
+                        self.sorted_graphic_href_items.append((renamed_href, elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href))
+                        if renamed_href is not None:
+                            part = part.replace(graphic, graphic.replace(href, renamed_href))
+                i += 1
+                new_parts.append(part)
+            self.sgml_content = ''.join(new_parts)
 
-    for item in os.listdir(html_path):
-        if os.path.isdir(html_path + '/' + item) and item.startswith(html_name):
-            html_img_path = html_path + '/' + item
-            break
-    return html_img_path
+    def find_href_file_in_src_folder(self, elem_name, elem_id, alternative_id):
+        filenames = [self.xml_name]
+        if 'v' in self.xml_name and self.xml_name.startswith('a'):
+            filenames.append(self.xml_name[:self.xml_name.find('v')])
 
+        found = []
+        possible_href_names = []
 
-def get_embedded_images_in_html(html_content):
-    #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
-    #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
-    if 'href=&quot;?' in html_content:
-        html_content = html_content.replace('href=&quot;?', 'href="?')
-    #if '“' in html_content:
-    #    html_content = html_content.replace('“', '"')
-    #if '”' in html_content:
-    #    html_content = html_content.replace('”', '"')
+        possibilities, alternative_id = get_components_of_new_href(elem_name, elem_id, alternative_id)
+        for name in filenames:
+            for possibility in possibilities:
+                elem_id, prefixes = possibility
 
-    html_content = html_content.replace('href="?', 'href="?--~BREAK~FIXHREF--FIXHREF')
-    _items = html_content.split('--~BREAK~FIXHREF--')
-    items = [item for item in _items if item.startswith('FIXHREF')]
-    img_src = []
-    for item in items:
-        if 'src="' in item:
-            src = item[item.find('src="') + len('src="'):]
-            src = src[0:src.find('"')]
-            if '/' in src:
-                src = src[src.find('/') + 1:]
-            if len(src) > 0:
-                img_src.append(src)
-        else:
-            img_src.append('None')
-    return img_src
+                i = 0
+                while not elem_id[i].isdigit():
+                    i += 1
+                n = str(int(elem_id[i:]))
 
-
-def extract_embedded_images(xml_name, content, html_content, html_filename, dest_path):
-    content = content.replace('href=&quot;?', 'href="?')
-    if content.find('href="?' + xml_name) > 0:
-        embedded_img_files = get_embedded_images_in_html(html_content)
-        embedded_img_path = None
-
-        html_path = os.path.dirname(html_filename)
-        html_name = os.path.basename(html_filename)
-        html_name = html_name[0:html_name.rfind('.')]
-
-        for item in os.listdir(html_path):
-            if os.path.isdir(html_path + '/' + item) and item.startswith(html_name):
-                embedded_img_path = html_path + '/' + item
-                break
-        if not embedded_img_path is None:
-            content = rename_embedded_img_href(content, xml_name, embedded_img_files)
-            for item in embedded_img_files:
-                if os.path.isfile(embedded_img_path + '/' + item):
-                    new_img_name = item
-                    if new_img_name.startswith('image'):
-                        utils.debugging(new_img_name)
-                        new_img_name = new_img_name[len('image'):]
-                        utils.debugging(new_img_name)
-                    shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + new_img_name)
-        content = content.replace('"">', '">')
-        content = content.replace('href=""?', 'href="?')
-
-    return content
-
-
-def get_html_tables(html_content):
-    html_content = fix_sgml_tags(html_content)
-    #utils.debugging(html_content)
-    html_content = fix_tabwrap_end(html_content)
-    #utils.debugging(html_content)
-
-    tables = {}
-    html_content = html_content.replace('[tabwrap', '~BREAK~[tabwrap')
-    html_content = html_content.replace('[/tabwrap]', '[/tabwrap]~BREAK~')
-    for item in html_content.split('~BREAK~'):
-        if item.startswith('[tabwrap') and item.endswith('[/tabwrap]'):
-            if 'id="' in item:
-                table_id = item[item.find('id="')+len('id="'):]
-                table_id = table_id[0:table_id.find('"')]
-                if item.find('<table') > 0 and item.rfind('</table>') > 0:
-                    table = item[item.find('<table'):]
-                    table = table[0:table.rfind('</table>')+len('</table>')]
-
-                    table = remove_sgml_tags(table)
-                    table = ignore_html_tags_and_insert_quotes_to_attributes(table, ['table', 'a', 'img', 'tbody', 'thead', 'th', 'tr', 'td', 'b', 'i'])
-                    utils.debugging(table_id)
-                    utils.debugging(table)
-                    x
-                    tables[table_id] = table
-    return tables
-
-
-def fix_sgml_tags(html_content):
-    # [<span style='color:#666699'>/td]
-    html_content = html_content.replace('[', '~BREAK~[')
-    html_content = html_content.replace(']', ']~BREAK~')
-    new = []
-    for item in html_content.split('~BREAK~'):
-        if item.startswith('[') and item.endswith(']') and '<' in item and '>' in item:
-            p1 = item.find('<')
-            p2 = item.find('>')
-            if p1 < p2:
-                r = item[p1:p2+1]
-                if r.startswith('</'):
-                    item = r + item[0:p1] + item[p2+1:]
-                else:
-                    item = item[0:p1] + item[p2+1:] + r
-
-        new.append(item)
-    return ''.join(new)
-
-
-def remove_sgml_tags(html_content):
-    html_content = html_content.replace('[', '~BREAK~[')
-    html_content = html_content.replace(']', ']~BREAK~')
-    parts = []
-    for part in html_content.split('~BREAK~'):
-        if not part.startswith('[') and not part.endswith(']'):
-            parts.append(part)
-    return ''.join(parts)
-
-
-def ignore_html_tags_and_insert_quotes_to_attributes(html_content, tags_to_keep, html=True):
-    if html:
-        c1 = '<'
-        c2 = '>'
-    else:
-        c1 = '['
-        c2 = ']'
-    html_content = html_content.replace(c1, '~BREAK~' + c1)
-    html_content = html_content.replace(c2, c2 + '~BREAK~')
-
-    html_content = html_content.replace(' nowrap', '')
-    parts = []
-    for part in html_content.split('~BREAK~'):
-        if part.startswith(c1) and part.endswith(c2):
-            tag = part[1:]
-            if tag.startswith('/'):
-                tag = tag[1:-1]
-            else:
-                if ' ' in tag:
-                    tag = tag[0:tag.find(' ')]
-                elif c2 in tag:
-                    tag = tag[0:tag.find(c2)]
-
-            if tag in tags_to_keep:
-                if '=' in part:
-                    utils.debugging('-'*80)
-                    utils.debugging(part)
-                    open_tag = part.replace(c2, ' ' + c2)
-                    open_tag = open_tag.replace('=', '~BREAK~=')
-                    attributes = []
-                    for attr in open_tag.split('~BREAK~'):
-                        if attr.startswith('='):
-                            if not '"' in attr:
-                                attr = attr.replace('=', '="')
-                                p = attr.rfind(' ')
-                                attr = attr[0:p] + '"' + attr[p:]
-                        attributes.append(attr)
-                    part = ''.join(attributes).replace(' ' + c2, c2)
-                    utils.debugging(part)
-            else:
-                part = ''
-        parts.append(part)
-    return ''.join(parts)
-
-
-def fix_tabwrap_end(html_content):
-    html_content = html_content.replace('[tabwrap', '~BREAK~[tabwrap')
-    parts = []
-    for part in html_content.split('~BREAK~'):
-        if part.startswith('[tabwrap'):
-            p_table = part.find('</table>')
-            p_tabwrap = part.find('[/tabwrap]')
-            if 0 < p_tabwrap < p_table:
-                part = part.replace('[/tabwrap]', '')
-                part = part.replace('</table>', '</table>[/tabwrap]')
-        parts.append(part)
-    return ''.join(parts)
-
-
-def replace_tables_in_sgmlxml(content, embedded_tables):
-    for table_id, table in embedded_tables.items():
-        p = content.find('<tabwrap id="' + table_id + '"')
-        if p > 0:
-            t = content[p:]
-            p_end = t.find('</table>')
-            if p_end > 0:
-                p_end += len('</table>')
-                t = t[0:p_end]
-                p = t.find('<table')
-                if p > 0:
-                    t = t[p:]
-                    content = content.replace(t, table)
-
-    return content
-
-
-def read_html(html_filename):
-    html_content = fs_utils.read_file(html_filename, sys.getfilesystemencoding())
-    if not '<html' in html_content.lower():
-        c = html_content
-        for c in html_content:
-            if ord(c) == 0:
-                break
-        html_content = html_content.replace(c, '')
-    return html_content
-
-
-def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, html_filename):
-    #content = fix_uppercase_tag(content)
-    register_log('normalize_sgmlxml')
-    content = xml_utils.remove_doctype(content)
-    if 'mml:' in content and not 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' in content:
-        if '<doc' in content:
-            content = content.replace('<doc ', '<doc xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
-        elif '<article' in content:
-            content = content.replace('<article ', '<article xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
-        elif '<text' in content:
-            content = content.replace('<text ', '<text xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
-
-    html_content = read_html(html_filename)
-    #embedded_tables = get_html_tables(html_content)
-    #content = replace_tables_in_sgmlxml(content, embedded_tables)
-    content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
-
-    content = replace_fontsymbols(content, html_content)
-    for style in ['italic', 'bold', 'sup', 'sub']:
-        s = '<' + style + '>'
-        e = '</' + style + '>'
-        content = content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
-
-    xml = xml_utils.is_xml_well_formed(content)
-    if xml is None:
-        content = make_sgmlxml_well_formed(content)
-        utils.debugging(sgmxml_filename)
-        fs_utils.write_file(sgmxml_filename, content)
-        xml = xml_utils.is_xml_well_formed(content)
-
-    if not xml is None:
-        content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
-        content = replace_mimetypes(content, src_path)
-    return content
-
-
-def make_sgmlxml_well_formed(content):
-    if '<doc ' in content and '</doc>' in content:
-        content = content[0:content.find('</doc>') + len('</doc>')]
-    elif '<article ' in content and '</article>' in content:
-        content = content[0:content.find('</article>') + len('</article>')]
-    elif '<text ' in content and '</text>' in content:
-        content = content[0:content.find('</text>') + len('</text>')]
-
-    xml_fix = xml_utils.XMLContent(content)
-    xml_fix.fix()
-    if not xml_fix.content == content:
-        content = xml_fix.content
-    return content
+                for prefix in prefixes:
+                    for number in [n, '0' + n]:
+                        for ext in ['.tiff', '.tif', '.eps', '.jpg']:
+                            href = name + prefix + number + ext
+                            possible_href_names.append(href)
+                            if os.path.isfile(self.src_path + '/' + href):
+                                found.append(href)
+        new_href = None if len(found) == 0 else found[0]
+        return (new_href, list(set(possible_href_names)), alternative_id)
 
 
 def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
-    try:
-        from PIL import Image
-        IMG_CONVERTER = True
-    except Exception as e:
-        IMG_CONVERTER = False
-        utils.display_message(e)
-
     if IMG_CONVERTER:
 
         for item in os.listdir(source_path):
@@ -572,92 +398,6 @@ def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
                         utils.display_message(inst)
 
 
-def package_resize_large_jpg(source_path, jpg_path):
-    if source_path == jpg_path:
-        for item in os.listdir(source_path):
-            if item.endswith('.jpg') and item.startswith('bkp-'):
-                shutil.copyfile(source_path + '/' + item, jpg_path + '/bkp-' + item)
-                resize_jpg(source_path + '/' + item, jpg_path + '/' + item)
-    else:
-        for item in os.listdir(source_path):
-            if item.endswith('.jpg'):
-                resize_jpg(source_path + '/' + item, jpg_path + '/' + item)
-
-
-def resize_jpg(large_jpg_filename, jpg_filename):
-    try:
-        from PIL import Image
-        IMG_CONVERTER = True
-    except Exception as e:
-        IMG_CONVERTER = False
-        utils.display_message(e)
-
-    if IMG_CONVERTER:
-        basewidth = 300
-        img = Image.open(large_jpg_filename)
-        if basewidth < img.size[0]:
-            wpercent = (basewidth/float(img.size[0]))
-            hsize = int((float(img.size[1])*float(wpercent)))
-            img = img.resize((basewidth, hsize), Image.ANTIALIAS)
-            img.save(jpg_filename)
-
-
-def generate_new_name(doc, param_acron='', original_xml_name=''):
-    def format_last_part(fpage, seq, elocation_id, order, doi, issn):
-        def normalize_len(fpage):
-            fpage = '00000' + fpage
-            return fpage[-5:]
-        #utils.debugging((fpage, seq, elocation_id, order, doi, issn))
-        r = None
-        if r is None:
-            if fpage is not None:
-                r = normalize_len(fpage)
-                if seq is not None:
-                    r += '-' + seq
-                if r == '00000':
-                    r = None
-        if r is None:
-            if elocation_id is not None:
-                r = elocation_id
-        if r is None:
-            if doi is not None:
-                doi = doi[doi.find('/')+1:]
-                if issn in doi:
-                    doi = doi[doi.find(issn) + len(issn):]
-                doi = doi.replace('.', '_').replace('-', '_')
-                r = doi
-        if r is None:
-            if order is not None:
-                r = normalize_len(order)
-        return r
-
-    register_log('generate_new_name')
-
-    r = ''
-    vol, issueno, fpage, seq, elocation_id, order, doi = doc.volume, doc.number, doc.fpage, doc.fpage_seq, doc.elocation_id, doc.order, doc.doi
-    issns = [issn for issn in [doc.e_issn, doc.print_issn] if issn is not None]
-    if original_xml_name[0:9] in issns:
-        issn = original_xml_name[0:9]
-    else:
-        issn = doc.e_issn if doc.e_issn else doc.print_issn
-
-    suppl = doc.volume_suppl if doc.volume_suppl else doc.number_suppl
-
-    last = format_last_part(fpage, seq, elocation_id, order, doi, issn)
-    if issueno:
-        if issueno == 'ahead' or issueno == '00':
-            issueno = None
-        else:
-            if len(issueno) <= 2:
-                issueno = '00' + issueno
-                issueno = issueno[-2:]
-    if suppl:
-        suppl = 's' + suppl if suppl != '0' else 'suppl'
-    parts = [issn, param_acron, vol, issueno, suppl, last, doc.compl]
-    r = '-'.join([part for part in parts if part is not None and not part == ''])
-    return r
-
-
 def href_attach_type(parent_tag, tag):
     if 'suppl' in tag or 'media' == tag:
         attach_type = 's'
@@ -668,185 +408,6 @@ def href_attach_type(parent_tag, tag):
     else:
         attach_type = 'g'
     return attach_type
-
-
-def generate_curr_and_new_href_list(xml_name, new_name, href_list):
-    r = []
-    attach_type = ''
-    for href, attach_type, attach_id in href_list:
-        if attach_id is None:
-            attach_name = href.replace(xml_name, '')
-            if attach_name[0:1] in '-_':
-                attach_name = attach_name[1:]
-        else:
-            attach_name = attach_id
-            if '.' in href:
-                attach_name += href[href.rfind('.'):]
-        new = new_name + '-' + attach_type + attach_name.replace('image', '').replace('img', '')
-        r.append((href, new))
-    return list(set(r))
-
-
-def add_extension(curr_and_new_href_list, xml_path):
-    r = []
-    for href, new_href in curr_and_new_href_list:
-        if not '.' in new_href:
-            extensions = [f[f.rfind('.'):] for f in os.listdir(xml_path) if f.startswith(href + '.')]
-            if len(extensions) > 1:
-                extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
-            if len(extensions) > 0:
-                new_href += extensions[0]
-        r.append((href, new_href))
-    return r
-
-
-def get_attach_info(doc):
-    items = []
-    for href_info in doc.hrefs:
-        if href_info.is_internal_file:
-            attach_type = href_attach_type(href_info.parent.tag, href_info.element.tag)
-            attach_id = href_info.id
-            items.append((href_info.src, attach_type, attach_id))
-    return items
-
-
-def normalize_hrefs(content, curr_and_new_href_list):
-    for current, new in curr_and_new_href_list:
-        utils.display_message(current + ' => ' + new)
-        content = content.replace('href="' + current, 'href="' + new)
-    return content
-
-
-def __pack_article_files(doc_files_info, dest_path, href_files_list):
-    register_log('pack_article_files: inicio')
-    src_path = doc_files_info.xml_path
-    xml_name = doc_files_info.xml_name
-    new_name = doc_files_info.new_name
-
-    r_related_files_list = []
-    r_href_files_list = []
-    r_not_found = []
-
-    register_log('pack_article_files: get_related_files')
-    related_files_list = get_related_files(src_path, xml_name)
-
-    if not os.path.isdir(dest_path):
-        os.makedirs(dest_path)
-
-    register_log('pack_article_files: related_files_list')
-    for f in related_files_list:
-        r_related_files_list += pack_file_extended(src_path, dest_path, f, f.replace(xml_name, new_name))
-
-    register_log('pack_article_files: href_files_list')
-    for curr, new in href_files_list:
-        s = pack_file_extended(src_path, dest_path, curr, new)
-        if len(s) == 0:
-            r_not_found.append((curr, new))
-        else:
-            r_href_files_list += s
-
-    register_log('pack_article_files: serial_files.delete_files')
-    serial_files.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
-    register_log('pack_article_files: fim')
-    return (r_related_files_list, r_href_files_list, r_not_found)
-
-
-def pack_article_files(doc_files_info, dest_path, href_files_list):
-    register_log('pack_article_files: inicio')
-    src_path = doc_files_info.xml_path
-    xml_name = doc_files_info.xml_name
-    new_name = doc_files_info.new_name
-
-    r_related_files_list = []
-    r_href_files_list = []
-    r_not_found = []
-
-    if os.path.isdir(dest_path):
-        for item in os.listdir(dest_path):
-            if item.startswith(new_name) and not item.endswith('.xml'):
-                try:
-                    os.unlink(dest_path + '/' + item)
-                except:
-                    pass
-    else:
-        os.makedirs(dest_path)
-
-    src_files = [f for f in os.listdir(src_path) if not f.endswith('.xml')]
-    href_names = []
-
-    for curr, new in href_files_list:
-        curr_href, ext = os.path.splitext(curr)
-        new_href, ext = os.path.splitext(new)
-
-        href_names.append(curr_href)
-        found = [f for f in src_files if f.startswith(curr_href + '.') and not f.endswith('.xml')]
-        for f in found:
-            dest_name = f.replace(curr_href, new_href)
-            if os.path.isfile(src_path + '/' + dest_name):
-                r_href_files_list.append((dest_name, dest_name))
-                shutil.copyfile(src_path + '/' + dest_name, dest_path + '/' + dest_name)
-            else:
-                r_href_files_list.append((curr, dest_name))
-                shutil.copyfile(src_path + '/' + f, dest_path + '/' + dest_name)
-        if len(found) == 0:
-            r_not_found.append((curr, new))
-
-    r_related_files_list = []
-    for f in src_files:
-        if f.startswith(xml_name + '.'):
-            r_related_files_list.append((f, f.replace(xml_name, new_name)))
-            shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(xml_name, new_name))
-        elif f.startswith(xml_name + '-'):
-            item = f[0:f.rfind('.')]
-            if not item in href_names:
-                r_related_files_list.append((f, f.replace(xml_name, new_name)))
-                shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(xml_name, new_name))
-
-    register_log('pack_article_files: serial_files.delete_files')
-    serial_files.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
-    register_log('pack_article_files: fim')
-    return (r_related_files_list, r_href_files_list, r_not_found)
-
-
-def pack_file_extended(src_path, dest_path, curr, new):
-    register_log('pack_file_extended: inicio')
-    r = []
-    c = curr if not '.' in curr else curr[0:curr.rfind('.')]
-    n = new if not '.' in new else new[0:new.rfind('.')]
-    found = [f for f in os.listdir(src_path) if (f == curr or f.startswith(c + '.') or f.startswith(c + '-')) and not f.endswith('.sgm.xml') and not f.endswith('.replaced.txt') and not f.endswith('.xml.bkp')]
-    for f in found:
-        shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(c, n))
-        r.append((f, f.replace(c, n)))
-    register_log('pack_file_extended: fim')
-    return r
-
-
-def generate_packed_files_report(doc_files_info, dest_path, related_packed, href_packed, curr_and_new_href_list, not_found):
-
-    def format(files_list):
-        return ['   ' + c + ' => ' + n for c, n in files_list]
-
-    xml_name = doc_files_info.xml_name
-    new_name = doc_files_info.new_name
-    src_path = doc_files_info.xml_path
-
-    log = []
-
-    log.append(_('Report of files') + '\n' + '-'*len(_('Report of files')) + '\n')
-
-    if src_path != dest_path:
-        log.append(_('Source path') + ':   ' + src_path)
-    log.append(_('Package path') + ':  ' + dest_path)
-    if src_path != dest_path:
-        log.append(_('Source XML name') + ': ' + xml_name)
-    log.append(_('Package XML name') + ': ' + new_name)
-
-    log.append(message_file_list(_('Total of related files'), format(related_packed)))
-    log.append(message_file_list(_('Total of files in package'), format(href_packed)))
-    log.append(message_file_list(_('Total of @href in XML'), format(curr_and_new_href_list)))
-    log.append(message_file_list(_('Total of @href not found in package'), format(not_found)))
-
-    return '\n'.join(log)
 
 
 def message_file_list(label, file_list):
@@ -953,57 +514,6 @@ def xml_status(content, label):
         print(e)
 
 
-def normalize_xml_content(doc_files_info, content, version):
-    register_log('normalize_xml_content')
-    sgml_graphic_href_info = None
-    #xml_status(content, 'original')
-
-    content = xml_utils.complete_entity(content)
-    register_log('convert_entities_to_chars')
-    content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
-    #xml_status(content, 'entidades para char')
-
-    replaced_entities_report = ''
-    if len(replaced_named_ent) > 0:
-        replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
-
-    if doc_files_info.is_sgmxml:
-        # old content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
-        sgmlxml = SGMLXML(doc_files_info.xml_filename, content, doc_files_info.xml_name, doc_files_info.xml_path)
-        content = sgmlxml.generate_xml(version, doc_files_info.html_filename)
-        sgml_graphic_href_info = (sgmlxml.matches, sgmlxml.no_match)
-
-        #xml_status(content, 'sgml normalized')
-
-    xml, e = xml_utils.load_xml(content)
-    if xml is not None:
-        #content = remove_xmllang_off_article_title(content)
-        content = content.replace('&amp;amp;', '&amp;')
-        content = content.replace('&amp;#', '&#')
-        content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
-        content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
-        content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
-        content = content.replace('publication-type="web"', 'publication-type="webpage"')
-        content = content.replace(' rid=" ', ' rid="')
-        content = content.replace(' id=" ', ' id="')
-        content = xml_utils.pretty_print(content)
-        #content = remove_xmllang_off(content, 'article-title')
-        #content = remove_xmllang_off(content, 'source')
-        content = remove_xmllang_off_article_title_alt(content)
-        content = remove_xmllang_off_source_alt(content)
-        content = content.replace('> :', '>: ')
-        content = normalize_references(content)
-        content = remove_styles_off_content(content)
-        content = content.replace('<institution content-type="normalized"/>', '')
-        content = content.replace('<institution content-type="normalized"></institution>', '')
-
-    return (content, replaced_entities_report, sgml_graphic_href_info)
-
-
-def remove_xmllang_off(content, element_name):
-    return content if not '<' + element_name + ' ' in content else re.sub(r'<' + element_name + '( xml:lang=".+")>', utils.repl, content)
-
-
 def remove_xmllang_off_article_title_alt(content):
     if '<article-title ' in content:
         new = []
@@ -1054,135 +564,6 @@ def remove_styles_off_tagged_content(tag, content):
     return ''.join(parts).replace(open_tag + ' ', ' ' + open_tag).replace(' ' + close_tag, close_tag + ' ')
 
 
-def get_new_name(doc_files_info, doc, acron):
-    new_name = doc_files_info.xml_name
-    if doc_files_info.is_sgmxml:
-        new_name = generate_new_name(doc, acron, doc_files_info.xml_name)
-    return new_name
-
-
-def get_curr_and_new_href_list(doc_files_info, doc):
-    attach_info = get_attach_info(doc)
-
-    if doc_files_info.is_sgmxml:
-        register_log('generate_curr_and_new_href_list')
-        curr_and_new_href_list = generate_curr_and_new_href_list(doc_files_info.xml_name, doc_files_info.new_name, attach_info)
-    else:
-        curr_and_new_href_list = [(href, href) for href, ign1, ign2 in attach_info]
-    register_log('add_extension')
-    return add_extension(curr_and_new_href_list, doc_files_info.xml_path)
-
-
-def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False, is_db_generation=False):
-    register_log('pack_xml_file')
-    if is_db_generation:
-        #local
-        content = content.replace('"' + xml_versions.DTDFiles('scielo', version).remote + '"', '"' + xml_versions.DTDFiles('scielo', version).local + '"')
-    else:
-        #remote
-        content = content.replace('"' + xml_versions.DTDFiles('scielo', version).local + '"', '"' + xml_versions.DTDFiles('scielo', version).remote + '"')
-
-    fs_utils.write_file(new_xml_filename, content)
-
-    if do_incorrect_copy:
-        shutil.copyfile(new_xml_filename, new_xml_filename.replace('.xml', '_incorrect.xml'))
-    elif os.path.isfile(new_xml_filename.replace('.xml', '_incorrect.xml')):
-        os.unlink(new_xml_filename.replace('.xml', '_incorrect.xml'))
-
-
-def normalize_package_name(doc_files_info, acron, content):
-    register_log('load_xml')
-
-    xml, e = xml_utils.load_xml(content)
-    doc = article.Article(xml, doc_files_info.xml_name)
-    doc_files_info.new_name = doc_files_info.xml_name
-
-    curr_and_new_href_list = None
-
-    if not doc.tree is None:
-        doc_files_info.new_name = get_new_name(doc_files_info, doc, acron)
-        curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info, doc)
-
-        if doc_files_info.is_sgmxml:
-            register_log('normalize_hrefs')
-            content = normalize_hrefs(content, curr_and_new_href_list)
-
-            xml, e = xml_utils.load_xml(content)
-            doc = article.Article(xml, doc_files_info.xml_name)
-            doc.new_prefix = doc_files_info.new_name
-
-    doc_files_info.new_xml_filename = doc_files_info.new_xml_path + '/' + doc_files_info.new_name + '.xml'
-    return (doc, doc_files_info, curr_and_new_href_list, content)
-
-
-def apply_normalized_package_name(doc, doc_files_info, content):
-    curr_and_new_href_list = None
-    if not doc.tree is None:
-        curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info, doc)
-        if doc_files_info.is_sgmxml:
-            content = normalize_hrefs(content, curr_and_new_href_list)
-    return (curr_and_new_href_list, content)
-
-
-def make_article_package(doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
-    packed_files_report = ''
-    content = fs_utils.read_file(doc_files_info.xml_filename)
-
-    content, replaced_entities_report, sgml_graphic_href_info = normalize_xml_content(doc_files_info, content, version)
-
-    doc_files_info.new_xml_path = scielo_pkg_path
-    doc, doc_files_info, curr_and_new_href_list, content = normalize_package_name(doc_files_info, acron, content)
-
-    if doc.tree is None:
-        packed_files_report = validation_status.STATUS_ERROR + ': ' + _('Unable to load') + ' ' + doc_files_info.new_xml_filename + _('. Try to open it in an XML Editor to view the errors.')
-        pkg_reports.display_report(doc_files_info.new_xml_filename)
-    else:
-        related_packed, href_packed, not_found = pack_article_files(doc_files_info, scielo_pkg_path, curr_and_new_href_list)
-
-        packed_files_report = generate_packed_files_report(doc_files_info, scielo_pkg_path, related_packed, href_packed, curr_and_new_href_list, not_found)
-
-        if sgml_graphic_href_info is not None:
-            matches, no_match = sgml_graphic_href_info
-            if len(no_match) > 0:
-                table_header = [_('element'), _('id'), _('source'), _('expected values for @href')]
-                packed_files_report += '\n' * 2 + _('doc//graphic/@href files were not found') + '\n' + utils.RSTTable(table_header, no_match).rst_table
-            if len(matches) > 0:
-                table_header = [_('element'), _('id'), _('source'), _('@href')]
-                packed_files_report += '\n' * 2 + _('doc//graphic/@href files were found') + '\n' + utils.RSTTable(table_header, matches).rst_table
-
-    pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc.tree is None), is_db_generation)
-
-    fs_utils.write_file(doc_files_info.err_filename, replaced_entities_report + packed_files_report)
-
-    return (doc, doc_files_info)
-
-
-def get_related_files(path, name):
-    return [f for f in os.listdir(path) if (f.startswith(name + '.') or f.startswith(name + '-')) and not f.startswith('.sgm.xml')]
-
-
-def get_not_found(path, href_list):
-    not_found = []
-    for href in href_list:
-        if not os.path.isfile(path + '/' + href_list):
-            not_found.append(href)
-    return not_found
-
-
-def get_not_found_extended(path, href_list):
-    not_found = []
-    for href in href_list:
-        if not os.path.isfile(path + '/' + href_list):
-            if '.' in href:
-                t = href[0:href.rfind('.')]
-            else:
-                t = href
-            found = [f for f in os.listdir(path) if f.startswith(t)]
-            if len(found) == 0:
-                not_found.append(href)
-    return not_found
-
-
 def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     if result_filename == xml_filename:
         shutil.copyfile(xml_filename, xml_filename + '.bkp')
@@ -1201,18 +582,426 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     return r
 
 
+class Package(object):
+
+    def __init__(self, xml_filenames):
+        self.xml_filenames = xml_filenames
+        self.path = os.path.dirname(xml_filenames[0])
+        self.doc_items = {}
+        self.doc_files_info_items = {}
+
+    def setUp(self):
+        hdimages_to_jpeg(self.path, self.path, False)
+
+    def add(self, doc_files_info, doc):
+        self.doc_items[doc_files_info.xml_name] = doc
+        self.doc_files_info_items[doc_files_info.xml_name] = doc_files_info
+
+
+class ArticlePkgMaker(object):
+
+    def __init__(self, doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
+        self.scielo_pkg_path = scielo_pkg_path
+        self.version = version
+        self.acron = acron
+        self.is_db_generation = is_db_generation
+        self.doc_files_info = doc_files_info
+        self.content = fs_utils.read_file(doc_files_info.xml_filename)
+        self.text_messages = []
+        self.doc = None
+        self.local_href_items = []
+        self.replacements_related_files_items = []
+        self.replacements_href_files_items = []
+        self.replacements_not_found_href_files_items = []
+        self.local_href_names = []
+        self.version_info = xml_versions.DTDFiles('scielo', version)
+        self.sgmlxml = None
+        #self.sorted_graphic_href_items = []
+        #self.src_folder_graphics = []
+
+    def make_article_package(self):
+        self.normalize_xml_content()
+        self.normalize_package_name()
+
+        if self.doc.tree is None:
+            self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load') + ' ' + self.doc_files_info.new_xml_filename + _('. Try to open it in an XML Editor to view the errors.'))
+            #pkg_reports.display_report(self.doc_files_info.new_xml_filename)
+        else:
+            self.pack_article_files()
+            self.text_messages.append(self.generate_packed_files_report())
+
+        self.pack_article_xml_file()
+
+        fs_utils.write_file(self.doc_files_info.err_filename, '\n'.join(self.text_messages))
+        html_reports.save(self.doc_files_info.images_report_filename, '', self.get_images_comparison_report())
+
+        return (self.doc, self.doc_files_info)
+
+    def normalize_xml_content(self):
+        register_log('normalize_xml_content')
+
+        self.content = xml_utils.complete_entity(self.content)
+
+        register_log('convert_entities_to_chars')
+        self.content, replaced_named_ent = xml_utils.convert_entities_to_chars(self.content)
+        if len(replaced_named_ent) > 0:
+            self.messsages.append('Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30)
+
+        if self.doc_files_info.is_sgmxml:
+            self.normalize_sgmlxml()
+
+        xml, e = xml_utils.load_xml(self.content)
+        if xml is not None:
+            #content = remove_xmllang_off_article_title(content)
+            self.content = self.content.replace('&amp;amp;', '&amp;')
+            self.content = self.content.replace('&amp;#', '&#')
+            self.content = self.content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
+            self.content = self.content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
+            self.content = self.content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
+            self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
+            self.content = self.content.replace(' rid=" ', ' rid="')
+            self.content = self.content.replace(' id=" ', ' id="')
+            self.content = xml_utils.pretty_print(self.content)
+            #self.content = remove_xmllang_off(self.content, 'article-title')
+            #self.content = remove_xmllang_off(self.content, 'source')
+            self.content = remove_xmllang_off_article_title_alt(self.content)
+            self.content = remove_xmllang_off_source_alt(self.content)
+            self.content = self.content.replace('> :', '>: ')
+            self.content = normalize_references(self.content)
+            self.content = remove_styles_off_content(self.content)
+            self.content = self.content.replace('<institution content-type="normalized"/>', '')
+            self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
+
+    def normalize_sgmlxml(self):
+        self.sgmlxml = SGMLXML(self.doc_files_info.xml_filename, self.content, self.doc_files_info.xml_name, self.doc_files_info.xml_path, self.doc_files_info.html_filename)
+        self.content = self.sgmlxml.generate_xml(self.version)
+
+    def replace_mimetypes(self):
+        r = self.content
+        if 'mimetype="replace' in self.content:
+            self.content = self.content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
+            self.content = self.content.replace('mime-subtype="replace"', '_~BREAK~MIME_')
+            r = ''
+            for item in self.content.split('_~BREAK~MIME_'):
+                if item.startswith('MIME:'):
+                    f = item[5:]
+                    f = f[0:f.rfind('"')]
+                    result = ''
+                    if os.path.isfile(self.src_path + '/' + f):
+                        result = mime.guess_type(self.src_path + '/' + f)
+                    else:
+                        url = urllib.pathname2url(f)
+                        result = mime.guess_type(url)
+                    try:
+                        result = result[0]
+                        if '/' in result:
+                            m, ms = result.split('/')
+                            r += 'mimetype="' + m + '" mime-subtype="' + ms + '"'
+                        else:
+                            pass
+                    except:
+                        pass
+                else:
+                    r += item
+        else:
+            utils.debugging('.............')
+        self.content = r
+
+    def get_images_comparison_report(self):
+        if self.sgmlxml is not None:
+            r = self.report_comparison_between_markup_and_src_images()
+        else:
+            r = self.report_images_in_the_package()
+        return r
+
+    def report_images_in_the_package(self):
+        #self.local_href_items
+        #self.sgmlxml.sorted_graphic_href_items = []
+        #self.sgmlxml.src_folder_graphics = []
+        #(elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
+        rows = []
+
+        rows.append(html_reports.tag('h2', _('Images Report')))
+        rows.append(html_reports.tag('p', _('The images are presented in their original dimensions and in the same order they are found in the Markup document.')))
+
+        rows.append('<ol>')
+        for name, renamed in self.local_href_items:
+            rows.append('<li>')
+            rows.append(html_reports.tag('h4', renamed))
+
+            # imagem final
+            rows.append('<div class="compare_images">')
+            rows.append(html_reports.tag('h5', _('* images presented in the same order they are in the XML file')))
+            rows.append(html_reports.tag('h5', _('* original dimensions')))
+            img_filename = self.scielo_pkg_path + '/' + renamed.replace('.tiff', '.jpg').replace('.tif', '.jpg')
+            rows.append('<div class="compare_inline">')
+            rows.append(html_reports.link(img_filename, html_reports.image(img_filename)))
+            rows.append('</div>')
+            rows.append('</div>')
+
+            rows.append('</li>')
+        rows.append('</ol>')
+        return ''.join(rows)
+
+    def report_comparison_between_markup_and_src_images(self):
+        #self.local_href_items
+        #self.sgmlxml.sorted_graphic_href_items = []
+        #self.sgmlxml.src_folder_graphics = []
+        #(elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
+        rows = []
+        if self.sgmlxml is not None:
+
+            rows.append(html_reports.tag('h2', _('Images Report')))
+            rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in the package.')))
+            replacements = {curr_href: new_href for curr_href, new_href in self.local_href_items}
+            #print(replacements)
+            #print(self.sgmlxml.sorted_graphic_href_items)
+            #print(self.sgmlxml.src_folder_graphics)
+
+            rows.append('<ol>')
+            for name, elem_name, elem_id, filename in self.sgmlxml.sorted_graphic_href_items:
+                rows.append('<li>')
+                path = os.path.dirname(filename)
+                fname = os.path.basename(filename)
+
+                element_label = elem_name + ' ' + elem_id
+                style = elem_name if elem_name in ['tabwrap', 'figgrp', 'equation'] else 'inline'
+
+                renamed = replacements.get(name, '???')
+                rows.append(html_reports.tag('h4', element_label))
+                rows.append(html_reports.tag('h4', name + ' => ' + renamed))
+
+                # imagem final
+                replaced = replacements.get(name)
+                #rows.append(html_reports.tag('h5', _('Image inserted into the package')))
+                #rows.append(html_reports.tag('p', self.scielo_pkg_path))
+                rows.append('<div class="compare_images">')
+                rows.append(html_reports.tag('h5', _('* images presented in the same order they are in the XML file')))
+                rows.append(html_reports.tag('h5', _('* original dimensions')))
+                if replaced is not None:
+                    img_filename = self.scielo_pkg_path + '/' + renamed.replace('.tiff', '.jpg').replace('.tif', '.jpg')
+                    if self.sgmlxml is not None:
+                        if name in self.sgmlxml.src_folder_graphics:
+                            rows.append(html_reports.tag('h4', _('Image inserted into the package was gotten from src folder')))
+                        else:
+                            rows.append(html_reports.tag('h4', _('Image inserted into the package was extracted from the .doc file')))
+                    rows.append('<div class="compare_' + style + '">')
+                    rows.append(html_reports.link(img_filename, html_reports.image(img_filename)))
+                    rows.append('</div>')
+
+                if self.sgmlxml is not None:
+                    if name in self.sgmlxml.src_folder_graphics:
+                        rows.append(html_reports.tag('h4', _('Image in the .doc file')))
+                        rows.append('<div class="compare_' + style + '">')
+                        img_filename = filename.replace('.tiff', '.jpg').replace('.tif', '.jpg')
+                        rows.append(html_reports.link(img_filename, html_reports.image(img_filename)))
+                        rows.append('</div>')
+                rows.append('</div>')
+                rows.append('</li>')
+            rows.append('<o/l>')
+        return ''.join(rows)
+
+    def normalize_package_name(self):
+        register_log('normalize_package_name')
+        self.doc_files_info.new_xml_path = self.scielo_pkg_path
+        xml, e = xml_utils.load_xml(self.content)
+        self.doc = article.Article(xml, self.doc_files_info.xml_name)
+        self.doc_files_info.new_name = self.doc_files_info.xml_name
+        if self.doc.tree is not None:
+            if self.doc_files_info.is_sgmxml:
+                self.doc_files_info.new_name = self.generate_doc_files_info_new_name()
+            self.replace_href_items()
+        self.doc.new_prefix = self.doc_files_info.new_name
+        self.doc_files_info.new_xml_filename = self.doc_files_info.new_xml_path + '/' + self.doc_files_info.new_name + '.xml'
+
+    def generate_doc_files_info_new_name(self):
+        #doc, acron, self.doc_files_info.xml_name
+        register_log('generate_doc_files_info_new_name')
+        vol, issueno, fpage, seq, elocation_id, order, doi = self.doc.volume, self.doc.number, self.doc.fpage, self.doc.fpage_seq, self.doc.elocation_id, self.doc.order, self.doc.doi
+        issns = [issn for issn in [self.doc.e_issn, self.doc.print_issn] if issn is not None]
+        if len(issns) > 0:
+            if self.doc_files_info.xml_name[0:9] in issns:
+                issn = self.doc_files_info.xml_name[0:9]
+            else:
+                issn = issns[0]
+
+        suppl = self.doc.volume_suppl if self.doc.volume_suppl else self.doc.number_suppl
+
+        last = format_last_part(fpage, seq, elocation_id, order, doi, issn)
+        if issueno:
+            if issueno == 'ahead' or int(issueno) == 0:
+                issueno = None
+            else:
+                issueno = complete_number(issueno, 2)
+        if suppl:
+            suppl = 's' + suppl if suppl != '0' else 'suppl'
+        parts = [issn, self.acron, vol, issueno, suppl, last, self.doc.compl]
+        r = '-'.join([part for part in parts if part is not None and not part == ''])
+        return r
+
+    def replace_href_items(self):
+        href_items = [href for href in self.doc.hrefs if href.is_internal_file]
+        if self.doc_files_info.is_sgmxml:
+            for href in href_items:
+                self.local_href_items.append((href.src, self.get_new_href(href)))
+        else:
+            for href in href_items:
+                self.local_href_items.append((href.src, self.add_extension(href.src, href.src)))
+        changed = False
+        if len(self.local_href_items) > 0:
+            for current, new in self.local_href_items:
+                if current != new:
+                    utils.display_message(current + ' => ' + new)
+                    self.content = self.content.replace('href="' + current, 'href="' + new)
+                    changed = True
+        if changed:
+            xml, e = xml_utils.load_xml(self.content)
+            self.doc = article.Article(xml, self.doc_files_info.xml_name)
+
+    def get_new_href(self, href):
+        href_type = href_attach_type(href.parent.tag, href.element.tag)
+        if href.id is None:
+            href_name = href.src.replace(self.doc_files_info.xml_name, '')
+            if href_name[0:1] in '-_':
+                href_name = href_name[1:]
+        else:
+            href_name = href.id
+            if '.' in href.src:
+                href_name += href.src[href.src.rfind('.'):]
+        new_href = self.doc_files_info.new_name + '-' + href_type + href_name.replace('image', '').replace('img', '')
+        return self.add_extension(href.src, new_href)
+
+    def add_extension(self, href, new_href):
+        if not '.' in new_href:
+            extensions = [f[f.rfind('.'):] for f in os.listdir(self.doc_files_info.xml_path) if f.startswith(href + '.')]
+            if len(extensions) > 1:
+                extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
+            if len(extensions) > 0:
+                new_href += extensions[0]
+        return new_href
+
+    def eliminate_old_package_files(self):
+        for item in os.listdir(self.scielo_pkg_path):
+            if item.startswith(self.doc_files_info.new_name):
+                eliminate = item.endswith('incorrect.xml')
+                if eliminate is False:
+                    eliminate = not item.endswith('.xml')
+                if eliminate:
+                    try:
+                        os.unlink(self.scielo_pkg_path + '/' + item)
+                    except:
+                        pass
+
+    def pack_article_files(self):
+        register_log('pack_article_files: inicio')
+
+        self.replacements_related_files_items = []
+        self.replacements_href_files_items = []
+        self.replacements_not_found_href_files_items = []
+        self.local_href_names = []
+
+        self.eliminate_old_package_files()
+
+        src_files = [f for f in os.listdir(self.doc_files_info.xml_path) if not f.endswith('.xml')]
+        self.pack_article_href_files(src_files)
+        self.pack_article_related_files(src_files)
+
+        register_log('pack_article_files: serial_files.delete_files')
+        serial_files.delete_files([self.scielo_pkg_path + '/' + f for f in os.listdir(self.scielo_pkg_path) if f.endswith('.sgm.xml') or f.endswith('incorrect.xml')])
+
+        register_log('pack_article_files: fim')
+
+    def pack_article_href_files(self, src_files):
+        register_log('pack_article_href_files: inicio')
+
+        self.replacements_href_files_items = []
+        self.replacements_not_found_href_files_items = []
+        for curr, new in self.local_href_items:
+            curr_name, curr_ext = os.path.splitext(curr)
+            new_name, new_ext = os.path.splitext(new)
+
+            self.local_href_names.append(curr_name)
+            curr_variations = [f for f in src_files if f.startswith(curr_name + '.')]
+
+            for f in curr_variations:
+                dest_name = f.replace(curr_name, new_name)
+                if os.path.isfile(self.doc_files_info.xml_path + '/' + dest_name):
+                    source_name = dest_name
+                else:
+                    source_name = f
+                self.replacements_href_files_items.append((source_name, dest_name))
+                shutil.copyfile(self.doc_files_info.xml_path + '/' + source_name, self.scielo_pkg_path + '/' + dest_name)
+            if len(curr_variations) == 0:
+                self.replacements_not_found_href_files_items.append((curr, new))
+
+        register_log('pack_article_href_files: fim')
+
+    def pack_article_related_files(self, src_files):
+        register_log('pack_article_related_files: inicio')
+        self.replacements_related_files_items = []
+        for f in src_files:
+            if f.startswith(self.doc_files_info.xml_name + '.'):
+                self.replacements_related_files_items.append((f, f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)))
+                shutil.copyfile(self.doc_files_info.xml_path + '/' + f, self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name))
+            elif f.startswith(self.doc_files_info.xml_name + '-'):
+                item, ext = os.path.splitext(f)
+                if not item in self.local_href_names:
+                    self.replacements_related_files_items.append((f, f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)))
+                    shutil.copyfile(self.doc_files_info.xml_path + '/' + f, self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name))
+        register_log('pack_article_related_files: fim')
+
+    def generate_packed_files_report(self):
+        #doc_files_info, dest_path, related_packed, href_packed, href_replacement_items, not_found
+
+        def format(files_list):
+            return ['   ' + c + ' => ' + n for c, n in files_list]
+
+        xml_name = self.doc_files_info.xml_name
+        new_name = self.doc_files_info.new_name
+        src_path = self.doc_files_info.xml_path
+        dest_path = self.scielo_pkg_path
+
+        log = []
+
+        log.append(_('Report of files') + '\n' + '-'*len(_('Report of files')) + '\n')
+
+        if src_path != dest_path:
+            log.append(_('Source path') + ':   ' + src_path)
+        log.append(_('Package path') + ':  ' + dest_path)
+        if src_path != dest_path:
+            log.append(_('Source XML name') + ': ' + xml_name)
+        log.append(_('Package XML name') + ': ' + new_name)
+
+        log.append(message_file_list(_('Total of related files'), format(self.replacements_related_files_items)))
+        log.append(message_file_list(_('Total of files in package'), format(self.replacements_href_files_items)))
+        log.append(message_file_list(_('Total of @href in XML'), format(self.local_href_items)))
+        log.append(message_file_list(_('Total of @href not found in package'), format(self.replacements_not_found_href_files_items)))
+
+        return '\n'.join(log)
+
+    def pack_article_xml_file(self):
+        register_log('pack_article_xml_file')
+        if self.is_db_generation:
+            #local
+            self.content = self.content.replace('"' + self.version_info.remote + '"', '"' + self.version_info.local + '"')
+        else:
+            #remote
+            self.content = self.content.replace('"' + self.version_info.local + '"', '"' + self.version_info.remote + '"')
+
+        fs_utils.write_file(self.doc_files_info.new_xml_filename, self.content)
+
+        if self.doc.tree is None:
+            shutil.copyfile(self.doc_files_info.new_xml_filename, self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml'))
+        elif os.path.isfile(self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml')):
+            os.unlink(self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml'))
+
+
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
 
-    if len(xml_files) > 0:
-        path = os.path.dirname(xml_files[0])
-        hdimages_to_jpeg(path, path, False)
-        #package_resize_large_jpg(path, path)
+    package = Package(xml_files)
+    package.setUp()
 
-    utils.display_message('\n')
-    utils.display_message(_('Make packages for ') + str(len(xml_files)) + _(' files.'))
-    doc_items = {}
-    doc_files_info_items = {}
-
+    utils.display_message('\n' + _('Make packages for ') + str(len(xml_files)) + _(' files.'))
     n = '/' + str(len(xml_files))
     index = 0
 
@@ -1225,12 +1014,12 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         item_label = str(index) + n + ': ' + doc_files_info.xml_name
         utils.display_message(item_label)
 
-        doc, doc_files_info = make_article_package(doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
+        article_pkg_maker = ArticlePkgMaker(doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
+        doc, doc_files_info = article_pkg_maker.make_article_package()
 
-        doc_items[doc_files_info.xml_name] = doc
-        doc_files_info_items[doc_files_info.xml_name] = doc_files_info
+        package.add(doc_files_info, doc)
 
-    return (doc_items, doc_files_info_items)
+    return (package.doc_items, package.doc_files_info_items)
 
 
 def make_pmc_report(articles, doc_files_info_items):
@@ -1436,29 +1225,6 @@ def get_xml_package_folders_info(input_pkg_path):
     return (xml_files, results_path)
 
 
-def get_article(xml_filename):
-    xml, e = xml_utils.load_xml(xml_filename)
-    return article.Article(xml, os.path.basename(xml_filename).replace('.xml', '')) if xml is not None else None
-
-
-def get_articles(xml_path):
-    r = {}
-    for xml_filename in os.listdir(xml_path):
-        if xml_filename.endswith('.xml'):
-            r[xml_filename.replace('.xml', '')] = get_article(xml_path + '/' + xml_filename)
-    return r
-
-
-def get_pkg_items(xml_filenames, report_path):
-    r = []
-    for xml_filename in xml_filenames:
-        doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
-        doc_files_info.new_xml_filename = xml_filename
-        doc_files_info.new_xml_path = os.path.dirname(xml_filename)
-        r.append((get_article(doc_files_info.new_xml_filename), doc_files_info))
-    return r
-
-
 def make_packages(path, acron, version='1.0', is_db_generation=False):
     path = fs_utils.fix_path(path)
     xml_files, results_path = get_xml_package_folders_info(path)
@@ -1512,63 +1278,6 @@ def call_make_packages(args, version):
 
 def validate_inputs(xml_path, acron):
     return xml_utils.is_valid_xml_path(xml_path)
-
-
-def get_fontsymbols_in_html(html_content):
-    r = []
-    if '[fontsymbol]' in html_content.lower():
-        for style in ['italic', 'sup', 'sub', 'bold']:
-            html_content = html_content.replace('<' + style + '>', '[' + style + ']')
-            html_content = html_content.replace('</' + style + '>', '[/' + style + ']')
-
-        html_content = html_content.replace('[fontsymbol]'.upper(), '[fontsymbol]')
-        html_content = html_content.replace('[/fontsymbol]'.upper(), '[/fontsymbol]')
-        html_content = html_content.replace('[fontsymbol]', '~BREAK~[fontsymbol]')
-        html_content = html_content.replace('[/fontsymbol]', '[/fontsymbol]~BREAK~')
-
-        html_fontsymbol_items = [item for item in html_content.split('~BREAK~') if item.startswith('[fontsymbol]')]
-        for item in html_fontsymbol_items:
-            item = item.replace('[fontsymbol]', '').replace('[/fontsymbol]', '')
-            item = item.replace('<', '~BREAK~<').replace('>', '>~BREAK~')
-            item = item.replace('[', '~BREAK~[').replace(']', ']~BREAK~')
-            parts = [part for part in item.split('~BREAK~') if not part.endswith('>') and not part.startswith('<')]
-
-            new = ''
-            for part in parts:
-                if part.startswith('['):
-                    new += part
-                else:
-
-                    for c in part:
-                        _c = c.strip()
-                        if _c.isdigit() or _c == '':
-                            n = c
-                        else:
-                            try:
-                                n = symbols.get_symbol(c)
-                            except:
-                                n = '?'
-                        new += n
-            for style in ['italic', 'sup', 'sub', 'bold']:
-                new = new.replace('[' + style + ']', '<' + style + '>')
-                new = new.replace('[/' + style + ']', '</' + style + '>')
-            r.append(new)
-    return r
-
-
-def replace_fontsymbols(content, html_content):
-    if content.find('<fontsymbol>') > 0:
-        html_fontsymbol_items = get_fontsymbols_in_html(html_content)
-        c = content.replace('<fontsymbol>', '~BREAK~<fontsymbol>')
-        c = c.replace('</fontsymbol>', '</fontsymbol>~BREAK~')
-
-        items = [item for item in c.split('~BREAK~') if item.startswith('<fontsymbol>') and item.endswith('</fontsymbol>')]
-
-        i = 0
-        for item in items:
-            content = content.replace(item, html_fontsymbol_items[i])
-            i += 1
-    return content
 
 
 def make_zip(files, zip_name):

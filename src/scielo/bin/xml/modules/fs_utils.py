@@ -10,7 +10,10 @@ import files_extractor
 def read_file(filename, encode='utf-8'):
     content = open(filename, 'r').read()
     if not isinstance(content, unicode):
-        content = content.decode(encode)
+        try:
+            content = content.decode(encode)
+        except:
+            content = content.decode('iso-8859-1')
     return content
 
 

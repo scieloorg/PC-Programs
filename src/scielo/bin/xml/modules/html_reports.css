@@ -1,6 +1,7 @@
 BODY {
     font-family: Verdana;
     font-size: 10pt;
+    padding: 20px;
 }
 /**/
 sub, sup{
@@ -334,9 +335,11 @@ h5 {
 }
 
 td img {
-  max-width: 40%;
-  min-height: 16px;
+  height: auto;
+  width: auto;
+  min-height: 40px;
   max-height: 300px;
+  max-width: 80%;
 }
 
 .delete {
@@ -628,4 +631,31 @@ td img {
   padding: 10pt;
   width: 30%;
   float: right;
+}
+
+.compare_ {
+  padding: 10px;
+  background-color: #E3CBC9;
+}
+.compare_inline {
+  padding: 10px;
+  background-color: #E3CBC9;
+}
+.compare_equation {
+  padding: 10px;
+  background-color: #E7E4D3;
+}
+.compare_figgrp {
+  padding: 10px;
+  background-color: #E7807B;
+}
+.compare_tabwrap {
+  padding: 10px;
+  background-color: #FF9985;
+}
+.compare_images {
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 5px;
 }

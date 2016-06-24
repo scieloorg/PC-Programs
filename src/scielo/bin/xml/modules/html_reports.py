@@ -340,8 +340,14 @@ def display_label_value(label, value):
     return tag('span', label, 'label') + ': ' + format_html_data(value)
 
 
-def image(path):
-    return '<img src="' + path + '"/>'
+def image(path, width='auto', height='auto'):
+    dim = ''
+    if width is not None:
+        dim += ' width="' + width + '"'
+    if height is not None:
+        dim += ' height="' + height + '"'
+
+    return '<img class="graphic" src="' + path + '" ' + dim + '/>'
 
 
 def section(title, content):
