@@ -257,7 +257,7 @@ class SGMLXML(object):
         self.src_path = src_path
         self.sgmxml_filename = sgmxml_filename
         self.sorted_graphic_href_items = []
-        self.graphics_replaced_by_src_files = {}
+        self.src_folder_graphics = []
         self.xml_content = None
 
     def generate_xml(self, version):
@@ -312,7 +312,7 @@ class SGMLXML(object):
         self.sgml_content = self.sgml_content.replace('"">', '">')
         self.sgml_content = self.sgml_content.replace('href=""?', 'href="?')
         self.sorted_graphic_href_items = []
-        self.graphics_replaced_by_src_files = {}
+        self.src_folder_graphics = []
         if self.sgml_content.find('href="?' + self.xml_name) > 0:
             # for each graphic in sgml.xml, replace href="?xmlname" by href="image in src or image in work/html"
             html_unknown_href_items = self.sgmlhtml.unknown_href_items
@@ -333,18 +333,17 @@ class SGMLXML(object):
                         href = get_href_content(graphic)
                         elem_name, elem_id = get_previous_element_which_has_id_attribute(parts[i - 1])
                         src_href, possible_href_names, alternative_id = self.find_href_file_in_src_folder(elem_name, elem_id, alternative_id)
-                        new_href = src_href
-                        if new_href is None and html_href is not None:
-                            if os.path.isfile(self.sgmlhtml.html_img_path + '/' + html_href):
-                                new_href = self.xml_name + html_href.replace('image', '')
-                                shutil.copyfile(self.sgmlhtml.html_img_path + '/' + html_href, self.src_path + '/' + new_href)
+                        renamed_href = src_href
                         if src_href is not None:
-                            self.graphics_replaced_by_src_files[src_href] = (elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
-                            self.sorted_graphic_href_items.append(self.graphics_replaced_by_src_files[src_href])
-                        else:
-                            self.sorted_graphic_href_items.append((elem_name, elem_id, self.src_path + '/' + new_href))
-                        if new_href is not None:
-                            part = part.replace(graphic, graphic.replace(href, new_href))
+                            self.src_folder_graphics.append(src_href)
+                        if renamed_href is None and html_href is not None:
+                            if os.path.isfile(self.sgmlhtml.html_img_path + '/' + html_href):
+                                renamed_href = self.xml_name + html_href.replace('image', '')
+                                shutil.copyfile(self.sgmlhtml.html_img_path + '/' + html_href, self.src_path + '/' + renamed_href)
+
+                        self.sorted_graphic_href_items.append((renamed_href, elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href))
+                        if renamed_href is not None:
+                            part = part.replace(graphic, graphic.replace(href, renamed_href))
                 i += 1
                 new_parts.append(part)
             self.sgml_content = ''.join(new_parts)
@@ -618,7 +617,7 @@ class ArticlePkgMaker(object):
         self.version_info = xml_versions.DTDFiles('scielo', version)
         self.sgmlxml = None
         #self.sorted_graphic_href_items = []
-        #self.graphics_replaced_by_src_files = {}
+        #self.src_folder_graphics = []
 
     def make_article_package(self):
         self.normalize_xml_content()
@@ -709,49 +708,97 @@ class ArticlePkgMaker(object):
         self.content = r
 
     def get_images_comparison_report(self):
+        if self.sgmlxml is not None:
+            r = self.report_comparison_between_markup_and_src_images()
+        else:
+            r = self.report_images_in_the_package()
+        return r
+
+    def report_images_in_the_package(self):
         #self.local_href_items
         #self.sgmlxml.sorted_graphic_href_items = []
-        #self.sgmlxml.graphics_replaced_by_src_files = {}
+        #self.sgmlxml.src_folder_graphics = []
         #(elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
         rows = []
-        rows.append(html_reports.tag('h2', _('Images extracted from Markup')))
-        rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in "src" folder.')))
+
+        rows.append(html_reports.tag('h2', _('Images Report')))
         rows.append(html_reports.tag('p', _('The images are presented in their original dimensions and in the same order they are found in the Markup document.')))
 
-        replacements = {curr_href: new_href for curr_href, new_href in self.local_href_items}
+        rows.append('<ol>')
+        for name, renamed in self.local_href_items:
+            rows.append('<li>')
+            rows.append(html_reports.tag('h4', renamed))
 
-        for elem_name, elem_id, filename in self.sgmlxml.sorted_graphic_href_items:
-            path = os.path.dirname(filename)
-            name = os.path.basename(filename)
+            # imagem final
+            rows.append('<div class="compare_images">')
+            rows.append(html_reports.tag('h5', _('* images presented in the same order they are in the XML file')))
+            rows.append(html_reports.tag('h5', _('* original dimensions')))
+            img_filename = self.scielo_pkg_path + '/' + renamed.replace('.tiff', '.jpg').replace('.tif', '.jpg')
+            rows.append('<div class="compare_inline">')
+            rows.append(html_reports.link(img_filename, html_reports.image(img_filename)))
+            rows.append('</div>')
+            rows.append('</div>')
 
-            element_label = elem_name + ' ' + elem_id
-            element_label = element_label.strip()
-            if element_label != '':
-                element_label = ' (' + element_label + ')'
+            rows.append('</li>')
+        rows.append('</ol>')
+        return ''.join(rows)
 
-            style = elem_name if elem_name in ['tabwrap', 'figgrp', 'equation'] else 'inline'
+    def report_comparison_between_markup_and_src_images(self):
+        #self.local_href_items
+        #self.sgmlxml.sorted_graphic_href_items = []
+        #self.sgmlxml.src_folder_graphics = []
+        #(elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
+        rows = []
+        if self.sgmlxml is not None:
 
-            if self.sgmlxml is not None:
-                if name in self.sgmlxml.graphics_replaced_by_src_files.keys():
-                    rows.append('<div class="compare_images">')
-                    rows.append(html_reports.tag('h3', name + ' => ' + new))
+            rows.append(html_reports.tag('h2', _('Images Report')))
+            rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in the package.')))
+            replacements = {curr_href: new_href for curr_href, new_href in self.local_href_items}
+            #print(replacements)
+            #print(self.sgmlxml.sorted_graphic_href_items)
+            #print(self.sgmlxml.src_folder_graphics)
 
-                    rows.append(html_reports.tag('h4', name + ' (.doc) ' + element_label))
+            rows.append('<ol>')
+            for name, elem_name, elem_id, filename in self.sgmlxml.sorted_graphic_href_items:
+                rows.append('<li>')
+                path = os.path.dirname(filename)
+                fname = os.path.basename(filename)
+
+                element_label = elem_name + ' ' + elem_id
+                style = elem_name if elem_name in ['tabwrap', 'figgrp', 'equation'] else 'inline'
+
+                renamed = replacements.get(name, '???')
+                rows.append(html_reports.tag('h4', element_label))
+                rows.append(html_reports.tag('h4', name + ' => ' + renamed))
+
+                # imagem final
+                replaced = replacements.get(name)
+                #rows.append(html_reports.tag('h5', _('Image inserted into the package')))
+                #rows.append(html_reports.tag('p', self.scielo_pkg_path))
+                rows.append('<div class="compare_images">')
+                rows.append(html_reports.tag('h5', _('* images presented in the same order they are in the XML file')))
+                rows.append(html_reports.tag('h5', _('* original dimensions')))
+                if replaced is not None:
+                    img_filename = self.scielo_pkg_path + '/' + renamed.replace('.tiff', '.jpg').replace('.tif', '.jpg')
+                    if self.sgmlxml is not None:
+                        if name in self.sgmlxml.src_folder_graphics:
+                            rows.append(html_reports.tag('h4', _('Image inserted into the package was gotten from src folder')))
+                        else:
+                            rows.append(html_reports.tag('h4', _('Image inserted into the package was extracted from the .doc file')))
                     rows.append('<div class="compare_' + style + '">')
-                    img_filename = filename.replace('.tiff', '.jpg').replace('.tif', '.jpg')
                     rows.append(html_reports.link(img_filename, html_reports.image(img_filename)))
                     rows.append('</div>')
 
-            # imagem final
-            replaced = replacements.get(name)
-            rows.append(html_reports.tag('h4', replacements.get(name, '???') + ' (' + self.scielo_pkg_path + ') ' + element_label))
-            if replaced is not None:
-                img_filename = self.scielo_pkg_path + '/' + replacements.get(name, '???').replace('.tiff', '.jpg').replace('.tif', '.jpg')
-                rows.append('<div class="compare_' + style + '">')
-                rows.append(html_reports.link(img_filename, html_reports.image(img_filename)))
+                if self.sgmlxml is not None:
+                    if name in self.sgmlxml.src_folder_graphics:
+                        rows.append(html_reports.tag('h4', _('Image in the .doc file')))
+                        rows.append('<div class="compare_' + style + '">')
+                        img_filename = filename.replace('.tiff', '.jpg').replace('.tif', '.jpg')
+                        rows.append(html_reports.link(img_filename, html_reports.image(img_filename)))
+                        rows.append('</div>')
                 rows.append('</div>')
-            rows.append('</div>')
-
+                rows.append('</li>')
+            rows.append('<o/l>')
         return ''.join(rows)
 
     def normalize_package_name(self):

@@ -501,18 +501,32 @@ def article_data_and_validations_report(journal, article, new_name, package_path
         article_validation_report = ArticleValidationReport(article_validation)
 
         content = []
+
+        img_report_content = ''
+        if os.path.isfile(images_generation_report_filename):
+            img_report_content = open(images_generation_report_filename, 'r').read()
+        if len(img_report_content) > 0:
+            content.append(html_reports.tag('h1', _('ATTENTION'), 'warning'))
+            content.append(html_reports.tag('h1', _('New report: Images Report at the bottom'), 'warning'))
+
         if is_sgml_generation:
             content.append(article_display_report.issue_header)
             content.append(article_display_report.article_front)
-            content.append(article_display_report.article_back)
-            content.append(article_display_report.article_body)
-            if os.path.isfile(images_generation_report_filename):
-                content.append(open(images_generation_report_filename, 'r').read())
+
             content.append(article_validation_report.validations(display_all_message_types=False))
+            content.append(article_display_report.table_tables)
+
+            content.append(article_display_report.article_body)
+            content.append(article_display_report.article_back)
+
         else:
             content.append(article_validation_report.validations(display_all_message_types=False))
             content.append(article_display_report.table_tables)
             content.append(sheet_data.files_and_href(package_path))
+
+        if len(img_report_content) > 0:
+            content.append(img_report_content)
+
         content = html_reports.join_texts(content)
 
     return content
