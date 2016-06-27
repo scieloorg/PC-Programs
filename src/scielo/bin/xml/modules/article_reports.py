@@ -9,7 +9,6 @@ import xml_utils
 import article_utils
 import article_validations
 import html_reports
-
 from article import PersonAuthor, CorpAuthor, format_author
 
 
@@ -225,7 +224,7 @@ class ArticleDisplayReport(object):
                     table_data += html_reports.tag('div', t.table, 'element-table')
                 if t.graphic:
                     #table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
-                    table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.image('file:///' + self.xml_path), 'value')
+                    table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('file:///' + self.xml_path), 'value')
                 r += header + html_reports.tag('div', table_data, 'block')
         return r
 
@@ -427,7 +426,7 @@ class ArticleSheetData(object):
             row['ID'] = t.graphic_parent.id
             row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
             #row['table/graphic'] = t.table + t.graphic_parent.graphic.display('file:///' + path)
-            row['table/graphic'] = t.table + html_reports.image('file:///' + path)
+            row['table/graphic'] = t.table + html_reports.thumb_image('file:///' + path)
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 

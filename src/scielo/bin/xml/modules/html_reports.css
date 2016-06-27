@@ -334,7 +334,7 @@ h5 {
     padding: 5px;
 }
 
-td img {
+.thumb {
   height: auto;
   width: auto;
   min-height: 40px;

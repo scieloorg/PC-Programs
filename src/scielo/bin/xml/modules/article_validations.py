@@ -1262,7 +1262,7 @@ class ArticleContentValidation(object):
                         status_message.append((validation_status.STATUS_FATAL_ERROR, os.path.basename(file_location) + _(' not found in package')))
                 hreflocation = 'file:///' + file_location
                 if hrefitem.is_image:
-                    display = html_reports.image(hreflocation)
+                    display = html_reports.thumb_image(hreflocation)
                 else:
                     display = html_reports.link(hreflocation, hrefitem.src)
                 if len(status_message) == 0:
@@ -1277,7 +1277,7 @@ class ArticleContentValidation(object):
                             message += '. ' + _('Be sure that there is no missing character such as _.')
                         status_message.append((validation_status.STATUS_WARNING, hrefitem.src + message))
                         if hrefitem.is_image:
-                            display = html_reports.image(hreflocation)
+                            display = html_reports.thumb_image(hreflocation)
                         else:
                             display = html_reports.link(hreflocation, hrefitem.src)
                         if len(status_message) == 0:
