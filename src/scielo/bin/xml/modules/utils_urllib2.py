@@ -132,7 +132,7 @@ def try_request(url, timeout=30, debug=False, force_error=False):
     return (response, error_code, error_message)
 
 
-def request(url, timeout=30, debug=False, force_error=False):
+def depricated_request(url, timeout=30, debug=False, force_error=False):
     response, error_code, error_message = try_request(url, timeout, debug, force_error)
     if response is None:
         if error_code is not None:
@@ -158,4 +158,19 @@ def request(url, timeout=30, debug=False, force_error=False):
         print(url)
         print(error_message)
 
+    return response
+
+
+def use_authenticated_proxy():
+    proxy_info = ask_proxy_info()
+    if proxy_info is not None:
+        ip, port, user, password = proxy_info
+        registry_proxy(ip, port, user, password)
+
+
+def request(url, timeout=30, debug=False, force_error=False):
+    response, error_code, error_message = try_request(url, timeout, debug, force_error)
+    if response is None and error_code is not None:
+        use_authenticated_proxy()
+        response, error_code, error_message = try_request(url, timeout, debug, force_error)
     return response
