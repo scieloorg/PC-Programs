@@ -1,8 +1,12 @@
 # coding=utf-8
 
+import urllib
 import os
+import json
+
 import utils
 import dbm_sql
+import utils_urllib2
 
 
 curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -172,8 +176,6 @@ def remove_sgml_tags(text):
 
 
 def wayta_request(text):
-    import urllib
-    import urllib2
 
     if isinstance(text, unicode):
         text = text.encode('utf-8')
@@ -190,9 +192,7 @@ def wayta_request(text):
         if result is None:
             result = []
         if len(result) == 0:
-            response = urllib2.urlopen(full_url, timeout=30)
-            result = response.read()
-            previous_requests[full_url] = result
+            previous_requests[full_url] = utils_urllib2.request(full_url, timeout=30)
 
     except Exception as e:
         print(e)
@@ -201,7 +201,6 @@ def wayta_request(text):
 
 
 def format_wayta_results(result, filter_country=None):
-    import json
     r = []
     keys = ['score', 'value', 'city', 'state', 'iso3166', 'country']
     try:

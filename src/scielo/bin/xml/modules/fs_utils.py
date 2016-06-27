@@ -2,9 +2,9 @@
 import os
 import shutil
 import tempfile
-import urllib2
 
 import files_extractor
+import utils_urllib2
 
 
 def read_file(filename, encode='utf-8'):
@@ -125,32 +125,13 @@ def zip_report(report_filename):
     return zip_path
 
 
-def request(url, _timeout=30, debug=False):
-    r = None
-    try:
-        r = urllib2.urlopen(url, timeout=_timeout).read()
-    except urllib2.URLError, e:
-        if debug:
-            display_message(datetime.now().isoformat() + " Oops, timed out?")
-    except urllib2.socket.timeout:
-        if debug:
-            display_message(datetime.now().isoformat() + " Timed out!")
-    except:
-        if debug:
-            display_message(datetime.now().isoformat() + " unknown")
-    if debug:
-        if r is None:
-            display_message(datetime.now().isoformat() + ' ' + url)
-    return r
-
-
 def get_downloaded_data(url, downloaded_filename):
     current_content = u''
     if os.path.isfile(downloaded_filename):
         current_content = read_file(downloaded_filename)
     current_items = current_content.split('\n')
 
-    new = request(url)
+    new = utils_urllib2.request(url)
     if new is None:
         new = current_content
     if not isinstance(new, unicode):
@@ -170,4 +151,3 @@ def get_downloaded_data(url, downloaded_filename):
 def last_modified_datetime(filename):
     from datetime import datetime
     return datetime.fromtimestamp(os.path.getmtime(filename))
-
