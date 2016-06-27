@@ -1,12 +1,12 @@
 # coding=utf-8
 import os
-import urllib2
 import csv
 import codecs
 import shutil
 
-
 import Tkinter
+
+import utils_urllib2
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -179,7 +179,7 @@ def generate_input_for_markup(journals, filename):
 
 def download_content(url):
     try:
-        new = urllib2.urlopen(url).read()
+        new = utils_urllib2.request(url)
     except:
         new = ''
     if not isinstance(new, unicode):

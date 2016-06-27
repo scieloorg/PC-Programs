@@ -5,7 +5,15 @@ import urllib2
 
 import Tkinter
 
-#from __init__ import _
+
+def local_gettext(text):
+    return text
+
+
+try:
+    from __init__ import _
+except:
+    _ = local_gettext
 
 
 class ProxyGUI(object):
@@ -21,7 +29,7 @@ class ProxyGUI(object):
 
         self.tkFrame.labelframe_message = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.labelframe_message.pack(fill="both", expand="yes")
-        self.tkFrame.label_message = Tkinter.Label(self.tkFrame.labelframe_message, text='This tool requires Internet access to validate DOI, affiliations, and other data, and also to get journals data from SciELO. Informe the required data, if applies.', font="Verdana 12 bold")
+        self.tkFrame.label_message = Tkinter.Label(self.tkFrame.labelframe_message, text=_('This tool requires Internet access to validate DOI, affiliations, and other data, and also to get journals data from SciELO. Inform the required data, if applies.'), font="Verdana 12 bold")
         self.tkFrame.labelframe_proxy_ip = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.labelframe_proxy_ip.pack(fill="both", expand="yes")
         self.tkFrame.label_proxy_ip = Tkinter.Label(self.tkFrame.labelframe_proxy_ip, text='Proxy IP', font="Verdana 12 bold")
@@ -38,14 +46,14 @@ class ProxyGUI(object):
 
         self.tkFrame.labelframe_proxy_user = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.labelframe_proxy_user.pack(fill="both", expand="yes")
-        self.tkFrame.label_proxy_user = Tkinter.Label(self.tkFrame.labelframe_proxy_user, text='user', font="Verdana 12 bold")
+        self.tkFrame.label_proxy_user = Tkinter.Label(self.tkFrame.labelframe_proxy_user, text=_('user'), font="Verdana 12 bold")
         self.tkFrame.label_proxy_user.pack(fill="both", expand="yes")
         self.tkFrame.entry_proxy_user = Tkinter.Entry(self.tkFrame.labelframe_proxy_user)
         self.tkFrame.entry_proxy_user.pack()
 
         self.tkFrame.labelframe_proxy_password = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.labelframe_proxy_password.pack(fill="both", expand="yes")
-        self.tkFrame.label_proxy_password = Tkinter.Label(self.tkFrame.labelframe_proxy_password, text='password', font="Verdana 12 bold")
+        self.tkFrame.label_proxy_password = Tkinter.Label(self.tkFrame.labelframe_proxy_password, text=_('password'), font="Verdana 12 bold")
         self.tkFrame.label_proxy_password.pack(fill="both", expand="yes")
         self.tkFrame.entry_proxy_password = Tkinter.Entry(self.tkFrame.labelframe_proxy_password, show='*')
         self.tkFrame.entry_proxy_password.pack()
@@ -53,10 +61,10 @@ class ProxyGUI(object):
         self.tkFrame.labelframe_buttons = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.labelframe_buttons.pack(fill="both", expand="yes")
 
-        self.tkFrame.button_cancel = Tkinter.Button(self.tkFrame.labelframe_buttons, text='Cancel', command=lambda: self.tkFrame.quit())
+        self.tkFrame.button_cancel = Tkinter.Button(self.tkFrame.labelframe_buttons, text=_('Cancel'), command=lambda: self.tkFrame.quit())
         self.tkFrame.button_cancel.pack(side='right')
 
-        self.tkFrame.button_execute = Tkinter.Button(self.tkFrame.labelframe_buttons, text='OK', command=self.register)
+        self.tkFrame.button_execute = Tkinter.Button(self.tkFrame.labelframe_buttons, text=_('OK'), command=self.register)
         self.tkFrame.button_execute.pack(side='right')
 
     def register(self):
@@ -67,7 +75,7 @@ class ProxyGUI(object):
 
 def ask_proxy_info(debug=False):
     tk_root = Tkinter.Tk()
-    tk_root.title('Proxy information')
+    tk_root.title(_('Proxy information'))
     tkFrame = Tkinter.Frame(tk_root)
     main = ProxyGUI(tkFrame, debug)
     main.tkFrame.pack(side="top", fill="both", expand=True)
@@ -111,7 +119,6 @@ def try_request(url, timeout=30, debug=False, force_error=False):
     except urllib2.HTTPError as e:
         error_code = e.code
         error_message = e.read()
-
     except urllib2.URLError as e:
         error_message = 'URLError'
     except urllib2.socket.timeout:
@@ -134,7 +141,7 @@ def request(url, timeout=30, debug=False, force_error=False):
             registry_proxy()
             response, error_code, error_message = try_request(url, timeout, debug, force_error)
     if response is None:
-        if error_code is not None:
+        if error_message == 'URLError':
             if debug:
                 print('Try with proxy authenticated: ask proxy info')
             proxy_info = ask_proxy_info(debug)
@@ -147,18 +154,8 @@ def request(url, timeout=30, debug=False, force_error=False):
                     print('Try with proxy authenticated: execute')
                 response, error_code, error_message = try_request(url, timeout)
     if response is None:
-        print('Unable to access')
+        print(_('Unable to access'))
         print(url)
         print(error_message)
 
     return response
-
-
-d = request('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', timeout=10, debug=True)
-if d is not None:
-    print('funcionou!')
-
-
-d = request('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', timeout=10, debug=True)
-if d is not None:
-    print('funcionou de novo!')

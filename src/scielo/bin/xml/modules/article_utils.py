@@ -2,10 +2,11 @@
 # coding=utf-8
 
 from datetime import datetime
-import urllib2
 import json
+
 from PIL import Image
 
+import utils_urllib2
 import validation_status
 import utils
 import institutions_service
@@ -22,7 +23,7 @@ MONTHS_ABBREV = '|' + '|'.join([_MONTHS[k] for k in sorted(_MONTHS.keys()) if k 
 def execute_api(url, timeout=30, debug=False):
     result = None
     if url is not None:
-        r = request(url, timeout, debug)
+        r = utils_urllib2.request(url, timeout, debug)
         if r is not None:
             result = json.loads(r)
     return result
@@ -100,29 +101,10 @@ def format_issue_label(year, volume, number, volume_suppl, number_suppl, compl):
     return ''.join([i for i in [year, v, vs, n, ns, compl] if i is not None])
 
 
-def request(url, _timeout=30, debug=False):
-    r = None
-    try:
-        r = urllib2.urlopen(url, timeout=_timeout).read()
-    except urllib2.URLError, e:
-        if debug:
-            utils.display_message(datetime.now().isoformat() + " Oops, timed out?")
-    except urllib2.socket.timeout:
-        if debug:
-            utils.display_message(datetime.now().isoformat() + " Timed out!")
-    except:
-        if debug:
-            utils.display_message(datetime.now().isoformat() + " unknown")
-    if debug:
-        if r is None:
-            utils.display_message(datetime.now().isoformat() + ' ' + url)
-    return r
-
-
 def url_check(url, _timeout=10):
     checked = url in URL_CHECKED
     if not checked:
-        if not request(url, _timeout) is None:
+        if not utils_urllib2.request(url, _timeout) is None:
             URL_CHECKED.append(url)
     return url in URL_CHECKED
 
