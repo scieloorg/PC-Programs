@@ -64,6 +64,11 @@
 			<ELocationID EIdType="pii">
 				<xsl:value-of select="$pid"/>
 			</ELocationID>
+			<xsl:if test=".//article-meta/article-id[@pub-id-type='doi']">
+				<ELocationID EIdType="doi">
+					<xsl:value-of select=".//article-meta/article-id[@pub-id-type='doi']"/>
+				</ELocationID>
+			</xsl:if>
 			<xsl:apply-templates
 				select="@xml:lang|.//sub-article[@article-type='translation']/@xml:lang"
 				mode="scielo-xml-languages"/>
