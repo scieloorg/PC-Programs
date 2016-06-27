@@ -340,14 +340,18 @@ def display_label_value(label, value):
     return tag('span', label, 'label') + ': ' + format_html_data(value)
 
 
-def image(path, width='auto', height='auto'):
+def thumb_image(path, width='auto', height='auto'):
+    return link(path, image(path, width, height, style='thumb'))
+
+
+def image(path, width='auto', height='auto', style='graphic'):
     dim = ''
     if width is not None:
         dim += ' width="' + width + '"'
     if height is not None:
         dim += ' height="' + height + '"'
 
-    return '<img class="graphic" src="' + path + '" ' + dim + '/>'
+    return '<img class="' + style + '" src="' + path + '" ' + dim + '/>'
 
 
 def section(title, content):
