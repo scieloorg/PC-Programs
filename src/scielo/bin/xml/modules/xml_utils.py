@@ -5,6 +5,7 @@ import tempfile
 import xml.etree.ElementTree as etree
 import HTMLParser
 from StringIO import StringIO
+import xml.dom.minidom
 
 from __init__ import _
 import fs_utils
@@ -428,6 +429,7 @@ def is_xml_well_formed(content):
     if e is None:
         return node
     else:
+        print('is_xml_well_formed')
         print(e)
 
 
@@ -452,7 +454,7 @@ def split_prefix(content):
 
 def minidom_pretty_print(content):
     pretty = None
-    import xml.dom.minidom
+
     try:
         content = content.replace('\r', '')
         content = ' '.join([item for item in content.split('\n')])
