@@ -121,6 +121,8 @@ class HRef(object):
             self.id = parent.attrib.get('id', None)
         self.parent = parent
         self.is_internal_file = (not '/' in src)
+        if element.tag in ['ext-link', 'uri']:
+            self.is_internal_file = False
         self.is_image = ext in IMG_EXTENSIONS
 
     def file_location(self, path):
