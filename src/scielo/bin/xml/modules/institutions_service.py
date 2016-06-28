@@ -190,13 +190,11 @@ def wayta_request(text):
 
         result = previous_requests.get(full_url)
         if result is None:
-            result = []
-        if len(result) == 0:
-            previous_requests[full_url] = utils_urllib2.request(full_url, timeout=30)
-
+            result = utils_urllib2.request(full_url, timeout=30)
+            previous_requests[full_url] = result
     except Exception as e:
+        print('wayta_request:')
         print(e)
-        result = []
     return result
 
 
@@ -210,6 +208,7 @@ def format_wayta_results(result, filter_country=None):
         else:
             r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '' and filter_country == item.get('country')]
     except Exception as e:
+        print('format_wayta_results:')
         print(e)
     return r
 
