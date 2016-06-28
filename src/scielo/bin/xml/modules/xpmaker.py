@@ -653,6 +653,7 @@ class ArticlePkgMaker(object):
         xml, e = xml_utils.load_xml(self.content)
         if xml is not None:
             #content = remove_xmllang_off_article_title(content)
+            self.content = self.content.replace(' - </title>', '</title>')
             self.content = self.content.replace('&amp;amp;', '&amp;')
             self.content = self.content.replace('&amp;#', '&#')
             self.content = self.content.replace('dtd-version="3.0"', 'dtd-version="1.0"')

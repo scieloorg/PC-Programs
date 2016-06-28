@@ -917,7 +917,6 @@ class ArticleContentValidation(object):
     @property
     def titles_abstracts_keywords(self):
         r = []
-
         for lang in sorted(self.article.title_abstract_kwd_languages):
             err_level = validation_status.STATUS_ERROR if lang != self.article.language else validation_status.STATUS_FATAL_ERROR
             titles, valid, errors = self.titles_by_lang(lang, err_level)
