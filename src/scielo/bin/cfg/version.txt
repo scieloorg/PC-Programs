@@ -1,18 +1,26 @@
-﻿4.0.091 - 11/04/2016
+﻿4.0.091 - 28/06/2016
 ====================
-03/06/2016
-----------
+- General:
+  - (new) [#2287] Solve HTTP Error Proxy Authentication Required 
 - XC: 
-  - (bug): retraction considered errornously as press release (#2236)
-  - (bug): unexpect error because of missing subject (#2252)
+  - (bug) [#2236] Retraction considered errornously as press release
+  - (bug) [#2252] Unexpect error because of missing subject 
 - PubMed XML Generator
-  - (new) Update the PubMed XML according to "new rules" of PubMed (errata, mult aff, etc) (#2243)
-  - (bug) Fix limitation of quantity of authors (#2243)
+  - (bug) [#2243] Fix limitation of quantity of authors
+  - (bug) [#2283] Fix affiliation content and do not exclude @article-type=other
+  - (new) [#2243] Update the PubMed XML according to "new rules" of PubMed (errata, mult aff, etc)
+  - (new) [#2288] ElocationID (doi)
 - XPM:
-  - (bug) Fix problem as identifying the xref ranges. It happened when there were xref in serveral levels of XML tree. (#2264)
+  - (bug) [#2264] Fix problem as identifying the xref ranges. It happened when there were xref in serveral levels of XML tree.
   - (bug) Fix unexpected error because of article-title that has @xml:lang and xref. 
+  - (bug) [#2272] Fix ext-link in mixed-citation
 - Markup:
-  - (bug) Word 2010 as saving HTML to generate .sgm.xml (#2265)
+  - (bug) [#2265] Word 2010 as saving HTML to generate .sgm.xml
+  - (bug) [#2294] Fix sub, sup, italic identification
+  - (bug) [#2273] Markup fixed sub, sup, italic only in footnotes
+- Title Manager:
+  - (bug) [#2282] Fix the edition of issue data: missing some ISSN previously filled.
+
 
 4.0.091 - 11/04/2016
 ====================
