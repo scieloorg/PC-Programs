@@ -5,6 +5,7 @@ from datetime import datetime
 from __init__ import _
 import validation_status
 import utils
+import fs_utils
 import xml_utils
 import article_utils
 import article_validations
@@ -503,7 +504,7 @@ def article_data_and_validations_report(journal, article, new_name, package_path
 
         img_report_content = ''
         if os.path.isfile(images_generation_report_filename):
-            img_report_content = open(images_generation_report_filename, 'r').read()
+            img_report_content = fs_utils.read_file(images_generation_report_filename)
         if len(img_report_content) > 0:
             content.append(html_reports.tag('h1', _('ATTENTION'), 'warning'))
             content.append(html_reports.tag('h1', _('New report: Images Report at the bottom'), 'warning'))
