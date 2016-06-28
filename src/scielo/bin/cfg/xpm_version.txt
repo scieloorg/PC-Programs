@@ -1,10 +1,12 @@
-﻿4.0.091 - 11/04/2016
-====================
-03/06/2016
-----------
+﻿4.0.091 - 28/06/2016 (beta)
+===========================
+- General:
+  - (new) [#2287] Solve HTTP Error Proxy Authentication Required 
 - XPM:
-  - (bug) Fix problem as identifying the xref ranges. It happened when there were xref in serveral levels of XML tree. (#2264)
+  - (bug) [#2264] Fix problem as identifying the xref ranges existing in different levels of XML tree.
   - (bug) Fix unexpected error because of article-title that has @xml:lang and xref. 
+  - (bug) [#2272] Fix ext-link in mixed-citation
+
 
 4.0.091 - 11/04/2016
 ====================
