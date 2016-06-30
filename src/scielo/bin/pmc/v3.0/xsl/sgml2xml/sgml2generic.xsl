@@ -2607,9 +2607,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<sup>
 						<xsl:apply-templates select="*[name()!='graphic']|text()" mode="text-only"/>
-					</sup>
 				</xsl:otherwise>					
 			</xsl:choose>
 		</xref>

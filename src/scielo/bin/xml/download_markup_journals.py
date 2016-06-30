@@ -6,7 +6,7 @@ import shutil
 
 import Tkinter
 
-import utils_urllib2
+from modules import utils_urllib2
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')

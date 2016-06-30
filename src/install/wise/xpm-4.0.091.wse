@@ -1145,6 +1145,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=c:\src\scielo\bin\xml\modules\utils_urllib2.py
+  Destination=%PROGDIR%\xml\modules\utils_urllib2.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=c:\src\scielo\bin\xml\modules\utils.py
   Destination=%PROGDIR%\xml\modules\utils.py
   Flags=0000000010000010
