@@ -6,7 +6,7 @@ import json
 
 import utils
 import dbm_sql
-import utils_urllib2
+import ws_requester
 
 
 curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -190,7 +190,7 @@ def wayta_request(text):
 
         result = previous_requests.get(full_url)
         if result is None:
-            result = utils_urllib2.request(full_url, timeout=30)
+            result = ws_requester.wsr.request(full_url, timeout=30)
             previous_requests[full_url] = result
     except Exception as e:
         print('wayta_request:')

@@ -6,7 +6,7 @@ import shutil
 
 import Tkinter
 
-from modules import utils_urllib2
+from modules import ws_requester
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -177,58 +177,15 @@ def generate_input_for_markup(journals, filename):
     codecs.open(filename, mode='w+').write('\n\r'.join(new_items))
 
 
-def download_content(url):
-    try:
-        new = utils_urllib2.request(url)
-    except:
-        new = ''
-    if not isinstance(new, unicode):
-        new = new.decode('utf-8')
-    return new
-
-
 markup_journals_filename = CURRENT_PATH + '/../markup/markup_journals.csv'
 temp_markup_journals_filename = CURRENT_PATH + '/../markup/temp_markup_journals.csv'
-downloaded_journals_filename = CURRENT_PATH + '/../markup/downloaded_markup_journals.csv'
 
-temp_path = os.path.dirname(temp_markup_journals_filename)
-if not os.path.isdir(temp_path):
-    os.makedirs(temp_path)
+for filename in [markup_journals_filename, temp_markup_journals_filename]:
+    temp_path = os.path.dirname(filename)
+    if not os.path.isdir(temp_path):
+        os.makedirs(temp_path)
 
-temp_path = os.path.dirname(markup_journals_filename)
-if not os.path.isdir(temp_path):
-    os.makedirs(temp_path)
+ws_requester.wsr.update_journals_file()
 
-temp_path = os.path.dirname(downloaded_journals_filename)
-if not os.path.isdir(temp_path):
-    os.makedirs(temp_path)
-
-url = 'http://static.scielo.org/sps/markup_journals.csv'
-url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
-alt_url = 'http://static.scielo.org/sps/titles-tab-utf-8.csv'
-
-current_content = u''
-if os.path.isfile(downloaded_journals_filename):
-    current_content = open(downloaded_journals_filename, 'r').read()
-if not isinstance(current_content, unicode):
-    current_content = current_content.decode('utf-8')
-current_items = current_content.split('\n')
-
-content = download_content(url)
-content_items = content.split('\n')
-
-alt_content = download_content(alt_url)
-alt_content_items = alt_content.split('\n')
-
-new = current_content
-if len(content_items) > len(current_items):
-    new = content
-if len(alt_content_items) > len(content_items):
-    new = alt_content
-updated = False
-if new != current_content:
-    open(downloaded_journals_filename, 'w').write(new.encode('utf-8'))
-    updated = True
-
-journals_collections = journals_by_collection(downloaded_journals_filename)
-open_main_window(journals_collections, markup_journals_filename, temp_markup_journals_filename, updated)
+journals_collections = journals_by_collection(ws_requester.wsr.downloaded_journals_filename)
+open_main_window(journals_collections, markup_journals_filename, temp_markup_journals_filename, True)
