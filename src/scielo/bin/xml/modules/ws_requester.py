@@ -1,9 +1,13 @@
 # code: utf-8
 
+import os
+import json
 import socket
 import urllib2
 
 import Tkinter
+
+import fs_utils
 
 
 def local_gettext(text):
@@ -132,45 +136,76 @@ def try_request(url, timeout=30, debug=False, force_error=False):
     return (response, error_code, error_message)
 
 
-def depricated_request(url, timeout=30, debug=False, force_error=False):
-    response, error_code, error_message = try_request(url, timeout, debug, force_error)
-    if response is None:
-        if error_code is not None:
-            if debug:
-                print('Try with proxy no authenticated')
-            registry_proxy()
+class WebServicesRequester(object):
+
+    def __init__(self, proxy_info=None):
+        self.proxy_info = proxy_info
+        self.requests = {}
+
+    def __new__(self):
+        if not hasattr(self, 'instance'):
+            self.instance = super(WebServicesRequester, self).__new__(self)
+            print(self.instance)
+        return self.instance
+
+    def request(self, url, timeout=30, debug=False, force_error=False):
+        response = self.requests.get(url)
+        if response is None:
             response, error_code, error_message = try_request(url, timeout, debug, force_error)
-    if response is None:
-        if error_message == 'URLError':
-            if debug:
-                print('Try with proxy authenticated: ask proxy info')
-            proxy_info = ask_proxy_info(debug)
-            if debug:
-                print(proxy_info)
-            if proxy_info is not None:
-                ip, port, user, password = proxy_info
-                registry_proxy(ip, port, user, password)
-                if debug:
-                    print('Try with proxy authenticated: execute')
-                response, error_code, error_message = try_request(url, timeout)
-    if response is None:
-        print(_('Unable to access'))
-        print(url)
-        print(error_message)
+            if response is None and error_code is not None:
+                if self.proxy_info is None:
+                    self.proxy_info = ask_proxy_info()
+                if self.proxy_info is not None:
+                    ip, port, user, password = self.proxy_info
+                    registry_proxy(ip, port, user, password)
+                response, error_code, error_message = try_request(url, timeout, debug, force_error)
+            if response is not None:
+                self.requests[url] = response
+        return response
 
-    return response
+    def json_result_request(self, url, timeout=30, debug=False):
+        result = None
+        if url is not None:
+            r = self.request(url, timeout, debug)
+            if r is not None:
+                result = json.loads(r)
+        return result
 
-
-def use_authenticated_proxy():
-    proxy_info = ask_proxy_info()
-    if proxy_info is not None:
-        ip, port, user, password = proxy_info
-        registry_proxy(ip, port, user, password)
+    def is_valid_url(self, url, timeout=30):
+        return self.request(url, timeout) is not None
 
 
-def request(url, timeout=30, debug=False, force_error=False):
-    response, error_code, error_message = try_request(url, timeout, debug, force_error)
-    if response is None and error_code is not None:
-        use_authenticated_proxy()
-        response, error_code, error_message = try_request(url, timeout, debug, force_error)
-    return response
+class PublishingWebServicesRequester(WebServicesRequester):
+
+    def __init__(self, proxy_info=None):
+        WebServicesRequester.__init__(self, proxy_info)
+        self.journals_url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
+        self.journals_file_content = ''
+
+    def journal_doi_prefix_url(self, issn):
+        if issn is not None:
+            return 'http://api.crossref.org/works?filter=issn:' + issn
+
+    def article_doi_checker_url(self, doi):
+        #PID|oldpid
+        url = None
+        if doi is not None:
+            if 'dx.doi.org' in doi:
+                doi = doi[doi.find('dx.doi.org/')+len('dx.doi.org/'):]
+            url = 'http://api.crossref.org/works/' + doi
+        return url
+
+    def update_journals_file(self):
+        self.journals_file_content = self.request(self.journals_url)
+        fs_utils.update_file_content_if_there_is_new_items(self.journals_file_content, self.downloaded_journals_filename)
+
+    @property
+    def downloaded_journals_filename(self):
+        CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+        downloaded_filename = CURRENT_PATH + '/../../markup/downloaded_markup_journals.csv'
+        if not os.path.isdir(CURRENT_PATH + '/../../markup'):
+            os.makedirs(CURRENT_PATH + '/../../markup')
+        return downloaded_filename
+
+
+wsr = PublishingWebServicesRequester()

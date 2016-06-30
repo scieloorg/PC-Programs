@@ -19,6 +19,7 @@ import serial_files
 import pkg_reports
 import institutions_service
 import html_reports
+import ws_requester
 
 
 ISSN_TYPE_CONVERSION = {
@@ -1309,15 +1310,10 @@ class DBManager(object):
 class JournalsList(object):
 
     def __init__(self):
-        url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
-        CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-        downloaded_filename = CURRENT_PATH + '/../../markup/downloaded_markup_journals.csv'
-        if not os.path.isdir(CURRENT_PATH + '/../../markup'):
-            os.makedirs(CURRENT_PATH + '/../../markup')
-        fs_utils.get_downloaded_data(url, downloaded_filename)
-
+        ws_requester.wsr.update_journals_file()
         self._journals = {}
-        with open(downloaded_filename, 'rb') as csvfile:
+
+        with open(ws_requester.wsr.downloaded_journals_filename, 'rb') as csvfile:
             spamreader = csv.reader(csvfile, delimiter='\t')
             for item in spamreader:
                 if len(item) >= 10:
@@ -1368,7 +1364,7 @@ class JournalsList(object):
                     journal.journal_title = update_list(journal.journal_title, j.journal_title)
                     journal.issn_id = update_list(journal.issn_id, j.issn_id)
 
-        journal.doi_prefix = article_utils.journal_doi_prefix([journal.e_issn, journal.p_issn])
+        journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
         return journal
 
 
@@ -1384,3 +1380,21 @@ def update_value(item, value):
     if item is None and value is not None and len(value) > 0:
         item = value
     return value
+
+
+def journal_doi_prefix(issn_list):
+    prefix = None
+    for issn in issn_list:
+        if issn is not None:
+            url = ws_requester.wsr.journal_doi_prefix_url(issn)
+            json_results = ws_requester.wsr.json_result_request(url)
+            if json_results is not None:
+                items = json_results.get('message', {}).get('items')
+                if items is not None:
+                    if len(items) > 0:
+                        prefix = items[0].get('prefix')
+                        if prefix is not None:
+                            prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
+        if prefix is not None:
+            break
+    return prefix

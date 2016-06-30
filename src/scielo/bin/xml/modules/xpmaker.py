@@ -27,6 +27,7 @@ import xml_versions
 import xpchecker
 import pkg_reports
 import symbols
+import xc_models
 
 
 mime = MimeTypes()
@@ -1121,7 +1122,6 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
 
         pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path)
 
-        import xc_models
         journals_list = xc_models.JournalsList()
         journal = journals_list.get_journal(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title)
 
