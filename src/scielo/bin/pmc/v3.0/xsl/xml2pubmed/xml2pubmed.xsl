@@ -124,14 +124,36 @@
 		</Object>
 	</xsl:template>
 	<xsl:template match="article" mode="scielo-xml-objects">
+		<xsl:if test="@article-type='correction' or @article-type='retraction'">
+			<ObjectList>
+				<xsl:apply-templates select=".//related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object">
+					<xsl:with-param name="article_type"><xsl:value-of select="@article-type"/></xsl:with-param>
+				</xsl:apply-templates>
+			</ObjectList>
+		</xsl:if>
+		<xsl:if test=".//ext-link[contains(@ext-link-type,'linical') and contains(@ext-link-type,'rial')]">
+			<ObjectList>
+				<xsl:apply-templates select=".//ext-link[contains(@ext-link-type,'linical') and contains(@ext-link-type,'rial')]" mode="object-clinical-trial"></xsl:apply-templates>
+			</ObjectList>
+		</xsl:if>
 	</xsl:template>
-	<xsl:template match="article[@article-type='correction' or @article-type='retraction']" mode="scielo-xml-objects">
-		<ObjectList>
-			<xsl:apply-templates select=".//related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object">
-				<xsl:with-param name="article_type"><xsl:value-of select="@article-type"/></xsl:with-param>
-			</xsl:apply-templates>
-		</ObjectList>
+	<xsl:template match="ext-link" mode="object-clinical-trial">
+		<!-- 
+		<ext-link ext-link-type="ClinicalTrial" xlink:href="https://clinicaltrials.gov/ct2/show/NCT00981734">NCT00981734</ext-link>
+		-->
+		<xsl:choose>
+			<xsl:when test="contains(@xlink:href,'clinicaltrials.gov')">
+				<Object Type="ClinicalTrials.gov">
+					<Param Name="id"><xsl:choose>
+						<xsl:when test="starts-with(.,'NCT')"><xsl:value-of select="."/></xsl:when>
+						<xsl:when test="contains(@xlink:href,'/show/')"><xsl:value-of select="substring-after(@xlink:href,'/show/')"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+					</xsl:choose></Param>
+				</Object>	
+			</xsl:when>
+		</xsl:choose>
 	</xsl:template>
+	
 	<xsl:template match="article[@article-type='case-report']" mode="scielo-xml-publication-type">Case Reports</xsl:template>
 	<xsl:template match="article[@article-type='research-article']" mode="scielo-xml-publication-type">Journal Article</xsl:template>
 	<xsl:template match="article[@article-type='corrected-article']" mode="scielo-xml-publication-type">Corrected and Republished Article</xsl:template>
@@ -222,7 +244,7 @@
 			
 			<xsl:apply-templates select=".//*[contains(name(),'abstract') and @xml:lang='en']"
 				mode="scielo-xml-content-abstract"/>
-			<xsl:apply-templates select=".//sub-article[@xml:lang='en' and @article-type='translation']//*[contains(name(),'abstract') and @xml:lang='en']"
+			<xsl:apply-templates select=".//sub-article[@xml:lang='en' and @article-type='translation']//abstract"
 				mode="scielo-xml-content-abstract"/>
 		</Abstract>
 	</xsl:template>
