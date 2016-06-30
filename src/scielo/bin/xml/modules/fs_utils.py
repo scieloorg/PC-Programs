@@ -4,7 +4,6 @@ import shutil
 import tempfile
 
 import files_extractor
-import utils_urllib2
 
 
 def read_file(filename, encode='utf-8'):
@@ -125,27 +124,22 @@ def zip_report(report_filename):
     return zip_path
 
 
-def get_downloaded_data(url, downloaded_filename):
+def update_file_content_if_there_is_new_items(new_content, filename):
     current_content = u''
-    if os.path.isfile(downloaded_filename):
-        current_content = read_file(downloaded_filename)
+    if os.path.isfile(filename):
+        current_content = read_file(filename)
     current_items = current_content.split('\n')
 
-    new = utils_urllib2.request(url)
-    if new is None:
-        new = current_content
-    if not isinstance(new, unicode):
-        new = new.decode('utf-8')
-    new_items = new.split('\n')
+    if new_content is None:
+        new_content = current_content
+    if not isinstance(new_content, unicode):
+        new_content = new_content.decode('utf-8')
+    new_items = new_content.split('\n')
 
-    content = current_content
-
-    allow_update = len(new_items) > len(current_items) or (len(new_items) == len(current_items) and new != current_content)
+    allow_update = len(new_items) > len(current_items) or (len(new_items) == len(current_items) and new_content != current_content)
 
     if allow_update is True:
-        write_file(downloaded_filename, new)
-        content = new
-    return content
+        write_file(filename, new_content)
 
 
 def last_modified_datetime(filename):

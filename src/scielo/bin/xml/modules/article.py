@@ -2,14 +2,14 @@
 import os
 from datetime import datetime
 
+from __init__ import _
 import institutions_service
 import article_utils
 import xml_utils
 import attributes
 import utils
 import institutions_service
-
-from __init__ import _
+import ws_requester
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
@@ -1326,9 +1326,6 @@ class Article(ArticleXML):
         self.creation_date = None
         self.last_update_date = None
         self.last_update_display = None
-        self._doi_journal_titles = None
-        self._doi_article_titles = None
-        self._doi_pid = None
         self.registered_aop_pid = None
         self._previous_pid = None
         self.normalized_affiliations = None
@@ -1370,28 +1367,20 @@ class Article(ArticleXML):
         return '; '.join(_pages)
 
     @property
+    def doi_data(self):
+        return doi_data(self.doi)
+
+    @property
     def doi_journal_titles(self):
-        if self._doi_journal_titles is None:
-            self._doi_data = article_utils.doi_data(self.doi)
-            if self._doi_data is not None:
-                self._doi_journal_titles = self._doi_data.get('journal-titles')
-        return self._doi_journal_titles
+        return self.doi_data.get('journal-titles')
 
     @property
     def doi_article_titles(self):
-        if self._doi_article_titles is None:
-            self._doi_data = article_utils.doi_data(self.doi)
-            if self._doi_data is not None:
-                self._doi_article_titles = self._doi_data.get('article-titles')
-        return self._doi_article_titles
+        return self.doi_data.get('article-titles')
 
     @property
     def doi_pid(self):
-        if self._doi_pid is None:
-            self._doi_data = article_utils.doi_data(self.doi)
-            if self._doi_data is not None:
-                self._doi_pid = self._doi_data.get('pid')
-        return self._doi_pid
+        return self.doi_data.get('pid')
 
     def summary(self):
         data = {}
@@ -1910,3 +1899,22 @@ class Journal(object):
         self.nlm_title = None
         self.publisher_name = None
         self.license = None
+
+
+def doi_data(doi):
+    results = None
+    url = ws_requester.wsr.article_doi_checker_url(doi)
+    article_json = ws_requester.wsr.json_result_request(url)
+    if article_json is not None:
+        data = article_json.get('message')
+        if data is not None:
+            results = []
+            for label in ['container-title', 'title', 'alternative-id']:
+                result = data.get(label)
+                if not result is None:
+                    if not isinstance(result, list):
+                        result = [result]
+                results.append(result)
+    if results is not None:
+        results = {'journal-titles': results[0], 'article-titles': results[1], 'pid': results[2][0] if results[2] is not None else None}
+    return results

@@ -6,7 +6,6 @@ import json
 
 from PIL import Image
 
-import utils_urllib2
 import validation_status
 import utils
 import institutions_service
@@ -18,15 +17,6 @@ URL_CHECKED = []
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 _MONTHS = {v: k for k, v in MONTHS.items()}
 MONTHS_ABBREV = '|' + '|'.join([_MONTHS[k] for k in sorted(_MONTHS.keys()) if k != '00']) + '|'
-
-
-def execute_api(url, timeout=30, debug=False):
-    result = None
-    if url is not None:
-        r = utils_urllib2.request(url, timeout, debug)
-        if r is not None:
-            result = json.loads(r)
-    return result
 
 
 def display_date(dateiso):
@@ -99,32 +89,6 @@ def format_issue_label(year, volume, number, volume_suppl, number_suppl, compl):
     n = 'n' + number if number is not None else None
     ns = 's' + number_suppl if number_suppl is not None else None
     return ''.join([i for i in [year, v, vs, n, ns, compl] if i is not None])
-
-
-def url_check(url, _timeout=10):
-    checked = url in URL_CHECKED
-    if not checked:
-        if not utils_urllib2.request(url, _timeout) is None:
-            URL_CHECKED.append(url)
-    return url in URL_CHECKED
-
-
-def api_crossref_doi_query_url(doi):
-    #PID|oldpid
-    url = None
-    if doi is not None:
-        if 'dx.doi.org' in doi:
-            doi = doi[doi.find('dx.doi.org/')+len('dx.doi.org/'):]
-        url = 'http://api.crossref.org/works/' + doi
-    return url
-
-
-def api_crossref_issn_query_url(issn):
-    #PID|oldpid
-    url = None
-    if issn is not None:
-        url = 'http://api.crossref.org/works?filter=issn:' + issn
-    return url
 
 
 def u_encode(u, encoding):
@@ -297,42 +261,6 @@ def four_digits_year(year):
             elif year[1:5].isdigit():
                 year = year[1:5]
     return year
-
-
-def doi_data(doi):
-    results = None
-    article_json = execute_api(api_crossref_doi_query_url(doi))
-    if article_json is not None:
-        data = article_json.get('message')
-        if data is not None:
-            results = []
-            for label in ['container-title', 'title', 'alternative-id']:
-                result = data.get(label)
-                if not result is None:
-                    if not isinstance(result, list):
-                        result = [result]
-                results.append(result)
-    if results is not None:
-        results = {'journal-titles': results[0], 'article-titles': results[1], 'pid': results[2][0] if results[2] is not None else None}
-    return results
-
-
-def journal_doi_prefix(issn_list):
-    prefix = None
-    for issn in issn_list:
-        print(issn)
-        if issn is not None:
-            json_results = execute_api(api_crossref_issn_query_url(issn))
-            if json_results is not None:
-                items = json_results.get('message', {}).get('items')
-                if items is not None:
-                    if len(items) > 0:
-                        prefix = items[0].get('prefix')
-                        if prefix is not None:
-                            prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
-        if prefix is not None:
-            break
-    return prefix
 
 
 def normalize_affiliations(article):

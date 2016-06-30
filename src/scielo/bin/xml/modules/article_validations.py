@@ -14,6 +14,7 @@ import html_reports
 import institutions_service
 import fs_utils
 from serial_files import filename_language_suffix
+import ws_requester
 
 
 MIN_IMG_DPI = 300
@@ -1008,7 +1009,7 @@ class ArticleContentValidation(object):
                 r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
             elif not '://creativecommons.org/licenses/' in license.get('href'):
                 r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
-            elif not article_utils.url_check(license.get('href')):
+            elif not ws_requester.wsr.is_valid_url(license.get('href')):
                 r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
             r.append(expected_values('license/@license-type', license.get('type'), ['open-access'], 'FATAL '))
             r.append(required('license/license-p', license.get('text'), validation_status.STATUS_FATAL_ERROR, False))
@@ -1270,7 +1271,7 @@ class ArticleContentValidation(object):
             else:
                 hreflocation = hrefitem.src
                 if self.check_url or ('scielo' in hrefitem.src and not hrefitem.src.endswith('.pdf')):
-                    if not article_utils.url_check(hrefitem.src, 30):
+                    if not ws_requester.wsr.is_valid_url(hrefitem.src, 30):
                         message = _(' is not working')
                         if ('scielo' in hrefitem.src and not hrefitem.src.endswith('.pdf')):
                             message += '. ' + _('Be sure that there is no missing character such as _.')
