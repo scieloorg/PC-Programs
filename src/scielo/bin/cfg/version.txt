@@ -1,4 +1,4 @@
-﻿4.0.091 - 28/06/2016 (beta)
+﻿4.0.091 - 07/07/2016 (beta)
 ===========================
 - General:
   - (new) [#2287] Solve HTTP Error Proxy Authentication Required 
@@ -10,20 +10,20 @@
   - (bug) [#2283] Fix affiliation content and do not exclude @article-type=other
   - (new) [#2243] Update the PubMed XML according to "new rules" of PubMed (errata, mult aff, etc)
   - (new) [#2288] ElocationID (doi)
+  - (new) [#2304] Clinical trial  
 - XPM:
   - (bug) [#2264] Fix problem as identifying the xref ranges existing in different levels of XML tree.
   - (bug) Fix unexpected error because of article-title that has @xml:lang and xref. 
   - (bug) [#2272] Fix ext-link in mixed-citation
 - Markup:
   - (bug) [#2265] Word 2010 as saving HTML to generate .sgm.xml
-  - (bug) [#2294] Fix sub, sup, italic identification
+  - (bug) [#2294] Fix sub, sup, italic identification, when the styles are in the same text.
   - (bug) [#2273] Markup fixed sub, sup, italic only in footnotes
 - Markup/XPM:
   - (bug) [#2290] Fix ext-link/@xlink:href generation if @xlink:href has no protocol informed
   - (bug) [#2289] Remove " - " from the end of title element
 - Title Manager:
   - (bug) [#2282] Fix the edition of issue data: missing some ISSN previously filled.
-
 
 4.0.091 - 11/04/2016
 ====================
