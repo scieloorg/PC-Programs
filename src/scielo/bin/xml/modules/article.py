@@ -1902,7 +1902,7 @@ class Journal(object):
 
 
 def doi_data(doi):
-    results = None
+    results = {}
     url = ws_requester.wsr.article_doi_checker_url(doi)
     article_json = ws_requester.wsr.json_result_request(url)
     if article_json is not None:
@@ -1915,6 +1915,6 @@ def doi_data(doi):
                     if not isinstance(result, list):
                         result = [result]
                 results.append(result)
-    if results is not None:
-        results = {'journal-titles': results[0], 'article-titles': results[1], 'pid': results[2][0] if results[2] is not None else None}
+            if len(results) > 0:
+                results = {'journal-titles': results[0], 'article-titles': results[1], 'pid': results[2][0] if results[2] is not None else None}
     return results

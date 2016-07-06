@@ -1460,6 +1460,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=c:\src\scielo\bin\xml\modules\utils_urllib2.py
+  Destination=%PROGDIR%\bin\xml\modules\utils_urllib2.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=c:\src\scielo\bin\xml\modules\xml_utils.py
   Destination=%PROGDIR%\bin\xml\modules\xml_utils.py
   Flags=0000000010000010
@@ -3078,6 +3083,26 @@ item: If/While Statement
   Variable=COMPONENTS
   Value=E
   Flags=00001010
+end
+item: Install File
+  Source=c:\src\scielo\bin\xml\modules\articles.fst
+  Destination=%PROGDIR%\bin\xml\modules\articles.fst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=c:\src\scielo\bin\xml\modules\xml2pubmed.py
+  Destination=%PROGDIR%\bin\xml\modules\xml2pubmed.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=c:\src\scielo\bin\xml\xml_pubmed.py
+  Destination=%PROGDIR%\bin\xml\xml_pubmed.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=c:\src\scielo\bin\pmc\v3.0\xsl\xml2pubmed\xml2pubmed.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\xml2pubmed\xml2pubmed.xsl
+  Flags=0000000010000010
 end
 item: Install File
   Source=c:\src\scielo\xml_scielo\proc\general\php\XML.php
@@ -4874,8 +4899,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\i2id.exe
-  Destination=%DATADIR%\serial\Code\i2id.exe
+  Source=c:\src\scielo\serial\code\i2id.exe
+  Destination=%DATADIR%\serial\code\i2id.exe
   Flags=0000000010000010
 end
 item: Install File
@@ -5014,13 +5039,13 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.id
-  Destination=%DATADIR%\serial\Code\code.id
+  Source=c:\src\scielo\serial\code\code.id
+  Destination=%DATADIR%\serial\code\code.id
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\id2i.exe
-  Destination=%DATADIR%\serial\Code\id2i.exe
+  Source=c:\src\scielo\serial\code\id2i.exe
+  Destination=%DATADIR%\serial\code\id2i.exe
   Flags=0000000010000010
 end
 item: Install File
@@ -5374,92 +5399,92 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.L01
+  Source=c:\src\scielo\serial\code\code.L01
   Destination=%DATADIR%\serial\code\code.L01
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.IFP
+  Source=c:\src\scielo\serial\code\code.IFP
   Destination=%DATADIR%\serial\code\code.IFP
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.CNT
+  Source=c:\src\scielo\serial\code\code.CNT
   Destination=%DATADIR%\serial\code\code.CNT
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.N02
+  Source=c:\src\scielo\serial\code\code.N02
   Destination=%DATADIR%\serial\code\code.N02
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.N01
+  Source=c:\src\scielo\serial\code\code.N01
   Destination=%DATADIR%\serial\code\code.N01
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.L02
+  Source=c:\src\scielo\serial\code\code.L02
   Destination=%DATADIR%\serial\code\code.L02
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.fst
+  Source=c:\src\scielo\serial\code\code.fst
   Destination=%DATADIR%\serial\code\code.fst
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.mst
+  Source=c:\src\scielo\serial\code\code.mst
   Destination=%DATADIR%\serial\code\code.mst
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.xrf
+  Source=c:\src\scielo\serial\code\code.xrf
   Destination=%DATADIR%\serial\code\code.xrf
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.L01
+  Source=c:\src\scielo\serial\code\code.L01
   Destination=%DATADIR%\serial\code\newcode.L01
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.IFP
+  Source=c:\src\scielo\serial\code\code.IFP
   Destination=%DATADIR%\serial\code\newcode.IFP
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.CNT
+  Source=c:\src\scielo\serial\code\code.CNT
   Destination=%DATADIR%\serial\code\newcode.CNT
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.N02
+  Source=c:\src\scielo\serial\code\code.N02
   Destination=%DATADIR%\serial\code\newcode.N02
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.N01
+  Source=c:\src\scielo\serial\code\code.N01
   Destination=%DATADIR%\serial\code\newcode.N01
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.L02
+  Source=c:\src\scielo\serial\code\code.L02
   Destination=%DATADIR%\serial\code\newcode.L02
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.fst
+  Source=c:\src\scielo\serial\code\code.fst
   Destination=%DATADIR%\serial\code\newcode.fst
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.mst
+  Source=c:\src\scielo\serial\code\code.mst
   Destination=%DATADIR%\serial\code\newcode.mst
   Flags=0000000010001010
 end
 item: Install File
-  Source=c:\src\scielo\serial\Code\code.xrf
+  Source=c:\src\scielo\serial\code\code.xrf
   Destination=%DATADIR%\serial\code\newcode.xrf
   Flags=0000000010001010
 end
