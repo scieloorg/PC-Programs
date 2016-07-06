@@ -116,12 +116,13 @@ def try_request(url, timeout=30, debug=False, force_error=False):
     response = None
     socket.setdefaulttimeout(timeout)
     req = urllib2.Request(url)
-    error_code = None
+    http_error_proxy_auth = None
     error_message = ''
     try:
         response = urllib2.urlopen(req).read()
     except urllib2.HTTPError as e:
-        error_code = e.code
+        if e.code == 407:
+            http_error_proxy_auth = e.code
         error_message = e.read()
     except urllib2.URLError as e:
         error_message = 'URLError'
@@ -132,8 +133,8 @@ def try_request(url, timeout=30, debug=False, force_error=False):
         raise
     if force_error is True:
         response = None
-        error_code = True
-    return (response, error_code, error_message)
+        http_error_proxy_auth = True
+    return (response, http_error_proxy_auth, error_message)
 
 
 class WebServicesRequester(object):
@@ -151,14 +152,14 @@ class WebServicesRequester(object):
     def request(self, url, timeout=30, debug=False, force_error=False):
         response = self.requests.get(url)
         if response is None:
-            response, error_code, error_message = try_request(url, timeout, debug, force_error)
-            if response is None and error_code is not None:
+            response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
+            if response is None and http_error_proxy_auth is not None:
                 if self.proxy_info is None:
                     self.proxy_info = ask_proxy_info()
                 if self.proxy_info is not None:
                     ip, port, user, password = self.proxy_info
                     registry_proxy(ip, port, user, password)
-                response, error_code, error_message = try_request(url, timeout, debug, force_error)
+                response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
             if response is not None:
                 self.requests[url] = response
         return response
