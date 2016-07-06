@@ -834,7 +834,10 @@ class ArticlePkgMaker(object):
             if issueno == 'ahead' or int(issueno) == 0:
                 issueno = None
             else:
-                issueno = complete_number(issueno, 2)
+                n = len(issueno)
+                if len(issueno) < 2:
+                    n = 2
+                issueno = complete_number(issueno, n)
         if suppl:
             suppl = 's' + suppl if suppl != '0' else 'suppl'
         parts = [issn, self.acron, vol, issueno, suppl, last, self.doc.compl]
