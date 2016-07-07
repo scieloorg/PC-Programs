@@ -944,36 +944,36 @@ class ArticleXML(object):
     @property
     def uri_clinical_trial_href(self):
         #FIXME nao existe clinical-trial 
-        #<uri content-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
-        if self.tree is not None:
-            node = self.tree.find('.//uri[@content-type="clinical-trial"]')
+        #<uri content-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
             if node is not None:
                 return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
     @property
     def uri_clinical_trial_text(self):
         #FIXME nao existe clinical-trial 
-        #<uri content-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
-        if self.tree is not None:
-            node = self.tree.find('.//uri[@content-type="clinical-trial"]')
+        #<uri content-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
             if node is not None:
                 return xml_utils.node_text(node)
 
     @property
     def ext_link_clinical_trial_href(self):
         #FIXME nao existe clinical-trial 
-        #<ext-link ext-link-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
-        if self.tree is not None:
-            node = self.tree.find('.//ext-link[@ext-link-type="clinical-trial"]')
+        #<ext-link ext-link-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
             if node is not None:
                 return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
     @property
     def ext_link_clinical_trial_text(self):
         #FIXME nao existe clinical-trial 
-        #<ext-link ext-link-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
-        if self.tree is not None:
-            node = self.tree.find('.//ext-link[@ext-link-type="clinical-trial"]')
+        #<ext-link ext-link-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
             if node is not None:
                 return xml_utils.node_text(node)
 

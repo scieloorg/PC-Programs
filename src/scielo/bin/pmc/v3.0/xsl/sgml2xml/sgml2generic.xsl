@@ -738,7 +738,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template-->
 	<xsl:template match="cltrial" mode="front-clinical-trial">
 		<ext-link>
-			<xsl:attribute name="ext-link-type">clinical-trial</xsl:attribute>
+			<xsl:attribute name="ext-link-type">ClinicalTrial</xsl:attribute>
 			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
 			<xsl:apply-templates select=".//text()"></xsl:apply-templates>
 		</ext-link>
