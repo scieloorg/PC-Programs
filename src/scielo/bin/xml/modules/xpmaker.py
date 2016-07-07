@@ -658,6 +658,8 @@ class ArticlePkgMaker(object):
             self.content = self.content.replace('&amp;amp;', '&amp;')
             self.content = self.content.replace('&amp;#', '&#')
             self.content = self.content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
+
+            self.content = self.content.replace('ext-link-type="clinical-trial"', 'ext-link-type="ClinicalTrial"')
             self.content = self.content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
             self.content = self.content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
             self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
