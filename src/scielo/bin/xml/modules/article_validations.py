@@ -1381,12 +1381,12 @@ class ReferenceContentValidation(object):
             if _test_number is not None:
                 r.append(_test_number)
             if self.reference.source[0:1] != self.reference.source[0:1].upper():
-                r.append(('source', validation_status.STATUS_ERROR, self.reference.source + '-' + _('Invalid value for ') + 'source' + '. '))
+                if not self.reference.source[0:2] != 'e-':
+                    r.append(('source', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.reference.source, label='source')))
+
             _source = self.reference.source.strip()
             if self.reference.source != _source:
-                r.append(('source', validation_status.STATUS_ERROR, self.reference.source + '-' + _('Invalid value for ') + 'source, ' + _('it starts or ends with space characters.')))
-            if _source.startswith('<') and _source.endswith('>'):
-                r.append(('source', validation_status.STATUS_ERROR, self.reference.source + '-' + _('Invalid value for ') + 'source, ' + _('it must not have styles elements (italic, bold).')))
+                r.append(('source', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.reference.source, label='source') + _('"{value}"" starts or ends with space characters.').format(value=self.reference.source)))
         return r
 
     def validate_element(self, label, value, error_level=validation_status.STATUS_FATAL_ERROR):
