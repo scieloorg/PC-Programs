@@ -3,6 +3,7 @@
 import os
 import json
 import socket
+import urllib
 import urllib2
 
 import Tkinter
@@ -115,6 +116,8 @@ def registry_proxy(proxy_server=None, proxy_port=None, proxy_user=None, proxy_pa
 def try_request(url, timeout=30, debug=False, force_error=False):
     response = None
     socket.setdefaulttimeout(timeout)
+    if isinstance(url, unicode):
+        url = url.encode('utf-8')
     req = urllib2.Request(url)
     http_error_proxy_auth = None
     error_message = ''
@@ -146,7 +149,6 @@ class WebServicesRequester(object):
     def __new__(self):
         if not hasattr(self, 'instance'):
             self.instance = super(WebServicesRequester, self).__new__(self)
-            print(self.instance)
         return self.instance
 
     def request(self, url, timeout=30, debug=False, force_error=False):

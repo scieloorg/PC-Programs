@@ -23,6 +23,20 @@ MAX_IMG_WIDTH = 2250
 MAX_IMG_HEIGHT = 2625
 
 
+def validate_doi_format(doi):
+    errors = []
+    for item in doi:
+        if item.isdigit():
+            pass
+        elif item in '-.-;()/':
+            pass
+        elif item in 'abcdefghijklmnopqrstuvwxyz' or item in 'abcdefghijklmnopqrstuvwxyz'.upper():
+            pass
+        else:
+            errors.append(item)
+    return errors
+
+
 def validate_element_is_found_in_mixed_citation(element_name, element_content, mixed_citation):
     r = []
     if element_content is not None:
@@ -572,38 +586,41 @@ class ArticleContentValidation(object):
             r.append(required('doi', self.article.doi, validation_status.STATUS_WARNING))
 
         if self.article.doi is not None:
-            if self.journal.doi_prefix is not None:
-                if not self.article.doi.startswith(self.journal.doi_prefix):
-                    r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.journal.doi_prefix)))
+            invalid_chars = validate_doi_format(self.article.doi)
+            if len(invalid_chars) > 0:
+                r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}').format(value=self.article.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
+            else:
+                if self.journal.doi_prefix is not None:
+                    if not self.article.doi.startswith(self.journal.doi_prefix):
+                        r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.journal.doi_prefix)))
+                if not self.article.doi_journal_titles is None:
+                    status = validation_status.STATUS_INFO
+                    if not self.article.journal_title in self.article.doi_journal_titles:
+                        max_rate, items = utils.most_similar(utils.similarity(self.article.doi_journal_titles, self.article.journal_title))
+                        if max_rate < 0.7:
+                            status = validation_status.STATUS_FATAL_ERROR
+                    r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(self.article.doi_journal_titles)))
 
-            if not self.article.doi_journal_titles is None:
-                status = validation_status.STATUS_INFO
-                if not self.article.journal_title in self.article.doi_journal_titles:
-                    max_rate, items = utils.most_similar(utils.similarity(self.article.doi_journal_titles, self.article.journal_title))
+                if not self.article.doi_article_titles is None:
+                    status = validation_status.STATUS_INFO
+                    max_rate = 0
+                    selected = None
+                    for t in self.article.titles:
+                        rate, items = utils.most_similar(utils.similarity(self.article.doi_article_titles, xml_utils.remove_tags(t.title)))
+                        if rate > max_rate:
+                            max_rate = rate
                     if max_rate < 0.7:
                         status = validation_status.STATUS_FATAL_ERROR
-                r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(self.article.doi_journal_titles)))
+                    r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(self.article.doi_article_titles)))
 
-            if not self.article.doi_article_titles is None:
-                status = validation_status.STATUS_INFO
-                max_rate = 0
-                selected = None
-                for t in self.article.titles:
-                    rate, items = utils.most_similar(utils.similarity(self.article.doi_article_titles, xml_utils.remove_tags(t.title)))
-                    if rate > max_rate:
-                        max_rate = rate
-                if max_rate < 0.7:
-                    status = validation_status.STATUS_FATAL_ERROR
-                r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(self.article.doi_article_titles)))
-
-            if self.article.doi_journal_titles is None:
-                found = False
-                for issn in [self.article.print_issn, self.article.e_issn]:
-                    if issn is not None:
-                        if issn in self.article.doi:
-                            found = True
-                if not found:
-                    r.append(('doi', validation_status.STATUS_ERROR, _('Be sure that {item} belongs to this journal.').format(item='DOI=' + self.article.doi)))
+                if self.article.doi_journal_titles is None:
+                    found = False
+                    for issn in [self.article.print_issn, self.article.e_issn]:
+                        if issn is not None:
+                            if issn in self.article.doi:
+                                found = True
+                    if not found:
+                        r.append(('doi', validation_status.STATUS_ERROR, _('Be sure that {item} belongs to this journal.').format(item='DOI=' + self.article.doi)))
         return r
 
     @property
