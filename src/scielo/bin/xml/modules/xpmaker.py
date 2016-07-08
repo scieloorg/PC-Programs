@@ -37,6 +37,7 @@ log_items = []
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 DISPLAY_REPORT = True
+GENERATE_PMC = False
 
 
 def complete_number(number, q=5):
@@ -1104,6 +1105,8 @@ def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
 
 
 def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=False):
+    global DISPLAY_REPORT
+    global GENERATE_PMC
     is_xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
 
     scielo_pkg_path = results_path + '/scielo_package'
@@ -1162,7 +1165,6 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
                                     html_reports.save_form(xpm_validations.total > 0, u'xml_package_maker.html') + xpm_validations.message, 
                                     xpm_version())
 
-            global DISPLAY_REPORT
             if DISPLAY_REPORT is True:
                 pkg_reports.display_report(filename)
 
@@ -1170,7 +1172,13 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             if is_xml_generation:
                 make_pmc_report(articles, doc_files_info_items)
             if is_pmc_journal(articles):
-                make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                if GENERATE_PMC:
+                    make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                else:
+                    print('='*10)
+                    print(_('To generate PMC package, add -pmc as parameter'))
+                    print('='*10)
+
             make_pkg_zip(scielo_pkg_path)
             if not is_xml_generation:
                 make_pkg_items_zip(scielo_pkg_path)
@@ -1231,7 +1239,11 @@ def get_xml_package_folders_info(input_pkg_path):
     return (xml_files, results_path)
 
 
-def make_packages(path, acron, version='1.0', is_db_generation=False):
+def make_packages(path, acron, version='1.0', is_db_generation=False, pmc=False):
+    global GENERATE_PMC
+
+    if pmc is True:
+        GENERATE_PMC = pmc
     path = fs_utils.fix_path(path)
     xml_files, results_path = get_xml_package_folders_info(path)
     if len(xml_files) > 0:
@@ -1241,19 +1253,26 @@ def make_packages(path, acron, version='1.0', is_db_generation=False):
 
 def get_inputs(args):
     global DISPLAY_REPORT
+    global GENERATE_PMC
+
     args = [arg.decode(encoding=sys.getfilesystemencoding()) for arg in args]
     script = args[0]
     path = None
     acron = None
-    if len(args) == 3:
-        script, path, other = args
-        if other == u'-auto':
-            DISPLAY_REPORT = False
-        elif other is not None:
-            acron = None if other.startswith('-') else other
 
-    elif len(args) == 2:
-        script, path = args
+    items = []
+    for item in args:
+        if item == '-auto':
+            DISPLAY_REPORT = False
+        elif item == '-pmc':
+            GENERATE_PMC = True
+        else:
+            items.append(item)
+
+    if len(items) == 3:
+        script, path, acron = items
+    elif len(items) == 2:
+        script, path = items
     return (script, path, acron)
 
 
