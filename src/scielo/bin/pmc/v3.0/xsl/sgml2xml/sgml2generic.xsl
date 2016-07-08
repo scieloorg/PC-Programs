@@ -3304,43 +3304,48 @@ et al.</copyright-statement>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:if test="string-length(normalize-space($preprint_date))&gt;0">
-			<pub-date pub-type="epub">
-				<xsl:call-template name="display_date">
-					<xsl:with-param name="dateiso">
-						<xsl:value-of select="$preprint_date"/>
-					</xsl:with-param>
-				</xsl:call-template>
-			</pub-date>
-		</xsl:if>
-		<xsl:variable name="issue_date_type">
-			<xsl:choose>
-				<xsl:when test="@issueno='ahead'"></xsl:when>
-				<xsl:when test="(number(@issueno)=0 or not(@issueno)) and (number(@volid)=0 or not(@volid))"></xsl:when>
-				<xsl:when test="@artdate">collection</xsl:when><!-- rolling pass -->
-				<xsl:when test="@ahpdate">collection</xsl:when>
-				<xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:if test="$issue_date_type!=''">
-			<pub-date pub-type="{$issue_date_type}">
-				<xsl:call-template name="display_date">
-					<xsl:with-param name="dateiso">
-						<xsl:value-of select="@dateiso"/>
-					</xsl:with-param>
-					<xsl:with-param name="date">
-						<xsl:choose>
-							<xsl:when test="@season!=''">
-								<xsl:value-of select="@season"/>
-							</xsl:when>
-							<xsl:when test="//extra-scielo//season">
-								<xsl:value-of select="//extra-scielo//season"/>
-							</xsl:when>
-						</xsl:choose>
-					</xsl:with-param>
-				</xsl:call-template>
-			</pub-date>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="string-length(normalize-space($preprint_date))&gt;0">
+				<pub-date pub-type="epub">
+					<xsl:call-template name="display_date">
+						<xsl:with-param name="dateiso">
+							<xsl:value-of select="$preprint_date"/>
+						</xsl:with-param>
+					</xsl:call-template>
+				</pub-date>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="issue_date_type">
+					<xsl:choose>
+						<xsl:when test="@issueno='ahead'"></xsl:when>
+						<xsl:when test="(number(@issueno)=0 or not(@issueno)) and (number(@volid)=0 or not(@volid))"></xsl:when>
+						<!--xsl:when test="@artdate">collection</xsl:when--><!-- rolling pass -->
+						<!--xsl:when test="@ahpdate">collection</xsl:when-->
+						<xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+				<xsl:if test="$issue_date_type!=''">
+					<pub-date pub-type="{$issue_date_type}">
+						<xsl:call-template name="display_date">
+							<xsl:with-param name="dateiso">
+								<xsl:value-of select="@dateiso"/>
+							</xsl:with-param>
+							<xsl:with-param name="date">
+								<xsl:choose>
+									<xsl:when test="@season!=''">
+										<xsl:value-of select="@season"/>
+									</xsl:when>
+									<xsl:when test="//extra-scielo//season">
+										<xsl:value-of select="//extra-scielo//season"/>
+									</xsl:when>
+								</xsl:choose>
+							</xsl:with-param>
+						</xsl:call-template>
+					</pub-date>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
+		
 	</xsl:template>
 	<xsl:template match="element">
 		<xsl:element name="{@name}">
