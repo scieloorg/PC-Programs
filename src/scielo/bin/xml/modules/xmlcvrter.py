@@ -436,7 +436,9 @@ def convert_package(src_path):
 
     pkg_name = os.path.basename(src_path)[:-4]
 
-    log_package = './' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
+    if not os.path.isdir('./../log'):
+        os.makedirs('./../log')
+    log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
 
     fs_utils.append_file(log_package, 'preparing')
     tmp_report_path, wrk_path, pkg_path, tmp_result_path = package_paths_preparation(src_path)
