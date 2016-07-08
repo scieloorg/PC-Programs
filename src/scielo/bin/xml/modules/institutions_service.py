@@ -210,7 +210,6 @@ def format_wayta_results(result, filter_country=None):
     except Exception as e:
         print('format_wayta_results:')
         print(e)
-        print(type(result))
     return r
 
 
