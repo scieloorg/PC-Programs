@@ -26,44 +26,36 @@ class XMLAppGUI(object):
         self.xml_package_maker = xml_package_maker
         self.xml_converter = xml_converter
 
-        #if self.is_converter_enabled:
-        #    self.tkFrame.collection_name_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        #    self.tkFrame.collection_name_labelframe.pack(fill="both", expand="yes")
-
         self.tkFrame.folder_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.folder_labelframe.pack(fill="both", expand="yes")
-
-        #self.tkFrame.acron_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        #self.tkFrame.acron_labelframe.pack(fill="both", expand="yes")
 
         self.tkFrame.msg_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.msg_labelframe.pack(fill="both", expand="yes")
 
+        self.tkFrame.labelframe_pmc_package = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.labelframe_pmc_package.pack(fill="both", expand="yes")
+
         self.tkFrame.buttons_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.buttons_labelframe.pack(fill="both", expand="yes")
 
-        #if self.is_converter_enabled:
-        #    self.tkFrame.label_collection_name = Tkinter.Label(self.tkFrame.collection_name_labelframe, text='Collection:', font="Verdana 12 bold")
-        #    self.tkFrame.label_collection_name.pack(side='left')
-        #    self.tkFrame.input_collection_name = ttk.Combobox(self.tkFrame.collection_name_labelframe, values=COLLECTIONS_NAMES)
-        #    self.tkFrame.input_collection_name.pack(side='left')
-
-        self.tkFrame.label_folder = Tkinter.Label(self.tkFrame.folder_labelframe, text='SPS XML Package Folder:', font="Verdana 12 bold")
+        self.tkFrame.label_folder = Tkinter.Label(self.tkFrame.folder_labelframe, text=_('SPS XML Package Folder:'), font="Verdana 12 bold")
         self.tkFrame.label_folder.pack(side='left')
         self.tkFrame.input_folder = Tkinter.Label(self.tkFrame.folder_labelframe, width=50, bd=1, bg='gray')
         self.tkFrame.input_folder.pack(side='left')
-        self.tkFrame.button_choose = Tkinter.Button(self.tkFrame.folder_labelframe, text='choose folder', command=self.open_file_explorer)
+        self.tkFrame.button_choose = Tkinter.Button(self.tkFrame.folder_labelframe, text=_('choose folder'), command=self.open_file_explorer)
         self.tkFrame.button_choose.pack()
 
-        #self.tkFrame.label_acron = Tkinter.Label(self.tkFrame.acron_labelframe, text='Journal acronym:', font="Verdana 12 bold")
-        #self.tkFrame.label_acron.pack(side='left')
-        #self.tkFrame.input_acron = Tkinter.Entry(self.tkFrame.acron_labelframe)
-        #self.tkFrame.input_acron.pack(side='left')
+        if not self.is_converter_enabled:
+
+            self.generate_pmc_package = Tkinter.IntVar()
+            self.tkFrame.checkbutton_pmc_package = Tkinter.Checkbutton(self.tkFrame.labelframe_pmc_package, text=_('generate PMC Package'), variable=self.generate_pmc_package)
+            self.tkFrame.checkbutton_pmc_package.pack()
+            self.tkFrame.checkbutton_pmc_package.var = self.generate_pmc_package
 
         self.tkFrame.label_msg = Tkinter.Label(self.tkFrame.msg_labelframe)
         self.tkFrame.label_msg.pack()
 
-        self.tkFrame.button_close = Tkinter.Button(self.tkFrame.buttons_labelframe, text='close', command=lambda: self.tkFrame.quit())
+        self.tkFrame.button_close = Tkinter.Button(self.tkFrame.buttons_labelframe, text=_('close'), command=lambda: self.tkFrame.quit())
         self.tkFrame.button_close.pack(side='right')
 
         if self.is_converter_enabled:
@@ -80,7 +72,7 @@ class XMLAppGUI(object):
         from tkFileDialog import askdirectory
         if self.selected_folder is not None:
             self.default_xml_path = self.selected_folder
-        self.selected_folder = askdirectory(parent=self.tkFrame, initialdir=self.default_xml_path, title='Select a SPS XML package folder')
+        self.selected_folder = askdirectory(parent=self.tkFrame, initialdir=self.default_xml_path, title=_('Select a SPS XML package folder'))
         self.tkFrame.input_folder.config(text=self.selected_folder)
         self.read_inputs()
         self.display_message(self.selected_folder, 'green')
@@ -117,7 +109,8 @@ class XMLAppGUI(object):
             msg = _('Executing XML Package Maker for ') + self.selected_folder + '\n'
         self.display_message(msg, color)
         if color == 'green':
-            xml_package_maker(self.selected_folder)
+            pmc = (self.tkFrame.checkbutton_pmc_package.var.get() == 1)
+            xml_package_maker(self.selected_folder, pmc)
 
     def run_xml_converter(self):
         self.read_inputs()
@@ -151,10 +144,9 @@ def open_main_window(is_converter_enabled, configurations):
     tk_root.focus_set()
 
 
-def xml_package_maker(path):
+def xml_package_maker(path, pmc=False):
     import xpmaker
-
-    xpmaker.make_packages(path, None)
+    xpmaker.make_packages(path, None, pmc=pmc)
 
 
 #def xml_converter(path, collection_name):
