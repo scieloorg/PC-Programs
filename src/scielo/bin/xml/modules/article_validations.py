@@ -833,18 +833,14 @@ class ArticleContentValidation(object):
 
     def _total(self, total, count, label_total, label_count):
         r = []
-        q = 0
-        if count is not None:
+        if total < 0:
+            r.append((label_total, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=str(total), label=label_total) + _('Expected value is a number greater or equal to 0.')))
+        elif count is not None:
             if count.isdigit():
-                q = int(count)
+                if total != int(count):
+                    r.append((label_count + ' (' + count + ') x ' + label_total + ' (' + str(total) + ')', validation_status.STATUS_ERROR, _('They must have the same value')))
             else:
                 r.append((label_count, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=count, label=label_count) + _('Expected value is a number greater or equal to 0.')))
-        if total is not None:
-            if total < 0:
-                r.append((label_count, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=str(total), label=label_total) + _('Expected value is a number greater or equal to 0.')))
-            if total != q:
-                if count is not None:
-                    r.append((label_count + ' (' + count + ') x ' + label_total + ' (' + str(total) + ')', validation_status.STATUS_ERROR, _('They must have the same value')))
         return r
 
     @property
