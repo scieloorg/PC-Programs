@@ -99,7 +99,6 @@ AUTHORS_REQUIRED_FOR_DOCTOPIC = [
     'letter', 
     'rapid-communication', 
     'research-article', 
-    'retraction', 
     'reply', 
     'review-article', 
     ]
@@ -305,7 +304,9 @@ def suggestions_of_article_type_by_section_title(section_title):
     suggestions = []
     if section_title is not None:
         lower_section_title = section_title.lower().strip()
-        if 'abstract' in lower_section_title or 'resum' in lower_section_title:
+        if 'retra' in lower_section_title:
+            suggestions.append('retraction')
+        elif 'abstract' in lower_section_title or 'resum' in lower_section_title:
             suggestions.append('abstract')
         elif 'book' in lower_section_title or 'resenha' in lower_section_title or u'reseñ' in lower_section_title:
             suggestions.append('book-review')
