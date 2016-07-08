@@ -1009,15 +1009,28 @@ class ArticleXML(object):
 
     @property
     def total_of_pages(self):
+        q = 1
         if self.fpage is not None and self.lpage is not None:
             if self.fpage.isdigit() and self.lpage.isdigit():
-                return int(self.lpage) - int(self.fpage) + 1
-        elif self.elocation_id is not None:
-            return 1
+                q = int(self.lpage) - int(self.fpage) + 1
+        return q
 
     def total(self, node, xpath):
+        q = 0
         if node is not None:
-            return len(node.findall(xpath))
+            q = len(node.findall(xpath))
+        return q
+
+    def total_group(self, element_name, element_parent):
+        q = 0
+        nodes = self.tree.findall('.//*[' + element_name + ']')
+        if nodes is not None:
+            for node in nodes:
+                if node.tag == element_parent:
+                    q += 1
+                else:
+                    q += len(node.findall(element_name))
+        return q
 
     @property
     def total_of_references(self):
@@ -1025,7 +1038,7 @@ class ArticleXML(object):
 
     @property
     def total_of_tables(self):
-        return self.total(self.tree, './/table-wrap')
+        return self.total_group('table-wrap', 'table-wrap-group')
 
     @property
     def total_of_equations(self):
@@ -1033,7 +1046,7 @@ class ArticleXML(object):
 
     @property
     def total_of_figures(self):
-        return self.total(self.tree, './/fig')
+        return self.total_group('fig', 'fig-group')
 
     @property
     def formulas(self):
