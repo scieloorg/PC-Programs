@@ -568,11 +568,13 @@ class ArticleContentValidation(object):
         r = []
         author_xref_items = []
         aff_ids = [aff.id for aff in self.article.affiliations if aff.id is not None]
+        print(aff_ids)
         for item in self.article.contrib_names:
             for xref in item.xref:
                 author_xref_items.append(xref)
             for result in validate_contrib_names(item, aff_ids):
                 r.append(result)
+        print(author_xref_items)
         for affid in aff_ids:
             if not affid in author_xref_items:
                 r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Missing') + ' xref[@ref-type="aff"]/@rid="' + affid + '".'))
