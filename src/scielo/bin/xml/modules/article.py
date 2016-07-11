@@ -676,6 +676,22 @@ class ArticleXML(object):
                     for xref_item in contrib.findall('xref[@ref-type="aff"]'):
                         p.xref.append(xref_item.attrib.get('rid'))
                     k.append(p)
+            if self.sub_articles is not None:
+                for subart in self.sub_articles:
+                    if subart.attrib.get('article-type') != 'translation':
+                        for contrib in subart.findall('.//contrib'):
+                            if contrib.findall('name'):
+                                p = PersonAuthor()
+                                p.fname = contrib.findtext('name/given-names')
+                                p.surname = contrib.findtext('name/surname')
+                                p.suffix = contrib.findtext('name/suffix')
+                                p.prefix = contrib.findtext('name/prefix')
+                                for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
+                                    p.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
+                                p.role = contrib.attrib.get('contrib-type')
+                                for xref_item in contrib.findall('xref[@ref-type="aff"]'):
+                                    p.xref.append(xref_item.attrib.get('rid'))
+                                k.append(p)
         return k
 
     @property
@@ -697,25 +713,6 @@ class ArticleXML(object):
                 else:
                     with_aff.append(contrib)
         return (with_aff, no_aff, mismatched_aff_id)
-
-    @property
-    def authors_without_aff(self):
-        k = []
-        if self.article_meta is not None:
-            for contrib in self.article_meta.findall('.//contrib'):
-                if contrib.findall('name'):
-                    p = PersonAuthor()
-                    p.fname = contrib.findtext('name/given-names')
-                    p.surname = contrib.findtext('name/surname')
-                    p.suffix = contrib.findtext('name/suffix')
-                    p.prefix = contrib.findtext('name/prefix')
-                    for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
-                        p.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
-                    p.role = contrib.attrib.get('contrib-type')
-                    for xref_item in contrib.findall('xref[@ref-type="aff"]'):
-                        p.xref.append(xref_item.attrib.get('rid'))
-                    k.append(p)
-        return k
 
     @property
     def first_author_surname(self):
@@ -937,8 +934,9 @@ class ArticleXML(object):
                 affs.append(get_affiliation(aff))
         if self.sub_articles is not None:
             for sub_art in self.sub_articles:
-                for aff in sub_art.findall('.//aff'):
-                    affs.append(get_affiliation(aff))
+                if sub_art.attrib.get('article-type') != 'translation':
+                    for aff in sub_art.findall('.//aff'):
+                        affs.append(get_affiliation(aff))
         return affs
 
     @property
