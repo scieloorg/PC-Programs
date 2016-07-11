@@ -536,7 +536,7 @@ class ArticleXML(object):
                 if item['ext-link-type'] == 'scielo-pid':
                     item['ext-link-type'] = 'pid'
                 item['id'] = rel.attrib.get('id')
-                if not item['related-article-type'] in ['corrected-article', 'press-release', 'retracted-article']:
+                if not item['related-article-type'] in attributes.related_articles_type:
                     item['id'] = ''.join([c for c in item['id'] if c.isdigit()])
                 item['xml'] = xml_utils.node_xml(rel)
                 r.append(item)

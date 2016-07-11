@@ -112,8 +112,15 @@ ABSTRACT_REQUIRED_FOR_DOCTOPIC = [
     'technical-report', 
     ]
 
+ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
+    'editorial', 
+    'editorial-material', 
+    'in-brief', 
+    'letter', 
+    'other', 
+    ]
+
 REFS_REQUIRED_FOR_DOCTOPIC = [
-    'article-commentary', 
     'brief-report', 
     'case-report', 
     'clinical-trial', 
@@ -258,6 +265,8 @@ COUNTRY_CODES = [
 
 
 PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']
+
+related_articles_type = ['corrected-article', 'article-commentary', 'press-release', 'retracted-article']
 
 
 def is_required(publication_type, label):
