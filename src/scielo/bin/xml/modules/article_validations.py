@@ -357,6 +357,7 @@ class ArticleContentValidation(object):
             items.append(self.article_permissions)
             items.append(self.history)
             items.append(self.titles_abstracts_keywords)
+            items.append(self.related_articles)
 
         items.append(self.sections)
         items.append(self.paragraphs)
@@ -465,7 +466,15 @@ class ArticleContentValidation(object):
         @id k
         . t pr
         """
-        return article_utils.display_values_with_attributes('related articles', self.article.related_articles)
+        r = []
+        for related_article in self.article.related_articles:
+            if not related_article.get('related-article-type') in attributes.related_articles_type:
+                r.append(('related-article/@related-article-type', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=related_article.get('related-article-type', _('None')), label='related-article/@related-article-type')))
+            if related_article.get('ext-link-type', '') == 'doi':
+                errors = validate_doi_format(related_article.get('href', ''))
+                if len(errors) > 0:
+                    r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=related_article.get('href'), label='related-article/@xlink:href') + _('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
+        return r
 
     @property
     def refstats(self):
@@ -947,7 +956,7 @@ class ArticleContentValidation(object):
             if self.article.article_type in attributes.ABSTRACT_REQUIRED_FOR_DOCTOPIC:
                 if len(abstracts) == 0 or len(keywords) == 0:
                     errors.append(('abstract + kwd-group', validation_status.STATUS_ERROR, _('Expected {unexpected} for {demander}. Be sure that "{demander}" is correct.').format(unexpected='abstract + kwd-group', demander=article_type)))
-            else:
+            elif self.article.article_type in attributes.ABSTRACT_UNEXPECTED_FOR_DOCTOPIC:
                 if len(abstracts) > 0 or len(keywords) > 0:
                     errors.append(('abstract + kwd-group', validation_status.STATUS_ERROR, _('Unexpected {unexpected} for {demander}. Be sure that {demander} is correct.').format(unexpected='abstract + kwd-group', demander=article_type)))
 
