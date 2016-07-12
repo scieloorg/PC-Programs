@@ -48,19 +48,17 @@ def validate_element_is_found_in_mixed_citation(element_name, element_content, m
             _element_content = xml_utils.remove_tags(item).replace('  ', ' ')
 
             if not _element_content in _mixed:
-                comp = utils.hightlight_equal(_element_content, _mixed)
+                diff1, s1 = utils.diff(_element_content, _mixed)
                 r.append(
                     (
                         element_name,
                         validation_status.STATUS_ERROR,
-                        [
-                            {_('Found in element-citation/{element}').format(element=element_name): comp[0],
-                            _('Not found in mixed-citation'): comp[1],
-                            _('Words in {element} which are not found in mixed-citation').format(element=element_name): utils.words_not_found(_element_content, _mixed)
-                            },
+                         {_('Be sure that the elements {elem1} and {elem2} are properly identified').format(elem1=element_name, elem2='mixed-citation'):
 
-                            _('Be sure that mixed-citation is complete and {element} is properly identified.').format(element=element_name),
-                        ]
+                            {element_name: s1,
+                             _('Words found in {elem1}, but not found in {elem2}').format(elem1=element_name, elem2='mixed-citation'): diff1
+                            },
+                        }
                     )
                 )
     return r
@@ -568,13 +566,12 @@ class ArticleContentValidation(object):
         r = []
         author_xref_items = []
         aff_ids = [aff.id for aff in self.article.affiliations if aff.id is not None]
-        print(aff_ids)
+        
         for item in self.article.contrib_names:
             for xref in item.xref:
                 author_xref_items.append(xref)
             for result in validate_contrib_names(item, aff_ids):
                 r.append(result)
-        print(author_xref_items)
         for affid in aff_ids:
             if not affid in author_xref_items:
                 r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Missing') + ' xref[@ref-type="aff"]/@rid="' + affid + '".'))
@@ -1584,7 +1581,6 @@ class ReferenceContentValidation(object):
         if self.reference.mixed_citation is None:
             r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
         else:
-            r.append(('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation))
             for label, data in [('source', self.reference.source), ('year', self.reference.year), ('ext-link', self.reference.ext_link)]:
                 for item in validate_element_is_found_in_mixed_citation(label, data, self.reference.mixed_citation):
                     if item is not None:
