@@ -566,7 +566,6 @@ class ArticleContentValidation(object):
         r = []
         author_xref_items = []
         aff_ids = [aff.id for aff in self.article.affiliations if aff.id is not None]
-        
         for item in self.article.contrib_names:
             for xref in item.xref:
                 author_xref_items.append(xref)
