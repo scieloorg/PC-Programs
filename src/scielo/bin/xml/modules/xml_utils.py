@@ -79,7 +79,7 @@ class XMLContent(object):
         _xml, e = load_xml(self.content)
         if _xml is None:
             self._fix_open_and_close_style_tags()
-        _xml, e = load_xml(self.content)
+            _xml, e = load_xml(self.content)
         if _xml is None:
             self._fix_open_close()
 
