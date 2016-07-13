@@ -170,11 +170,13 @@ class Conversion(object):
         self.actions = None
         self.changed_orders = None
         self.conversion_status = {}
+        self.error_messages = []
 
         for k in ['converted', 'not converted', 'rejected', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']:
             self.conversion_status[k] = []
 
     def evaluate_pkg_and_registered_items(self, skip_identical_xml):
+        error_messages = []
         #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
         self.previous_registered_articles = {}
         if self.db.registered_articles is not None:
@@ -192,21 +194,55 @@ class Conversion(object):
         for name, article in self.pkg.articles.items():
             action = 'add'
             if name in self.previous_registered_articles.keys():
-                action = 'update'
-                if skip_identical_xml:
-                    if fs_utils.read_file(self.pkg.issue_files.base_source_path + '/' + name + '.xml') == fs_utils.read_file(self.pkg.pkg_path + '/' + name + '.xml'):
-                        action = 'skip-update'
+                #self.pkg.articles[name], self.previous_registered_articles[name]
+                diffs = self.differences(self.pkg.articles[name], self.previous_registered_articles[name])
+                action = self.decide_action(name, diffs, skip_identical_xml)
                 if action == 'update':
                     self.pkg.articles[name].creation_date = self.previous_registered_articles[name].creation_date
                     if self.previous_registered_articles[name].order != self.pkg.articles[name].order:
                         self.changed_orders[name] = (self.previous_registered_articles[name].order, self.pkg.articles[name].order)
+                elif action == 'block-update':
+                    error_messages.append(self.format_differences_report(diffs))
             self.actions[name] = action
             if action == 'add':
                 self.expected_registered += 1
-        unmatched_orders_errors = ''
         if self.changed_orders is not None:
-            unmatched_orders_errors = ''.join([html_reports.p_message(validation_status.STATUS_WARNING + ': ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order)), False) for name, order in self.changed_orders.items()])
-        self.changed_orders_validations = pkg_reports.ValidationsResults(unmatched_orders_errors)
+            unmatched_orders_errors = [html_reports.p_message(validation_status.STATUS_WARNING + ': ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order)), False) for name, order in self.changed_orders.items()]
+            error_messages.append(''.join(unmatched_orders_errors))
+        self.changed_orders_validations = pkg_reports.ValidationsResults(''.join(error_messages))
+
+    def differences(self, input_item, registered_item):
+        labels = ['titles', 'authors', 'order', 'fpage', 'elocation-id']
+        validations = []
+        validations.append((input_item.textual_titles, registered_item.textual_titles))
+        validations.append((input_item.textual_contrib_surnames, registered_item.textual_contrib_surnames))
+        validations.append((input_item.order, registered_item.order))
+        validations.append((input_item.fpage, registered_item.fpage))
+        validations.append((input_item.elocation_id, registered_item.elocation_id))
+        return [(label, items) for label, items in zip(labels, validations) if items[0] != items[1]]
+
+    def format_differences_report(self, diffs):
+        msg = []
+        for label, items in diffs:
+            msg.append(html_reports.p_message('[' + validation_status.STATUS_ERROR + '] ' + _('{label} is different. ').format(label=label)))
+            msg.append(html_reports.tag('p', _('New:')))
+            msg.append(html_reports.tag('p', items[0]))
+            msg.append(html_reports.tag('p', _('Previously registered:')))
+            msg.append(html_reports.tag('p', items[1]))
+        msg.append(html_reports.tag('p', _('It is allowed only one change by time')))
+        return ''.join(msg)
+
+    def decide_action(self, name, diffs, skip_identical_xml):
+        changed_content = (len(diffs) > 0)
+        if not changed_content:
+            changed_content = (fs_utils.read_file(self.pkg.issue_files.base_source_path + '/' + name + '.xml') != fs_utils.read_file(self.pkg.pkg_path + '/' + name + '.xml'))
+        action = 'update'
+        if changed_content:
+            if len(diffs) > 1:
+                action = 'block-update'
+        elif skip_identical_xml:
+            action = 'skip-update'
+        return action
 
     @property
     def selected_articles(self):
