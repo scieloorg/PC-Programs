@@ -284,7 +284,9 @@ class SGMLXML(object):
                 fs_utils.write_file(self.sgmxml_filename, self.sgml_content)
                 xml = xml_utils.is_xml_well_formed(self.sgml_content)
 
-        if xml is not None:
+        if xml is None:
+            return self.sgml_content
+        else:
             return java_xml_utils.xml_content_transform(self.sgml_content, xml_versions.xsl_sgml2xml(version))
 
     def insert_mml_namespace(self):
