@@ -263,7 +263,7 @@ class ArticlesPkgReport(object):
         self._registered_issue_data_validations = None
         self._registered_journal_data_validations = None
         self.consistence_blocking_errors = None
-        self.changed_orders_validations = None
+        self.update_validations = None
 
         self.complete_issue_articles.error_level_for_unique = {'order': validation_status.STATUS_FATAL_ERROR, 'doi': validation_status.STATUS_FATAL_ERROR, 'elocation id': validation_status.STATUS_FATAL_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
 
@@ -670,11 +670,13 @@ class ArticlesPkgReport(object):
                 report.append(html_reports.tag('h2', _('Checking journal data: XML files and registered data') + '<sup>*</sup>') + html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('If the data in the XML files are correct, please, ignore the error messages and report the errors found in the registered data.') + html_reports.tag('p', html_reports.link('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', _('Consult the registered data'))), 'note') + self.registered_journal_data_validations.report(True))
 
         self.evaluate_pkg_journal_and_issue_data_consistence()
-        for item in [self.changed_orders_validations, self.pkg_data_consistence_validations]:
+
+        for item in [self.update_validations, self.pkg_data_consistence_validations]:
             if item is not None:
+                print(item.total)
                 if item.total > 0:
                     report.append(item.message)
-
+            
         if self.is_db_generation:
             if self.registered_issue_data_validations is not None:
                 if self.registered_issue_data_validations.total > 0:

@@ -269,6 +269,18 @@ PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyrig
 related_articles_type = ['corrected-article', 'article-commentary', 'press-release', 'retracted-article']
 
 
+def normalize_doctopic(_doctopic):
+    r = DOCTOPIC.get(_doctopic)
+    return _doctopic if r == '??' else r
+
+
+def normalize_role(_role):
+    r = ROLE.get(_role)
+    if r == '??' or _role is None or r is None:
+        r = 'ND'
+    return r
+
+
 def is_required(publication_type, label):
     return label in REFERENCE_REQUIRED_SUBELEMENTS.get(publication_type, [])
 

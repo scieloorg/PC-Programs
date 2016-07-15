@@ -99,63 +99,6 @@ def complete_issue_items_row(article, action, result, source, notes='', results=
     return (labels, values)
 
 
-def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, actions, unmatched_orders):
-    actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skipped', 'order changed': 'order changed', 'fail': 'update/add failed'}
-    orders = sorted(list(set([article.order for article in previous_registered_articles.values()] + [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
-
-    sorted_previous_registered = pkg_reports.articles_sorted_by_order(previous_registered_articles)
-    sorted_registered = pkg_reports.articles_sorted_by_order(registered_articles)
-    sorted_package = pkg_reports.articles_sorted_by_order(pkg_articles)
-
-    items = []
-
-    for order in orders:
-        if order in sorted_registered.keys():
-            # documento na base
-            for article in sorted_registered[order]:
-                action = actions[article.xml_name]
-                result = actions_result_labels[action]
-                _notes = ''
-                if action == 'update':
-                    if article.last_update_display is None:
-                        result = 'error'
-                    elif previous_registered_articles.get(article.xml_name).last_update_display == article.last_update_display:
-                        result = 'error'
-                    name = article.xml_name
-                    if name in unmatched_orders.keys():
-                        previous_order, new_order = unmatched_orders[name]
-                        _notes = previous_order + '=>' + new_order
-                        if result == 'error':
-                            _notes = validation_status.STATUS_ERROR + ': ' + _('Unable to replace ') + _notes
-                labels, values = complete_issue_items_row(article, action, result, 'registered', _notes, True)
-                items.append(pkg_reports.label_values(labels, values))
-        elif order in sorted_package.keys():
-            # documento no pacote mas nao na base
-            for article in sorted_package[order]:
-                action = actions[article.xml_name]
-                name = article.xml_name
-                _notes = ''
-                if name in unmatched_orders.keys():
-                    previous_order, new_order = unmatched_orders[name]
-                    _notes = previous_order + '=>' + new_order
-                    _notes = validation_status.STATUS_ERROR + ': ' + _('Unable to replace ') + _notes
-
-                labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes, True)
-                items.append(pkg_reports.label_values(labels, values))
-        elif order in sorted_previous_registered.keys():
-            # documento anteriormente na base
-            for article in sorted_previous_registered[order]:
-                action = 'delete'
-                name = article.xml_name
-                _notes = ''
-                if name in unmatched_orders.keys():
-                    previous_order, new_order = unmatched_orders[name]
-                    _notes = 'deleted ' + previous_order + '=> new: ' + new_order
-                labels, values = complete_issue_items_row(article, '?', 'deleted', 'excluded', _notes, True)
-                items.append(pkg_reports.label_values(labels, values))
-    return html_reports.sheet(labels, items, 'dbstatus', 'result')
-
-
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
     xml_filenames = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
     articles, doc_file_info_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron', is_db_generation=True)
@@ -183,56 +126,107 @@ class Conversion(object):
             for k, v in self.db.registered_articles.items():
                 self.previous_registered_articles[k] = v
 
-        self.expected_registered = len(self.previous_registered_articles)
+        self.identify_actions(skip_identical_xml)
+        self.check_orders()
 
-        self.actions = {}
-        for name in self.previous_registered_articles.keys():
-            if not name in self.pkg.articles.keys():
-                self.actions[name] = '-'
-                #self.complete_issue_items[name] = self.previous_registered_articles[name]
-        self.changed_orders = {}
+        error_messages.append(html_reports.tag('h2', _('Order validations')))
+        diff_messages = []
+        for name in self.pkg.articles.keys():
+            if self.actions.get(name) == 'block-update':
+                msg = self.format_differences_report(name)
+                if len(msg) > 0:
+                    diff_messages.append(msg)
+            elif self.actions.get(name) == 'update':
+                self.pkg.articles[name].creation_date = self.previous_registered_articles[name].creation_date
+        if len(diff_messages) > 0:
+            error_messages.append(html_reports.tag('h3', _('Changes in article titles and authors')))
+            error_messages.append(''.join(diff_messages))
+        if len(self.rejected_order_change) > 0:
+            error_messages.append(html_reports.tag('h3', _('rejected orders')))
+            error_messages.append('<div class="issue-problem">')
+            error_messages.append(html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('It is not allowed to use same order for different articles.')))
+            for order, items in self.rejected_order_change.items():
+                error_messages.append(html_reports.tag('p', html_reports.format_html_data({order:items})))
+            error_messages.append('</div>')
+        if len(self.changed_orders) > 0:
+            error_messages.append(html_reports.tag('h3', _('order changes')))
+            error_messages.append('<div class="issue-problem">')
+            error_messages.append(html_reports.p_message(validation_status.STATUS_INFO))
+            for name, changes in self.changed_orders.items():
+                error_messages.append(html_reports.tag('p', name + ': ' + ' -> '.join(list(changes))))
+            error_messages.append('</div>')
+        self.update_validations = pkg_reports.ValidationsResults(''.join(error_messages))
+
+    def identify_actions(self, skip_identical_xml):
+        self.diffs = {}
+        self.actions = {name: '-' for name in self.previous_registered_articles.keys() if not name in self.pkg.articles.keys()}
         for name, article in self.pkg.articles.items():
             action = 'add'
             if name in self.previous_registered_articles.keys():
-                #self.pkg.articles[name], self.previous_registered_articles[name]
-                diffs = self.differences(self.pkg.articles[name], self.previous_registered_articles[name])
-                action = self.decide_action(name, diffs, skip_identical_xml)
-                if action == 'update':
-                    self.pkg.articles[name].creation_date = self.previous_registered_articles[name].creation_date
-                    if self.previous_registered_articles[name].order != self.pkg.articles[name].order:
-                        self.changed_orders[name] = (self.previous_registered_articles[name].order, self.pkg.articles[name].order)
-                elif action == 'block-update':
-                    error_messages.append(self.format_differences_report(diffs))
+                self.diffs[name] = self.differences(self.pkg.articles[name], self.previous_registered_articles[name])
+                action = self.decide_action(name, skip_identical_xml)
             self.actions[name] = action
-            if action == 'add':
-                self.expected_registered += 1
-        if self.changed_orders is not None:
-            unmatched_orders_errors = [html_reports.p_message(validation_status.STATUS_WARNING + ': ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order)), False) for name, order in self.changed_orders.items()]
-            error_messages.append(''.join(unmatched_orders_errors))
-        self.changed_orders_validations = pkg_reports.ValidationsResults(''.join(error_messages))
+
+    def check_orders(self):
+        self.changed_orders = {}
+        merged = {name: article.order for name, article in self.previous_registered_articles.items()}
+        for name, article in self.pkg.articles.items():
+            merged[name] = article.order
+            if name in self.previous_registered_articles.keys():
+                if self.previous_registered_articles[name].order != article.order:
+                    self.changed_orders[name] = (self.previous_registered_articles[name].order, article.order)
+
+        orders = {}
+        for name, order in merged.items():
+            if not order in orders.keys():
+                orders[order] = []
+            orders[order].append(name)
+
+        self.rejected_order_change = {}
+        for order, names in orders.items():
+            if len(names) > 1:
+                self.rejected_order_change[order] = names
 
     def differences(self, input_item, registered_item):
-        labels = ['titles', 'authors', 'order', 'fpage', 'elocation-id']
+        diffs = []
+        labels = ['titles', 'authors']
         validations = []
         validations.append((input_item.textual_titles, registered_item.textual_titles))
         validations.append((input_item.textual_contrib_surnames, registered_item.textual_contrib_surnames))
-        validations.append((input_item.order, registered_item.order))
-        validations.append((input_item.fpage, registered_item.fpage))
-        validations.append((input_item.elocation_id, registered_item.elocation_id))
-        return [(label, items) for label, items in zip(labels, validations) if items[0] != items[1]]
+        diffs = [(label, items) for label, items in zip(labels, validations) if items[0] != items[1]]
+        invalid = False
+        if input_item.order == registered_item.order:
+            if len(diffs) > 0:
+                invalid = True
+        else:
+            if len(diffs) > 0:
+                diffs.append(('order', (input_item.order, registered_item.order)))
+                invalid = True
+        status = validation_status.STATUS_INFO
+        if invalid:
+            status = validation_status.STATUS_FATAL_ERROR
+        elif len(diffs) > 0:
+            status = validation_status.STATUS_WARNING
+        return (status, diffs)
 
-    def format_differences_report(self, diffs):
+    def format_differences_report(self, name):
         msg = []
-        for label, items in diffs:
-            msg.append(html_reports.p_message('[' + validation_status.STATUS_ERROR + '] ' + _('{label} is different. ').format(label=label)))
-            msg.append(html_reports.tag('p', _('New:')))
-            msg.append(html_reports.tag('p', items[0]))
-            msg.append(html_reports.tag('p', _('Previously registered:')))
-            msg.append(html_reports.tag('p', items[1]))
-        msg.append(html_reports.tag('p', _('It is allowed only one change by time')))
+        status, diffs = self.diffs[name]
+        if len(diffs) > 0:
+            msg.append(html_reports.tag('h4', name))
+            for label, items in diffs:
+                msg.append('<div class="issue-problem">')
+                if status == validation_status.STATUS_ERROR:
+                    msg.append(html_reports.p_message(status + ': ' + _('It is not allowed to change the order and the article titles and authors at the same time.')))
+                msg.append(html_reports.tag('h5', _('Previously registered:')))
+                msg.append(html_reports.tag('p', items[1]))
+                msg.append(html_reports.tag('h5', _('Update:')))
+                msg.append(html_reports.tag('p', items[0]))
+                msg.append('</div>')
         return ''.join(msg)
 
-    def decide_action(self, name, diffs, skip_identical_xml):
+    def decide_action(self, name, skip_identical_xml):
+        status, diffs = self.diffs[name]
         changed_content = (len(diffs) > 0)
         if not changed_content:
             changed_content = (fs_utils.read_file(self.pkg.issue_files.base_source_path + '/' + name + '.xml') != fs_utils.read_file(self.pkg.pkg_path + '/' + name + '.xml'))
@@ -296,7 +290,7 @@ class Conversion(object):
         return report + html_reports.sheet(labels, items, 'dbstatus', 'action')
 
     def final_status_report(self):
-        actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skipped', 'order changed': 'order changed', 'fail': 'update/add failed'}
+        actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skipped', 'order changed': 'order changed', 'fail': 'update/add failed', 'block-update': 'update blocked'}
         orders = sorted(list(set([article.order for article in self.previous_registered_articles.values()] + [article.order for article in self.db.registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in self.pkg.articles.values()])))
 
         sorted_previous_registered = pkg_reports.articles_sorted_by_order(self.previous_registered_articles)
@@ -354,48 +348,17 @@ class Conversion(object):
         return after_conversion_report
 
     def convert_articles(self, pkg_validator):
-        index = 0
-
-        n = '/' + str(len(self.pkg.articles))
-
-        utils.display_message('Converting...')
         for xml_name in self.pkg.xml_name_sorted_by_order:
-            index += 1
-            item_label = str(index) + n + ' - ' + xml_name
-            utils.display_message(item_label)
-
-            xc_result = None
-            if not self.actions[xml_name] in ['add', 'update']:
-                xc_result = 'skipped'
-            else:
-                self.db.aop_manager.check_aop(self.pkg.articles[xml_name])
+            if self.actions[xml_name] in ['add', 'update']:
                 permission = is_conversion_allowed(self.pkg.articles[xml_name].issue_pub_dateiso, len(self.pkg.articles[xml_name].references), pkg_validator)
-
                 if permission:
-                    valid_aop = self.db.aop_manager.aop_article(xml_name)
-                    if valid_aop is not None:
-                        self.pkg.articles[xml_name].registered_aop_pid = valid_aop.pid
-
-                    incorrect_order = None
-                    if xml_name in self.changed_orders.keys():
-                        incorrect_order, curr_order = self.changed_orders[xml_name]
-
                     article_utils.normalize_affiliations(self.pkg.articles[xml_name])
-                    self.db.evaluate(self.pkg.issue_models.record, self.pkg.articles[xml_name], valid_aop, incorrect_order)
                 else:
-                    xc_result = 'rejected'
-            if xc_result is not None:
-                self.conversion_status[xc_result].append(xml_name)
+                    self.conversion_status['rejected'].append(xml_name)
 
-        is_package_registered = self.db.finish_conversion(self.pkg.pkg_path, self.pkg.issue_models.record)
-        self.conversion_status['converted'] = self.db.is_converted
-        self.conversion_status['not converted'] = self.db.is_not_converted
+        if len(self.conversion_status.get('rejected', [])) == 0:
+            registered_scilista_item, self.conversion_status, self.error_messages = self.db.convert_articles(self.pkg, self.changed_orders, self.actions, not converter_env.is_windows)
 
-        registered_scilista_item = None
-        if is_package_registered is True:
-            registered_scilista_item = self.pkg.acron_issue_label
-            if not converter_env.is_windows:
-                self.db.generate_windows_version()
         return registered_scilista_item
 
     @property
@@ -512,6 +475,7 @@ def convert_package(src_path):
         conversion.evaluate_pkg_and_registered_items(converter_env.skip_identical_xml)
 
         pkg_validator = pkg_reports.ArticlesPkgReport(tmp_report_path, pkg, journal, issue, conversion.previous_registered_articles, is_db_generation)
+        pkg_validator.update_validations = conversion.update_validations
 
         fs_utils.append_file(log_package, 'pkg_validator.overview_report()')
         report_components['pkg_overview'] = pkg_validator.overview_report()
@@ -575,8 +539,9 @@ def convert_package(src_path):
             converted = len(conversion.conversion_status.get('converted', [])) if conversion.conversion_status.get('converted', []) is not None else 0
             not_converted = len(conversion.conversion_status.get('not converted', [])) if conversion.conversion_status.get('not converted', []) is not None else 0
 
-        fs_utils.append_file(log_package, 'conversion.conclusion(')
-        xc_conclusion_msg = conclusion_message(total, converted, not_converted, xc_status, pkg.acron_issue_label)
+        fs_utils.append_file(log_package, 'conversion.conclusion()')
+        xc_conclusion_msg = ''.join([html_reports.p_message(item) for item in conversion.error_messages])
+        xc_conclusion_msg += conclusion_message(total, converted, not_converted, xc_status, pkg.acron_issue_label)
         if len(after_conversion_report) == 0:
             after_conversion_report = xc_conclusion_msg
 
