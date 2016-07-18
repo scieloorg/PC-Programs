@@ -1,6 +1,6 @@
 .. _pt_how_to_generate_xml-prepara:
 
-How to prepare the files for Markup Program (TRADUZIR)
+How to prepare the files for Markup Program
 ===========================================
  
 Antes de iniciar o processo de marcação, é necessário seguir alguns passos para preparação do arquivo que será marcado.

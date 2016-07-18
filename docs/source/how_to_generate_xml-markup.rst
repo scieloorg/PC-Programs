@@ -1,7 +1,7 @@
 .. pt_how_to_generate_xml-markup:
 
 =============================
-How to use the Markup Program (TRADUZIR)
+How to use the Markup Program
 =============================
 
 Introdução
