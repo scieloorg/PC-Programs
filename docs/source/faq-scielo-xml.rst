@@ -1,7 +1,7 @@
 .. _faq-scielo:
 
-Perguntas Frequentes Sobre a Adoção de XML
-==========================================
+Frequently Asked Questions About XML Adoption
+=============================================
 
 SPS
 ---
