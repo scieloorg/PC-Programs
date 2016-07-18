@@ -2,7 +2,7 @@
 Workflow of the XML Files
 =========================
 
-`Portuguese <pt_how_to_work_with_xml.html>`_ |`Español <es_how_to_work_with_xml.html>`_.
+`Portuguese <pt_how_to_work_with_xml.html>`_ |`Spanish <es_how_to_work_with_xml.html>`_.
 
 .. toctree::
     :maxdepth: 1
