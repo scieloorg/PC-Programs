@@ -2,6 +2,9 @@
 Fluxo de Trabalho com XML
 =========================
 
+`English <how_to_work_with_xml.html>`_ |`Español <es_how_to_work_with_xml.html>`_.
+
+
 .. toctree::
     :maxdepth: 1
 
