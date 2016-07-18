@@ -2,7 +2,7 @@
 Fluxo de Trabalho com XML
 =========================
 
-`Inglês <how_to_work_with_xml.html>`_ |`Espanhol <es_how_to_work_with_xml.html>`_.
+`Inglês <how_to_work_with_xml.html>`_ | `Espanhol <es_how_to_work_with_xml.html>`_.
 
 
 .. toctree::
