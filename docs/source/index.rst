@@ -16,11 +16,16 @@ Welcome to SciELO PC Programs' documentation!
 
     programs.rst
 
-    how_to_use_the_programs.rst
+    how_to_generate_sgml.rst
+
+    how_to_work_with_xml.rst
+
+    how_to_update_local_site.rst
     
     support.rst
 
     concepts.rst
+    
     code_database.rst
     
 
