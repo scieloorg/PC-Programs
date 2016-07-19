@@ -263,7 +263,7 @@ class ArticlesPkgReport(object):
         self._registered_issue_data_validations = None
         self._registered_journal_data_validations = None
         self.consistence_blocking_errors = None
-        self.update_validations = None
+        self.xc_validations = None
 
         self.complete_issue_articles.error_level_for_unique = {'order': validation_status.STATUS_FATAL_ERROR, 'doi': validation_status.STATUS_FATAL_ERROR, 'elocation id': validation_status.STATUS_FATAL_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
 

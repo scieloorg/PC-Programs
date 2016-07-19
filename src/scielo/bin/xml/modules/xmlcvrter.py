@@ -267,6 +267,7 @@ class Conversion(object):
                 else:
                     action = 'block-update'
             self.actions[name] = action
+        self.changed_orders = pkg_validations.changed_orders
         self.xc_validations = pkg_reports.ValidationsResults(PkgValidationsReport(pkg_validations).content)
 
     @property
