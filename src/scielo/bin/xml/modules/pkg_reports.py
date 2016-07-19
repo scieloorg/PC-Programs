@@ -671,7 +671,7 @@ class ArticlesPkgReport(object):
 
         self.evaluate_pkg_journal_and_issue_data_consistence()
 
-        for item in [self.update_validations, self.pkg_data_consistence_validations]:
+        for item in [self.xc_validations, self.pkg_data_consistence_validations]:
             if item is not None:
                 print(item.total)
                 if item.total > 0:
