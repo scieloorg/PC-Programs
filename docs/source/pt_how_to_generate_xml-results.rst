@@ -17,7 +17,7 @@ Em seguida clique no botão "Markup: Gerar o XML":
    :align: center
 
 
-.. relatorios
+.. relatorios:
 
 Relatórios
 ==========
