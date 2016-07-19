@@ -373,6 +373,9 @@ def suggestions_of_article_type_by_section_title(section_title):
             suggestions.append('research-article')
         elif 'original' in lower_section_title:
             suggestions.append('research-article')
+
+    if 'editorial-material' in suggestions:
+        suggestions = [item.replace('editorial-material', 'other') for item in suggestions]
     return suggestions
 
 
