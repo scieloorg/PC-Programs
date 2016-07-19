@@ -907,7 +907,7 @@ class ArticlePkgMaker(object):
 
         if self.doc.tree is None:
             self.text_messages.append(self.e)
-            self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.doc_files_info.new_xml_filename) + '\n' + _('Open it with a XML Editor or Web Browser to find the errors easily.'))
+            self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.doc_files_info.new_xml_filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily.'))
         else:
             src_files = [f for f in os.listdir(self.doc_files_info.xml_path) if not f.endswith('.xml')]
             self.pack_article_href_files(src_files)

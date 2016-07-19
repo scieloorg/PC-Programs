@@ -151,7 +151,7 @@ class IssueFiles(object):
 
     @property
     def id_path(self):
-        return self.issue_path + '/base_xml/id'
+        return self.base_xml_path + '/id'
 
     @property
     def id_filename(self):
@@ -174,12 +174,16 @@ class IssueFiles(object):
         return self.issue_path + '/windows'
 
     @property
+    def base_xml_path(self):
+        return self.issue_path + '/base_xml'
+
+    @property
     def base_reports_path(self):
-        return self.issue_path + '/base_xml/base_reports'
+        return self.base_xml_path + '/base_reports'
 
     @property
     def base_source_path(self):
-        return self.issue_path + '/base_xml/base_source'
+        return self.base_xml_path + '/base_source'
 
     @property
     def base_source_xml_files(self):
@@ -257,6 +261,35 @@ class IssueFiles(object):
                         shutil.copy(xml_path + '/' + f, self.base_source_path)
                     except:
                         pass
+
+    def delete_id_files(self, delete_id_items):
+        errors = []
+        if len(delete_id_items) > 0:
+            if self.backup_id_folder():
+                for item in delete_id_items:
+                    if os.path.isfile(self.id_path + '/' + item + '.id'):
+                        os.unlink(self.id_path + '/' + item + '.id')
+                    if os.path.isfile(self.id_path + '/' + item + '.id'):
+                        errors.append(item + '.id')
+        return errors
+
+    def backup_folder(self, src_path, dest_path):
+        if not os.path.isdir(dest_path):
+            os.makedirs(dest_path)
+        for fname in os.listdir(dest_path):
+            os.unlink(dest_path + '/' + fname)
+        for fname in os.listdir(src_path):
+            shutil.copyfile(src_path + '/' + fname, dest_path + '/' + fname)
+        return (len(os.listdir(src_path)) == len(os.listdir(dest_path)))
+
+    def backup_id_folder(self, backup_name='.bkp'):
+        return self.backup_folder(self.id_path, self.id_path + backup_name)
+
+    def restore_backup_id_folder(self, backup_name='.bkp'):
+        r = self.backup_folder(self.id_path + backup_name, self.id_path)
+        for fname in os.listdir(self.id_path + backup_name):
+            os.unlink(self.id_path + backup_name + '/' + fname)
+        return r
 
 
 def create_path(path):

@@ -86,18 +86,6 @@ def format_issn_fields(issn_items, convert_issn_type):
     return fields
 
 
-def normalize_role(_role):
-    r = ROLE.get(_role)
-    if r == '??' or _role is None or r is None:
-        r = 'ND'
-    return r
-
-
-def normalize_doctopic(_doctopic):
-    r = DOCTOPIC.get(_doctopic)
-    return _doctopic if r == '??' else r
-
-
 class RegisteredArticle(object):
     def __init__(self, article_records, i_record):
         self._issue = None
@@ -200,7 +188,7 @@ class ArticleRecords(object):
     def add_article_data(self):
         if self.article.dtd_version is not None:
             self._metadata['120'] = 'XML_' + self.article.dtd_version
-        self._metadata['71'] = normalize_doctopic(self.article.article_type)
+        self._metadata['71'] = attributes.normalize_doctopic(self.article.article_type)
         self._metadata['40'] = self.article.language
         self._metadata['38'] = self.article.illustrative_materials
         self._metadata['709'] = 'text' if self.article.is_text else 'article'
@@ -251,7 +239,7 @@ class ArticleRecords(object):
             new['n'] = item.fname
             new['s'] = surname_and_suffix
             new['p'] = item.prefix
-            new['r'] = normalize_role(item.role)
+            new['r'] = attributes.normalize_role(item.role)
             new['1'] = ' '.join(item.xref)
             new['k'] = item.contrib_id.get('orcid')
             new['l'] = item.contrib_id.get('lattes')
@@ -352,7 +340,7 @@ class ArticleRecords(object):
                             if author.suffix != '':
                                 a['s'] += ' ' + author.suffix
                         #a['z'] = author.suffix
-                        a['r'] = normalize_role(author.role)
+                        a['r'] = attributes.normalize_role(author.role)
                     else:
                         # collab
                         a = author.collab
@@ -719,13 +707,10 @@ class ArticleDB(object):
         self._registered_i_record = None
         self.is_converted = None
         self.is_not_converted = None
-
         self.validations = {}
-        self.is_id_created = {}
         self.is_excluded_incorrect_order = {}
         self.is_excluded_aop = {}
         self.eval_msg = {}
-
         self._registration_reports = None
 
     def restore_missing_id_files(self):
@@ -840,55 +825,87 @@ class ArticleDB(object):
                 try:
                     os.unlink(article_files.id_filename)
                 except:
-                    print('Unable to delete ' + article_files.id_filename)
+                    print(_('Unable to exclude {item}').format(item=article_files.id_filename))
             previous = os.path.isfile(article_files.id_filename)
 
             self.db_isis.save_id(article_files.id_filename, article_records.records, self.content_formatter)
             saved = os.path.isfile(article_files.id_filename)
         return saved and not previous
 
-    def evaluate(self, i_record, article, valid_aop, incorrect_order):
-        is_excluded_incorrect_order = None
+    def exclude_ex_aop(self, valid_aop):
         is_excluded_aop = None
         is_excluded_aop_msg = None
+        if valid_aop is not None:
+            self.aop_manager.manage_ex_aop(valid_aop)
+            is_excluded_aop = self.aop_manager.is_excluded_aop.get(valid_aop.xml_name, False)
+            is_excluded_aop_msg = self.aop_manager.is_excluded_aop_msg.get(valid_aop.xml_name, [])
+        return (is_excluded_aop, is_excluded_aop_msg)
+
+    def convert_articles(self, pkg, changed_orders, actions, create_windows_base=False):
+        error_messages = []
+        conversion_status = {}
+        index = 0
+
+        n = '/' + str(len(pkg.articles))
+
+        not_excluded_items = self.exclude_incorrect_orders(changed_orders)
+        if len(not_excluded_items) > 0:
+            error_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}').format(item=', '.join(not_excluded_items)))
+
+        utils.display_message('Converting...')
+        for xml_name in pkg.xml_name_sorted_by_order:
+            index += 1
+            item_label = str(index) + n + ' - ' + xml_name
+            utils.display_message(item_label)
+
+            xc_result = None
+            if actions[xml_name] in ['add', 'update']:
+                self.aop_manager.check_aop(pkg.articles[xml_name])
+                valid_aop = self.aop_manager.aop_article(xml_name)
+                if valid_aop is not None:
+                    pkg.articles[xml_name].registered_aop_pid = valid_aop.pid
+                self.create_id_and_exclude_aop(pkg.issue_models.record, pkg.articles[xml_name], valid_aop)
+            elif actions[xml_name] == 'reject':
+                xc_result = 'reject'
+            else:
+                xc_result = 'skipped'
+            if xc_result is not None:
+                if xc_result is not conversion_status.keys():
+                    conversion_status[xc_result] = []
+                conversion_status[xc_result].append(xml_name)
+
+        is_package_registered = self.finish_conversion(pkg.pkg_path, pkg.issue_models.record)
+        conversion_status['converted'] = self.is_converted
+        conversion_status['not converted'] = self.is_not_converted
+
+        registered_scilista_item = None
+        if is_package_registered is True:
+            registered_scilista_item = pkg.acron_issue_label
+            if create_windows_base:
+                self.generate_windows_version()
+        else:
+            if len(changed_orders) > 0 and len(not_excluded_items) == 0:
+                self.issue_files.restore_backup_id_folder()
+        return (registered_scilista_item, conversion_status, error_messages)
+
+    def exclude_incorrect_orders(self, changed_orders):
+        return self.issue_files.delete_id_files([item[0] for item in changed_orders.values()])
+
+    def create_id_and_exclude_aop(self, i_record, article, valid_aop):
         article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
         article_records = self.article_records(i_record, article, article_files)
         id_created = self.create_article_id_file(article_records, article_files)
-        validations = []
-        validations.append(id_created)
-        if id_created:
-            if incorrect_order is not None:
-                incorrect_article_files = serial_files.ArticleFiles(self.issue_files, incorrect_order, article.xml_name)
-                if os.path.isfile(incorrect_article_files.id_filename):
-                    os.unlink(incorrect_article_files.id_filename)
-                is_excluded_incorrect_order = not os.path.isfile(incorrect_article_files.id_filename)
-                validations.append(is_excluded_incorrect_order)
-            if valid_aop is not None:
-                self.aop_manager.manage_ex_aop(valid_aop)
-                is_excluded_aop = self.aop_manager.is_excluded_aop.get(valid_aop.xml_name, False)
-                is_excluded_aop_msg = self.aop_manager.is_excluded_aop_msg.get(valid_aop.xml_name, [])
-                validations.append(is_excluded_aop)
-        self.validations[article.xml_name] = all(validations)
+        is_excluded_aop, is_excluded_aop_msg = self.exclude_ex_aop(valid_aop)
 
-        self.is_id_created[article.xml_name] = id_created
-        if is_excluded_aop is not None:
-            self.is_excluded_aop[article.xml_name] = is_excluded_aop
-        if is_excluded_incorrect_order is not None:
-            self.is_excluded_incorrect_order[article.xml_name] = is_excluded_incorrect_order
+        self.validations[article.xml_name] = id_created and (is_excluded_aop is not False)
 
         msg = []
         if id_created is False:
-            msg.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('<article>.id not updated/created'))
-        if is_excluded_incorrect_order is not None:
-            msg.append(validation_status.STATUS_WARNING + ': ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
-            if is_excluded_incorrect_order is True:
-                msg.append(validation_status.STATUS_INFO + ': ' + _('Done'))
-            else:
-                msg.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude ') + incorrect_order)
+            msg.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(article.order))
         if is_excluded_aop is True:
-            msg.append(validation_status.STATUS_INFO + ': ' + _('ex aop was excluded'))
+            msg.append(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop'))
         elif is_excluded_aop is False:
-            msg.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude ex aop'))
+            msg.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}').format(item='ex aop'))
             if is_excluded_aop_msg is not None:
                 for m in is_excluded_aop_msg:
                     msg.append(m)

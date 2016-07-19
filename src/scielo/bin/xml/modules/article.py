@@ -1422,6 +1422,14 @@ class Article(ArticleXML):
             titles[title.language] = title.title
         return titles
 
+    @property
+    def textual_titles(self):
+        return ' | '.join([self.article_titles.get(k) for k in sorted(self.article_titles.keys())])
+
+    @property
+    def textual_contrib_surnames(self):
+        return ' | '.join([contrib.surname for contrib in self.contrib_names])
+
     def _issue_parts(self):
         number_suppl = None
         volume_suppl = None
