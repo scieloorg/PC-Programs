@@ -272,5 +272,11 @@
             </xsl:call-template>
         </xsl:if>
     </xsl:template>
+    <xsl:template match="contrib-id">
+        <xsl:call-template name="empty-element-check"/>
+        <!--xsl:call-template name="scielo-contrib-id-check"/-->
+        <xsl:apply-templates select="." mode="output"/>
+    </xsl:template>
+    
 </xsl:stylesheet>
 

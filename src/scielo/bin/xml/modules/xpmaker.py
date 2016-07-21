@@ -28,6 +28,7 @@ import xpchecker
 import pkg_reports
 import symbols
 import xc_models
+import attributes
 
 
 mime = MimeTypes()
@@ -650,6 +651,10 @@ class ArticlePkgMaker(object):
 
         self.xml, self.e = xml_utils.load_xml(self.content)
         if self.xml is not None:
+            if 'contrib-id-type="' in self.content:
+                for contrib_id, url in attributes.CONTRIB_ID_URLS.items():
+                    self.content = self.content.replace(' contrib-id-type="' + contrib_id + '">' + url, ' contrib-id-type="' + contrib_id + '">')
+
             #content = remove_xmllang_off_article_title(content)
             self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
             self.content = self.content.replace('&amp;amp;', '&amp;')

@@ -263,10 +263,16 @@ COUNTRY_CODES = [
  'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM', 'ZW',
  ]
 
-
 PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']
 
 related_articles_type = ['corrected-article', 'article-commentary', 'press-release', 'retracted-article']
+
+CONTRIB_ID_URLS = {
+    'lattes': 'http://lattes.cnpq.br/',
+    'orcid': 'http://orcid.org/',
+    'researchid': 'http://www.researcherid.com/rid/',
+    'scopus': 'https://www.scopus.com/authid/detail.uri?authorId=',  
+}
 
 
 def normalize_doctopic(_doctopic):
