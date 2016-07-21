@@ -353,7 +353,23 @@
 	<xsl:template match="related-object[@specific-use='processing-only']">
 		
 	</xsl:template>
-	
+	<xsl:template match="contrib-id">
+		<!-- 
+		    'lattes': 'http://lattes.cnpq.br/',
+    'orcid': 'http://orcid.org/',
+    'researchid': 'http://www.researcherid.com/rid/',
+    'scopus': 'https://www.scopus.com/authid/detail.uri?authorId='
+		-->
+		<contrib-id>
+			<xsl:attribute name="contrib-id-type"><xsl:value-of select="@contrib-id-type"/></xsl:attribute>
+		<xsl:choose>
+			<xsl:when test="@contrib-id-type='lattes' and not(contains(.,'http://lattes.cnpq.br/'))">http://lattes.cnpq.br/</xsl:when>
+			<xsl:when test="@contrib-id-type='orcid' and not(contains(.,'http://orcid.org/'))">http://orcid.org/</xsl:when>
+			<xsl:when test="@contrib-id-type='researchid'and not(contains(.,'http://www.researcherid.com/rid/'))">http://www.researcherid.com/rid/</xsl:when>
+			<xsl:when test="@contrib-id-type='scopus'and not(contains(.,'https://www.scopus.com/authid/detail.uri?authorId='))">https://www.scopus.com/authid/detail.uri?authorId=</xsl:when>
+		</xsl:choose><xsl:value-of select="."/>
+		</contrib-id>
+	</xsl:template>
 	<xsl:template match="contrib/xref[normalize-space(text())='' and not(*)]"></xsl:template>
 	<xsl:template match="ref/@specific-use|element-citation/@specific-use"></xsl:template>
 	<xsl:template match="article/@specific-use"></xsl:template>

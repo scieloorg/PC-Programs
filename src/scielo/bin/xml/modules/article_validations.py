@@ -571,6 +571,16 @@ class ArticleContentValidation(object):
                 author_xref_items.append(xref)
             for result in validate_contrib_names(item, aff_ids):
                 r.append(result)
+            for contrib_id_type, contrib_id in item.contrib_id.items():
+                if contrib_id_type in attributes.CONTRIB_ID_URLS.keys():
+                    if attributes.CONTRIB_ID_URLS.get(contrib_id_type) in contrib_id:
+                        label = 'contrib-id[@contrib-id-type="' + contrib_id_type + '"]'
+                        r.append((label, validation_status.STATUS_ERROR,
+                            _('{value} is an invalid value for {label}. ').format(value=contrib_id, label=label)))
+                else:
+                    r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR,
+                            _('{value} is an invalid value for {label}. ').format(value=contrib_id_type, label='contrib-id/@contrib-id-type') + 
+                            _('Expected values: {expected_values}').format(values=', '.join(attributes.CONTRIB_ID_URLS.keys()))))
         for affid in aff_ids:
             if not affid in author_xref_items:
                 r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Missing') + ' xref[@ref-type="aff"]/@rid="' + affid + '".'))
