@@ -573,10 +573,11 @@ class ArticleContentValidation(object):
                 r.append(result)
             for contrib_id_type, contrib_id in item.contrib_id.items():
                 if contrib_id_type in attributes.CONTRIB_ID_URLS.keys():
-                    if attributes.CONTRIB_ID_URLS.get(contrib_id_type) in contrib_id:
+                    if attributes.CONTRIB_ID_URLS.get(contrib_id_type) in contrib_id or contrib_id.startswith('http'):
                         label = 'contrib-id[@contrib-id-type="' + contrib_id_type + '"]'
                         r.append((label, validation_status.STATUS_ERROR,
-                            _('{value} is an invalid value for {label}. ').format(value=contrib_id, label=label)))
+                            _('{value} is an invalid value for {label}. ').format(value=contrib_id, label=label) +
+                            _('Use only the ID')))
                 else:
                     r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR,
                             _('{value} is an invalid value for {label}. ').format(value=contrib_id_type, label='contrib-id/@contrib-id-type') + 
