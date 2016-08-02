@@ -1185,6 +1185,92 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))
 
 
+def pack_and_validate_refac(xml_files, results_path, acron, version, is_db_generation=False):
+    global DISPLAY_REPORT
+    global GENERATE_PMC
+    is_xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
+
+    scielo_pkg_path = results_path + '/scielo_package'
+    pmc_pkg_path = results_path + '/pmc_package'
+    report_path = results_path + '/errors'
+    wrk_path = results_path + '/work'
+
+    report_components = {}
+
+    pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
+    scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
+
+    for d in [scielo_pkg_path, pmc_pkg_path, report_path, wrk_path]:
+        if not os.path.isdir(d):
+            os.makedirs(d)
+
+    if len(xml_files) == 0:
+        utils.display_message(_('No files to process'))
+    else:
+        articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
+
+        #pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path)
+        articles_set_validations = ArticlesSetValidations(scielo_dtd_files, articles, doc_files_info_items, journals, issues, None, new_names)
+
+        journals_manager = xc_models.JournalsManager()
+        journal = journals_manager.journal(articles_set_validations.journal.p_issn, articles_set_validations.journal.e_issn, articles_set_validations.journal.journal_title)
+
+        issue = None
+
+        articles_set_reports = pkg_validations.PkgReportsMaker(scielo_pkg_path)
+        #pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, journal, issue, None, is_db_generation)
+
+        report_components['xml-files'] = articles_set_reports.xml_list
+
+        toc_f = 0
+        report_components['pkg_overview'] = articles_set_reports.overview_report
+        report_components['pkg_overview'] += pkg_validator.references_overview_report()
+        report_components['references'] = pkg_validator.sources_overview_report()
+
+        if not is_xml_generation:
+            report_components['issue-report'] = pkg_validator.issue_report
+            toc_f = pkg_validator.blocking_errors
+        if toc_f == 0:
+            pkg_validator.validate_articles_pkg_xml_and_data(doc_files_info_items, scielo_dtd_files, is_xml_generation)
+
+            if not is_xml_generation:
+                report_components['detail-report'] = pkg_validator.detail_report()
+                report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
+
+        if not is_xml_generation:
+            xpm_validations = pkg_reports.format_complete_report(report_components)
+            filename = report_path + '/xml_package_maker.html'
+            if os.path.isfile(filename):
+                bkp_filename = report_path + '/xpm_bkp_' + '-'.join(utils.now()) + '.html'
+                shutil.copyfile(filename, bkp_filename)
+            pkg_reports.save_report(filename, 
+                                    _('XML Package Maker Report'), 
+                                    html_reports.save_form(xpm_validations.total > 0, u'xml_package_maker.html') + xpm_validations.message, 
+                                    xpm_version())
+
+            if DISPLAY_REPORT is True:
+                pkg_reports.display_report(filename)
+
+        if not is_db_generation:
+            if is_xml_generation:
+                make_pmc_report(articles, doc_files_info_items)
+            if is_pmc_journal(articles):
+                if GENERATE_PMC:
+                    make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                else:
+                    print('='*10)
+                    print(_('To generate PMC package, add -pmc as parameter'))
+                    print('='*10)
+
+            make_pkg_zip(scielo_pkg_path)
+            if not is_xml_generation:
+                make_pkg_items_zip(scielo_pkg_path)
+
+        utils.display_message(_('Result of the processing:'))
+        utils.display_message(results_path)
+        fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))
+
+
 def is_pmc_journal(articles):
     r = False
     for doc in articles.values():

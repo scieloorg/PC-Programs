@@ -1415,3 +1415,16 @@ def journal_doi_prefix(issn_list):
         if prefix is not None:
             break
     return prefix
+
+
+class JournalsManager(object):
+
+    def __init__(self, journals_db=None):
+        self.journals_list = JournalsList()
+        self.journals_db = journals_db
+
+    def journal(self, p_issn, e_issn, journal_title):
+        j = None
+        if self.journals_db is None:
+            j = self.journals_list.get_journal(p_issn, e_issn, journal_title)
+        return j

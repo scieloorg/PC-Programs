@@ -197,6 +197,7 @@ def expected_values(label, value, expected):
     return display_value(label, value) if value in expected else validation_status.STATUS_ERROR + ': ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
 
 
+#FIXME apagar
 def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
     def normalize_value(value):
         if not isinstance(value, unicode):

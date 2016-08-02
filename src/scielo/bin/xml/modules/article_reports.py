@@ -22,8 +22,8 @@ def register_log(text):
 
 class ArticleDisplayReport(object):
 
-    def __init__(self, article, sheet_data, xml_path, xml_name):
-        self.article = article
+    def __init__(self, sheet_data, xml_path, xml_name):
+        self.article = sheet_data.article
         self.xml_name = xml_name
         self.xml_path = xml_path
         self.sheet_data = sheet_data
@@ -344,8 +344,8 @@ class ArticleValidationReport(object):
 
 class ArticleSheetData(object):
 
-    def __init__(self, article, article_validation):
-        self.article = article
+    def __init__(self, article_validation):
+        self.article = article_validation.article
         self.article_validation = article_validation
 
     def authors_sheet_data(self, filename=None):
@@ -496,8 +496,8 @@ def article_data_and_validations_report(journal, article, new_name, package_path
         content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to get data of ') + new_name + '.'
     else:
         article_validation = article_validations.ArticleContentValidation(journal, article, is_db_generation, False)
-        sheet_data = ArticleSheetData(article, article_validation)
-        article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
+        sheet_data = ArticleSheetData(article_validation)
+        article_display_report = ArticleDisplayReport(sheet_data, package_path, new_name)
         article_validation_report = ArticleValidationReport(article_validation)
 
         content = []
