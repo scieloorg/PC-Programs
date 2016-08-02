@@ -1074,8 +1074,9 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
 def validate_pmc_image(img_filename):
     img = utils.tiff_image(img_filename)
     if img is not None:
-        if img.info.get('dpi') < 300:
-            print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
+        if img.info is not None:
+            if img.info.get('dpi') < 300:
+                print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
 
 
 def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
