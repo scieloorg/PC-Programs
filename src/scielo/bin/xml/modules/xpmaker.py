@@ -1217,19 +1217,19 @@ def pack_and_validate_refac(xml_files, results_path, acron, version, is_db_gener
 
         issue = None
 
-        articles_set_reports = pkg_validations.PkgReportsMaker(scielo_pkg_path)
+        articles_set_reports = pkg_validations.PkgReportsMaker(scielo_pkg_path, articles_set_validations)
         #pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, journal, issue, None, is_db_generation)
 
-        report_components['xml-files'] = articles_set_reports.xml_list
+        report_components['xml-files'] = articles_set_validations.xml_list
 
         toc_f = 0
-        report_components['pkg_overview'] = articles_set_reports.overview_report
-        report_components['pkg_overview'] += pkg_validator.references_overview_report()
-        report_components['references'] = pkg_validator.sources_overview_report()
+        report_components['pkg_overview'] = articles_set_validations.overview_report
+        report_components['references'] = articles_set_validations.references_overview_report
+        report_components['references'] += articles_set_validations.sources_overview_report
 
         if not is_xml_generation:
-            report_components['issue-report'] = pkg_validator.issue_report
-            toc_f = pkg_validator.blocking_errors
+            report_components['issue-report'] = articles_set_validations.issue_report
+            toc_f = articles_set_validations.blocking_errors
         if toc_f == 0:
             pkg_validator.validate_articles_pkg_xml_and_data(doc_files_info_items, scielo_dtd_files, is_xml_generation)
 
