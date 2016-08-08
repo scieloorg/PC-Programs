@@ -60,7 +60,7 @@
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-title"/>
 
-			<xsl:apply-templates select=".//article-meta/fpage|.//article-meta/lpage"/>
+			<xsl:apply-templates select=".//article-meta/fpage|.//article-meta/lpage|.//article-meta/elocation-id"/>
 			<ELocationID EIdType="pii">
 				<xsl:value-of select="$pid"/>
 			</ELocationID>
@@ -111,7 +111,17 @@
 	</xsl:template>
 	<xsl:template match="related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object">
 		<xsl:param name="article_type"/>
-		<Object>
+		<ObjectList>
+			<Object>
+				<xsl:attribute name="Type"><xsl:choose>
+					<xsl:when test="$article_type='correction'">Erratum</xsl:when>
+					<xsl:when test="$article_type='retraction'">Retraction</xsl:when>
+				</xsl:choose></xsl:attribute>
+				<Param Name="type">pmid</Param>
+				<Param Name="id"></Param>
+			</Object>
+		</ObjectList>
+		<!--Object>
 			<xsl:attribute name="Type"><xsl:choose>
 				<xsl:when test="$article_type='correction'">Erratum</xsl:when>
 				<xsl:when test="$article_type='retraction'">Retraction</xsl:when>
@@ -121,7 +131,7 @@
 				<xsl:otherwise>pii</xsl:otherwise>
 			</xsl:choose></Param>
 			<Param Name="id"><xsl:value-of select="@xlink:href"/></Param>
-		</Object>
+		</Object-->
 	</xsl:template>
 	<xsl:template match="article" mode="scielo-xml-objects">
 		<xsl:if test="@article-type='correction' or @article-type='retraction'">
@@ -408,7 +418,14 @@
 			<xsl:value-of select="."/>
 		</xsl:element>
 	</xsl:template>
-
+	
+	<xsl:template match="article-meta/elocation-id">
+		<xsl:element name="FirstPage">
+			<xsl:attribute name="LZero">save</xsl:attribute>
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template>
+	
 	<xsl:template match="lpage">
 		<xsl:element name="LastPage">
 			<xsl:value-of select="."/>
