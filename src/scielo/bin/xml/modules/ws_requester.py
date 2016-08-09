@@ -122,7 +122,6 @@ def try_request(url, timeout=30, debug=False, force_error=False):
     error_message = ''
     try:
         response = urllib2.urlopen(req, timeout=timeout).read()
-        print('ok!')
     except urllib2.HTTPError as e:
         if e.code == 407:
             http_error_proxy_auth = e.code
@@ -176,10 +175,7 @@ class WebServicesRequester(object):
         return result
 
     def is_valid_url(self, url, timeout=30):
-        print('is_valid_url')
-        print(url)
         _result = self.request(url, timeout)
-        print(_result)
         return _result is not None
 
 
