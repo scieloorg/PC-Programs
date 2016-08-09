@@ -100,9 +100,13 @@
 				</ArticleId>
 			</ArticleIdList>
 			<xsl:if test=".//front//history">
+				<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(.//article-meta/volume,.//article-meta/issue),'0',' '))"/></xsl:variable>
+				
 				<History>
 					<xsl:apply-templates select=".//front//history/*"/>
-					<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
+					<xsl:if test="$issueid=''">
+						<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
+					</xsl:if>
 				</History>
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-abstract"/>
@@ -346,8 +350,9 @@
 
 	</xsl:template>
 	<xsl:template match="@date-type">
+		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and $issueid=''">aheadofprint</xsl:when>
 			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
 			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
@@ -358,8 +363,9 @@
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="pub-date/@pub-type">
+		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and $issueid=''">aheadofprint</xsl:when>
 			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
 			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
