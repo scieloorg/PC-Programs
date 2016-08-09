@@ -5,6 +5,7 @@ from datetime import datetime
 from __init__ import _
 import validation_status
 import article_utils
+import ws_requester
 
 
 SPS_MIN_DATE = datetime(2012, 06, 01)
@@ -274,6 +275,18 @@ CONTRIB_ID_URLS = {
     'scopus': 'https://www.scopus.com/authid/detail.uri?authorId=',  
 }
 
+LICENSES = [
+    'http://creativecommons.org/licenses/by/4.0/',
+    'http://creativecommons.org/licenses/by/3.0/',
+    'http://creativecommons.org/licenses/by-nc/4.0/',
+    'http://creativecommons.org/licenses/by-nc/3.0/',
+    'https://creativecommons.org/licenses/by-nc-nd/3.0/',
+    'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+    'https://creativecommons.org/licenses/by/3.0/igo/',
+    'https://creativecommons.org/licenses/by-nc/3.0/igo/',
+    'https://creativecommons.org/licenses/by-nc-nd/3.0/igo/',
+]
+
 
 def normalize_doctopic(_doctopic):
     r = DOCTOPIC.get(_doctopic)
@@ -505,3 +518,19 @@ def validate_iso_country_code(iso_country_code):
             r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, 
                 iso_country_code + ': ' + _('Invalid value')))
     return r
+
+
+def validate_license_href(license_href):
+    result = None
+    if license_href is None:
+        result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Required {label}').format(label='license/@href. '))
+    elif license_href in LICENSES:
+        result = ('license/@xlink:href', validation_status.STATUS_VALID, license_href)
+    else:
+        result = ('license/@xlink:href', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=license_href, label='license/@href'))
+        print('LICENSE NOT FOUND')
+        print('|' + license_href + '|')
+        print('\n'.join(LICENSES))
+        #if not ws_requester.wsr.is_valid_url(license_href):
+        #    result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=license_href, label='license/@href'))
+    return result
