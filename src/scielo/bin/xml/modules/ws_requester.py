@@ -121,7 +121,7 @@ def try_request(url, timeout=30, debug=False, force_error=False):
     http_error_proxy_auth = None
     error_message = ''
     try:
-        response = urllib2.urlopen(req).read()
+        response = urllib2.urlopen(req, timeout=timeout).read()
     except urllib2.HTTPError as e:
         if e.code == 407:
             http_error_proxy_auth = e.code
@@ -163,6 +163,7 @@ class WebServicesRequester(object):
                 response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
             if response is not None:
                 self.requests[url] = response
+
         return response
 
     def json_result_request(self, url, timeout=30, debug=False):
@@ -174,7 +175,8 @@ class WebServicesRequester(object):
         return result
 
     def is_valid_url(self, url, timeout=30):
-        return self.request(url, timeout) is not None
+        _result = self.request(url, timeout)
+        return _result is not None
 
 
 class PublishingWebServicesRequester(WebServicesRequester):

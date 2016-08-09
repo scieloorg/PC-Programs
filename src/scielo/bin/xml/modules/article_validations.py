@@ -1036,12 +1036,9 @@ class ArticleContentValidation(object):
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('Identify @xml:lang of license')))
             else:
                 r.append(('license/@xml:lang', validation_status.STATUS_INFO, lang))
-            if license.get('href') is None:
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
-            elif not '://creativecommons.org/licenses/' in license.get('href'):
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
-            elif not ws_requester.wsr.is_valid_url(license.get('href')):
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
+            result = attributes.validate_license_href(license.get('href'))
+            if result is not None:
+                r.append(result)
             r.append(expected_values('license/@license-type', license.get('type'), ['open-access'], 'FATAL '))
             r.append(required('license/license-p', license.get('text'), validation_status.STATUS_FATAL_ERROR, False))
         return [item for item in r if r is not None]
