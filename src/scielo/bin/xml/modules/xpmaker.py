@@ -395,7 +395,7 @@ def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
                     try:
                         im = Image.open(image_filename)
                         im.thumbnail(im.size)
-                        im.save(jpg_filename, "JPEG", quality=72, optimize=True, progressive=True)
+                        im.save(jpg_filename, "JPEG")
                         utils.display_message(jpg_filename)
                         print(jpg_filename)
                     except Exception as inst:

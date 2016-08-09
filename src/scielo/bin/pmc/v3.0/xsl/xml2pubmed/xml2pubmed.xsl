@@ -60,7 +60,7 @@
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-title"/>
 
-			<xsl:apply-templates select=".//article-meta/fpage|.//article-meta/lpage"/>
+			<xsl:apply-templates select=".//article-meta/fpage|.//article-meta/lpage|.//article-meta/elocation-id"/>
 			<ELocationID EIdType="pii">
 				<xsl:value-of select="$pid"/>
 			</ELocationID>
@@ -100,9 +100,13 @@
 				</ArticleId>
 			</ArticleIdList>
 			<xsl:if test=".//front//history">
+				<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(.//article-meta/volume,.//article-meta/issue),'0',' '))"/></xsl:variable>
+				
 				<History>
 					<xsl:apply-templates select=".//front//history/*"/>
-					<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
+					<xsl:if test="$issueid=''">
+						<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
+					</xsl:if>
 				</History>
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-abstract"/>
@@ -111,7 +115,17 @@
 	</xsl:template>
 	<xsl:template match="related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object">
 		<xsl:param name="article_type"/>
-		<Object>
+		<ObjectList>
+			<Object>
+				<xsl:attribute name="Type"><xsl:choose>
+					<xsl:when test="$article_type='correction'">Erratum</xsl:when>
+					<xsl:when test="$article_type='retraction'">Retraction</xsl:when>
+				</xsl:choose></xsl:attribute>
+				<Param Name="type">pmid</Param>
+				<Param Name="id"></Param>
+			</Object>
+		</ObjectList>
+		<!--Object>
 			<xsl:attribute name="Type"><xsl:choose>
 				<xsl:when test="$article_type='correction'">Erratum</xsl:when>
 				<xsl:when test="$article_type='retraction'">Retraction</xsl:when>
@@ -121,7 +135,7 @@
 				<xsl:otherwise>pii</xsl:otherwise>
 			</xsl:choose></Param>
 			<Param Name="id"><xsl:value-of select="@xlink:href"/></Param>
-		</Object>
+		</Object-->
 	</xsl:template>
 	<xsl:template match="article" mode="scielo-xml-objects">
 		<xsl:if test="@article-type='correction' or @article-type='retraction'">
@@ -336,8 +350,9 @@
 
 	</xsl:template>
 	<xsl:template match="@date-type">
+		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and $issueid=''">aheadofprint</xsl:when>
 			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
 			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
@@ -348,8 +363,9 @@
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="pub-date/@pub-type">
+		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and $issueid=''">aheadofprint</xsl:when>
 			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
 			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
@@ -408,7 +424,14 @@
 			<xsl:value-of select="."/>
 		</xsl:element>
 	</xsl:template>
-
+	
+	<xsl:template match="article-meta/elocation-id">
+		<xsl:element name="FirstPage">
+			<xsl:attribute name="LZero">save</xsl:attribute>
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template>
+	
 	<xsl:template match="lpage">
 		<xsl:element name="LastPage">
 			<xsl:value-of select="."/>
