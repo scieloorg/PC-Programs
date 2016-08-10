@@ -1209,15 +1209,18 @@ def pack_and_validate_refac(xml_files, results_path, acron, version, is_db_gener
     else:
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
 
-        #pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path)
-        articles_set_validations = ArticlesSetValidations(scielo_dtd_files, articles, doc_files_info_items, journals, issues, None, new_names)
+        pkg_articles = pkg_validations.PkgArticles(scielo_pkg_path, articles)
 
         journals_manager = xc_models.JournalsManager()
-        journal = journals_manager.journal(articles_set_validations.journal.p_issn, articles_set_validations.journal.e_issn, articles_set_validations.journal.journal_title)
+        pkg_articles.journal = journals_manager.journal(pkg_articles.journal.p_issn, pkg_articles.journal.e_issn, pkg_articles.journal.journal_title)
+
+        articles_data_set = ArticlesDataSet(scielo_pkg_path, articles, doc_files_info_items, new_names)
+
+        articles_set_validations = IssueItemsValidations(scielo_dtd_files, articles, doc_files_info_items, None, new_names)
 
         issue = None
 
-        articles_set_reports = pkg_validations.PkgReportsMaker(scielo_pkg_path, articles_set_validations)
+        reports = pkg_validations.ReportsMaker(scielo_pkg_path, articles_set_validations)
         #pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, journal, issue, None, is_db_generation)
 
         report_components['xml-files'] = articles_set_validations.xml_list

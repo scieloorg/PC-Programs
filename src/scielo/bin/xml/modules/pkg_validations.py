@@ -252,31 +252,20 @@ class ArticleValidations(object):
         return (links, block)
 
 
-class ArticlesSetValidations(object):
+class PkgArticles(object):
 
-    def __init__(self, dtd_files, articles, doc_files_info_items, journals, issues, previous_registered_articles, new_names, pkg_path, is_xml_generation, is_db_generation, issue_models, xpm_version=None):
-        self.xpm_version = xpm_version
-        self.issue_models = issue_models
+    def __init__(self, pkg_path, articles):
         self.pkg_path = pkg_path
-        self.xml_filenames = sorted([self.pkg_path + '/' + name for name in os.listdir(self.pkg_path) if name.endswith('.xml')])
         self.xml_names = [name for name in os.listdir(self.pkg_path) if name.endswith('.xml')]
-        self.is_xml_generation = is_xml_generation
-        self.is_db_generation = is_db_generation
         self.articles = articles
-        self.doc_files_info_items = doc_files_info_items
-        self.new_names = new_names
-        self.journal = journals
-        self.invalid_xml_name_items = []
+        self._issue_identification()
 
-        self.journal_validations = PackageValidationsResults(self.report_path, 'journal-', '')
-        
-        self.EXPECTED_EQUAL_VALUES_LABELS = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', 'license']
-        self.EXPECTED_UNIQUE_VALUE_LABELS = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
-        self.REQUIRED_DATA = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        self.CHECKLIST_LABELS = ['journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'license']
-
-        self.validate_journal_and_issue_data()
-        self.compile_references()
+    def _issue_identification(self):
+        journals = [[a.journal_title, a.print_issn, a.e_issn, a.issue_label] for a in self.articles.values()]
+        journals = list(set(journals))
+        self.journal = article.Journal()
+        if len(journals) > 0:
+            self.journal.journal_title, self.journal.p_issn, self.journal.e_issn, self.issue_label = journals[0]
 
     @property
     def xml_list(self):
@@ -286,18 +275,86 @@ class ArticlesSetValidations(object):
         r += html_reports.format_list('', 'ol', self.xml_names)
         return '<div class="xmllist">' + r + '</div>'
 
+
+class IssueItemsValidations(object):
+
+    def __init__(self, pkg_path, articles, doc_files_info_items, new_names, dtd_files, is_xml_generation, is_db_generation, xpm_version=None):
+        self.articles = articles
+        self.xpm_version = xpm_version
+        self.is_xml_generation = is_xml_generation
+        self.is_db_generation = is_db_generation
+
+        self.invalid_xml_name_items = []
+
+        self.EXPECTED_EQUAL_VALUES_LABELS = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', 'license']
+        self.EXPECTED_UNIQUE_VALUE_LABELS = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
+        self.REQUIRED_DATA = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        self.CHECKLIST_LABELS = ['journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'license']
+
+        self.validate_journal_and_issue_data()
+
+        self.pkg_path = pkg_path
+        self.xml_filenames = sorted([self.pkg_path + '/' + name for name in os.listdir(self.pkg_path) if name.endswith('.xml')])
+
+        self.articles = articles
+        self.doc_files_info_items = doc_files_info_items
+        self.new_names = new_names
+
+        self.compile_references()
+
     @property
     def xml_name_sorted_by_order(self):
         l = sorted([(order, xml_name) for xml_name, article in self.articles.items()])
         return [xml_name for order, xml_name in l]
 
+    def compile_references(self):
+        self.sources_and_reftypes = {}
+        self.reftype_and_sources = {}
+        self.missing_source = []
+        self.missing_year = []
+        self.unusual_sources = []
+        self.unusual_years = []
+        for xml_name, doc in self.articles.items():
+            for ref in doc.references:
+                if ref.source is not None:
+                    if not ref.source in self.sources_and_reftypes.keys():
+                        self.sources_and_reftypes[ref.source] = {}
+                    if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
+                        self.sources_and_reftypes[ref.source][ref.publication_type] = []
+                    self.sources_and_reftypes[ref.source][ref.publication_type].append(xml_name + ': ' + str(ref.id))
+
+                if not ref.publication_type in self.reftype_and_sources.keys():
+                    self.reftype_and_sources[ref.publication_type] = {}
+                if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
+                    self.reftype_and_sources[ref.publication_type][ref.source] = []
+                self.reftype_and_sources[ref.publication_type][ref.source].append(xml_name + ': ' + str(ref.id))
+
+                # year
+                if ref.publication_type in attributes.BIBLIOMETRICS_USE:
+                    if ref.year is None:
+                        self.missing_year.append([xml_name, ref.id])
+                    else:
+                        numbers = len([n for n in ref.year if n.isdigit()])
+                        not_numbers = len(ref.year) - numbers
+                        if not_numbers > numbers:
+                            self.unusual_years.append([xml_name, ref.id, ref.year])
+
+                    if ref.source is None:
+                        self.missing_source.append([xml_name, ref.id])
+                    else:
+                        numbers = len([n for n in ref.source if n.isdigit()])
+                        not_numbers = len(ref.source) - numbers
+                        if not_numbers < numbers:
+                            self.unusual_sources.append([xml_name, ref.id, ref.source])
+        self.bad_sources_and_reftypes = {source: reftypes for source, reftypes in self.sources_and_reftypes.items() if len(reftypes) > 1}
+
     @property
     def journal_and_issue_expected_equal_items(self):
-        return {label: self.journal_and_issue_data[label].keys() for label in self.EXPECTED_EQUAL_VALUES_LABELS}
+        return {label: self.articles_data_set.journal_and_issue_data[label].keys() for label in self.EXPECTED_EQUAL_VALUES_LABELS}
 
     @property
     def journal_and_issue_expected_unique_items(self):
-        return {label: self.journal_and_issue_data[label].keys() for label in self.EXPECTED_UNIQUE_VALUE_LABELSs}
+        return {label: self.articles_data_set.journal_and_issue_data[label].keys() for label in self.EXPECTED_UNIQUE_VALUE_LABELSs}
 
     @property
     def registered_issue_data_validations(self):
@@ -317,15 +374,6 @@ class ArticlesSetValidations(object):
         for xml_name, article_validations in self.articles_validations.items():
             r[xml_name] = articles_validations.xml_content_validations
         return r
-
-    @property
-    def issue_id_data(self):
-        journals = [[a.journal_title, a.print_issn, a.e_issn, a.issue_label] for a in self.articles.values()]
-        journals = list(set(journals))
-        j = article.Journal()
-        if len(journals) > 0:
-            j.journal_title, j.p_issn, j.e_issn, issue_label = journals[0]
-        return (j, issue_label)
 
     @property
     def xml_files_with_duplicated_values(self):
@@ -397,46 +445,6 @@ class ArticlesSetValidations(object):
     def articles_validations(self):
         return {name: ArticleValidations(self.journal, a, self.doc_files_info_items[name], self.dtd_files, self.pkg_path, self.new_names[name], self.is_xml_generation, self.is_db_generation) for name, a in self.articles.items()}
 
-    def compile_references(self):
-        self.sources_and_reftypes = {}
-        self.reftype_and_sources = {}
-        self.missing_source = []
-        self.missing_year = []
-        self.unusual_sources = []
-        self.unusual_years = []
-        for xml_name, doc in self.articles.items():
-            for ref in doc.references:
-                if ref.source is not None:
-                    if not ref.source in self.sources_and_reftypes.keys():
-                        self.sources_and_reftypes[ref.source] = {}
-                    if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
-                        self.sources_and_reftypes[ref.source][ref.publication_type] = []
-                    self.sources_and_reftypes[ref.source][ref.publication_type].append(xml_name + ': ' + str(ref.id))
-
-                if not ref.publication_type in self.reftype_and_sources.keys():
-                    self.reftype_and_sources[ref.publication_type] = {}
-                if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
-                    self.reftype_and_sources[ref.publication_type][ref.source] = []
-                self.reftype_and_sources[ref.publication_type][ref.source].append(xml_name + ': ' + str(ref.id))
-
-                # year
-                if ref.publication_type in attributes.BIBLIOMETRICS_USE:
-                    if ref.year is None:
-                        self.missing_year.append([xml_name, ref.id])
-                    else:
-                        numbers = len([n for n in ref.year if n.isdigit()])
-                        not_numbers = len(ref.year) - numbers
-                        if not_numbers > numbers:
-                            self.unusual_years.append([xml_name, ref.id, ref.year])
-
-                    if ref.source is None:
-                        self.missing_source.append([xml_name, ref.id])
-                    else:
-                        numbers = len([n for n in ref.source if n.isdigit()])
-                        not_numbers = len(ref.source) - numbers
-                        if not_numbers < numbers:
-                            self.unusual_sources.append([xml_name, ref.id, ref.source])
-        self.bad_sources_and_reftypes = {source: reftypes for source, reftypes in self.sources_and_reftypes.items() if len(reftypes) > 1}
 
     @property
     def articles_dates_report(self):
@@ -652,17 +660,18 @@ class ArticlesSetValidations(object):
         return ''.join(report) if len(report) > 0 else None
 
 
-class PkgReportsMaker(object):
+class ReportsMaker(object):
 
-    def __init__(self, articles_set_validations):
-        self.articles_set_validations = articles_set_validations
-        self.order = ['xml-files', 'summary-report', 'issue-report', 'detail-report', 'conversion-report', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
+    def __init__(self, pkg_articles, issue_items_validations):
+        self.pkg_articles = pkg_articles
+        self.issue_items_validations = issue_items_validations
+        self.tabs = ['pkg-files', 'summary-report', 'issue-report', 'detail-report', 'conversion-report', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
         self.labels = {
             'issue-report': 'journal/issue',
             'summary-report': _('Summary report'), 
             'detail-report': _('XML Validations report'), 
             'conversion-report': _('Conversion report'),
-            'xml-files': _('Files/Folders'),
+            'pkg-files': _('Files/Folders'),
             'db-overview': _('Database'),
             'pkg_overview': _('Package overview'),
             'references': _('Sources')
@@ -671,20 +680,20 @@ class PkgReportsMaker(object):
 
     def generate_components(self):
         self.components = {}
-        self.components['xml-files'] = self.articles_set_validations.xml_list
+        self.components['pkg-files'] = self.pkg_articles.xml_list
 
-        self.components['pkg_overview'] = self.articles_set_validations.overview_report
-        self.components['references'] = self.articles_set_validations.references_overview_report
-        self.components['references'] += self.articles_set_validations.sources_overview_report
+        self.components['pkg_overview'] = self.issue_items_validations.overview_report
+        self.components['references'] = self.issue_items_validations.references_overview_report
+        self.components['references'] += self.issue_items_validations.sources_overview_report
 
-        if not self.articles_set_validations.is_xml_generation:
-            self.components['issue-report'] = self.articles_set_validations.issue_report
+        if not self.issue_items_validations.is_xml_generation:
+            self.components['issue-report'] = self.issue_items_validations.issue_report
 
-            self.components['detail-report'] = self.articles_set_validations.detail_report
-            self.components['xml-files'] += processing_result_location(os.path.dirname(self.articles_set_validations.pkg_path))
+            self.components['detail-report'] = self.issue_items_validations.detail_report
+            self.components['pkg-files'] += processing_result_location(os.path.dirname(self.issue_items_validations.pkg_path))
 
     def save_report(self, report_filename='xml_package_maker.html', report_title=_('XML Package Maker Report')):
-        if not self.articles_set_validations.is_xml_generation:
+        if not self.issue_items_validations.is_xml_generation:
 
             filename = report_path + '/' + report_filename
             if os.path.isfile(filename):
@@ -704,17 +713,17 @@ class PkgReportsMaker(object):
         self.components['summary-report'] = error_msg_subtitle() + html_reports.statistics_display(validations, False) + self.components['summary-report']
 
         # tabs
-        content = html_reports.tabs_items([(tab_id, labels[tab_id]) for tab_id in order if self.components.get(tab_id) is not None], pre_selected)
+        content = html_reports.tabs_items([(tab_id, labels[tab_id]) for tab_id in self.tabs if self.components.get(tab_id) is not None], pre_selected)
         # tabs content
-        for tab_id in order:
+        for tab_id in self.tabs:
             c = self.components.get(tab_id)
             if c is not None:
                 style = 'selected-tab-content' if tab_id == pre_selected else 'not-selected-tab-content'
                 content += html_reports.tab_block(tab_id, c, style)
 
         content += html_reports.tag('p', _('finished'))
-        if self.articles_set_validations.xpm_version is not None:
-            content += html_reports.tag('p', _('report generated by XPM ') + self.articles_set_validations.xpm_version)
+        if self.issue_items_validations.xpm_version is not None:
+            content += html_reports.tag('p', _('report generated by XPM ') + self.issue_items_validations.xpm_version)
 
         return label_errors(content)
 
@@ -736,29 +745,29 @@ class PkgReportsMaker(object):
             item_label = str(index) + n + ': ' + new_name
             utils.display_message(item_label)
 
-            links, block = self.articles_set_validations.articles_validations[new_name].block_reports
+            links, block = self.issue_items_validations.articles_validations[new_name].block_reports
 
             values = []
             values.append(new_name)
 
             d = {}
-            d['order'] = self.articles_set_validations.articles[new_name].order
-            d['pages'] = self.articles_set_validations.articles[new_name].fpage
-            d['elocation-id'] = self.articles_set_validations.articles[new_name].pages
+            d['order'] = self.issue_items_validations.articles[new_name].order
+            d['pages'] = self.issue_items_validations.articles[new_name].fpage
+            d['elocation-id'] = self.issue_items_validations.articles[new_name].pages
             values.append(d)
 
             d = {}
-            d['doi'] = self.articles_set_validations.articles[new_name].doi
-            d['doi aop'] = self.articles_set_validations.articles[new_name].previous_pid
-            d['related'] = self.articles_set_validations.articles[new_name].related_articles
+            d['doi'] = self.issue_items_validations.articles[new_name].doi
+            d['doi aop'] = self.issue_items_validations.articles[new_name].previous_pid
+            d['related'] = self.issue_items_validations.articles[new_name].related_articles
             values.append(d)
 
             d = {}
-            d['subject'] = self.articles_set_validations.articles[new_name].sorted_toc_sections
-            d['article-type'] = self.articles_set_validations.articles[new_name].article_type
+            d['subject'] = self.issue_items_validations.articles[new_name].sorted_toc_sections
+            d['article-type'] = self.issue_items_validations.articles[new_name].article_type
             values.append(d)
 
-            values.append(self.articles_set_validations.articles[new_name].title)
+            values.append(self.issue_items_validations.articles[new_name].title)
             values.append(links)
 
             items.append(label_values(labels, values))
