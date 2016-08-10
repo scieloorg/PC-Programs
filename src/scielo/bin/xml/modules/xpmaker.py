@@ -28,6 +28,7 @@ import xpchecker
 import pkg_reports
 import symbols
 import xc_models
+import attributes
 
 
 mime = MimeTypes()
@@ -37,6 +38,7 @@ log_items = []
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 DISPLAY_REPORT = True
+GENERATE_PMC = False
 
 
 def complete_number(number, q=5):
@@ -274,7 +276,7 @@ class SGMLXML(object):
             e = '</' + style + '>'
             self.sgml_content = self.sgml_content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
 
-        xml = xml_utils.is_xml_well_formed(self.sgml_content)
+        xml, e = xml_utils.load_xml(self.sgml_content)
         if xml is None:
             xml_fixer = xml_utils.XMLContent(self.sgml_content)
             xml_fixer.fix()
@@ -282,7 +284,7 @@ class SGMLXML(object):
                 self.sgml_content = xml_fixer.content
                 utils.debugging(self.sgmxml_filename)
                 fs_utils.write_file(self.sgmxml_filename, self.sgml_content)
-                xml = xml_utils.is_xml_well_formed(self.sgml_content)
+                xml, e = xml_utils.load_xml(self.sgml_content)
 
         if xml is None:
             return self.sgml_content
@@ -393,7 +395,7 @@ def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
                     try:
                         im = Image.open(image_filename)
                         im.thumbnail(im.size)
-                        im.save(jpg_filename, "JPEG", quality=72, optimize=True, progressive=True)
+                        im.save(jpg_filename, "JPEG")
                         utils.display_message(jpg_filename)
                         print(jpg_filename)
                     except Exception as inst:
@@ -619,21 +621,15 @@ class ArticlePkgMaker(object):
         self.local_href_names = []
         self.version_info = xml_versions.DTDFiles('scielo', version)
         self.sgmlxml = None
+        self.xml = None
+        self.e = None
         #self.sorted_graphic_href_items = []
         #self.src_folder_graphics = []
 
     def make_article_package(self):
         self.normalize_xml_content()
         self.normalize_package_name()
-
-        if self.doc.tree is None:
-            self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load') + ' ' + self.doc_files_info.new_xml_filename + _('. Try to open it in an XML Editor to view the errors.'))
-            #pkg_reports.display_report(self.doc_files_info.new_xml_filename)
-        else:
-            self.pack_article_files()
-            self.text_messages.append(self.generate_packed_files_report())
-
-        self.pack_article_xml_file()
+        self.pack_article_files()
 
         fs_utils.write_file(self.doc_files_info.err_filename, '\n'.join(self.text_messages))
         html_reports.save(self.doc_files_info.images_report_filename, '', self.get_images_comparison_report())
@@ -653,13 +649,19 @@ class ArticlePkgMaker(object):
         if self.doc_files_info.is_sgmxml:
             self.normalize_sgmlxml()
 
-        xml, e = xml_utils.load_xml(self.content)
-        if xml is not None:
+        self.xml, self.e = xml_utils.load_xml(self.content)
+        if self.xml is not None:
+            if 'contrib-id-type="' in self.content:
+                for contrib_id, url in attributes.CONTRIB_ID_URLS.items():
+                    self.content = self.content.replace(' contrib-id-type="' + contrib_id + '">' + url, ' contrib-id-type="' + contrib_id + '">')
+
             #content = remove_xmllang_off_article_title(content)
             self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
             self.content = self.content.replace('&amp;amp;', '&amp;')
             self.content = self.content.replace('&amp;#', '&#')
             self.content = self.content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
+
+            self.content = self.content.replace('ext-link-type="clinical-trial"', 'ext-link-type="ClinicalTrial"')
             self.content = self.content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
             self.content = self.content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
             self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
@@ -675,6 +677,7 @@ class ArticlePkgMaker(object):
             self.content = remove_styles_off_content(self.content)
             self.content = self.content.replace('<institution content-type="normalized"/>', '')
             self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
+            self.xml, self.e = xml_utils.load_xml(self.content)
 
     def normalize_sgmlxml(self):
         self.sgmlxml = SGMLXML(self.doc_files_info.xml_filename, self.content, self.doc_files_info.xml_name, self.doc_files_info.xml_path, self.doc_files_info.html_filename)
@@ -808,8 +811,7 @@ class ArticlePkgMaker(object):
     def normalize_package_name(self):
         register_log('normalize_package_name')
         self.doc_files_info.new_xml_path = self.scielo_pkg_path
-        xml, e = xml_utils.load_xml(self.content)
-        self.doc = article.Article(xml, self.doc_files_info.xml_name)
+        self.doc = article.Article(self.xml, self.doc_files_info.xml_name)
         self.doc_files_info.new_name = self.doc_files_info.xml_name
         if self.doc.tree is not None:
             if self.doc_files_info.is_sgmxml:
@@ -862,8 +864,8 @@ class ArticlePkgMaker(object):
                     self.content = self.content.replace('href="' + current, 'href="' + new)
                     changed = True
         if changed:
-            xml, e = xml_utils.load_xml(self.content)
-            self.doc = article.Article(xml, self.doc_files_info.xml_name)
+            self.xml, self.e = xml_utils.load_xml(self.content)
+            self.doc = article.Article(self.xml, self.doc_files_info.xml_name)
 
     def get_new_href(self, href):
         href_type = href_attach_type(href.parent.tag, href.element.tag)
@@ -889,8 +891,8 @@ class ArticlePkgMaker(object):
 
     def eliminate_old_package_files(self):
         for item in os.listdir(self.scielo_pkg_path):
-            if item.startswith(self.doc_files_info.new_name):
-                eliminate = item.endswith('incorrect.xml')
+            if item.startswith(self.doc_files_info.new_name) or item.endswith('.sgm.xml'):
+                eliminate = (item.endswith('incorrect.xml') or item.endswith('.sgm.xml'))
                 if eliminate is False:
                     eliminate = not item.endswith('.xml')
                 if eliminate:
@@ -906,16 +908,18 @@ class ArticlePkgMaker(object):
         self.replacements_href_files_items = []
         self.replacements_not_found_href_files_items = []
         self.local_href_names = []
-
         self.eliminate_old_package_files()
 
-        src_files = [f for f in os.listdir(self.doc_files_info.xml_path) if not f.endswith('.xml')]
-        self.pack_article_href_files(src_files)
-        self.pack_article_related_files(src_files)
+        if self.doc.tree is None:
+            self.text_messages.append(self.e)
+            self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.doc_files_info.new_xml_filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily.'))
+        else:
+            src_files = [f for f in os.listdir(self.doc_files_info.xml_path) if not f.endswith('.xml')]
+            self.pack_article_href_files(src_files)
+            self.pack_article_related_files(src_files)
+            self.text_messages.append(self.generate_packed_files_report())
 
-        register_log('pack_article_files: serial_files.delete_files')
-        serial_files.delete_files([self.scielo_pkg_path + '/' + f for f in os.listdir(self.scielo_pkg_path) if f.endswith('.sgm.xml') or f.endswith('incorrect.xml')])
-
+        self.pack_article_xml_file()
         register_log('pack_article_files: fim')
 
     def pack_article_href_files(self, src_files):
@@ -994,13 +998,7 @@ class ArticlePkgMaker(object):
         else:
             #remote
             self.content = self.content.replace('"' + self.version_info.local + '"', '"' + self.version_info.remote + '"')
-
         fs_utils.write_file(self.doc_files_info.new_xml_filename, self.content)
-
-        if self.doc.tree is None:
-            shutil.copyfile(self.doc_files_info.new_xml_filename, self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml'))
-        elif os.path.isfile(self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml')):
-            os.unlink(self.doc_files_info.new_xml_filename.replace('.xml', '_incorrect.xml'))
 
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
@@ -1105,6 +1103,8 @@ def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
 
 
 def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=False):
+    global DISPLAY_REPORT
+    global GENERATE_PMC
     is_xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
 
     scielo_pkg_path = results_path + '/scielo_package'
@@ -1163,7 +1163,6 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
                                     html_reports.save_form(xpm_validations.total > 0, u'xml_package_maker.html') + xpm_validations.message, 
                                     xpm_version())
 
-            global DISPLAY_REPORT
             if DISPLAY_REPORT is True:
                 pkg_reports.display_report(filename)
 
@@ -1171,7 +1170,13 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             if is_xml_generation:
                 make_pmc_report(articles, doc_files_info_items)
             if is_pmc_journal(articles):
-                make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                if GENERATE_PMC:
+                    make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                else:
+                    print('='*10)
+                    print(_('To generate PMC package, add -pmc as parameter'))
+                    print('='*10)
+
             make_pkg_zip(scielo_pkg_path)
             if not is_xml_generation:
                 make_pkg_items_zip(scielo_pkg_path)
@@ -1232,7 +1237,11 @@ def get_xml_package_folders_info(input_pkg_path):
     return (xml_files, results_path)
 
 
-def make_packages(path, acron, version='1.0', is_db_generation=False):
+def make_packages(path, acron, version='1.0', is_db_generation=False, pmc=False):
+    global GENERATE_PMC
+
+    if pmc is True:
+        GENERATE_PMC = pmc
     path = fs_utils.fix_path(path)
     xml_files, results_path = get_xml_package_folders_info(path)
     if len(xml_files) > 0:
@@ -1242,19 +1251,26 @@ def make_packages(path, acron, version='1.0', is_db_generation=False):
 
 def get_inputs(args):
     global DISPLAY_REPORT
+    global GENERATE_PMC
+
     args = [arg.decode(encoding=sys.getfilesystemencoding()) for arg in args]
     script = args[0]
     path = None
     acron = None
-    if len(args) == 3:
-        script, path, other = args
-        if other == u'-auto':
-            DISPLAY_REPORT = False
-        elif other is not None:
-            acron = None if other.startswith('-') else other
 
-    elif len(args) == 2:
-        script, path = args
+    items = []
+    for item in args:
+        if item == '-auto':
+            DISPLAY_REPORT = False
+        elif item == '-pmc':
+            GENERATE_PMC = True
+        else:
+            items.append(item)
+
+    if len(items) == 3:
+        script, path, acron = items
+    elif len(items) == 2:
+        script, path = items
     return (script, path, acron)
 
 

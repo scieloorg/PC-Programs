@@ -115,11 +115,13 @@ def registry_proxy(proxy_server=None, proxy_port=None, proxy_user=None, proxy_pa
 def try_request(url, timeout=30, debug=False, force_error=False):
     response = None
     socket.setdefaulttimeout(timeout)
+    if isinstance(url, unicode):
+        url = url.encode('utf-8')
     req = urllib2.Request(url)
     http_error_proxy_auth = None
     error_message = ''
     try:
-        response = urllib2.urlopen(req).read()
+        response = urllib2.urlopen(req, timeout=timeout).read()
     except urllib2.HTTPError as e:
         if e.code == 407:
             http_error_proxy_auth = e.code
@@ -146,7 +148,6 @@ class WebServicesRequester(object):
     def __new__(self):
         if not hasattr(self, 'instance'):
             self.instance = super(WebServicesRequester, self).__new__(self)
-            print(self.instance)
         return self.instance
 
     def request(self, url, timeout=30, debug=False, force_error=False):
@@ -162,6 +163,7 @@ class WebServicesRequester(object):
                 response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
             if response is not None:
                 self.requests[url] = response
+
         return response
 
     def json_result_request(self, url, timeout=30, debug=False):
@@ -173,7 +175,8 @@ class WebServicesRequester(object):
         return result
 
     def is_valid_url(self, url, timeout=30):
-        return self.request(url, timeout) is not None
+        _result = self.request(url, timeout)
+        return _result is not None
 
 
 class PublishingWebServicesRequester(WebServicesRequester):

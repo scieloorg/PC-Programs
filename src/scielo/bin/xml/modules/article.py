@@ -536,7 +536,7 @@ class ArticleXML(object):
                 if item['ext-link-type'] == 'scielo-pid':
                     item['ext-link-type'] = 'pid'
                 item['id'] = rel.attrib.get('id')
-                if not item['related-article-type'] in ['corrected-article', 'press-release', 'retracted-article']:
+                if not item['related-article-type'] in attributes.related_articles_type:
                     item['id'] = ''.join([c for c in item['id'] if c.isdigit()])
                 item['xml'] = xml_utils.node_xml(rel)
                 r.append(item)
@@ -676,6 +676,22 @@ class ArticleXML(object):
                     for xref_item in contrib.findall('xref[@ref-type="aff"]'):
                         p.xref.append(xref_item.attrib.get('rid'))
                     k.append(p)
+            if self.sub_articles is not None:
+                for subart in self.sub_articles:
+                    if subart.attrib.get('article-type') != 'translation':
+                        for contrib in subart.findall('.//contrib'):
+                            if contrib.findall('name'):
+                                p = PersonAuthor()
+                                p.fname = contrib.findtext('name/given-names')
+                                p.surname = contrib.findtext('name/surname')
+                                p.suffix = contrib.findtext('name/suffix')
+                                p.prefix = contrib.findtext('name/prefix')
+                                for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
+                                    p.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
+                                p.role = contrib.attrib.get('contrib-type')
+                                for xref_item in contrib.findall('xref[@ref-type="aff"]'):
+                                    p.xref.append(xref_item.attrib.get('rid'))
+                                k.append(p)
         return k
 
     @property
@@ -697,25 +713,6 @@ class ArticleXML(object):
                 else:
                     with_aff.append(contrib)
         return (with_aff, no_aff, mismatched_aff_id)
-
-    @property
-    def authors_without_aff(self):
-        k = []
-        if self.article_meta is not None:
-            for contrib in self.article_meta.findall('.//contrib'):
-                if contrib.findall('name'):
-                    p = PersonAuthor()
-                    p.fname = contrib.findtext('name/given-names')
-                    p.surname = contrib.findtext('name/surname')
-                    p.suffix = contrib.findtext('name/suffix')
-                    p.prefix = contrib.findtext('name/prefix')
-                    for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
-                        p.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
-                    p.role = contrib.attrib.get('contrib-type')
-                    for xref_item in contrib.findall('xref[@ref-type="aff"]'):
-                        p.xref.append(xref_item.attrib.get('rid'))
-                    k.append(p)
-        return k
 
     @property
     def first_author_surname(self):
@@ -937,43 +934,44 @@ class ArticleXML(object):
                 affs.append(get_affiliation(aff))
         if self.sub_articles is not None:
             for sub_art in self.sub_articles:
-                for aff in sub_art.findall('.//aff'):
-                    affs.append(get_affiliation(aff))
+                if sub_art.attrib.get('article-type') != 'translation':
+                    for aff in sub_art.findall('.//aff'):
+                        affs.append(get_affiliation(aff))
         return affs
 
     @property
     def uri_clinical_trial_href(self):
         #FIXME nao existe clinical-trial 
-        #<uri content-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
-        if self.tree is not None:
-            node = self.tree.find('.//uri[@content-type="clinical-trial"]')
+        #<uri content-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
             if node is not None:
                 return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
     @property
     def uri_clinical_trial_text(self):
         #FIXME nao existe clinical-trial 
-        #<uri content-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
-        if self.tree is not None:
-            node = self.tree.find('.//uri[@content-type="clinical-trial"]')
+        #<uri content-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
             if node is not None:
                 return xml_utils.node_text(node)
 
     @property
     def ext_link_clinical_trial_href(self):
         #FIXME nao existe clinical-trial 
-        #<ext-link ext-link-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
-        if self.tree is not None:
-            node = self.tree.find('.//ext-link[@ext-link-type="clinical-trial"]')
+        #<ext-link ext-link-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
             if node is not None:
                 return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
     @property
     def ext_link_clinical_trial_text(self):
         #FIXME nao existe clinical-trial 
-        #<ext-link ext-link-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
-        if self.tree is not None:
-            node = self.tree.find('.//ext-link[@ext-link-type="clinical-trial"]')
+        #<ext-link ext-link-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
             if node is not None:
                 return xml_utils.node_text(node)
 
@@ -1009,15 +1007,28 @@ class ArticleXML(object):
 
     @property
     def total_of_pages(self):
+        q = 1
         if self.fpage is not None and self.lpage is not None:
             if self.fpage.isdigit() and self.lpage.isdigit():
-                return int(self.lpage) - int(self.fpage) + 1
-        elif self.elocation_id is not None:
-            return 1
+                q = int(self.lpage) - int(self.fpage) + 1
+        return q
 
     def total(self, node, xpath):
+        q = 0
         if node is not None:
-            return len(node.findall(xpath))
+            q = len(node.findall(xpath))
+        return q
+
+    def total_group(self, element_name, element_parent):
+        q = 0
+        nodes = self.tree.findall('.//*[' + element_name + ']')
+        if nodes is not None:
+            for node in nodes:
+                if node.tag == element_parent:
+                    q += 1
+                else:
+                    q += len(node.findall(element_name))
+        return q
 
     @property
     def total_of_references(self):
@@ -1025,7 +1036,7 @@ class ArticleXML(object):
 
     @property
     def total_of_tables(self):
-        return self.total(self.tree, './/table-wrap')
+        return self.total_group('table-wrap', 'table-wrap-group')
 
     @property
     def total_of_equations(self):
@@ -1033,7 +1044,7 @@ class ArticleXML(object):
 
     @property
     def total_of_figures(self):
-        return self.total(self.tree, './/fig')
+        return self.total_group('fig', 'fig-group')
 
     @property
     def formulas(self):
@@ -1410,6 +1421,14 @@ class Article(ArticleXML):
         for title in self.titles:
             titles[title.language] = title.title
         return titles
+
+    @property
+    def textual_titles(self):
+        return ' | '.join([self.article_titles.get(k) for k in sorted(self.article_titles.keys())])
+
+    @property
+    def textual_contrib_surnames(self):
+        return ' | '.join([contrib.surname for contrib in self.contrib_names])
 
     def _issue_parts(self):
         number_suppl = None

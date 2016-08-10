@@ -5,6 +5,7 @@ from datetime import datetime
 from __init__ import _
 import validation_status
 import article_utils
+import ws_requester
 
 
 SPS_MIN_DATE = datetime(2012, 06, 01)
@@ -99,7 +100,6 @@ AUTHORS_REQUIRED_FOR_DOCTOPIC = [
     'letter', 
     'rapid-communication', 
     'research-article', 
-    'retraction', 
     'reply', 
     'review-article', 
     ]
@@ -113,8 +113,15 @@ ABSTRACT_REQUIRED_FOR_DOCTOPIC = [
     'technical-report', 
     ]
 
+ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
+    'editorial', 
+    'editorial-material', 
+    'in-brief', 
+    'letter', 
+    'other', 
+    ]
+
 REFS_REQUIRED_FOR_DOCTOPIC = [
-    'article-commentary', 
     'brief-report', 
     'case-report', 
     'clinical-trial', 
@@ -257,8 +264,40 @@ COUNTRY_CODES = [
  'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM', 'ZW',
  ]
 
-
 PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']
+
+related_articles_type = ['corrected-article', 'article-commentary', 'press-release', 'retracted-article']
+
+CONTRIB_ID_URLS = {
+    'lattes': 'http://lattes.cnpq.br/',
+    'orcid': 'http://orcid.org/',
+    'researchid': 'http://www.researcherid.com/rid/',
+    'scopus': 'https://www.scopus.com/authid/detail.uri?authorId=',  
+}
+
+LICENSES = [
+    'http://creativecommons.org/licenses/by/4.0/',
+    'http://creativecommons.org/licenses/by/3.0/',
+    'http://creativecommons.org/licenses/by-nc/4.0/',
+    'http://creativecommons.org/licenses/by-nc/3.0/',
+    'https://creativecommons.org/licenses/by-nc-nd/3.0/',
+    'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+    'https://creativecommons.org/licenses/by/3.0/igo/',
+    'https://creativecommons.org/licenses/by-nc/3.0/igo/',
+    'https://creativecommons.org/licenses/by-nc-nd/3.0/igo/',
+]
+
+
+def normalize_doctopic(_doctopic):
+    r = DOCTOPIC.get(_doctopic)
+    return _doctopic if r == '??' else r
+
+
+def normalize_role(_role):
+    r = ROLE.get(_role)
+    if r == '??' or _role is None or r is None:
+        r = 'ND'
+    return r
 
 
 def is_required(publication_type, label):
@@ -305,7 +344,9 @@ def suggestions_of_article_type_by_section_title(section_title):
     suggestions = []
     if section_title is not None:
         lower_section_title = section_title.lower().strip()
-        if 'abstract' in lower_section_title or 'resum' in lower_section_title:
+        if 'retra' in lower_section_title:
+            suggestions.append('retraction')
+        elif 'abstract' in lower_section_title or 'resum' in lower_section_title:
             suggestions.append('abstract')
         elif 'book' in lower_section_title or 'resenha' in lower_section_title or u'reseñ' in lower_section_title:
             suggestions.append('book-review')
@@ -351,6 +392,9 @@ def suggestions_of_article_type_by_section_title(section_title):
             suggestions.append('research-article')
         elif 'original' in lower_section_title:
             suggestions.append('research-article')
+
+    if 'editorial-material' in suggestions:
+        suggestions = [item.replace('editorial-material', 'other') for item in suggestions]
     return suggestions
 
 
@@ -474,3 +518,19 @@ def validate_iso_country_code(iso_country_code):
             r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, 
                 iso_country_code + ': ' + _('Invalid value')))
     return r
+
+
+def validate_license_href(license_href):
+    result = None
+    if license_href is None:
+        result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Required {label}').format(label='license/@href. '))
+    elif license_href in LICENSES:
+        result = ('license/@xlink:href', validation_status.STATUS_VALID, license_href)
+    else:
+        result = ('license/@xlink:href', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=license_href, label='license/@href'))
+        print('LICENSE NOT FOUND')
+        print('|' + license_href + '|')
+        print('\n'.join(LICENSES))
+        #if not ws_requester.wsr.is_valid_url(license_href):
+        #    result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=license_href, label='license/@href'))
+    return result

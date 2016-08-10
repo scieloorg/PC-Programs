@@ -1355,6 +1355,16 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=c:\src\scielo\bin\cfg\version.txt
+  Destination=%PROGDIR%\bin\cfg\version.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=c:\src\scielo\bin\cfg\xpm_version.txt
+  Destination=%PROGDIR%\bin\cfg\xpm_version.txt
+  Flags=0000000010000010
+end
+item: Install File
   Source=c:\src\scielo\bin\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.po
   Destination=%PROGDIR%\bin\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
@@ -1460,8 +1470,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\modules\utils_urllib2.py
-  Destination=%PROGDIR%\bin\xml\modules\utils_urllib2.py
+  Source=c:\src\scielo\bin\xml\modules\ws_requester.py
+  Destination=%PROGDIR%\bin\xml\modules\ws_requester.py
   Flags=0000000010000010
 end
 item: Install File
@@ -5630,15 +5640,15 @@ item: Install File
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\Readme.txt
   Flags=0000000010000010
 end
-remarked item: Install File
+item: Install File
   Source=c:\src\scielo\bin\markup\automata.dll
   Destination=%SYS32%\automata.dll
-  Flags=0001000010000010
+  Flags=0001001010000010
 end
 item: Install File
   Source=c:\src\scielo\bin\markup\automata.dll
   Destination=%PROGDIR%\bin\markup\automata.dll
-  Flags=0001000010000010
+  Flags=0001001010000010
 end
 item: Install File
   Source=c:\src\scielo\bin\markup\default.mds

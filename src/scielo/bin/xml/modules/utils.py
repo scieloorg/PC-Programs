@@ -106,28 +106,27 @@ def valid_formula_min_max_height(values, percent=0.25):
     return (m - r, m + r)
 
 
-def words_not_found(sentence, other_sentence):
-    not_found = []
-    for word in sentence.split():
-        if not word in other_sentence:
-            not_found.append(word)
-    return not_found
+def diff(sentence1, sentence2):
+    s1 = sentence1
+    sentence1 = sentence1.split()
 
+    d1 = [item for item in sentence1 if not item in sentence2.split()]
 
-def hightlight_equal(sentence1, sentence2):
-    s2 = ''
-    s1 = []
-    diff = ''
-    for item in sentence1.split():
-        if item in sentence2:
-            diff = sentence2[0:sentence2.find(item)]
-            #if len(diff.strip()) > 0:
-            #    diff = ' {{' + diff + '}} '
-            s2 += diff + ' **' + item + '** '
-            sentence2 = sentence2[sentence2.find(item)+len(item):]
-            item = ' **' + item + '** '
-        s1.append(item)
-    return [' ' + ' '.join(s1) + ' ', s2 + ' ' + sentence2]
+    if len(d1) > 0:
+        equal = []
+        s1 = []
+        s2 = []
+        for item in sentence1:
+            if item in d1:
+                item = ' **' + item + '** '
+                equal.append(' '.join(s2))
+                s2 = []
+            else:
+                s2.append(item)
+            s1.append(item)
+        s1 = ' '.join(s1)
+
+    return [d1, s1]
 
 
 def repl(matchobj):

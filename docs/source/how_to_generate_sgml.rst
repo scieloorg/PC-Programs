@@ -1,3 +1,7 @@
+=================================================
+Workflow of article in HTML / article or text DTD
+=================================================
+
 How to generate SGML files (article and text DTD)
 =================================================
 

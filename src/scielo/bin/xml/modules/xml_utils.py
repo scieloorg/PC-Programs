@@ -76,9 +76,11 @@ class XMLContent(object):
             self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
 
-        if is_xml_well_formed(self.content) is None:
+        _xml, e = load_xml(self.content)
+        if _xml is None:
             self._fix_open_and_close_style_tags()
-        if is_xml_well_formed(self.content) is None:
+            _xml, e = load_xml(self.content)
+        if _xml is None:
             self._fix_open_close()
 
     def _fix_open_close(self):
@@ -419,18 +421,24 @@ def parse_xml(content):
             msg += content[pos:pos+1]
             text = content[pos+1:]
             msg += ']]]' + text[0:text.find('>')+1]
+        elif 'line ' in msg:
+            line = msg[msg.find('line ')+len('line '):]
+            column = ''
+            if 'column ' in line:
+                column = line[line.find('column ')+len('column '):].strip()
+            line = line[:line.find(',')].strip()
+            if line.isdigit():
+                line = int(line)
+                lines = content.decode('utf-8').split('\n')
+                col = len(lines[line-1])
+                if column.isdigit():
+                    col = int(column)
+                msg += '\n...\n' + lines[line-1][:col] + '\n\n [[[[ ' + _('ERROR here') + ' ]]]] \n\n' + lines[line-1][col:] + '\n...\n'
+
         message += msg
+
         r = None
     return (r, message)
-
-
-def is_xml_well_formed(content):
-    node, e = parse_xml(content)
-    if e is None:
-        return node
-    else:
-        print('is_xml_well_formed')
-        print(e)
 
 
 def load_xml(content):

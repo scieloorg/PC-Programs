@@ -23,6 +23,20 @@ MAX_IMG_WIDTH = 2250
 MAX_IMG_HEIGHT = 2625
 
 
+def validate_doi_format(doi):
+    errors = []
+    for item in doi:
+        if item.isdigit():
+            pass
+        elif item in '-.-;()/':
+            pass
+        elif item in 'abcdefghijklmnopqrstuvwxyz' or item in 'abcdefghijklmnopqrstuvwxyz'.upper():
+            pass
+        else:
+            errors.append(item)
+    return errors
+
+
 def validate_element_is_found_in_mixed_citation(element_name, element_content, mixed_citation):
     r = []
     if element_content is not None:
@@ -34,19 +48,17 @@ def validate_element_is_found_in_mixed_citation(element_name, element_content, m
             _element_content = xml_utils.remove_tags(item).replace('  ', ' ')
 
             if not _element_content in _mixed:
-                comp = utils.hightlight_equal(_element_content, _mixed)
+                diff1, s1 = utils.diff(_element_content, _mixed)
                 r.append(
                     (
                         element_name,
                         validation_status.STATUS_ERROR,
-                        [
-                            {_('Found in element-citation/{element}').format(element=element_name): comp[0],
-                            _('Not found in mixed-citation'): comp[1],
-                            _('Words in {element} which are not found in mixed-citation').format(element=element_name): utils.words_not_found(_element_content, _mixed)
-                            },
+                         {_('Be sure that the elements {elem1} and {elem2} are properly identified').format(elem1=element_name, elem2='mixed-citation'):
 
-                            _('Be sure that mixed-citation is complete and {element} is properly identified.').format(element=element_name),
-                        ]
+                            {element_name: s1,
+                             _('Words found in {elem1}, but not found in {elem2}').format(elem1=element_name, elem2='mixed-citation'): diff1
+                            },
+                        }
                     )
                 )
     return r
@@ -345,6 +357,7 @@ class ArticleContentValidation(object):
             items.append(self.article_permissions)
             items.append(self.history)
             items.append(self.titles_abstracts_keywords)
+            items.append(self.related_articles)
 
         items.append(self.sections)
         items.append(self.paragraphs)
@@ -453,7 +466,15 @@ class ArticleContentValidation(object):
         @id k
         . t pr
         """
-        return article_utils.display_values_with_attributes('related articles', self.article.related_articles)
+        r = []
+        for related_article in self.article.related_articles:
+            if not related_article.get('related-article-type') in attributes.related_articles_type:
+                r.append(('related-article/@related-article-type', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=related_article.get('related-article-type', _('None')), label='related-article/@related-article-type')))
+            if related_article.get('ext-link-type', '') == 'doi':
+                errors = validate_doi_format(related_article.get('href', ''))
+                if len(errors) > 0:
+                    r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=related_article.get('href'), label='related-article/@xlink:href') + _('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
+        return r
 
     @property
     def refstats(self):
@@ -552,6 +573,17 @@ class ArticleContentValidation(object):
                 author_xref_items.append(xref)
             for result in validate_contrib_names(item, aff_ids):
                 r.append(result)
+            for contrib_id_type, contrib_id in item.contrib_id.items():
+                if contrib_id_type in attributes.CONTRIB_ID_URLS.keys():
+                    if attributes.CONTRIB_ID_URLS.get(contrib_id_type) in contrib_id or contrib_id.startswith('http'):
+                        label = 'contrib-id[@contrib-id-type="' + contrib_id_type + '"]'
+                        r.append((label, validation_status.STATUS_ERROR,
+                            _('{value} is an invalid value for {label}. ').format(value=contrib_id, label=label) +
+                            _('Use only the ID')))
+                else:
+                    r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR,
+                            _('{value} is an invalid value for {label}. ').format(value=contrib_id_type, label='contrib-id/@contrib-id-type') + 
+                            _('Expected values: {expected_values}').format(values=', '.join(attributes.CONTRIB_ID_URLS.keys()))))
         for affid in aff_ids:
             if not affid in author_xref_items:
                 r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Missing') + ' xref[@ref-type="aff"]/@rid="' + affid + '".'))
@@ -574,38 +606,41 @@ class ArticleContentValidation(object):
             r.append(required('doi', self.article.doi, validation_status.STATUS_WARNING))
 
         if self.article.doi is not None:
-            if self.journal.doi_prefix is not None:
-                if not self.article.doi.startswith(self.journal.doi_prefix):
-                    r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.journal.doi_prefix)))
+            invalid_chars = validate_doi_format(self.article.doi)
+            if len(invalid_chars) > 0:
+                r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}').format(value=self.article.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
+            else:
+                if self.journal.doi_prefix is not None:
+                    if not self.article.doi.startswith(self.journal.doi_prefix):
+                        r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.journal.doi_prefix)))
+                if not self.article.doi_journal_titles is None:
+                    status = validation_status.STATUS_INFO
+                    if not self.article.journal_title in self.article.doi_journal_titles:
+                        max_rate, items = utils.most_similar(utils.similarity(self.article.doi_journal_titles, self.article.journal_title))
+                        if max_rate < 0.7:
+                            status = validation_status.STATUS_FATAL_ERROR
+                    r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(self.article.doi_journal_titles)))
 
-            if not self.article.doi_journal_titles is None:
-                status = validation_status.STATUS_INFO
-                if not self.article.journal_title in self.article.doi_journal_titles:
-                    max_rate, items = utils.most_similar(utils.similarity(self.article.doi_journal_titles, self.article.journal_title))
+                if not self.article.doi_article_titles is None:
+                    status = validation_status.STATUS_INFO
+                    max_rate = 0
+                    selected = None
+                    for t in self.article.titles:
+                        rate, items = utils.most_similar(utils.similarity(self.article.doi_article_titles, xml_utils.remove_tags(t.title)))
+                        if rate > max_rate:
+                            max_rate = rate
                     if max_rate < 0.7:
                         status = validation_status.STATUS_FATAL_ERROR
-                r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(self.article.doi_journal_titles)))
+                    r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(self.article.doi_article_titles)))
 
-            if not self.article.doi_article_titles is None:
-                status = validation_status.STATUS_INFO
-                max_rate = 0
-                selected = None
-                for t in self.article.titles:
-                    rate, items = utils.most_similar(utils.similarity(self.article.doi_article_titles, xml_utils.remove_tags(t.title)))
-                    if rate > max_rate:
-                        max_rate = rate
-                if max_rate < 0.7:
-                    status = validation_status.STATUS_FATAL_ERROR
-                r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(self.article.doi_article_titles)))
-
-            if self.article.doi_journal_titles is None:
-                found = False
-                for issn in [self.article.print_issn, self.article.e_issn]:
-                    if issn is not None:
-                        if issn in self.article.doi:
-                            found = True
-                if not found:
-                    r.append(('doi', validation_status.STATUS_ERROR, _('Be sure that {item} belongs to this journal.').format(item='DOI=' + self.article.doi)))
+                if self.article.doi_journal_titles is None:
+                    found = False
+                    for issn in [self.article.print_issn, self.article.e_issn]:
+                        if issn is not None:
+                            if issn in self.article.doi:
+                                found = True
+                    if not found:
+                        r.append(('doi', validation_status.STATUS_ERROR, _('Be sure that {item} belongs to this journal.').format(item='DOI=' + self.article.doi)))
         return r
 
     @property
@@ -818,18 +853,14 @@ class ArticleContentValidation(object):
 
     def _total(self, total, count, label_total, label_count):
         r = []
-        q = 0
-        if count is not None:
+        if total < 0:
+            r.append((label_total, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=str(total), label=label_total) + _('Expected value is a number greater or equal to 0.')))
+        elif count is not None:
             if count.isdigit():
-                q = int(count)
+                if total != int(count):
+                    r.append((label_count + ' (' + count + ') x ' + label_total + ' (' + str(total) + ')', validation_status.STATUS_ERROR, _('They must have the same value')))
             else:
                 r.append((label_count, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=count, label=label_count) + _('Expected value is a number greater or equal to 0.')))
-        if total is not None:
-            if total < 0:
-                r.append((label_count, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=str(total), label=label_total) + _('Expected value is a number greater or equal to 0.')))
-            if total != q:
-                if count is not None:
-                    r.append((label_count + ' (' + count + ') x ' + label_total + ' (' + str(total) + ')', validation_status.STATUS_ERROR, _('They must have the same value')))
         return r
 
     @property
@@ -936,7 +967,7 @@ class ArticleContentValidation(object):
             if self.article.article_type in attributes.ABSTRACT_REQUIRED_FOR_DOCTOPIC:
                 if len(abstracts) == 0 or len(keywords) == 0:
                     errors.append(('abstract + kwd-group', validation_status.STATUS_ERROR, _('Expected {unexpected} for {demander}. Be sure that "{demander}" is correct.').format(unexpected='abstract + kwd-group', demander=article_type)))
-            else:
+            elif self.article.article_type in attributes.ABSTRACT_UNEXPECTED_FOR_DOCTOPIC:
                 if len(abstracts) > 0 or len(keywords) > 0:
                     errors.append(('abstract + kwd-group', validation_status.STATUS_ERROR, _('Unexpected {unexpected} for {demander}. Be sure that {demander} is correct.').format(unexpected='abstract + kwd-group', demander=article_type)))
 
@@ -1007,12 +1038,9 @@ class ArticleContentValidation(object):
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('Identify @xml:lang of license')))
             else:
                 r.append(('license/@xml:lang', validation_status.STATUS_INFO, lang))
-            if license.get('href') is None:
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
-            elif not '://creativecommons.org/licenses/' in license.get('href'):
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
-            elif not ws_requester.wsr.is_valid_url(license.get('href')):
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
+            result = attributes.validate_license_href(license.get('href'))
+            if result is not None:
+                r.append(result)
             r.append(expected_values('license/@license-type', license.get('type'), ['open-access'], 'FATAL '))
             r.append(required('license/license-p', license.get('text'), validation_status.STATUS_FATAL_ERROR, False))
         return [item for item in r if r is not None]
@@ -1383,12 +1411,12 @@ class ReferenceContentValidation(object):
             if _test_number is not None:
                 r.append(_test_number)
             if self.reference.source[0:1] != self.reference.source[0:1].upper():
-                r.append(('source', validation_status.STATUS_ERROR, self.reference.source + '-' + _('Invalid value for ') + 'source' + '. '))
+                if not self.reference.source[0:2] != 'e-':
+                    r.append(('source', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.reference.source, label='source')))
+
             _source = self.reference.source.strip()
             if self.reference.source != _source:
-                r.append(('source', validation_status.STATUS_ERROR, self.reference.source + '-' + _('Invalid value for ') + 'source, ' + _('it starts or ends with space characters.')))
-            if _source.startswith('<') and _source.endswith('>'):
-                r.append(('source', validation_status.STATUS_ERROR, self.reference.source + '-' + _('Invalid value for ') + 'source, ' + _('it must not have styles elements (italic, bold).')))
+                r.append(('source', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.reference.source, label='source') + _('"{value}"" starts or ends with space characters.').format(value=self.reference.source)))
         return r
 
     def validate_element(self, label, value, error_level=validation_status.STATUS_FATAL_ERROR):
@@ -1562,7 +1590,6 @@ class ReferenceContentValidation(object):
         if self.reference.mixed_citation is None:
             r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
         else:
-            r.append(('mixed-citation', validation_status.STATUS_INFO, self.reference.mixed_citation))
             for label, data in [('source', self.reference.source), ('year', self.reference.year), ('ext-link', self.reference.ext_link)]:
                 for item in validate_element_is_found_in_mixed_citation(label, data, self.reference.mixed_citation):
                     if item is not None:
