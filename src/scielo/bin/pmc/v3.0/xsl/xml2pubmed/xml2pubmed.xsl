@@ -129,8 +129,10 @@
 				
 				<History>
 					<xsl:apply-templates select=".//article-meta//history/*"/>
-					<xsl:if test="count(.//article-meta/pub-date)&gt;1">
-						<xsl:apply-templates select=".//article-meta//pub-date[@pub-type='epub']" mode="history"/>
+					<xsl:if test="count(.//article-meta//pub-date)=1">
+						<xsl:if test=".//article-meta//pub-date[@pub-type='epub' and day]">
+							<xsl:apply-templates select=".//article-meta//pub-date[@pub-type='epub' and day]" mode="history"/>
+						</xsl:if>
 					</xsl:if>
 				</History>
 			</xsl:if>
@@ -353,14 +355,30 @@
 		<Issue><xsl:if test=".//front//issue!='00' and .//front//issue!=''"><xsl:value-of select=".//front//issue"/></xsl:if></Issue>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-publishing_dateiso">
-		<xsl:apply-templates select=".//article-meta//pub-date"/>
+		<xsl:choose>
+			<xsl:when test=".//front//pub-date[@pub-type='collection']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='collection']"/>
+			</xsl:when>
+			<xsl:when test=".//front//pub-date[@pub-type='ppub']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='ppub']"/>
+			</xsl:when>
+			<xsl:when test=".//front//pub-date[@pub-type='epub-ppub']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='epub-ppub']"/>
+			</xsl:when>
+			<xsl:when test=".//front//pub-date[@pub-type='epub']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select=".//front//pub-date[1]"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="pub-date/@pub-type | @date-type">
 		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test=".='epub' and $issueid=''">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and $issueid!=''">ppublish</xsl:when>
 			<xsl:when test=".='epub' and ../day">aheadofprint</xsl:when>
-			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
 			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
 			<xsl:when test=".='collection'">ppublish</xsl:when>
@@ -372,26 +390,28 @@
 	<xsl:template match="date[@date-type='rev-recd']"> </xsl:template>
 	
 	<xsl:template match="pub-date|date[@date-type!='rev-recd']">
-		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
+		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../volume,../issue),'0',' '))"/></xsl:variable>
 		<PubDate>
 			<xsl:attribute name="PubStatus"><xsl:apply-templates select="@pub-type|@date-type"/></xsl:attribute>
 			<xsl:apply-templates select="year"/>
 			<xsl:choose>
-				<xsl:when test="month='Jan-Dec' or season='Jan-Dec'"></xsl:when>
-				<xsl:when test="@pub-type='epub'">
+				<xsl:when test="@date-type">
+					<!-- history -->
 					<xsl:apply-templates select="month|season"/>
 					<xsl:apply-templates select="day"/>	
 				</xsl:when>
+				<xsl:when test="@pub-type='epub' and $issueid=''">
+					<!-- aop -->
+					<xsl:apply-templates select="month|season"/>
+					<xsl:apply-templates select="day"/>	
+				</xsl:when>
+				<xsl:when test="@pub-type='epub' and $issueid!=''"><!-- rolling pass --></xsl:when>
+				<xsl:when test="month='Jan-Dec' or season='Jan-Dec'"></xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="month|season"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</PubDate>
-		<xsl:if test="count(..//pub-date)=1">
-			<xsl:if test="@pub-type='epub'">
-				<PubDate PubStatus="ppublish"><xsl:apply-templates select="year"/></PubDate>
-			</xsl:if>
-		</xsl:if>
 	</xsl:template>
 	<xsl:template match="pub-date" mode="history">
 		<PubDate>
