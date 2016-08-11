@@ -1393,6 +1393,7 @@ class Article(ArticleXML):
     def doi_pid(self):
         return self.doi_data.get('pid')
 
+    @property
     def summary(self):
         data = {}
         data['journal-title'] = self.journal_title

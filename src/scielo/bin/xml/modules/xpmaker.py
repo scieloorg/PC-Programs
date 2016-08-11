@@ -1209,50 +1209,21 @@ def pack_and_validate_refac(xml_files, results_path, acron, version, is_db_gener
     else:
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
 
-        pkg_articles = pkg_validations.PkgArticles(scielo_pkg_path, articles)
+        pkg_articles = pkg_validations.PkgArticles(scielo_pkg_path, articles, True)
 
         journals_manager = xc_models.JournalsManager()
-        pkg_articles.journal = journals_manager.journal(pkg_articles.journal.p_issn, pkg_articles.journal.e_issn, pkg_articles.journal.journal_title)
+        journal = journals_manager.journal(pkg_articles.journal.p_issn, pkg_articles.journal.e_issn, pkg_articles.journal.journal_title)
 
-        articles_data_set = ArticlesDataSet(scielo_pkg_path, articles, doc_files_info_items, new_names)
-
-        articles_set_validations = IssueItemsValidations(scielo_dtd_files, articles, doc_files_info_items, None, new_names)
-
-        issue = None
-
-        reports = pkg_validations.ReportsMaker(scielo_pkg_path, articles_set_validations)
-        #pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, journal, issue, None, is_db_generation)
-
-        report_components['xml-files'] = articles_set_validations.xml_list
-
-        toc_f = 0
-        report_components['pkg_overview'] = articles_set_validations.overview_report
-        report_components['references'] = articles_set_validations.references_overview_report
-        report_components['references'] += articles_set_validations.sources_overview_report
+        issue_items = pkg_validations.IssueItems(articles)
+        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, None)
+        reports = pkg_validations.ReportsMaker(issue_items_validations, xpm_version())
 
         if not is_xml_generation:
-            report_components['issue-report'] = articles_set_validations.issue_report
-            toc_f = articles_set_validations.blocking_errors
-        if toc_f == 0:
-            pkg_validator.validate_articles_pkg_xml_and_data(doc_files_info_items, scielo_dtd_files, is_xml_generation)
-
-            if not is_xml_generation:
-                report_components['detail-report'] = pkg_validator.detail_report()
-                report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
-
-        if not is_xml_generation:
-            xpm_validations = pkg_reports.format_complete_report(report_components)
             filename = report_path + '/xml_package_maker.html'
-            if os.path.isfile(filename):
-                bkp_filename = report_path + '/xpm_bkp_' + '-'.join(utils.now()) + '.html'
-                shutil.copyfile(filename, bkp_filename)
-            pkg_reports.save_report(filename, 
-                                    _('XML Package Maker Report'), 
-                                    html_reports.save_form(xpm_validations.total > 0, u'xml_package_maker.html') + xpm_validations.message, 
-                                    xpm_version())
+            reports.save_report(report_path, report_filename='xml_package_maker.html', report_title=_('XML Package Maker Report'))
 
             if DISPLAY_REPORT is True:
-                pkg_reports.display_report(filename)
+                pkg_validations.display_report(filename)
 
         if not is_db_generation:
             if is_xml_generation:
