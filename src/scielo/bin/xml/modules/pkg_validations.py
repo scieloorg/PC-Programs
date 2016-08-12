@@ -12,14 +12,10 @@ from . import validation_status
 from . import xpchecker
 
 
-class PackageValidationsResults(dict):
+class PkgValReports(dict):
 
-    def __init__(self, report_path, prefix, suffix):
+    def __init__(self):
         dict.__init__(self)
-        self.report_path = report_path
-        self.prefix = prefix
-        self.suffix = suffix
-        self.load()
 
     @property
     def total(self):
@@ -54,32 +50,12 @@ class PackageValidationsResults(dict):
     def statistics_message(self):
         return '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(self.fatal_errors)), ('errors', str(self.errors)), ('warnings', str(self.warnings))]]) + ']'
 
-    def save_reports(self):
-        for xml_name, validations in self.items():
-            validations.write_report(self.report_path + '/' + self.prefix + xml_name + self.suffix)
 
-    def load(self, read_all=True):
-        for item in os.listdir(self.report_path):
-            valid = False
-            xml_name = item
-            if len(self.prefix) > 0:
-                if item.startswith(self.prefix):
-                    xml_name = xml_name[len(self.prefix):]
-                    valid = True
-            if len(self.suffix) > 0:
-                if item.endswith(self.suffix):
-                    xml_name = xml_name[0:-len(self.suffix)]
-                    valid = True
-            if valid is True:
-                self[xml_name] = ValidationsResults('')
-                self[xml_name].read_report(self.report_path + '/' + item)
+class ValResults(object):
 
-
-class ValidationsResults(object):
-
-    def __init__(self, message):
-        self.fatal_errors, self.errors, self.warnings = html_reports.statistics_numbers(message)
-        self.message = message
+    def __init__(self, filename):
+        self.filename = filename
+        self.read()
 
     @property
     def total(self):
@@ -97,95 +73,79 @@ class ValidationsResults(object):
             block = html_reports.report_block(id + new_name, self.message, id, a_name)
         return (links, block)
 
-    def write_report(self, report_filename):
+    def write(self):
         if self.message is not None:
             if len(self.message) > 0:
-                fs_utils.write_file(report_filename, self.message)
+                fs_utils.write_file(self.filename, self.message)
 
-    def read_report(self, report_filename):
-        if os.path.isfile(report_filename):
-            self.message = fs_utils.read_file(self.report_path + '/' + item)
-            self.fatal_errors, self.errors, self.warnings = html_reports.statistics_numbers(self.message)
+    def read(self):
+        self.message = ''
+        if os.path.isfile(self.filename):
+            self.message = fs_utils.read_file(self.filename)
+        self.fatal_errors, self.errors, self.warnings = html_reports.statistics_numbers(self.message)
 
 
 class ArticleValidations(object):
 
-    def __init__(self, journal, article, doc_files_info, dtd_files, new_name, pkg_path, is_xml_generation, is_db_generation):
-        self.new_name = new_name
+    def __init__(self, article, work_area, pkg_path, is_xml_generation, is_db_generation):
         self.article = article
-        self.doc_files_info = doc_files_info
-        self.dtd_files = dtd_files
+        self.work_area = work_area
         self.pkg_path = pkg_path
-        self.journal = journal
         self.is_xml_generation = is_xml_generation
         self.is_db_generation = is_db_generation
+        self.journal_data_validations = ValResults(self.work_area.journal_validations_filename)
+        self.issue_data_validations = ValResults(self.work_area.issue_validations_filename)
+        self.xml_structure_validations = ValResults(self.work_area.xml_structure_validations_filename)
+        self.xml_content_validations = ValResults(self.work_area.xml_content_validations_filename)
 
-    @property
-    def xml_structure_validations(self):
-        for f in [self.doc_files_info.dtd_report_filename, self.doc_files_info.style_report_filename, self.doc_files_info.data_report_filename, self.doc_files_info.pmc_style_report_filename]:
+    def validate_xml_structure(self, dtd_files):
+        for f in [self.work_area.dtd_report_filename, self.work_area.style_report_filename, self.work_area.data_report_filename, self.work_area.pmc_style_report_filename]:
             if os.path.isfile(f):
                 os.unlink(f)
-        xml_filename = self.doc_files_info.new_xml_filename
+        xml_filename = self.work_area.new_xml_filename
 
-        xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, self.dtd_files, self.doc_files_info.dtd_report_filename, self.doc_files_info.style_report_filename)
+        xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, self.dtd_files, self.work_area.dtd_report_filename, self.work_area.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
-        if os.path.isfile(self.doc_files_info.dtd_report_filename):
+        if os.path.isfile(self.work_area.dtd_report_filename):
             separator = ''
-            if os.path.isfile(self.doc_files_info.err_filename):
+            if os.path.isfile(self.work_area.err_filename):
                 separator = '\n\n\n' + '.........\n\n\n'
-            open(self.doc_files_info.err_filename, 'a+').write(separator + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(self.doc_files_info.dtd_report_filename, 'r').read())
+            open(self.work_area.err_filename, 'a+').write(separator + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(self.work_area.dtd_report_filename, 'r').read())
 
         if xml is None:
             xml_f += 1
         if not valid_dtd:
             xml_f += 1
-        if self.doc_files_info.ctrl_filename is None:
+        if self.work_area.ctrl_filename is None:
             if xml_f + xml_e + xml_w == 0:
-                os.unlink(self.doc_files_info.style_report_filename)
+                os.unlink(self.work_area.style_report_filename)
         else:
-            open(self.doc_files_info.ctrl_filename, 'w').write('Finished')
+            open(self.work_area.ctrl_filename, 'w').write('Finished')
 
-        if os.path.isfile(self.doc_files_info.dtd_report_filename):
-            os.unlink(self.doc_files_info.dtd_report_filename)
-
+        if os.path.isfile(self.work_area.dtd_report_filename):
+            os.unlink(self.work_area.dtd_report_filename)
         report_content = ''
-        for rep_file in [self.doc_files_info.err_filename, self.doc_files_info.dtd_report_filename, self.doc_files_info.style_report_filename]:
+        for rep_file in [self.work_area.err_filename, self.work_area.dtd_report_filename, self.work_area.style_report_filename]:
             if os.path.isfile(rep_file):
                 report_content += extract_report_core(fs_utils.read_file(rep_file))
                 #if self.is_xml_generation is False:
                 #    fs_utils.delete_file_or_folder(rep_file)
-        return ValidationsResults(report_content)
+        return report_content
 
-    @property
-    def xml_structure_block_report(self):
-        return self.xml_structure_validations.block_report(self.new_name, _('Structure Validations'), 'xmlrep')
-
-    @property
-    def xml_content_block_report(self):
-        return self.xml_content_validations.block_report(self.new_name, _('Contents Validations'), 'datarep')
-
-    @property
-    def xml_content_validations(self):
+    def validate_xml_content(self, journal):
         if self.article.tree is None:
             sheet_data = None
             article_display_report = None
             article_validation_report = None
-            content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to get data of ') + self.new_name + '.'
+            content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to get data of ') + self.work_area.new_name + '.'
         else:
-            article_validation = article_validations.ArticleContentValidation(self.journal, self.article, self.is_db_generation, False)
+            article_validation = article_validations.ArticleContentValidation(journal, self.article, self.is_db_generation, False)
             sheet_data = article_reports.ArticleSheetData(article_validation)
-            article_display_report = article_reports.ArticleDisplayReport(sheet_data, self.pkg_path, self.new_name)
+            article_display_report = article_reports.ArticleDisplayReport(sheet_data, self.pkg_path, self.work_area.new_name)
             article_validation_report = article_reports.ArticleValidationReport(article_validation)
 
             content = []
-
-            img_report_content = ''
-            if os.path.isfile(self.doc_files_info.images_report_filename):
-                img_report_content = fs_utils.read_file(self.doc_files_info.images_report_filename)
-            if len(img_report_content) > 0:
-                content.append(html_reports.tag('h1', _('ATTENTION'), 'warning'))
-                content.append(html_reports.tag('h1', _('New report: Images Report at the bottom'), 'warning'))
 
             if self.is_xml_generation:
                 content.append(article_display_report.issue_header)
@@ -202,61 +162,111 @@ class ArticleValidations(object):
                 content.append(article_display_report.table_tables)
                 content.append(sheet_data.files_and_href(self.pkg_path))
 
-            if len(img_report_content) > 0:
-                content.append(img_report_content)
-
             content = html_reports.join_texts(content)
-        data_validations = ValidationsResults(content)
-        if self.is_xml_generation:
-            stats = html_reports.statistics_display(data_validations, False)
-            title = [_('Data Quality Control'), self.new_name]
-            fs_utils.write_file(self.doc_files_info.data_report_filename, html_reports.html(title, stats + content))
-        return data_validations
 
-    @property
-    def journal_data_validations(self):
+        return content
+
+    def validate_journal_data(self, journal):
         items = []
         license_url = None
         if len(self.article.article_licenses) > 0:
             license_url = self.article.article_licenses.values()[0].get('href')
-        items.append([_('NLM title'), self.article.journal_id_nlm_ta, self.journal.nlm_title, validation_status.STATUS_FATAL_ERROR])
-        items.append([_('journal-id (publisher-id)'), self.article.journal_id_publisher_id, self.journal.acron, validation_status.STATUS_FATAL_ERROR])
-        items.append([_('e-ISSN'), self.article.e_issn, self.journal.e_issn, validation_status.STATUS_FATAL_ERROR])
-        items.append([_('print ISSN'), self.article.print_issn, self.journal.p_issn, validation_status.STATUS_FATAL_ERROR])
-        items.append([_('publisher name'), self.article.publisher_name, self.journal.publisher_name, validation_status.STATUS_ERROR])
-        items.append([_('license'), license_url, self.journal.license, validation_status.STATUS_ERROR])
-        return ValidationsResults(evaluate_journal_data(items))
+        items.append([_('NLM title'), self.article.journal_id_nlm_ta, journal.nlm_title, validation_status.STATUS_FATAL_ERROR])
+        items.append([_('journal-id (publisher-id)'), self.article.journal_id_publisher_id, journal.acron, validation_status.STATUS_FATAL_ERROR])
+        items.append([_('e-ISSN'), self.article.e_issn, journal.e_issn, validation_status.STATUS_FATAL_ERROR])
+        items.append([_('print ISSN'), self.article.print_issn, journal.p_issn, validation_status.STATUS_FATAL_ERROR])
+        items.append([_('publisher name'), self.article.publisher_name, journal.publisher_name, validation_status.STATUS_ERROR])
+        items.append([_('license'), license_url, journal.license, validation_status.STATUS_ERROR])
+        return evaluate_journal_data(items)
 
-    def registered_issue_data_validations(self, issue_models):
-        issue_validations_msg = issue_models.validate_article_issue_data(self.article)
-        return ValidationsResults(issue_validations_msg)
+    def validate_issue_data(self, issue_models):
+        return issue_models.validate_article_issue_data(self.article)
 
     @property
     def block_reports(self):
-        a_name = 'view-reports-' + self.new_name
+        a_name = 'view-reports-' + self.work_area.new_name
         links = '<a name="' + a_name + '"/>'
         status = ''
         block = ''
 
-        _link, _block = self.xml_structure_validations.block_report(self.new_name, _('Structure Validations'), 'xmlrep')
-        links += _link
-        block += _block
+        blocks = []
+        #blocks.append([_('Table of Contents data'), 'toc', self.table_of_content_presentation])
+        blocks.append([_('Structure Validations'), 'xmlrep', self.xml_structure_validations])
+        blocks.append([_('Contents Validations'), 'datarep', self.xml_content_validations])
+        blocks.append([_('Images Validations'), 'imgrep', self.images_validations])
 
-        _link, _block = self.xml_content_validations.block_report(self.new_name, _('Contents Validations'), 'datarep')
-        links += _link
-        block += _block
+        for title, a_name, val_results in blocks:
+            _link, _block = val_results.block_report(self.work_area.new_name, title, a_name)
+            links += _link
+            block += _block
 
         if self.is_db_generation:
-            _link, _block = self.registered_issue_data_validations.block_report(self.new_name, _('Converter Validations'), 'xcrep')
+            _link, _block = self.registered_issue_data_validations.block_report(self.work_area.new_name, _('Converter Validations'), 'xcrep')
             links += _link
             block += _block
         return (links, block)
 
+    @property
     def table_of_content_presentation(self):
         r = []
-        r += html_reports.tag('h5', self.article.toc_section)
+        r += '<div>'
+        r += html_reports.tag('h7', self.xml_name)
+        r += html_reports.tag('h6', self.article.toc_section)
         r += html_reports.tag('h4', self.article.title)
-        r += html_reports.tag('p', authors)
+        r += html_reports.tag('h5', self.article.trans_titles)
+        r += html_reports.tag('p', article.display_authors(self.article.article_contrib_items), 'style: display-inline')
+        r += '<ul>'
+        for lang in sorted(self.article.title_abstract_kwd_languages):
+            r += '<li>'
+            r += html_reports.tag('h3', attributes.LANGUAGES.get(lang, _('unknown')) + '[' + lang + ']')
+            r += html_reports.tag('p', html_reports.format_html_data(self.article.titles_by_lang.get(lang, '')), 'toc-title')
+            r += html_reports.tag('p', html_reports.format_html_data(self.article.abstracts_by_lang.get(lang, '')), 'toc-abstract')
+            r += html_reports.tag('p', html_reports.format_html_data(self.article.keywords_by_lang.get(lang, '')), 'toc-keywords')
+            r += '</li>'
+        r += '</ul>'
+        r += html_reports.tag('p', html_reports.format_html_data({'doi': self.article.doi, _('previous pid'): self.article.previous_pid, _('related'): [item.get('xml', '') for item in self.article.related_articles]}))
+
+        d = {}
+        d['order'] = self.article.order
+        d['fpage'] = self.article.fpage
+        d['pages'] = self.article.pages
+        d['elocation-id'] = self.article.elocation_id
+
+        r += html_reports.tag('p', html_reports.format_html_data(d))
+        r += '</div>'
+        return r
+
+    @property
+    def alt_table_of_content_presentation(self):
+        r = []
+        r += '<div>'
+        r += html_reports.tag('h7', self.xml_name)
+        r += html_reports.tag('h6', self.article.toc_section)
+        r += html_reports.tag('h4', self.article.title)
+        r += html_reports.tag('h5', self.article.trans_titles)
+        r += html_reports.tag('p', article.display_authors(self.article.article_contrib_items), 'style: display-inline')
+        r += '<ul>'
+        for lang in sorted(self.article.title_abstract_kwd_languages):
+            r += '<li>'
+            r += html_reports.tag('h3', attributes.LANGUAGES.get(lang, _('unknown')) + '[' + lang + ']')
+            r += html_reports.tag('p', html_reports.format_html_data(self.article.titles_by_lang.get(lang, '')), 'toc-title')
+            r += html_reports.tag('p', html_reports.format_html_data(self.article.abstracts_by_lang.get(lang, '')), 'toc-abstract')
+            r += html_reports.tag('p', html_reports.format_html_data(self.article.keywords_by_lang.get(lang, '')), 'toc-keywords')
+            r += '</li>'
+        r += '</ul>'
+        r += '</div>'
+        return r
+
+    def validate(self, journal, issue_models, dtd_files):
+        fs_utils.write_file(self.work_area.journal_validations_filename, self.validate_journal_data(journal))
+        fs_utils.write_file(self.work_area.issue_validations_filename, self.validate_issue_data(issue_models))
+        fs_utils.write_file(self.work_area.xml_structure_validations_filename, self.validate_xml_structure(dtd_files))
+        fs_utils.write_file(self.work_area.xml_content_validations_filename, self.validate_xml_content(journal))
+        if self.is_xml_generation:
+            valresults = ValResults(self.work_area.xml_content_validations_filename)
+            stats = html_reports.statistics_display(valresults, False)
+            title = [_('Data Quality Control'), self.work_area.new_name]
+            fs_utils.write_file(self.work_area.data_report_filename, html_reports.html(title, stats + valresults.message))
 
 
 class PkgArticles(object):
@@ -291,8 +301,6 @@ class PkgArticles(object):
 class IssueItems(object):
 
     def __init__(self, pkg_articles, registered_articles=None):
-        self.journal = journal
-        self.issue = issue
         self.pkg_articles = pkg_articles
         self.registered_articles = registered_articles
 
@@ -465,31 +473,52 @@ class IssueItems(object):
 
 class IssueItemsValidations(object):
 
-    def __init__(self, issue_items, issue_models):
+    def __init__(self, issue_items, articles_work_area, journal, issue_models, dtd_files):
         self.issue_items = issue_items
-        self.validate(issue_models)
+        self.articles_work_area = articles_work_area
+        self.article_validations = {}
+        self.journal = journal
+        self.issue_models = issue_models
+        self.dtd_files = dtd_files
+        self.validate()
 
     @property
     def articles(self):
         return articles_sorted_by_order(self.issue_items.articles)
 
-    @property
-    def articles_validations(self):
-        return {name: ArticleValidations(self.journal, a, self.doc_files_info_items[name], self.dtd_files, self.pkg_path, self.new_names[name], self.is_xml_generation, self.is_db_generation) for name, a in self.articles}
-
-    def validate(self, issue_models):
-        self.journal_data_validations = PackageValidationsResults(self.report_path, 'journal-', '')
-        if issue_models is not None:
-            self.registered_issue_data_validations = PackageValidationsResults(self.report_path, 'issue-', '')
-
-        for xml_name, article_validations in self.articles_validations.items():
-            self.journal_data_validations[xml_name] = articles_validations.journal_data_validations
-            if issue_models is not None:
-                self.registered_issue_data_validations[xml_name] = articles_validations.registered_issue_data_validations(self.issue_models)
+    def validate(self):
+        for name, article in self.issue_items.pkg_articles.items():
+            self.article_validations[name] = ArticleValidations(article, self.articles_work_area[name], self.pkg_path, self.is_xml_generation, self.is_db_generation)
+            self.article_validations[name].validate(self.journal, self.issue_models, self.dtd_files)
+        if self.issue_items.registered_articles is not None:
+            for name, article in self.issue_items.registered_articles.items():
+                if not name in self.issue_items.pkg_articles.keys():
+                    self.articles_validations[name] = ArticleValidations(article, self.articles_work_area[name], self.pkg_path, self.is_xml_generation, self.is_db_generation)})
 
     @property
     def detailed_report(self):
-        labels = ['file', 'order | pages | elocation-id', 'doi | aop pid | related', 'subject | @article-type', 'article-title', _('reports')]
+        labels = ['file', 'order', _('article'), _('reports')]
+        items = []
+
+        for new_name, article in self.articles:
+
+            links, block = self.articles_validations[new_name].block_reports
+
+            values = []
+            values.append(new_name)
+            values.append(article.order)
+
+            values.append(self.article_validations[new_name].table_of_content_presentation)
+            values.append(links)
+
+            items.append(label_values(labels, values))
+            items.append({'reports': block})
+
+        return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=['reports'])
+
+    @property
+    def alt_detailed_report(self):
+        labels = ['file', 'order', 'pages', 'doi | aop pid | related', 'subject | @article-type', 'article-title', _('reports')]
         items = []
 
         for new_name, article in self.articles:
@@ -501,14 +530,19 @@ class IssueItemsValidations(object):
 
             d = {}
             d['order'] = article.order
+            values.append(d)
+
+            d = {}
+            d['fpage'] = article.fpage
             d['pages'] = article.pages
             d['elocation-id'] = article.elocation_id
+            d['article-id (other)'] = article.article_id_other
             values.append(d)
 
             d = {}
             d['doi'] = article.doi
-            d['doi aop'] = article.previous_pid
-            d['related'] = article.related_articles
+            d['previous pid'] = article.previous_pid
+            d['related'] = [item.get('xml', '') for item in article.related_articles]
             values.append(d)
 
             d = {}
@@ -708,7 +742,7 @@ class IssueItemsValidations(object):
         r += self.registered_issue_data_validations_report
 
         toc_report = html_reports.tag('h2', _('Checking issue data consistence')) + html_reports.tag('div', r, 'issue-messages') + self.pages_report
-        return ValidationsResults(toc_report)
+        return ValResults(toc_report)
 
     @property
     def journal_validations_report(self):
@@ -758,7 +792,7 @@ class ReportsMaker(object):
 
         if not self.issue_items_validations.is_xml_generation:
             self.components['issue-report'] = self.issue_report
-            self.components['individual-report'] = self.detailed_report
+            self.components['individual-report'] = self.issue_items_validations.detailed_report
 
     @property
     def issue_report(self):
@@ -788,7 +822,7 @@ class ReportsMaker(object):
 
     @property
     def content_report(self):
-        validations = ValidationsResults(html_reports.join_texts(self.components.values()))
+        validations = ValResults(html_reports.join_texts(self.components.values()))
 
         pre_selected = 'summary-report'
         self.components['summary-report'] = error_msg_subtitle() + html_reports.statistics_display(validations, False) + self.components['summary-report']
@@ -807,54 +841,6 @@ class ReportsMaker(object):
             content += html_reports.tag('p', _('report generated by XPM ') + self.xpm_version)
 
         return label_errors(content)
-
-    def detailed_report(self):
-        labels = ['file', 'order/pages/elocation-id', 'doi/aop pid/related', 'subject/@article-type', 'article-title', _('reports')]
-        items = []
-
-        n = '/' + str(len(self.articles_set.articles))
-        index = 0
-
-        validations_text = ''
-
-        #utils.debugging(self.pkg_stats)
-        #utils.debugging(self.articles_set.xml_name_sorted_by_order)
-        utils.display_message('\n')
-        utils.display_message(_('Generating Detail report'))
-        for new_name in self.articles_set.xml_name_sorted_by_order:
-            index += 1
-            item_label = str(index) + n + ': ' + new_name
-            utils.display_message(item_label)
-
-            links, block = self.issue_items_validations.articles_validations[new_name].block_reports
-
-            values = []
-            values.append(new_name)
-
-            d = {}
-            d['order'] = self.issue_items_validations.articles[new_name].order
-            d['pages'] = self.issue_items_validations.articles[new_name].fpage
-            d['elocation-id'] = self.issue_items_validations.articles[new_name].pages
-            values.append(d)
-
-            d = {}
-            d['doi'] = self.issue_items_validations.articles[new_name].doi
-            d['doi aop'] = self.issue_items_validations.articles[new_name].previous_pid
-            d['related'] = self.issue_items_validations.articles[new_name].related_articles
-            values.append(d)
-
-            d = {}
-            d['subject'] = self.issue_items_validations.articles[new_name].sorted_toc_sections
-            d['article-type'] = self.issue_items_validations.articles[new_name].article_type
-            values.append(d)
-
-            values.append(self.issue_items_validations.articles[new_name].title)
-            values.append(links)
-
-            items.append(label_values(labels, values))
-            items.append({'reports': block})
-
-        return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=['reports'])
 
 
 def extract_report_core(content):

@@ -30,7 +30,7 @@ class ArticleDisplayReport(object):
 
     @property
     def article_front(self):
-        r = self.xml_name + ' is invalid.'
+        r = _('{xml_name} is an invalid XML file').format(xml_name=self.xml_name)
         if self.article.tree is not None:
             r = ''
             r += self.sps
@@ -505,9 +505,6 @@ def article_data_and_validations_report(journal, article, new_name, package_path
         img_report_content = ''
         if os.path.isfile(images_generation_report_filename):
             img_report_content = fs_utils.read_file(images_generation_report_filename)
-        if len(img_report_content) > 0:
-            content.append(html_reports.tag('h1', _('ATTENTION'), 'warning'))
-            content.append(html_reports.tag('h1', _('New report: Images Report at the bottom'), 'warning'))
 
         if is_sgml_generation:
             content.append(article_display_report.issue_header)

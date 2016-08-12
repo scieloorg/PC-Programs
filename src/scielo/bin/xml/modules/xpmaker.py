@@ -1207,15 +1207,15 @@ def pack_and_validate_refac(xml_files, results_path, acron, version, is_db_gener
     if len(xml_files) == 0:
         utils.display_message(_('No files to process'))
     else:
-        articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
+        articles, articles_work_area = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
 
         pkg_articles = pkg_validations.PkgArticles(scielo_pkg_path, articles, True)
 
         journals_manager = xc_models.JournalsManager()
         journal = journals_manager.journal(pkg_articles.journal.p_issn, pkg_articles.journal.e_issn, pkg_articles.journal.journal_title)
 
-        issue_items = pkg_validations.IssueItems(articles)
-        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, None)
+        issue_items = pkg_validations.IssueItems(articles, None)
+        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, articles_work_area, journal, None, scielo_dtd_files)
         reports = pkg_validations.ReportsMaker(issue_items_validations, xpm_version())
 
         if not is_xml_generation:
@@ -1227,10 +1227,10 @@ def pack_and_validate_refac(xml_files, results_path, acron, version, is_db_gener
 
         if not is_db_generation:
             if is_xml_generation:
-                make_pmc_report(articles, doc_files_info_items)
+                make_pmc_report(articles, articles_work_area)
             if is_pmc_journal(articles):
                 if GENERATE_PMC:
-                    make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                    make_pmc_package(articles, articles_work_area, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
                 else:
                     print('='*10)
                     print(_('To generate PMC package, add -pmc as parameter'))

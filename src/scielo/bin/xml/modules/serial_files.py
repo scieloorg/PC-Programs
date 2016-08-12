@@ -4,6 +4,7 @@ import shutil
 from datetime import datetime
 
 import fs_utils
+from article import Article
 
 
 def filename_language_suffix(filename):
@@ -28,6 +29,8 @@ class DocumentFiles(object):
     def __init__(self, xml_filename, report_path, wrk_path):
         self.ctrl_filename = None
         self.html_filename = None
+        self.report_path = report_path
+        self.wrk_path = wrk_path
 
         self.is_sgmxml = xml_filename.endswith('.sgm.xml')
         self.xml_filename = xml_filename
@@ -40,13 +43,13 @@ class DocumentFiles(object):
         report_name = self.xml_name
 
         if self.is_sgmxml:
-            wrk_path = wrk_path + '/' + self.xml_name
-            if not os.path.isdir(wrk_path):
-                os.makedirs(wrk_path)
-            self.html_filename = wrk_path + '/' + self.xml_name + '.temp.htm'
+            self.wrk_path = wrk_path + '/' + self.xml_name
+            if not os.path.isdir(self.wrk_path):
+                os.makedirs(self.wrk_path)
+            self.html_filename = self.wrk_path + '/' + self.xml_name + '.temp.htm'
             if not os.path.isfile(self.html_filename):
                 self.html_filename += 'l'
-            self.ctrl_filename = wrk_path + '/' + self.xml_name + '.ctrl.txt'
+            self.ctrl_filename = self.wrk_path + '/' + self.xml_name + '.ctrl.txt'
 
         if not os.path.isdir(report_path):
             os.makedirs(report_path)
@@ -57,6 +60,11 @@ class DocumentFiles(object):
         self.err_filename = report_path + '/' + report_name + '.err.txt'
         self.data_report_filename = report_path + '/' + report_name + '.contents.html'
         self.images_report_filename = report_path + '/' + report_name + '.images.html'
+
+        self.xml_structure_validations_filename = report_path + '/xmlstr-' + report_name
+        self.xml_content_validations_filename = report_path + '/xmlcon-' + report_name
+        self.journal_validations_filename = report_path + '/journal-' + report_name
+        self.issue_validations_filename = report_path + '/issue-' + report_name
 
     def clean(self):
         delete_files([self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename])
@@ -377,3 +385,4 @@ class JournalFiles(object):
             print(os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
             done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
         return (done, errors)
+
