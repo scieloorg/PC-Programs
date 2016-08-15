@@ -695,6 +695,15 @@ class IssueArticlesRecords(object):
         return (i_record, items)
 
 
+class ArticlesDBManager(object):
+
+    def __init__(self, db_isis, issue_files):
+        self.db_isis = db_isis
+        self.issue_files = issue_files
+        self.aop_db_manager = AopDBManager(db_isis, self.issue_files.journal_files)
+
+
+#FIXME
 class ArticleDB(object):
 
     def __init__(self, db_isis, issue_files, aop_manager=None):
@@ -963,6 +972,13 @@ class ArticleDB(object):
             os.makedirs(self.issue_files.windows_base_path)
         self.db_isis.cisis.mst2iso(self.issue_files.base, self.issue_files.windows_base + '.iso')
         self.db_isis.cisis.crunchmf(self.issue_files.base, self.issue_files.windows_base)
+
+
+class AopDBManager(object):
+
+    def __init__(self, db_isis, journal_files):
+        self.db_isis = db_isis
+        self.journal_files = journal_files
 
 
 class AopManager(object):

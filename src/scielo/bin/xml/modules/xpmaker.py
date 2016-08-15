@@ -1125,7 +1125,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     else:
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
 
-        pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path)
+        pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path, not is_xml_generation)
 
         journals_list = xc_models.JournalsList()
         journal = journals_list.get_journal(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title)
@@ -1215,7 +1215,7 @@ def pack_and_validate_refac(xml_files, results_path, acron, version, is_db_gener
         journal = journals_manager.journal(pkg_articles.journal.p_issn, pkg_articles.journal.e_issn, pkg_articles.journal.journal_title)
 
         issue_items = pkg_validations.IssueItems(articles, None)
-        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, articles_work_area, journal, None, scielo_dtd_files)
+        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, articles_work_area, journal, None, scielo_dtd_files, is_xml_generation, is_db_generation)
         reports = pkg_validations.ReportsMaker(issue_items_validations, xpm_version())
 
         if not is_xml_generation:
