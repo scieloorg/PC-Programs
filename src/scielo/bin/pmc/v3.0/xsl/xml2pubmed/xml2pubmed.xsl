@@ -6,6 +6,31 @@
 	<!DOCTYPE ArticleSet PUBLIC "-//NLM//DTD PubMed 2.4//EN" "http://www.ncbi.nlm.nih.gov/entrez/query/static/PubMed.dtd">
 
 	-->
+	<!-- 		
+				<pub-date pub-type="epub|ppub|epub-ppub|collection">
+		                <month>09</month>
+		                <year>2016</year>
+		        </pub-date>
+
+		AOP = 1 DATA (epub)
+			* em journal-meta data do tipo aheadofprint do artigo (sempre terá dia, mês e ano)
+				<PubDate PubStatus="aheadofprint"> <Year>2016</Year> <Month>07</Month> <Day>11</Day> </PubDate>
+			* em history NADA
+		EXCLUSÃO DE AOP = 2 DATAS (epub + collection)
+			* em journal-meta data do tipo ppublish do fascículo (sempre terá mês ou intervalo de meses e ano)
+				<PubDate PubStatus="ppublish"> <Month>09</Month> <Year>2016</Year> </PubDate>			
+			** em history data do tipo aheadofprint do artigo (sempre terá dia, mês e ano)
+				<PubDate PubStatus="aheadofprint"> <Year>2016</Year> <Month>07</Month> <Day>11</Day> </PubDate>
+		RPASS = 2 DATAS (epub + ppub ou somente epub?)
+			* em journal-meta data do tipo ppublish do fascículo (sempre terá ano)
+				<PubDate PubStatus="ppublish"> <Year>2016</Year> </PubDate>			
+			** em history data do tipo aheadofprint do artigo (sempre terá dia, mês e ano)
+				<PubDate PubStatus="aheadofprint"> <Year>2016</Year> <Month>07</Month> <Day>11</Day> </PubDate>
+		FASCÍCULO = 1 DATA
+			* em journal-meta data do tipo ppublish do fascículo (sempre terá mês ou intervalo de meses e ano)
+	        	<PubDate PubStatus="ppublish"> <Month>09</Month> <Year>2016</Year> </PubDate>
+			* em history NADA
+	-->
 	<xsl:output 
 		doctype-public="-//NLM//DTD PubMed 2.6//EN" 
 		doctype-system="http://www.ncbi.nlm.nih.gov/entrez/query/static/PubMed.dtd" 
@@ -60,7 +85,7 @@
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-title"/>
 
-			<xsl:apply-templates select=".//article-meta/fpage|.//article-meta/lpage"/>
+			<xsl:apply-templates select=".//article-meta/fpage|.//article-meta/lpage|.//article-meta/elocation-id"/>
 			<ELocationID EIdType="pii">
 				<xsl:value-of select="$pid"/>
 			</ELocationID>
@@ -100,9 +125,15 @@
 				</ArticleId>
 			</ArticleIdList>
 			<xsl:if test=".//front//history">
+				<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(.//article-meta/volume,.//article-meta/issue),'0',' '))"/></xsl:variable>
+				
 				<History>
-					<xsl:apply-templates select=".//front//history/*"/>
-					<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
+					<xsl:apply-templates select=".//article-meta//history/*"/>
+					<xsl:if test="count(.//article-meta//pub-date)=1">
+						<xsl:if test=".//article-meta//pub-date[@pub-type='epub' and day]">
+							<xsl:apply-templates select=".//article-meta//pub-date[@pub-type='epub' and day]" mode="history"/>
+						</xsl:if>
+					</xsl:if>
 				</History>
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-abstract"/>
@@ -111,7 +142,17 @@
 	</xsl:template>
 	<xsl:template match="related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="scielo-xml-object">
 		<xsl:param name="article_type"/>
-		<Object>
+		<ObjectList>
+			<Object>
+				<xsl:attribute name="Type"><xsl:choose>
+					<xsl:when test="$article_type='correction'">Erratum</xsl:when>
+					<xsl:when test="$article_type='retraction'">Retraction</xsl:when>
+				</xsl:choose></xsl:attribute>
+				<Param Name="type">pmid</Param>
+				<Param Name="id"></Param>
+			</Object>
+		</ObjectList>
+		<!--Object>
 			<xsl:attribute name="Type"><xsl:choose>
 				<xsl:when test="$article_type='correction'">Erratum</xsl:when>
 				<xsl:when test="$article_type='retraction'">Retraction</xsl:when>
@@ -121,7 +162,7 @@
 				<xsl:otherwise>pii</xsl:otherwise>
 			</xsl:choose></Param>
 			<Param Name="id"><xsl:value-of select="@xlink:href"/></Param>
-		</Object>
+		</Object-->
 	</xsl:template>
 	<xsl:template match="article" mode="scielo-xml-objects">
 		<xsl:if test="@article-type='correction' or @article-type='retraction'">
@@ -306,39 +347,38 @@
 		<xsl:if test="substring(.//front//issue,1,5)='Suppl'">
 			<xsl:value-of select=".//front//issue"/>
 		</xsl:if></xsl:variable>
-		<xsl:if test="$volume!=''">
-			<Volume><xsl:value-of select="$volume"/></Volume>
-		</xsl:if>
+		<Volume><xsl:if test="$volume!='' and $volume!='00'">
+			<xsl:value-of select="$volume"/>
+		</xsl:if></Volume>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-issue_no">
-			<xsl:if test=".//front//issue!='00' and .//front//issue!=''">
-				<Issue><xsl:value-of select=".//front//issue"/></Issue>
-			</xsl:if>
+		<Issue><xsl:if test=".//front//issue!='00' and .//front//issue!=''"><xsl:value-of select=".//front//issue"/></xsl:if></Issue>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-publishing_dateiso">
 		<xsl:choose>
-			<xsl:when test=".//front//pub-date[@date-type='collection']">
-				<xsl:apply-templates select=".//front//pub-date[@date-type='collection']"/>
+			<xsl:when test=".//front//pub-date[@pub-type='collection']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='collection']"/>
 			</xsl:when>
-			<xsl:when test=".//front//pub-date[@date-type='ppub']">
-				<xsl:apply-templates select=".//front//pub-date[@date-type='ppub']"/>
+			<xsl:when test=".//front//pub-date[@pub-type='ppub']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='ppub']"/>
 			</xsl:when>
-			<xsl:when test=".//front//pub-date[@date-type='epub-ppub']">
-				<xsl:apply-templates select=".//front//pub-date[@date-type='epub-ppub']"/>
+			<xsl:when test=".//front//pub-date[@pub-type='epub-ppub']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='epub-ppub']"/>
 			</xsl:when>
-			<xsl:when test=".//front//pub-date[@date-type='epub']">
-				<xsl:apply-templates select=".//front//pub-date[@date-type='epub']"/>
+			<xsl:when test=".//front//pub-date[@pub-type='epub']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select=".//front//pub-date[1]"/>
 			</xsl:otherwise>
 		</xsl:choose>
-
 	</xsl:template>
-	<xsl:template match="@date-type">
+	<xsl:template match="pub-date/@pub-type | @date-type">
+		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
-			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
+			<xsl:when test=".='epub' and $issueid=''">aheadofprint</xsl:when>
+			<xsl:when test=".='epub' and $issueid!=''">ppublish</xsl:when>
+			<xsl:when test=".='epub' and ../day">aheadofprint</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
 			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
 			<xsl:when test=".='collection'">ppublish</xsl:when>
@@ -347,46 +387,40 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="pub-date/@pub-type">
-		<xsl:choose>
-			<xsl:when test=".='epub' and not(../../issue) and not(../../volume)">aheadofprint</xsl:when>
-			<xsl:when test=".='epub' and (../../issue or ../../volume)">ppublish</xsl:when>
-			<xsl:when test=".='ppub'">ppublish</xsl:when>
-			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
-			<xsl:when test=".='collection'">ppublish</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="."/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	<xsl:template match="pub-date|date[@date-type='rev-recd']"> </xsl:template>
-	<xsl:template match="date[@date-type!='rev-recd']">
+	<xsl:template match="date[@date-type='rev-recd']"> </xsl:template>
+	
+	<xsl:template match="pub-date|date[@date-type!='rev-recd']">
+		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../volume,../issue),'0',' '))"/></xsl:variable>
 		<PubDate>
-			<xsl:attribute name="PubStatus">
-				<xsl:apply-templates select="@*"/>
-			</xsl:attribute>
+			<xsl:attribute name="PubStatus"><xsl:apply-templates select="@pub-type|@date-type"/></xsl:attribute>
+			<xsl:apply-templates select="year"/>
+			<xsl:choose>
+				<xsl:when test="@date-type">
+					<!-- history -->
+					<xsl:apply-templates select="month|season"/>
+					<xsl:apply-templates select="day"/>	
+				</xsl:when>
+				<xsl:when test="@pub-type='epub' and $issueid=''">
+					<!-- aop -->
+					<xsl:apply-templates select="month|season"/>
+					<xsl:apply-templates select="day"/>	
+				</xsl:when>
+				<xsl:when test="@pub-type='epub' and $issueid!=''"><!-- rolling pass --></xsl:when>
+				<xsl:when test="month='Jan-Dec' or season='Jan-Dec'"></xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="month|season"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</PubDate>
+	</xsl:template>
+	<xsl:template match="pub-date" mode="history">
+		<PubDate>
+			<xsl:attribute name="PubStatus">aheadofprint</xsl:attribute>
 			<xsl:apply-templates select="year"/>
 			<xsl:apply-templates select="month|season"/>
 			<xsl:apply-templates select="day"/>
 		</PubDate>
 	</xsl:template>
-	<xsl:template match="pub-date">
-		<PubDate>
-			<xsl:attribute name="PubStatus">
-				<xsl:apply-templates select="@pub-type"/>
-			</xsl:attribute>
-			<xsl:apply-templates select="year"/>
-			<xsl:choose>
-				<xsl:when test="count(..//pub-date)=1 and @pub-type='epub' and not(../issue) and not(../volume)"></xsl:when>
-				<xsl:when test="month='Jan-Dec' or season='Jan-Dec'"></xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="month|season"/>
-					<xsl:apply-templates select="day"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</PubDate>
-	</xsl:template>
-	
 	<xsl:template match="month|season">
 		<Month>
 			<xsl:value-of select="."/>
@@ -408,7 +442,14 @@
 			<xsl:value-of select="."/>
 		</xsl:element>
 	</xsl:template>
-
+	
+	<xsl:template match="article-meta/elocation-id">
+		<xsl:element name="FirstPage">
+			<xsl:attribute name="LZero">save</xsl:attribute>
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template>
+	
 	<xsl:template match="lpage">
 		<xsl:element name="LastPage">
 			<xsl:value-of select="."/>

@@ -390,7 +390,7 @@ def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
                     try:
                         im = Image.open(image_filename)
                         im.thumbnail(im.size)
-                        im.save(jpg_filename, "JPEG", quality=72, optimize=True, progressive=True)
+                        im.save(jpg_filename, "JPEG")
                         utils.display_message(jpg_filename)
                         print(jpg_filename)
                     except Exception as inst:
@@ -1067,8 +1067,9 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
 def validate_pmc_image(img_filename):
     img = utils.tiff_image(img_filename)
     if img is not None:
-        if img.info.get('dpi') < 300:
-            print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
+        if img.info is not None:
+            if img.info.get('dpi') < 300:
+                print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
 
 
 def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):

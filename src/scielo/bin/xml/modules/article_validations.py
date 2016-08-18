@@ -86,8 +86,10 @@ def evaluate_tiff(img_filename, min_height=None, max_height=None):
     tiff_im = utils.tiff_image(img_filename)
     if tiff_im is not None:
         errors = []
+        dpi = None if tiff_im.info is None else tiff_im.info.get('dpi', [_('unknown')])[0]
+
         info = []
-        info.append('{dpi} dpi'.format(dpi=tiff_im.info.get('dpi', [_('unknown')])[0]))
+        info.append('{dpi} dpi'.format(dpi=dpi))
         info.append(_('height: {height} pixels').format(height=tiff_im.size[1]))
         info.append(_('width: {width} pixels').format(width=tiff_im.size[0]))
 
@@ -100,8 +102,8 @@ def evaluate_tiff(img_filename, min_height=None, max_height=None):
                 status = validation_status.STATUS_WARNING
         if status is not None:
             errors.append(_('Be sure that {img} has valid height. Recommended: min={min} and max={max}. The images must be proportional among themselves.').format(img=os.path.basename(img_filename), min=min_height, max=max_height))
-        if tiff_im.info.get('dpi') is not None:
-            if tiff_im.info.get('dpi') < MIN_IMG_DPI:
+        if dpi is not None:
+            if dpi < MIN_IMG_DPI:
                 errors.append(_('Expected >= {value} dpi').format(value=MIN_IMG_DPI))
                 status = validation_status.STATUS_ERROR
         if len(errors) > 0:
@@ -1046,12 +1048,9 @@ class ArticleContentValidation(object):
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('Identify @xml:lang of license')))
             else:
                 r.append(('license/@xml:lang', validation_status.STATUS_INFO, lang))
-            if license.get('href') is None:
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
-            elif not '://creativecommons.org/licenses/' in license.get('href'):
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
-            elif not ws_requester.wsr.is_valid_url(license.get('href')):
-                r.append(('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + 'license/@href. ' + license.get('href')))
+            result = attributes.validate_license_href(license.get('href'))
+            if result is not None:
+                r.append(result)
             r.append(expected_values('license/@license-type', license.get('type'), ['open-access'], 'FATAL '))
             r.append(required('license/license-p', license.get('text'), validation_status.STATUS_FATAL_ERROR, False))
         return [item for item in r if r is not None]
