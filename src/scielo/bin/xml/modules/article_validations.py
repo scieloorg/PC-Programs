@@ -23,6 +23,13 @@ MAX_IMG_WIDTH = 2250
 MAX_IMG_HEIGHT = 2625
 
 
+def invalid_value_and_expected_values_message(invalid_value, label, expected_values=None):
+    msg = _('{value} is an invalid value for {label}. ').format(value=invalid_value, label=label)
+    if expected_values is not None:
+        msg += _('Expected values: {expected}. ').format(expected_values=expected_values)
+    return msg
+
+
 def validate_doi_format(doi):
     errors = []
     for item in doi:
@@ -280,6 +287,7 @@ def validate_surname(label, value):
 
 
 def validate_contrib_names(author, aff_ids=[]):
+    #FIXME
     results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
     if len(aff_ids) > 0:
         if len(author.xref) == 0:
@@ -467,11 +475,13 @@ class ArticleContentValidation(object):
         r = []
         for related_article in self.article.related_articles:
             if not related_article.get('related-article-type') in attributes.related_articles_type:
-                r.append(('related-article/@related-article-type', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=related_article.get('related-article-type', _('None')), label='related-article/@related-article-type')))
+                r.append(('related-article/@related-article-type', validation_status.STATUS_FATAL_ERROR,
+                    invalid_value_and_expected_values_message(related_article.get('related-article-type', _('None')), 'related-article/@related-article-type')))
             if related_article.get('ext-link-type', '') == 'doi':
                 errors = validate_doi_format(related_article.get('href', ''))
                 if len(errors) > 0:
-                    r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=related_article.get('href'), label='related-article/@xlink:href') + _('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
+                    msg = invalid_value_and_expected_values_message(related_article.get('href'), 'related-article/@xlink:href')
+                    r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
         return r
 
     @property
@@ -575,13 +585,11 @@ class ArticleContentValidation(object):
                 if contrib_id_type in attributes.CONTRIB_ID_URLS.keys():
                     if attributes.CONTRIB_ID_URLS.get(contrib_id_type) in contrib_id or contrib_id.startswith('http'):
                         label = 'contrib-id[@contrib-id-type="' + contrib_id_type + '"]'
-                        r.append((label, validation_status.STATUS_ERROR,
-                            _('{value} is an invalid value for {label}. ').format(value=contrib_id, label=label) +
-                            _('Use only the ID')))
+                        msg = invalid_value_and_expected_values_message(contrib_id, label)
+                        r.append((label, validation_status.STATUS_ERROR, msg + _('Use only the ID')))
                 else:
-                    r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR,
-                            _('{value} is an invalid value for {label}. ').format(value=contrib_id_type, label='contrib-id/@contrib-id-type') + 
-                            _('Expected values: {expected_values}').format(values=', '.join(attributes.CONTRIB_ID_URLS.keys()))))
+                    msg = invalid_value_and_expected_values_message(contrib_id_type, 'contrib-id/@contrib-id-type', ', '.join(attributes.CONTRIB_ID_URLS.keys()))
+                    r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR, msg))
         for affid in aff_ids:
             if not affid in author_xref_items:
                 r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Missing') + ' xref[@ref-type="aff"]/@rid="' + affid + '".'))
@@ -852,13 +860,15 @@ class ArticleContentValidation(object):
     def _total(self, total, count, label_total, label_count):
         r = []
         if total < 0:
-            r.append((label_total, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=str(total), label=label_total) + _('Expected value is a number greater or equal to 0.')))
+            msg = invalid_value_and_expected_values_message(str(total), label_total, _('numbers greater or equal to 0'))
+            r.append((label_total, validation_status.STATUS_FATAL_ERROR, msg))
         elif count is not None:
             if count.isdigit():
                 if total != int(count):
                     r.append((label_count + ' (' + count + ') x ' + label_total + ' (' + str(total) + ')', validation_status.STATUS_ERROR, _('They must have the same value')))
             else:
-                r.append((label_count, validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=count, label=label_count) + _('Expected value is a number greater or equal to 0.')))
+                msg = invalid_value_and_expected_values_message(count, label_count, _('numbers greater or equal to 0'))
+                r.append((label_count, validation_status.STATUS_FATAL_ERROR, msg))
         return r
 
     @property
@@ -1407,17 +1417,19 @@ class ReferenceContentValidation(object):
     @property
     def source(self):
         r = []
+
         if self.reference.source is not None:
+            msg = invalid_value_and_expected_values_message(self.reference.source, 'source')
             _test_number = warn_unexpected_numbers('source', self.reference.source, 4)
             if _test_number is not None:
                 r.append(_test_number)
             if self.reference.source[0:1] != self.reference.source[0:1].upper():
                 if not self.reference.source[0:2] != 'e-':
-                    r.append(('source', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.reference.source, label='source')))
+                    r.append(('source', validation_status.STATUS_ERROR, msg))
 
             _source = self.reference.source.strip()
             if self.reference.source != _source:
-                r.append(('source', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.reference.source, label='source') + _('"{value}"" starts or ends with space characters.').format(value=self.reference.source)))
+                r.append(('source', validation_status.STATUS_ERROR, msg + _('"{value}"" starts or ends with space characters.').format(value=self.reference.source)))
         return r
 
     def validate_element(self, label, value, error_level=validation_status.STATUS_FATAL_ERROR):
@@ -1608,6 +1620,7 @@ class ReferenceContentValidation(object):
                 r.append(('collab', validation_status.STATUS_OK, person.collab))
             else:
                 r.append((_('invalid author'), validation_status.STATUS_WARNING, str(type(person))))
+
         return r
 
     def year(self, article_year):

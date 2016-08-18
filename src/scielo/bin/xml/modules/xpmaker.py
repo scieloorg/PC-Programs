@@ -15,20 +15,20 @@ except Exception as e:
     IMG_CONVERTER = False
 
 from __init__ import _
-import validation_status
 import utils
 import fs_utils
 import java_xml_utils
 import html_reports
-import article
-import serial_files
 import xml_utils
 import xml_versions
 import xpchecker
-import pkg_reports
+import pkg_validations
 import symbols
+import article
+import serial_files
 import xc_models
 import attributes
+import validation_status
 
 
 mime = MimeTypes()
@@ -41,17 +41,12 @@ DISPLAY_REPORT = True
 GENERATE_PMC = False
 
 
-def complete_number(number, q=5):
-    number = '0'*q + number
-    return number[-q:]
-
-
 def format_last_part(fpage, seq, elocation_id, order, doi, issn):
     #utils.debugging((fpage, seq, elocation_id, order, doi, issn))
     r = None
     if r is None:
         if fpage is not None:
-            r = complete_number(fpage)
+            r = fpage.zfill(5)
             if seq is not None:
                 r += '-' + seq
             if r == '00000':
@@ -68,7 +63,7 @@ def format_last_part(fpage, seq, elocation_id, order, doi, issn):
             r = doi
     if r is None:
         if order is not None:
-            r = complete_number(order)
+            r = order.zfill(5)
     return r
 
 
@@ -841,7 +836,7 @@ class ArticlePkgMaker(object):
                 n = len(issueno)
                 if len(issueno) < 2:
                     n = 2
-                issueno = complete_number(issueno, n)
+                issueno = issueno.zfill(n)
         if suppl:
             suppl = 's' + suppl if suppl != '0' else 'suppl'
         parts = [issn, self.acron, vol, issueno, suppl, last, self.doc.compl]
@@ -1123,107 +1118,22 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     if len(xml_files) == 0:
         utils.display_message(_('No files to process'))
     else:
-        articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
-
-        pkg = pkg_reports.PkgArticles(articles, scielo_pkg_path, not is_xml_generation)
-
-        journals_list = xc_models.JournalsList()
-        journal = journals_list.get_journal(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title)
-
-        issue = None
-
-        pkg_validator = pkg_reports.ArticlesPkgReport(report_path, pkg, journal, issue, None, is_db_generation)
-
-        report_components['xml-files'] = pkg.xml_list()
-
-        toc_f = 0
-        report_components['pkg_overview'] = pkg_validator.overview_report()
-        report_components['pkg_overview'] += pkg_validator.references_overview_report()
-        report_components['references'] = pkg_validator.sources_overview_report()
-
-        if not is_xml_generation:
-            report_components['issue-report'] = pkg_validator.issue_report
-            toc_f = pkg_validator.blocking_errors
-        if toc_f == 0:
-            pkg_validator.validate_articles_pkg_xml_and_data(doc_files_info_items, scielo_dtd_files, is_xml_generation)
-
-            if not is_xml_generation:
-                report_components['detail-report'] = pkg_validator.detail_report()
-                report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
-
-        if not is_xml_generation:
-            xpm_validations = pkg_reports.format_complete_report(report_components)
-            filename = report_path + '/xml_package_maker.html'
-            if os.path.isfile(filename):
-                bkp_filename = report_path + '/xpm_bkp_' + '-'.join(utils.now()) + '.html'
-                shutil.copyfile(filename, bkp_filename)
-            pkg_reports.save_report(filename, 
-                                    _('XML Package Maker Report'), 
-                                    html_reports.save_form(xpm_validations.total > 0, u'xml_package_maker.html') + xpm_validations.message, 
-                                    xpm_version())
-
-            if DISPLAY_REPORT is True:
-                pkg_reports.display_report(filename)
-
-        if not is_db_generation:
-            if is_xml_generation:
-                make_pmc_report(articles, doc_files_info_items)
-            if is_pmc_journal(articles):
-                if GENERATE_PMC:
-                    make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
-                else:
-                    print('='*10)
-                    print(_('To generate PMC package, add -pmc as parameter'))
-                    print('='*10)
-
-            make_pkg_zip(scielo_pkg_path)
-            if not is_xml_generation:
-                make_pkg_items_zip(scielo_pkg_path)
-
-        utils.display_message(_('Result of the processing:'))
-        utils.display_message(results_path)
-        fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))
-
-
-def pack_and_validate_refac(xml_files, results_path, acron, version, is_db_generation=False):
-    global DISPLAY_REPORT
-    global GENERATE_PMC
-    is_xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
-
-    scielo_pkg_path = results_path + '/scielo_package'
-    pmc_pkg_path = results_path + '/pmc_package'
-    report_path = results_path + '/errors'
-    wrk_path = results_path + '/work'
-
-    report_components = {}
-
-    pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
-    scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
-
-    for d in [scielo_pkg_path, pmc_pkg_path, report_path, wrk_path]:
-        if not os.path.isdir(d):
-            os.makedirs(d)
-
-    if len(xml_files) == 0:
-        utils.display_message(_('No files to process'))
-    else:
         articles, articles_work_area = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
 
-        pkg_articles = pkg_validations.PkgArticles(scielo_pkg_path, articles, True)
+        pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles)
 
         journals_manager = xc_models.JournalsManager()
-        journal = journals_manager.journal(pkg_articles.journal.p_issn, pkg_articles.journal.e_issn, pkg_articles.journal.journal_title)
+        journal, journal_data = journals_manager.journal(pkg.journal.p_issn, pkg.journal.e_issn, pkg.journal.journal_title)
+        pkg.identify_issue_label(journal.acron)
 
-        issue_items = pkg_validations.IssueItems(articles, None)
-        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, articles_work_area, journal, None, scielo_dtd_files, is_xml_generation, is_db_generation)
-        reports = pkg_validations.ReportsMaker(issue_items_validations, xpm_version())
+        issue_items = pkg_validations.IssueItems(pkg, None)
+        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, articles_work_area, journal_data, None, scielo_dtd_files, is_xml_generation, is_db_generation)
+        reports = pkg_validations.ReportsMaker(issue_items_validations, xpm_version(), display_report=DISPLAY_REPORT)
 
         if not is_xml_generation:
             filename = report_path + '/xml_package_maker.html'
-            reports.save_report(report_path, report_filename='xml_package_maker.html', report_title=_('XML Package Maker Report'))
-
-            if DISPLAY_REPORT is True:
-                pkg_validations.display_report(filename)
+            reports.processing_result_location = os.path.dirname(report_path)
+            reports.save_report(report_path, 'xml_package_maker.html', _('XML Package Maker Report'))
 
         if not is_db_generation:
             if is_xml_generation:

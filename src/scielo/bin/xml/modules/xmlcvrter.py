@@ -8,11 +8,10 @@ from __init__ import _
 import validation_status
 import fs_utils
 import utils
-import article_utils
 import html_reports
 import dbm_isis
 import xc_models
-import pkg_reports
+import pkg_validations
 import xml_utils
 import xml_versions
 import xpmaker
@@ -47,12 +46,12 @@ categories_messages = {
 
 CONVERSIONS_STATUS = ['converted', 'not converted', 'rejected', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']
 
-XC_STATUS = {}
-XC_STATUS['rejected'] = [u"\u274C", _(' REJECTED ')]
-XC_STATUS['ignored'] = ['', _('IGNORED')]
-XC_STATUS['accepted'] = [u"\u2713" + ' ' + u"\u270D", _(' ACCEPTED but corrections required ')]
-XC_STATUS['approved'] = [u"\u2705", _(' APPROVED ')]
-XC_STATUS['not processed'] = ['', _(' NOT PROCESSED ')]
+EMAIL_SUBJECT_STATUS_ICON = {}
+EMAIL_SUBJECT_STATUS_ICON['rejected'] = [u"\u274C", _(' REJECTED ')]
+EMAIL_SUBJECT_STATUS_ICON['ignored'] = ['', _('IGNORED')]
+EMAIL_SUBJECT_STATUS_ICON['accepted'] = [u"\u2713" + ' ' + u"\u270D", _(' ACCEPTED but corrections required ')]
+EMAIL_SUBJECT_STATUS_ICON['approved'] = [u"\u2705", _(' APPROVED ')]
+EMAIL_SUBJECT_STATUS_ICON['not processed'] = ['', _(' NOT PROCESSED ')]
 
 
 class ConverterEnv(object):
@@ -71,445 +70,131 @@ def register_log(message):
     converter_report_lines.append(message)
 
 
-def complete_issue_items_row(article, action, result, source, notes='', results=False):
-    if results:
-        labels = ['name', 'package or database', 'creation date | last update', 'action', 'result', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
-    else:
-        labels = ['name', 'package or database', 'creation date | last update', 'action', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
-    _source = source
-    if source == 'registered':
-        _source = 'database'
-        _dates = str(article.creation_date_display) + ' / ' + str(article.last_update_display)
-        action = ''
-    else:
-        _dates = ''
-
-    values = []
-    values.append(article.xml_name)
-    values.append(_source)
-    values.append(_dates)
-    values.append(action)
-    if results:
-        values.append(result)
-    values.append(article.order)
-    values.append(article.pages)
-    values.append(notes)
-    values.append(article.previous_pid)
-    values.append(article.doi)
-    values.append(article.title)
-    return (labels, values)
-
-
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
     xml_filenames = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
     articles, doc_file_info_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron', is_db_generation=True)
     return (articles, doc_file_info_items)
 
 
-class XCPreValidations(object):
+class ConversionReports(object):
 
-    def __init__(self, registered_items, pkg_items):
-        self.registered_items = registered_items
-        self.pkg_items = pkg_items
-        self.rejected_order_change = {}
-        self.data_changes = {}
-        self.exact_comparison = {}
-        self.relaxed_comparison = {}
-        self.allowed_to_update = {}
-        self.evaluate_changes = {}
-        self._check_orders()
-        self._detect_changes()
-        self._evaluate_actions()
-
-    def _check_orders(self):
-        # order change must be allowed only if authors and titles are the same
-        self.changed_orders = {}
-        merged = {name: article.order for name, article in self.registered_items.items()}
-        for name, article in self.pkg_items.items():
-            merged[name] = article.order
-            if name in self.registered_items.keys():
-                if self.registered_items[name].order != article.order:
-                    self.changed_orders[name] = (self.registered_items[name].order, article.order)
-
-        orders = {}
-        for name, order in merged.items():
-            if not order in orders.keys():
-                orders[order] = []
-            orders[order].append(name)
-
-        self.rejected_order_change = {}
-        for order, names in orders.items():
-            if len(names) > 1:
-                self.rejected_order_change[order] = names
-
-    def _detect_changes(self):
-        labels = ['titles', 'authors']
-        for name, article in self.pkg_items.items():
-            if name in self.registered_items.keys():
-                validations = []
-                validations.append((article.textual_titles, self.registered_items[name].textual_titles))
-                validations.append((article.textual_contrib_surnames, self.registered_items[name].textual_contrib_surnames))
-                self.exact_comparison[name] = [(label, items) for label, items in zip(labels, validations) if not items[0] == items[1]]
-                self.relaxed_comparison[name] = [(label, items) for label, items in zip(labels, validations) if not utils.is_similar(items[0], items[1])]
-
-                if len(self.exact_comparison[name]) == 0:
-                    # no changes
-                    allowed_to_update = True
-                    status = validation_status.STATUS_INFO
-                elif len(self.relaxed_comparison[name]) == 0:
-                    # acceptable changes
-                    allowed_to_update = True
-                    status = validation_status.STATUS_WARNING
-                else:
-                    # many changes
-                    allowed_to_update = False
-                    status = validation_status.STATUS_FATAL_ERROR
-                if allowed_to_update:
-                    order_change = self.changed_orders.get(name)
-                    if order_change is not None:
-                        # order change
-                        if order_change[1] in self.rejected_order_change.keys():
-                            # order change is rejected
-                            allowed_to_update = False
-                            status = validation_status.STATUS_FATAL_ERROR
-
-                self.allowed_to_update[name] = allowed_to_update
-                self.evaluate_changes[name] = status
-
-    def _evaluate_actions(self):
-        self.actions = {name: '-' for name in self.registered_items.keys() if not name in self.pkg_items.keys()}
-        for name, article in self.pkg_items.items():
-            action = 'add'
-            if name in self.allowed_to_update.keys():
-                if self.allowed_to_update[name] is True:
-                    action = 'update'
-                else:
-                    action = 'block-update'
-            self.actions[name] = action
-
-
-class XCPreValidationsReport(object):
-
-    def __init__(self, xc_pre_validations):
-        self.xc_pre_validations = xc_pre_validations
-
-    @property
-    def content(self):
-        error_messages = []
-        if self.rejected_order_changes + self.update_report != '':
-            error_messages.append(html_reports.tag('h2', _('Order validations')))
-            error_messages.append(self.rejected_order_changes)
-            if self.update_report != '':
-                error_messages.append(html_reports.tag('h3', _('Changes detected')))
-                error_messages.append(self.update_report)
-        return ''.join(error_messages)
-
-    @property
-    def rejected_order_changes(self):
-        error_messages = []
-        if len(self.xc_pre_validations.rejected_order_change) > 0:
-            error_messages.append(html_reports.tag('h3', _('rejected orders')))
-            error_messages.append('<div class="issue-problem">')
-            error_messages.append(html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('It is not allowed to use same order for different articles.')))
-            for order, items in self.xc_pre_validations.rejected_order_change.items():
-                error_messages.append(html_reports.tag('p', html_reports.format_html_data({order:items})))
-            error_messages.append('</div>')
-        return ''.join(error_messages)
-
-    @property
-    def update_report(self):
-        all_msg = []
-        for name, allowed in self.xc_pre_validations.allowed_to_update.items():
-            msg = []
-            if self.xc_pre_validations.allowed_to_update[name] is False:
-                msg.append(html_reports.p_message(self.xc_pre_validations.evaluate_changes[name] + ': ' + _('{item} is not allowed to be updated.').format(item=name)))
-            # allowed to update
-            order_change = self.xc_pre_validations.changed_orders.get(name)
-            if order_change is not None:
-                # order change
-                if order_change[1] in self.xc_pre_validations.rejected_order_change.keys():
-                    # order change is rejected
-                    msg.append(html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('{new_order} is being assign to more than one file: {files}').format(new_order=order_change[1], files=', '.join(self.xc_pre_validations.rejected_order_change[order_change[1]]))))
-                else:
-                    # order change is acceptable
-                    msg.append(html_reports.p_message(validation_status.STATUS_WARNING + ': ' + _('order changed: {old} => {new}').format(old=order_change[0], new=order_change[1])))
-            if len(self.xc_pre_validations.relaxed_comparison[name]) > 0:
-                msg.append(html_reports.p_message(self.xc_pre_validations.evaluate_changes[name] + ': ' + _('{item} contains too many differences. It seems {item} in the package is very different from the one previously published.').format(item=name)))
-            if len(self.xc_pre_validations.exact_comparison[name]) > 0:
-                #self.evaluate_changes[name]
-                msg.append(html_reports.tag('h5', _('Previously registered:')))
-                for label, differences in self.xc_pre_validations.exact_comparison[name]:
-                    msg.append(html_reports.tag('p', differences[1]))
-                msg.append(html_reports.tag('h5', _('Update:')))
-                for label, differences in self.xc_pre_validations.exact_comparison[name]:
-                    msg.append(html_reports.tag('p', differences[0]))
-
-            if len(msg) > 0:
-                all_msg.append(html_reports.tag('h4', name))
-                all_msg.append('<div class="issue-problem">')
-                all_msg.append(''.join(msg))
-                all_msg.append('</div>')
-        return ''.join(all_msg)
+    def __init__(self, registered_articles, pkg_articles, registered_articles_after_conversion):
+        #self.components['conversion-report'] = self.conversion_reports.xc_report
+        #self.components['db-overview'] = self.conversion_reports.before_conversion_report + self.conversion_reports.after_conversion_report
+        #self.components['summary-report'] = self.conversion_reports.xc_conclusion_msg + self.conversion_reports.xc_results_report + self.conversion_reports.aop_results_report
+        self.issue_error_msg = ''
+        self.xc_validations_report = ''
+        self.xc_conclusion_msg = ''
+        self.xc_results_report = ''
+        self.aop_results_report = ''
+        self.db_status_report = ''
 
 
 class ArticlesConversion(object):
 
-    def __init__(self, issue_items_validations, db, server=False):
+    def __init__(self, pkg, issue_items_validations, db, create_windows_base=False):
+        self.pkg = pkg
         self.issue_items_validations = issue_items_validations
         self.db = db
-        self.conversion_status = {status: [] for status in CONVERSIONS_STATUS.keys()}
-        self.server = server
-
-    def initial_status_report(self):
-        return ''
-
-    def final_status_report(self):
-        return ''
-
-    def convert_articles(self):
-        registered_scilista_item = None
-        self.conversion_status['rejected'] = self.issue_items_validations.issue_items.rejected
-        if len(self.conversion_status['rejected']) == 0:
-            registered_scilista_item, xc_status, self.error_messages = self.db.convert_articles(self.issue_items_validations.issue_items.articles_to_convert, self.changed_orders, self.actions, self.server)
-        self.conversion_status.update(xc_status)
-        return registered_scilista_item
+        self.create_windows_base = create_windows_base
+        self.articles_xc_results = {}
+        self.articles_xc_messages = {}
+        self.articles_aop_excluded = {}
+        self.articles_aop_status = {}
 
     def conversion(self):
+        scilista_items = []
         if self.issue_items_validations.blocking_errors == 0:
+            #FIXME
+            self.excluded_error_messages = self.db.exclude_incorrect_orders(self.issue_items_validations.issue_items.changed_orders)
+            result, self.articles_xc_messages, self.articles_xc_results, self.articles_aop_excluded, self.articles_aop_status = self.db.convert_articles(self.issue_items_validations.issue_items.xc_articles, self.issue_items_validations.issue_models.record, self.create_windows_base)
+            if result:
+                self.db.issue_files.copy_files_to_local_web_app()
 
-            registered_scilista_item = self.convert_articles()
+                if self.db.aop_db_manager is not None:
+                    scilista_items = self.db.aop_db_manager.changed_issues
 
-            #fs_utils.append_file(log_package, 'Conversion results')
-            xc_results_report = report_status(_('Conversion results'), self.conversion_status, 'conversion')
+                scilista_items.append(self.pkg.acron_issue_label)
+                self.db.issue_files.save_source_files(self.pkg.pkg_path)
 
-            #fs_utils.append_file(log_package, 'AOP status')
-            aop_results_report = report_status(_('AOP status'), self.db.aop_manager.aop_sorted_by_status, 'aop-block')
-            if len(aop_results_report) == 0:
-                aop_results_report = _('this journal has no aop.')
-
-            final_report_path = issue_files.base_reports_path
-            final_result_path = issue_files.issue_path
-
-            if registered_scilista_item is not None:
-                #fs_utils.append_file(log_package, 'pkg.issue_files.copy_files_to_local_web_app()')
-                issue_files.copy_files_to_local_web_app()
-
-            #fs_utils.append_file(log_package, 'xc_status = get_xc_status()')
-            xc_status = get_xc_status(registered_scilista_item, self.xc_pre_validations.fatal_errors, pkg_xml_fatal_errors, self.blocking_errors)
-
-            if self.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update') is not None:
-                for item in self.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update'):
-                    scilista_items.append(item)
-
-            total = len(self.selected_articles) if self.selected_articles is not None else 0
-            converted = len(self.conversion_status.get('converted', [])) if self.conversion_status.get('converted', []) is not None else 0
-            not_converted = len(self.conversion_status.get('not converted', [])) if self.conversion_status.get('not converted', []) is not None else 0
-
-        #fs_utils.append_file(log_package, 'self.conclusion()')
-        xc_conclusion_msg = ''.join([html_reports.p_message(item) for item in self.error_messages])
-        xc_conclusion_msg += conclusion_message(total, converted, not_converted, xc_status, pkg_articles.acron_issue_label)
-        if len(after_conversion_report) == 0:
-            after_conversion_report = xc_conclusion_msg
-
-            
-            #fs_utils.append_file(log_package, 'pkg_reports.format_complete_report')
-
-            xc_validations = pkg_reports.format_complete_report(report_components)
-            content = xc_validations.message
-            if tmp_report_path in content:
-                #fs_utils.append_file(log_package, 'content.replace(tmp_report_path, final_report_path)')
-                content = content.replace(tmp_report_path, final_report_path)
-
-            report_location = final_report_path + '/xml_converter.html'
-            pkg_reports.save_report(report_location, [_('XML Conversion (XML to Database)'), pkg.acron_issue_label], content)
-
-            if not converter_env.is_windows:
-                #fs_utils.append_file(log_package, 'format_reports_for_web')
-                format_reports_for_web(final_report_path, pkg_path, pkg.acron_issue_label.replace(' ', '/'))
-
-            if tmp_result_path != final_result_path:
-                fs_utils.delete_file_or_folder(tmp_result_path)
-
-
-class Conversion(object):
-
-    def __init__(self, pkg, db):
-        self.pkg = pkg
-        self.db = db
-        self.actions = None
-        self.conversion_status = {}
-        self.error_messages = []
-
-        for k in ['converted', 'not converted', 'rejected', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']:
-            self.conversion_status[k] = []
-
-    def evaluate_pkg_and_registered_items(self, skip_identical_xml):
-        self.previous_registered_articles = {k: v for k, v in self.db.registered_articles.items()}
-        pkg_validations = XCPreValidations(self.previous_registered_articles, self.pkg.articles)
-        pkg_validations.evaluate()
-
-        self.actions = {name: '-' for name in self.db.registered_articles.keys() if not name in self.pkg.articles.keys()}
-        for name, article in self.pkg.articles.items():
-            action = 'add'
-            if name in pkg_validations.allowed_to_update.keys():
-                if pkg_validations.allowed_to_update[name] is True:
-                    action = 'update'
-                else:
-                    action = 'block-update'
-            self.actions[name] = action
-        self.changed_orders = pkg_validations.changed_orders
-        self.xc_validations = pkg_reports.ValidationsResults(XCPreValidationsReport(pkg_validations).content)
+        self.total = len(self.issue_items_validations.issue_items.xc_articles)
+        self.converted = len([item for item in self.articles_xc_results.values() if item is True])
+        self.not_converted = len([item for item in self.articles_xc_results.values() if item is False])
+        self.sort_articles_by_status()
+        return scilista_items
 
     @property
-    def selected_articles(self):
-        _selected_articles = None
-        if self.blocking_errors == 0:
-            #utils.debugging('toc_f == 0')
-            _selected_articles = {}
-            for xml_name, status in self.actions.items():
-                if status in ['add', 'update']:
-                    _selected_articles[xml_name] = self.pkg.articles[xml_name]
-        return _selected_articles
-
-    def initial_status_report(self):
-        report = html_reports.tag('h4', _('Documents status in the package/database - before conversion'))
-
-        orders = [article.order for article in self.previous_registered_articles.values()]
-        for article in self.pkg.articles.values():
-            if article.tree is None:
-                orders.append('None')
-            else:
-                orders.append(article.order)
-
-        orders = sorted(list(set([order for order in orders if order is not None])))
-
-        sorted_registered = pkg_reports.articles_sorted_by_order(self.previous_registered_articles)
-        sorted_package = pkg_reports.articles_sorted_by_order(self.pkg.articles)
-        items = []
-
-        for order in orders:
-            action = ''
-            if order in sorted_registered.keys():
-                for article in sorted_registered[order]:
-                    action = self.actions[article.xml_name]
-                    _notes = ''
-                    if action == 'update':
-                        if self.previous_registered_articles[article.xml_name].order != self.pkg.articles[article.xml_name].order:
-                            action = 'delete'
-                            _notes = 'new order=' + self.pkg.articles[article.xml_name].order
-                    labels, values = complete_issue_items_row(article, '', '', 'registered', _notes)
-                    items.append(pkg_reports.label_values(labels, values))
-
-            if order in sorted_package.keys():
-                for article in sorted_package[order]:
-                    action = self.actions[article.xml_name]
-                    _notes = ''
-                    if self.previous_registered_articles.get(article.xml_name) is not None:
-                        if self.previous_registered_articles[article.xml_name].order != self.pkg.articles[article.xml_name].order:
-                            _notes = _('replacing ') + self.previous_registered_articles[article.xml_name].order
-                    labels, values = complete_issue_items_row(article, action, '', 'package', _notes)
-                    items.append(pkg_reports.label_values(labels, values))
-        return report + html_reports.sheet(labels, items, 'dbstatus', 'action')
-
-    def final_status_report(self):
-        actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skipped', 'order changed': 'order changed', 'fail': 'update/add failed', 'block-update': 'update blocked'}
-        orders = sorted(list(set([article.order for article in self.previous_registered_articles.values()] + [article.order for article in self.db.registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in self.pkg.articles.values()])))
-
-        sorted_previous_registered = pkg_reports.articles_sorted_by_order(self.previous_registered_articles)
-        sorted_registered = pkg_reports.articles_sorted_by_order(self.db.registered_articles)
-        sorted_package = pkg_reports.articles_sorted_by_order(self.pkg.articles)
-
-        items = []
-
-        for order in orders:
-            if order in sorted_registered.keys():
-                # documento na base
-                for article in sorted_registered[order]:
-                    action = self.actions[article.xml_name]
-                    result = actions_result_labels[action]
-                    _notes = ''
-                    if action == 'update':
-                        if article.last_update_display is None:
-                            result = 'error'
-                        elif self.previous_registered_articles.get(article.xml_name).last_update_display == article.last_update_display:
-                            result = 'error'
-                        name = article.xml_name
-                        if name in self.changed_orders.keys():
-                            previous_order, new_order = self.changed_orders[name]
-                            _notes = previous_order + '=>' + new_order
-                            if result == 'error':
-                                _notes = validation_status.STATUS_ERROR + ': ' + _('Unable to replace ') + _notes
-                    labels, values = complete_issue_items_row(article, action, result, 'registered', _notes, True)
-                    items.append(pkg_reports.label_values(labels, values))
-            elif order in sorted_package.keys():
-                # documento no pacote mas nao na base
-                for article in sorted_package[order]:
-                    action = self.actions[article.xml_name]
-                    name = article.xml_name
-                    _notes = ''
-                    if name in self.changed_orders.keys():
-                        previous_order, new_order = self.changed_orders[name]
-                        _notes = previous_order + '=>' + new_order
-                        _notes = validation_status.STATUS_ERROR + ': ' + _('Unable to replace ') + _notes
-
-                    labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes, True)
-                    items.append(pkg_reports.label_values(labels, values))
-            elif order in sorted_previous_registered.keys():
-                # documento anteriormente na base
-                for article in sorted_previous_registered[order]:
-                    action = 'delete'
-                    name = article.xml_name
-                    _notes = ''
-                    if name in self.changed_orders.keys():
-                        previous_order, new_order = self.changed_orders[name]
-                        _notes = 'deleted ' + previous_order + '=> new: ' + new_order
-                    labels, values = complete_issue_items_row(article, '?', 'deleted', 'excluded', _notes, True)
-                    items.append(pkg_reports.label_values(labels, values))
-        after_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - after conversion'))
-        after_conversion_report += html_reports.sheet(labels, items, 'dbstatus', 'result')
-        return after_conversion_report
-
-    def convert_articles(self, pkg_validator):
-        for xml_name in self.pkg.xml_name_sorted_by_order:
-            if self.actions[xml_name] in ['add', 'update']:
-                permission = is_conversion_allowed(self.pkg.articles[xml_name].issue_pub_dateiso, len(self.pkg.articles[xml_name].references), pkg_validator)
-                if permission:
-                    article_utils.normalize_affiliations(self.pkg.articles[xml_name])
-                else:
-                    self.conversion_status['rejected'].append(xml_name)
-
-        if len(self.conversion_status.get('rejected', [])) == 0:
-            registered_scilista_item, self.conversion_status, self.error_messages = self.db.convert_articles(self.pkg, self.changed_orders, self.actions, not converter_env.is_windows)
-
-        return registered_scilista_item
-
-    @property
-    def pkg_xc_validations(self):
-        validations = pkg_reports.PackageValidationsResults(self.pkg.issue_files.base_reports_path, 'xc-', '')
-        for xml_name, messages in self.db.registration_reports.items():
-            validations.add(xml_name, pkg_reports.ValidationsResults(''.join(messages)))
-        validations.save_reports()
+    def xc_validations(self):
+        validations = pkg_validations.PkgValReports()
+        for xml_name, messages in self.articles_xc_messages.items():
+            validations[xml_name] = pkg_validations.ValResults(''.join(messages))
         return validations
 
+    @property
+    def xc_validations_report(self):
+        return self.xc_validations.report()
 
-def conclusion_message(total, converted, not_converted, xc_status, acron_issue_label):
+    @property
+    def db_status_report(self):
+        #report = html_reports.tag('h4', _('Database status'))
+        #for xml_name, article in self.final_registered_articles:
+
+        #    articles = [self.issue_items.initial_registered_articles.get(xml_name), self.issue_items.pkg_articles.get(xml_name), article]
+        #    history = ['registered', 'package', 'updated']
+
+        #    for art, hist in zip(articles, history):
+        #        labels, values = db_status_item_row(art, hist)
+        #        items.append(label_values(labels, values))
+
+        #return report + html_reports.sheet(labels, items, 'dbstatus', 'action')
+        return ''
+
+    @property
+    def xc_status(self):
+        if self.issue_items_validations.blocking_errors > 0:
+            result = 'rejected'
+        elif self.issue_items_validations.xml_validations_fatal_errors + self.xc_validations.fatal_errors == 0:
+            result = 'approved'
+        else:
+            result = 'accepted'
+        return result
+
+    def sort_articles_by_status(self):
+        #CONVERSIONS_STATUS = ['converted', 'not converted', 'rejected', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']
+        self.conversion_status = {}
+        self.conversion_status['converted'] = [xml_name for xml_name, result in self.articles_xc_results.values() if result is True]
+        self.conversion_status['not converted'] = [xml_name for xml_name, result in self.articles_xc_results.values() if result is False]
+        self.conversion_status['rejected'] = self.issue_items_validations.issue_items.blocked_update
+
+        names = self.conversion_status['converted'].values() + self.conversion_status['not converted'].values() + self.conversion_status['rejected'].values()
+        self.conversion_status['skipped'] = [xml_name for xml_name, article in self.issue_items_validations.issue_items.pkg_articles.items() if not xml_name in names]
+
+        self.aop_status = {}
+        self.aop_status['excluded ex-aop'] = [name for name, status in self.articles_aop_excluded.items() if status is True]
+        self.aop_status['not excluded ex-aop'] = [name for name, status in self.articles_aop_excluded.items() if status is False]
+        self.aop_status['new doc'] = [name for name, status in self.articles_aop_excluded.items() if status is None]
+        #self.aop_status['ex aop'] = []
+        self.aop_status.update(self.articles_aop_status)
+
+
+def conclusion_message(self, total, converted, not_converted, xc_status, acron_issue_label):
     app_site = converter_env.web_app_site if converter_env.web_app_site is not None else _('scielo web site')
     status = ''
-    action = ''
-    result = _('be updated/published on ') + app_site
+    result = _('be updated/published on {app_site}').format(app_site=app_site)
     reason = ''
+    update = True
     if xc_status == 'rejected':
-        action = _(' not')
+        update = False
         status = validation_status.STATUS_FATAL_ERROR
         if total > 0:
             if not_converted > 0:
-                reason = _('because it is not complete (') + str(not_converted) + '/' + str(total) + _(' were not converted).')
+                reason = _('because it is not complete ({value} were not converted).').format(value=str(not_converted) + '/' + str(total))
             else:
                 reason = _('unknown')
         else:
             reason = _('because there are blocking errors in the package.')
     elif xc_status == 'ignored':
-        action = _(' not')
+        update = False
         reason = _('because no document was changed.')
     elif xc_status == 'accepted':
         status = validation_status.STATUS_WARNING
@@ -520,7 +205,10 @@ def conclusion_message(total, converted, not_converted, xc_status, acron_issue_l
     else:
         status = validation_status.STATUS_FATAL_ERROR
         reason = _('because there are blocking errors in the package.')
-    text = status + ': ' + acron_issue_label + _(' will') + action + ' ' + result + ' ' + reason
+    action = ' not'
+    if update:
+        action = ''
+    text = _('{status}: {issueid} will{action} {result} {reason}.').format(status=status, issueid=acron_issue_label, result=result, reason=reason, action=action)
     text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(converted) + '/' + str(total), False) + html_reports.p_message(text, False)
     return text
 
@@ -538,181 +226,10 @@ def package_paths_preparation(src_path):
 
 
 def convert_package(src_path):
-    xc_conclusion_msg = ''
-    pkg_xml_fatal_errors = 0
-    xc_results_report = ''
-    aop_results_report = ''
-    before_conversion_report = ''
-    after_conversion_report = ''
-    registered_scilista_item = None
-    report_components = {}
     scilista_items = []
-    xc_status = 'not processed'
     is_db_generation = True
-    converted = 0
-    not_converted = 0
-    total = 0
-
-    dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
-
-    pkg_name = os.path.basename(src_path)[:-4]
-
-    if not os.path.isdir('./../log'):
-        os.makedirs('./../log')
-    log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
-
-    fs_utils.append_file(log_package, 'preparing')
-    tmp_report_path, wrk_path, pkg_path, tmp_result_path = package_paths_preparation(src_path)
-    final_result_path = tmp_result_path
-    final_report_path = tmp_report_path
-
-    fs_utils.append_file(log_package, 'normalized_package')
-    pkg_articles, doc_file_info_items = normalized_package(src_path, tmp_report_path, wrk_path, pkg_path, converter_env.version)
-
-    pkg = pkg_reports.PkgArticles(pkg_articles, pkg_path)
-
-    journals_list = xc_models.JournalsList()
-    journal = journals_list.get_journal(pkg.pkg_p_issn, pkg.pkg_e_issn, pkg.pkg_journal_title)
-
-    fs_utils.append_file(log_package, 'identify_issue')
-    issue_error_msg = pkg.identify_issue(converter_env.db_manager, pkg_name)
-    #FIXME
-    issue = None
-
-    fs_utils.append_file(log_package, 'pkg.xml_list()')
-    report_components['xml-files'] = pkg.xml_list()
-
-    scilista_items.append(pkg.acron_issue_label)
-    if issue_error_msg is not None:
-        xc_status = 'rejected'
-        report_components['issue-report'] = issue_error_msg
-    else:
-
-        fs_utils.append_file(log_package, 'db_article')
-        db_article = xc_models.ArticleDB(converter_env.db_manager.db_isis, pkg.issue_files, xc_models.AopManager(converter_env.db_manager.db_isis, pkg.issue_files.journal_files))
-
-        conversion = Conversion(pkg, db_article)
-
-        fs_utils.append_file(log_package, 'conversion.evaluate_pkg_and_registered_items')
-        conversion.evaluate_pkg_and_registered_items(converter_env.skip_identical_xml)
-
-        pkg_validator = pkg_reports.ArticlesPkgReport(tmp_report_path, pkg, journal, issue, conversion.previous_registered_articles, is_db_generation)
-        pkg_validator.xc_validations = conversion.xc_validations
-
-        fs_utils.append_file(log_package, 'pkg_validator.overview_report()')
-        report_components['pkg_overview'] = pkg_validator.overview_report()
-
-        fs_utils.append_file(log_package, 'pkg_validator.references_overview_report()')
-        report_components['pkg_overview'] += pkg_validator.references_overview_report()
-
-        fs_utils.append_file(log_package, 'pkg_validator.sources_overview_report()')
-        report_components['references'] = pkg_validator.sources_overview_report()
-
-        fs_utils.append_file(log_package, 'pkg_validator.issue_report')
-        report_components['issue-report'] = pkg_validator.issue_report
-
-        conversion.blocking_errors = pkg_validator.blocking_errors
-
-        fs_utils.append_file(log_package, 'conversion.initial_status_report')
-        before_conversion_report = conversion.initial_status_report()
-
-        if conversion.blocking_errors == 0:
-
-            fs_utils.append_file(log_package, 'pkg_validator.validate_articles_pkg_xml_and_data')
-
-            pkg_validator.validate_articles_pkg_xml_and_data(doc_file_info_items, dtd_files, False, conversion.selected_articles.keys())
-
-            pkg_xml_fatal_errors = pkg_validator.pkg_xml_structure_validations.fatal_errors + pkg_validator.pkg_xml_content_validations.fatal_errors
-
-            fs_utils.append_file(log_package, 'pkg_validator.detail_report')
-            report_components['detail-report'] = pkg_validator.detail_report()
-
-            fs_utils.append_file(log_package, 'conversion.convert_articles')
-            registered_scilista_item = conversion.convert_articles(pkg_validator)
-
-            fs_utils.append_file(log_package, 'conversion.pkg_xc_validations.report')
-            report_components['conversion-report'] = conversion.pkg_xc_validations.report()
-            if conversion.pkg_xc_validations.fatal_errors == 0:
-                after_conversion_report = conversion.final_status_report()
-
-            fs_utils.append_file(log_package, 'Conversion results')
-            xc_results_report = report_status(_('Conversion results'), conversion.conversion_status, 'conversion')
-
-            fs_utils.append_file(log_package, 'AOP status')
-            aop_results_report = report_status(_('AOP status'), conversion.db.aop_manager.aop_sorted_by_status, 'aop-block')
-            if len(aop_results_report) == 0:
-                aop_results_report = _('this journal has no aop.')
-
-            final_report_path = pkg.issue_files.base_reports_path
-            final_result_path = pkg.issue_files.issue_path
-
-            if registered_scilista_item is not None:
-                fs_utils.append_file(log_package, 'pkg.issue_files.copy_files_to_local_web_app()')
-                pkg.issue_files.copy_files_to_local_web_app()
-
-            fs_utils.append_file(log_package, 'xc_status = get_xc_status()')
-            xc_status = get_xc_status(registered_scilista_item, conversion.pkg_xc_validations.fatal_errors, pkg_xml_fatal_errors, conversion.blocking_errors)
-
-            if conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update') is not None:
-                for item in conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update'):
-                    scilista_items.append(item)
-
-            total = len(conversion.selected_articles) if conversion.selected_articles is not None else 0
-            converted = len(conversion.conversion_status.get('converted', [])) if conversion.conversion_status.get('converted', []) is not None else 0
-            not_converted = len(conversion.conversion_status.get('not converted', [])) if conversion.conversion_status.get('not converted', []) is not None else 0
-
-        fs_utils.append_file(log_package, 'conversion.conclusion()')
-        xc_conclusion_msg = ''.join([html_reports.p_message(item) for item in conversion.error_messages])
-        xc_conclusion_msg += conclusion_message(total, converted, not_converted, xc_status, pkg.acron_issue_label)
-        if len(after_conversion_report) == 0:
-            after_conversion_report = xc_conclusion_msg
-
-    if converter_env.is_windows:
-        fs_utils.append_file(log_package, 'pkg_reports.processing_result_location')
-        report_components['xml-files'] += pkg_reports.processing_result_location(final_result_path)
-
-    report_components['db-overview'] = before_conversion_report + after_conversion_report
-    report_components['summary-report'] = xc_conclusion_msg + xc_results_report + aop_results_report
-
-    fs_utils.append_file(log_package, 'pkg_reports.format_complete_report')
-
-    xc_validations = pkg_reports.format_complete_report(report_components)
-    content = xc_validations.message
-    if tmp_report_path in content:
-        fs_utils.append_file(log_package, 'content.replace(tmp_report_path, final_report_path)')
-        content = content.replace(tmp_report_path, final_report_path)
-
-    report_location = final_report_path + '/xml_converter.html'
-    pkg_reports.save_report(report_location, [_('XML Conversion (XML to Database)'), pkg.acron_issue_label], content)
-
-    if not converter_env.is_windows:
-        fs_utils.append_file(log_package, 'format_reports_for_web')
-        format_reports_for_web(final_report_path, pkg_path, pkg.acron_issue_label.replace(' ', '/'))
-
-    if tmp_result_path != final_result_path:
-        fs_utils.delete_file_or_folder(tmp_result_path)
-
-    fs_utils.append_file(log_package, 'antes de return - convert_package')
-
-    os.unlink(log_package)
-    return (scilista_items, xc_status, xc_validations.statistics_message(), report_location)
-
-
-def convert_package_refact(src_path):
-    xc_conclusion_msg = ''
-    pkg_xml_fatal_errors = 0
-    xc_results_report = ''
-    aop_results_report = ''
-    before_conversion_report = ''
-    after_conversion_report = ''
-    registered_scilista_item = None
-    report_components = {}
-    scilista_items = []
+    is_xml_generation = False
     xc_status = 'not processed'
-    is_db_generation = True
-    converted = 0
-    not_converted = 0
-    total = 0
 
     scielo_dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
 
@@ -723,125 +240,59 @@ def convert_package_refact(src_path):
     log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
 
     fs_utils.append_file(log_package, 'preparing')
-    tmp_report_path, wrk_path, pkg_path, tmp_result_path = package_paths_preparation(src_path)
+    tmp_report_path, wrk_path, scielo_pkg_path, tmp_result_path = package_paths_preparation(src_path)
     final_result_path = tmp_result_path
     final_report_path = tmp_report_path
 
     fs_utils.append_file(log_package, 'normalized_package')
-    articles, articles_work_area = normalized_package(src_path, tmp_report_path, wrk_path, pkg_path, converter_env.version)
+    articles, articles_work_area = normalized_package(src_path, tmp_report_path, wrk_path, scielo_pkg_path, converter_env.version)
 
-    pkg_articles = pkg_validations.PkgArticles(scielo_pkg_path, articles, converter_env.is_windows)
+    pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles)
+    #, converter_env.is_windows
 
     journals_manager = xc_models.JournalsManager()
-    journal = journals_manager.journal(pkg_articles.journal.p_issn, pkg_articles.journal.e_issn, pkg_articles.journal.journal_title)
+    journal, journal_data = journals_manager.journal(pkg.journal.p_issn, pkg.journal.e_issn, pkg.journal.journal_title)
+    pkg.identify_issue_label(journal.acron)
 
-    acron_issue_label, issue_models, issue_error_msg = converter_env.db_manager.get_issue_models(journal.journal_title, pkg_articles.issue_label, journal.p_issn, journal.e_issn)
+    acron_issue_label, issue_models, issue_error_msg = converter_env.db_manager.get_issue_models(journal.journal_title, pkg.issue_label, journal.p_issn, journal.e_issn)
 
-    scilista_items.append(pkg_articles.acron_issue_label)
+    conversion_reports = ConversionReports()
     if issue_error_msg is not None:
+        conversion_reports.issue_error_msg = issue_error_msg
+        total = 0
+        converted = 0
+        not_converted = 0
+        acron_issue_label = 'not registered'
         xc_status = 'rejected'
-        report_components['issue-report'] = issue_error_msg
     else:
-
+        scilista_items.append(pkg.acron_issue_label)
         issue_files = converter_env.db_manager.get_issue_files(issue_models, scielo_pkg_path)
 
         articles_db_manager = xc_models.ArticlesDBManager(converter_env.db_manager.db_isis, issue_files)
-        registered_articles = articles_db_manager.registered_articles
 
-        issue_items = pkg_validations.IssueItems(articles, registered_articles)
-        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, articles_work_area, journal, issue_models, scielo_dtd_files, is_xml_generation, is_db_generation)
+        issue_items = pkg_validations.IssueItems(pkg, articles_db_manager.registered_articles)
+        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, articles_work_area, journal_data, issue_models, scielo_dtd_files, is_xml_generation, is_db_generation)
 
-        conversion = ArticlesConversion(issue_items_validations, articles_db_manager, not converter_env.is_windows)
+        conversion = ArticlesConversion(pkg, issue_items_validations, articles_db_manager, not converter_env.is_windows)
+        conversion_reports.xc_validations_report = conversion.xc_validations_report
+        total = conversion.total
+        converted = conversion.converted
+        not_converted = conversion.not_converted
+        xc_status = conversion.xc_status
+        conversion_reports.xc_conclusion_msg = conversion.excluded_error_messages
 
+        final_report_path = issue_files.base_reports_path
+        final_result_path = issue_files.issue_path
 
+    conversion_reports.xc_conclusion_msg += conclusion_message(total, converted, not_converted, xc_status, acron_issue_label)
 
-        #FIXME
-        conversion.evaluate_pkg_and_registered_items(converter_env.skip_identical_xml)
-
-
-        issue_items_validations.xc_validations = conversion.xc_validations
-
-        reports = pkg_validations.ReportsMaker(issue_items_validations, None)
-
-        conversion.blocking_errors = issue_items_validations.blocking_errors
-
-        if conversion.blocking_errors == 0:
-
-            reports.before_conversion_report = conversion.initial_status_report()
-
-            registered_scilista_item = conversion.convert_articles(pkg_validator)
-
-            report_components['conversion-report'] = conversion.pkg_xc_validations.report()
-            if conversion.pkg_xc_validations.fatal_errors == 0:
-                reports.after_conversion_report = conversion.final_status_report()
-
-            #fs_utils.append_file(log_package, 'Conversion results')
-            xc_results_report = report_status(_('Conversion results'), conversion.conversion_status, 'conversion')
-
-            #fs_utils.append_file(log_package, 'AOP status')
-            aop_results_report = report_status(_('AOP status'), conversion.db.aop_manager.aop_sorted_by_status, 'aop-block')
-            if len(aop_results_report) == 0:
-                aop_results_report = _('this journal has no aop.')
-
-            final_report_path = issue_files.base_reports_path
-            final_result_path = issue_files.issue_path
-
-            if registered_scilista_item is not None:
-                #fs_utils.append_file(log_package, 'pkg.issue_files.copy_files_to_local_web_app()')
-                issue_files.copy_files_to_local_web_app()
-
-            #fs_utils.append_file(log_package, 'xc_status = get_xc_status()')
-            xc_status = get_xc_status(registered_scilista_item, conversion.pkg_xc_validations.fatal_errors, pkg_xml_fatal_errors, conversion.blocking_errors)
-
-            if conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update') is not None:
-                for item in conversion.db.aop_manager.aop_sorted_by_status.get('aop scilista item to update'):
-                    scilista_items.append(item)
-
-            total = len(conversion.selected_articles) if conversion.selected_articles is not None else 0
-            converted = len(conversion.conversion_status.get('converted', [])) if conversion.conversion_status.get('converted', []) is not None else 0
-            not_converted = len(conversion.conversion_status.get('not converted', [])) if conversion.conversion_status.get('not converted', []) is not None else 0
-
-        #fs_utils.append_file(log_package, 'conversion.conclusion()')
-        xc_conclusion_msg = ''.join([html_reports.p_message(item) for item in conversion.error_messages])
-        xc_conclusion_msg += conclusion_message(total, converted, not_converted, xc_status, pkg_articles.acron_issue_label)
-        if len(after_conversion_report) == 0:
-            after_conversion_report = xc_conclusion_msg
-
-    
-    #fs_utils.append_file(log_package, 'pkg_reports.format_complete_report')
-
-    xc_validations = pkg_reports.format_complete_report(report_components)
-    content = xc_validations.message
-    if tmp_report_path in content:
-        #fs_utils.append_file(log_package, 'content.replace(tmp_report_path, final_report_path)')
-        content = content.replace(tmp_report_path, final_report_path)
-
+    reports = pkg_validations.ReportsMaker(issue_items_validations, None, conversion_reports, display_report=converter_env.is_windows)
+    reports.processing_result_location = final_result_path
     report_location = final_report_path + '/xml_converter.html'
-    pkg_reports.save_report(report_location, [_('XML Conversion (XML to Database)'), pkg.acron_issue_label], content)
-
-    if not converter_env.is_windows:
-        #fs_utils.append_file(log_package, 'format_reports_for_web')
-        format_reports_for_web(final_report_path, pkg_path, pkg.acron_issue_label.replace(' ', '/'))
-
-    if tmp_result_path != final_result_path:
-        fs_utils.delete_file_or_folder(tmp_result_path)
-
-    #fs_utils.append_file(log_package, 'antes de return - convert_package')
+    reports.save_report(report_location, 'xml_converter.html', _('XML Conversion (XML to Database)'))
 
     os.unlink(log_package)
-    return (scilista_items, xc_status, xc_validations.statistics_message(), report_location)
-
-
-def get_xc_status(registered_scilista_item, xc_errors, pkg_xml_fatal_errors, blocking_errors):
-    if registered_scilista_item is None:
-        result = 'rejected'
-        if blocking_errors + pkg_xml_fatal_errors + xc_errors == 0:
-            result = 'ignored'
-    elif pkg_xml_fatal_errors > 0:
-        result = 'accepted'
-    else:
-        result = 'approved'
-    return result
+    return (scilista_items, xc_status, reports.statistics_message(), report_location)
 
 
 def format_reports_for_web(report_path, pkg_path, issue_path):
@@ -863,33 +314,6 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
             if isinstance(content, unicode):
                 content = content.encode('utf-8')
             fs_utils.write_file(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, content)
-
-
-def is_conversion_allowed(pub_year, ref_count, pkg_validator):
-
-    def max_score(quote, score):
-        return ((score * quote) / 100) + 1
-
-    doit = False
-    score = (ref_count + 20)
-    if pkg_validator.registered_issue_data_validations.fatal_errors == 0:
-        if pub_year is not None:
-            if pub_year[0:4].isdigit():
-                if int(pub_year[0:4]) < (int(datetime.now().isoformat()[0:4]) - 1):
-                    #doc anterior a dois anos atrás)
-                    doit = True
-        if doit is False:
-            doit = True
-            if converter_env.max_fatal_error is not None:
-                if pkg_validator.pkg_xml_structure_validations.fatal_errors + pkg_validator.pkg_xml_content_validations.fatal_errors > max_score(converter_env.max_fatal_error, score):
-                    doit = False
-            if converter_env.max_error is not None:
-                if pkg_validator.pkg_xml_structure_validations.errors + pkg_validator.pkg_xml_content_validations.errors > max_score(converter_env.max_error, score):
-                    doit = False
-            if converter_env.max_warning is not None:
-                if pkg_validator.pkg_xml_structure_validations.warnings + pkg_validator.pkg_xml_content_validations.warnings > max_score(converter_env.max_warning, score):
-                    doit = False
-    return doit
 
 
 def report_status(title, status, style=None):
@@ -1135,7 +559,7 @@ def execute_converter(package_paths, collection_name=None):
                         pkg_reports.display_report(report_location)
 
                     if config.email_subject_package_evaluation is not None:
-                        results = ' '.join(XC_STATUS.get(xc_status, [])) + ' ' + stats_msg
+                        results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
                         link = converter_env.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
                         report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 

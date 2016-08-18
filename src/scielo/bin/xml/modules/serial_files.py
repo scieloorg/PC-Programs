@@ -117,6 +117,10 @@ class IssueFiles(object):
         self.create_folders()
         self.move_old_id_folder()
         self._articles_files = None
+        self.is_aop = issue_folder.endswith('ahead') and not issue_folder.startswith('ex-')
+        self.is_ex_aop = issue_folder.endswith('ahead') and issue_folder.startswith('ex-')
+        self.is_pr = issue_folder.endswith('pr') and not issue_folder.startswith('ex-')
+        self.is_regular = not self.is_aop and not self.is_ex_aop and not self.is_pr
 
     @property
     def articles_files(self):
@@ -196,6 +200,10 @@ class IssueFiles(object):
     @property
     def base_source_xml_files(self):
         return [self.base_source_path + '/' + item for item in os.listdir(self.base_source_path) if item.endswith('.xml')]
+
+    @property
+    def xml_files(self):
+        return {item: self.base_source_path + '/' + item for item in os.listdir(self.base_source_path) if item.endswith('.xml')}
 
     @property
     def base(self):
@@ -312,20 +320,14 @@ class JournalFiles(object):
             serial_path = serial_path[0:-1]
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
-        self._issues_files = None
-        self._aop_issues_files = None
-        self._ex_aop_issues_files = None
-        self._regular_issues_files = None
-        self._pr_issues_files = None
+        self._issues_files = {}
+        for issue_id in os.listdir(self.journal_path):
+            if os.path.isdir(self.journal_path + '/' + issue_id):
+                if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
+                    self._issues_files[issue_id] = IssueFiles(self, issue_id, None, None)
 
     @property
     def issues_files(self):
-        if self._issues_files is None:
-            self._issues_files = {}
-            for issue_id in os.listdir(self.journal_path):
-                if os.path.isdir(self.journal_path + '/' + issue_id):
-                    if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
-                        self._issues_files[issue_id] = IssueFiles(self, issue_id, None, None)
         return self._issues_files
 
     def publishes_aop(self):
@@ -333,31 +335,19 @@ class JournalFiles(object):
 
     @property
     def pr_issues_files(self):
-        if self._pr_issues_files is None:
-            if self.issue_files is not None:
-                self._pr_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('pr') and not k.startswith('ex-')}
-        return self._pr_issues_files
+        return {k:v for k, v in self.issues_files.items() if v.is_pr}
 
     @property
     def regular_issues_files(self):
-        if self._regular_issues_files is None:
-            if self.issue_files is not None:
-                self._regular_issues_files = {k:v for k, v in self.issues_files.items() if k is not self.aop_issue_files.keys() and k is not self.ex_aop_issues_files.keys() and k is not self.pr_issue_files.keys()}
-        return self._regular_issues_files
+        return {k:v for k, v in self.issues_files.items() if v.is_regular}
 
     @property
     def aop_issue_files(self):
-        if self._aop_issues_files is None:
-            if self.issues_files is not None:
-                self._aop_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and not k.startswith('ex-')}
-        return self._aop_issues_files
+        return {k:v for k, v in self.issues_files.items() if v.is_aop}
 
     @property
     def ex_aop_issues_files(self):
-        if self._ex_aop_issues_files is None:
-            if self.issues_files is not None:
-                self._ex_aop_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and k.startswith('ex-')}
-        return self._ex_aop_issues_files
+        return {k:v for k, v in self.issues_files.items() if v.is_ex_aop}
 
     def archive_ex_aop_files(self, aop, db_name):
         aop_issue_files = None
@@ -365,12 +355,11 @@ class JournalFiles(object):
         done = False
         errors = []
         if self.ex_aop_issues_files is not None:
-            print('self.ex_aop_issues_files is not None')
-            ex_aop_issues_files = self.ex_aop_issues_files.get('ex-' + db_name)
+            ex_aop_db_name = 'ex-' + db_name
+            ex_aop_issues_files = self.ex_aop_issues_files.get(ex_aop_db_name)
             if ex_aop_issues_files is None:
-                self._issues_files['ex-' + db_name] = IssueFiles(self, 'ex-' + db_name, None, None)
-                self._ex_aop_issues_files['ex-' + db_name] = self._issues_files['ex-' + db_name]
-                ex_aop_issues_files = self._ex_aop_issues_files['ex-' + db_name]
+                self._issues_files[ex_aop_db_name] = IssueFiles(self, ex_aop_db_name, None, None)
+                ex_aop_issues_files = self._ex_aop_issues_files[ex_aop_db_name]
         if self.aop_issue_files is not None:
             aop_issue_files = self.aop_issue_files.get(db_name)
         if aop_issue_files is not None and ex_aop_issues_files is not None:
@@ -378,11 +367,7 @@ class JournalFiles(object):
             errors += fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.id_path + '/' + aop.order + '.id', ex_aop_issues_files.id_path + '/' + aop.order + '.id')
-            print(errors)
         if aop_issue_files is not None:
-            print('aop_issue_files.id_path')
-            print(aop_issue_files.id_path + '/' + aop.order + '.id')
-            print(os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
             done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
         return (done, errors)
 

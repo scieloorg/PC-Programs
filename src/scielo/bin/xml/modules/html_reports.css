@@ -131,7 +131,7 @@ h5 {
    color: black;
    vertical-align: top;
    word-wrap:break-word;
-   width:20%;  
+   max-width:20%;  
 } 
 .fatalerror .td_label {
    border: 1px solid gray;
@@ -374,7 +374,6 @@ h5 {
   max-width: 100%;
   word-wrap:break-word;
   margin: 5px;
-  padding: 1px;
   font-family: Verdana;
   font-size: 8pt;
 } 

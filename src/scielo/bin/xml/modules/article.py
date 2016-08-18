@@ -68,14 +68,14 @@ def format_author(author):
     return r
 
 
-def display_authors(authors):
+def authors_list(authors):
     items = []
     for item in authors:
         if isinstance(item, PersonAuthor):
             items.append(item.surname + ', ' + item.fname)
         else:
             items.append(item.collab)
-    return '; '.join(items)
+    return items
 
 
 def get_affiliation(aff):
@@ -105,9 +105,9 @@ def get_affiliation(aff):
     return a
 
 
-def get_author(contrib):
+def get_author(contrib, role=None):
     c = None
-    if contrib.findall('name'):
+    if contrib.find('name') is not None:
         c = PersonAuthor()
         c.fname = contrib.findtext('name/given-names')
         c.surname = contrib.findtext('name/surname')
@@ -118,10 +118,20 @@ def get_author(contrib):
         c.role = contrib.attrib.get('contrib-type')
         for xref_item in contrib.findall('xref[@ref-type="aff"]'):
             c.xref.append(xref_item.attrib.get('rid'))
-    elif contrib.findall('collab'):
+    elif contrib.tag == 'name':
+        c = PersonAuthor()
+        c.fname = contrib.findtext('given-names')
+        c.surname = contrib.findtext('surname')
+        c.suffix = contrib.findtext('suffix')
+        c.prefix = contrib.findtext('prefix')
+        c.role = role
+    elif contrib.find('collab') is not None:
         c = CorpAuthor()
         c.role = contrib.attrib.get('contrib-type')
         c.collab = contrib.findtext('collab')
+    elif contrib.tag == 'collab':
+        c = CorpAuthor()
+        c.collab = contrib.text
     return c
 
 
@@ -800,12 +810,14 @@ class ArticleXML(object):
         if self.translations is not None:
             for node in self.translations:
                 k.append(xml_utils.element_lang(node))
-        return r
+        return k
 
     @property
     def doi(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
+            _doi = self.article_meta.findtext('article-id[@pub-id-type="doi"]')
+            if _doi is not None:
+                return _doi.lower()
 
     @property
     def previous_article_pid(self):
