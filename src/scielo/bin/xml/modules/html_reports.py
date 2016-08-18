@@ -147,7 +147,14 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_
     else:
         if _('why it is not a valid message?') in table_header:
             table_header = [item for item in table_header if item != _('why it is not a valid message?')]
-    return sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content)
+    r = ''
+    try:
+        r = sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content)
+    except Exception as e:
+        print(e)
+        print(table_header)
+        print(table_data)
+    return r
 
 
 def sheet_build(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):

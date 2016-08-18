@@ -43,8 +43,6 @@ class PkgValReports(dict):
 
     def report(self, errors_only=False):
         _reports = ''
-        if title is not None:
-            _reports += title
         for xml_name, results in self.items():
             if results.total() > 0 or errors_only is False:
                 _reports += html_reports.tag('h4', xml_name)
@@ -274,8 +272,8 @@ class ArticleValidations(object):
         r += html_reports.tag('p', self.article.article_type)
         #r += html_reports.tag('p', self.article.pages)
         r += html_reports.tag('p', self.article.doi)
-        r += html_reports.tag('p', html_reports.tag('strong', self.article.title.title))
-        r += html_reports.tag('p', html_reports.format_html_data({t.lang: t.title for t in self.article.trans_titles}))
+        r += html_reports.tag('p', html_reports.tag('strong', self.article.title))
+        r += html_reports.tag('p', html_reports.format_html_data({t.language: t.title for t in self.article.titles[1:]}))
         a = []
         for item in article.authors_list(self.article.article_contrib_items):
             a.append(html_reports.tag('span', item))
@@ -345,8 +343,8 @@ class ArticlesPackage(object):
             self.journal.journal_title, self.journal.p_issn, self.journal.e_issn, self.issue_label = journals[0]
 
     def identify_issue_label(self, acron):
-        self.journal.acron = acron
-        self.acron_issue_label = self.journal.acron + ' ' + self.issue_label
+        self.journal.acron = str(acron)
+        self.acron_issue_label = self.journal.acron + ' ' + str(self.issue_label)
 
     @property
     def xml_list(self):
@@ -617,6 +615,10 @@ class IssueItemsValidations(object):
         self.validate()
         self.journal_and_issue_validations()
 
+        self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_FATAL_ERROR, 'doi': validation_status.STATUS_FATAL_ERROR, 'elocation id': validation_status.STATUS_FATAL_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
+        if not self.is_db_generation:
+            self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
+
     @property
     def articles(self):
         return articles_sorted_by_order(self.issue_items.articles)
@@ -877,7 +879,7 @@ class IssueItemsValidations(object):
     def duplicated_values_report(self):
         parts = []
         for label, values in self.issue_items.duplicated_values.items():
-            status = self.error_level_for_unique[label]
+            status = self.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
             _m = _('{status}: unique value of {label} is required for all the documents in the package').format(status=status, label=label)
             part.append(html_reports.p_message(_m))
             for value, xml_files in values.items():
@@ -889,10 +891,12 @@ class IssueItemsValidations(object):
         parts = []
         for label, values in self.issue_items.conflicting_values.items():
             compl = ''
+            _status = validation_status.STATUS_FATAL_ERROR
             if label == 'issue pub date':
                 if self.issue_items.is_rolling_pass:
-                    compl += ' rolling pass'
-            _status = status.get(label, validation_status.STATUS_FATAL_ERROR)
+                    _status = validation_status.STATUS_WARNING
+            elif label == 'license':
+                _status = validation_status.STATUS_WARNING
             _m = _('{status}: same value for {label} is required for all the documents in the package.').format(status=_status, label=label)
             parts.append(html_reports.p_message(_m))
             parts.append(html_reports.format_html_data(values))

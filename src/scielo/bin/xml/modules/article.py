@@ -153,9 +153,10 @@ def get_title(node, lang):
 def items_by_lang(items):
     r = {}
     for item in items:
-        if not item.language in r.keys():
-            r[item.language] = []
-        r[item.language].append(item)
+        if item is not None:
+            if not item.language in r.keys():
+                r[item.language] = []
+            r[item.language].append(item)
     return r
 
 
@@ -709,7 +710,10 @@ class ArticleXML(object):
         k = []
         if self.article_meta is not None:
             for contrib in self.article_meta.findall('.//contrib'):
-                k.append(get_author(contrib))
+                a = get_author(contrib)
+                if a is not None:
+                    k.append(a)
+        k = [item for item in k if item is not None]
         return k
 
     @property
@@ -720,7 +724,10 @@ class ArticleXML(object):
                 if subart.attrib.get('article-type') != 'translation':
                     contribs[subart.attrib.get('id')] = []
                     for contrib in subart.findall('.//contrib'):
-                        contribs[subart.attrib.get('id')].append(get_author(contrib))
+                        a = get_author(contrib)
+                        if a is not None:
+                            contribs[subart.attrib.get('id')].append(a)
+        
         return contribs
 
     @property
@@ -758,7 +765,9 @@ class ArticleXML(object):
         k = []
         if self.article_meta is not None:
             for contrib in self.article_meta.findall('.//contrib[collab]'):
-                k.append(get_author(contrib))
+                a = get_author(contrib)
+                if a is not None:
+                    k.append()
         return k
 
     def short_article_title(self, size=None):
@@ -773,31 +782,54 @@ class ArticleXML(object):
                 return self.title
 
     @property
-    def title(self):
+    def title_group_title(self):
+        k = []
         if self.article_meta is not None:
-            node = self.article_meta.find('.//title-group')
-            if node is not None:
-                return get_title(node, self.language)
+            for node in self.article_meta.findall('.//title-group'):
+                t = Title()
+                t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
+                t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
+                t.language = self.language
+                k.append(t)
+        return k
 
     @property
-    def trans_titles(self):
+    def trans_title_group_titles(self):
         k = []
         if self.article_meta is not None:
             for node in self.article_meta.findall('.//trans-title-group'):
-                k.append(get_title(node, xml_utils.element_lang(node)))
+                t = Title()
+                t.title = article_utils.remove_xref(xml_utils.node_text(node.find('trans-title')))
+                t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('trans-subtitle')))
+                t.language = xml_utils.element_lang(node)
+                k.append(t)
+        return k
+
+    @property
+    def translations_title_group_titles(self):
+        k = []
         if self.translations is not None:
             for subart in self.translations:
                 for node in subart.findall('*/title-group'):
-                    k.append(get_title(node, xml_utils.element_lang(subart)))
+                    t = Title()
+                    t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
+                    t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
+                    t.language = xml_utils.element_lang(subart)
+                    k.append(t)
         return k
 
     @property
     def titles(self):
-        return [self.title] + self.trans_titles
+        return self.title_group_title + self.trans_title_group_titles + self.translations_title_group_titles
+
+    @property
+    def title(self):
+        if len(self.titles) > 0:
+            return self.titles[0].title
 
     @property
     def titles_by_lang(self):
-        return items_by_lang([self.title] + self.trans_titles)
+        return items_by_lang(self.titles)
 
     @property
     def title_abstract_kwd_languages(self):
@@ -1647,6 +1679,7 @@ class ReferenceXML(object):
         for grp in self.authors_by_group:
             for contrib in grp:
                 r.append(contrib)
+
         return r
 
     @property
@@ -1656,6 +1689,8 @@ class ReferenceXML(object):
             for person_group in self.element_citation.findall('.//person-group'):
                 role = person_group.attrib.get('person-group-type', 'author')
                 authors = [get_author(contrib) for contrib in person_group.findall('*')]
+                authors = [a for a in authors if a is not None]
+
                 groups.append(authors)
         return groups
 

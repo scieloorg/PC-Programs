@@ -489,9 +489,10 @@ def minidom_pretty_print(content):
     except Exception as e:
         print('ERROR in pretty')
         print(e)
-        #print(content)
+        print(content)
         #print(pretty)
         fs_utils.write_file('./pretty_print.xml', content)
+        raise
     return pretty
 
 
@@ -665,6 +666,8 @@ class PrettyXML(object):
         except Exception as e:
             print('ERROR in minidom_pretty_print')
             print(e)
+            print(self._xml)
+            raise
 
     @property
     def xml(self):
