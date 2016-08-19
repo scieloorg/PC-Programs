@@ -881,7 +881,7 @@ class IssueItemsValidations(object):
         for label, values in self.issue_items.duplicated_values.items():
             status = self.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
             _m = _('{status}: unique value of {label} is required for all the documents in the package').format(status=status, label=label)
-            part.append(html_reports.p_message(_m))
+            parts.append(html_reports.p_message(_m))
             for value, xml_files in values.items():
                 parts.append(html_reports.format_list(_('found {label}="{value}" in:').format(label=label, value=value), 'ul', xml_files, 'issue-problem'))
         return ''.join(parts)
