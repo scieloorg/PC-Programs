@@ -695,6 +695,14 @@ class IssueArticlesRecords(object):
         return (i_record, items)
 
 
+class ConversionResults(object):
+    def __init__(self):
+        self.converted = False
+        self.excluded_aop = None
+        self.xc_validations = pkg_validations.ValidationResults()
+        self.aop_status = None
+
+
 class ArticlesDBManager(object):
 
     def __init__(self, db_isis, issue_files):
@@ -825,43 +833,45 @@ class ArticlesDBManager(object):
         return saved and not previous
 
     def convert_article(self, article, i_record):
-        error_messages = []
-        converted = True
-        is_excluded_aop = None
+        result = ConversionResults()
+        xc_messages = []
+        result.converted = True
+        result.excluded_aop = None
         if self.aop_db_manager is not None:
-            valid_aop, aop_status, messages = self.aop_db_manager.get_statusated_aop(article)
-            error_messages.append(messages)
+            valid_aop, result.aop_status, messages = self.aop_db_manager.get_statusated_aop(article)
+            xc_messages.append(messages)
             if valid_aop is not None:
                 article.registered_aop_pid = valid_aop.pid
-        if converted is True:
+        if result.converted is True:
             article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
             article_records = self.article_records(i_record, article, article_files)
             id_created = self.create_article_id_file(article_records, article_files)
             if id_created is True:
                 if valid_aop is not None:
-                    is_excluded_aop, messages = self.aop_db_manager.manage_ex_aop(valid_aop)
-                    if is_excluded_aop is True:
-                        error_messages.append(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order))
+                    result.excluded_aop, messages = self.aop_db_manager.manage_ex_aop(valid_aop)
+                    if result.excluded_aop is True:
+                        xc_messages.append(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order))
                     else:
-                        error_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}').format(item='ex aop: ' + valid_aop.order))
+                        xc_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}').format(item='ex aop: ' + valid_aop.order))
                         if messages is not None:
                             for m in messages:
-                                error_messages.append(m)
-                    converted = id_created and is_excluded_aop
+                                xc_messages.append(m)
+                    result.converted = id_created and result.excluded_aop
             else:
-                error_messages.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(article.order))
-                converted = False
-        return (converted, error_messages, is_excluded_aop, aop_status)
+                xc_messages.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(article.order))
+                result.converted = False
+
+        result.xc_validations.message = ''.join([html_reports.p_message(item) for item in xc_messages])
+        return result
 
     def convert_articles(self, articles, i_record, create_windows_base):
-        article_messages = {}
         xc_results = {}
-        excluded_aop = {}
+
         result = False
         error = False
 
         for xml_name, article in articles:
-            xc_results[xml_name], article_messages[xml_name], excluded_aop[xml_name] = self.convert_article(article, i_record)
+            xc_results[xml_name] = self.convert_article(article, i_record)
             if xc_results[xml_name] is False:
                 error = True
 
@@ -871,7 +881,7 @@ class ArticlesDBManager(object):
             if result:
                 if create_windows_base:
                     self.generate_windows_version()
-        return (result, article_messages, xc_results, excluded_aop)
+        return (result, xc_results)
 
     def exclude_incorrect_orders(self, changed_orders):
         messages = []

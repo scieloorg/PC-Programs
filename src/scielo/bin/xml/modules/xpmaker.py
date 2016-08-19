@@ -1127,9 +1127,10 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         journal, journal_data = journals_manager.journal(pkg.journal.p_issn, pkg.journal.e_issn, pkg.journal.journal_title)
         pkg.identify_issue_label(journal.acron)
 
-        issue_items = pkg_validations.IssueItems(pkg, None)
-        issue_items_validations = pkg_validations.IssueItemsValidations(issue_items, articles_work_area, journal_data, None, scielo_dtd_files, is_xml_generation, is_db_generation)
-        reports = pkg_validations.ReportsMaker(issue_items_validations, xpm_version(), display_report=DISPLAY_REPORT)
+        articles_set = pkg_validations.ArticlesSet(pkg, None)
+        articles_set_validations = pkg_validations.ArticlesSetValidations(articles_set, articles_work_area, journal_data, None, scielo_dtd_files, is_xml_generation, is_db_generation)
+        articles_set_validations.validate()
+        reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), display_report=DISPLAY_REPORT)
 
         if not is_xml_generation:
             filename = report_path + '/xml_package_maker.html'
