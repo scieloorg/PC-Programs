@@ -74,17 +74,6 @@ class ValidationsResult(object):
     def statistics_message(self):
         return '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(self.fatal_errors)), ('errors', str(self.errors)), ('warnings', str(self.warnings))]]) + ']'
 
-    def block_report(self, new_name, label, id):
-        links = ''
-        block = ''
-        if self.total() > 0:
-            a_name = 'view-reports-' + new_name
-            status = html_reports.statistics_display(self)
-            links = html_reports.report_link(id + new_name, '[ ' + label + ' ]', id, a_name)
-            links += html_reports.tag('span', status, 'smaller')
-            block = html_reports.report_block(id + new_name, self.message, id, a_name)
-        return (links, block)
-
 
 class ValidationsFile(object):
 
@@ -93,20 +82,20 @@ class ValidationsFile(object):
         self.filename = filename
         self.read()
 
-    @message.setter
-    def message(self, message):
-        self.validations.message = message
-        self.write()
-
     @property
     def message(self):
         return self.validations.message
+
+    @message.setter
+    def message(self, _message):
+        self.validations.message = _message
+        self.write()
 
     def total(self):
         return self.validations.total
 
     def statistics_message(self):
-        return self.validations.statistics_message
+        return self.validations.statistics_message()
 
     def block_report(self, new_name, label, id):
         return self.validations.block_report
@@ -116,7 +105,10 @@ class ValidationsFile(object):
         fs_utils.write_file(self.filename, m)
 
     def read(self):
-        self.message = fs_utils.read_file(self.filename)
+        if os.path.isfile(self.filename):
+            self.message = fs_utils.read_file(self.filename)
+        else:
+            self.message = ''
 
 
 class ArticleValidations(object):
@@ -132,8 +124,8 @@ class ArticleValidations(object):
         self.is_db_generation = is_db_generation
         self.xml_journal_data_validations_file = ValidationsFile(self.work_area.journal_validations_filename)
         self.xml_issue_data_validations_file = ValidationsFile(self.work_area.issue_validations_filename)
-        self.xml_structure_validations_file = ValidationsFile(self.work_area.xml_structure_validations_file_filename)
-        self.xml_content_validations_file = ValidationsFile(self.work_area.xml_content_validations_file_filename)
+        self.xml_structure_validations_file = ValidationsFile(self.work_area.dtd_report_filename)
+        self.xml_content_validations_file = ValidationsFile(self.work_area.data_report_filename)
 
     @property
     def xml_validations(self):
@@ -249,30 +241,18 @@ class ArticleValidations(object):
                         doit = False
         return doit
 
-    @property
-    def block_reports(self):
-        a_name = 'view-reports-' + self.work_area.new_name
-        links = '<a name="' + a_name + '"/>'
-        status = ''
-        block = ''
-
+    def hide_and_show_block(self, report_id):
         blocks = []
-        blocks.append([_('Structure Validations'), 'xmlrep', self.xml_structure_validations_file])
-        blocks.append([_('Contents Validations'), 'datarep', self.xml_content_validations_file])
-        #FIXME
-        #blocks.append([_('Images Validations'), 'imgrep', self.images_validations])
-
-        for title, a_name, val_results in blocks:
-            _link, _block = val_results.block_report(self.work_area.new_name, title, a_name)
-            links += _link
-            block += _block
-
+        block_parent_id = report_id + self.work_area.new_name
+        blocks.append((_('Structure Validations'), 'xmlrep', self.xml_structure_validations_file))
+        blocks.append((_('Contents Validations'),  'datarep', self.xml_content_validations_file))
         if self.is_db_generation:
-            #FIXME
-            _link, _block = self.xml_issue_data_validations.block_report(self.work_area.new_name, _('Converter Validations'), 'xcrep')
-            links += _link
-            block += _block
-        return (links, block)
+            blocks.append((_('Converter Validations'), 'xcrep', self.xml_issue_data_validations_file))
+        _blocks = []
+        for label, style, validations_file in blocks:
+            if validations_file.total() > 0:
+                _blocks.append(html_reports.HideAndShowBlockItem(block_parent_id, label, style + self.work_area.new_name, style, validations_file.message, validations_file.statistics_message()))
+        return html_reports.HideAndShowBlock(block_parent_id, _blocks)
 
     @property
     def table_of_content(self):
@@ -317,10 +297,10 @@ class ArticleValidations(object):
         return r
 
     def validate(self, journal, issue_models, dtd_files):
-        self.xml_journal_data_validations_file.message = self.validate_journal_data(journal))
-        self.xml_issue_data_validations_file.message = self.validate_issue_data(issue_models))
-        self.xml_structure_validations_file.message = self.validate_xml_structure(dtd_files))
-        self.xml_content_validations_file.message = self.validate_xml_content(journal))
+        self.xml_journal_data_validations_file.message = self.validate_journal_data(journal)
+        self.xml_issue_data_validations_file.message = self.validate_issue_data(issue_models)
+        self.xml_structure_validations_file.message = self.validate_xml_structure(dtd_files)
+        self.xml_content_validations_file.message = self.validate_xml_content(journal)
         if self.is_xml_generation:
             valresults = ValidationsFile(self.work_area.data_report_filename)
             stats = html_reports.statistics_display(valresults, False)
@@ -357,14 +337,26 @@ class ArticlesPackage(object):
         return r
 
 
-class ArticlesSet(object):
+class ArticlesSetValidations(object):
 
-    def __init__(self, pkg, registered_articles=None):
+    def __init__(self, pkg, articles_work_area, journal, dtd_files, is_xml_generation, is_db_generation, registered_articles=None, issue_models=None):
         self.pkg = pkg
         self.pkg_articles = pkg.articles
         self.registered_articles = registered_articles if registered_articles is not None else {}
-        self.articles = {} if self.registered_articles is None else self.registered_articles.copy()
-        self.articles.update(self.pkg_articles)
+        self.merged_articles = {} if self.registered_articles is None else self.registered_articles.copy()
+        self.merged_articles.update(self.pkg_articles)
+        self.articles_work_area = articles_work_area
+        self.articles_validations = {}
+        self.journal = journal
+        self.issue_models = issue_models
+        self.dtd_files = dtd_files
+        self.is_xml_generation = is_xml_generation
+        self.is_db_generation = is_db_generation
+
+        self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_FATAL_ERROR, 'doi': validation_status.STATUS_FATAL_ERROR, 'elocation id': validation_status.STATUS_FATAL_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
+        if not self.is_db_generation:
+            self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
+
         self.blocked_update = []
         self.xc_articles = {}
         self.exact_comparison = {}
@@ -451,7 +443,7 @@ class ArticlesSet(object):
         data = {}
         for label in self.EXPECTED_COMMON_VALUES_LABELS:
             values = {}
-            for xml_name, article in self.articles.items():
+            for xml_name, article in self.merged_articles.items():
                 value = article.summary[label]
 
                 if not value in values:
@@ -466,7 +458,7 @@ class ArticlesSet(object):
         data = {}
         for label in self.EXPECTED_UNIQUE_VALUE_LABELS:
             values = {}
-            for xml_name, article in self.articles.items():
+            for xml_name, article in self.merged_articles.items():
                 value = article.summary[label]
 
                 if not value in values:
@@ -478,7 +470,7 @@ class ArticlesSet(object):
 
     @property
     def invalid_xml_name_items(self):
-        return sorted([xml_name for xml_name, doc in self.articles.items() if doc.tree is None])
+        return sorted([xml_name for xml_name, doc in self.merged_articles.items() if doc.tree is None])
 
     @property
     def missing_required_values(self):
@@ -518,7 +510,7 @@ class ArticlesSet(object):
         for k in keys:
             evaluation[k] = []
 
-        for xml_name, doc in self.articles.items():
+        for xml_name, doc in self.merged_articles.items():
             aff_ids = [aff.id for aff in doc.affiliations]
             for contrib in doc.contrib_names:
                 if len(contrib.xref) == 0:
@@ -543,7 +535,7 @@ class ArticlesSet(object):
         self.missing_year = []
         self.unusual_sources = []
         self.unusual_years = []
-        for xml_name, doc in self.articles.items():
+        for xml_name, doc in self.merged_articles.items():
             for ref in doc.references:
                 if ref.source is not None:
                     if not ref.source in self.sources_and_reftypes.keys():
@@ -583,45 +575,28 @@ class ArticlesSet(object):
 
     @property
     def is_aop_issue(self):
-        return any([a.is_ahead for a in self.articles.values()])
+        return any([a.is_ahead for a in self.merged_articles.values()])
 
     @property
     def is_rolling_pass(self):
         _is_rolling_pass = False
         if not self.is_aop_issue:
-            epub_dates = list(set([a.epub_dateiso for a in self.articles.values() if a.epub_dateiso is not None]))
-            epub_ppub_dates = [a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]
-            collection_dates = [a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]
+            epub_dates = list(set([a.epub_dateiso for a in self.merged_articles.values() if a.epub_dateiso is not None]))
+            epub_ppub_dates = [a.epub_ppub_dateiso for a in self.merged_articles.values() if a.epub_ppub_dateiso is not None]
+            collection_dates = [a.collection_dateiso for a in self.merged_articles.values() if a.collection_dateiso is not None]
             other_dates = list(set(epub_ppub_dates + collection_dates))
             if len(epub_dates) > 0:
                 if len(other_dates) == 0:
                     _is_rolling_pass = True
                 elif len(other_dates) > 1:
                     _is_rolling_pass = True
-                elif len([None for a in self.articles.values() if a.collection_dateiso is None]) > 0:
+                elif len([None for a in self.merged_articles.values() if a.collection_dateiso is None]) > 0:
                     _is_rolling_pass = True
         return _is_rolling_pass
 
-
-class ArticlesSetValidations(object):
-
-    def __init__(self, articles_set, articles_work_area, journal, issue_models, dtd_files, is_xml_generation, is_db_generation):
-        self.articles_set = articles_set
-        self.articles_work_area = articles_work_area
-        self.articles_validations = {}
-        self.journal = journal
-        self.issue_models = issue_models
-        self.dtd_files = dtd_files
-        self.is_xml_generation = is_xml_generation
-        self.is_db_generation = is_db_generation
-
-        self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_FATAL_ERROR, 'doi': validation_status.STATUS_FATAL_ERROR, 'elocation id': validation_status.STATUS_FATAL_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
-        if not self.is_db_generation:
-            self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
-
     @property
     def articles(self):
-        return articles_sorted_by_order(self.articles_set.articles)
+        return articles_sorted_by_order(self.merged_articles)
 
     @property
     def pkg_journal_validations_report_title(self):
@@ -632,8 +607,8 @@ class ArticlesSetValidations(object):
         return t1 + t2
 
     def validate(self):
-        for name, article in self.articles_set.articles.items():
-            self.articles_validations[name] = ArticleValidations(article, self.articles_work_area[name], self.articles_set.pkg.pkg_path, self.is_xml_generation, self.is_db_generation)
+        for name, article in self.merged_articles.items():
+            self.articles_validations[name] = ArticleValidations(article, self.articles_work_area[name], self.pkg.pkg_path, self.is_xml_generation, self.is_db_generation)
             self.articles_validations[name].validate(self.journal, self.issue_models, self.dtd_files)
 
         self.pkg_journal_validations = PackageValidationsResult()
@@ -659,57 +634,39 @@ class ArticlesSetValidations(object):
     @property
     def detailed_report(self):
         labels = ['file', 'order', _('pages'), _('article'), 'aop pid/related', _('reports')]
-        items = []
+        values = {}
+        hide_and_show_block_items = {}
 
         for new_name, article in self.articles:
+            hide_and_show_block_items[new_name] = self.articles_validations[new_name].hide_and_show_block('view-reports-')
 
-            links, block = self.articles_validations[new_name].block_reports
+            values[new_name] = []
+            values[new_name].append(new_name)
+            values[new_name].append(article.order)
+            values[new_name].append(article.pages)
 
-            values = []
-            values.append(new_name)
-            values.append(article.order)
-            values.append(article.pages)
+            values[new_name].append(self.articles_validations[new_name].table_of_content)
+            values[new_name].append({'aop doi': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]})
 
-            values.append(self.articles_validations[new_name].table_of_content)
-            values.append({'aop doi': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]})
-            # + self.articles_validations[new_name].data_with_lang)
-            values.append(links)
-
-            items.append(label_values(labels, values))
-            items.append({'reports': block})
-
-        return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=['reports', 'article'])
-
-    @property
-    def toc_report(self):
-        labels = ['file', _('article'), _('pages')]
-        items = []
-
-        for new_name, article in self.articles:
-
-            values = []
-            values.append(new_name)
-            values.append(self.articles_validations[new_name].table_of_content)
-            values.append(article.pages)
-            items.append(label_values(labels, values))
-
-        return html_reports.sheet(labels, items, table_style='dbstatus', html_cell_content=['reports', 'article'])
+        report = html_reports.HideAndShowBlocksReport(labels, values, hide_and_show_block_items, html_cell_content=[_('article')])
+        return report.content
 
     @property
     def toc_extended_report(self):
-        labels = ['file', _('article'), _('pages')]
-        items = []
+        labels = ['file', _('article'), _('pages'), '+']
+        values = {}
 
         for new_name, article in self.articles:
+            report_id = 'toc-'
+            block_parent_id = report_id + new_name
+            block_items = [html_reports.HideAndShowBlockItem(block_parent_id, '+', 'more-' + new_name, 'xmlrep', self.articles_validations[new_name].data_with_lang, '')]
+            hide_and_show_block_items[new_name] = html_reports.HideAndShowBlock(block_parent_id, block_items)
+            values[new_name] = []
+            values[new_name].append(new_name)
+            values[new_name].append(self.articles_validations[new_name].table_of_content)
 
-            values = []
-            values.append(new_name)
-            values.append(self.articles_validations[new_name].table_of_content + self.articles_validations[new_name].data_with_lang)
-            values.append(article.pages)
-
-            items.append(label_values(labels, values))
-
-        return html_reports.sheet(labels, items, table_style='dbstatus', html_cell_content=['reports', 'article'])
+        report = html_reports.HideAndShowBlocksReport(labels, values, hide_and_show_block_items, html_cell_content=[_('article')])
+        return report.content
 
     @property
     def alt_detailed_report(self):
@@ -776,7 +733,7 @@ class ArticlesSetValidations(object):
     def articles_affiliations_report(self):
         r = html_reports.tag('h4', _('Affiliations Report'))
         items = []
-        for label, occs in self.articles_set.compiled_affiliations.items():
+        for label, occs in self.compiled_affiliations.items():
             items.append({'label': label, 'quantity': str(len(occs)), _('files'): sorted(list(set(occs)))})
         r += html_reports.sheet(['label', 'quantity', _('files')], items, 'dbstatus')
         return r
@@ -788,26 +745,26 @@ class ArticlesSetValidations(object):
         values = []
         values.append(_('references by type'))
         values.append(validation_status.STATUS_INFO)
-        values.append({reftype: str(sum([len(occ) for occ in sources.values()])) for reftype, sources in self.articles_set.reftype_and_sources.items()})
+        values.append({reftype: str(sum([len(occ) for occ in sources.values()])) for reftype, sources in self.reftype_and_sources.items()})
         values.append('')
         items.append(label_values(labels, values))
 
-        if len(self.articles_set.bad_sources_and_reftypes) > 0:
+        if len(self.bad_sources_and_reftypes) > 0:
             values = []
             values.append(_('same sources as different types references'))
             values.append(validation_status.STATUS_ERROR)
-            values.append(self.articles_set.bad_sources_and_reftypes)
+            values.append(self.bad_sources_and_reftypes)
             values.append('')
             items.append(label_values(labels, values))
 
-        if len(self.articles_set.missing_source) > 0:
-            items.append({'label': _('references missing source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.articles_set.missing_source], _('why it is not a valid message?'): ''})
-        if len(self.articles_set.missing_year) > 0:
-            items.append({'label': _('references missing year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.articles_set.missing_year], _('why it is not a valid message?'): ''})
-        if len(self.articles_set.unusual_sources) > 0:
-            items.append({'label': _('references with unusual value for source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.articles_set.unusual_sources], _('why it is not a valid message?'): ''})
-        if len(self.articles_set.unusual_years) > 0:
-            items.append({'label': _('references with unusual value for year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.articles_set.unusual_years], _('why it is not a valid message?'): ''})
+        if len(self.missing_source) > 0:
+            items.append({'label': _('references missing source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_source], _('why it is not a valid message?'): ''})
+        if len(self.missing_year) > 0:
+            items.append({'label': _('references missing year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_year], _('why it is not a valid message?'): ''})
+        if len(self.unusual_sources) > 0:
+            items.append({'label': _('references with unusual value for source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_sources], _('why it is not a valid message?'): ''})
+        if len(self.unusual_years) > 0:
+            items.append({'label': _('references with unusual value for year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_years], _('why it is not a valid message?'): ''})
 
         return html_reports.tag('h4', _('Package references overview')) + html_reports.sheet(labels, items, table_style='dbstatus')
 
@@ -815,9 +772,9 @@ class ArticlesSetValidations(object):
     def sources_overview_report(self):
         labels = ['source', 'total']
         h = None
-        if len(self.articles_set.reftype_and_sources) > 0:
+        if len(self.reftype_and_sources) > 0:
             h = ''
-            for reftype, sources in self.articles_set.reftype_and_sources.items():
+            for reftype, sources in self.reftype_and_sources.items():
                 items = []
                 h += html_reports.tag('h4', reftype)
                 for source in sorted(sources.keys()):
@@ -874,7 +831,7 @@ class ArticlesSetValidations(object):
     @property
     def journal_issue_header_report(self):
         articles_common_data = ''
-        for label, values in self.articles_set.articles_common_data.items():
+        for label, values in self.articles_common_data.items():
             message = ''
             if len(values.keys()) == 1:
                 articles_common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
@@ -885,15 +842,15 @@ class ArticlesSetValidations(object):
     @property
     def invalid_xml_report(self):
         r = ''
-        if len(self.articles_set.invalid_xml_name_items) > 0:
+        if len(self.invalid_xml_name_items) > 0:
             r += html_reports.tag('div', html_reports.p_message(_('{status}: invalid XML files.').format(status=validation_status.STATUS_FATAL_ERROR)))
-            r += html_reports.tag('div', html_reports.format_list('', 'ol', self.articles_set.invalid_xml_name_items, 'issue-problem'))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', self.invalid_xml_name_items, 'issue-problem'))
         return r
 
     @property
     def missing_items_report(self):
         r = ''
-        for label, items in self.articles_set.missing_required_values.items():
+        for label, items in self.missing_required_values.items():
             r += html_reports.tag('div', html_reports.p_message(_('{status}: missing {label} in: ').format(status=validation_status.STATUS_FATAL_ERROR, label=label)))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
         return r
@@ -901,7 +858,7 @@ class ArticlesSetValidations(object):
     @property
     def duplicated_values_report(self):
         parts = []
-        for label, values in self.articles_set.duplicated_values.items():
+        for label, values in self.duplicated_values.items():
             status = self.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
             _m = _('{status}: unique value of {label} is required for all the documents in the package').format(status=status, label=label)
             parts.append(html_reports.p_message(_m))
@@ -912,11 +869,11 @@ class ArticlesSetValidations(object):
     @property
     def conflicting_values_report(self):
         parts = []
-        for label, values in self.articles_set.conflicting_values.items():
+        for label, values in self.conflicting_values.items():
             compl = ''
             _status = validation_status.STATUS_FATAL_ERROR
             if label == 'issue pub date':
-                if self.articles_set.is_rolling_pass:
+                if self.is_rolling_pass:
                     _status = validation_status.STATUS_WARNING
             elif label == 'license':
                 _status = validation_status.STATUS_WARNING
@@ -970,11 +927,11 @@ class ArticlesSetValidations(object):
     @property
     def rejected_order_changes_report(self):
         error_messages = []
-        if len(self.articles_set.rejected_order_change) > 0:
+        if len(self.rejected_order_change) > 0:
             error_messages.append(html_reports.tag('h3', _('rejected orders')))
             error_messages.append('<div class="issue-problem">')
             error_messages.append(html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('It is not allowed to use same order for different articles.')))
-            for order, items in self.articles_set.rejected_order_change.items():
+            for order, items in self.rejected_order_change.items():
                 error_messages.append(html_reports.tag('p', html_reports.format_html_data({order: items})))
             error_messages.append('</div>')
         return ''.join(error_messages)
@@ -985,27 +942,27 @@ class ArticlesSetValidations(object):
         for xml_name, article in self.articles:
             msg = []
 
-            if xml_name in self.articles_set.blocked_update:
-                msg.append(html_reports.p_message(_('{status}: {item} is not allowed to be updated.').format(status=self.articles_set.allowed_to_update_status[xml_name], item=xml_name)))
+            if xml_name in self.blocked_update:
+                msg.append(html_reports.p_message(_('{status}: {item} is not allowed to be updated.').format(status=self.allowed_to_update_status[xml_name], item=xml_name)))
 
-            order_change = self.articles_set.changed_orders.get(xml_name)
+            order_change = self.changed_orders.get(xml_name)
             if order_change is not None:
                 # order change
-                if order_change[1] in self.articles_set.rejected_order_change.keys():
+                if order_change[1] in self.rejected_order_change.keys():
                     # order change is rejected
-                    msg.append(html_reports.p_message(_('{status}: {new_order} is being assign to more than one file: {files}').format(status=validation_status.STATUS_FATAL_ERROR, new_order=order_change[1], files=', '.join(self.articles_set.rejected_order_change[order_change[1]]))))
+                    msg.append(html_reports.p_message(_('{status}: {new_order} is being assign to more than one file: {files}').format(status=validation_status.STATUS_FATAL_ERROR, new_order=order_change[1], files=', '.join(self.rejected_order_change[order_change[1]]))))
                 else:
                     # order change is acceptable
                     msg.append(html_reports.p_message(_('{status}: order changed: {old} => {new}').format(status=validation_status.STATUS_INFO, old=order_change[0], new=order_change[1])))
 
-            if len(self.articles_set.relaxed_comparison.get(xml_name, [])) > 0:
-                msg.append(html_reports.p_message(_('{status}: {item} contains too many differences. It seems {item} in the package is very different from the one previously published.').format(status=self.articles_set.allowed_to_update_status[xml_name], item=name)))
-            if len(self.articles_set.exact_comparison.get(xml_name, [])) > 0:
+            if len(self.relaxed_comparison.get(xml_name, [])) > 0:
+                msg.append(html_reports.p_message(_('{status}: {item} contains too many differences. It seems {item} in the package is very different from the one previously published.').format(status=self.allowed_to_update_status[xml_name], item=name)))
+            if len(self.exact_comparison.get(xml_name, [])) > 0:
                 msg.append(html_reports.tag('h5', _('Previously registered:')))
-                for label, differences in self.articles_set.exact_comparison.get(xml_name, []):
+                for label, differences in self.exact_comparison.get(xml_name, []):
                     msg.append(html_reports.tag('p', differences[1]))
                 msg.append(html_reports.tag('h5', _('Update:')))
-                for label, differences in self.articles_set.exact_comparison.get(xml_name, []):
+                for label, differences in self.exact_comparison.get(xml_name, []):
                     msg.append(html_reports.tag('p', differences[0]))
 
             if len(msg) > 0:
@@ -1024,10 +981,9 @@ class ReportsMaker(object):
         self.articles_set_validations = articles_set_validations
         self.conversion_reports = conversion_reports
         self.xpm_version = xpm_version
-        self.tabs = ['pkg-files', 'toc', 'toc-extended', 'summary-report', 'issue-report', 'individual-report', 'references', 'dates-report', 'aff-report', 'conversion-report', 'db-overview']
+        self.tabs = ['pkg-files', 'toc-extended', 'summary-report', 'issue-report', 'individual-report', 'references', 'dates-report', 'aff-report', 'conversion-report', 'db-overview']
         self.labels = {
             'pkg-files': _('Files/Folders'),
-            'toc': _('ToC'),
             'summary-report': _('Summary'),
             'issue-report': 'journal/issue',
             'individual-report': _('XML Validations'),
@@ -1036,69 +992,50 @@ class ReportsMaker(object):
             'aff-report': _('Affiliations'),
             'dates-report': _('Dates'),
             'references': _('References'),
-            'toc-extended': _('ToC') + '+',
+            'toc-extended': _('ToC'),
         }
 
     @property
-    def validations_content(self):
-        self.components = {}
-        self.components['pkg-files'] = self.consistence_validations.articles_set.pkg.xml_list
+    def report_components(self):
+        components = {}
+        components['pkg-files'] = self.articles_set_validations.pkg.xml_list
         if self.processing_result_location is not None:
-            self.components['pkg-files'] += processing_result_location(self.processing_result_location)
+            components['pkg-files'] += processing_result_location(self.processing_result_location)
 
-        self.components['summary-report'] = ''
-        self.components['individual-report'] = self.consistence_validations.detailed_report
-        self.components['aff-report'] = self.consistence_validations.articles_affiliations_report
-        self.components['dates-report'] = self.consistence_validations.articles_dates_report
-        self.components['references'] = self.consistence_validations.references_overview_report
-        self.components['references'] += self.consistence_validations.sources_overview_report
+        components['summary-report'] = ''
+        components['individual-report'] = self.articles_set_validations.detailed_report
+        components['aff-report'] = self.articles_set_validations.articles_affiliations_report
+        components['dates-report'] = self.articles_set_validations.articles_dates_report
+        components['references'] = self.articles_set_validations.references_overview_report
+        components['references'] += self.articles_set_validations.sources_overview_report
 
-        if not self.consistence_validations.is_xml_generation:
-            self.components['toc'] = self.consistence_validations.toc_report
-            self.components['toc-extended'] = self.consistence_validations.toc_extended_report
-            self.components['issue-report'] = self.consistence_validations.journal_and_issue_report
+        if not self.articles_set_validations.is_xml_generation:
+            components['toc-extended'] = self.articles_set_validations.toc_extended_report
+            components['issue-report'] = self.articles_set_validations.journal_and_issue_report
 
         if self.conversion_reports:
             if self.conversion_reports.issue_error_msg != '':
-                self.components['issue-report'] = self.conversion_reports.issue_error_msg
-            self.components['conversion-report'] = self.conversion_reports.xc_pre_validations_report
-            self.components['db-overview'] = self.conversion_reports.db_status_report
-            self.components['summary-report'] = self.conversion_reports.xc_conclusion_msg + self.conversion_reports.xc_results_report + self.conversion_reports.aop_results_report
-        return html_reports.join_texts(self.components.values())
+                components['issue-report'] = self.conversion_reports.issue_error_msg
+            components['conversion-report'] = self.conversion_reports.xc_pre_validations_report
+            components['db-overview'] = self.conversion_reports.db_status_report
+            components['summary-report'] = self.conversion_reports.xc_conclusion_msg + self.conversion_reports.xc_results_report + self.conversion_reports.aop_results_report
 
-    def save_report(self, report_path, report_filename, report_title):
-        filename = report_path + '/' + report_filename
-        if os.path.isfile(filename):
-            bkp_filename = report_path + '/' + report_filename + '-'.join(utils.now()) + '.html'
-            shutil.copyfile(filename, bkp_filename)
-
-        html_reports.save(filename, report_title, self.report_content)
-        print(_('Report:\n  {filename}').format(filename=filename))
-        if self.display_report:
-            display_report(filename)
+        validations = ValidationsResult()
+        validations.message = html_reports.join_texts(components.values())
+        components['summary-report'] = error_msg_subtitle() + html_reports.statistics_display(validations, False) + components['summary-report']
+        components = {k: label_errors(v) for k, v in components.items()}
+        return components
 
     @property
-    def report_content(self):
-        validations = ValidationsResult()
-        validations.message = validations_content
-
-        pre_selected = 'summary-report'
-        self.components['summary-report'] = error_msg_subtitle() + html_reports.statistics_display(validations, False) + self.components['summary-report']
-
-        # tabs
-        content = html_reports.tabs_items([(tab_id, self.labels[tab_id]) for tab_id in self.tabs if self.components.get(tab_id) is not None], pre_selected)
-        # tabs content
-        for tab_id in self.tabs:
-            c = self.components.get(tab_id)
-            if c is not None:
-                style = 'selected-tab-content' if tab_id == pre_selected else 'not-selected-tab-content'
-                content += html_reports.tab_block(tab_id, c, style)
-
-        content += html_reports.tag('p', _('finished'))
+    def footnote(self):
+        content = html_reports.tag('p', _('finished'))
         if self.xpm_version is not None:
             content += html_reports.tag('p', _('report generated by XPM ') + self.xpm_version)
+        return content
 
-        return label_errors(content)
+    def save_report(self, report_path, report_filename, report_title):
+        self.tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, 'summary-report', self.footnote)
+        self.tabbed_report.save_report(report_path, report_filename, report_title)
 
 
 def extract_report_core(content):

@@ -104,9 +104,9 @@ class ArticlesConversion(object):
         self.xc_results = {}
         scilista_items = []
         if self.articles_set_validations.blocking_errors == 0 and self.total_to_convert > 0:
-            self.excluded_error_messages = self.db.exclude_incorrect_orders(self.articles_set_validations.articles_set.changed_orders)
+            self.excluded_error_messages = self.db.exclude_incorrect_orders(self.articles_set_validations.changed_orders)
 
-            converted, self.xc_results = self.db.convert_articles(self.articles_set_validations.articles_set.xc_articles, self.articles_set_validations.issue_models.record, self.create_windows_base)
+            converted, self.xc_results = self.db.convert_articles(self.articles_set_validations.xc_articles, self.articles_set_validations.issue_models.record, self.create_windows_base)
 
             for xml_name, self.xc_result in self.xc_results.items():
                 self.xc_validations[xml_name] = self.xc_result.xc_validations
@@ -115,15 +115,15 @@ class ArticlesConversion(object):
                 self.db.issue_files.copy_files_to_local_web_app()
                 if self.db.aop_db_manager is not None:
                     scilista_items = self.db.aop_db_manager.changed_issues
-                scilista_items.append(self.articles_set_validations.articles_set.pkg.acron_issue_label)
-                self.db.issue_files.save_source_files(self.articles_set_validations.articles_set.pkg.pkg_path)
+                scilista_items.append(self.articles_set_validations.pkg.acron_issue_label)
+                self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
 
         self.sort_articles_by_status()
         return scilista_items
 
     @property
     def total_to_convert(self):
-        return len(self.articles_set_validations.articles_set.xc_articles)
+        return len(self.articles_set_validations.xc_articles)
 
     @property
     def total_converted(self):
@@ -152,7 +152,7 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.articles_set_validations.blocking_errors > 0:
             result = 'rejected'
-        elif self.total_to_convert == 0 and len(self.articles_set_validations.articles_set.blocked_update) == 0:
+        elif self.total_to_convert == 0 and len(self.articles_set_validations.blocked_update) == 0:
             result = 'ignored'
         elif self.articles_set_validations.xml_validations_fatal_errors == 0:
             result = 'approved'
@@ -164,10 +164,10 @@ class ArticlesConversion(object):
         self.conversion_status = {}
         self.conversion_status['converted'] = [xml_name for xml_name, result in self.xc_results.items() if result.converted is True]
         self.conversion_status['not converted'] = [xml_name for xml_name, result in self.xc_results.items() if result.converted is False]
-        self.conversion_status['rejected'] = self.articles_set_validations.articles_set.blocked_update
+        self.conversion_status['rejected'] = self.articles_set_validations.blocked_update
 
         names = self.conversion_status['converted'].values() + self.conversion_status['not converted'].values() + self.conversion_status['rejected'].values()
-        self.conversion_status['skipped'] = [xml_name for xml_name, article in self.articles_set_validations.articles_set.pkg_articles.items() if not xml_name in names]
+        self.conversion_status['skipped'] = [xml_name for xml_name, article in self.articles_set_validations.pkg_articles.items() if not xml_name in names]
 
         self.aop_status = {}
         self.aop_status['excluded ex-aop'] = [name for name, result in self.xc_results.items() if result.excluded_aop is True]
@@ -287,8 +287,7 @@ def convert_package(src_path):
 
         articles_db_manager = xc_models.ArticlesDBManager(converter_env.db_manager.db_isis, issue_files)
 
-        articles_set = pkg_validations.ArticlesSet(pkg, articles_db_manager.registered_articles)
-        articles_set_validations = pkg_validations.ArticlesSetValidations(articles_set, articles_work_area, journal_data, issue_models, scielo_dtd_files, is_xml_generation, is_db_generation)
+        articles_set_validations = pkg_validations.ArticlesSetValidations(pkg, articles_work_area, journal_data, scielo_dtd_files, is_xml_generation, is_db_generation, articles_db_manager.registered_articles, issue_models)
         articles_set_validations.validate()
 
         conversion = ArticlesConversion(articles_set_validations, articles_db_manager, not converter_env.is_windows)
@@ -309,7 +308,10 @@ def convert_package(src_path):
     reports.processing_result_location = final_result_path
     report_location = final_report_path + '/xml_converter.html'
     reports.save_report(report_location, 'xml_converter.html', _('XML Conversion (XML to Database)'))
-
+    if not converter_env.is_windows:
+        format_reports_for_web(final_report_path, scielo_pkg_path, acron_issue_label.replace(' ', '/'))
+    if tmp_result_path != final_result_path:
+        fs_utils.delete_file_or_folder(tmp_result_path)
     os.unlink(log_package)
     return (scilista_items, xc_status, reports.validations.statistics_message(), report_location)
 
@@ -535,7 +537,6 @@ def execute_converter(package_paths, collection_name=None):
     if config is not None:
         prepare_env(config)
         invalid_pkg_files = []
-        bad_pkg_files = []
 
         mailer = xc.get_mailer(config)
 
@@ -553,6 +554,7 @@ def execute_converter(package_paths, collection_name=None):
             xc_status = 'interrupted'
             stats_msg = ''
             report_location = None
+
             try:
                 scilista_items, xc_status, stats_msg, report_location = convert_package(package_path)
             except Exception as e:
@@ -575,7 +577,7 @@ def execute_converter(package_paths, collection_name=None):
 
                 if report_location is not None:
                     if config.is_windows:
-                        pkg_reports.display_report(report_location)
+                        pkg_validations.display_report(report_location)
 
                     if config.email_subject_package_evaluation is not None:
                         results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg

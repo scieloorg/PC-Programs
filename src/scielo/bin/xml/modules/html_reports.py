@@ -1,15 +1,105 @@
 # coding=utf-8
 
 import os
+import shutil
 
 from datetime import datetime
 
 from __init__ import _
 from . import validation_status
 from . import xml_utils
+from . import utils
 
 
 ENABLE_COMMENTS = False
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+
+
+class TabbedReport(object):
+
+    def __init__(self, labels, tabs, tabbed_content, pre_selected, footnote='', style_selected='selected-tab-content', style_not_selected='not-selected-tab-content'):
+        self.labels = labels
+        self.tabs = tabs
+        self.tabbed_content = tabbed_content
+        self.style_selected = style_selected
+        self.style_not_selected = style_not_selected
+        self.pre_selected = pre_selected
+        self.footnote = footnote
+
+    def save_report(self, report_path, report_filename, report_title):
+        filename = report_path + '/' + report_filename
+        if os.path.isfile(filename):
+            bkp_filename = report_path + '/' + report_filename + '-'.join(utils.now()) + '.html'
+            shutil.copyfile(filename, bkp_filename)
+
+        save(filename, report_title, self.report_components)
+        print(_('Report:\n  {filename}').format(filename=filename))
+        if self.display_report:
+            display_report(filename)
+
+    @property
+    def report_content(self):
+        # tabs
+        content = tabs_items([(tab_id, self.labels[tab_id]) for tab_id in self.tabs if self.tabbed_content.get(tab_id) is not None], self.pre_selected)
+        # tabs content
+        for tab_id in self.tabs:
+            c = self.tabbed_content.get(tab_id)
+            if c is not None:
+                style = self.style_selected if tab_id == self.pre_selected else self.style_not_selected
+                content += tab_block(tab_id, c, style)
+
+        return content + self.footnote
+
+
+class HideAndShowBlocksReport(object):
+
+    def __init__(self, labels, values, hide_and_show_blocks, html_cell_content=[]):
+        self.labels = labels
+        self.values = values
+        self.hide_and_show_blocks = hide_and_show_blocks
+        self.html_cell_content = html_cell_content
+        self.html_cell_content.append(labels[-1])
+
+    @property
+    def content(self):
+        items = []
+        for new_name, data in self.values.items():
+            items.append(label_values(self.labels, data.append(self.hide_and_show_blocks[new_name].links)))
+            items.append({self.labels[-1]: self.hide_and_show_blocks[new_name].block})
+        return sheet(self.labels, items, table_style='reports-sheet', html_cell_content=self.html_cell_content)
+
+
+class HideAndShowBlockItem(object):
+
+    def __init__(self, block_parent_id, label, block_id, block_style, block_content, status=''):
+        self.block_parent_id = block_parent_id
+        self.block_id = block_id
+        self.label = label
+        self.block_content = block_content
+        self.status = status
+        self.block_style = block_style
+
+    @property
+    def link(self):
+        _link = block_link(self.block_id, '[ ' + self.label + ' ]', self.block_style, self.block_parent_id)
+        print(self.status)
+        if self.status != '':
+            _link += tag('span', self.status, 'smaller')
+        return _link
+
+    @property
+    def block(self):
+        return block_element(self.block_id, self.block_content, self.block_style, self.block_parent_id)
+
+
+class HideAndShowBlock(object):
+
+    def __init__(self, block_parent_id, block_items):
+        self.links = '<a name="' + block_parent_id + '"/>'
+        self.block = ''
+        for item in block_items:
+            self.links += item.link
+            self.block += item.block
 
 
 def validations_table(results):
@@ -60,8 +150,9 @@ def join_texts(texts):
 
 
 def styles():
-    css = '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/html_reports.css', 'r').read() + '</style>'
-    js = open(os.path.dirname(os.path.realpath(__file__)) + '/html_reports_collapsible.js', 'r').read()
+    css_file = CURRENT_PATH + '/html_reports.css'
+    css = '<style>' + open(css_file, 'r').read() + '</style>'
+    js = open(CURRENT_PATH + '/html_reports_collapsible.js', 'r').read()
     return css + js + save_report_js()
 
 
@@ -388,14 +479,14 @@ def tabs_items(tabs, selected):
     return '<div class="tabs">' + r + '</div>'
 
 
-def report_link(report_id, report_label, style, location):
-    return '<a name="begin_label-' + report_id + '"/>&#160;<p id="label-' + report_id + '" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\', \'' + location + '\')" class="report-link-' + style + '">' + report_label.replace(' ', '&#160;') + '</p>'
+def block_link(block_id, block_label, style, location):
+    return '<a name="begin_label-' + block_id + '"/>&#160;<p id="label-' + block_id + '" onClick="display_article_report(\'' + block_id + '\', \'label-' + block_id + '\', \'' + location + '\')" class="report-link-' + style + '">' + block_label.replace(' ', '&#160;') + '</p>'
 
 
-def report_block(report_id, content, style, location):
-    r = '<div id="' + report_id + '" class="report-block-' + style + '">'
+def block_element(block_id, content, style, location):
+    r = '<div id="' + block_id + '" class="report-block-' + style + '">'
     r += content
-    r += '<div class="endreport"><span class="button" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\', \'' + location + '\')"> ' + _('close') + ' </span></div>'
+    r += '<div class="endreport"><span class="button" onClick="display_article_report(\'' + block_id + '\', \'label-' + block_id + '\', \'' + location + '\')"> ' + _('close') + ' </span></div>'
     r += '</div>'
     return r
 
@@ -423,3 +514,21 @@ def save_form(display, filename):
 
         r = tag('div', ''.join(s), 'tabs')
     return r
+
+
+def label_values(labels, values):
+    r = {}
+    print(labels)
+    print(values)
+    for i in range(0, len(labels)):
+        r[labels[i]] = values[i]
+    return r
+
+
+def display_report(report_filename):
+    try:
+        webbrowser.open('file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()), new=2)
+    except:
+        pass
+
+
