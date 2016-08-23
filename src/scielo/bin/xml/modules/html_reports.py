@@ -25,16 +25,17 @@ class TabbedReport(object):
         self.style_not_selected = style_not_selected
         self.pre_selected = pre_selected
         self.footnote = footnote
+        self.display_report = display_report
 
-    def save_report(self, report_path, report_filename, report_title):
+    def save_report(self, report_path, report_filename, report_title, _display_report):
         filename = report_path + '/' + report_filename
         if os.path.isfile(filename):
             bkp_filename = report_path + '/' + report_filename + '-'.join(utils.now()) + '.html'
             shutil.copyfile(filename, bkp_filename)
 
-        save(filename, report_title, self.report_components)
+        save(filename, report_title, self.report_content)
         print(_('Report:\n  {filename}').format(filename=filename))
-        if self.display_report:
+        if _display_report:
             display_report(filename)
 
     @property
@@ -63,8 +64,11 @@ class HideAndShowBlocksReport(object):
     @property
     def content(self):
         items = []
+        print(self.values)
+        print(self.hide_and_show_blocks)
         for new_name, data in self.values.items():
-            items.append(label_values(self.labels, data.append(self.hide_and_show_blocks[new_name].links)))
+            data.append(self.hide_and_show_blocks[new_name].links)
+            items.append(label_values(self.labels, data))
             items.append({self.labels[-1]: self.hide_and_show_blocks[new_name].block})
         return sheet(self.labels, items, table_style='reports-sheet', html_cell_content=self.html_cell_content)
 

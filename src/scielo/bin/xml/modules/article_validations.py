@@ -998,10 +998,11 @@ class ArticleContentValidation(object):
             dates = []
             if not received < accepted:
                 dates.append(('"' + received + '" (received)', '"' + accepted + '" (accepted)'))
-            if self.article.pub_date_year < received[0:4]:
-                dates.append(('"' + received + '" (received)', '"' + self.article.pub_date_year + '" (pub-date)'))
-            if self.article.pub_date_year < accepted[0:4]:
-                dates.append(('"' + accepted + '" (accepted)', '"' + self.article.pub_date_year + '" (pub-date)'))
+            if self.article.pub_date_year is not None:
+                if self.article.pub_date_year < received[0:4]:
+                    dates.append(('"' + received + '" (received)', '"' + self.article.pub_date_year + '" (pub-date)'))
+                if self.article.pub_date_year < accepted[0:4]:
+                    dates.append(('"' + accepted + '" (accepted)', '"' + self.article.pub_date_year + '" (pub-date)'))
 
             if len(dates) > 0:
                 for date in dates:

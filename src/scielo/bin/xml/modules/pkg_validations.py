@@ -352,6 +352,7 @@ class ArticlesSetValidations(object):
         self.dtd_files = dtd_files
         self.is_xml_generation = is_xml_generation
         self.is_db_generation = is_db_generation
+        self.updated_articles = {}
 
         self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_FATAL_ERROR, 'doi': validation_status.STATUS_FATAL_ERROR, 'elocation id': validation_status.STATUS_FATAL_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
         if not self.is_db_generation:
@@ -655,7 +656,7 @@ class ArticlesSetValidations(object):
     def toc_extended_report(self):
         labels = ['file', _('article'), _('pages'), '+']
         values = {}
-
+        hide_and_show_block_items = {}
         for new_name, article in self.articles:
             report_id = 'toc-'
             block_parent_id = report_id + new_name
@@ -664,7 +665,57 @@ class ArticlesSetValidations(object):
             values[new_name] = []
             values[new_name].append(new_name)
             values[new_name].append(self.articles_validations[new_name].table_of_content)
+            values[new_name].append(article.pages)
+        report = html_reports.HideAndShowBlocksReport(labels, values, hide_and_show_block_items, html_cell_content=[_('article')])
+        return report.content
 
+    @property
+    def article_db_status_report(self, new_name):
+        labels = [
+            _('type'),
+            _('creation date'),
+            _('last update'),
+            _('order'),
+            _('pages'),
+            _('aop PID'),
+            _('doi'),
+            _('authors'),
+            _('title'),
+
+        ]
+        rows = []
+        articles = [self.registered_articles.get('new_name'), self.pkg.articles.get('new_name'), self.updated_articles.get('new_name')]
+        types = [_('registered, before converting'), _('package'), _('registered, after converting')]
+        for tp, a in zip(types, articles):
+            if a is not None:
+                values = []
+                values.append(tp)
+                values.append(a.creation_date_display)
+                values.append(a.last_update_display)
+                values.append(a.order)
+                values.append(a.pages)
+                values.append(a.previous_article_pid)
+                values.append(a.doi)
+                values.append('; '.join(article.authors_list(a.article_contrib_items)))
+                values.append(article.title)
+
+                rows.append(label_values(labels, values))
+
+        return html_reports.sheet(labels, rows, table_style='reports-sheet', html_cell_content=['title'])
+
+    @property
+    def db_status_report(self):
+        labels = ['file', _('article'), _('processing history')]
+        values = {}
+        hide_and_show_block_items = {}
+        for new_name, article in self.articles:
+            report_id = 'dbstatus-'
+            block_parent_id = report_id + new_name
+            block_items = [html_reports.HideAndShowBlockItem(block_parent_id, _('processing history'), 'db-hist-' + new_name, 'datarep', self.article_db_status_report(new_name), '')]
+            hide_and_show_block_items[new_name] = html_reports.HideAndShowBlock(block_parent_id, block_items)
+            values[new_name] = []
+            values[new_name].append(new_name)
+            values[new_name].append(self.articles_validations[new_name].table_of_content)
         report = html_reports.HideAndShowBlocksReport(labels, values, hide_and_show_block_items, html_cell_content=[_('article')])
         return report.content
 
@@ -1035,7 +1086,7 @@ class ReportsMaker(object):
 
     def save_report(self, report_path, report_filename, report_title):
         self.tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, 'summary-report', self.footnote)
-        self.tabbed_report.save_report(report_path, report_filename, report_title)
+        self.tabbed_report.save_report(report_path, report_filename, report_title, self.display_report)
 
 
 def extract_report_core(content):

@@ -117,6 +117,7 @@ class ArticlesConversion(object):
                     scilista_items = self.db.aop_db_manager.changed_issues
                 scilista_items.append(self.articles_set_validations.pkg.acron_issue_label)
                 self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
+                self.articles_set_validations.updated_articles = self.db.registered_articles
 
         self.sort_articles_by_status()
         return scilista_items
