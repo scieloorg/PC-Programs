@@ -1059,6 +1059,14 @@ class ArticleXML(object):
         return r
 
     @property
+    def disp_formula_elements(self):
+        r = []
+        if self.tree is not None:
+            if self.tree.findall('.//disp-formula') is not None:
+                r = self.tree.findall('.//disp-formula')
+        return r
+
+    @property
     def abstract(self):
         r = []
         if self.article_meta is not None:
