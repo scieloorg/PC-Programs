@@ -40,11 +40,13 @@ class PackageValidationsResult(dict):
         return sum([item.warnings for item in self.values()])
 
     def report(self, errors_only=False):
-        _reports = self.title
+        _reports = ''
         for xml_name, results in self.items():
             if results.total() > 0 or errors_only is False:
                 _reports += html_reports.tag('h4', xml_name)
                 _reports += results.message
+        if len(_reports) > 0:
+            _reports = self.title + _reports
         return _reports
 
     def statistics_message(self):
@@ -92,7 +94,19 @@ class ValidationsFile(object):
         self.write()
 
     def total(self):
-        return self.validations.total
+        return self.validations.total()
+
+    @property
+    def fatal_errors(self):
+        return self.validations.fatal_errors
+
+    @property
+    def errors(self):
+        return self.validations.errors
+
+    @property
+    def warnings(self):
+        return self.validations.warnings
 
     def statistics_message(self):
         return self.validations.statistics_message()
@@ -251,7 +265,8 @@ class ArticleValidations(object):
         _blocks = []
         for label, style, validations_file in blocks:
             if validations_file.total() > 0:
-                _blocks.append(html_reports.HideAndShowBlockItem(block_parent_id, label, style + self.work_area.new_name, style, validations_file.message, validations_file.statistics_message()))
+                status = html_reports.statistics_display(validations_file)
+                _blocks.append(html_reports.HideAndShowBlockItem(block_parent_id, label, style + self.work_area.new_name, style, validations_file.message, status))
         return html_reports.HideAndShowBlock(block_parent_id, _blocks)
 
     @property
@@ -601,11 +616,12 @@ class ArticlesSetValidations(object):
 
     @property
     def pkg_journal_validations_report_title(self):
-        t1 = html_reports.tag('h2', _('Journal data: XML files and registered data'))
-        msg = '<sup>*</sup>'
-        msg += html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Journal data in the XML files must be consistent with {link}').format(link=html_reports.link('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv')), 'note')
-        t2 = '' if self.is_db_generation else msg
-        return t1 + t2
+        signal = ''
+        msg = ''
+        if not self.is_db_generation:
+            signal = '<sup>*</sup>'
+            msg = html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Journal data in the XML files must be consistent with {link}').format(link=html_reports.link('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv')), 'note')
+        return html_reports.tag('h2', _('Journal data: XML files and registered data') + signal) + msg
 
     def validate(self):
         for name, article in self.merged_articles.items():
@@ -622,8 +638,8 @@ class ArticlesSetValidations(object):
             self.pkg_journal_validations[name] = item.xml_journal_data_validations_file.validations
             self.pkg_reg_issue_validations[name] = item.xml_issue_data_validations_file.validations
 
-        self.consistence_validations = ValidationsResult()
-        self.consistence_validations.message = self.consistence_validations_report
+        self.consistency_validations = ValidationsResult()
+        self.consistency_validations.message = self.consistency_validations_report
 
         self.xc_pre_validations = ValidationsResult()
         self.xc_pre_validations.message = self.xc_pre_validations_report
@@ -640,14 +656,17 @@ class ArticlesSetValidations(object):
 
         for new_name, article in self.articles:
             hide_and_show_block_items[new_name] = self.articles_validations[new_name].hide_and_show_block('view-reports-')
-
             values[new_name] = []
             values[new_name].append(new_name)
             values[new_name].append(article.order)
             values[new_name].append(article.pages)
-
             values[new_name].append(self.articles_validations[new_name].table_of_content)
-            values[new_name].append({'aop doi': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]})
+            items = {}
+            for k, v in {'aop doi': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
+                if v is not None:
+                    if len(v) > 0:
+                        items[k] = v
+            values[new_name].append(items)
 
         report = html_reports.HideAndShowBlocksReport(labels, values, hide_and_show_block_items, html_cell_content=[_('article')])
         return report.content
@@ -681,7 +700,6 @@ class ArticlesSetValidations(object):
             _('doi'),
             _('authors'),
             _('title'),
-
         ]
         rows = []
         articles = [self.registered_articles.get('new_name'), self.pkg.articles.get('new_name'), self.updated_articles.get('new_name')]
@@ -698,9 +716,7 @@ class ArticlesSetValidations(object):
                 values.append(a.doi)
                 values.append('; '.join(article.authors_list(a.article_contrib_items)))
                 values.append(article.title)
-
                 rows.append(label_values(labels, values))
-
         return html_reports.sheet(labels, rows, table_style='reports-sheet', html_cell_content=['title'])
 
     @property
@@ -821,7 +837,7 @@ class ArticlesSetValidations(object):
 
     @property
     def sources_overview_report(self):
-        labels = ['source', 'total']
+        labels = ['source', _('location')]
         h = None
         if len(self.reftype_and_sources) > 0:
             h = ''
@@ -829,7 +845,7 @@ class ArticlesSetValidations(object):
                 items = []
                 h += html_reports.tag('h4', reftype)
                 for source in sorted(sources.keys()):
-                    items.append({'source': source, 'total': sources[source]})
+                    items.append({'source': source, _('location'): sources[source]})
                 h += html_reports.sheet(labels, items, 'dbstatus')
         return h
 
@@ -934,17 +950,15 @@ class ArticlesSetValidations(object):
         return ''.join(parts)
 
     @property
-    def consistence_validations_report(self):
+    def consistency_validations_report(self):
         text = []
         text += self.invalid_xml_report
         text += self.missing_items_report
         text += self.conflicting_values_report
         text += self.duplicated_values_report
-
-        r = html_reports.tag('h2', _('Checking issue data consistence'))
-        r += html_reports.tag('div', ''.join(text), 'issue-messages')
-        r += self.pages_report
-        return r
+        text = html_reports.tag('div', ''.join(text), 'issue-messages')
+        text += self.pages_report
+        return html_reports.tag('h2', _('Checking issue data consistency')) + text
 
     @property
     def journal_and_issue_report(self):
@@ -952,13 +966,14 @@ class ArticlesSetValidations(object):
         report.append(self.journal_issue_header_report)
         report.append(self.pkg_journal_validations.report(errors_only=not self.is_xml_generation))
         report.append(self.pkg_reg_issue_validations.report(errors_only=not self.is_xml_generation))
-        report.append(self.consistence_validations_report)
+        if self.consistency_validations.total() > 0:
+            report.append(self.consistency_validations.message)
         report.append(self.xc_pre_validations_report)
         return ''.join(report)
 
     @property
     def blocking_errors(self):
-        return self.consistence_validations.fatal_errors + self.pkg_reg_issue_validations.fatal_errors + self.xc_pre_validations.fatal_errors
+        return self.consistency_validations.fatal_errors + self.pkg_reg_issue_validations.fatal_errors + self.xc_pre_validations.fatal_errors
 
     @property
     def xml_validations_fatal_errors(self):
@@ -1032,7 +1047,7 @@ class ReportsMaker(object):
         self.articles_set_validations = articles_set_validations
         self.conversion_reports = conversion_reports
         self.xpm_version = xpm_version
-        self.tabs = ['pkg-files', 'toc-extended', 'summary-report', 'issue-report', 'individual-report', 'references', 'dates-report', 'aff-report', 'conversion-report', 'db-overview']
+        self.tabs = ['pkg-files', 'summary-report', 'issue-report', 'toc-extended', 'individual-report', 'references', 'dates-report', 'aff-report', 'conversion-report', 'db-overview']
         self.labels = {
             'pkg-files': _('Files/Folders'),
             'summary-report': _('Summary'),

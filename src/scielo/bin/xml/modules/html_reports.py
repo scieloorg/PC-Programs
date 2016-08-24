@@ -64,8 +64,6 @@ class HideAndShowBlocksReport(object):
     @property
     def content(self):
         items = []
-        print(self.values)
-        print(self.hide_and_show_blocks)
         for new_name, data in self.values.items():
             data.append(self.hide_and_show_blocks[new_name].links)
             items.append(label_values(self.labels, data))
@@ -85,8 +83,7 @@ class HideAndShowBlockItem(object):
 
     @property
     def link(self):
-        _link = block_link(self.block_id, '[ ' + self.label + ' ]', self.block_style, self.block_parent_id)
-        print(self.status)
+        _link = block_link(self.block_id, self.label, self.block_style, self.block_parent_id)
         if self.status != '':
             _link += tag('span', self.status, 'smaller')
         return _link
@@ -349,11 +346,17 @@ def format_list(label, list_type, list_items, style=''):
 
 
 def format_html_data_dict(value, list_type='ul'):
-    r = '<' + list_type + '>'
-    for k in sorted(value.keys()):
-        v = value[k]
-        r += tag('li', display_label_value(k, v))
-    r += '</' + list_type + '>'
+    r = ''
+    if len(value) == 1:
+        for k in sorted(value.keys()):
+            v = value[k]
+            r += display_label_value(k, v)
+    else:
+        r = '<' + list_type + '>'
+        for k in sorted(value.keys()):
+            v = value[k]
+            r += tag('li', display_label_value(k, v))
+        r += '</' + list_type + '>'
     return r
 
 
@@ -522,8 +525,6 @@ def save_form(display, filename):
 
 def label_values(labels, values):
     r = {}
-    print(labels)
-    print(values)
     for i in range(0, len(labels)):
         r[labels[i]] = values[i]
     return r

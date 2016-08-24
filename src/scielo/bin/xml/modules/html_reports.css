@@ -14,6 +14,31 @@ p {
 div {
     border: none;
 }
+ul li{
+  list-style: square;
+}
+ol{
+  counter-reset: myCounter;
+}
+ol li{
+  list-style: none;
+  
+}
+ol li:before {
+  counter-increment: myCounter;
+  content:counter(myCounter);
+  color: white;
+  background: #9FD6D2;
+  display: inline-block;
+  text-align: center;
+  font-family: Verdana;
+  font-weight: bold;
+  margin: 1px;
+  padding: 5px;
+  border-radius: 30px;
+}
+
+
 
 td {
   vertical-align: top;
@@ -130,7 +155,6 @@ h5 {
    font-size: 9pt;
    color: black;
    vertical-align: top;
-   word-wrap:break-word;
    max-width:20%;  
 } 
 .fatalerror .td_label {
