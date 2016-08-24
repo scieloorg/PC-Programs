@@ -1994,7 +1994,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</xsl:choose>
 				</xsl:variable>
 				
-				<comment content-type="cited">
+				<comment>
 					<xsl:choose>
 						<xsl:when test="contains($comment, '&lt;')"><xsl:value-of select="substring-before($comment,'&lt;')"/></xsl:when>
 						<xsl:otherwise><xsl:value-of select="$comment"/></xsl:otherwise>
