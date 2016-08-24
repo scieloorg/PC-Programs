@@ -19,6 +19,7 @@ import serial_files
 import pkg_reports
 import institutions_service
 import html_reports
+import article_reports
 import ws_requester
 
 
@@ -656,7 +657,7 @@ class IssueModels(object):
                 for item in attributes.validate_article_type_and_section(article.article_type, _sectitle, len(article.abstracts) > 0):
                     results.append(item)
                 article.section_code = section_code
-        return (html_reports.tag('div', html_reports.validations_table(results)))
+        return (html_reports.tag('div', article_reports.validations_table(results)))
 
 
 class IssueArticlesRecords(object):

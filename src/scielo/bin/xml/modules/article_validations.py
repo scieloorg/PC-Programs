@@ -361,6 +361,7 @@ class ArticleContentValidation(object):
 
         items.append(self.sections)
         items.append(self.paragraphs)
+        items.append(self.disp_formulas)
         items.append(self.validate_xref_reftype)
         items.append(self.missing_xref_list)
         items.append(self.innerbody_elements_permissions)
@@ -370,6 +371,25 @@ class ArticleContentValidation(object):
 
         r = self.normalize_validations(items)
         return (r, performance)
+
+    @property
+    def disp_formulas(self):
+        results = []
+        children = ['graphic', '{http://www.w3.org/1998/Math/MathML}math']
+        for item in self.article.disp_formula_elements:
+            found = False
+            for name in children:
+                if item.find(name) is not None:
+                    print(xml_utils.node_text(item))
+                    if name == 'graphic':
+                        if item.attrib.get('{http://www.w3.org/1999/xlink}href') is not None:
+                            found = True
+                    elif name == '{http://www.w3.org/1998/Math/MathML}math':
+                        if len(xml_utils.remove_tags(xml_utils.node_text(item))) > 0:
+                            found = True
+            if not found:
+                results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure.').format(children=_(' or ').join(children), element='disp-formula'), xml_utils.node_xml(item)))
+        return results
 
     @property
     def dtd_version(self):
