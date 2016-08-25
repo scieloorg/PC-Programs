@@ -657,7 +657,7 @@ class ArticleContentValidation(object):
                     found = False
                     for issn in [self.article.print_issn, self.article.e_issn]:
                         if issn is not None:
-                            if issn in self.article.doi:
+                            if issn.upper() in self.article.doi.upper():
                                 found = True
                     if not found:
                         r.append(('doi', validation_status.STATUS_ERROR, _('Be sure that {item} belongs to this journal.').format(item='DOI=' + self.article.doi)))
