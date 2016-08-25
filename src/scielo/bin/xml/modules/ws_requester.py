@@ -186,9 +186,9 @@ class PublishingWebServicesRequester(WebServicesRequester):
         self.journals_url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
         self.journals_file_content = ''
 
-    def journal_doi_prefix_url(self, issn):
+    def journal_doi_prefix_url(self, issn, year):
         if issn is not None:
-            return 'http://api.crossref.org/works?filter=issn:' + issn
+            return 'http://api.crossref.org/works?filter=issn:{issn},from-pub-date:{year}'.format(issn=issn, year=year)
 
     def article_doi_checker_url(self, doi):
         #PID|oldpid

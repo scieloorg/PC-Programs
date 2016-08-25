@@ -11,6 +11,7 @@ import utils
 import html_reports
 import dbm_isis
 import xc_models
+import article_validations
 import pkg_validations
 import xml_utils
 import xml_versions
@@ -288,7 +289,9 @@ def convert_package(src_path):
 
         articles_db_manager = xc_models.ArticlesDBManager(converter_env.db_manager.db_isis, issue_files)
 
-        articles_set_validations = pkg_validations.ArticlesSetValidations(pkg, articles_work_area, journal_data, scielo_dtd_files, is_xml_generation, is_db_generation, articles_db_manager.registered_articles, issue_models)
+        doi_services = article_validations.DOI_Services()
+
+        articles_set_validations = pkg_validations.ArticlesSetValidations(doi_services, pkg, articles_work_area, journal_data, scielo_dtd_files, is_xml_generation, is_db_generation, articles_db_manager.registered_articles, issue_models)
         articles_set_validations.validate()
 
         conversion = ArticlesConversion(articles_set_validations, articles_db_manager, not converter_env.is_windows)

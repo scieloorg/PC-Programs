@@ -1283,7 +1283,7 @@ class JournalsList(object):
                     journal.journal_title = update_list(journal.journal_title, j.journal_title)
                     journal.issn_id = update_list(journal.issn_id, j.issn_id)
 
-        journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
+        #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
         return journal
 
     def get_journal(self, p_issn, e_issn, journal_title):
@@ -1292,7 +1292,7 @@ class JournalsList(object):
             if issn is not None:
                 for j in self._journals.get(issn, []):
                     journal = j
-                    journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
+                    #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
         return journal
 
 
@@ -1308,24 +1308,6 @@ def update_value(item, value):
     if item is None and value is not None and len(value) > 0:
         item = value
     return value
-
-
-def journal_doi_prefix(issn_list):
-    prefix = None
-    for issn in issn_list:
-        if issn is not None:
-            url = ws_requester.wsr.journal_doi_prefix_url(issn)
-            json_results = ws_requester.wsr.json_result_request(url)
-            if json_results is not None:
-                items = json_results.get('message', {}).get('items')
-                if items is not None:
-                    if len(items) > 0:
-                        prefix = items[0].get('prefix')
-                        if prefix is not None:
-                            prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
-        if prefix is not None:
-            break
-    return prefix
 
 
 class JournalsManager(object):

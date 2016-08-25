@@ -23,25 +23,136 @@ MAX_IMG_WIDTH = 2250
 MAX_IMG_HEIGHT = 2625
 
 
+class DOI_Services(object):
+
+    def __init__(self):
+        self.doi_data_items = {}
+        self.doi_journal_prefixes = {}
+
+    def get_doi_data(self, doi):
+        doi_data = self.doi_data_items.get(doi)
+        if doi_data is None:
+            url = ws_requester.wsr.article_doi_checker_url(doi)
+            article_json = ws_requester.wsr.json_result_request(url)
+            if article_json is not None:
+                data = article_json.get('message')
+                if data is not None:
+                    doi_data = DOI_Data(doi)
+                    doi_data.journal_titles = data.get('container-title')
+                    doi_data.article_titles = data.get('title')
+                    doi_data.pid = data.get('alternative-id')
+                    if doi_data.pid is not None:
+                        doi_data.pid = doi_data.pid[0]
+        if doi_data is not None:
+            self.doi_data_items[doi] = doi_data
+        return doi_data
+
+    def doi_journal_prefix(self, issn, year):
+        prefix = self.doi_journal_prefixes.get(issn)
+        if prefix is None:
+            url = ws_requester.wsr.journal_doi_prefix_url(issn, year)
+            json_results = ws_requester.wsr.json_result_request(url)
+            if json_results is not None:
+                items = json_results.get('message', {}).get('items')
+                if items is not None:
+                    if len(items) > 0:
+                        prefix = items[0].get('prefix')
+                        if prefix is not None:
+                            prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
+        if prefix is not None:
+            self.doi_journal_prefixes[issn] = prefix
+        return prefix
+
+
+class DOI_Validator(object):
+
+    def __init__(self, doi_services, article):
+        self.doi_services = doi_services
+        self.article = article
+        self.doi_data = doi_services.get_doi_data(article.doi)
+        self.journal_doi_prefix = [doi_services.doi_journal_prefix(issn, article.pub_date_year) for issn in [article.e_issn, article.print_issn] if issn is not None]
+        self.journal_doi_prefix = [item for item in self.journal_doi_prefix if item is not None]
+        if len(self.journal_doi_prefix) > 0:
+            self.journal_doi_prefix = self.journal_doi_prefix[0]
+        self.messages = []
+
+    def validate(self):
+        self.validate_format()
+        self.validate_doi_prefix()
+        self.validate_journal_title()
+        self.validate_article_title()
+        self.validate_issn()
+
+    def validate_format(self):
+        invalid_chars = self.doi_data.validate_doi_format()
+        if len(invalid_chars) > 0:
+            self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}').format(value=self.doi_data.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
+
+    def validate_doi_prefix(self):
+        if self.journal_doi_prefix is not None:
+            if not self.doi_data.doi.startswith(self.journal_doi_prefix):
+                self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.doi_data.doi, label=self.journal_doi_prefix) + _('{label} must starts with: {expected}').format(label='doi', expected=self.journal_doi_prefix)))
+
+    def validate_journal_title(self):
+        if not self.doi_data.journal_titles is None:
+            status = validation_status.STATUS_INFO
+            if not self.article.journal_title in self.doi_data.journal_titles:
+                max_rate, items = utils.most_similar(utils.similarity(self.doi_data.journal_titles, self.article.journal_title))
+                if max_rate < 0.7:
+                    status = validation_status.STATUS_FATAL_ERROR
+            self.messages.append(('doi', status, _('{item} is registered as belonging to {owner}').format(item=self.doi_data.doi, owner='|'.join(self.doi_data.journal_titles))))
+
+    def validate_article_title(self):
+        if not self.doi_data.article_titles is None:
+            status = validation_status.STATUS_INFO
+            max_rate = 0
+            selected = None
+            for t in self.article.titles:
+                rate, items = utils.most_similar(utils.similarity(self.doi_data.article_titles, xml_utils.remove_tags(t.title)))
+                if rate > max_rate:
+                    max_rate = rate
+            if max_rate < 0.7:
+                status = validation_status.STATUS_FATAL_ERROR
+            self.messages.append(('doi', status, _('{item} is registered as belonging to {owner}').format(item=self.doi_data.doi, owner='|'.join(self.doi_data.article_titles))))
+
+    def validate_issn(self):
+        if self.doi_data.journal_titles is None:
+            found = False
+            for issn in [self.article.print_issn, self.article.e_issn]:
+                if issn is not None:
+                    if issn.upper() in self.doi_data.doi.upper():
+                        found = True
+            if not found:
+                self.messages.append(('doi', validation_status.STATUS_ERROR, _('Be sure that {item} belongs to this journal.').format(item='DOI=' + self.doi_data.doi)))
+
+
+class DOI_Data(object):
+
+    def __init__(self, doi):
+        self.doi = doi
+        self.journal_titles = None
+        self.article_titles = None
+        self.pid = None
+
+    def validate_doi_format(self):
+        errors = []
+        for item in self.doi:
+            if item.isdigit():
+                pass
+            elif item in '-.-;()/':
+                pass
+            elif item in 'abcdefghijklmnopqrstuvwxyz' or item in 'abcdefghijklmnopqrstuvwxyz'.upper():
+                pass
+            else:
+                errors.append(item)
+        return errors
+
+
 def invalid_value_and_expected_values_message(invalid_value, label, expected_values=None):
     msg = _('{value} is an invalid value for {label}. ').format(value=invalid_value, label=label)
     if expected_values is not None:
         msg += _('Expected values: {expected}. ').format(expected_values=expected_values)
     return msg
-
-
-def validate_doi_format(doi):
-    errors = []
-    for item in doi:
-        if item.isdigit():
-            pass
-        elif item in '-.-;()/':
-            pass
-        elif item in 'abcdefghijklmnopqrstuvwxyz' or item in 'abcdefghijklmnopqrstuvwxyz'.upper():
-            pass
-        else:
-            errors.append(item)
-    return errors
 
 
 def validate_element_is_found_in_mixed_citation(element_name, element_content, mixed_citation):
@@ -303,7 +414,8 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, journal, _article, is_db_generation, check_url):
+    def __init__(self, doi_services, journal, _article, is_db_generation, check_url):
+        self.doi_services = doi_services
         self.journal = journal
         self.article = _article
         self.is_db_generation = is_db_generation
@@ -628,47 +740,10 @@ class ArticleContentValidation(object):
     @property
     def doi(self):
         r = []
-        if self.article.is_ahead:
-            r.append(required('doi', self.article.doi, validation_status.STATUS_FATAL_ERROR))
-        else:
-            r.append(required('doi', self.article.doi, validation_status.STATUS_WARNING))
-
         if self.article.doi is not None:
-            invalid_chars = validate_doi_format(self.article.doi)
-            if len(invalid_chars) > 0:
-                r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}').format(value=self.article.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
-            else:
-                if self.journal.doi_prefix is not None:
-                    if not self.article.doi.startswith(self.journal.doi_prefix):
-                        r.append(('doi', validation_status.STATUS_FATAL_ERROR, _('Invalid DOI: {doi}. DOI must starts with: {expected}').format(doi=self.article.doi, expected=self.journal.doi_prefix)))
-                if not self.article.doi_journal_titles is None:
-                    status = validation_status.STATUS_INFO
-                    if not self.article.journal_title in self.article.doi_journal_titles:
-                        max_rate, items = utils.most_similar(utils.similarity(self.article.doi_journal_titles, self.article.journal_title))
-                        if max_rate < 0.7:
-                            status = validation_status.STATUS_FATAL_ERROR
-                    r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(self.article.doi_journal_titles)))
-
-                if not self.article.doi_article_titles is None:
-                    status = validation_status.STATUS_INFO
-                    max_rate = 0
-                    selected = None
-                    for t in self.article.titles:
-                        rate, items = utils.most_similar(utils.similarity(self.article.doi_article_titles, xml_utils.remove_tags(t.title)))
-                        if rate > max_rate:
-                            max_rate = rate
-                    if max_rate < 0.7:
-                        status = validation_status.STATUS_FATAL_ERROR
-                    r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(self.article.doi_article_titles)))
-
-                if self.article.doi_journal_titles is None:
-                    found = False
-                    for issn in [self.article.print_issn, self.article.e_issn]:
-                        if issn is not None:
-                            if issn.upper() in self.article.doi.upper():
-                                found = True
-                    if not found:
-                        r.append(('doi', validation_status.STATUS_ERROR, _('Be sure that {item} belongs to this journal.').format(item='DOI=' + self.article.doi)))
+            doi_validator = DOI_Validator(self.doi_services, self.article)
+            doi_validator.validate()
+            r = doi_validator.messages
         return r
 
     @property

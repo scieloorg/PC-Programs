@@ -223,7 +223,7 @@ def statistics_display(validations_results, inline=True):
     return tag(tag_name, stats, get_stats_numbers_style(validations_results.fatal_errors, validations_results.errors, validations_results.warnings))
 
 
-def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):
+def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[], default_width=None):
     if ENABLE_COMMENTS is True:
         html_cell_content.append(_('why it is not a valid message?'))
     else:
@@ -231,18 +231,21 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_
             table_header = [item for item in table_header if item != _('why it is not a valid message?')]
     r = ''
     try:
-        r = sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content)
+        r = sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content, default_width)
     except Exception as e:
         print(e)
         print(table_header)
         print(table_data)
+        raise
     return r
 
 
-def sheet_build(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):
+def old_sheet_build(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[], default_width=None):
     r = ''
     if not table_header is None:
         width = 70 if len(table_header) > 4 else int(float(140) / len(table_header))
+        if default_width is not None:
+            width = default_width
         th = ''.join([tag('th', label, 'th') for label in table_header])
         if len(table_data) == 0:
             tr_items = [tag('tr', ''.join(['<td>-</td>' for label in table_header]))]
@@ -287,6 +290,86 @@ def sheet_build(table_header, table_data, table_style='sheet', row_style=None, c
                 tr_items.append(tag('tr', ''.join(td_items), tr_style))
         r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', ''.join(tr_items)), table_style))
     return r
+
+
+def sheet_column(data, _tag='td', style=None, width=None):
+    _style = ''
+    if style is not None:
+        _style = ' class="' + style + '"'
+    _width = ''
+    if width is not None:
+        _width = ' width="' + width + '%"'
+    return '<' + _tag + _style + _width + '>' + data + '</' + _tag + '>'
+
+
+def sheet_row(data, style=None):
+    _style = ''
+    if style is not None:
+        _style = ' class="' + style + '"'
+    return '<tr' + _style + '>' + data + '</tr>'
+
+
+def sheet_row_style(table_header, row_style, row_content):
+    tr_style = None
+    if row_style is None:
+        if 'status' in table_header:
+            row_style = 'status'
+    if row_style is not None:
+        tr_style = get_message_style(row_content)
+    return tr_style
+
+
+def hidden_row(columns_number, label, data):
+    return '<td colspan="' + columns_number + '" class="' + label + '-hidden-block">' + data + '</td>'
+
+
+def sheet_col_style(label, colums_styles):
+    style = colums_styles.get(label)
+    if style is None:
+        if label in ['label', 'message', 'status', 'xml']:
+            style = 'td_' + label
+    if style is None:
+        style = 'td_regular'
+    return style
+
+
+def sheet_column_value(data, width, is_html_format, _color_text=False):
+    value = data
+    if not is_html_format:
+        value = format_html_data(data, width)
+        if _color_text:
+            value = color_text(value)
+    return value
+
+
+def sheet_build(table_header, table_rows_data, table_style='sheet', style4row=None, columns_styles={}, html_cell_content=[], default_width=None):
+    _color_text = (table_style == 'sheet')
+    th = ''.join([tag('th', label, 'th') for label in table_header])
+    if len(table_rows_data) == 0:
+        table_rows_data = [{table_header[-1]: '-' for item in table_header}]
+    width = str(50 if len(table_header) > 4 else int(float(140) / len(table_header)))
+    rows = ''
+    for row_data in table_rows_data:
+        if len(row_data) == 1 and len(table_header) > 1:
+            # hidden row
+            columns = hidden_row(str(len(table_header)), table_header[-1], row_data.get(table_header[-1]))
+        elif len(table_header) <= len(row_data):
+            columns = ''
+            for label in table_header:
+                
+                col_style = sheet_col_style(label, columns_styles)
+
+                if label == _('why it is not a valid message?'):
+                    if 'ERROR' in row_data.get('status', '') or 'WARNING' in row_data.get('status', ''):
+                        col_value = '<textarea rows="5" cols="40"> </textarea>'
+                    else:
+                        col_value = ' - '
+                else:
+                    col_value = sheet_column_value(row_data.get(label), width, (label in html_cell_content), _color_text)
+                columns += sheet_column(col_value, style=col_style, width=width)
+        row_style = sheet_row_style(table_header, style4row, columns)
+        rows += sheet_row(columns, row_style)
+    return tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', rows), table_style))
 
 
 def break_words(value, width=40):

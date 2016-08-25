@@ -19,6 +19,7 @@ import utils
 import fs_utils
 import java_xml_utils
 import html_reports
+import article_validations
 import xml_utils
 import xml_versions
 import xpchecker
@@ -1128,7 +1129,9 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         journal, journal_data = journals_manager.journal(pkg.journal.p_issn, pkg.journal.e_issn, pkg.journal.journal_title)
         pkg.identify_issue_label(journal.acron)
 
-        articles_set_validations = pkg_validations.ArticlesSetValidations(pkg, articles_work_area, journal_data, scielo_dtd_files, is_xml_generation, is_db_generation, None, None)
+        doi_services = article_validations.DOI_Services()
+
+        articles_set_validations = pkg_validations.ArticlesSetValidations(doi_services, pkg, articles_work_area, journal_data, scielo_dtd_files, is_xml_generation, is_db_generation, None, None)
         articles_set_validations.validate()
         reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), display_report=DISPLAY_REPORT)
 

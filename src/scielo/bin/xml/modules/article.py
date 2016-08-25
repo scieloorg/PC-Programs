@@ -1912,6 +1912,7 @@ class Journal(object):
         self.license = None
 
 
+#FIXME
 def doi_data(doi):
     results = {}
     url = ws_requester.wsr.article_doi_checker_url(doi)

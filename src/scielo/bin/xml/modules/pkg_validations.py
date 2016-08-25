@@ -127,7 +127,8 @@ class ValidationsFile(object):
 
 class ArticleValidations(object):
 
-    def __init__(self, article, work_area, pkg_path, is_xml_generation, is_db_generation, MAX_FATAL_ERRORS=None, MAX_ERRORS=None, MAX_WARNINGS=None):
+    def __init__(self, doi_services, article, work_area, pkg_path, is_xml_generation, is_db_generation, MAX_FATAL_ERRORS=None, MAX_ERRORS=None, MAX_WARNINGS=None):
+        self.doi_services = doi_services
         self.MAX_FATAL_ERRORS = MAX_FATAL_ERRORS
         self.MAX_ERRORS = MAX_ERRORS
         self.MAX_WARNINGS = MAX_WARNINGS
@@ -191,7 +192,7 @@ class ArticleValidations(object):
             article_validation_report = None
             content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to get data of ') + self.work_area.new_name + '.'
         else:
-            article_validation = article_validations.ArticleContentValidation(journal, self.article, self.is_db_generation, False)
+            article_validation = article_validations.ArticleContentValidation(self.doi_services, journal, self.article, self.is_db_generation, False)
             sheet_data = article_reports.ArticleSheetData(article_validation)
             article_display_report = article_reports.ArticleDisplayReport(sheet_data, self.pkg_path, self.work_area.new_name)
             article_validation_report = article_reports.ArticleValidationReport(article_validation)
@@ -354,7 +355,8 @@ class ArticlesPackage(object):
 
 class ArticlesSetValidations(object):
 
-    def __init__(self, pkg, articles_work_area, journal, dtd_files, is_xml_generation, is_db_generation, registered_articles=None, issue_models=None):
+    def __init__(self, doi_services, pkg, articles_work_area, journal, dtd_files, is_xml_generation, is_db_generation, registered_articles=None, issue_models=None):
+        self.doi_services = doi_services
         self.pkg = pkg
         self.pkg_articles = pkg.articles
         self.registered_articles = registered_articles if registered_articles is not None else {}
@@ -625,7 +627,7 @@ class ArticlesSetValidations(object):
 
     def validate(self):
         for name, article in self.merged_articles.items():
-            self.articles_validations[name] = ArticleValidations(article, self.articles_work_area[name], self.pkg.pkg_path, self.is_xml_generation, self.is_db_generation)
+            self.articles_validations[name] = ArticleValidations(self.doi_services, article, self.articles_work_area[name], self.pkg.pkg_path, self.is_xml_generation, self.is_db_generation)
             self.articles_validations[name].validate(self.journal, self.issue_models, self.dtd_files)
 
         self.pkg_journal_validations = PackageValidationsResult()
@@ -846,7 +848,7 @@ class ArticlesSetValidations(object):
                 h += html_reports.tag('h4', reftype)
                 for source in sorted(sources.keys()):
                     items.append({'source': source, _('location'): sources[source]})
-                h += html_reports.sheet(labels, items, 'dbstatus')
+                h += html_reports.sheet(labels, items, 'dbstatus', default_width=50)
         return h
 
     @property
