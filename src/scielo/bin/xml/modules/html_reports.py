@@ -103,16 +103,6 @@ class HideAndShowBlock(object):
             self.block += item.block
 
 
-def validations_table(results):
-    r = ''
-    if results is not None:
-        rows = []
-        for label, status, msg in results:
-            rows.append({'label': label, 'status': status, 'message': msg, _('why it is not a valid message?'): ' '})
-        r = tag('div', sheet(['label', 'status', 'message', _('why it is not a valid message?')], rows, table_style='validation'))
-    return r
-
-
 def report_date():
     procdate = datetime.now().isoformat()
     return tag('p', procdate[0:10] + ' ' + procdate[11:19], 'report-date')

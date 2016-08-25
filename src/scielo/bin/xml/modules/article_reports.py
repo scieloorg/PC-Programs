@@ -4,11 +4,11 @@ from datetime import datetime
 
 from __init__ import _
 import validation_status
-import utils
 import fs_utils
 import xml_utils
 import article_utils
 import article_validations
+import attributes
 import html_reports
 from article import PersonAuthor, CorpAuthor, format_author
 
@@ -310,16 +310,19 @@ class ArticleValidationReport(object):
         items, performance = self.article_validation.validations
         items = [item for item in items if item is not None]
         new_items = []
-        for item in [item for item in items if len(item) == 3]:
-            label, status, msg = item
+        for item in items:
+            xml = ''
+            if len(item) == 3:
+                label, status, msg = item
+            elif len(item) == 4:
+                label, status, msg, xml = item
             if display_all_message_types:
-                new_items.append((label, status, msg))
-            else:
-                if status != validation_status.STATUS_OK:
-                    new_items.append((label, status, msg))
+                new_items.append((label, status, msg, xml))
+            elif status != validation_status.STATUS_OK:
+                new_items.append((label, status, msg, xml))
         items = new_items
 
-        r = html_reports.validations_table(items)
+        r = validations_table(items)
 
         r += self.references(display_all_message_types)
 
@@ -338,7 +341,7 @@ class ArticleValidationReport(object):
 
             if len(found_errors) > 0:
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
-                rows += html_reports.validations_table(ref_result)
+                rows += validations_table(ref_result)
         return rows
 
 
@@ -527,3 +530,25 @@ def article_data_and_validations_report(journal, article, new_name, package_path
         content = html_reports.join_texts(content)
 
     return content
+
+
+def validations_table(results):
+    r = ''
+    if results is not None:
+        rows = []
+        for result in results:
+            result = list(result)
+            if len(result) == 3:
+                result.append('')
+            label, status, msg, xml = result
+            rows.append({'label': sps_help(label), 'status': status, 'message': msg, 'xml': xml, _('why it is not a valid message?'): ' '})
+        r = html_reports.tag('div', html_reports.sheet(['label', 'status', 'message', 'xml', _('why it is not a valid message?')], rows, table_style='validation'))
+    return r
+
+
+def sps_help(label):
+    r = label
+    if label in attributes.SPS_HELP_ELEMENTS:
+        href = 'http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/tagset/elemento-{label}.html'.format(label=label)
+        r += ' ' + html_reports.link(href, '[?]')
+    return r

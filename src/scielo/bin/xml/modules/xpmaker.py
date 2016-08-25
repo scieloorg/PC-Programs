@@ -651,6 +651,7 @@ class ArticlePkgMaker(object):
                     self.content = self.content.replace(' contrib-id-type="' + contrib_id + '">' + url, ' contrib-id-type="' + contrib_id + '">')
 
             #content = remove_xmllang_off_article_title(content)
+            self.content = self.content.replace('<comment content-type="cited"', '<comment')
             self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
             self.content = self.content.replace('&amp;amp;', '&amp;')
             self.content = self.content.replace('&amp;#', '&#')
