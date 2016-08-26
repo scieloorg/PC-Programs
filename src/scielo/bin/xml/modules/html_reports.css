@@ -625,6 +625,7 @@ h5 {
 } 
 
 .report-block-xmlrep {
+    font-family: "Courier";
     border: 5px solid #55C3DC;
     padding: 2px;
     display: none;
@@ -689,4 +690,9 @@ h5 {
   border-radius: 10px;
   margin: 5px;
   padding: 5px;
+}
+
+.blockingerror {
+  background-color: black;
+  color: white;
 }

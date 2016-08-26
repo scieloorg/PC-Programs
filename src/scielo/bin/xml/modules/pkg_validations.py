@@ -49,17 +49,12 @@ class PackageValidationsResult(dict):
             _reports = self.title + _reports
         return _reports
 
-    def statistics_message(self):
-        return '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(self.fatal_errors)), ('errors', str(self.errors)), ('warnings', str(self.warnings))]]) + ']'
-
 
 class ValidationsResult(object):
 
     def __init__(self):
         self._message = ''
-        self.fatal_errors = 0
-        self.errors = 0
-        self.warnings = 0
+        self.numbers = {}
 
     @property
     def message(self):
@@ -68,13 +63,49 @@ class ValidationsResult(object):
     @message.setter
     def message(self, value):
         self._message = value
-        self.fatal_errors, self.errors, self.warnings = html_reports.statistics_numbers(value)
+        self.calculate_numbers()
+
+    def calculate_numbers(self):
+        for status, style_checker_error_type in zip(validation_status.STATUS_LEVEL_ORDER, validation_status.STYLE_CHECKER_ERROR_TYPES):
+            self.numbers[status] = word_counter(self.message, status)
+            if len(style_checker_error_type) != '':
+                self.numbers[status] += number_after_words(self.message, style_checker_error_type)
 
     def total(self):
-        return sum([self.fatal_errors, self.errors, self.warnings])
+        return sum([item for item in self.numbers.values()])
 
-    def statistics_message(self):
-        return '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(self.fatal_errors)), ('errors', str(self.errors)), ('warnings', str(self.warnings))]]) + ']'
+    @property
+    def statistics_label_and_number(self):
+        items = []
+        for status in validation_status.STATUS_LEVEL_ORDER:
+            items.append((validation_status.STATUS_LABELS.get(status), str(self.numbers.get(status, 0))))
+        return items
+
+    @property
+    def fatal_errors(self):
+        return self.numbers.get(validation_status.STATUS_FATAL_ERROR, 0)
+
+    @property
+    def errors(self):
+        return self.numbers.get(validation_status.STATUS_ERROR, 0)
+
+    @property
+    def blocking_errors(self):
+        return self.numbers.get(validation_status.STATUS_BLOCKING_ERROR, 0)
+
+    @property
+    def warnings(self):
+        return self.numbers.get(validation_status.STATUS_WARNING, 0)
+
+    def statistics_display(self, inline=True):
+        tag_name = 'span'
+        text = ' | '.join([k + ': ' + v for k, v in self.statistics_label_and_number if v != '0'])
+        if not inline:
+            tag_name = 'div'
+            text = ''.join([html_reports.tag('p', html_reports.display_label_value(_('Total of ') + k, v)) for k, v in self.statistics_label_and_number])
+        style = validation_status.message_style(self.statistics_label_and_number)
+        r = html_reports.tag(tag_name, text, style)
+        return r
 
 
 class ValidationsFile(object):
@@ -97,6 +128,10 @@ class ValidationsFile(object):
         return self.validations.total()
 
     @property
+    def blocking_errors(self):
+        return self.validations.blocking_errors
+
+    @property
     def fatal_errors(self):
         return self.validations.fatal_errors
 
@@ -108,8 +143,8 @@ class ValidationsFile(object):
     def warnings(self):
         return self.validations.warnings
 
-    def statistics_message(self):
-        return self.validations.statistics_message()
+    def statistics_display(self):
+        return self.validations.statistics_display()
 
     def block_report(self, new_name, label, id):
         return self.validations.block_report
@@ -139,7 +174,7 @@ class ArticleValidations(object):
         self.is_db_generation = is_db_generation
         self.xml_journal_data_validations_file = ValidationsFile(self.work_area.journal_validations_filename)
         self.xml_issue_data_validations_file = ValidationsFile(self.work_area.issue_validations_filename)
-        self.xml_structure_validations_file = ValidationsFile(self.work_area.dtd_report_filename)
+        self.xml_structure_validations_file = ValidationsFile(self.work_area.err_filename)
         self.xml_content_validations_file = ValidationsFile(self.work_area.data_report_filename)
 
     @property
@@ -151,6 +186,16 @@ class ArticleValidations(object):
         return validations
 
     def validate_xml_structure(self, dtd_files):
+        separator = '\n\n\n' + '.........\n\n\n'
+
+        name_error = ''
+        if '_' in self.work_area.xml_name or '.' in self.work_area.xml_name:
+            name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=self.work_area.xml_name, forbidden_characters='_.') + separator
+
+        files_errors = ''
+        if os.path.isfile(self.work_area.err_filename):
+            files_errors = fs_utils.read_file(self.work_area.err_filename)
+
         for f in [self.work_area.dtd_report_filename, self.work_area.style_report_filename, self.work_area.data_report_filename, self.work_area.pmc_style_report_filename]:
             if os.path.isfile(f):
                 os.unlink(f)
@@ -159,30 +204,38 @@ class ArticleValidations(object):
         xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, self.work_area.dtd_report_filename, self.work_area.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
+        xml_structure_report_content = ''
         if os.path.isfile(self.work_area.dtd_report_filename):
-            separator = ''
-            if os.path.isfile(self.work_area.err_filename):
-                separator = '\n\n\n' + '.........\n\n\n'
-            open(self.work_area.err_filename, 'a+').write(separator + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(self.work_area.dtd_report_filename, 'r').read())
+            xml_structure_report_content = rst_title(_('DTD errors')) + fs_utils.read_file(self.work_area.dtd_report_filename)
+            os.unlink(self.work_area.dtd_report_filename)
 
+        report_content = ''
         if xml is None:
             xml_f += 1
+            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file is invalid') + '\n'
         if not valid_dtd:
             xml_f += 1
+            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has DTD errors') + '\n'
+        if len(name_error) > 0:
+            xml_f += 1
+            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has name errors') + '\n'
+
+        if len(report_content) > 0:
+            report_content = rst_title(_('Summary')) + report_content + separator
+            report_content = report_content.replace('\n', '<br/>')
+
+        if xml_f > 0:
+            fs_utils.append_file(self.work_area.err_filename, name_error + xml_structure_report_content)
+
         if self.work_area.ctrl_filename is None:
             if xml_f + xml_e + xml_w == 0:
                 os.unlink(self.work_area.style_report_filename)
         else:
-            open(self.work_area.ctrl_filename, 'w').write('Finished')
+            fs_utils.write_file(self.work_area.ctrl_filename, 'Finished')
 
-        if os.path.isfile(self.work_area.dtd_report_filename):
-            os.unlink(self.work_area.dtd_report_filename)
-        report_content = ''
-        for rep_file in [self.work_area.err_filename, self.work_area.dtd_report_filename, self.work_area.style_report_filename]:
+        for rep_file in [self.work_area.err_filename, self.work_area.style_report_filename]:
             if os.path.isfile(rep_file):
                 report_content += extract_report_core(fs_utils.read_file(rep_file))
-                #if self.is_xml_generation is False:
-                #    fs_utils.delete_file_or_folder(rep_file)
         return report_content
 
     def validate_xml_content(self, journal):
@@ -266,7 +319,7 @@ class ArticleValidations(object):
         _blocks = []
         for label, style, validations_file in blocks:
             if validations_file.total() > 0:
-                status = html_reports.statistics_display(validations_file)
+                status = validations_file.statistics_display()
                 _blocks.append(html_reports.HideAndShowBlockItem(block_parent_id, label, style + self.work_area.new_name, style, validations_file.message, status))
         return html_reports.HideAndShowBlock(block_parent_id, _blocks)
 
@@ -319,7 +372,7 @@ class ArticleValidations(object):
         self.xml_content_validations_file.message = self.validate_xml_content(journal)
         if self.is_xml_generation:
             valresults = ValidationsFile(self.work_area.data_report_filename)
-            stats = html_reports.statistics_display(valresults, False)
+            stats = valresults.statistics_display(False)
             title = [_('Data Quality Control'), self.work_area.new_name]
             valresults.message = stats + valresults.message
 
@@ -371,7 +424,7 @@ class ArticlesSetValidations(object):
         self.is_db_generation = is_db_generation
         self.updated_articles = {}
 
-        self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_FATAL_ERROR, 'doi': validation_status.STATUS_FATAL_ERROR, 'elocation id': validation_status.STATUS_FATAL_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
+        self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_BLOCKING_ERROR, 'doi': validation_status.STATUS_BLOCKING_ERROR, 'elocation id': validation_status.STATUS_BLOCKING_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
         if not self.is_db_generation:
             self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
 
@@ -675,13 +728,13 @@ class ArticlesSetValidations(object):
 
     @property
     def toc_extended_report(self):
-        labels = ['file', _('article'), _('pages'), '+']
+        labels = ['file', _('article'), _('pages'), _('titles, abstracts, keywords')]
         values = {}
         hide_and_show_block_items = {}
         for new_name, article in self.articles:
             report_id = 'toc-'
             block_parent_id = report_id + new_name
-            block_items = [html_reports.HideAndShowBlockItem(block_parent_id, '+', 'more-' + new_name, 'xmlrep', self.articles_validations[new_name].data_with_lang, '')]
+            block_items = [html_reports.HideAndShowBlockItem(block_parent_id, _('view'), 'more-' + new_name, 'xmlrep', self.articles_validations[new_name].data_with_lang, '')]
             hide_and_show_block_items[new_name] = html_reports.HideAndShowBlock(block_parent_id, block_items)
             values[new_name] = []
             values[new_name].append(new_name)
@@ -781,7 +834,7 @@ class ArticlesSetValidations(object):
 
     @property
     def articles_dates_report(self):
-        labels = ['name', '@article-type', 
+        labels = ['name', '@article-type',
         'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
         items = []
         for xml_name, doc in self.articles:
@@ -876,7 +929,7 @@ class ArticlesSetValidations(object):
                     #if not article.is_rolling_pass and not article.is_ahead:
                     if int_previous_lpage is not None:
                         if int_previous_lpage > int_fpage:
-                            status = validation_status.STATUS_FATAL_ERROR if not article.is_epub_only else validation_status.STATUS_WARNING
+                            status = validation_status.STATUS_BLOCKING_ERROR if not article.is_epub_only else validation_status.STATUS_WARNING
                             msg.append(_('Invalid pages') + ': ' + _('check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage == int_fpage:
                             status = validation_status.STATUS_WARNING
@@ -885,7 +938,7 @@ class ArticlesSetValidations(object):
                             status = validation_status.STATUS_WARNING
                             msg.append(_('there is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                     if int_fpage > int_lpage:
-                        status = validation_status.STATUS_FATAL_ERROR
+                        status = validation_status.STATUS_BLOCKING_ERROR
                         msg.append(_('Invalid page range'))
                     int_previous_lpage = int_lpage
                     previous_lpage = lpage
@@ -912,7 +965,7 @@ class ArticlesSetValidations(object):
     def invalid_xml_report(self):
         r = ''
         if len(self.invalid_xml_name_items) > 0:
-            r += html_reports.tag('div', html_reports.p_message(_('{status}: invalid XML files.').format(status=validation_status.STATUS_FATAL_ERROR)))
+            r += html_reports.tag('div', html_reports.p_message(_('{status}: invalid XML files.').format(status=validation_status.STATUS_BLOCKING_ERROR)))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', self.invalid_xml_name_items, 'issue-problem'))
         return r
 
@@ -920,7 +973,7 @@ class ArticlesSetValidations(object):
     def missing_items_report(self):
         r = ''
         for label, items in self.missing_required_values.items():
-            r += html_reports.tag('div', html_reports.p_message(_('{status}: missing {label} in: ').format(status=validation_status.STATUS_FATAL_ERROR, label=label)))
+            r += html_reports.tag('div', html_reports.p_message(_('{status}: missing {label} in: ').format(status=validation_status.STATUS_BLOCKING_ERROR, label=label)))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
         return r
 
@@ -940,7 +993,7 @@ class ArticlesSetValidations(object):
         parts = []
         for label, values in self.conflicting_values.items():
             compl = ''
-            _status = validation_status.STATUS_FATAL_ERROR
+            _status = validation_status.STATUS_BLOCKING_ERROR
             if label == 'issue pub date':
                 if self.is_rolling_pass:
                     _status = validation_status.STATUS_WARNING
@@ -998,7 +1051,7 @@ class ArticlesSetValidations(object):
         if len(self.rejected_order_change) > 0:
             error_messages.append(html_reports.tag('h3', _('rejected orders')))
             error_messages.append('<div class="issue-problem">')
-            error_messages.append(html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('It is not allowed to use same order for different articles.')))
+            error_messages.append(html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('It is not allowed to use same order for different articles.')))
             for order, items in self.rejected_order_change.items():
                 error_messages.append(html_reports.tag('p', html_reports.format_html_data({order: items})))
             error_messages.append('</div>')
@@ -1090,7 +1143,7 @@ class ReportsMaker(object):
 
         validations = ValidationsResult()
         validations.message = html_reports.join_texts(components.values())
-        components['summary-report'] = error_msg_subtitle() + html_reports.statistics_display(validations, False) + components['summary-report']
+        components['summary-report'] = error_msg_subtitle() + validations.statistics_display(False) + components['summary-report']
         components = {k: label_errors(v) for k, v in components.items()}
         return components
 
@@ -1134,6 +1187,8 @@ def extract_report_core(content):
             content = content.decode('utf-8')
         content = content[content.find('<body'):]
         report = content[content.find('>')+1:]
+    elif not '<' in content:
+        report = content.replace('\n', '<br/>')
     return report
 
 
@@ -1224,7 +1279,8 @@ def check_title_and_authors_changes(article, registered):
 
 
 def error_msg_subtitle():
-    msg = html_reports.tag('p', _('Fatal error - indicates errors which impact on the quality of the bibliometric indicators and other services'))
+    msg += html_reports.tag('p', _('Blocking error - indicates errors of data consistency'))
+    msg += html_reports.tag('p', _('Fatal error - indicates errors which impact on the quality of the bibliometric indicators and other services'))
     msg += html_reports.tag('p', _('Error - indicates the other kinds of errors'))
     msg += html_reports.tag('p', _('Warning - indicates that something can be an error or something needs more attention'))
     return html_reports.tag('div', msg, 'subtitle')
@@ -1249,3 +1305,29 @@ def label_errors_type(content, error_type, prefix):
     return ''.join(new)
 
 
+def word_counter(content, word):
+    return len(content.split(word)) - 1
+
+
+def number_after_words(content, text='Total of errors = '):
+    n = 0
+    if text in content:
+        content = content[content.find(text) + len(text):]
+        finished = False
+        n = ''
+        while not finished and len(content) > 0:
+            if content[0].isdigit():
+                n += content[0]
+                content = content[1:]
+            else:
+                finished = True
+
+        if len(n) > 0:
+            n = int(n)
+        else:
+            n = 0
+    return n
+
+
+def rst_title(title):
+    return '\n\n' + title + '\n' + '-'*len(title) + '\n'

@@ -577,7 +577,7 @@ class IssueModels(object):
             a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
             i_year = self.issue.dateiso[0:4] if self.issue.dateiso is not None else ''
             if self.issue.dateiso is not None:
-                _status = validation_status.STATUS_FATAL_ERROR
+                _status = validation_status.STATUS_BLOCKING_ERROR
                 if self.issue.dateiso.endswith('0000'):
                     _status = validation_status.STATUS_WARNING
             validations.append((_('issue pub-date'), a_year, i_year))
@@ -600,7 +600,7 @@ class IssueModels(object):
                         if label == _('issue pub-date'):
                             status = _status
                         else:
-                            status = validation_status.STATUS_FATAL_ERROR
+                            status = validation_status.STATUS_BLOCKING_ERROR
                     results.append((label, status, _msg))
 
             validations = []
@@ -632,7 +632,7 @@ class IssueModels(object):
             fixed_sectitle = None
             article_section = article.toc_section
             if article.toc_section is None:
-                results.append(('section', validation_status.STATUS_FATAL_ERROR, _('Required')))
+                results.append(('section', validation_status.STATUS_BLOCKING_ERROR, _('Required')))
             else:
                 _results = []
                 for article_section in article.toc_sections:

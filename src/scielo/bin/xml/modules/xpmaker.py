@@ -1133,6 +1133,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
 
         articles_set_validations = pkg_validations.ArticlesSetValidations(doi_services, pkg, articles_work_area, journal_data, scielo_dtd_files, is_xml_generation, is_db_generation, None, None)
         articles_set_validations.validate()
+
         reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), display_report=DISPLAY_REPORT)
 
         if not is_xml_generation:

@@ -6,10 +6,9 @@ import shutil
 from datetime import datetime
 
 from __init__ import _
-from . import validation_status
 from . import xml_utils
 from . import utils
-
+from . import validation_status
 
 ENABLE_COMMENTS = False
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -108,17 +107,6 @@ def report_date():
     return tag('p', procdate[0:10] + ' ' + procdate[11:19], 'report-date')
 
 
-def statistics(content, word):
-    return len(content.split(word)) - 1
-
-
-def statistics_numbers(content):
-    e = statistics(content, validation_status.STATUS_ERROR)
-    f = statistics(content, validation_status.STATUS_FATAL_ERROR)
-    w = statistics(content, validation_status.STATUS_WARNING)
-    return (f, e, w)
-
-
 def get_unicode(text):
     if text is None:
         text = u''
@@ -210,17 +198,6 @@ def html(title, body):
     s += '</html>'
 
     return s
-
-
-def statistics_display(validations_results, inline=True):
-    if inline:
-        tag_name = 'span'
-        stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(validations_results.fatal_errors)), ('errors', str(validations_results.errors)), ('warnings', str(validations_results.warnings))]])
-    else:
-        tag_name = 'div'
-        stats = [('Total of fatal errors', validations_results.fatal_errors), ('Total of errors', validations_results.errors), ('Total of warnings', validations_results.warnings)]
-        stats = ''.join([tag('p', display_label_value(l, str(v))) for l, v in stats])
-    return tag(tag_name, stats, get_stats_numbers_style(validations_results.fatal_errors, validations_results.errors, validations_results.warnings))
 
 
 def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[], default_width=None):
@@ -480,26 +457,17 @@ def save(filename, title, body):
 def get_message_style(value, default=''):
     if value is None:
         value = ''
-    if validation_status.STATUS_FATAL_ERROR in value:
-        r = 'fatalerror'
-    elif validation_status.STATUS_ERROR in value:
-        r = 'error'
-    elif validation_status.STATUS_WARNING in value:
-        r = 'warning'
-    elif validation_status.STATUS_OK in value:
-        r = 'ok'
-    elif validation_status.STATUS_INFO in value:
-        r = 'info'
-    elif validation_status.STATUS_VALID in value:
-        r = 'valid'
-    else:
+    r = validation_status.style(value)
+    if r is None:
         r = default
     return r
 
 
-def get_stats_numbers_style(f, e, w):
+def get_stats_numbers_style(f, e, w, blocking=None):
     r = 'success'
-    if f > 0:
+    if blocking is not None:
+        r = 'blockingerror'
+    elif f > 0:
         r = 'fatalerror'
     elif e > 0:
         r = 'error'
