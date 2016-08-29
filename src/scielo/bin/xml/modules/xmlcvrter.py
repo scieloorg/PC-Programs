@@ -105,7 +105,8 @@ class ArticlesConversion(object):
         self.xc_results = {}
         scilista_items = []
         if self.articles_set_validations.blocking_errors == 0 and self.total_to_convert > 0:
-            self.excluded_error_messages = self.db.exclude_incorrect_orders(self.articles_set_validations.changed_orders)
+
+            self.error_messages = self.db.exclude_incorrect_orders(self.articles_set_validations.changed_orders)
 
             converted, self.xc_results = self.db.convert_articles(self.articles_set_validations.xc_articles, self.articles_set_validations.issue_models.record, self.create_windows_base)
 
@@ -154,12 +155,12 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.articles_set_validations.blocking_errors > 0:
             result = 'rejected'
-        elif self.total_to_convert == 0 and len(self.articles_set_validations.blocked_update) == 0:
+        elif self.total_to_convert == 0:
             result = 'ignored'
-        elif self.articles_set_validations.xml_validations_fatal_errors == 0:
-            result = 'approved'
-        else:
+        elif self.articles_set_validations.fatal_errors > 0:
             result = 'accepted'
+        else:
+            result = 'approved'
         return result
 
     def sort_articles_by_status(self):
@@ -205,7 +206,7 @@ def conclusion_message(total, converted, not_converted, xc_status, acron_issue_l
     update = True
     if xc_status == 'rejected':
         update = False
-        status = validation_status.STATUS_FATAL_ERROR
+        status = validation_status.STATUS_BLOCKING_ERROR
         if total > 0:
             if not_converted > 0:
                 reason = _('because it is not complete ({value} were not converted).').format(value=str(not_converted) + '/' + str(total))
@@ -301,7 +302,7 @@ def convert_package(src_path):
         converted = conversion.converted
         not_converted = conversion.not_converted
         xc_status = conversion.xc_status
-        conversion_reports.xc_conclusion_msg = conversion.excluded_error_messages
+        conversion_reports.xc_conclusion_msg = conversion.error_messages
 
         final_report_path = issue_files.base_reports_path
         final_result_path = issue_files.issue_path

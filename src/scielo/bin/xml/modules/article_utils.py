@@ -194,7 +194,7 @@ def required_one(label, value):
 
 
 def expected_values(label, value, expected):
-    return display_value(label, value) if value in expected else validation_status.STATUS_ERROR + ': ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
+    return display_value(label, value) if value in expected else validation_status.STATUS_ERROR + ': ' + _('{value} is an invalid value for {label}. ').format(value=value, label=label) + _('Expected values: {expected}').format(expected=', '.join(expected))
 
 
 #FIXME apagar

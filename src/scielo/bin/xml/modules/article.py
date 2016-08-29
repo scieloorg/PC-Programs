@@ -221,6 +221,12 @@ class PersonAuthor(object):
         self.role = ''
         self.xref = []
 
+    @property
+    def fullname(self):
+        a = self.fname if self.fname is not None else ''
+        a += ' ' + self.surname if self.surname is not None else ''
+        return a
+
 
 class CorpAuthor(object):
 
@@ -727,7 +733,6 @@ class ArticleXML(object):
                         a = get_author(contrib)
                         if a is not None:
                             contribs[subart.attrib.get('id')].append(a)
-        
         return contribs
 
     @property
@@ -850,6 +855,11 @@ class ArticleXML(object):
             _doi = self.article_meta.findtext('article-id[@pub-id-type="doi"]')
             if _doi is not None:
                 return _doi.lower()
+
+    @property
+    def marked_to_delete(self):
+        if self.article_meta is not None:
+            return self.article_meta.findtext('article-id[@specific-use="delete"]')
 
     @property
     def previous_article_pid(self):

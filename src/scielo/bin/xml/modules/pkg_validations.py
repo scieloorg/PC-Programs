@@ -435,8 +435,7 @@ class ArticlesSetValidations(object):
         self.allowed_to_update = {}
         self.allowed_to_update_status = {}
 
-        self._validate_orders()
-        self._check_articles_set_ared_allowed_to_update()
+        self.evaluate_pkg_articles()
 
         self.EXPECTED_COMMON_VALUES_LABELS = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', 'license']
         self.REQUIRED_DATA = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
@@ -444,18 +443,38 @@ class ArticlesSetValidations(object):
 
         self.compile_references()
 
+    def evaluate_pkg_articles(self):
+        self._validate_orders()
+        self._check_articles_set_are_allowed_to_update()
+
+    def check_articles_to_exclude(self):
+        excluded_names = []
+        excluded_orders = {}
+        for k, a in self.pkg_articles.items():
+            if a.marked_to_delete:
+                excluded_names.append(k)
+                excluded_orders[a.order] = k
+        return (excluded_names, excluded_orders)
+
     def _validate_orders(self):
         # order change must be allowed only if authors and titles are the same
         self.changed_orders = {}
-        order_items = {name: article.order for name, article in self.registered_articles.items()}
+        registered_orders = {name: article.order for name, article in self.registered_articles.items()}
 
         for name, article in self.pkg_articles.items():
-            if name in order_items.keys():
-                if order_items[name] != article.order:
-                    self.changed_orders[name] = (order_items[name], article.order)
+            if article.marked_to_delete:
+                if name in registered_orders.keys():
+                    del registered_orders[name]
+
+        for name, article in self.pkg_articles.items():
+            if name in registered_orders.keys():
+                if registered_orders[name] != article.order:
+                    self.changed_orders[name] = (registered_orders[name], article.order)
+            else:
+                registered_orders[name] = article.order
 
         order_values = {}
-        for name, order in order_items.items():
+        for name, order in registered_orders.items():
             if not order in order_values.keys():
                 order_values[order] = []
             order_values[order].append(name)
@@ -465,7 +484,7 @@ class ArticlesSetValidations(object):
             if len(names) > 1:
                 self.rejected_order_change[order] = names
 
-    def _check_articles_set_ared_allowed_to_update(self):
+    def _check_articles_set_are_allowed_to_update(self):
         self.blocked_update = []
         for xml_name, article in self.pkg_articles.items():
             registered = self.registered_articles.get(xml_name)
@@ -1028,10 +1047,10 @@ class ArticlesSetValidations(object):
 
     @property
     def blocking_errors(self):
-        return self.consistency_validations.fatal_errors + self.pkg_reg_issue_validations.fatal_errors + self.xc_pre_validations.fatal_errors
+        return self.consistency_validations.blocking_errors + self.pkg_reg_issue_validations.blocking_errors + self.xc_pre_validations.blocking_errors
 
     @property
-    def xml_validations_fatal_errors(self):
+    def fatal_errors(self):
         return sum([v.xml_structure_validations_file.fatal_errors + v.xml_content_validations_file.fatal_errors for v in self.articles_validations.values()])
 
     @property
@@ -1071,7 +1090,7 @@ class ArticlesSetValidations(object):
                 # order change
                 if order_change[1] in self.rejected_order_change.keys():
                     # order change is rejected
-                    msg.append(html_reports.p_message(_('{status}: {new_order} is being assign to more than one file: {files}').format(status=validation_status.STATUS_FATAL_ERROR, new_order=order_change[1], files=', '.join(self.rejected_order_change[order_change[1]]))))
+                    msg.append(html_reports.p_message(_('{status}: {new_order} is being assign to more than one file: {files}').format(status=validation_status.STATUS_BLOCKING_ERROR, new_order=order_change[1], files=', '.join(self.rejected_order_change[order_change[1]]))))
                 else:
                     # order change is acceptable
                     msg.append(html_reports.p_message(_('{status}: order changed: {old} => {new}').format(status=validation_status.STATUS_INFO, old=order_change[0], new=order_change[1])))

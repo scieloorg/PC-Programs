@@ -151,7 +151,7 @@ class DOI_Data(object):
 def invalid_value_and_expected_values_message(invalid_value, label, expected_values=None):
     msg = _('{value} is an invalid value for {label}. ').format(value=invalid_value, label=label)
     if expected_values is not None:
-        msg += _('Expected values: {expected}. ').format(expected_values=expected_values)
+        msg += _('Expected values: {expected}. ').format(expected=expected_values)
     return msg
 
 
@@ -215,7 +215,7 @@ def evaluate_tiff(img_filename, min_height=None, max_height=None):
             errors.append(_('Be sure that {img} has valid height. Recommended: min={min} and max={max}. The images must be proportional among themselves.').format(img=os.path.basename(img_filename), min=min_height, max=max_height))
         if dpi is not None:
             if dpi < MIN_IMG_DPI:
-                errors.append(_('Expected >= {value} dpi').format(value=MIN_IMG_DPI))
+                errors.append(_('Expected values: {expected}. ').format(expected=_('equal or greater than {value} dpi').format(value=MIN_IMG_DPI)))
                 status = validation_status.STATUS_ERROR
         if len(errors) > 0:
             status_message.append((status, '; '.join(info) + ' | ' + '. '.join(errors)))
@@ -321,7 +321,7 @@ def expected_values(label, value, expected, fatal=''):
     status = validation_status.STATUS_ERROR
     if fatal != '':
         status = validation_status.STATUS_FATAL_ERROR
-    return (label, validation_status.STATUS_OK, value) if value in expected else (label, status, format_value(value) + ' - ' + _('Invalid value for ') + label + '. ' + _('Expected values') + ': ' + ', '.join(expected))
+    return (label, validation_status.STATUS_OK, value) if value in expected else (label, status, invalid_value_and_expected_values_message(format_value(value), label, expected))
 
 
 def display_attributes(attributes):
@@ -404,11 +404,13 @@ def validate_contrib_names(author, aff_ids=[]):
     results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
     if len(aff_ids) > 0:
         if len(author.xref) == 0:
-            results.append(('xref', validation_status.STATUS_ERROR, _('Author') + ' "' + author.fname + ' ' + author.surname + '" ' + _('has no') + ' xref' + '. ' + _('Expected values') + ': ' + '|'.join(aff_ids)))
+            msg = _('{item} has no {missing_item}. ').format(item=author.fullname, missing_item='xref[@ref-type="aff"]/@rid') + _('Expected values: {expected}. ').format(expected='|'.join(aff_ids))
+            results.append(('xref', validation_status.STATUS_WARNING, msg))
         else:
             for xref in author.xref:
                 if not xref in aff_ids:
-                    results.append(('xref', validation_status.STATUS_FATAL_ERROR, xref + ' ' + _('of') + ' "' + author.fname + ' ' + author.surname + '" ' + ': ' + _('Invalid value of') + ' xref[@ref-type="aff"]/@rid' + '. ' + _('Valid values: ') + '|'.join(aff_ids)))
+                    msg = invalid_value_and_expected_values_message(xref, 'xref[@ref-type="aff"]/@rid' + (' of ') + author.fullname, ', '.join(aff_ids))
+                    results.append(('xref', validation_status.STATUS_FATAL_ERROR, msg))
     return results
 
 
@@ -537,7 +539,7 @@ class ArticleContentValidation(object):
                 expected_values = attributes.expected_sps_versions(article_dateiso)
                 if not str(self.article.sps) in expected_values:
                     status = validation_status.STATUS_ERROR
-                    msg = _('Invalid value for ') + ' ' + label + ': ' + str(self.article.sps) + '. ' + _('Expected values') + ': ' + _(' or ').join(expected_values)
+                    msg = invalid_value_and_expected_values_message(self.article.sps, label, ', '.join(aff_ids))
         r.append((label, status, msg))
         return r
 
@@ -575,7 +577,7 @@ class ArticleContentValidation(object):
             else:
                 error = True
             if error:
-                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + '<month>: ' + value + '. ' + _('Expected values') + ': ' + ' | '.join([str(i) for i in range(1, 13)])))
+                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, invalid_value_and_expected_values_message(value, 'month', ' | '.join([str(i) for i in range(1, 13)]))))
         for parent, parent_id, value in self.article.seasons:
             error = False
             if '-' in value:
@@ -592,7 +594,9 @@ class ArticleContentValidation(object):
             elif '|' + value + '|' in article_utils.MONTHS_ABBREV:
                 error = True
             if error:
-                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, _('Invalid value for ') + '<season>: ' + value + '. ' + _('Expected value for season: initial month and final month separated by hyphen. E.g.: Jan-Feb. Expected values for the months: ' + article_utils.MONTHS_ABBREV.replace('|', ' '))))
+                expected = _('initial month and final month separated by hyphen. E.g.: Jan-Feb. Expected values for the months: {months}').format(months=article_utils.MONTHS_ABBREV.replace('|', ' '))
+                msg = invalid_value_and_expected_values_message(value, 'season', expected)
+                r.append((parent + '(' + parent_id + ')', validation_status.STATUS_FATAL_ERROR, msg))
         return r
 
     @property
@@ -674,7 +678,8 @@ class ArticleContentValidation(object):
             if len(self.journal.nlm_title) > 0:
                 if self.article.journal_id_nlm_ta is not None:
                     if not self.article.journal_id_nlm_ta in self.journal.nlm_title:
-                        return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected {expected}.').format(value=self.article.journal_id_nlm_ta, expected='|'.join(self.journal.nlm_title))))
+                        msg = invalid_value_and_expected_values_message(self.article.journal_id_nlm_ta, 'journal-id (nlm-ta)', '|'.join(self.journal.nlm_title))
+                        return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, msg))
 
     @property
     def journal_issns(self):
@@ -1184,7 +1189,7 @@ class ArticleContentValidation(object):
         if c in expected:
             r.append(('article dates', validation_status.STATUS_OK, c))
         else:
-            r.append(('article dates', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + _('Expected values') + ': ' + ' | '.join(expected)))
+            r.append(('article dates', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + _('Expected values: {expected}. ').format(expected=' | '.join(expected))))
         return r
 
     @property
@@ -1264,9 +1269,10 @@ class ArticleContentValidation(object):
             for label, sections in body.items():
                 for sectype, sectitle in sections:
                     if sectype == '':
+                        msg = _('{item} has no {missing_item}. ').format(item=sectitle, missing_item='@sec-type') + _('Expected values: {expected}. ').format(expected=_(' and/or ').join(expected_values))
                         r.append((label + '/sec/@sec-type',
                                   validation_status.STATUS_WARNING,
-                                  _('{sectitle} has no @sec-type. Expected values for @sec-type: {expected}.').format(sectitle=sectitle, expected=_(' and/or ').join(expected_values))))
+                                  msg))
                     elif not sectype in expected_values:
                         invalid = None
                         if '|' in sectype:
@@ -1275,7 +1281,8 @@ class ArticleContentValidation(object):
                             invalid = sectype
                         if invalid is not None:
                             if len(invalid) > 0:
-                                r.append((label + '/sec/@sec-type', validation_status.STATUS_FATAL_ERROR, _('Invalid value: {value}. Expected values: {expected}.').format(value=sectype, expected=_(' and/or ').join(expected_values))))
+                                msg = invalid_value_and_expected_values_message(sectype, label + '/sec/@sec-type', _(' and/or ').join(expected_values))
+                                r.append((label + '/sec/@sec-type', validation_status.STATUS_FATAL_ERROR, msg))
         return r
 
     @property
@@ -1301,7 +1308,9 @@ class ArticleContentValidation(object):
                 else:
                     for item in xref_nodes:
                         if item['ref-type'] != xref_type:
-                            message.append(('xref/@ref-type', validation_status.STATUS_FATAL_ERROR, 'xref[@rid="' + str(item['rid']) + '"]/@ref-type=' + str(item['ref-type']) + ': ' + _('Invalid value') + '. ' + _('Expected value:') + str(xref_type)))
+                            msg = _('')
+                            'xref[@rid="' + str(item['rid']) + '"]/@ref-type=' + str(item['ref-type']) + ': ' + _('Invalid value') + '. ' + _('Expected value:') + str(xref_type)
+                            message.append(('xref/@ref-type', validation_status.STATUS_FATAL_ERROR, msg))
 
         for xref_type, missing_xref_list in missing.items():
             if self.article.any_xref_ranges.get(xref_type) is None:

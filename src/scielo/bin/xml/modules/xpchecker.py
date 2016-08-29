@@ -167,7 +167,7 @@ def validate_article_xml(xml_filename, dtd_files, dtd_report_filename, style_rep
     if e is None:
         is_valid_style = style_validation(xml_filename, dtd_files.doctype_with_local_path, style_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report, dtd_files.database_name)
     else:
-        text = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to load') + ' ' + xml_filename + '\n' + e
+        text = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=xml_filename) + '\n' + e
         fs_utils.write_file(style_report_filename, text)
     f, e, w = style_checker_statistics(style_report_filename)
     register_log('validate_article_xml: fim')

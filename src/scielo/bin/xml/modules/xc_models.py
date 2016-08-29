@@ -593,7 +593,7 @@ class IssueModels(object):
                 elif isinstance(issue_data, list):
                     issue_data = ' | '.join(issue_data)
                 if not article_data == issue_data:
-                    _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
+                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
                     if issue_data == 'None':
                         status = validation_status.STATUS_ERROR
                     else:
@@ -615,24 +615,25 @@ class IssueModels(object):
                 elif isinstance(issue_data, list):
                     issue_data = ' | '.join(issue_data)
                 if utils.how_similar(article_data, issue_data) < 0.8:
-                    _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
+                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
                     results.append((label, validation_status.STATUS_ERROR, _msg))
 
             # license
             article_license_code_and_versions = ' | '.join(article.article_license_code_and_versions)
             if self.issue.license is None:
-                results.append(('license', validation_status.STATUS_ERROR, _('Unable to identify issue license')))
+                results.append(('license', validation_status.STATUS_ERROR, _('Unable to identify {item}').format(item=_('issue license'))))
             elif article_license_code_and_versions is not None:
+                _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match').format(label=label, value1=article_license_code_and_versions, label1=_('article'), value2=self.issue.license, label2=_('issue'))
                 if not self.issue.license.lower() in article_license_code_and_versions:
-                    results.append(('license', validation_status.STATUS_ERROR, _('data mismatched. In article: "') + article_license_code_and_versions + _('" and in issue: "') + self.issue.license + '"'))
+                    results.append(('license', validation_status.STATUS_ERROR, _msg))
                 else:
-                    results.append(('license', validation_status.STATUS_INFO, _('In article: "') + article_license_code_and_versions + _('" and in issue: "') + self.issue.license + '"'))
+                    results.append(('license', validation_status.STATUS_INFO, _msg))
 
             # section
             fixed_sectitle = None
             article_section = article.toc_section
             if article.toc_section is None:
-                results.append(('section', validation_status.STATUS_BLOCKING_ERROR, _('Required')))
+                results.append((_('table of contents section'), validation_status.STATUS_BLOCKING_ERROR, _('Required')))
             else:
                 _results = []
                 for article_section in article.toc_sections:
@@ -640,14 +641,14 @@ class IssueModels(object):
                     if matched_rate != 1:
                         if not article.is_ahead:
                             if section_code is None:
-                                _results.append(('section', validation_status.STATUS_ERROR, article_section + _(' is not a registered section.')))
+                                _results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('{value} is not registered as {label}. ').format(value=article_section, label=_(_('table of contents section')))))
                             else:
-                                _results = [('section', validation_status.STATUS_WARNING, _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article_section + '")')]
+                                _results = [(_('table of contents section'), validation_status.STATUS_WARNING, _('{incorrect} was changed to {fixed}. ').format(incorrect=article_section, fixed=fixed_sectitle))]
                                 break
                     else:
                         break
                 if len(_results) > 0:
-                    results.append(('section', validation_status.STATUS_INFO, _('Registered sections') + ':\n' + u'; '.join(self.section_titles)))
+                    results.append((_('table of contents section'), validation_status.STATUS_INFO, _('Registered sections') + ':\n' + u'; '.join(self.section_titles)))
                     for _result in _results:
                         results.append(_result)
 

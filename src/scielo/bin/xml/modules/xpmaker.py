@@ -1003,7 +1003,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
     package = Package(xml_files)
     package.setUp()
 
-    utils.display_message('\n' + _('Make packages for ') + str(len(xml_files)) + _(' files.'))
+    utils.display_message('\n' + _('Make packages for {n} files.').format(n=str(len(xml_files))))
     n = '/' + str(len(xml_files))
     index = 0
 
@@ -1046,7 +1046,7 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
     for xml_name, doc in articles.items():
         doc_files_info = doc_files_info_items[xml_name]
         if doc.journal_id_nlm_ta is None:
-            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', _('Missing journal-id (nlm-ta).'))
+            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
         else:
             do_it = True
 
