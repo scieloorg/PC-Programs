@@ -32,7 +32,7 @@ def message_style(label_and_number_items):
 
 def style(value):
     r = None
-    if STATUS_FATAL_ERROR in value:
+    if STATUS_BLOCKING_ERROR in value:
         r = 'blockingerror'
     elif STATUS_FATAL_ERROR in value:
         r = 'fatalerror'

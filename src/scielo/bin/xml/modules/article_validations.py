@@ -77,16 +77,18 @@ class DOI_Validator(object):
         self.messages = []
 
     def validate(self):
-        self.validate_format()
-        self.validate_doi_prefix()
-        self.validate_journal_title()
-        self.validate_article_title()
-        self.validate_issn()
+        if self.doi_data is not None:
+            self.validate_format()
+            self.validate_doi_prefix()
+            self.validate_journal_title()
+            self.validate_article_title()
+            self.validate_issn()
 
     def validate_format(self):
-        invalid_chars = self.doi_data.validate_doi_format()
-        if len(invalid_chars) > 0:
-            self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}').format(value=self.doi_data.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
+        if self.doi_data is not None:
+            invalid_chars = self.doi_data.validate_doi_format()
+            if len(invalid_chars) > 0:
+                self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}').format(value=self.doi_data.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
 
     def validate_doi_prefix(self):
         if self.journal_doi_prefix is not None:
@@ -273,15 +275,15 @@ def validate_value(value):
         else:
             status = validation_status.STATUS_ERROR
             if value.startswith(' '):
-                result.append(value + _(' starts with') + _(' "space"'))
+                result.append(_('{value} starts with invalid characters: {invalid_chars}. ').format(value=value, invalid_chars=_('space')))
             if value.endswith(' '):
-                result.append(value + _(' ends with') + _(' "space"'))
+                result.append(_('{value} ends with invalid characters: {invalid_chars}. ').format(value=value, invalid_chars=_('space')))
             if value.startswith('.'):
                 status = validation_status.STATUS_WARNING
-                result.append(value + _(' starts with') + ' "."')
+                result.append(_('{value} starts with invalid characters: {invalid_chars}. ').format(value=value, invalid_chars=_('dot')))
             differ = value.replace(_value, '')
             if len(differ) > 0:
-                result.append('<data>' + value + '</data> ' + _('contains invalid characteres:') + ' "' + differ + '"')
+                result.append(_('{value} contains invalid characters: {invalid_chars}. ').format(value='<data>' + value + '</data> ', invalid_chars=differ))
     if status == validation_status.STATUS_OK:
         message = format_value(value)
     else:
@@ -502,7 +504,6 @@ class ArticleContentValidation(object):
             found = False
             for name in children:
                 if item.find(name) is not None:
-                    print(xml_utils.node_text(item))
                     if name == 'graphic':
                         if item.attrib.get('{http://www.w3.org/1999/xlink}href') is not None:
                             found = True
@@ -1308,8 +1309,7 @@ class ArticleContentValidation(object):
                 else:
                     for item in xref_nodes:
                         if item['ref-type'] != xref_type:
-                            msg = _('')
-                            'xref[@rid="' + str(item['rid']) + '"]/@ref-type=' + str(item['ref-type']) + ': ' + _('Invalid value') + '. ' + _('Expected value:') + str(xref_type)
+                            msg = invalid_value_and_expected_values_message(str(item['ref-type']), 'xref[@rid="' + str(item['rid']) + '"]/@ref-type', [str(xref_type)])
                             message.append(('xref/@ref-type', validation_status.STATUS_FATAL_ERROR, msg))
 
         for xref_type, missing_xref_list in missing.items():
@@ -1341,7 +1341,8 @@ class ArticleContentValidation(object):
                     missing.append(ref.id)
         message = []
         if len(invalid_reftype) > 0:
-            message.append(('xref[@ref-type=bibr]', validation_status.STATUS_FATAL_ERROR, '@ref-type=' + item['ref-type'] + ': ' + _('Invalid value for') + ' @ref-type. ' + _('Expected value:') + ' bibr.'))
+            msg = invalid_value_and_expected_values_message(item['ref-type'], '@ref-type', ['bibr'])
+            message.append(('xref[@ref-type=bibr]', validation_status.STATUS_FATAL_ERROR, msg))
 
         if len(missing) > 0:
             missing = confirm_missing_xref_items(missing, self.article.bibr_xref_ranges)

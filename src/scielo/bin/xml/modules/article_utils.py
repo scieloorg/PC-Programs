@@ -193,10 +193,6 @@ def required_one(label, value):
     return display_attributes(label, value) if value is not None else validation_status.STATUS_ERROR + ': Required ' + label + '. '
 
 
-def expected_values(label, value, expected):
-    return display_value(label, value) if value in expected else validation_status.STATUS_ERROR + ': ' + _('{value} is an invalid value for {label}. ').format(value=value, label=label) + _('Expected values: {expected}').format(expected=', '.join(expected))
-
-
 #FIXME apagar
 def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
     def normalize_value(value):

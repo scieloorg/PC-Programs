@@ -53,20 +53,20 @@ class TabbedReport(object):
 
 class HideAndShowBlocksReport(object):
 
-    def __init__(self, labels, values, hide_and_show_blocks, html_cell_content=[]):
+    def __init__(self, labels, data, html_cell_content=[]):
         self.labels = labels
-        self.values = values
-        self.hide_and_show_blocks = hide_and_show_blocks
+        self.data = data
         self.html_cell_content = html_cell_content
         self.html_cell_content.append(labels[-1])
 
     @property
     def content(self):
         items = []
-        for new_name, data in self.values.items():
-            data.append(self.hide_and_show_blocks[new_name].links)
-            items.append(label_values(self.labels, data))
-            items.append({self.labels[-1]: self.hide_and_show_blocks[new_name].block})
+        for data in self.data:
+            values, block = data
+            values.append(block.links)
+            items.append(label_values(self.labels, values))
+            items.append({self.labels[-1]: block.block})
         return sheet(self.labels, items, table_style='reports-sheet', html_cell_content=self.html_cell_content)
 
 
@@ -217,58 +217,6 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_
     return r
 
 
-def old_sheet_build(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[], default_width=None):
-    r = ''
-    if not table_header is None:
-        width = 70 if len(table_header) > 4 else int(float(140) / len(table_header))
-        if default_width is not None:
-            width = default_width
-        th = ''.join([tag('th', label, 'th') for label in table_header])
-        if len(table_data) == 0:
-            tr_items = [tag('tr', ''.join(['<td>-</td>' for label in table_header]))]
-        else:
-            tr_items = []
-            for row in table_data:
-                td_items = []
-                if len(row) == 1 and len(table_header) > 1:
-                    # hidden tr
-                    td_items.append('<td colspan="' + str(len(table_header)) + '" class="' + label + '-hidden-block">' + row.get(label, '') + '</td>')
-                elif len(table_header) <= len(row):
-                    for label in table_header:
-                        td_content = row.get(label, '')
-                        td_style = None
-                        if label == _('why it is not a valid message?'):
-                            if 'ERROR' in row.get('status', '') or 'WARNING' in row.get('status', ''):
-                                td_content = '<textarea rows="5" cols="40"> </textarea>'
-                            else:
-                                td_content = ' - '
-                        else:
-                            # cell style
-                            td_style = colums_styles.get(label)
-                            if td_style is None:
-                                if label in ['label', 'message', 'status', 'xml']:
-                                    td_style = 'td_' + label
-                            if td_style is None:
-                                td_style = 'td_regular'
-                            if not label in html_cell_content:
-                                td_content = format_html_data(td_content, width)
-                                if table_style == 'sheet':
-                                    td_content = color_text(td_content)
-                        td_items.append(tag('td', td_content, td_style))
-
-                # row style
-                tr_style = None
-                if row_style is None:
-                    if 'status' in table_header:
-                        row_style = 'status'
-                if row_style is not None:
-                    tr_style = get_message_style(row.get(row_style))
-
-                tr_items.append(tag('tr', ''.join(td_items), tr_style))
-        r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', ''.join(tr_items)), table_style))
-    return r
-
-
 def sheet_column(data, _tag='td', style=None, width=None):
     _style = ''
     if style is not None:
@@ -276,6 +224,8 @@ def sheet_column(data, _tag='td', style=None, width=None):
     _width = ''
     if width is not None:
         _width = ' width="' + width + '%"'
+
+
     return '<' + _tag + _style + _width + '>' + data + '</' + _tag + '>'
 
 
@@ -333,7 +283,6 @@ def sheet_build(table_header, table_rows_data, table_style='sheet', style4row=No
         elif len(table_header) <= len(row_data):
             columns = ''
             for label in table_header:
-                
                 col_style = sheet_col_style(label, columns_styles)
 
                 if label == _('why it is not a valid message?'):
@@ -378,7 +327,7 @@ def p_message(value, display_justification_input=True):
     style = get_message_style(value, '')
     justification_input = ''
     if display_justification_input is True and ENABLE_COMMENTS is True:
-        if style in ['error', 'fatalerror', 'warning']:
+        if style in ['error', 'fatalerror', 'warning', 'blockingerror']:
             justification_input = tag('p', tag('textarea', ' ', attributes={'cols': '100', 'rows': '5'}))
     return tag('p', value, style) + justification_input
 
@@ -460,19 +409,6 @@ def get_message_style(value, default=''):
     r = validation_status.style(value)
     if r is None:
         r = default
-    return r
-
-
-def get_stats_numbers_style(f, e, w, blocking=None):
-    r = 'success'
-    if blocking is not None:
-        r = 'blockingerror'
-    elif f > 0:
-        r = 'fatalerror'
-    elif e > 0:
-        r = 'error'
-    elif w > 0:
-        r = 'warning'
     return r
 
 

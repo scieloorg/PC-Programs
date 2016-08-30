@@ -33,6 +33,7 @@ ol li:before {
   text-align: center;
   font-family: Verdana;
   font-weight: bold;
+  font-size: 60%;
   margin: 1px;
   padding: 5px;
   border-radius: 30px;
@@ -188,7 +189,7 @@ h5 {
 } 
 .validation th {
   border: 1px solid gray;
-  background-color: #A6C1BC;
+  background-color: #547980;
   color: white;
 }
 .sheet {
@@ -312,7 +313,7 @@ h5 {
 }
 /* MESSAGES */
 .issue-messages{
-    background-color: #9ECFA2;
+    background-color: #547980;
     border: 1px solid gray;
     color: white;
 }
@@ -693,6 +694,6 @@ h5 {
 }
 
 .blockingerror {
-  background-color: black;
+  background-color: #784071;
   color: white;
 }
