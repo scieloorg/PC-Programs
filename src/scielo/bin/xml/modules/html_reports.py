@@ -53,11 +53,12 @@ class TabbedReport(object):
 
 class HideAndShowBlocksReport(object):
 
-    def __init__(self, labels, data, html_cell_content=[]):
+    def __init__(self, labels, data, html_cell_content=[], widths=None):
         self.labels = labels
         self.data = data
         self.html_cell_content = html_cell_content
         self.html_cell_content.append(labels[-1])
+        self.widths = widths
 
     @property
     def content(self):
@@ -67,7 +68,7 @@ class HideAndShowBlocksReport(object):
             values.append(block.links)
             items.append(label_values(self.labels, values))
             items.append({self.labels[-1]: block.block})
-        return sheet(self.labels, items, table_style='reports-sheet', html_cell_content=self.html_cell_content)
+        return sheet(self.labels, items, table_style='reports-sheet', html_cell_content=self.html_cell_content, widths=self.widths)
 
 
 class HideAndShowBlockItem(object):
@@ -200,7 +201,7 @@ def html(title, body):
     return s
 
 
-def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[], default_width=None):
+def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[], widths=None):
     if ENABLE_COMMENTS is True:
         html_cell_content.append(_('why it is not a valid message?'))
     else:
@@ -208,7 +209,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_
             table_header = [item for item in table_header if item != _('why it is not a valid message?')]
     r = ''
     try:
-        r = sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content, default_width)
+        r = sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content, widths)
     except Exception as e:
         print(e)
         print(table_header)
@@ -224,8 +225,6 @@ def sheet_column(data, _tag='td', style=None, width=None):
     _width = ''
     if width is not None:
         _width = ' width="' + width + '%"'
-
-
     return '<' + _tag + _style + _width + '>' + data + '</' + _tag + '>'
 
 
@@ -269,12 +268,14 @@ def sheet_column_value(data, width, is_html_format, _color_text=False):
     return value
 
 
-def sheet_build(table_header, table_rows_data, table_style='sheet', style4row=None, columns_styles={}, html_cell_content=[], default_width=None):
+def sheet_build(table_header, table_rows_data, table_style='sheet', style4row=None, columns_styles={}, html_cell_content=[], widths=None):
     _color_text = (table_style == 'sheet')
     th = ''.join([tag('th', label, 'th') for label in table_header])
     if len(table_rows_data) == 0:
         table_rows_data = [{table_header[-1]: '-' for item in table_header}]
-    width = str(50 if len(table_header) > 4 else int(float(140) / len(table_header)))
+    if widths is None:
+        w = str(int(float(100) / len(table_header)))
+        widths = {label: w for label in table_header}
     rows = ''
     for row_data in table_rows_data:
         if len(row_data) == 1 and len(table_header) > 1:
@@ -291,8 +292,8 @@ def sheet_build(table_header, table_rows_data, table_style='sheet', style4row=No
                     else:
                         col_value = ' - '
                 else:
-                    col_value = sheet_column_value(row_data.get(label), width, (label in html_cell_content), _color_text)
-                columns += sheet_column(col_value, style=col_style, width=width)
+                    col_value = sheet_column_value(row_data.get(label), widths[label], (label in html_cell_content), _color_text)
+                columns += sheet_column(col_value, style=col_style, width=widths[label])
         row_style = sheet_row_style(table_header, style4row, columns)
         rows += sheet_row(columns, row_style)
     return tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', rows), table_style))

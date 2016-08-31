@@ -772,7 +772,7 @@ class ArticleXML(object):
             for contrib in self.article_meta.findall('.//contrib[collab]'):
                 a = get_author(contrib)
                 if a is not None:
-                    k.append()
+                    k.append(a)
         return k
 
     def short_article_title(self, size=None):

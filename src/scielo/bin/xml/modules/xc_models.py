@@ -1284,8 +1284,19 @@ class JournalsList(object):
                     journal.journal_title = update_list(journal.journal_title, j.journal_title)
                     journal.issn_id = update_list(journal.issn_id, j.issn_id)
 
-        #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
+                    print(journal.acron)
+                    print(journal.p_issn)
+                    print(journal.e_issn)
+                    print(journal.abbrev_title)
+                    print(journal.nlm_title)
+                    print(journal.publisher_name)
+                    print(journal.license)
+
+                    print(journal.collection_acron)
+                    print(journal.journal_title)
+                    print(journal.issn_id)
         return journal
+        #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
 
     def get_journal(self, p_issn, e_issn, journal_title):
         journal = Journal()
@@ -1319,6 +1330,7 @@ class JournalsManager(object):
 
     def journal(self, p_issn, e_issn, journal_title):
         j = None
+        j_data = None
         if self.journals_db is None:
             j = self.journals_list.get_journal(p_issn, e_issn, journal_title)
             j_data = self.journals_list.get_journal_data(p_issn, e_issn, journal_title)

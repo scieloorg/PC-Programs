@@ -330,10 +330,9 @@ class ArticleValidations(object):
         #r += html_reports.tag('h7', self.work_area.xml_name)
         r += html_reports.tag('p', self.article.toc_section)
         r += html_reports.tag('p', self.article.article_type)
-        #r += html_reports.tag('p', self.article.pages)
+        r += html_reports.tag('p', html_reports.tag('strong', self.article.pages))
         r += html_reports.tag('p', self.article.doi)
         r += html_reports.tag('p', html_reports.tag('strong', self.article.title))
-        r += html_reports.tag('p', html_reports.format_html_data({t.language: t.title for t in self.article.titles[1:]}))
         a = []
         for item in article.authors_list(self.article.article_contrib_items):
             a.append(html_reports.tag('span', item))
@@ -342,28 +341,48 @@ class ArticleValidations(object):
         return r
 
     @property
-    def data_with_lang(self):
-        r = '<p>'
-        r += '<ul>'
-        for lang in sorted(self.article.title_abstract_kwd_languages):
-            r += '<li>'
+    def table_of_content_detailed(self):
+        r = ''
+        r += '<div>'
+        #r += html_reports.tag('h7', self.work_area.xml_name)
+        r += html_reports.tag('p', self.article.toc_section)
+        r += html_reports.tag('p', self.article.article_type)
+        r += html_reports.tag('p', html_reports.tag('strong', self.article.pages))
+        r += html_reports.tag('p', self.article.doi)
+        r += html_reports.tag('p', html_reports.tag('strong', self.article.title))
+        #r += html_reports.tag('p', html_reports.format_html_data({t.language: t.title for t in self.article.titles[1:]}))
+        a = []
+        for item in article.authors_list(self.article.article_contrib_items):
+            a.append(html_reports.tag('span', item))
+        r += html_reports.tag('p', '; '.join(a))
 
-            label = html_reports.tag('smaller', attributes.LANGUAGES.get(lang, _('unknown')) + ' [' + lang + ']')
-
-            items = [item.text for item in self.article.abstracts_by_lang.get(lang, [])]
-            if len(items) > 0:
-                r += html_reports.tag('p', label + ' ' + _('abstract'))
-                r += html_reports.format_html_data(items)
-
-            keywords = self.article.keywords_by_lang.get(lang, [])
-            if keywords is not None:
-                keywords = [kwd.text for kwd in keywords]
-            if len(keywords) > 0:
-                r += html_reports.tag('p', label + ' ' + _('keywords'))
-                r += html_reports.format_html_data(keywords)
-            r += '</li>'
-        r += '</ul></p>'
+        r += self.table_of_content_data_with_lang
+        r += '</div>'
         return r
+
+    @property
+    def table_of_content_data_with_lang(self):
+        r = ''
+        for lang in sorted(self.article.title_abstract_kwd_languages):
+            label = html_reports.tag('smaller', attributes.LANGUAGES.get(lang, _('unknown')) + ' [' + lang + ']')
+            r += '<h4>' + label + '</h4>'
+            r += '<p>' + '; '.join([k.text for k in self.article.abstracts_by_lang.get(lang, [])]) + '</p>'
+            r += '<p>' + '; '.join([k.text for k in self.article.keywords_by_lang.get(lang, [])]) + '</p>'
+        return r
+
+    @property
+    def pdf_items(self):
+        items = []
+        pdf = self.pkg_path + '/' + self.work_area.xml_name + '.pdf'
+        #items.append('<p>' + pdf + '</p>')
+        if os.path.isfile(pdf):
+            items.append('<object data="file://' + pdf + '" width="100%" height="100%"/>')
+        for lang in self.article.trans_languages:
+            pdf = self.pkg_path + '/' + self.work_area.xml_name + '-' + lang + '.pdf'
+            #items.append('<p>' + pdf + '</p>')
+            if os.path.isfile(pdf):
+                items.append('<object data="file://' + pdf + '" width="100%" height="100%"/>')
+        return ''.join(items)
 
     def validate(self, journal, issue_models, dtd_files):
         self.xml_journal_data_validations_file.message = self.validate_journal_data(journal)
@@ -543,7 +562,7 @@ class OrderValidations(object):
 
     def validate_resulting_orders_report(self):
         #resulting_orders
-        labels = ['order', 'status', _('filename'), _('message'), _('history')]
+        labels = ['order', _('filename'), _('history'), 'status', _('message')]
         orders, history = self.resulting_orders
         items = []
         for order in sorted(orders.keys()):
@@ -554,10 +573,10 @@ class OrderValidations(object):
                 status = validation_status.STATUS_BLOCKING_ERROR
                 msg = _('Unique value for {label} is required for all the documents in the package').format(label='order')
             values.append(order)
-            values.append(status)
             values.append(orders[order])
-            values.append(msg)
             values.append(''.join(history[order]))
+            values.append(status)
+            values.append(msg)
 
             items.append(label_values(labels, values))
         return html_reports.tag('h2', _('Orders validations')) + html_reports.sheet(labels, items, html_cell_content=[_('message'), _('history')])
@@ -688,6 +707,7 @@ class ArticlesSetValidations(object):
         self.missing_year = []
         self.unusual_sources = []
         self.unusual_years = []
+        self.years = {}
         for xml_name, doc in self.merged_articles.items():
             for ref in doc.references:
                 if ref.source is not None:
@@ -705,20 +725,19 @@ class ArticlesSetValidations(object):
 
                 # year
                 if ref.publication_type in attributes.BIBLIOMETRICS_USE:
+                    if not ref.year in self.years.keys():
+                        self.years[ref.year] = []
+                    self.years[ref.year].append(xml_name + ': ' + str(ref.id))
                     if ref.year is None:
                         self.missing_year.append([xml_name, ref.id])
                     else:
-                        numbers = len([n for n in ref.year if n.isdigit()])
-                        not_numbers = len(ref.year) - numbers
-                        if not_numbers > numbers:
+                        if not ref.year.isdigit():
                             self.unusual_years.append([xml_name, ref.id, ref.year])
 
                     if ref.source is None:
                         self.missing_source.append([xml_name, ref.id])
                     else:
-                        numbers = len([n for n in ref.source if n.isdigit()])
-                        not_numbers = len(ref.source) - numbers
-                        if not_numbers < numbers:
+                        if ref.source.isdigit():
                             self.unusual_sources.append([xml_name, ref.id, ref.source])
         self.bad_sources_and_reftypes = {source: reftypes for source, reftypes in self.sources_and_reftypes.items() if len(reftypes) > 1}
 
@@ -788,6 +807,14 @@ class ArticlesSetValidations(object):
     @property
     def detailed_report(self):
         labels = ['file', 'order', _('pages'), _('article'), 'aop pid/related', _('reports')]
+        widths = {}
+        widths['file'] = '10'
+        widths['order'] = '10'
+        widths[_('pages')] = '10'
+        widths[_('article')] = '50'
+        widths['aop pid/related'] = '10'
+        widths[_('reports')] = '10'
+
         items = []
         for new_name, article in self.articles:
             hide_and_show_block_items = self.articles_validations[new_name].hide_and_show_block('view-reports-')
@@ -803,26 +830,21 @@ class ArticlesSetValidations(object):
                         related[k] = v
             values.append(related)
             items.append((values, hide_and_show_block_items))
-        report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')])
+        report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')], widths=widths)
         return report.content
 
     @property
     def toc_extended_report(self):
-        labels = ['file', _('article'), _('pages'), _('titles, abstracts, keywords')]
+        labels = ['file', _('article'), 'pdf']
+        widths = {'file': '10', _('article'): '50', 'pdf': '40'}
         items = []
         for new_name, article in self.articles:
-            report_id = 'toc-'
-            block_parent_id = report_id + new_name
-            block_items = [html_reports.HideAndShowBlockItem(block_parent_id, _('view'), 'more-' + new_name, 'xmlrep', self.articles_validations[new_name].data_with_lang, '')]
-            hide_and_show_block_items = html_reports.HideAndShowBlock(block_parent_id, block_items)
             values = []
             values.append(new_name)
-            values.append(self.articles_validations[new_name].table_of_content)
-            values.append(article.pages)
-
-            items.append((values, hide_and_show_block_items))
-        report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')])
-        return report.content
+            values.append(self.articles_validations[new_name].table_of_content_detailed)
+            values.append(self.articles_validations[new_name].pdf_items)
+            items.append(label_values(labels, values))
+        return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), 'pdf'], widths=widths)
 
     @property
     def article_db_status_report(self, new_name):
@@ -930,7 +952,18 @@ class ArticlesSetValidations(object):
             values.append(str(doc.publication_days))
             values.append(str(doc.registration_days))
             items.append(label_values(labels, values))
-        return html_reports.tag('h4', _('Articles Dates Report')) + html_reports.sheet(labels, items, 'dbstatus')
+        article_dates = html_reports.sheet(labels, items, 'dbstatus')
+
+        labels = [_('year'), _('location')]
+        items = []
+        for year in sorted(self.years.keys()):
+            values = []
+            values.append(year)
+            values.append(self.years[year])
+            items.append(label_values(labels, values))
+        reference_dates = html_reports.sheet(labels, items, 'dbstatus')
+
+        return html_reports.tag('h4', _('Articles Dates Report')) + article_dates + reference_dates
 
     @property
     def articles_affiliations_report(self):
@@ -982,7 +1015,7 @@ class ArticlesSetValidations(object):
                 h += html_reports.tag('h4', reftype)
                 for source in sorted(sources.keys()):
                     items.append({'source': source, _('location'): sources[source]})
-                h += html_reports.sheet(labels, items, 'dbstatus', default_width=50)
+                h += html_reports.sheet(labels, items, 'dbstatus')
         return h
 
     @property
