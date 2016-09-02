@@ -1,7 +1,9 @@
 # coding=utf-8
 
 import os
+import sys
 import shutil
+import webbrowser
 
 from datetime import datetime
 
@@ -34,6 +36,7 @@ class TabbedReport(object):
 
         save(filename, report_title, self.report_content)
         print(_('Report:\n  {filename}').format(filename=filename))
+        print(_display_report)
         if _display_report:
             display_report(filename)
 
@@ -510,8 +513,8 @@ def label_values(labels, values):
 
 def display_report(report_filename):
     try:
-        webbrowser.open('file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()), new=2)
-    except:
-        pass
-
-
+        webbrowser.open('file://' + report_filename.encode(encoding=sys.getfilesystemencoding()), new=2)
+    except Exception as e:
+        print('unable to open')
+        print(report_filename)
+        print(e)

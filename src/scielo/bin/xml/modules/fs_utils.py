@@ -4,6 +4,7 @@ import shutil
 import tempfile
 
 import files_extractor
+import zipfile
 
 
 def read_file(filename, encode='utf-8'):
@@ -117,7 +118,6 @@ def fix_path(path):
 
 
 def zip_report(report_filename):
-    import zipfile
     zip_path = report_filename.replace('.html', '.zip')
     myZipFile = zipfile.ZipFile(zip_path, "w")
     myZipFile.write(report_filename, os.path.basename(report_filename), zipfile.ZIP_DEFLATED)
@@ -136,7 +136,7 @@ def update_file_content_if_there_is_new_items(new_content, filename):
         new_content = new_content.decode('utf-8')
     new_items = new_content.split('\n')
 
-    allow_update = len(new_items) > len(current_items) or (len(new_items) == len(current_items) and new_content != current_content)
+    allow_update = (len(new_items) > len(current_items)) or (len(new_items) == len(current_items) and new_content != current_content)
 
     if allow_update is True:
         write_file(filename, new_content)

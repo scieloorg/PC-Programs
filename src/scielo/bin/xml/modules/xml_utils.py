@@ -364,9 +364,7 @@ def convert_entities_to_chars(content, debug=False):
         content = htmlent2char(content)
         content = content.replace('&mldr;', u"\u2026")
         content, replaced_named_ent = named_ent_to_char(content)
-
         register_remaining_named_entities(content)
-
         content = restore_xml_entities(content)
     return content, replaced_named_ent
 
@@ -719,31 +717,17 @@ class PrettyXML(object):
                 self._xml = self._xml.replace('</' + style + '> <' + style + '>', ' ')
             doit = (curr_value != self._xml)
 
-    def normalize_spaces_in_xml_item(self, item):
-        debug = False
-        if debug:
-            print('1{' + item + '}')
-
-        if item.startswith('<') and item.endswith('>'):
-            item = '<' + ' '.join(item[1:-1].split()) + '>'
-        elif item.strip() == '':
+    def normalize_spaces_in_xml_item(self, text):
+        if text.startswith('<') and text.endswith('>'):
+            text = '<' + ' '.join(text[1:-1].split()) + '>'
+        elif text.strip() == '':
             pass
         else:
-            item = item.replace(' ', 'PRESERVESPACES')
-            if debug:
-                print('2{' + item + '}')
-            item = item.replace('\n', 'PRESERVESPACES')
-            if debug:
-                print('3{' + item + '}')
-            item = ' '.join(item.split())
-            if debug:
-                print('4{' + item + '}')
-            while 'PRESERVESPACESPRESERVESPACES' in item:
-                item = item.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
-            if debug:
-                print('5{' + item + '}')
-
-        return item
+            text = text.replace(' ', 'PRESERVESPACES').replace('\n', 'PRESERVESPACES')
+            text = ' '.join(text.split())
+            while 'PRESERVESPACESPRESERVESPACES' in text:
+                text = text.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
+        return text
 
     def fix_line(self, item):
         if item.strip() != '':

@@ -64,10 +64,9 @@ class DOI_Services(object):
         return prefix
 
 
-class DOI_Validator(object):
+class ArticleDOIValidator(object):
 
     def __init__(self, doi_services, article):
-        self.doi_services = doi_services
         self.article = article
         self.doi_data = doi_services.get_doi_data(article.doi)
         self.journal_doi_prefix = [doi_services.doi_journal_prefix(issn, article.pub_date_year) for issn in [article.e_issn, article.print_issn] if issn is not None]
@@ -77,6 +76,7 @@ class DOI_Validator(object):
         self.messages = []
 
     def validate(self):
+        self.messages = []
         if self.doi_data is not None:
             self.validate_format()
             self.validate_doi_prefix()
@@ -419,7 +419,7 @@ def validate_contrib_names(author, aff_ids=[]):
 class ArticleContentValidation(object):
 
     def __init__(self, doi_services, journal, _article, is_db_generation, check_url):
-        self.doi_services = doi_services
+        self.doi_validator = ArticleDOIValidator(doi_services, _article)
         self.journal = journal
         self.article = _article
         self.is_db_generation = is_db_generation
@@ -747,9 +747,8 @@ class ArticleContentValidation(object):
     def doi(self):
         r = []
         if self.article.doi is not None:
-            doi_validator = DOI_Validator(self.doi_services, self.article)
-            doi_validator.validate()
-            r = doi_validator.messages
+            self.doi_validator.validate()
+            r = self.doi_validator.messages
         return r
 
     @property

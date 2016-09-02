@@ -120,7 +120,7 @@ def xml_validate(xml_filename, result_filename, doctype=None):
     shutil.move(temp_result_filename, result_filename)
     shutil.move(bkp_xml_filename, xml_filename)
     register_log('xml_validate: fim')
-    return not validation_status.STATUS_ERROR in result.upper()
+    return not 'ERROR' in result.upper()
 
 
 def create_temp_xml_filename(xml_filename):

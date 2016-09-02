@@ -701,7 +701,7 @@ class ConversionResults(object):
     def __init__(self):
         self.converted = False
         self.excluded_aop = None
-        self.xc_validations = pkg_validations.ValidationResults()
+        self.validations = pkg_validations.ValidationResults()
         self.aop_status = None
 
 
@@ -863,27 +863,27 @@ class ArticlesDBManager(object):
                 xc_messages.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(article.order))
                 result.converted = False
 
-        result.xc_validations.message = ''.join([html_reports.p_message(item) for item in xc_messages])
+        result.validations.message = ''.join([html_reports.p_message(item) for item in xc_messages])
         return result
 
     def convert_articles(self, articles, i_record, create_windows_base):
-        xc_results = {}
+        articles_result = {}
 
-        result = False
+        converted = False
         error = False
 
         for xml_name, article in articles:
-            xc_results[xml_name] = self.convert_article(article, i_record)
-            if xc_results[xml_name] is False:
+            articles_result[xml_name] = self.convert_article(article, i_record)
+            if articles_result[xml_name] is False:
                 error = True
 
         if not error:
             q_registered = self.finish_conversion(i_record)
-            result = q_registered == len(articles)
+            converted = q_registered == len(articles)
             if result:
                 if create_windows_base:
                     self.generate_windows_version()
-        return (result, xc_results)
+        return (converted, articles_result)
 
     def exclude_incorrect_orders(self, changed_orders):
         messages = []
@@ -1284,17 +1284,6 @@ class JournalsList(object):
                     journal.journal_title = update_list(journal.journal_title, j.journal_title)
                     journal.issn_id = update_list(journal.issn_id, j.issn_id)
 
-                    print(journal.acron)
-                    print(journal.p_issn)
-                    print(journal.e_issn)
-                    print(journal.abbrev_title)
-                    print(journal.nlm_title)
-                    print(journal.publisher_name)
-                    print(journal.license)
-
-                    print(journal.collection_acron)
-                    print(journal.journal_title)
-                    print(journal.issn_id)
         return journal
         #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
 

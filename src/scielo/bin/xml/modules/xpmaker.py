@@ -360,20 +360,31 @@ class SGMLXML(object):
         possibilities, alternative_id = get_components_of_new_href(elem_name, elem_id, alternative_id)
         for name in filenames:
             for possibility in possibilities:
-                elem_id, prefixes = possibility
-
+                element_id, prefixes = possibility
                 i = 0
-                while not elem_id[i].isdigit():
+                stop = False
+                while i < len(element_id) and not stop:
+                    stop = element_id[i].isdigit()
                     i += 1
-                n = str(int(elem_id[i:]))
-
-                for prefix in prefixes:
-                    for number in [n, '0' + n]:
-                        for ext in ['.tiff', '.tif', '.eps', '.jpg']:
-                            href = name + prefix + number + ext
-                            possible_href_names.append(href)
-                            if os.path.isfile(self.src_path + '/' + href):
-                                found.append(href)
+                if stop:
+                    n = element_id[i-1:]
+                else:
+                    n = ''
+                if n != '':
+                    n = str(int(n))
+                    for prefix in prefixes:
+                        for number in [n, '0' + n]:
+                            for ext in ['.tiff', '.tif', '.eps', '.jpg']:
+                                href = name + prefix + number + ext
+                                possible_href_names.append(href)
+                                if os.path.isfile(self.src_path + '/' + href):
+                                    found.append(href)
+                else:
+                    for ext in ['.tiff', '.tif', '.eps', '.jpg']:
+                        href = name + elem_id + ext
+                        possible_href_names.append(href)
+                        if os.path.isfile(self.src_path + '/' + href):
+                            found.append(href)
         new_href = None if len(found) == 0 else found[0]
         return (new_href, list(set(possible_href_names)), alternative_id)
 
@@ -1123,16 +1134,13 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     else:
         articles, articles_work_area = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
 
-        pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles)
-
-        journals_manager = xc_models.JournalsManager()
-        journal, journal_data = journals_manager.journal(pkg.journal.p_issn, pkg.journal.e_issn, pkg.journal.journal_title)
-        pkg.identify_issue_label(journal.acron)
-
         doi_services = article_validations.DOI_Services()
 
-        articles_set_validations = pkg_validations.ArticlesSetValidations(doi_services, pkg, articles_work_area, journal_data, scielo_dtd_files, is_xml_generation, is_db_generation, None, None)
-        articles_set_validations.validate()
+        pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles)
+        articles_data = pkg_validations.ArticlesData(pkg, xc_models.JournalsManager(), db_manager=None)
+        articles_data.setup()
+        articles_set_validations = pkg_validations.ArticlesSetValidations(articles_data, articles_work_area, is_xml_generation, is_db_generation)
+        articles_set_validations.validate(doi_services, scielo_dtd_files)
 
         reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), display_report=DISPLAY_REPORT)
 

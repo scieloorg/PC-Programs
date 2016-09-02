@@ -58,6 +58,7 @@ class DocumentFiles(object):
         self.pmc_dtd_report_filename = report_path + '/' + report_name + '.pmc.dtd.txt'
         self.pmc_style_report_filename = report_path + '/' + report_name + '.pmc.rep.html'
         self.err_filename = report_path + '/' + report_name + '.err.txt'
+        self.err_filename_html = report_path + '/' + report_name + '.err.html'
         self.data_report_filename = report_path + '/' + report_name + '.contents.html'
         self.images_report_filename = report_path + '/' + report_name + '.images.html'
 

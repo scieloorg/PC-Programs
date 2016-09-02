@@ -2084,8 +2084,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="figgrp/@id | tabwrap/@id">
 		<xsl:choose>
-			<xsl:when test="substring(.,1,1)='f'">f<xsl:value-of select="string(number(substring(.,2)))"/></xsl:when>
-			<xsl:when test="substring(.,1,1)='t'">t<xsl:value-of select="string(number(substring(.,2)))"/></xsl:when>
+			<xsl:when test="substring(.,1,1)='f'">f<xsl:value-of select="substring(.,2)"/></xsl:when>
+			<xsl:when test="substring(.,1,1)='t'">t<xsl:value-of select="substring(.,2)"/></xsl:when>
+			<!--xsl:when test="substring(.,1,1)='f'">f<xsl:value-of select="string(number(substring(.,2)))"/></xsl:when>
+			<xsl:when test="substring(.,1,1)='t'">t<xsl:value-of select="string(number(substring(.,2)))"/></xsl:when-->
 			<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
