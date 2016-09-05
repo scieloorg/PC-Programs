@@ -118,7 +118,7 @@ class ArticlesConversion(object):
                 if self.db.aop_db_manager is not None:
                     scilista_items.extend(self.db.aop_db_manager.changed_issues)
                 scilista_items.append(self.articles_set_validations.articles_data.acron_issue_label)
-                self.db.issue_files.save_source_files(self.articles_set_validations.articles_data.pkg.pkg_path)
+                self.db.issue_files.save_source_files(self.articles_set_validations.articles_data.pkg_path)
                 self.articles_set_validations.updated_articles = self.db.registered_articles
                 self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
 
@@ -255,15 +255,16 @@ def convert_package(src_path):
     fs_utils.append_file(log_package, 'normalized_package')
     articles, articles_work_area = normalized_package(src_path, tmp_report_path, wrk_path, scielo_pkg_path, converter_env.version)
 
-    pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles)
     #, converter_env.is_windows
     doi_services = article_validations.DOI_Services()
 
-    articles_data = pkg_validations.ArticlesData(pkg, xc_models.JournalsManager(), converter_env.db_manager)
-    articles_data.setup()
+    articles_pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles, is_xml_generation)
 
-    articles_set_validations = pkg_validations.ArticlesSetValidations(articles_data, articles_work_area, is_xml_generation, is_db_generation)
-    articles_set_validations.validate(doi_services, scielo_dtd_files)
+    articles_data = pkg_validations.ArticlesData()
+    articles_data.setup(articles_pkg, xc_models.JournalsManager(), db_manager=converter_env.db_manager)
+
+    articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data)
+    articles_set_validations.validate(doi_services, scielo_dtd_files, articles_work_area)
 
     conversion = ArticlesConversion(articles_set_validations, articles_data.articles_db_manager, not converter_env.is_windows)
     conversion.final_result_path = final_result_path
@@ -282,84 +283,6 @@ def convert_package(src_path):
         fs_utils.delete_file_or_folder(tmp_result_path)
     os.unlink(log_package)
     return (scilista_items, conversion.xc_status, reports.validations.statistics_message(), report_location)
-
-
-def xconvert_package(src_path):
-    scilista_items = []
-    is_db_generation = True
-    is_xml_generation = False
-
-    scielo_dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
-
-    pkg_name = os.path.basename(src_path)[:-4]
-
-    if not os.path.isdir('./../log'):
-        os.makedirs('./../log')
-    log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
-
-    fs_utils.append_file(log_package, 'preparing')
-    tmp_report_path, wrk_path, scielo_pkg_path, tmp_result_path = package_paths_preparation(src_path)
-    final_result_path = tmp_result_path
-    final_report_path = tmp_report_path
-
-    fs_utils.append_file(log_package, 'normalized_package')
-    articles, articles_work_area = normalized_package(src_path, tmp_report_path, wrk_path, scielo_pkg_path, converter_env.version)
-
-    pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles)
-    #, converter_env.is_windows
-    doi_services = article_validations.DOI_Services()
-
-    articles_data = pkg_validations.ArticlesData(pkg, xc_models.JournalsManager(), converter_env.db_manager)
-    articles_data.setup()
-
-    articles_set_validations = pkg_validations.ArticlesSetValidations(articles_data, articles_work_area, is_xml_generation, is_db_generation)
-    articles_set_validations.validate(doi_services, scielo_dtd_files)
-    
-    reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), display_report=DISPLAY_REPORT)
-
-    conversion_reports = ConversionReports()
-    if issue_error_msg is not None:
-        conversion_reports.issue_error_msg = issue_error_msg
-        total = 0
-        converted = 0
-        not_converted = 0
-        acron_issue_label = 'not registered'
-        xc_status = 'not processed'
-    else:
-        scilista_items.append(pkg.acron_issue_label)
-        issue_files = converter_env.db_manager.get_issue_files(issue_models, scielo_pkg_path)
-
-        articles_db_manager = xc_models.ArticlesDBManager(converter_env.db_manager.db_isis, issue_files)
-
-        doi_services = article_validations.DOI_Services()
-
-        articles_set_validations = pkg_validations.ArticlesSetValidations(doi_services, pkg, articles_work_area, journal_data, scielo_dtd_files, is_xml_generation, is_db_generation, articles_db_manager.registered_articles, issue_models)
-        articles_set_validations.validate()
-
-        conversion = ArticlesConversion(articles_set_validations, articles_db_manager, not converter_env.is_windows)
-        conversion.convert()
-        conversion_reports.xc_validations_report = conversion.xc_validations.report()
-        total = conversion.total
-        converted = conversion.converted
-        not_converted = conversion.not_converted
-        xc_status = conversion.xc_status
-        conversion_reports.xc_conclusion_msg = conversion.error_messages
-
-        final_report_path = issue_files.base_reports_path
-        final_result_path = issue_files.issue_path
-
-    conversion_reports.xc_conclusion_msg += conclusion_message(total, converted, not_converted, xc_status, acron_issue_label)
-
-    reports = pkg_validations.ReportsMaker(articles_set_validations, None, conversion_reports, display_report=converter_env.is_windows)
-    reports.processing_result_location = final_result_path
-    report_location = final_report_path + '/xml_converter.html'
-    reports.save_report(report_location, 'xml_converter.html', _('XML Conversion (XML to Database)'))
-    if not converter_env.is_windows:
-        format_reports_for_web(final_report_path, scielo_pkg_path, acron_issue_label.replace(' ', '/'))
-    if tmp_result_path != final_result_path:
-        fs_utils.delete_file_or_folder(tmp_result_path)
-    os.unlink(log_package)
-    return (scilista_items, xc_status, reports.validations.statistics_message(), report_location)
 
 
 def format_reports_for_web(report_path, pkg_path, issue_path):

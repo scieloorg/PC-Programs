@@ -109,59 +109,162 @@ class ValidationsResult(object):
         return r
 
 
-class ValidationsFile(object):
+class ValidationsFile(ValidationsResult):
 
     def __init__(self, filename):
-        self.validations = ValidationsResult()
+        ValidationsResult.__init__(self)
         self.filename = filename
         self.read()
 
-    @property
-    def message(self):
-        return self.validations.message
-
-    @message.setter
+    @ValidationsResult.message.setter
     def message(self, _message):
-        self.validations.message = _message
+        self._message = _message
+        self.calculate_numbers()
         self.write()
 
-    def total(self):
-        return self.validations.total()
-
-    @property
-    def blocking_errors(self):
-        return self.validations.blocking_errors
-
-    @property
-    def fatal_errors(self):
-        return self.validations.fatal_errors
-
-    @property
-    def errors(self):
-        return self.validations.errors
-
-    @property
-    def warnings(self):
-        return self.validations.warnings
-
-    def statistics_display(self, inline=True):
-        return self.validations.statistics_display(inline)
-
-    def block_report(self, new_name, label, id):
-        return self.validations.block_report
-
     def write(self):
-        m = self.validations.message if self.validations.message is not None else ''
+        m = self.message if self.message is not None else ''
         fs_utils.write_file(self.filename, m)
 
     def read(self):
         if os.path.isfile(self.filename):
-            self.message = fs_utils.read_file(self.filename)
+            self._message = fs_utils.read_file(self.filename)
         else:
-            self.message = ''
+            self._message = ''
 
 
-class ArticleValidations(object):
+class ArticleValidator(object):
+
+    def __init__(self, articles_data, doi_services):
+        self.doi_services = doi_services
+        self.articles_data = articles_data
+        self.is_db_generation = articles_data.db_manager is not None
+
+    def validate(self, article, pkg_path, work_area, is_xml_generation, validations):
+        validations.xml_journal_data_validations_file.message = self.validate_journal_data(article)
+        if self.is_db_generation:
+            validations.xml_issue_data_validations_file.message = self.validate_issue_data(article)
+        validations.xml_structure_validations_file.message = self.validate_xml_structure(article, dtd_files)
+        validations.xml_content_validations_file.message = self.validate_xml_content(article, pkg_path, work_area, is_xml_generation)
+        if is_xml_generation:
+            stats = validations.xml_content_validations_file.statistics_display(False)
+            title = [_('Data Quality Control'), work_area.new_name]
+            validations.xml_content_validations_file.message = stats + validations.xml_content_validations_file.message
+
+    def validate_journal_data(self, article):
+        if self.articles_data.journal_data is None:
+            r = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify {unidentified}. ').format(unidentified=_('journal'))
+        else:
+            items = []
+            license_url = None
+            if len(article.article_licenses) > 0:
+                license_url = article.article_licenses.values()[0].get('href')
+            items.append([_('NLM title'), article.journal_id_nlm_ta, self.articles_data.journal_data.nlm_title, validation_status.STATUS_FATAL_ERROR])
+            items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.articles_data.journal_data.acron, validation_status.STATUS_FATAL_ERROR])
+            items.append([_('e-ISSN'), article.e_issn, self.articles_data.journal_data.e_issn, validation_status.STATUS_FATAL_ERROR])
+            items.append([_('print ISSN'), article.print_issn, self.articles_data.journal_data.p_issn, validation_status.STATUS_FATAL_ERROR])
+            items.append([_('publisher name'), article.publisher_name, self.articles_data.journal_data.publisher_name, validation_status.STATUS_ERROR])
+            items.append([_('license'), license_url, self.articles_data.journal_data.license, validation_status.STATUS_ERROR])
+            r = evaluate_journal_data(items)
+        return r
+
+    def validate_issue_data(self, article):
+        r = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify {unidentified}. ').format(unidentified=_('issue'))
+        if self.articles_data.issue_error_msg is not None:
+            r += self.articles_data.issue_error_msg
+        if self.articles_data.issue_models:
+            r = self.articles_data.issue_models.validate_article_issue_data(self.article)
+        return r
+
+    def validate_xml_structure(self, work_area):
+        separator = '\n\n\n' + '.........\n\n\n'
+
+        name_error = ''
+        if '_' in work_area.xml_name or '.' in work_area.xml_name:
+            name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=work_area.xml_name, forbidden_characters='_.') + separator
+
+        files_errors = ''
+        if os.path.isfile(work_area.err_filename):
+            files_errors = fs_utils.read_file(work_area.err_filename)
+
+        for f in [work_area.dtd_report_filename, work_area.style_report_filename, work_area.data_report_filename, work_area.pmc_style_report_filename]:
+            if os.path.isfile(f):
+                os.unlink(f)
+        xml_filename = work_area.new_xml_filename
+
+        xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, work_area.dtd_report_filename, work_area.style_report_filename)
+        xml_f, xml_e, xml_w = valid_style
+
+        xml_structure_report_content = ''
+        if os.path.isfile(work_area.dtd_report_filename):
+            xml_structure_report_content = rst_title(_('DTD errors')) + fs_utils.read_file(work_area.dtd_report_filename)
+            #os.unlink(work_area.dtd_report_filename)
+
+        report_content = ''
+        if xml is None:
+            xml_f += 1
+            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file is invalid') + '\n'
+        if not valid_dtd:
+            xml_f += 1
+            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has DTD errors') + '\n'
+        if len(name_error) > 0:
+            xml_f += 1
+            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has name errors') + '\n'
+
+        if len(report_content) > 0:
+            report_content = rst_title(_('Summary')) + report_content + separator
+            report_content = report_content.replace('\n', '<br/>')
+
+        if xml_f > 0:
+            fs_utils.append_file(work_area.err_filename, name_error + xml_structure_report_content)
+
+        if work_area.ctrl_filename is None:
+            if xml_f + xml_e + xml_w == 0:
+                os.unlink(work_area.style_report_filename)
+        else:
+            fs_utils.write_file(work_area.ctrl_filename, 'Finished')
+
+        for rep_file in [work_area.err_filename, work_area.style_report_filename]:
+            if os.path.isfile(rep_file):
+                report_content += extract_report_core(fs_utils.read_file(rep_file))
+        return report_content
+
+    def validate_xml_content(self, article, pkg_path, work_area, is_xml_generation):
+        if article.tree is None:
+            sheet_data = None
+            article_display_report = None
+            article_validation_report = None
+            content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}.').format(item=work_area.new_name)
+        elif journal is None:
+            content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify {unidentified}. ').format(unidentified=_('journal'))
+        else:
+            article_validation = article_validations.ArticleContentValidation(self.doi_services, self.articles_data.journal, article, self.is_db_generation, False)
+            sheet_data = article_reports.ArticleSheetData(article_validation)
+            article_display_report = article_reports.ArticleDisplayReport(sheet_data, pkg_path, work_area.new_name)
+            article_validation_report = article_reports.ArticleValidationReport(article_validation)
+
+            content = []
+
+            if is_xml_generation:
+                content.append(article_display_report.issue_header)
+                content.append(article_display_report.article_front)
+
+                content.append(article_validation_report.validations(display_all_message_types=False))
+                content.append(article_display_report.table_tables)
+
+                content.append(article_display_report.article_body)
+                content.append(article_display_report.article_back)
+
+            else:
+                content.append(article_validation_report.validations(display_all_message_types=False))
+                content.append(article_display_report.table_tables)
+                content.append(sheet_data.files_and_href(pkg_path))
+
+            content = html_reports.join_texts(content)
+        return content
+
+
+class Article_Validations(object):
 
     def __init__(self, article, work_area, pkg_path, is_xml_generation, is_db_generation, MAX_FATAL_ERRORS=None, MAX_ERRORS=None, MAX_WARNINGS=None):
         self.MAX_FATAL_ERRORS = MAX_FATAL_ERRORS
@@ -180,9 +283,8 @@ class ArticleValidations(object):
     @property
     def xml_validations(self):
         validations = ValidationsResult()
-        validations.message = ''
-        for item in [self.xml_journal_data_validations_file, self.xml_issue_data_validations_file, self.xml_structure_validations_file, self.xml_content_validations_file]:
-            validations.message += item.message
+        messages = [item.message for item in [self.xml_journal_data_validations_file, self.xml_issue_data_validations_file, self.xml_structure_validations_file, self.xml_content_validations_file]]
+        validations.message = ''.join(messages)
         return validations
 
     def validate_xml_structure(self, dtd_files):
@@ -401,12 +503,29 @@ class ArticleValidations(object):
             xml_content_validations_file.message = stats + xml_content_validations_file.message
 
 
+class ArticleValidations(object):
+
+    def __init__(self, work_area):
+        self.xml_journal_data_validations_file = ValidationsFile(work_area.journal_validations_filename)
+        self.xml_issue_data_validations_file = ValidationsFile(work_area.issue_validations_filename)
+        self.xml_structure_validations_file = ValidationsFile(work_area.err_filename_html)
+        self.xml_content_validations_file = ValidationsFile(work_area.data_report_filename)
+
+    @property
+    def all(self):
+        validations = ValidationsResult()
+        messages = [item.message for item in [self.xml_journal_data_validations_file, self.xml_issue_data_validations_file, self.xml_structure_validations_file, self.xml_content_validations_file]]
+        validations.message = ''.join(messages)
+        return validations
+
+
 class ArticlesPackage(object):
 
-    def __init__(self, pkg_path, articles):
+    def __init__(self, pkg_path, pkg_articles, is_xml_generation):
         self.pkg_path = pkg_path
+        self.pkg_articles = pkg_articles
+        self.is_xml_generation = is_xml_generation
         self.xml_names = [name for name in os.listdir(self.pkg_path) if name.endswith('.xml')]
-        self.articles = articles
 
     @property
     def xml_list(self):
@@ -420,20 +539,24 @@ class ArticlesPackage(object):
 
 class ArticlesData(object):
 
-    def __init__(self, pkg, journals_manager, db_manager):
-        self.pkg = pkg
-        self.journals_manager = journals_manager
-        self.db_manager = db_manager
-
-    def setup(self):
-        self.get_journal_data(self.journals_manager)
-        self.get_issue_data()
-
-    def get_journal_data(self, journals_manager):
-        #journals_manager = xc_models.JournalsManager()
+    def __init__(self):
+        self.articles_db_manager = None
         self.journal = None
         self.journal_data = None
-        journals = [(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in self.pkg.articles.values() if a.journal_title is not None and a.issue_label is not None and (a.print_issn is not None or a.e_issn is not None)]
+        self.acron_issue_label = None
+        self.issue_models = None
+        self.issue_error_msg = None
+        self.issue_files = None
+
+    def setup(self, pkg, journals_manager, db_manager):
+        self._identify_journal_data(pkg.pkg_articles, journals_manager)
+        if db_manager is not None:
+            self._identify_issue_data(db_manager)
+            self._identify_articles_data(pkg.pkg_path, db_manager)
+
+    def _identify_journal_data(self, pkg_articles, journals_manager):
+        #journals_manager = xc_models.JournalsManager()
+        journals = [(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in pkg_articles.values() if a.journal_title is not None and a.issue_label is not None and (a.print_issn is not None or a.e_issn is not None)]
         journals = list(set(journals))
         if len(journals) > 0:
             journal = article.Journal()
@@ -441,18 +564,14 @@ class ArticlesData(object):
                 journal.journal_title, journal.p_issn, journal.e_issn, self.issue_label = journals[0]
                 self.journal, self.journal_data = journals_manager.journal(journal.p_issn, journal.e_issn, journal.journal_title)
 
-    def get_issue_data(self):
-        self.acron_issue_label = None
-        self.issue_models = None
-        self.issue_error_msg = None
-        if self.db_manager is not None and self.journal is not None:
-            self.acron_issue_label, self.issue_models, self.issue_error_msg = self.db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
+    def _identify_issue_data(self, db_manager):
+        if db_manager is not None and self.journal is not None:
+            self.acron_issue_label, self.issue_models, self.issue_error_msg = db_manager._identify_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
 
-    @property
-    def articles_db_manager(self):
+    def _identify_articles_data(self, pkg_path, db_manager):
         if self.issue_error_msg is None:
-            self.issue_files = self.db_manager.get_issue_files(self.issue_models, self.pkg.pkg_path)
-            return xc_models.ArticlesDBManager(self.db_manager.db_isis, self.issue_files)
+            self.issue_files = db_manager.get_issue_files(self.issue_models, pkg_path)
+            self.articles_db_manager = xc_models.ArticlesDBManager(db_manager.db_isis, self.issue_files)
 
 
 class OrderValidations(object):
@@ -614,18 +733,15 @@ class OrderValidations(object):
 
 class ArticlesSetValidations(object):
 
-    def __init__(self, articles_data, articles_work_area, is_xml_generation, is_db_generation):
+    def __init__(self, pkg, articles_data):
         self.articles_data = articles_data
         self.registered_articles = {}
-        if is_db_generation:
-            if articles_data.article_db_manager is not None:
-                self.registered_articles = articles_data.article_db_manager.registered_articles
-        self.merged_articles = {} if self.registered_articles is None else self.registered_articles.copy()
-        self.merged_articles.update(articles_data.pkg.articles)
-        self.articles_work_area = articles_work_area
+        self.is_db_generation = articles_data.articles_db_manager is not None
+        if articles_data.articles_db_manager is not None:
+            self.registered_articles = articles_data.articles_db_manager.registered_articles
+        self.merged_articles = self.registered_articles.copy()
+        self.merged_articles.update(pkg.pkg_articles)
         self.articles_validations = {}
-        self.is_xml_generation = is_xml_generation
-        self.is_db_generation = is_db_generation
         self.updated_articles = {}
 
         self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_BLOCKING_ERROR, 'doi': validation_status.STATUS_BLOCKING_ERROR, 'elocation id': validation_status.STATUS_BLOCKING_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
@@ -805,7 +921,7 @@ class ArticlesSetValidations(object):
             msg = html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Journal data in the XML files must be consistent with {link}').format(link=html_reports.link('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv')), 'note')
         return html_reports.tag('h2', _('Journal data: XML files and registered data') + signal) + msg
 
-    def validate(self, doi_services, dtd_files):
+    def validate(self, doi_services, dtd_files, articles_work_area):
         self.compile_references()
 
         self.pkg_journal_validations = PackageValidationsResult()
@@ -815,18 +931,23 @@ class ArticlesSetValidations(object):
         self.pkg_reg_issue_validations.title = html_reports.tag('h2', _('Checking issue data: XML files and registered data'))
 
         self.articles_validations = {}
-        for name, article in self.merged_articles.items():
-            self.articles_validations[name] = ArticleValidations(article, self.articles_work_area[name], self.articles_data.pkg.pkg_path, self.is_xml_generation, self.is_db_generation)
-            self.articles_validations[name].validate(self.articles_data, dtd_files, doi_services)
+        article_validator = ArticleValidator(articles_data, doi_services)
 
-            self.pkg_journal_validations[name] = self.articles_validations[name].xml_journal_data_validations_file.validations
-            self.pkg_reg_issue_validations[name] = self.articles_validations[name].xml_issue_data_validations_file.validations
+        for name, article in self.merged_articles.items():
+            self.articles_validations[name] = ArticleValidations()
+            article_validator.validate(article, self.pkg.pkg_path, articles_work_area[name], self.pkg.is_xml_generation, self.articles_validations[name])
+
+            #self.articles_validations[name] = ArticleValidations(article, articles_work_area[name], self.pkg.pkg_path, self.pkg.is_xml_generation, self.is_db_generation)
+            #self.articles_validations[name].validate(self.articles_data, dtd_files, doi_services)
+
+            self.pkg_journal_validations[name] = self.articles_validations[name].xml_journal_data_validations_file
+            self.pkg_reg_issue_validations[name] = self.articles_validations[name].xml_issue_data_validations_file
 
         self.consistency_validations = ValidationsResult()
         self.consistency_validations.message = self.consistency_validations_report
 
         self.xc_pre_validations = ValidationsResult()
-        self.xc_pre_validations.message = OrderValidations(self.registered_articles, self.articles_data.pkg.articles).report_content()
+        self.xc_pre_validations.message = OrderValidations(self.registered_articles, self.pkg.pkg_articles).report_content()
 
     @property
     def xml_validations_fatal_errors(self):
@@ -888,7 +1009,7 @@ class ArticlesSetValidations(object):
             _('title'),
         ]
         rows = []
-        articles = [self.registered_articles.get('new_name'), self.articles_data.pkg.articles.get('new_name'), self.updated_articles.get('new_name')]
+        articles = [self.registered_articles.get('new_name'), self.pkg.pkg_articles.get('new_name'), self.updated_articles.get('new_name')]
         types = [_('registered, before converting'), _('package'), _('registered, after converting')]
         for tp, a in zip(types, articles):
             if a is not None:
@@ -1161,8 +1282,8 @@ class ArticlesSetValidations(object):
     def journal_and_issue_report(self):
         report = []
         report.append(self.journal_issue_header_report)
-        report.append(self.pkg_journal_validations.report(errors_only=not self.is_xml_generation))
-        report.append(self.pkg_reg_issue_validations.report(errors_only=not self.is_xml_generation))
+        report.append(self.pkg_journal_validations.report(errors_only=not self.articles_data.is_xml_generation))
+        report.append(self.pkg_reg_issue_validations.report(errors_only=not self.articles_data.is_xml_generation))
         if self.consistency_validations.total() > 0:
             report.append(self.consistency_validations.message)
         report.append(self.xc_pre_validations.message)
@@ -1202,7 +1323,7 @@ class ReportsMaker(object):
     @property
     def report_components(self):
         components = {}
-        components['pkg-files'] = self.articles_set_validations.articles_data.pkg.xml_list
+        components['pkg-files'] = self.articles_set_validations.articles_data.xml_list
         if self.processing_result_location is not None:
             components['pkg-files'] += processing_result_location(self.processing_result_location)
 
@@ -1213,7 +1334,7 @@ class ReportsMaker(object):
         components['references'] = self.articles_set_validations.references_overview_report
         components['references'] += self.articles_set_validations.sources_overview_report
 
-        if not self.articles_set_validations.is_xml_generation:
+        if not self.articles_set_validations.articles_data.is_xml_generation:
             components['toc-extended'] = self.articles_set_validations.toc_extended_report
             components['issue-report'] = self.articles_set_validations.journal_and_issue_report
 

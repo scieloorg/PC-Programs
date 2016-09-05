@@ -1136,11 +1136,13 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
 
         doi_services = article_validations.DOI_Services()
 
-        pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles)
-        articles_data = pkg_validations.ArticlesData(pkg, xc_models.JournalsManager(), db_manager=None)
-        articles_data.setup()
-        articles_set_validations = pkg_validations.ArticlesSetValidations(articles_data, articles_work_area, is_xml_generation, is_db_generation)
-        articles_set_validations.validate(doi_services, scielo_dtd_files)
+        articles_pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles, is_xml_generation)
+
+        articles_data = pkg_validations.ArticlesData()
+        articles_data.setup(articles_pkg, xc_models.JournalsManager(), db_manager=None)
+
+        articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data)
+        articles_set_validations.validate(doi_services, scielo_dtd_files, articles_work_area)
 
         reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), display_report=DISPLAY_REPORT)
 
