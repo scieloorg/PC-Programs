@@ -2,6 +2,7 @@
 import os
 import shutil
 import tempfile
+from datetime import datetime
 
 import files_extractor
 import zipfile
@@ -143,5 +144,19 @@ def update_file_content_if_there_is_new_items(new_content, filename):
 
 
 def last_modified_datetime(filename):
-    from datetime import datetime
     return datetime.fromtimestamp(os.path.getmtime(filename))
+
+
+class ProcessLogger(object):
+
+    def __init__(self):
+        self.logged_items = []
+
+    def register(self, text):
+        self.logged_items.append(datetime.now().isoformat() + ' ' + text)
+
+    def write(self, filename):
+        write_file(filename, '\n'.join(self.logged_items))
+
+    def display(self):
+        print('\n'.join(self.logged_items))

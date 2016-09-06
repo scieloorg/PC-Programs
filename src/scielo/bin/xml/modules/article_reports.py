@@ -4,13 +4,11 @@ from datetime import datetime
 
 from __init__ import _
 import validation_status
-import fs_utils
 import xml_utils
 import article_utils
-import article_validations
 import attributes
 import html_reports
-from article import PersonAuthor, CorpAuthor, format_author
+from article import PersonAuthor, CorpAuthor, format_author, authors_list
 
 
 log_items = []
@@ -22,11 +20,11 @@ def register_log(text):
 
 class ArticleDisplayReport(object):
 
-    def __init__(self, sheet_data, xml_path, xml_name):
-        self.article = sheet_data.article
+    def __init__(self, article_validation, xml_path, xml_name):
+        self.article = article_validation.article
+        self.article_validation = article_validation
         self.xml_name = xml_name
         self.xml_path = xml_path
-        self.sheet_data = sheet_data
 
     @property
     def article_front(self):
@@ -71,12 +69,12 @@ class ArticleDisplayReport(object):
 
     @property
     def authors_sheet(self):
-        labels, width, data = self.sheet_data.authors_sheet_data()
+        labels, width, data = self.authors_sheet_data()
         return html_reports.tag('h2', _('Authors')) + html_reports.sheet(labels, data)
 
     @property
     def sources_sheet(self):
-        labels, width, data = self.sheet_data.sources_sheet_data()
+        labels, width, data = self.sources_sheet_data()
         return html_reports.tag('h2', _('Sources')) + html_reports.sheet(labels, data)
 
     def display_labeled_value(self, label, value, style=''):
@@ -247,7 +245,7 @@ class ArticleDisplayReport(object):
         r = html_reports.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
             r += html_reports.tag('p', html_reports.format_html_data(item.xml))
-        th, w, data = self.sheet_data.affiliations_sheet_data()
+        th, w, data = self.affiliations_sheet_data()
         r += html_reports.sheet(th, data)
         return r
 
@@ -290,6 +288,200 @@ class ArticleDisplayReport(object):
             sheet_data.append(row)
         r += html_reports.sheet(['element-citation/@publication-type', 'quantity'], sheet_data)
         return r
+
+    def authors_sheet_data(self):
+        r = []
+        t_header = ['xref', 'publication-type', 'role', 'given-names', 'surname', 'suffix', 'prefix', 'collab']
+        if not self.xml_name is None:
+            t_header = ['filename', 'scope'] + t_header
+        for a in self.article.contrib_names:
+            row = {}
+            row['scope'] = 'article meta'
+            row['filename'] = self.xml_name
+            row['xref'] = ' '.join(a.xref)
+            row['role'] = a.role
+            row['publication-type'] = self.article.article_type
+            row['given-names'] = a.fname
+            row['surname'] = a.surname
+            row['suffix'] = a.suffix
+            row['prefix'] = a.prefix
+            r.append(row)
+
+        for a in self.article.contrib_collabs:
+            row = {}
+            row['scope'] = 'article meta'
+            row['filename'] = self.xml_name
+            row['publication-type'] = self.article.article_type
+            row['collab'] = a.collab
+            row['role'] = a.role
+            r.append(row)
+
+        for ref in self.article.references:
+            for item in ref.authors_list:
+                row = {}
+                row['scope'] = ref.id
+                row['filename'] = self.xml_name
+                row['publication-type'] = ref.publication_type
+
+                if isinstance(item, PersonAuthor):
+                    row['given-names'] = item.fname
+                    row['surname'] = item.surname
+                    row['suffix'] = item.suffix
+                    row['prefix'] = item.prefix
+                    row['role'] = item.role
+                elif isinstance(item, CorpAuthor):
+                    row['collab'] = item.collab
+                    row['role'] = item.role
+                else:
+                    row['given-names'] = '?'
+                    row['surname'] = '?'
+                    row['suffix'] = '?'
+                    row['prefix'] = '?'
+                    row['role'] = '?'
+                r.append(row)
+        return (t_header, [], r)
+
+    def sources_sheet_data(self):
+        r = []
+        t_header = ['ID', 'type', 'year', 'source', 'publisher name', 'location', ]
+        if not self.xml_name is None:
+            t_header = ['filename', 'scope'] + t_header
+
+        for ref in self.article.references:
+            row = {}
+            row['scope'] = ref.id
+            row['ID'] = ref.id
+            row['filename'] = self.xml_name
+            row['type'] = ref.publication_type
+            row['year'] = ref.year
+            row['source'] = ref.source
+            row['publisher name'] = ref.publisher_name
+            row['location'] = ref.publisher_loc
+            r.append(row)
+        return (t_header, [], r)
+
+    def tables_sheet_data(self):
+        t_header = ['ID', 'label/caption', 'table/graphic']
+        r = []
+        for t in self.article.tables:
+            row = {}
+            row['ID'] = t.graphic_parent.id
+            row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
+            row['table/graphic'] = t.table + html_reports.thumb_image('file:///' + self.xml_path)
+            r.append(row)
+        return (t_header, ['label/caption', 'table/graphic'], r)
+
+    def files_and_href(self):
+        r = ''
+        r += html_reports.tag('h4', _('Files in the package'))
+        th, data = self.package_files()
+        r += html_reports.sheet(th, data, table_style='validation')
+        r += html_reports.tag('h4', '@href')
+        th, data = self.hrefs_sheet_data()
+        r += html_reports.sheet(th, data, table_style='validation')
+        return r
+
+    def hrefs_sheet_data(self):
+        t_header = ['label', 'status', 'message', _('why it is not a valid message?'), 'display', 'xml']
+        r = []
+        href_items = self.article_validation.href_list(self.xml_path)
+        for src in sorted(href_items.keys()):
+            hrefitem = href_items.get(src)
+            for result in hrefitem['results']:
+                row = {}
+                row['label'] = src
+                row['xml'] = hrefitem['elem'].xml
+                row['display'] = hrefitem['display']
+                row['status'] = result[0]
+                row['message'] = result[1]
+                row[_('why it is not a valid message?')] = ''
+                r.append(row)
+        return (t_header, r)
+
+    def package_files(self):
+        r = []
+        t_header = ['label', 'status', 'message', _('why it is not a valid message?')]
+        items = self.article_validation.package_files(self.xml_path)
+        if len(items) > 0:
+            for filename, status, message in items:
+                row = {}
+                row['label'] = filename
+                row['status'] = status
+                row['message'] = message
+                row[_('why it is not a valid message?')] = ''
+                r.append(row)
+        return (t_header, r)
+
+    def affiliations_sheet_data(self):
+        t_header = ['aff id', 'aff orgname', 'aff norgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', ]
+        r = []
+        for a in self.article.affiliations:
+            row = {}
+            row['aff id'] = a.id
+            row['aff norgname'] = a.norgname
+            row['aff orgname'] = a.orgname
+            row['aff orgdiv1'] = a.orgdiv1
+            row['aff orgdiv2'] = a.orgdiv2
+            row['aff city'] = a.city
+            row['aff state'] = a.state
+            row['aff country'] = a.country
+            r.append(row)
+        return (t_header, ['aff xml'], r)
+
+    @property
+    def table_of_contents_data(self):
+        r = ''
+        r += html_reports.tag('p', self.article.toc_section, 'toc-section')
+        r += html_reports.tag('p', self.article.article_type, 'article-type')
+        r += html_reports.tag('p', html_reports.tag('strong', self.article.pages), 'fpage')
+        r += html_reports.tag('p', self.article.doi, 'doi')
+        r += html_reports.tag('p', html_reports.tag('strong', self.article.title), 'article-title')
+        a = []
+        for item in authors_list(self.article.article_contrib_items):
+            a.append(html_reports.tag('span', item))
+        r += html_reports.tag('p', '; '.join(a))
+        return r
+
+    @property
+    def table_of_contents(self):
+        r = ''
+        r += '<div>'
+        #r += html_reports.tag('h7', self.work_area.xml_name)
+        r += self.table_of_contents_data
+        r += '</div>'
+        return r
+
+    @property
+    def table_of_contents_detailed(self):
+        r = ''
+        r += '<div>'
+        r += self.table_of_contents_data
+        r += self.table_of_contents_data_with_lang
+        r += '</div>'
+        return r
+
+    @property
+    def table_of_contents_data_with_lang(self):
+        r = ''
+        for lang in sorted(self.article.title_abstract_kwd_languages):
+            label = html_reports.tag('smaller', attributes.LANGUAGES.get(lang, _('unknown')) + ' [' + lang + ']')
+            r += '<h4>' + label + '</h4>'
+            r += '<p>' + '; '.join([k.text for k in self.article.abstracts_by_lang.get(lang, [])]) + '</p>'
+            r += html_reports.tag('h5', '; '.join([k.text for k in self.article.keywords_by_lang.get(lang, [])]))
+        return r
+
+    @property
+    def pdf_items(self):
+        items = []
+        pdf = self.xml_path + '/' + self.xml_name + '.pdf'
+        if os.path.isfile(pdf):
+            #items.append('<object id="' + pdf_id + '" data="file://' + pdf + '" width="100%" height="100%"><param name="view" value="Fit" /></object>')
+            items.append(html_reports.tag('p', html_reports.display_embedded_object(pdf, os.path.basename(pdf), self.xml_name)))
+        for lang in self.article.trans_languages:
+            pdf = self.xml_path + '/' + self.xml_name + '-' + lang + '.pdf'
+            if os.path.isfile(pdf):
+                items.append(html_reports.tag('p', html_reports.display_embedded_object(pdf, os.path.basename(pdf), self.xml_name + '_' + lang)))
+        return ''.join(items)
 
 
 class ArticleValidationReport(object):
@@ -343,193 +535,6 @@ class ArticleValidationReport(object):
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
                 rows += validations_table(ref_result)
         return rows
-
-
-class ArticleSheetData(object):
-
-    def __init__(self, article_validation):
-        self.article = article_validation.article
-        self.article_validation = article_validation
-
-    def authors_sheet_data(self, filename=None):
-        r = []
-        t_header = ['xref', 'publication-type', 'role', 'given-names', 'surname', 'suffix', 'prefix', 'collab']
-        if not filename is None:
-            t_header = ['filename', 'scope'] + t_header
-        for a in self.article.contrib_names:
-            row = {}
-            row['scope'] = 'article meta'
-            row['filename'] = filename
-            row['xref'] = ' '.join(a.xref)
-            row['role'] = a.role
-            row['publication-type'] = self.article.article_type
-            row['given-names'] = a.fname
-            row['surname'] = a.surname
-            row['suffix'] = a.suffix
-            row['prefix'] = a.prefix
-            r.append(row)
-
-        for a in self.article.contrib_collabs:
-            row = {}
-            row['scope'] = 'article meta'
-            row['filename'] = filename
-            row['publication-type'] = self.article.article_type
-            row['collab'] = a.collab
-            row['role'] = a.role
-            r.append(row)
-
-        for ref in self.article.references:
-            for item in ref.authors_list:
-                row = {}
-                row['scope'] = ref.id
-                row['filename'] = filename
-                row['publication-type'] = ref.publication_type
-
-                if isinstance(item, PersonAuthor):
-                    row['given-names'] = item.fname
-                    row['surname'] = item.surname
-                    row['suffix'] = item.suffix
-                    row['prefix'] = item.prefix
-                    row['role'] = item.role
-                elif isinstance(item, CorpAuthor):
-                    row['collab'] = item.collab
-                    row['role'] = item.role
-                else:
-                    row['given-names'] = '?'
-                    row['surname'] = '?'
-                    row['suffix'] = '?'
-                    row['prefix'] = '?'
-                    row['role'] = '?'
-                r.append(row)
-        return (t_header, [], r)
-
-    def sources_sheet_data(self, filename=None):
-        r = []
-        t_header = ['ID', 'type', 'year', 'source', 'publisher name', 'location', ]
-        if not filename is None:
-            t_header = ['filename', 'scope'] + t_header
-
-        for ref in self.article.references:
-            row = {}
-            row['scope'] = ref.id
-            row['ID'] = ref.id
-            row['filename'] = filename
-            row['type'] = ref.publication_type
-            row['year'] = ref.year
-            row['source'] = ref.source
-            row['publisher name'] = ref.publisher_name
-            row['location'] = ref.publisher_loc
-            r.append(row)
-        return (t_header, [], r)
-
-    def tables_sheet_data(self, path):
-        t_header = ['ID', 'label/caption', 'table/graphic']
-        r = []
-        for t in self.article.tables:
-            row = {}
-            row['ID'] = t.graphic_parent.id
-            row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
-            #row['table/graphic'] = t.table + t.graphic_parent.graphic.display('file:///' + path)
-            row['table/graphic'] = t.table + html_reports.thumb_image('file:///' + path)
-            r.append(row)
-        return (t_header, ['label/caption', 'table/graphic'], r)
-
-    def files_and_href(self, package_path):
-        r = ''
-        r += html_reports.tag('h4', _('Files in the package'))
-        th, data = self.package_files(package_path)
-        r += html_reports.sheet(th, data, table_style='validation')
-        r += html_reports.tag('h4', '@href')
-        th, data = self.hrefs_sheet_data(package_path)
-        r += html_reports.sheet(th, data, table_style='validation')
-        return r
-
-    def hrefs_sheet_data(self, path):
-        t_header = ['label', 'status', 'message', _('why it is not a valid message?'), 'display', 'xml']
-        r = []
-        href_items = self.article_validation.href_list(path)
-        for src in sorted(href_items.keys()):
-            hrefitem = href_items.get(src)
-            for result in hrefitem['results']:
-                row = {}
-                row['label'] = src
-                row['xml'] = hrefitem['elem'].xml
-                row['display'] = hrefitem['display']
-                row['status'] = result[0]
-                row['message'] = result[1]
-                row[_('why it is not a valid message?')] = ''
-                r.append(row)
-        return (t_header, r)
-
-    def package_files(self, package_path):
-        r = []
-        t_header = ['label', 'status', 'message', _('why it is not a valid message?')]
-        if len(self.article_validation.package_files(package_path)) > 0:
-            for filename, status, message in self.article_validation.package_files(package_path):
-                row = {}
-                row['label'] = filename
-                row['status'] = status
-                row['message'] = message
-                row[_('why it is not a valid message?')] = ''
-                r.append(row)
-        return (t_header, r)
-
-    def affiliations_sheet_data(self):
-        t_header = ['aff id', 'aff orgname', 'aff norgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', ]
-        r = []
-        for a in self.article.affiliations:
-            row = {}
-            row['aff id'] = a.id
-            row['aff norgname'] = a.norgname
-            row['aff orgname'] = a.orgname
-            row['aff orgdiv1'] = a.orgdiv1
-            row['aff orgdiv2'] = a.orgdiv2
-            row['aff city'] = a.city
-            row['aff state'] = a.state
-            row['aff country'] = a.country
-            r.append(row)
-        return (t_header, ['aff xml'], r)
-
-
-def article_data_and_validations_report(journal, article, new_name, package_path, images_generation_report_filename, is_db_generation, is_sgml_generation):
-    if article.tree is None:
-        sheet_data = None
-        article_display_report = None
-        article_validation_report = None
-        content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to get data of ') + new_name + '.'
-    else:
-        article_validation = article_validations.ArticleContentValidation(journal, article, is_db_generation, False)
-        sheet_data = ArticleSheetData(article_validation)
-        article_display_report = ArticleDisplayReport(sheet_data, package_path, new_name)
-        article_validation_report = ArticleValidationReport(article_validation)
-
-        content = []
-
-        img_report_content = ''
-        if os.path.isfile(images_generation_report_filename):
-            img_report_content = fs_utils.read_file(images_generation_report_filename)
-
-        if is_sgml_generation:
-            content.append(article_display_report.issue_header)
-            content.append(article_display_report.article_front)
-
-            content.append(article_validation_report.validations(display_all_message_types=False))
-            content.append(article_display_report.table_tables)
-
-            content.append(article_display_report.article_body)
-            content.append(article_display_report.article_back)
-
-        else:
-            content.append(article_validation_report.validations(display_all_message_types=False))
-            content.append(article_display_report.table_tables)
-            content.append(sheet_data.files_and_href(package_path))
-
-        if len(img_report_content) > 0:
-            content.append(img_report_content)
-
-        content = html_reports.join_texts(content)
-
-    return content
 
 
 def validations_table(results):

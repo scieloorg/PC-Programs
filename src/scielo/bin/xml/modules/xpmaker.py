@@ -42,6 +42,9 @@ DISPLAY_REPORT = True
 GENERATE_PMC = False
 
 
+xpm_process_logger = fs_utils.ProcessLogger()
+
+
 def format_last_part(fpage, seq, elocation_id, order, doi, issn):
     #utils.debugging((fpage, seq, elocation_id, order, doi, issn))
     r = None
@@ -110,10 +113,6 @@ def xpm_version():
     if f is not None:
         version = open(f).readlines()[0].decode('utf-8')
     return version
-
-
-def register_log(text):
-    log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
 def get_previous_element_which_has_id_attribute(text):
@@ -261,7 +260,7 @@ class SGMLXML(object):
 
     def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
-        register_log('SGMLXML.generate_xml')
+        xpm_process_logger.register('SGMLXML.generate_xml')
         self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
         self.insert_mml_namespace()
         self.identify_unknown_href_items()
@@ -594,7 +593,7 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     return r
 
 
-class Package(object):
+class OriginalPackage(object):
 
     def __init__(self, xml_filenames):
         self.xml_filenames = xml_filenames
@@ -644,11 +643,11 @@ class ArticlePkgMaker(object):
         return (self.doc, self.doc_files_info)
 
     def normalize_xml_content(self):
-        register_log('normalize_xml_content')
+        xpm_process_logger.register('normalize_xml_content')
 
         self.content = xml_utils.complete_entity(self.content)
 
-        register_log('convert_entities_to_chars')
+        xpm_process_logger.register('convert_entities_to_chars')
         self.content, replaced_named_ent = xml_utils.convert_entities_to_chars(self.content)
         if len(replaced_named_ent) > 0:
             self.messsages.append('Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30)
@@ -817,7 +816,7 @@ class ArticlePkgMaker(object):
         return ''.join(rows)
 
     def normalize_package_name(self):
-        register_log('normalize_package_name')
+        xpm_process_logger.register('normalize_package_name')
         self.doc_files_info.new_xml_path = self.scielo_pkg_path
         self.doc = article.Article(self.xml, self.doc_files_info.xml_name)
         self.doc_files_info.new_name = self.doc_files_info.xml_name
@@ -830,7 +829,7 @@ class ArticlePkgMaker(object):
 
     def generate_doc_files_info_new_name(self):
         #doc, acron, self.doc_files_info.xml_name
-        register_log('generate_doc_files_info_new_name')
+        xpm_process_logger.register('generate_doc_files_info_new_name')
         vol, issueno, fpage, seq, elocation_id, order, doi = self.doc.volume, self.doc.number, self.doc.fpage, self.doc.fpage_seq, self.doc.elocation_id, self.doc.order, self.doc.doi
         issns = [issn for issn in [self.doc.e_issn, self.doc.print_issn] if issn is not None]
         if len(issns) > 0:
@@ -910,7 +909,7 @@ class ArticlePkgMaker(object):
                         pass
 
     def pack_article_files(self):
-        register_log('pack_article_files: inicio')
+        xpm_process_logger.register('pack_article_files: inicio')
 
         self.replacements_related_files_items = []
         self.replacements_href_files_items = []
@@ -928,10 +927,10 @@ class ArticlePkgMaker(object):
             self.text_messages.append(self.generate_packed_files_report())
 
         self.pack_article_xml_file()
-        register_log('pack_article_files: fim')
+        xpm_process_logger.register('pack_article_files: fim')
 
     def pack_article_href_files(self, src_files):
-        register_log('pack_article_href_files: inicio')
+        xpm_process_logger.register('pack_article_href_files: inicio')
 
         self.replacements_href_files_items = []
         self.replacements_not_found_href_files_items = []
@@ -953,10 +952,10 @@ class ArticlePkgMaker(object):
             if len(curr_variations) == 0:
                 self.replacements_not_found_href_files_items.append((curr, new))
 
-        register_log('pack_article_href_files: fim')
+        xpm_process_logger.register('pack_article_href_files: fim')
 
     def pack_article_related_files(self, src_files):
-        register_log('pack_article_related_files: inicio')
+        xpm_process_logger.register('pack_article_related_files: inicio')
         self.replacements_related_files_items = []
         for f in src_files:
             if f.startswith(self.doc_files_info.xml_name + '.'):
@@ -967,7 +966,7 @@ class ArticlePkgMaker(object):
                 if not item in self.local_href_names:
                     self.replacements_related_files_items.append((f, f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)))
                     shutil.copyfile(self.doc_files_info.xml_path + '/' + f, self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name))
-        register_log('pack_article_related_files: fim')
+        xpm_process_logger.register('pack_article_related_files: fim')
 
     def generate_packed_files_report(self):
         #doc_files_info, dest_path, related_packed, href_packed, href_replacement_items, not_found
@@ -999,7 +998,7 @@ class ArticlePkgMaker(object):
         return '\n'.join(log)
 
     def pack_article_xml_file(self):
-        register_log('pack_article_xml_file')
+        xpm_process_logger.register('pack_article_xml_file')
         if self.is_db_generation:
             #local
             self.content = self.content.replace('"' + self.version_info.remote + '"', '"' + self.version_info.local + '"')
@@ -1011,9 +1010,10 @@ class ArticlePkgMaker(object):
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
 
-    package = Package(xml_files)
+    package = OriginalPackage(xml_files)
     package.setUp()
 
+    xpm_process_logger.register('make packages')
     utils.display_message('\n' + _('Make packages for {n} files.').format(n=str(len(xml_files))))
     n = '/' + str(len(xml_files))
     index = 0
@@ -1141,7 +1141,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         articles_data = pkg_validations.ArticlesData()
         articles_data.setup(articles_pkg, xc_models.JournalsManager(), db_manager=None)
 
-        articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data)
+        articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data, xpm_process_logger)
         articles_set_validations.validate(doi_services, scielo_dtd_files, articles_work_area)
 
         reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), display_report=DISPLAY_REPORT)
@@ -1168,7 +1168,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
 
         utils.display_message(_('Result of the processing:'))
         utils.display_message(results_path)
-        fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))
+        xpm_process_logger.write(report_path + '/log.txt')
 
 
 def is_pmc_journal(articles):

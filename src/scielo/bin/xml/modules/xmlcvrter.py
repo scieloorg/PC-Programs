@@ -20,7 +20,6 @@ import xc
 import xc_config
 
 
-converter_report_lines = []
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 CONFIG_PATH = CURRENT_PATH + '/../config/'
@@ -63,12 +62,6 @@ class ConverterEnv(object):
         self.serial_path = None
         self.is_windows = None
         self.db_manager = None
-
-
-def register_log(message):
-    if not '<' in message:
-        message = html_reports.p_message(message, False)
-    converter_report_lines.append(message)
 
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
@@ -236,7 +229,6 @@ def package_paths_preparation(src_path):
 
 def convert_package(src_path):
     scilista_items = []
-    is_db_generation = True
     is_xml_generation = False
 
     scielo_dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)

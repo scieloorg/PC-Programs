@@ -167,6 +167,30 @@ def link(href, label):
     return '<a href="' + href + '" target="_blank">' + label + '</a>'
 
 
+def display_embedded_object(href, label, element_id, width='400px', height='400px'):
+    js_load_pdf = 'document.getElementById("{element_id}_pdf").data="{href}";'.format(
+        element_id=element_id, href=href)
+    js_show_close_button = 'document.getElementById("{element_id}_close_button").style.display="block";'.format(
+        element_id=element_id)
+    js_show_pdf_button = 'document.getElementById("{element_id}_pdf_button").style.display="block";'.format(
+        element_id=element_id)
+    js_unload_pdf = 'document.getElementById("{element_id}_pdf").data="";'.format(
+        element_id=element_id)
+    js_hide_close_button = 'document.getElementById("{element_id}_close_button").style.display="none";'.format(
+        element_id=element_id)
+    js_hide_pdf_button = 'document.getElementById("{element_id}_pdf_button").style.display="none";'.format(
+        element_id=element_id)
+    js_close_button = ''.join([item.replace('"', "'") for item in [js_hide_close_button, js_unload_pdf, js_show_pdf_button]])
+    js_pdf_button = ''.join([item.replace('"', "'") for item in [js_show_close_button, js_load_pdf, js_hide_pdf_button]])
+
+    block_pdf = tag('object', '', attributes={'id': element_id + '_pdf', 'data': '', 'width': width, 'height': height})
+    block_close_button = '<span id="{element_id}_close_button" style="display: none;" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
+        element_id=element_id, label=_('close') + ' ' + label, js=js_close_button)
+    block_pdf_button = '<span id="{element_id}_pdf_button" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
+        element_id=element_id, label=_('open') + ' ' + label, js=js_pdf_button)
+    return block_pdf_button + block_close_button + block_pdf
+
+
 def tag(tag_name, content, style=None, attributes={}):
     if content is None:
         content = ''
@@ -174,6 +198,13 @@ def tag(tag_name, content, style=None, attributes={}):
         tag_name = 'div'
     style = attr('class', style) if style is not None else ''
     return '<' + tag_name + style + ' '.join([attr(name, val) for name, val in attributes.items()]) + '>' + content + '</' + tag_name + '>'
+
+
+def report_title(titles):
+    s = ''
+    if not isinstance(titles, list):
+        titles = [titles]
+    return ''.join([tag('h1', item) for item in titles])
 
 
 def html(title, body):
@@ -192,11 +223,7 @@ def html(title, body):
     s += '</head>'
     s += '<body>'
     s += report_date()
-    if isinstance(title, list):
-        s += tag('h1', title[0])
-        s += tag('h1', title[1])
-    else:
-        s += tag('h1', title)
+    s += report_title(title)
     s += body
     s += '</body>'
     s += '</html>'
