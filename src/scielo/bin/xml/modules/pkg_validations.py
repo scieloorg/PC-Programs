@@ -177,32 +177,40 @@ class XMLIssueDataValidator(object):
 class XMLStructureValidator(object):
 
     def __init__(self, dtd_files):
-        self.dtd_files = dtd_files
+        self.xml_validator = xpchecker.XMLValidator(dtd_files)
+        self.logger = None
 
     def validate(self, work_area):
+
+        self.xml_validator.logger = self.logger
+        self.logger.register('XMLStructureValidator.validate() - inicio')
         separator = '\n\n\n' + '.........\n\n\n'
 
         name_error = ''
         if '_' in work_area.xml_name or '.' in work_area.xml_name:
             name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=work_area.xml_name, forbidden_characters='_.') + separator
 
+        self.logger.register('XMLStructureValidator.validate() - err_filename')
         files_errors = ''
         if os.path.isfile(work_area.err_filename):
             files_errors = fs_utils.read_file(work_area.err_filename)
 
+        self.logger.register('XMLStructureValidator.validate() - delete old version of reports')
         for f in [work_area.dtd_report_filename, work_area.style_report_filename, work_area.data_report_filename, work_area.pmc_style_report_filename]:
             if os.path.isfile(f):
                 os.unlink(f)
-        xml_filename = work_area.new_xml_filename
-
-        xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, self.dtd_files, work_area.dtd_report_filename, work_area.style_report_filename)
+        #xml_filename = work_area.new_xml_filename
+        self.logger.register('XMLStructureValidator.validate() - self.xml_validator.validate')
+        xml, valid_dtd, valid_style = self.xml_validator.validate(work_area.new_xml_filename, work_area.dtd_report_filename, work_area.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
+        self.logger.register('XMLStructureValidator.validate() - xml_structure_report_content')
         xml_structure_report_content = ''
         if os.path.isfile(work_area.dtd_report_filename):
             xml_structure_report_content = rst_title(_('DTD errors')) + fs_utils.read_file(work_area.dtd_report_filename)
             #os.unlink(work_area.dtd_report_filename)
 
+        self.logger.register('XMLStructureValidator.validate() - report_content')
         report_content = ''
         if xml is None:
             xml_f += 1
@@ -218,18 +226,22 @@ class XMLStructureValidator(object):
             report_content = rst_title(_('Summary')) + report_content + separator
             report_content = report_content.replace('\n', '<br/>')
 
+        self.logger.register('XMLStructureValidator.validate() - err_filename')
         if xml_f > 0:
             fs_utils.append_file(work_area.err_filename, name_error + xml_structure_report_content)
 
+        self.logger.register('XMLStructureValidator.validate() - apaga ou escreve files')
         if work_area.ctrl_filename is None:
             if xml_f + xml_e + xml_w == 0:
                 os.unlink(work_area.style_report_filename)
         else:
             fs_utils.write_file(work_area.ctrl_filename, 'Finished')
 
+        self.logger.register('XMLStructureValidator.validate() - report_content')
         for rep_file in [work_area.err_filename, work_area.style_report_filename]:
             if os.path.isfile(rep_file):
                 report_content += extract_report_core(fs_utils.read_file(rep_file))
+        self.logger.register('XMLStructureValidator.validate() - fim')
         return report_content
 
 
@@ -760,17 +772,23 @@ class ArticlesSetValidations(object):
         xml_journal_data_validator = XMLJournalDataValidator(self.articles_data.journal_data)
         xml_issue_data_validator = XMLIssueDataValidator(self.is_db_generation, self.articles_data.issue_error_msg, self.articles_data.issue_models)
         xml_structure_validator = XMLStructureValidator(dtd_files)
+        xml_structure_validator.logger = self.logger
         xml_content_validator = XMLContentValidator(doi_services, self.articles_data)
 
         self.logger.register('articles validations')
         self.articles_validations = {}
         for name, article in self.merged_articles.items():
-            self.logger.register('validate ' + name)
+            self.logger.register(' '.join(['validate', name]))
             self.articles_validations[name] = ArticleValidations(articles_work_area[name], self.pkg.is_xml_generation, self.is_db_generation)
+            self.logger.register(' '.join([name, 'journal']))
             self.articles_validations[name].validations_file['journal'].message = xml_journal_data_validator.validate(article)
+            self.logger.register(' '.join([name, 'issue']))
             self.articles_validations[name].validations_file['issue'].message = xml_issue_data_validator.validate(article)
+            self.logger.register(' '.join([name, 'xmlstructure']))
             self.articles_validations[name].validations_file['xmlstructure'].message = xml_structure_validator.validate(articles_work_area[name])
+            self.logger.register(' '.join([name, 'xmlcontent']))
             self.articles_validations[name].validations_file['xmlcontent'].message, self.articles_validations[name].article_display_report = xml_content_validator.validate(article, self.pkg.pkg_path, articles_work_area[name], self.pkg.is_xml_generation)
+            self.logger.register(' '.join([name, 'fim']))
 
             self.pkg_journal_validations[name] = self.articles_validations[name].validations_file['journal']
             self.pkg_reg_issue_validations[name] = self.articles_validations[name].validations_file['issue']

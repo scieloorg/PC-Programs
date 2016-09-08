@@ -623,7 +623,7 @@ class ArticlePkgMaker(object):
         self.local_href_items = []
         self.replacements_related_files_items = []
         self.replacements_href_files_items = []
-        self.replacements_not_found_href_files_items = []
+        self.href_files_items_not_found_in_src_folder = []
         self.local_href_names = []
         self.version_info = xml_versions.DTDFiles('scielo', version)
         self.sgmlxml = None
@@ -913,7 +913,7 @@ class ArticlePkgMaker(object):
 
         self.replacements_related_files_items = []
         self.replacements_href_files_items = []
-        self.replacements_not_found_href_files_items = []
+        self.href_files_items_not_found_in_src_folder = []
         self.local_href_names = []
         self.eliminate_old_package_files()
 
@@ -932,25 +932,24 @@ class ArticlePkgMaker(object):
     def pack_article_href_files(self, src_files):
         xpm_process_logger.register('pack_article_href_files: inicio')
 
+        in_src_folder = os.listdir(self.doc_files_info.xml_path)
+
         self.replacements_href_files_items = []
-        self.replacements_not_found_href_files_items = []
-        for curr, new in self.local_href_items:
-            curr_name, curr_ext = os.path.splitext(curr)
-            new_name, new_ext = os.path.splitext(new)
+        self.href_files_items_not_found_in_src_folder = []
+        for original_href, changed_href in self.local_href_items:
+            original_href_name, original_href_ext = os.path.splitext(original_href)
+            changed_href_name, changed_href_ext = os.path.splitext(changed_href)
 
-            self.local_href_names.append(curr_name)
-            curr_variations = [f for f in src_files if f.startswith(curr_name + '.')]
+            self.local_href_names.append(original_href_name)
 
-            for f in curr_variations:
-                dest_name = f.replace(curr_name, new_name)
-                if os.path.isfile(self.doc_files_info.xml_path + '/' + dest_name):
-                    source_name = dest_name
-                else:
-                    source_name = f
-                self.replacements_href_files_items.append((source_name, dest_name))
-                shutil.copyfile(self.doc_files_info.xml_path + '/' + source_name, self.scielo_pkg_path + '/' + dest_name)
-            if len(curr_variations) == 0:
-                self.replacements_not_found_href_files_items.append((curr, new))
+            original_and_changed_fnames = [(src_file, src_file.replace(original_href_name, changed_href_name)) for src_file in src_files if src_file.startswith(original_href_name + '.')]
+
+            for original, changed in original_and_changed_fnames:
+                source_fname = changed if changed in in_src_folder else original
+                self.replacements_href_files_items.append((source_fname, changed))
+                shutil.copyfile(self.doc_files_info.xml_path + '/' + source_fname, self.scielo_pkg_path + '/' + changed)
+            if len(original_and_changed_fnames) == 0:
+                self.href_files_items_not_found_in_src_folder.append((original_href, changed_href))
 
         xpm_process_logger.register('pack_article_href_files: fim')
 
@@ -958,14 +957,16 @@ class ArticlePkgMaker(object):
         xpm_process_logger.register('pack_article_related_files: inicio')
         self.replacements_related_files_items = []
         for f in src_files:
+            source_filename = self.doc_files_info.xml_path + '/' + f
+            dest_filename = self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)
             if f.startswith(self.doc_files_info.xml_name + '.'):
-                self.replacements_related_files_items.append((f, f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)))
-                shutil.copyfile(self.doc_files_info.xml_path + '/' + f, self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name))
+                self.replacements_related_files_items.append((f, dest_filename))
+                shutil.copyfile(source_filename, dest_filename)
             elif f.startswith(self.doc_files_info.xml_name + '-'):
                 item, ext = os.path.splitext(f)
                 if not item in self.local_href_names:
-                    self.replacements_related_files_items.append((f, f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)))
-                    shutil.copyfile(self.doc_files_info.xml_path + '/' + f, self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name))
+                    self.replacements_related_files_items.append((f, dest_filename))
+                    shutil.copyfile(source_filename, dest_filename)
         xpm_process_logger.register('pack_article_related_files: fim')
 
     def generate_packed_files_report(self):
@@ -993,19 +994,20 @@ class ArticlePkgMaker(object):
         log.append(message_file_list(_('Total of related files'), format(self.replacements_related_files_items)))
         log.append(message_file_list(_('Total of files in package'), format(self.replacements_href_files_items)))
         log.append(message_file_list(_('Total of @href in XML'), format(self.local_href_items)))
-        log.append(message_file_list(_('Total of @href not found in package'), format(self.replacements_not_found_href_files_items)))
+        log.append(message_file_list(_('Total of files not found in package'), format(self.href_files_items_not_found_in_src_folder)))
 
         return '\n'.join(log)
 
     def pack_article_xml_file(self):
         xpm_process_logger.register('pack_article_xml_file')
+        original = self.version_info.local
+        final = self.version_info.remote
         if self.is_db_generation:
-            #local
-            self.content = self.content.replace('"' + self.version_info.remote + '"', '"' + self.version_info.local + '"')
-        else:
-            #remote
-            self.content = self.content.replace('"' + self.version_info.local + '"', '"' + self.version_info.remote + '"')
+            original = self.version_info.remote
+            final = self.version_info.local
+        self.content = self.content.replace('"' + original + '"', '"' + final + '"')
         fs_utils.write_file(self.doc_files_info.new_xml_filename, self.content)
+        xpm_process_logger.register('pack_article_xml_file: fim')
 
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
@@ -1162,9 +1164,9 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
                     print(_('To generate PMC package, add -pmc as parameter'))
                     print('='*10)
 
-            make_pkg_zip(scielo_pkg_path)
-            if not is_xml_generation:
-                make_pkg_items_zip(scielo_pkg_path)
+            #make_pkg_zip(scielo_pkg_path)
+            #if not is_xml_generation:
+            #    make_pkg_items_zip(scielo_pkg_path)
 
         utils.display_message(_('Result of the processing:'))
         utils.display_message(results_path)
