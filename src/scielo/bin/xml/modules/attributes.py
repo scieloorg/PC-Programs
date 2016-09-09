@@ -185,14 +185,13 @@ REFERENCE_REQUIRED_SUBELEMENTS['journal'] = ['article-title', 'person-group', 'y
 REFERENCE_REQUIRED_SUBELEMENTS['book'] = ['year', 'source']
 REFERENCE_REQUIRED_SUBELEMENTS['confproc'] = ['conf-name', 'source', 'year']
 REFERENCE_REQUIRED_SUBELEMENTS['thesis'] = ['comment', 'source', 'year']
-REFERENCE_REQUIRED_SUBELEMENTS['webpage'] = ['ext-link', 'date-in-citation[@content-type="access-date"]', 'source']
+REFERENCE_REQUIRED_SUBELEMENTS['webpage'] = ['ext-link', 'date-in-citation[@content-type="access-date"]']
 
 
 REFERENCE_NOT_ALLOWED_SUBELEMENTS = {}
 REFERENCE_NOT_ALLOWED_SUBELEMENTS['journal'] = ['chapter-title', 'conf-date', 'conf-loc', 'conf-name', 'conf-num', 'conf-sponsor', 'conf-theme', 'conference', 'patent']
 REFERENCE_NOT_ALLOWED_SUBELEMENTS['book'] = ['article-title', 'conf-date', 'conf-loc', 'conf-name', 'conf-num', 'conf-sponsor', 'conf-theme', 'conference', 'patent']
 REFERENCE_NOT_ALLOWED_SUBELEMENTS['thesis'] = ['article-title', 'conf-date', 'conf-loc', 'conf-name', 'conf-num', 'conf-sponsor', 'conf-theme', 'conference', 'patent']
-REFERENCE_NOT_ALLOWED_SUBELEMENTS['webpage'] = ['article-title', 'chapter-title']
 REFERENCE_NOT_ALLOWED_SUBELEMENTS['confproc'] = ['chapter-title', 'patent']
 
 LANGUAGES = {
@@ -440,15 +439,15 @@ def validate_element(publication_type, label, value):
     items = []
     if value is None or value == '':
         if is_required(publication_type, label):
-            problem = '@publication-type="' + publication_type + '" ' + _('requires') + ' ' + label
+            problem = _('{requirer} requires {required}. ').format(requirer='@publication-type="' + publication_type + '"', required=label)
+            compl = _('If the reference has no {label}, ignore this message. ').format(label=label)
             items = ['@publication-type', _('the elements of this reference')]
-            compl = '. ' + _('If the reference has no ') + label + ', ' + _('ignore this message')
     else:
         if not is_allowed_element(publication_type, label):
-            problem = label + _(' is not allowed for ') + '@publication-type=' + publication_type
+            problem = _('{label} is not allowed for {item}. ').format(label=label, item='@publication-type=' + publication_type)
             items = ['@publication-type', label, value]
     if len(problem) > 0:
-        problem += _('. Be sure that you have correctly identified: ') + _(' or ').join(items)
+        problem += _('. Be sure that you have correctly identified: ') + ', '.join(items)
         problem += compl
     return problem
 
@@ -550,7 +549,7 @@ def check_lang(lang):
     if lang in LANGUAGES.keys():
         return (True, LANGUAGES.get(lang))
     else:
-        return (False, lang + ': ' + _('Invalid value for ') + '@xml:lang. ' + _('Expected values') + ': ' + ', '.join(sorted(LANGUAGES.keys())) + '. ' + '|'.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()])))
+        return (False, _('{value} is an invalid value for {label}. ').format(value=lang, label='@xml:lang') + _('Expected values: {expected}. ').format(expected=', '.join(sorted(LANGUAGES.keys())) + '. ' + '|'.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()]))))
 
 
 def expected_sps_versions(article_dateiso):
@@ -625,8 +624,8 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
             else:
                 suggestions = [item for item in DOCTOPIC_IN_USE if not item in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
     if not article_type in suggestions:
-        suggestions_msg = _('Expected values') + ': ' + _(' or ').join(suggestions) + ' ' + _('instead of') + ' ' + article_type + '.'
-        results.append(('@article-type', status, '@article-type=' + article_type + _(' and ') + _('section title') + '=' + article_section + ': ' + _('Be sure that ') + article_type + _(' is a valid value for') + ' @article-type. ' + suggestions_msg))
+        suggestions_msg = _('{value} is an invalid value for {label}. ').format(value=article_type, label='@article-type') + _('Expected values: {expected}. ').format(expected=_(' or ').join(suggestions))
+        results.append(('@article-type', status, _('Be sure that the elements {elem1} and {elem2} are properly identified. ').format(elem1='@article-type', elem2=_('section title') + '(' + article_section + ')') + suggestions_msg))
 
     return results
 
@@ -634,18 +633,18 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
 def validate_iso_country_code(iso_country_code):
     r = []
     if iso_country_code is None:
-        r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, _('Required')))
+        r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='aff/country/@country')))
     else:
         if not iso_country_code in COUNTRY_CODES:
             r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, 
-                iso_country_code + ': ' + _('Invalid value')))
+                _('{value} is an invalid value for {label}. ').format(value=iso_country_code, label='aff/country/@country') + _('Expected values: {expected}. ').format(expected=' | '.join(COUNTRY_CODES))))
     return r
 
 
 def validate_license_href(license_href):
     result = None
     if license_href is None:
-        result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('Required {label}').format(label='license/@href. '))
+        result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='license/@href'))
     elif license_href in LICENSES:
         result = ('license/@xlink:href', validation_status.STATUS_VALID, license_href)
     else:

@@ -56,21 +56,24 @@ class TabbedReport(object):
 
 class HideAndShowBlocksReport(object):
 
-    def __init__(self, labels, data, html_cell_content=[], widths=None):
+    def __init__(self, labels, data, pdf_items=None, html_cell_content=[], widths=None):
         self.labels = labels
         self.data = data
         self.html_cell_content = html_cell_content
         self.html_cell_content.append(labels[-1])
+        self.pdf_items = pdf_items
         self.widths = widths
 
     @property
     def content(self):
         items = []
-        for data in self.data:
+        for i, data in zip(range(len(self.data)), self.data):
             values, block = data
             values.append(block.links)
             items.append(label_values(self.labels, values))
-            items.append({self.labels[-1]: block.block})
+            if self.pdf_items is not None:
+                items.append({'pdf': self.pdf_items[i]})
+            items.append({'hidden': block.block})
         return sheet(self.labels, items, table_style='reports-sheet', html_cell_content=self.html_cell_content, widths=self.widths)
 
 
@@ -163,8 +166,13 @@ def collapsible_block(section_id, section_title, content, status='ok'):
     return r
 
 
-def link(href, label):
-    return '<a href="' + href + '" target="_blank">' + label + '</a>'
+def link(href, label, window=None):
+    if window is not None:
+        width, height = window
+        r = '<a href="{href}" onclick="w = window.open(\'{href}\', \'newwindow\', \'resizeable=yes, width={width}, height={height}\'); w.focus(); return false;">{label}</a>'.format(href=href, label=label, width=width, height=height)
+    else:
+        r = '<a href="' + href + '" target="_blank">' + label + '</a>'
+    return r
 
 
 def display_embedded_object(href, label, element_id, width='400px', height='400px'):
@@ -185,9 +193,9 @@ def display_embedded_object(href, label, element_id, width='400px', height='400p
 
     block_pdf = tag('object', '', attributes={'id': element_id + '_pdf', 'data': '', 'width': width, 'height': height})
     block_close_button = '<span id="{element_id}_close_button" style="display: none;" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
-        element_id=element_id, label=_('close') + ' ' + label, js=js_close_button)
+        element_id=element_id, label=_('hide') + ' ' + label, js=js_close_button)
     block_pdf_button = '<span id="{element_id}_pdf_button" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
-        element_id=element_id, label=_('open') + ' ' + label, js=js_pdf_button)
+        element_id=element_id, label=_('show') + ' ' + label, js=js_pdf_button)
     return block_pdf_button + block_close_button + block_pdf
 
 
@@ -309,8 +317,11 @@ def sheet_build(table_header, table_rows_data, table_style='sheet', style4row=No
     rows = ''
     for row_data in table_rows_data:
         if len(row_data) == 1 and len(table_header) > 1:
-            # hidden row
-            columns = hidden_row(str(len(table_header)), table_header[-1], row_data.get(table_header[-1]))
+            key = row_data.keys()[0]
+            if key == 'hidden':
+                columns = hidden_row(str(len(table_header)), table_header[-1], row_data.get(key))
+            else:
+                columns = '<td colspan="' + str(len(table_header)) + '">' + row_data.get(key) + '</td>'
         elif len(table_header) <= len(row_data):
             columns = ''
             for label in table_header:

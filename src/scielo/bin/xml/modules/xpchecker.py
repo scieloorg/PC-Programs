@@ -119,10 +119,12 @@ class JavaXMLValidator(object):
         self.doctype = doctype
         self.xsl_prep_report = xsl_prep_report
         self.xsl_report = xsl_report
+        self.logger = None
 
     def setup(self, xml_filename):
         self.xml_filename = xml_filename
         self.xml = java_xml_utils.XML(self.xml_filename, self.doctype)
+        self.xml.logger = self.logger
 
     def dtd_validation(self, report_filename):
         return self.xml.xml_validate(report_filename)
@@ -138,6 +140,7 @@ class JavaXMLValidator(object):
         parameters = {}
         if self.xml.transform_file(self.xsl_prep_report, xml_report, parameters):
             xml_transformer_report = java_xml_utils.XML(xml_report, None)
+            xml_transformer_report.logger = self.logger
             xml_transformer_report.transform_file(self.xsl_report, report_filename, parameters)
             result = fs_utils.read_file(report_filename)
             if os.path.isfile(xml_report):
@@ -275,6 +278,7 @@ class XMLValidator(object):
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
         self.logger.register('XMLValidator.validate - inicio')
         self.logger.register('XMLValidator.validate - self.validator.setup()')
+        self.validator.logger = self.logger
         self.validator.setup(xml_filename)
         self.logger.register('XMLValidator.validate - xml_utils.load_xml')
         xml, e = xml_utils.load_xml(self.validator.xml.content)

@@ -604,10 +604,6 @@ class OriginalPackage(object):
     def setUp(self):
         hdimages_to_jpeg(self.path, self.path, False)
 
-    def add(self, doc_files_info, doc):
-        self.doc_items[doc_files_info.xml_name] = doc
-        self.doc_files_info_items[doc_files_info.xml_name] = doc_files_info
-
 
 class ArticlePkgMaker(object):
 
@@ -639,6 +635,8 @@ class ArticlePkgMaker(object):
 
         fs_utils.write_file(self.doc_files_info.err_filename, '\n'.join(self.text_messages))
         html_reports.save(self.doc_files_info.images_report_filename, '', self.get_images_comparison_report())
+        if len(self.replacements_related_files_items) > 0:
+            self.doc.related_files = [item[1] for item in self.replacements_related_files_items]
 
         return (self.doc, self.doc_files_info)
 
@@ -1015,11 +1013,13 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
     package = OriginalPackage(xml_files)
     package.setUp()
 
+    doc_items = {}
+    doc_files_info_items = {}
     xpm_process_logger.register('make packages')
     utils.display_message('\n' + _('Make packages for {n} files.').format(n=str(len(xml_files))))
     n = '/' + str(len(xml_files))
     index = 0
-
+    related_files = {}
     for xml_filename in xml_files:
 
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, wrk_path)
@@ -1032,9 +1032,10 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         article_pkg_maker = ArticlePkgMaker(doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
         doc, doc_files_info = article_pkg_maker.make_article_package()
 
-        package.add(doc_files_info, doc)
+        doc_files_info_items[doc_files_info.xml_name] = doc_files_info
+        doc_items[doc_files_info.xml_name] = doc
 
-    return (package.doc_items, package.doc_files_info_items)
+    return (doc_items, doc_files_info_items)
 
 
 def make_pmc_report(articles, doc_files_info_items):

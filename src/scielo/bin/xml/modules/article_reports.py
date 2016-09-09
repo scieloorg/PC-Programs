@@ -448,6 +448,7 @@ class ArticleDisplayReport(object):
         r += '<div>'
         #r += html_reports.tag('h7', self.work_area.xml_name)
         r += self.table_of_contents_data
+        r += self.link_to_pdf_items()
         r += '</div>'
         return r
 
@@ -457,6 +458,7 @@ class ArticleDisplayReport(object):
         r += '<div>'
         r += self.table_of_contents_data
         r += self.table_of_contents_data_with_lang
+        r += self.link_to_pdf_items()
         r += '</div>'
         return r
 
@@ -470,17 +472,44 @@ class ArticleDisplayReport(object):
             r += html_reports.tag('h5', '; '.join([k.text for k in self.article.keywords_by_lang.get(lang, [])]))
         return r
 
-    @property
-    def pdf_items(self):
+    def embedded_pdf_items(self, page_id='', width='400px', height='400px'):
+        items = []
+        for item in self.article.related_files:
+            items.append(html_reports.tag('p', html_reports.display_embedded_object(
+                item,
+                os.path.basename(item), page_id + item, width, height)))
+        return ''.join(items)
+
+    def link_to_pdf_items(self):
+        items = []
+        for item in self.article.related_files:
+            items.append(html_reports.tag('p', html_reports.link(
+                item,
+                os.path.basename(item), window=('800', '400'))))
+        return ''.join(items)
+
+    def old_embedded_pdf_items(self, page_id='', width='400px', height='400px'):
         items = []
         pdf = self.xml_path + '/' + self.xml_name + '.pdf'
         if os.path.isfile(pdf):
             #items.append('<object id="' + pdf_id + '" data="file://' + pdf + '" width="100%" height="100%"><param name="view" value="Fit" /></object>')
-            items.append(html_reports.tag('p', html_reports.display_embedded_object(pdf, os.path.basename(pdf), self.xml_name)))
+            items.append(html_reports.tag('p', html_reports.display_embedded_object(pdf, os.path.basename(pdf), page_id + self.xml_name, width, height)))
         for lang in self.article.trans_languages:
             pdf = self.xml_path + '/' + self.xml_name + '-' + lang + '.pdf'
             if os.path.isfile(pdf):
-                items.append(html_reports.tag('p', html_reports.display_embedded_object(pdf, os.path.basename(pdf), self.xml_name + '_' + lang)))
+                items.append(html_reports.tag('p', html_reports.display_embedded_object(pdf, os.path.basename(pdf), page_id + self.xml_name + '_' + lang, width, height)))
+        return ''.join(items)
+
+    def old_link_to_pdf_items(self, page_id=''):
+        items = []
+        pdf = self.xml_path + '/' + self.xml_name + '.pdf'
+        if os.path.isfile(pdf):
+            #items.append('<object id="' + pdf_id + '" data="file://' + pdf + '" width="100%" height="100%"><param name="view" value="Fit" /></object>')
+            items.append(html_reports.link(pdf, os.path.basename(pdf)))
+        for lang in self.article.trans_languages:
+            pdf = self.xml_path + '/' + self.xml_name + '-' + lang + '.pdf'
+            if os.path.isfile(pdf):
+                items.append(html_reports.link(pdf, os.path.basename(pdf)))
         return ''.join(items)
 
 

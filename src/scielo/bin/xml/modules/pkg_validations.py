@@ -812,7 +812,7 @@ class ArticlesSetValidations(object):
         widths[_('article')] = '60'
         widths['aop pid/related'] = '10'
         widths[_('reports')] = '10'
-
+        pdf_items = []
         items = []
         for new_name, article in self.articles:
             hide_and_show_block_items = self.articles_validations[new_name].hide_and_show_block('view-reports-')
@@ -847,7 +847,7 @@ class ArticlesSetValidations(object):
                 values.append('')
             else:
                 values.append(self.articles_validations[new_name].article_display_report.table_of_contents_detailed)
-                values.append(self.articles_validations[new_name].article_display_report.pdf_items)
+                values.append(self.articles_validations[new_name].article_display_report.embedded_pdf_items())
             items.append(label_values(labels, values))
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), 'pdf'], widths=widths)
 

@@ -36,24 +36,35 @@ class XML(object):
         self.xml_filename = xml if not '<' in xml else None
         self.content = xml if '<' in xml else fs_utils.read_file(xml)
         self.doctype = doctype
+        self.logger = None
         if doctype is not None:
             self._backup_xml_file()
             self._change_doctype()
 
     def _backup_xml_file(self):
+        if self.logger is not None:
+            self.logger.register('XML._backup_xml_file - inicio')
         self.backup_path = tempfile.mkdtemp()
         self.backup_xml_filename = self.backup_path + '/' + os.path.basename(self.xml_filename)
         shutil.copyfile(self.xml_filename, self.backup_xml_filename)
+        if self.logger is not None:
+            self.logger.register('XML._backup_xml_file - fim')
 
     def finish(self):
+        if self.logger is not None:
+            self.logger.register('XML.finish - inicio')
         if self.doctype is not None:
             shutil.move(self.backup_xml_filename, self.xml_filename)
             try:
                 shutil.rmtree(self.backup_path)
             except:
                 pass
+        if self.logger is not None:
+            self.logger.register('XML.finish - fim')
 
     def _change_doctype(self):
+        if self.logger is not None:
+            self.logger.register('XML._change_doctype - inicio')
         self.content = self.content.replace('\r\n', '\n')
         if '<!DOCTYPE' in self.content:
             find_text = self.content[self.content.find('<!DOCTYPE'):]
@@ -75,8 +86,12 @@ class XML(object):
             else:
                 self.content = xml_proc + '\n' + xml
         fs_utils.write_file(self.xml_filename, self.content)
+        if self.logger is not None:
+            self.logger.register('XML._change_doctype - fim')
 
     def transform_content(self, xsl_filename):
+        if self.logger is not None:
+            self.logger.register('XML.transform_content - inicio')
         f = tempfile.NamedTemporaryFile(delete=False)
         f.close()
 
@@ -91,9 +106,13 @@ class XML(object):
 
         for item in [f.name, f2.name]:
             os.unlink(f.name)
+        if self.logger is not None:
+            self.logger.register('XML.transform_content - fim')
         return content
 
     def prepare(self, result_filename):
+        if self.logger is not None:
+            self.logger.register('XML.prepare - inicio')
         temp_result_filename = TMP_DIR + '/' + os.path.basename(result_filename)
         result_path = os.path.dirname(result_filename)
         if not os.path.isdir(result_path):
@@ -101,31 +120,47 @@ class XML(object):
         for f in [result_filename, temp_result_filename]:
             if os.path.isfile(f):
                 os.unlink(f)
+        if self.logger is not None:
+            self.logger.register('XML.prepare - fim')
         return temp_result_filename
 
     def transform_file(self, xsl_filename, result_filename, parameters={}):
+        if self.logger is not None:
+            self.logger.register('XML.transform_file - inicio')
         error = False
 
         temp_result_filename = self.prepare(result_filename)
 
+        if self.logger is not None:
+            self.logger.register('XML.transform_file - command - inicio')
         cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + self.xml_filename + '" "' + xsl_filename + '" ' + format_parameters(parameters)
         cmd = cmd.encode(encoding=sys.getfilesystemencoding())
         os.system(cmd)
+        if self.logger is not None:
+            self.logger.register('XML.transform_file - command - fim')
 
         if not os.path.exists(temp_result_filename):
             fs_utils.write_file(temp_result_filename, 'ERROR: transformation error.\n' + cmd)
             error = True
         shutil.move(temp_result_filename, result_filename)
+        if self.logger is not None:
+            self.logger.register('XML.transform_file - fim')
 
         return (not error)
 
     def xml_validate(self, result_filename):
+        if self.logger is not None:
+            self.logger.register('XML.xml_validate - inicio')
         validation_type = '' if self.doctype == '' else '--validate'
         temp_result_filename = self.prepare(result_filename)
 
+        if self.logger is not None:
+            self.logger.register('XML.transform_file - command - inicio')
         cmd = JAVA_PATH + ' -cp "' + JAR_VALIDATE + '" br.bireme.XMLCheck.XMLCheck "' + self.xml_filename + '" ' + validation_type + '>"' + temp_result_filename + '"'
         cmd = cmd.encode(encoding=sys.getfilesystemencoding())
         os.system(cmd)
+        if self.logger is not None:
+            self.logger.register('XML.transform_file - command - fim')
 
         if os.path.exists(temp_result_filename):
             result = fs_utils.read_file(temp_result_filename, sys.getfilesystemencoding())
@@ -137,12 +172,17 @@ class XML(object):
                         s += str(n) + ':' + line
                     n += 1
                 result += '\n' + s.decode('utf-8')
-                fs_utils.write_file(temp_result_filename, result)
+                fs_utils.write_file(result_filename, result)
+                os.unlink(temp_result_filename)
+            else:
+                shutil.move(temp_result_filename, result_filename)
         else:
             result = 'ERROR: Not valid. Unknown error.\n' + cmd
-            fs_utils.write_file(temp_result_filename, result)
-
-        shutil.move(temp_result_filename, result_filename)
+            fs_utils.write_file(result_filename, result)
+        if self.logger is not None:
+            self.logger.register('XML.transform_file - command - fim')
+        if self.logger is not None:
+            self.logger.register('XML.xml_validate - fim')
         return not 'ERROR' in result.upper()
 
 
