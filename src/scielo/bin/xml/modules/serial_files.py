@@ -321,6 +321,8 @@ class JournalFiles(object):
             serial_path = serial_path[0:-1]
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
+        if not os.path.isdir(self.journal_path):
+            os.makedirs(self.journal_path)
         self._issues_files = {}
         for issue_id in os.listdir(self.journal_path):
             if os.path.isdir(self.journal_path + '/' + issue_id):

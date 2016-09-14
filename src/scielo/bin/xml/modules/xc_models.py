@@ -722,39 +722,31 @@ class ArticlesDBManager(object):
                 if not os.path.isfile(article_files.id_filename):
                     self.db_isis.save_id(article_files.id_filename, registered_article.article_records)
 
-    def reset_registered_records(self):
-        self._registered_articles_records = None
-        self._registered_articles = None
-
-    @property
     def registered_records(self):
-        if self._registered_i_record is None or self._registered_articles_records is None:
-            records = self.db_isis.get_records(self.issue_files.base)
-            self._registered_i_record, self._registered_articles_records = IssueArticlesRecords(records).articles()
-        return (self._registered_i_record, self._registered_articles_records)
+        records = self.db_isis.get_records(self.issue_files.base)
+        self.registered_i_record, self.registered_articles_records = IssueArticlesRecords(records).articles()
 
     @property
     def registered_articles(self):
-        if self._registered_articles is None:
-            self._registered_articles = {}
-            self._registered_i_record, self._registered_articles_records = self.registered_records
-            for xml_name, registered_article in self._registered_articles_records.items():
-                f = self.issue_files.base_source_path + '/' + xml_name + '.xml'
-                if os.path.isfile(f):
-                    xml, e = xml_utils.load_xml(f)
-                else:
-                    xml = None
-                doc = Article(xml, xml_name)
-                doc.pid = registered_article.pid
-                doc.creation_date_display = registered_article.creation_date_display
-                doc.creation_date = registered_article.creation_date
-                doc.last_update_date = registered_article.last_update_date
-                doc.last_update_display = registered_article.last_update_display
-                doc.article_records = registered_article.article_records
-                if doc.doi is not None:
-                    self.articles_by_doi[doc.doi] = xml_name
-                self._registered_articles[xml_name] = doc
-        return self._registered_articles
+        _registered_articles = {}
+        self.registered_records()
+        for xml_name, registered_article in self.registered_articles_records.items():
+            f = self.issue_files.base_source_path + '/' + xml_name + '.xml'
+            if os.path.isfile(f):
+                xml, e = xml_utils.load_xml(f)
+            else:
+                xml = None
+            doc = Article(xml, xml_name)
+            doc.pid = registered_article.pid
+            doc.creation_date_display = registered_article.creation_date_display
+            doc.creation_date = registered_article.creation_date
+            doc.last_update_date = registered_article.last_update_date
+            doc.last_update_display = registered_article.last_update_display
+            doc.article_records = registered_article.article_records
+            if doc.doi is not None:
+                self.articles_by_doi[doc.doi] = xml_name
+            _registered_articles[xml_name] = doc
+        return _registered_articles
 
     def content_formatter(self, content):
 
@@ -803,7 +795,7 @@ class ArticlesDBManager(object):
                     os.unlink(self.issue_files.id_path + '/' + f)
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                     self.db_isis.append_id_records(self.issue_files.id_path + '/' + f, self.issue_files.base)
-        self.reset_registered_records()
+        #self.reset_registered_records()
 
     def article_records(self, i_record, article, article_files):
         _article_records = None

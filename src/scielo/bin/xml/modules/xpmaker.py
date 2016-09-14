@@ -34,7 +34,6 @@ import validation_status
 
 mime = MimeTypes()
 messages = []
-log_items = []
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -1016,7 +1015,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
     doc_items = {}
     doc_files_info_items = {}
     xpm_process_logger.register('make packages')
-    utils.display_message('\n' + _('Make packages for {n} files.').format(n=str(len(xml_files))))
+    utils.display_message('\n' + _('Make package for {n} files.').format(n=str(len(xml_files))))
     n = '/' + str(len(xml_files))
     index = 0
     related_files = {}

@@ -279,6 +279,15 @@ LICENSES = [
     'http://creativecommons.org/licenses/by/3.0/',
     'http://creativecommons.org/licenses/by-nc/4.0/',
     'http://creativecommons.org/licenses/by-nc/3.0/',
+    'http://creativecommons.org/licenses/by-nc-nd/3.0/',
+    'http://creativecommons.org/licenses/by-nc-nd/4.0/',
+    'http://creativecommons.org/licenses/by/3.0/igo/',
+    'http://creativecommons.org/licenses/by-nc/3.0/igo/',
+    'http://creativecommons.org/licenses/by-nc-nd/3.0/igo/',
+    'https://creativecommons.org/licenses/by/4.0/',
+    'https://creativecommons.org/licenses/by/3.0/',
+    'https://creativecommons.org/licenses/by-nc/4.0/',
+    'https://creativecommons.org/licenses/by-nc/3.0/',
     'https://creativecommons.org/licenses/by-nc-nd/3.0/',
     'https://creativecommons.org/licenses/by-nc-nd/4.0/',
     'https://creativecommons.org/licenses/by/3.0/igo/',
@@ -645,13 +654,10 @@ def validate_license_href(license_href):
     result = None
     if license_href is None:
         result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='license/@href'))
-    elif license_href in LICENSES:
+    elif license_href in LICENSES or license_href + '/' in LICENSES:
         result = ('license/@xlink:href', validation_status.STATUS_VALID, license_href)
     else:
-        result = ('license/@xlink:href', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=license_href, label='license/@href'))
-        print('LICENSE NOT FOUND')
-        print('|' + license_href + '|')
-        print('\n'.join(LICENSES))
+        result = ('license/@xlink:href', validation_status.STATUS_WARNING, _('{value} is an invalid value for {label}. ').format(value=license_href, label='license/@href') + _('Expected values: {expected}. ').format(expected=_('or').join(LICENSES)))
         #if not ws_requester.wsr.is_valid_url(license_href):
         #    result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=license_href, label='license/@href'))
     return result
