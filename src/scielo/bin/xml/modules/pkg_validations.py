@@ -74,7 +74,7 @@ class ValidationsResult(object):
     def calculate_numbers(self):
         for status, style_checker_error_type in zip(validation_status.STATUS_LEVEL_ORDER, validation_status.STYLE_CHECKER_ERROR_TYPES):
             self.numbers[status] = word_counter(self.message, status)
-            if len(style_checker_error_type) != '':
+            if style_checker_error_type != '':
                 self.numbers[status] += number_after_words(self.message, style_checker_error_type)
 
     def total(self):
@@ -151,6 +151,7 @@ class XMLJournalDataValidator(object):
             license_url = None
             if len(article.article_licenses) > 0:
                 license_url = article.article_licenses.values()[0].get('href')
+            print([article.journal_id_nlm_ta, self.journal_data.nlm_title])
             items.append([_('NLM title'), article.journal_id_nlm_ta, self.journal_data.nlm_title, validation_status.STATUS_FATAL_ERROR])
             items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal_data.acron, validation_status.STATUS_FATAL_ERROR])
             items.append([_('e-ISSN'), article.e_issn, self.journal_data.e_issn, validation_status.STATUS_FATAL_ERROR])
@@ -411,19 +412,31 @@ class ArticlesData(object):
             self.articles_db_manager = xc_models.ArticlesDBManager(db_manager.db_isis, self.issue_files)
 
 
-class OrderValidations(object):
+class PreConversionValidator(object):
 
     def __init__(self, registered_articles, pkg_articles):
         self.registered_articles = registered_articles
         self.pkg_articles = pkg_articles
         self.conflicting_items = {}
         self.names_changed = []
-        self.orders_changed = []
+        self.orders_changed = {}
         self.rejected_names_change = []
-        self.rejected_orders_change = []
+        self.rejected_orders_change = {}
         self.actions = {}
         for action in ['add', 'update', 'conditional update', 'reject', 'exclude', 'replace']:
             self.actions[action] = []
+
+    @property
+    def total_to_convert(self):
+        return len(self.pkg_articles)
+
+    @property
+    def excluded_orders(self):
+        return dict(self.actions['exclude'])
+
+    @property
+    def xc_articles(self):
+        return self.pkg_articles
 
     @property
     def articles_actions(self):
@@ -433,10 +446,9 @@ class OrderValidations(object):
         _articles_actions = {}
         self.conflicting_items = {}
         self.exclude_items = []
-        articles = self.registered_articles.copy()
         for name, article in self.pkg_articles.items():
             actions, exclude_name, conflicts = self._identify_actions(name, article)
-            _articles_actions[name] = actions, exclude_name
+            _articles_actions[name] = actions, exclude_name, conflicts
             for action in actions:
                 self.actions[action].append(name)
                 if action == 'update':
@@ -450,11 +462,11 @@ class OrderValidations(object):
     def _simulate_orders_updating(self):
         orders = {name: article.order for name, article in self.registered_articles.items()}
         for name, article in self.pkg_articles.items():
-            actions, exclude_name = self.article_actions[name]
-            self._apply_actions(article.order, article.marked_to_delete, actions, orders, exclude_name)
+            actions, exclude_name, conflicts = self.articles_actions[name]
+            self._apply_actions(name, article.order, article.marked_to_delete, actions, orders, exclude_name)
         return orders
 
-    def _apply_actions(self, new_value, marked_to_delete, actions, result, exclude_name):
+    def _apply_actions(self, name, new_value, marked_to_delete, actions, result, exclude_name):
         done = []
         for action in actions:
             if action == 'update':
@@ -466,6 +478,7 @@ class OrderValidations(object):
                     result[name] = new_value
                     done.append('updated')
             elif action == 'add':
+
                 result[name] = new_value
                 done.append('added')
             elif action == 'conditional update':
@@ -491,7 +504,7 @@ class OrderValidations(object):
         if len(check_names) > 0:
             updated_orders = self._simulate_orders_updating()
             sorted_orders = self.sort_articles_orders(updated_orders)
-            self.duplicated_orders = {order: items for order, items in orders.items() if len(items) > 1}
+            self.duplicated_orders = {order: items for order, items in updated_orders.items() if len(items) > 1}
             if len(self.duplicated_orders) > 0:
                 for name in check_names:
                     article = self.pkg_articles.get(name)
@@ -507,41 +520,43 @@ class OrderValidations(object):
     def updated_articles(self):
         articles = self.registered_articles.copy()
         self.names_changed = []
-        self.orders_changed = []
+        self.orders_changed = {}
         self.rejected_names_change = []
-        self.rejected_orders_change = []
+        self.rejected_orders_change = {}
 
-        self.history = {name: [_('Registered as order={order}. ').format(order=article.order)] for name, article in self.registered_articles.items()}
+        self.history = {name: [_('registered'), '/'.join([article.creation_date_display, article.last_update_display]), 'order={order}'.format(order=article.order)] for name, article in self.registered_articles.items()}
 
         for name, article in self.pkg_articles.items():
             if not name in self.history.keys():
-                self.history[name] = []
-            actions, exclude_name, conflict_msg = self.actions[name]
+                self.history[name] = [_('new article'), 'order={order}'.format(order=article.order)]
+            actions, exclude_name, conflict_msg = self.articles_actions[name]
 
+            self.history[name].append(_('package'))
+            self.history[name].append('order={order}'.format(order=article.order))
             if conflict_msg is not None:
                 self.history[name].append(conflict_msg)
             elif self.has_order_conflict(name):
-                self.history[name].append(_('There is order={order} in {files}. ').format(order=article.order, files=', '.join(self.duplicated_orders[article.order])))
+                self.history[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('There is order={order} in other files: {files}. ').format(order=article.order, files=', '.join(self.duplicated_orders[article.order])))
                 if exclude_name is not None:
                     self.rejected_names_change.append((exclude_name, name))
-                    self.history[name].append(_('Unable to rename: {old} => {new}. ').format(old=exclude_name, new=name))
+                    self.history[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('Unable to rename: {old} => {new}. ').format(old=exclude_name, new=name))
                 if article.order != articles[name].order:
                     self.rejected_orders_change[name].append((articles[name].order, article.order))
-                    self.history[name].append(_('Unable to change order: {old} => {new}. ').format(old=articles[name].order, new=article.order))
+                    self.history[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('Unable to change order: {old} => {new}. ').format(old=articles[name].order, new=article.order))
             else:
-                done = self._apply_actions(article, article.marked_to_delete, actions, articles, exclude_name)
+                done = self._apply_actions(name, article, article.marked_to_delete, actions, articles, exclude_name)
                 for item in done:
                     self.history[name].append(_(item))
                 if exclude_name is not None:
                     self.names_changed.append((exclude_name, name))
-                    self.history[name].append(_('Renamed: {old} => {new}. ').format(old=exclude_name, new=name))
+                    self.history[name].append(validation_status.STATUS_INFO + ' ' + _('Renamed: {old} => {new}. ').format(old=exclude_name, new=name))
                 if article.order != articles[name].order:
                     self.orders_changed[name].append((articles[name].order, article.order))
-                    self.history[name].append(_('Order changed: {old} => {new}. ').format(old=articles[name].order, new=article.order))
+                    self.history[name].append(validation_status.STATUS_INFO + ' ' + _('Order changed: {old} => {new}. ').format(old=articles[name].order, new=article.order))
         self.names_changed.sort()
-        self.orders_changed.sort()
+        #self.orders_changed.sort()
         self.rejected_names_change.sort()
-        self.rejected_orders_change.sort()
+        #self.rejected_orders_change.sort()
 
         return articles
 
@@ -550,7 +565,7 @@ class OrderValidations(object):
         registered = self.registered_item(name, article)
         conflicts = None
         if registered is None:
-            matched_titaut_article_names = self.registered_titaut(article)
+            matched_titaut_article_names = self.registered_titles_and_authors(article)
             matched_order_article_names = self.registered_order(article.order)
             registered_titaut = self._found_items(matched_titaut_article_names)
             registered_order = self._found_items(matched_order_article_names)
@@ -582,7 +597,7 @@ class OrderValidations(object):
                 actions = ['update']
             elif id(registered_titaut) == id(registered_name):
                 # titaut + name != order
-                # avaliar mudança de order | rejeitar
+                # avaliar mudanca de order | rejeitar
                 actions = ['conditional update']
             elif id(registered_titaut) == id(registered_order):
                 # titaut + order != name
@@ -686,10 +701,10 @@ class OrderValidations(object):
         r = ''
         if len(self.names_changed) > 0:
             r += html_reports.tag('h3', _('Names changed'))
-            r += ''.join([html_reports.tag('p', '{old} => {new}'.format(old=old, new=new)) for old, new in self.names_changed))
+            r += ''.join([html_reports.tag('p', '{old} => {new}'.format(old=old, new=new)) for old, new in self.names_changed])
         if len(self.rejected_names_change) > 0:
             r += html_reports.tag('h3', _('Rejected names change'))
-            r += ''.join([html_reports.p_message('{status}: {old} => {new}'.format(old=old, new=new, status=validation_status.STATUS_BLOCKING_ERROR)) for old, new in self.rejected_names_change))
+            r += ''.join([html_reports.p_message('{status}: {old} => {new}'.format(old=old, new=new, status=validation_status.STATUS_BLOCKING_ERROR)) for old, new in self.rejected_names_change])
         return r
 
     @property
@@ -697,10 +712,10 @@ class OrderValidations(object):
         r = ''
         if len(self.orders_changed) > 0:
             r += html_reports.tag('h3', _('Orders changed'))
-            r += ''.join([html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=item[0], new=item[1])) for name, item in self.orders_changed.items()))
+            r += ''.join([html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=item[0], new=item[1])) for name, item in self.orders_changed.items()])
         if len(self.rejected_orders_change) > 0:
             r += html_reports.tag('h3', _('Rejected orders change'))
-            r += ''.join([html_reports.p_message('{status}: {name}: {old} => {new}'.format(name=name, old=item[0], new=item[1], status=validation_status.STATUS_BLOCKING_ERROR)) for name, item in self.rejected_orders_change.items()))
+            r += ''.join([html_reports.p_message('{status}: {name}: {old} => {new}'.format(name=name, old=item[0], new=item[1], status=validation_status.STATUS_BLOCKING_ERROR)) for name, item in self.rejected_orders_change.items()])
         return r
 
     @property
@@ -708,7 +723,7 @@ class OrderValidations(object):
         r = ''
         if len(self.conflicting_items) > 0:
             r += html_reports.tag('h3', _('Conflicts'))
-            r += html_reports.p_message(_('Unable to update some files'))
+            r += html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update some files'))
             for name, msg in self.conflicting_items.items():
                 r += html_reports.tag('h4', name) + html_reports.tag('p', msg)
         return r
@@ -727,10 +742,10 @@ class OrderValidations(object):
         r = ''
         if len(deleted) > 0:
             r += html_reports.tag('h3', _('Excluded items'))
-            r += ''.join([html_reports.tag('p', '{name} / {order}'.format(name=name, order=order)) for name, order in deleted))
+            r += ''.join([html_reports.tag('p', '{name} / {order}'.format(name=name, order=order)) for name, order in deleted])
         if len(not_deleted) > 0:
             r += html_reports.tag('h3', _('Items not excluded'))
-            r += ''.join([html_reports.p_message('{status}: {name} / {order}'.format(name=name, order=order, status=validation_status.STATUS_BLOCKING_ERROR)) for name, order in not_deleted))
+            r += ''.join([html_reports.p_message('{status}: {name} / {order}'.format(name=name, order=order, status=validation_status.STATUS_BLOCKING_ERROR)) for name, order in not_deleted])
         return r
 
     @property
@@ -747,68 +762,42 @@ class OrderValidations(object):
                     r += html_reports.tag('p', '{old} => {new}'.format(old=old, new=new))
         return r
 
-    def report_content(self):
-        # self.conflicting_items
-        # self.rejected_names_change
-        # self.rejected_orders_change
-        # self.names_changed
-        # self.orders_changed
-        self.updated_articles
+    @property
+    def errors_report(self):
         r = ''
         r += self.conflicting_report
         r += self.orders_change_report
         r += self.names_change_report
         r += self.replacements_report
         r += self.exclusions_report
+        #r += self.history_report
+        return r
 
-        return self.validate_resulting_orders_report()
+    def article_report(self, _article):
+        r = ''
+        r += html_reports.tag('p', _article.toc_section, 'toc-section')
+        r += html_reports.tag('p', _article.article_type, 'article-type')
+        r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
+        r += html_reports.tag('p', _article.doi, 'doi')
+        r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
+        a = []
+        for item in article.authors_list(_article.article_contrib_items):
+            a.append(html_reports.tag('span', item))
+        r += html_reports.tag('p', '; '.join(a))
+        return r
 
     @property
-    def articles_report(self, articles, title):
-        labels = ['order', _('name'), _('article')]
-        widths = {'order': 10, _('name'): '10', _('article'): '80'}
-        items = []
-        for new_name, article in articles:
-            values = []
-            values.append(article.order)
-            values.append(new_name)
-
-            r = ''
-            r += html_reports.tag('p', article.toc_section, 'toc-section')
-            r += html_reports.tag('p', article.article_type, 'article-type')
-            r += html_reports.tag('p', html_reports.tag('strong', article.pages), 'fpage')
-            r += html_reports.tag('p', article.doi, 'doi')
-            r += html_reports.tag('p', html_reports.tag('strong', article.title), 'article-title')
-            a = []
-            for item in authors_list(article.article_contrib_items):
-                a.append(html_reports.tag('span', item))
-            r += html_reports.tag('p', '; '.join(a))
-
-            values.append(r)
-
-            items.append(label_values(labels, values))
-        return html_reports.tag('h2', title) + html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), 'pdf'], widths=widths)
-
-    def validate_resulting_orders_report(self):
+    def history_report(self):
         #resulting_orders
-        labels = ['order', _('filename'), _('history'), 'status', _('message')]
-        orders, history = self.resulting_orders
+        labels = [_('filename'), _('article'), _('history')]
         items = []
-        for order in sorted(orders.keys()):
+        for name in sorted(self.history.keys()):
             values = []
-            status = ''
-            msg = ''
-            if len(orders[order]) > 1:
-                status = validation_status.STATUS_BLOCKING_ERROR
-                msg = _('Unique value for {label} is required for all the documents in the package').format(label='order')
-            values.append(order)
-            values.append(orders[order])
-            values.append(''.join(history[order]))
-            values.append(status)
-            values.append(msg)
-
+            values.append(name)
+            values.append(self.article_report(self.pkg_articles.get(name, self.registered_articles.get(name))))
+            values.append(''.join([html_reports.p_message(msg) for msg in self.history[name]]))
             items.append(label_values(labels, values))
-        return html_reports.tag('h2', _('Orders validations')) + html_reports.sheet(labels, items, html_cell_content=[_('message'), _('history')])
+        return html_reports.tag('h2', _('Registered and Package Articles')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('history')])
 
 
 class ArticlesSetValidations(object):
@@ -1059,8 +1048,11 @@ class ArticlesSetValidations(object):
         self.consistency_validations.message = self.consistency_validations_report
 
         self.logger.register('xc pre validations')
+        self.xc_pre_validator = PreConversionValidator(self.registered_articles, self.pkg.pkg_articles)
+        self.xc_pre_validator.updated_articles
+
         self.xc_pre_validations = ValidationsResult()
-        self.xc_pre_validations.message = OrderValidations(self.registered_articles, self.pkg.pkg_articles).report_content()
+        self.xc_pre_validations.message = self.xc_pre_validator.errors_report
         self.logger.register('xc pre validations - fim')
 
     @property
@@ -1233,9 +1225,8 @@ class ArticlesSetValidations(object):
     @property
     def sources_overview_report(self):
         labels = ['source', _('location')]
-        h = None
+        h = ''
         if len(self.reftype_and_sources) > 0:
-            h = ''
             for reftype, sources in self.reftype_and_sources.items():
                 items = []
                 h += html_reports.tag('h4', reftype)
@@ -1368,7 +1359,7 @@ class ArticlesSetValidations(object):
 
     @property
     def blocking_errors(self):
-        return self.consistency_validations.blocking_errors + self.pkg_reg_issue_validations.blocking_errors + self.xc_pre_validations.blocking_errors
+        return sum([self.consistency_validations.blocking_errors, self.pkg_reg_issue_validations.blocking_errors, self.xc_pre_validations.blocking_errors])
 
     @property
     def fatal_errors(self):
@@ -1383,19 +1374,20 @@ class ReportsMaker(object):
         self.articles_set_validations = articles_set_validations
         self.conversion = conversion
         self.xpm_version = xpm_version
-        self.tabs = ['pkg-files', 'summary-report', 'issue-report', 'toc-extended', 'individual-report', 'references', 'dates-report', 'aff-report', 'pre-conversion-report', 'db-overview']
+        self.tabs = ['pkg-files', 'summary-report', 'issue-report', 'toc-extended', 'individual-report', 'references', 'dates-report', 'aff-report', 'xc-validations', 'db-report']
         self.labels = {
             'pkg-files': _('Files/Folders'),
             'summary-report': _('Summary'),
             'issue-report': 'journal/issue',
             'individual-report': _('XML Validations'),
-            'pre-conversion-report': _('Conversion'),
-            'db-overview': _('Database'),
+            'xc-validations': _('Conversion'),
+            'db-report': _('Database'),
             'aff-report': _('Affiliations'),
             'dates-report': _('Dates'),
             'references': _('References'),
             'toc-extended': _('ToC'),
         }
+        self.validations = ValidationsResult()
 
     @property
     def report_components(self):
@@ -1405,6 +1397,7 @@ class ReportsMaker(object):
             components['pkg-files'] += processing_result_location(self.processing_result_location)
 
         components['summary-report'] = ''
+        components['issue-report'] = ''
         components['individual-report'] = self.articles_set_validations.detailed_report
         components['aff-report'] = self.articles_set_validations.articles_affiliations_report
         components['dates-report'] = self.articles_set_validations.articles_dates_report
@@ -1413,20 +1406,18 @@ class ReportsMaker(object):
 
         if not self.articles_set_validations.pkg.is_xml_generation:
             components['toc-extended'] = self.articles_set_validations.toc_extended_report
-            components['issue-report'] = self.articles_set_validations.journal_and_issue_report
+            components['issue-report'] += self.articles_set_validations.journal_and_issue_report
 
         if self.conversion is not None:
-            if self.articles_set_validations.articles_data.issue_error_msg != '':
-                components['issue-report'] = self.articles_set_validations.articles_data.issue_error_msg
-            components['pre-conversion-report'] = self.articles_set_validations.xc_pre_validations.message
-            #FIXME
-            components['db-overview'] = self.conversion.db_status_report
-            components['summary-report'] = self.conversion.xc_conclusion_msg + self.conversion.conversion_status_report + self.conversion.aop_status_report
+            if self.articles_set_validations.articles_data.issue_error_msg is not None:
+                components['issue-report'] += self.articles_set_validations.articles_data.issue_error_msg
+            components['xc-validations'] = self.conversion.xc_pre_validator.errors_report + self.conversion.articles_conversion_validations.report(True)
+            components['db-report'] = self.articles_set_validations.xc_pre_validator.history_report
+            components['summary-report'] = self.conversion.conclusion_message + self.conversion.conversion_status_report + self.conversion.aop_status_report
 
-        validations = ValidationsResult()
-        validations.message = html_reports.join_texts(components.values())
-        components['summary-report'] = error_msg_subtitle() + validations.statistics_display(False) + components['summary-report']
-        components = {k: label_errors(v) for k, v in components.items()}
+        self.validations.message = html_reports.join_texts(components.values())
+        components['summary-report'] = error_msg_subtitle() + self.validations.statistics_display(False) + components['summary-report']
+        components = {k: label_errors(v) for k, v in components.items() if v is not None}
         return components
 
     @property
@@ -1561,10 +1552,13 @@ def error_msg_subtitle():
 
 
 def label_errors(content):
-    content = label_errors_type(content, validation_status.STATUS_BLOCKING_ERROR, 'B')
-    content = label_errors_type(content, validation_status.STATUS_FATAL_ERROR, 'F')
-    content = label_errors_type(content, validation_status.STATUS_ERROR, 'E')
-    content = label_errors_type(content, validation_status.STATUS_WARNING, 'W')
+    if content is None:
+        content = ''
+    else:
+        content = label_errors_type(content, validation_status.STATUS_BLOCKING_ERROR, 'B')
+        content = label_errors_type(content, validation_status.STATUS_FATAL_ERROR, 'F')
+        content = label_errors_type(content, validation_status.STATUS_ERROR, 'E')
+        content = label_errors_type(content, validation_status.STATUS_WARNING, 'W')
     return content
 
 

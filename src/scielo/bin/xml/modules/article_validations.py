@@ -621,10 +621,13 @@ class ArticleContentValidation(object):
                 r.append(('related-article/@related-article-type', validation_status.STATUS_FATAL_ERROR,
                     invalid_value_message(related_article.get('related-article-type', _('None')), 'related-article/@related-article-type')))
             if related_article.get('ext-link-type', '') == 'doi':
-                errors = validate_doi_format(related_article.get('href', ''))
-                if len(errors) > 0:
-                    msg = invalid_value_message(related_article.get('href'), 'related-article/@xlink:href')
-                    r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
+                _doi =related_article.get('href', '')
+                if _doi != '':
+                    doi_data = DOI_Data(_doi)
+                    errors = doi_data.validate_doi_format()
+                    if len(errors) > 0:
+                        msg = invalid_value_message(related_article.get('href'), 'related-article/@xlink:href')
+                        r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
         return r
 
     @property

@@ -379,6 +379,7 @@ def color_text(value):
 
 
 def format_list(label, list_type, list_items, style=''):
+    li_items = ''
     if isinstance(list_items, dict):
         list_items = format_html_data_dict(list_items, list_type)
     elif isinstance(list_items, list):

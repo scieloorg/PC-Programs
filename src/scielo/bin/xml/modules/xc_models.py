@@ -697,14 +697,6 @@ class IssueArticlesRecords(object):
         return (i_record, items)
 
 
-class ConversionResults(object):
-    def __init__(self):
-        self.converted = False
-        self.excluded_aop = None
-        self.validations = pkg_validations.ValidationResults()
-        self.aop_status = None
-
-
 class ArticlesDBManager(object):
 
     def __init__(self, db_isis, issue_files):
@@ -827,62 +819,91 @@ class ArticlesDBManager(object):
         return saved and not previous
 
     def convert_article(self, article, i_record):
-        result = ConversionResults()
         xc_messages = []
-        result.converted = True
-        result.excluded_aop = None
+        article_converted = True
+        excluded_aop = None
         if self.aop_db_manager is not None:
-            valid_aop, result.aop_status, messages = self.aop_db_manager.get_statusated_aop(article)
+            valid_aop, aop_status, messages = self.aop_db_manager.get_validated_aop(article)
             xc_messages.append(messages)
             if valid_aop is not None:
                 article.registered_aop_pid = valid_aop.pid
-        if result.converted is True:
+        if article_converted is True:
             article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
             article_records = self.article_records(i_record, article, article_files)
             id_created = self.create_article_id_file(article_records, article_files)
             if id_created is True:
                 if valid_aop is not None:
-                    result.excluded_aop, messages = self.aop_db_manager.manage_ex_aop(valid_aop)
-                    if result.excluded_aop is True:
+                    excluded_aop, messages = self.aop_db_manager.manage_ex_aop(valid_aop)
+                    if excluded_aop is True:
                         xc_messages.append(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order))
                     else:
                         xc_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}').format(item='ex aop: ' + valid_aop.order))
                         if messages is not None:
                             for m in messages:
                                 xc_messages.append(m)
-                    result.converted = id_created and result.excluded_aop
+                    article_converted = id_created and excluded_aop
             else:
                 xc_messages.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(article.order))
-                result.converted = False
+                article_converted = False
 
-        result.validations.message = ''.join([html_reports.p_message(item) for item in xc_messages])
-        return result
+        return article_converted, excluded_aop, ''.join([html_reports.p_message(item) for item in xc_messages]), aop_status
 
-    def convert_articles(self, articles, i_record, create_windows_base):
-        articles_result = {}
+    def sort_articles_by_status(self):
+        self.db_conversion_status = {}
+        self.db_conversion_status['converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is True]
+        self.db_conversion_status['not converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is False]
 
-        converted = False
+        self.db_aop_status = self.articles_aop_status.copy()
+        self.db_aop_status['excluded ex-aop'] = [name for name, result in self.articles_aop_exclusion_status.items() if result is True]
+        self.db_aop_status['not excluded ex-aop'] = [name for name, result in self.articles_aop_exclusion_status.items() if result is False]
+        self.db_aop_status['still aop'] = self.aop_db_manager.still_aop_items()
+
+    def convert_articles(self, acron_issue_label, articles, i_record, create_windows_base):
+        self.articles_conversion_status = {}
+        self.articles_aop_status = {}
+        self.articles_aop_exclusion_status = {}
+        self.articles_conversion_validations = {}
+        self.db_conversion_status = {}
+        self.db_aop_status = {}
+
+        scilista_items = []
+
         error = False
 
         for xml_name, article in articles:
-            articles_result[xml_name] = self.convert_article(article, i_record)
-            if articles_result[xml_name] is False:
+            article_converted, excluded_aop, messages, aop_status = self.convert_article(article, i_record)
+            self.articles_conversion_status[xml_name] = article_converted
+            self.articles_aop_exclusion_status[xml_name] = excluded_aop
+            self.articles_aop_status[xml_name] = aop_status
+            self.articles_conversion_validations[xml_name] = pkg_validations.ValidationResults()
+            self.articles_conversion_validations[xml_name].message = messages
+            if article_converted is False:
                 error = True
+
+        self.sort_articles_by_status()
 
         if not error:
             q_registered = self.finish_conversion(i_record)
             converted = q_registered == len(articles)
-            if result:
+            if converted:
                 if create_windows_base:
                     self.generate_windows_version()
-        return (converted, articles_result)
 
-    def exclude_incorrect_orders(self, changed_orders):
+                if self.aop_db_manager is not None:
+                    scilista_items.extend(self.aop_db_manager.changed_issues)
+                scilista_items.append(acron_issue_label)
+
+        return scilista_items
+
+    def exclude_order_id_filenames(self, changed_orders, excluded_orders):
         messages = []
-        x = [item[0] for item in changed_orders.values()]
+        x = [item[0] for item in changed_orders.values()] + excluded_orders
         not_excluded_items = self.issue_files.delete_id_files(x)
         if len(not_excluded_items) > 0:
-            messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(changed_orders)))
+            if len(excluded_orders) > 0:
+                messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(excluded_orders)))
+            if len(changed_orders) > 0:
+                messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(changed_orders)))
             messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}').format(item=', '.join(not_excluded_items))))
         return ''.join(messages)
 
@@ -1264,17 +1285,17 @@ class JournalsList(object):
         for issn in [p_issn, e_issn]:
             if issn is not None:
                 for j in self._journals.get(issn, []):
-                    journal.acron = update_list(journal.acron, j.acron)
-                    journal.p_issn = update_value(journal.p_issn, j.p_issn)
-                    journal.e_issn = update_value(journal.e_issn, j.e_issn)
-                    journal.abbrev_title = update_list(journal.abbrev_title, j.abbrev_title)
-                    journal.nlm_title = update_list(journal.nlm_title, j.nlm_title)
-                    journal.publisher_name = update_list(journal.publisher_name, j.publisher_name)
-                    journal.license = update_list(journal.license, j.license)
+                    update_list(journal.acron, j.acron)
+                    update_list(journal.p_issn, j.p_issn)
+                    update_list(journal.e_issn, j.e_issn)
+                    update_list(journal.abbrev_title, j.abbrev_title)
+                    update_list(journal.nlm_title, j.nlm_title)
+                    update_list(journal.publisher_name, j.publisher_name)
+                    update_list(journal.license, j.license)
 
-                    journal.collection_acron = update_list(journal.collection_acron, j.collection_acron)
-                    journal.journal_title = update_list(journal.journal_title, j.journal_title)
-                    journal.issn_id = update_list(journal.issn_id, j.issn_id)
+                    update_list(journal.collection_acron, j.collection_acron)
+                    update_list(journal.journal_title, j.journal_title)
+                    update_list(journal.issn_id, j.issn_id)
 
         return journal
         #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
@@ -1289,18 +1310,13 @@ class JournalsList(object):
         return journal
 
 
-def update_list(item, value):
-    if item is None:
-        item = []
-    if value is not None and len(value) > 0:
-        item.append(value)
-    return list(set(item))
-
-
-def update_value(item, value):
-    if item is None and value is not None and len(value) > 0:
-        item = value
-    return value
+def update_list(l, value):
+    if l is None:
+        l = []
+    if value is not None:
+        if len(value) > 0:
+            l.append(value)
+    l = list(set(l))
 
 
 class JournalsManager(object):

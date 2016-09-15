@@ -78,30 +78,32 @@ class ArticlesConversion(object):
         self.create_windows_base = create_windows_base
         self.final_report_path = None
         self.final_result_path = None
-        self.xc_conclusion_msg = ''
-        self.xc_results = {}
-        self.aop_results_report = ''
-        self.conversion_results = {}
+        self.xc_pre_validator = self.articles_set_validations.xc_pre_validator
+        self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
+        self.aop_status = {}
+        self.articles_conversion_validations = pkg_validations.PackageValidationsResult()
+        self.error_messages = []
 
     def convert(self):
         scilista_items = []
         self.acron_issue_label = 'not registered'
 
-        self.conversion_results = {name: results for name in self.articles_set_validations.pkg.articles.keys()}
-        if self.articles_set_validations.blocking_errors == 0 and self.total_to_convert > 0:
-            scilista_items.append(self.articles_set_validations.articles_data.acron_issue_label)
-            self.error_messages = self.db.exclude_incorrect_orders(self.articles_set_validations.changed_orders)
+        self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
+        self.aop_status = {}
 
-            converted, self.conversion_results = self.db.convert_articles(self.articles_set_validations.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
+        if self.articles_set_validations.blocking_errors == 0 and len(self.xc_pre_validator.total_to_convert) > 0:
+            self.error_messages = self.db.exclude_order_id_filenames(self.xc_pre_validator.orders_changed, self.xc_pre_validator.excluded_orders)
 
-            self.sort_articles_by_status()
-            if converted:
+            scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.xc_pre_validator.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
+
+            self.conversion_status.update(self.db.conversion_status)
+            self.aop_status.update(self.db.aop_status)
+            self.articles_conversion_validations.update(self.db.articles_conversion_validations)
+
+            if len(scilista_items) > 0:
                 self.db.issue_files.copy_files_to_local_web_app()
-                if self.db.aop_db_manager is not None:
-                    scilista_items.extend(self.db.aop_db_manager.changed_issues)
-                scilista_items.append(self.articles_set_validations.articles_data.acron_issue_label)
                 self.db.issue_files.save_source_files(self.articles_set_validations.articles_data.pkg_path)
-                self.articles_set_validations.updated_articles = self.db.registered_articles
+                self.updated_articles = self.db.registered_articles
                 self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
 
                 self.final_report_path = self.articles_set_validations.articles_data.issue_files.base_reports_path
@@ -109,51 +111,24 @@ class ArticlesConversion(object):
         return scilista_items
 
     @property
-    def total_to_convert(self):
-        return len(self.articles_set_validations.xc_articles)
-
-    @property
     def total_converted(self):
         return len(self.conversion_status.get('converted', []))
 
     @property
     def total_not_converted(self):
-        return self.total_to_convert - self.total_converted
+        return len(self.conversion_status.get('not converted', []))
 
     @property
     def xc_status(self):
         if self.articles_set_validations.blocking_errors > 0:
             result = 'rejected'
-        elif self.total_to_convert == 0:
+        elif self.xc_pre_validator.total_to_convert == 0:
             result = 'ignored'
         elif self.articles_set_validations.fatal_errors > 0:
             result = 'accepted'
         else:
             result = 'approved'
         return result
-
-    def sort_articles_by_status(self):
-        self.conversion_status = {}
-        self.conversion_status['converted'] = [xml_name for xml_name, result in self.conversion_results.items() if result.converted is True]
-        self.conversion_status['not converted'] = [xml_name for xml_name, result in self.conversion_results.items() if result.converted is False]
-        self.conversion_status['rejected'] = self.articles_set_validations.blocked_update
-
-        names = self.conversion_status['converted'].values() + self.conversion_status['not converted'].values() + self.conversion_status['rejected'].values()
-        self.conversion_status['skipped'] = [xml_name for xml_name, article in self.articles_set_validations.pkg_articles.items() if not xml_name in names]
-
-        self.aop_status = {}
-        self.aop_status['excluded ex-aop'] = [name for name, result in self.conversion_results.items() if result.excluded_aop is True]
-        self.aop_status['not excluded ex-aop'] = [name for name, result in self.conversion_results.items() if result.excluded_aop is False]
-        #self.aop_status['new doc'] = [name for name, result in self.conversion_results.items() if result.excluded_aop is None]
-
-        status = {}
-        for name, result in self.conversion_results.items():
-            if not result.aop_status in status.keys():
-                status[result.aop_status] = []
-            status[result.aop_status].append(name)
-        self.aop_status.update(status)
-
-        self.aop_status['still aop'] = self.db.aop_db_manager.still_aop_items()
 
     @property
     def conversion_status_report(self):
@@ -177,9 +152,9 @@ class ArticlesConversion(object):
         if self.xc_status == 'rejected':
             update = False
             status = validation_status.STATUS_BLOCKING_ERROR
-            if self.total_to_convert > 0:
-                if self.not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted).').format(value=str(self.not_converted) + '/' + str(self.total_to_convert))
+            if self.xc_pre_validator.total_to_convert > 0:
+                if self.total_not_converted > 0:
+                    reason = _('because it is not complete ({value} were not converted).').format(value=str(self.total_not_converted) + '/' + str(self.xc_pre_validator.total_to_convert))
                 else:
                     reason = _('unknown')
             else:
@@ -200,57 +175,8 @@ class ArticlesConversion(object):
         if update:
             action = ''
         text = _('{status}: {issueid} will{action} {result} {reason}.').format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
-        text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.total_to_convert), False) + html_reports.p_message(text, False)
+        text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.xc_pre_validator.total_to_convert), False) + html_reports.p_message(text, False)
         return text
-
-    # FIXME
-    @property
-    def article_db_status_report(self, new_name):
-        labels = [
-            _('type'),
-            _('creation date'),
-            _('last update'),
-            _('order'),
-            _('pages'),
-            _('aop PID'),
-            _('doi'),
-            _('authors'),
-            _('title'),
-        ]
-        rows = []
-        articles = [self.registered_articles.get('new_name'), self.pkg.pkg_articles.get('new_name'), self.updated_articles.get('new_name')]
-        types = [_('registered, before converting'), _('package'), _('registered, after converting')]
-        for tp, a in zip(types, articles):
-            if a is not None:
-                values = []
-                values.append(tp)
-                values.append(a.creation_date_display)
-                values.append(a.last_update_display)
-                values.append(a.order)
-                values.append(a.pages)
-                values.append(a.previous_article_pid)
-                values.append(a.doi)
-                values.append('; '.join(article.authors_list(a.article_contrib_items)))
-                values.append(article.title)
-                rows.append(label_values(labels, values))
-        return html_reports.sheet(labels, rows, table_style='reports-sheet', html_cell_content=['title'])
-
-    @property
-    def db_status_report(self):
-        # FIXME
-        labels = ['file', _('article'), _('processing history')]
-        items = []
-        for new_name, article in self.articles:
-            report_id = 'dbstatus-'
-            block_parent_id = report_id + new_name
-            block_items = [html_reports.HideAndShowBlockItem(block_parent_id, _('processing history'), 'db-hist-' + new_name, 'datarep', self.article_db_status_report(new_name), '')]
-            hide_and_show_block_items = html_reports.HideAndShowBlock(block_parent_id, block_items)
-            values = []
-            values.append(new_name)
-            values.append(self.articles_validations[new_name].article_display_report.table_of_contents)
-            items.append((values, hide_and_show_block_items))
-        report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')])
-        return report.content
 
 
 def package_paths_preparation(src_path):
@@ -307,14 +233,14 @@ def convert_package(src_path):
 
     reports.processing_result_location = conversion.final_result_path
     report_location = conversion.final_report_path + '/xml_converter.html'
-    reports.save_report(report_location, 'xml_converter.html', _('XML Conversion (XML to Database)'))
+    reports.save_report(conversion.final_report_path, 'xml_converter.html', _('XML Conversion (XML to Database)'))
 
     if not converter_env.is_windows:
         format_reports_for_web(conversion.final_report_path, scielo_pkg_path, conversion.acron_issue_label.replace(' ', '/'))
     if tmp_result_path != final_result_path:
         fs_utils.delete_file_or_folder(tmp_result_path)
     os.unlink(log_package)
-    return (scilista_items, conversion.xc_status, reports.validations.statistics_message(), report_location)
+    return (scilista_items, conversion.xc_status, reports.validations.statistics_display(), report_location)
 
 
 def format_reports_for_web(report_path, pkg_path, issue_path):
@@ -567,6 +493,8 @@ def execute_converter(package_paths, collection_name=None):
                     raise
 
             try:
+                if len(scilista_items) == 0:
+                    scilista_items.append('not registered')
                 acron, issue_id = scilista_items[0].split(' ')
 
                 if xc_status in ['accepted', 'approved']:
