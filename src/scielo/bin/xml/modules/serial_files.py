@@ -34,6 +34,7 @@ class DocumentFiles(object):
         self.related_files = []
         self.is_sgmxml = xml_filename.endswith('.sgm.xml')
         self.xml_filename = xml_filename
+        self.new_xml_filename = self.xml_filename
         self.xml_path = os.path.dirname(xml_filename)
 
         basename = os.path.basename(xml_filename).replace('.sgm.xml', '')

@@ -16,6 +16,7 @@ from . import validation_status
 from . import xpchecker
 from . import xc_models
 from . import utils
+from . import serial_files
 
 
 class PackageValidationsResult(dict):
@@ -151,7 +152,7 @@ class XMLJournalDataValidator(object):
             license_url = None
             if len(article.article_licenses) > 0:
                 license_url = article.article_licenses.values()[0].get('href')
-            print([article.journal_id_nlm_ta, self.journal_data.nlm_title])
+
             items.append([_('NLM title'), article.journal_id_nlm_ta, self.journal_data.nlm_title, validation_status.STATUS_FATAL_ERROR])
             items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal_data.acron, validation_status.STATUS_FATAL_ERROR])
             items.append([_('e-ISSN'), article.e_issn, self.journal_data.e_issn, validation_status.STATUS_FATAL_ERROR])
@@ -524,35 +525,46 @@ class PreConversionValidator(object):
         self.rejected_names_change = []
         self.rejected_orders_change = {}
 
-        self.history = {name: [_('registered'), '/'.join([article.creation_date_display, article.last_update_display]), 'order={order}'.format(order=article.order)] for name, article in self.registered_articles.items()}
+        self.history_items = {name: [('registered data', article)] for name, article in self.registered_articles.items()}
+        self.history_messages = {}
 
         for name, article in self.pkg_articles.items():
-            if not name in self.history.keys():
-                self.history[name] = [_('new article'), 'order={order}'.format(order=article.order)]
-            actions, exclude_name, conflict_msg = self.articles_actions[name]
+            if not name in self.history_items.keys():
+                self.history_items[name] = []
 
-            self.history[name].append(_('package'))
-            self.history[name].append('order={order}'.format(order=article.order))
+            if not name in self.history_messages.keys():
+                self.history_messages[name] = []
+
+            reg_art = articles.get(name)
+            registered_order = _('none') if reg_art is None else reg_art.order
+            self.history_items[name].append(('package data', article))
+            actions, exclude_name, conflict_msg = self.articles_actions[name]
             if conflict_msg is not None:
-                self.history[name].append(conflict_msg)
+                self.history_messages[name].append(conflict_msg)
             elif self.has_order_conflict(name):
-                self.history[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('There is order={order} in other files: {files}. ').format(order=article.order, files=', '.join(self.duplicated_orders[article.order])))
+                self.history_messages[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('There is order={order} in other files: {files}. ').format(order=article.order, files=', '.join(self.duplicated_orders[article.order])))
                 if exclude_name is not None:
                     self.rejected_names_change.append((exclude_name, name))
-                    self.history[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('Unable to rename: {old} => {new}. ').format(old=exclude_name, new=name))
-                if article.order != articles[name].order:
-                    self.rejected_orders_change[name].append((articles[name].order, article.order))
-                    self.history[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('Unable to change order: {old} => {new}. ').format(old=articles[name].order, new=article.order))
+                    self.history_messages[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('Unable to rename: {old} => {new}. ').format(old=exclude_name, new=name))
+                if article.order != registered_order:
+                    if not name in self.rejected_orders_change.keys():
+                        self.rejected_orders_change[name] = []
+                    self.rejected_orders_change[name].append((registered_order, article.order))
+                    self.history_messages[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('Unable to change order: {old} => {new}. ').format(old=registered_order, new=article.order))
             else:
+                self.history_messages[name].append(_('actions to execute: {actions}').format(actions='; '.join(actions)))
+
                 done = self._apply_actions(name, article, article.marked_to_delete, actions, articles, exclude_name)
-                for item in done:
-                    self.history[name].append(_(item))
+                self.history_messages[name].append(_('actions executed: {actions}').format(actions='; '.join(done)))
+
                 if exclude_name is not None:
                     self.names_changed.append((exclude_name, name))
-                    self.history[name].append(validation_status.STATUS_INFO + ' ' + _('Renamed: {old} => {new}. ').format(old=exclude_name, new=name))
-                if article.order != articles[name].order:
-                    self.orders_changed[name].append((articles[name].order, article.order))
-                    self.history[name].append(validation_status.STATUS_INFO + ' ' + _('Order changed: {old} => {new}. ').format(old=articles[name].order, new=article.order))
+                    self.history_messages[name].append(validation_status.STATUS_INFO + ' ' + _('Renamed: {old} => {new}. ').format(old=exclude_name, new=name))
+                if article.order != registered_order:
+                    if not name in self.rejected_orders_change.keys():
+                        self.rejected_orders_change[name] = []
+                    self.orders_changed[name].append((registered_order, article.order))
+                    self.history_messages[name].append(validation_status.STATUS_INFO + ' ' + _('Order changed: {old} => {new}. ').format(old=registered_order, new=article.order))
         self.names_changed.sort()
         #self.orders_changed.sort()
         self.rejected_names_change.sort()
@@ -665,9 +677,11 @@ class PreConversionValidator(object):
     def compare_versions(self, registered, pkg_article):
         labels = [_('titles'), _('authors'), _('body')]
         validations = []
-        validations.append((registered.textual_titles, article.textual_titles))
-        validations.append((registered.textual_contrib_surnames, article.textual_contrib_surnames))
-        validations.append((registered.body_words[0:200], article.body_words[0:200]))
+        validations.append((registered.textual_titles, pkg_article.textual_titles))
+        validations.append((registered.textual_contrib_surnames, pkg_article.textual_contrib_surnames))
+
+        if registered.body_words is not None:
+            validations.append((registered.body_words[0:200], pkg_article.body_words[0:200]))
         exact_comparison_result = [(label, items) for label, items in zip(labels, validations) if not items[0] == items[1]]
         relaxed_comparison_result = [(label, items) for label, items in zip(labels, validations) if not utils.is_similar(items[0], items[1])]
 
@@ -685,7 +699,6 @@ class PreConversionValidator(object):
         message = self._differences_message(status, exact_comparison_result)
         return (valid_titles_and_authors, status, message)
 
-    @property
     def _differences_message(self, status, comparison_result):
         msg = []
         if len(comparison_result) > 0:
@@ -733,12 +746,13 @@ class PreConversionValidator(object):
         deleted = []
         not_deleted = []
         for name, order in self.actions['exclude']:
-            if article.marked_to_delete:
-                if name in self.registered_articles.keys():
-                    if name in self.updated_articles.keys():
-                        not_deleted.append((name, order))
-                    else:
-                        deleted.append((name, order))
+            if name in self.pkg_articles.keys():
+                if self.pkg_articles[name].marked_to_delete:
+                    if name in self.registered_articles.keys():
+                        if name in self.updated_articles.keys():
+                            not_deleted.append((name, order))
+                        else:
+                            deleted.append((name, order))
         r = ''
         if len(deleted) > 0:
             r += html_reports.tag('h3', _('Excluded items'))
@@ -786,18 +800,55 @@ class PreConversionValidator(object):
         r += html_reports.tag('p', '; '.join(a))
         return r
 
+    def update_history(self, updated_articles):
+        for name, article in updated_articles.items():
+            if not name in self.history_items.keys():
+                self.history_items[name] = []
+            self.history_items[name].append(('updated data', article))
+
     @property
     def history_report(self):
         #resulting_orders
         labels = [_('filename'), _('article'), _('history')]
+        widths = {_('filename'): '10', _('article'): '40', _('history'): '50'}
+
+        l = sorted([(hist[-1][1].order, xml_name, hist[0][0]) for xml_name, hist in self.history_items.items()])
+        l = [(xml_name, status) for order, xml_name, status in l]
+
+        status_items = {}
+        for xml_name, status in l:
+            if not status in status_items.keys():
+                status_items[status] = []
+            status_items[status].append(xml_name)
+
         items = []
-        for name in sorted(self.history.keys()):
-            values = []
-            values.append(name)
-            values.append(self.article_report(self.pkg_articles.get(name, self.registered_articles.get(name))))
-            values.append(''.join([html_reports.p_message(msg) for msg in self.history[name]]))
-            items.append(label_values(labels, values))
-        return html_reports.tag('h2', _('Registered and Package Articles')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('history')])
+        print(status_items.keys())
+        for status in ['registered data', 'package data', 'updated data']:
+            if status in status_items.keys():
+                for xml_name in status_items[status]:
+                    hist = self.history_items[xml_name]
+                    values = []
+                    values.append(xml_name)
+                    values.append(self.article_report(hist[-1][1]))
+                    values.append(self.history_item_report(hist, self.history_messages.get(xml_name)))
+                    items.append(label_values(labels, values))
+        return html_reports.tag('h2', _('Registered and Package Articles')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('history')], widths=widths)
+
+    def history_item_report(self, items, messages):
+        r = []
+        for status, article in items:
+            text = []
+            text.append(html_reports.tag('h4', _(status)))
+            text.append(html_reports.tag('h4', 'order: {order}'.format(order=article.order)))
+            if status == 'package data':
+                if messages is not None:
+                    for msg in messages:
+                        text.append(html_reports.tag('p', msg, 'hist-package-messages'))
+            else:
+                text.append(html_reports.tag('p', _('creation date: {date}').format(date=article.creation_date_display)))
+                text.append(html_reports.tag('p', _('last update date: {date}').format(date=article.last_update_display)))
+            r.append(html_reports.tag('div', ''.join(text), 'hist-' + status))
+        return ''.join(r)
 
 
 class ArticlesSetValidations(object):
@@ -845,10 +896,10 @@ class ArticlesSetValidations(object):
             values = {}
             for xml_name, article in self.merged_articles.items():
                 value = article.summary[label]
-
-                if not value in values:
-                    values[value] = []
-                values[value].append(xml_name)
+                if value is not None:
+                    if not value in values:
+                        values[value] = []
+                    values[value].append(xml_name)
 
             data[label] = values
         return data
@@ -860,9 +911,10 @@ class ArticlesSetValidations(object):
     @property
     def missing_required_values(self):
         required_items = {}
-        for label, values in self.articles_common_data.items():
-            if None in values.keys():
-                required_items[label] = values[None]
+        for label in self.REQUIRED_DATA:
+            if label in self.articles_common_data.keys():
+                if None in self.articles_common_data[label].keys():
+                    required_items[label] = values[None]
         return required_items
 
     @property
@@ -1018,26 +1070,36 @@ class ArticlesSetValidations(object):
 
         self.logger.register('articles validations')
         self.articles_validations = {}
+
+        report_path = os.path.dirname(self.pkg.pkg_path) + '/errors'
+        wrk_path = os.path.dirname(self.pkg.pkg_path) + '/work'
+
         for name, article in self.merged_articles.items():
+            article_work_area = articles_work_area.get(name)
+            if article_work_area is None:
+                article_work_area = serial_files.DocumentFiles(self.pkg.pkg_path + '/' + name + '.xml', report_path, wrk_path)
+
             utils.display_message(_('Validate {name}').format(name=name))
             self.logger.register(' '.join(['validate', name]))
-            self.articles_validations[name] = ArticleValidations(articles_work_area[name], self.pkg.is_xml_generation, self.is_db_generation)
+            self.articles_validations[name] = ArticleValidations(article_work_area, self.pkg.is_xml_generation, self.is_db_generation)
 
-            utils.display_message(_(' - validate journal data'))
-            self.logger.register(' '.join([name, 'journal']))
-            self.articles_validations[name].validations_file['journal'].message = xml_journal_data_validator.validate(article)
+            if name in self.pkg.pkg_articles.keys():
+                utils.display_message(_(' - validate journal data'))
+                self.logger.register(' '.join([name, 'journal']))
+                self.articles_validations[name].validations_file['journal'].message = xml_journal_data_validator.validate(article)
 
-            utils.display_message(_(' - validate issue data'))
-            self.logger.register(' '.join([name, 'issue']))
-            self.articles_validations[name].validations_file['issue'].message = xml_issue_data_validator.validate(article)
+                utils.display_message(_(' - validate issue data'))
+                self.logger.register(' '.join([name, 'issue']))
+                self.articles_validations[name].validations_file['issue'].message = xml_issue_data_validator.validate(article)
 
-            utils.display_message(_(' - validate XML structure'))
-            self.logger.register(' '.join([name, 'xmlstructure']))
-            self.articles_validations[name].validations_file['xmlstructure'].message = xml_structure_validator.validate(articles_work_area[name])
+                utils.display_message(_(' - validate XML structure'))
+                self.logger.register(' '.join([name, 'xmlstructure']))
+                self.articles_validations[name].validations_file['xmlstructure'].message = xml_structure_validator.validate(article_work_area)
 
-            utils.display_message(_(' - validate XML contents'))
-            self.logger.register(' '.join([name, 'xmlcontent']))
-            self.articles_validations[name].validations_file['xmlcontent'].message, self.articles_validations[name].article_display_report = xml_content_validator.validate(article, self.pkg.pkg_path, articles_work_area[name], self.pkg.is_xml_generation)
+                utils.display_message(_(' - validate XML contents'))
+                self.logger.register(' '.join([name, 'xmlcontent']))
+                self.articles_validations[name].validations_file['xmlcontent'].message, self.articles_validations[name].article_display_report = xml_content_validator.validate(article, self.pkg.pkg_path, article_work_area, self.pkg.is_xml_generation)
+
             self.logger.register(' '.join([name, 'fim']))
 
             self.pkg_journal_validations[name] = self.articles_validations[name].validations_file['journal']
@@ -1363,7 +1425,10 @@ class ArticlesSetValidations(object):
 
     @property
     def fatal_errors(self):
-        return sum([article_validations.fatal_errors for article_validations in self.articles_validations.validations_file.values()])
+        fatal_errors = 0
+        for article_validations in self.articles_validations.values():
+            fatal_errors += sum([v.fatal_errors for v in article_validations.validations_file.values()])
+        return fatal_errors
 
 
 class ReportsMaker(object):
@@ -1411,8 +1476,9 @@ class ReportsMaker(object):
         if self.conversion is not None:
             if self.articles_set_validations.articles_data.issue_error_msg is not None:
                 components['issue-report'] += self.articles_set_validations.articles_data.issue_error_msg
-            components['xc-validations'] = self.conversion.xc_pre_validator.errors_report + self.conversion.articles_conversion_validations.report(True)
-            components['db-report'] = self.articles_set_validations.xc_pre_validator.history_report
+            components['xc-validations'] = self.conversion.xc_pre_validator.errors_report + self.conversion.articles_conversion_validations.report(False)
+
+            components['db-report'] = self.conversion.xc_pre_validator.history_report
             components['summary-report'] = self.conversion.conclusion_message + self.conversion.conversion_status_report + self.conversion.aop_status_report
 
         self.validations.message = html_reports.join_texts(components.values())
@@ -1474,33 +1540,26 @@ def label_values(labels, values):
 
 def evaluate_journal_data(items):
     unmatched = []
-    for label, value, expected_values, err_msg in items:
-        if expected_values is None or expected_values == '':
-            expected_values = _('no value')
-        if not isinstance(expected_values, list):
-            expected_values = [expected_values]
-        expected_values_msg = _(' or ').join(expected_values)
-        value = _('no value') if value is None else value.strip()
+    for label, value, expected_values, default_status in items:
         if len(expected_values) == 0:
-            expected_values_msg = _('no value')
-            status = validation_status.STATUS_WARNING if value != expected_values_msg else validation_status.STATUS_OK
-        else:
-            status = validation_status.STATUS_OK
-            if not value in expected_values:
-                if label == _('license'):
-                    status = err_msg
-                    for expected_value in expected_values:
-                        if '/' + expected_value.lower() + '/' in str(value) + '/':
-                            status = validation_status.STATUS_OK
-                            break
-                else:
-                    status = err_msg
+            expected_values.extend([None, ''])
+        status = validation_status.STATUS_OK
+        if not value in expected_values:
+            status = default_status
+            for expected_value in expected_values:
+                if '/' + expected_value.lower() + '/' in value.lower() + '/':
+                    status = validation_status.STATUS_OK
+                    break
+
         if status != validation_status.STATUS_OK:
-            unmatched.append({_('data'): label, 'status': status, _('in XML'): value, _('registered journal data') + '*': expected_values_msg, _('why it is not a valid message?'): ''})
+            if None in expected_values:
+                expected_values = [item for item in expected_values if item is not None]
+                expected_values.append(_('none'))
+            unmatched.append({_('data'): label, 'status': status, 'XML': value, _('registered journal data') + '*': _(' or ').join(expected_values), _('why it is not a valid message?'): ''})
 
     validations_result = ''
     if len(unmatched) > 0:
-        validations_result = html_reports.sheet([_('data'), 'status', _('in XML'), _('registered journal data') + '*', _('why it is not a valid message?')], unmatched, table_style='dbstatus')
+        validations_result = html_reports.sheet([_('data'), 'status', 'XML', _('registered journal data') + '*', _('why it is not a valid message?')], unmatched, table_style='dbstatus')
     return validations_result
 
 

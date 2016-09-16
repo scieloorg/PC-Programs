@@ -111,7 +111,7 @@ class HideAndShowBlock(object):
 
 def report_date():
     procdate = datetime.now().isoformat()
-    return tag('p', procdate[0:10] + ' ' + procdate[11:19], 'report-date')
+    return tag('p', tag('span', procdate[0:10] + ' ' + procdate[11:19], 'report-date'))
 
 
 def get_unicode(text):
@@ -167,6 +167,7 @@ def collapsible_block(section_id, section_title, content, status='ok'):
 
 
 def link(href, label, window=None):
+    href = href.replace('\\', '/')
     if window is not None:
         width, height = window
         r = '<a href="{href}" onclick="w = window.open(\'{href}\', \'newwindow\', \'resizeable=yes, width={width}, height={height}\'); w.focus(); return false;">{label}</a>'.format(href=href, label=label, width=width, height=height)

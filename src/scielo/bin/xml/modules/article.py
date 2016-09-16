@@ -289,8 +289,8 @@ class ArticleXML(object):
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
             self.article_meta = self.tree.find('./front/article-meta')
-            self.body = self.tree.find('./body')
-            self.back = self.tree.find('./back')
+            self.body = self.tree.find('.//body')
+            self.back = self.tree.find('.//back')
             self.translations = self.tree.findall('./sub-article[@article-type="translation"]')
             for s in self.tree.findall('./sub-article'):
                 if s.attrib.get('article-type') != 'translation':

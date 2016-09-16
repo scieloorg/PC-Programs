@@ -416,7 +416,12 @@ h5 {
 .report-date {
   text-align: left;
   font-size: 9pt;
-  font-family: Verdana
+  font-family: Verdana;
+  font-weight: bold;
+  color: #4677A6;
+  background-color: #F8C751;
+  border-radius: 1em;
+  padding: 5px;
 }
 .endreport {
   text-align: center;
@@ -467,7 +472,7 @@ h5 {
 }
 .not-selected-tab {
   /* background-color: #CAC7BE; */
-  background-color: #99B2B7;
+  background-color: #A7B3C6;
   color: white;
   padding: 10px;
   border: 1px solid white;
@@ -476,7 +481,7 @@ h5 {
 
 }
 .selected-tab {
-  background-color: #004C75;
+  background-color: #4677A6;
   color: #C8E7EA;
   padding: 10px;
   font-weight: bold;
@@ -487,7 +492,7 @@ h5 {
 }
 .not-selected-tab-content {
   display: none;
-  border: 5px solid #004C75;
+  border: 5px solid #C7DEEB;
   margin: 5px;
   padding: 5px;
 
@@ -560,7 +565,7 @@ h5 {
 } 
 .reports-sheet th {
   border: 0.5px solid gray;
-    background-color: #CCADBC;
+    background-color: #BBACAF;
     color: white;
     font-family: Verdana;
 }
@@ -653,7 +658,7 @@ h5 {
 }
 
 .smaller {
-  font-size: 65%
+  font-size: 75%
 }
 
 .note {
@@ -696,4 +701,21 @@ h5 {
 .blockingerror {
   background-color: #784071;
   color: white;
+}
+
+.hist-registered {
+  background-color: #5DC0CD;
+  color: #451E0F;
+}
+.hist-package {
+  background-color: #F2CACA;  
+  color: #451E0F;
+}
+.hist-package-messages {
+  background-color: #F2CACA;
+  color: #451E0F;
+}
+.hist-updated {
+  background-color: #DEDB00;
+  color: #451E0F;
 }

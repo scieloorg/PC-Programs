@@ -36,7 +36,7 @@ categories_messages = {
     'not excluded incorrect order': _('not excluded incorrect order'), 
     'not excluded ex-aop': _('not excluded ex-aop'), 
     'new aop': _('aop version'), 
-    'new doc': _('doc has no aop'), 
+    'regular doc': _('doc has no aop'), 
     'ex aop': _('aop is published in an issue'), 
     'matched aop': _('doc has aop version'), 
     'partially matched aop': _('doc has aop version partially matched (title/author are similar)'), 
@@ -91,19 +91,22 @@ class ArticlesConversion(object):
         self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
         self.aop_status = {}
 
-        if self.articles_set_validations.blocking_errors == 0 and len(self.xc_pre_validator.total_to_convert) > 0:
+        if self.articles_set_validations.blocking_errors == 0 and self.xc_pre_validator.total_to_convert > 0:
             self.error_messages = self.db.exclude_order_id_filenames(self.xc_pre_validator.orders_changed, self.xc_pre_validator.excluded_orders)
 
             scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.xc_pre_validator.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
 
-            self.conversion_status.update(self.db.conversion_status)
-            self.aop_status.update(self.db.aop_status)
-            self.articles_conversion_validations.update(self.db.articles_conversion_validations)
+            self.conversion_status.update(self.db.db_conversion_status)
+            self.aop_status.update(self.db.db_aop_status)
+
+            for name, message in self.db.articles_conversion_messages.items():
+                self.articles_conversion_validations[name] = pkg_validations.ValidationsResult()
+                self.articles_conversion_validations[name].message = message
 
             if len(scilista_items) > 0:
                 self.db.issue_files.copy_files_to_local_web_app()
-                self.db.issue_files.save_source_files(self.articles_set_validations.articles_data.pkg_path)
-                self.updated_articles = self.db.registered_articles
+                self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
+                self.xc_pre_validator.update_history(self.db.registered_articles)
                 self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
 
                 self.final_report_path = self.articles_set_validations.articles_data.issue_files.base_reports_path

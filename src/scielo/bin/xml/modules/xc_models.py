@@ -106,26 +106,25 @@ class RegisteredArticle(object):
 
     @property
     def creation_date_display(self):
-        return utils.display_datetime(self.creation_date, '')
+        return '' if self.creation_date is None else utils.display_datetime(self.creation_date, '')
 
     @property
     def last_update_display(self):
-        return utils.display_datetime(self.last_update_date, self.last_update_time)
+        return '' if self.last_update_date is None else utils.display_datetime(self.last_update_date, self.last_update_time)
 
     @property
     def creation_date(self):
-        return self.dates[0] if len(self.dates) > 0 else utils.now()[0]
+        if len(self.dates) > 0:
+            return self.dates[0]
 
     @property
     def last_update_date(self):
-        return self.dates[-1] if len(self.dates) > 0 else utils.now()[0]
+        if len(self.dates) > 0:
+            return self.dates[-1]
 
     @property
     def last_update_time(self):
-        t = self.article_records[0].get('92')
-        if t is None:
-            d, t = utils.now()
-        return t
+        return self.article_records[0].get('92', '')
 
     @property
     def order(self):
@@ -562,95 +561,74 @@ class IssueModels(object):
         results = []
         section_code = None
         if article.tree is not None:
-            validations = []
-            validations.append((_('journal title'), article.journal_title, self.issue.journal_title))
-            #validations.append((_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.issue.journal_id_publisher_id))
-            validations.append((_('journal-id (nlm-ta)'), article.journal_id_nlm_ta, self.issue.journal_id_nlm_ta))
-
-            if article.e_issn is not None:
-                validations.append((_('journal e-ISSN'), article.e_issn, self.issue.e_issn))
-
-            if article.print_issn is not None:
-                validations.append((_('journal print ISSN'), article.print_issn, self.issue.print_issn))
-
-            validations.append((_('issue label'), article.issue_label, self.issue.issue_label))
             a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
             i_year = self.issue.dateiso[0:4] if self.issue.dateiso is not None else ''
-            if self.issue.dateiso is not None:
-                _status = validation_status.STATUS_BLOCKING_ERROR
-                if self.issue.dateiso.endswith('0000'):
-                    _status = validation_status.STATUS_WARNING
-            validations.append((_('issue pub-date'), a_year, i_year))
+
+            validations = []
+            validations.append((_('journal title'), article.journal_title, self.issue.journal_title, validation_status.STATUS_BLOCKING_ERROR))
+            validations.append((_('issue label'), article.issue_label, self.issue.issue_label, validation_status.STATUS_BLOCKING_ERROR))
+
+            labels = [_('journal-id (nlm-ta)'), _('journal e-ISSN'), _('journal print ISSN'), _('issue year')]
+            article_items = [article.journal_id_nlm_ta, article.e_issn, article.print_issn, a_year]
+            issue_items = [self.issue.journal_id_nlm_ta, self.issue.e_issn, self.issue.print_issn, i_year]
+
+            for label, article_data, issue_data in zip(labels, article_items, issue_items):
+                if article_data is not None:
+                    validations.append((label, article_data, issue_data, validation_status.STATUS_BLOCKING_ERROR))
 
             # check issue data
-            for label, article_data, issue_data in validations:
-                if article_data is None:
-                    article_data = 'None'
-                elif isinstance(article_data, list):
-                    article_data = ' | '.join(article_data)
-                if issue_data is None:
-                    issue_data = 'None'
-                elif isinstance(issue_data, list):
-                    issue_data = ' | '.join(issue_data)
+            for label, article_data, issue_data, status in validations:
+                error = False
                 if not article_data == issue_data:
-                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
-                    if issue_data == 'None':
-                        status = validation_status.STATUS_ERROR
-                    else:
-                        if label == _('issue pub-date'):
-                            status = _status
-                        else:
-                            status = validation_status.STATUS_BLOCKING_ERROR
+                    error = True
+                    if issue_data is None:
+                        status = validation_status.STATUS_WARNING
+                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
                     results.append((label, status, _msg))
 
             validations = []
-            validations.append(('publisher', article.publisher_name, self.issue.publisher_name))
-            for label, article_data, issue_data in validations:
-                if article_data is None:
-                    article_data = 'None'
-                elif isinstance(article_data, list):
-                    article_data = ' | '.join(article_data)
-                if issue_data is None:
-                    issue_data = 'None'
-                elif isinstance(issue_data, list):
-                    issue_data = ' | '.join(issue_data)
+            validations.append(('publisher', article.publisher_name, self.issue.publisher_name, validation_status.STATUS_ERROR))
+            for label, article_data, issue_data, status in validations:
                 if utils.how_similar(article_data, issue_data) < 0.8:
-                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
-                    results.append((label, validation_status.STATUS_ERROR, _msg))
+                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
+                    results.append((label, status, _msg))
 
             # license
             article_license_code_and_versions = ' | '.join(article.article_license_code_and_versions)
             if self.issue.license is None:
-                results.append(('license', validation_status.STATUS_ERROR, _('Unable to identify {item}').format(item=_('issue license'))))
+                results.append(('license', validation_status.STATUS_WARNING, _('Unable to identify {item}').format(item=_('issue license'))))
             elif article_license_code_and_versions is not None:
-                _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match').format(label=label, value1=article_license_code_and_versions, label1=_('article'), value2=self.issue.license, label2=_('issue'))
                 if not self.issue.license.lower() in article_license_code_and_versions:
+                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_license_code_and_versions, label1=_('article'), value2=self.issue.license, label2=_('issue'))
                     results.append(('license', validation_status.STATUS_ERROR, _msg))
-                else:
-                    results.append(('license', validation_status.STATUS_INFO, _msg))
 
             # section
             fixed_sectitle = None
-            article_section = article.toc_section
-            if article.toc_section is None:
-                results.append((_('table of contents section'), validation_status.STATUS_BLOCKING_ERROR, _('Required')))
+            if len(self.section_titles) == 0:
+                if article.toc_section is not None:
+                    results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('Issue has no table of contents sections. ')))
             else:
-                _results = []
-                for article_section in article.toc_sections:
-                    section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article_section)
-                    if matched_rate != 1:
-                        if not article.is_ahead:
-                            if section_code is None:
-                                _results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('{value} is not registered as {label}. ').format(value=article_section, label=_(_('table of contents section')))))
+                if article.toc_section is None:
+                    results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('Article has no subject. ') + _('Expected values: {expected}. ').format(expected=_(' or ').join(self.section_titles))))
+                else:
+                    found = False
+                    for article_section in article.toc_sections:
+                        if article_section in self.section_titles:
+                            found = True
+                            break
+                    if not found:
+                        fixed_sectitle = None
+                        for article_section in article.toc_sections:
+                            section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article_section)
+                            if matched_rate != 1:
+                                if section_code is None:
+                                    results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('{value} is a invalid value for {label}. ').format(value=article_section, label=_(_('table of contents section')))))
+                                else:
+                                    results.append((_('table of contents section'), validation_status.STATUS_WARNING, _('{incorrect} was changed to {fixed}. ').format(incorrect=article_section, fixed=fixed_sectitle)))
+                                    break
                             else:
-                                _results = [(_('table of contents section'), validation_status.STATUS_WARNING, _('{incorrect} was changed to {fixed}. ').format(incorrect=article_section, fixed=fixed_sectitle))]
                                 break
-                    else:
-                        break
-                if len(_results) > 0:
-                    results.append((_('table of contents section'), validation_status.STATUS_INFO, _('Registered sections') + ':\n' + u'; '.join(self.section_titles)))
-                    for _result in _results:
-                        results.append(_result)
+                        results.append((_('table of contents section'), validation_status.STATUS_INFO, _('Expected values: {expected}. ').format(expected=' | '.join(self.section_titles))))
 
             # @article-type
             _sectitle = article_section if fixed_sectitle is None else fixed_sectitle
@@ -720,6 +698,10 @@ class ArticlesDBManager(object):
 
     @property
     def registered_articles(self):
+        print('*' * 100)
+        print(utils.now()[0])
+        print('=' * 100)
+        
         _registered_articles = {}
         self.registered_records()
         for xml_name, registered_article in self.registered_articles_records.items():
@@ -811,7 +793,7 @@ class ArticlesDBManager(object):
                 try:
                     os.unlink(article_files.id_filename)
                 except:
-                    print(_('Unable to exclude {item}').format(item=article_files.id_filename))
+                    print(_('Unable to exclude {item}. ').format(item=article_files.id_filename))
             previous = os.path.isfile(article_files.id_filename)
 
             self.db_isis.save_id(article_files.id_filename, article_records.records, self.content_formatter)
@@ -822,9 +804,11 @@ class ArticlesDBManager(object):
         xc_messages = []
         article_converted = True
         excluded_aop = None
+        valid_aop = None
+        aop_status = None
         if self.aop_db_manager is not None:
             valid_aop, aop_status, messages = self.aop_db_manager.get_validated_aop(article)
-            xc_messages.append(messages)
+            xc_messages.extend(messages)
             if valid_aop is not None:
                 article.registered_aop_pid = valid_aop.pid
         if article_converted is True:
@@ -837,32 +821,34 @@ class ArticlesDBManager(object):
                     if excluded_aop is True:
                         xc_messages.append(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order))
                     else:
-                        xc_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}').format(item='ex aop: ' + valid_aop.order))
+                        xc_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item='ex aop: ' + valid_aop.order))
                         if messages is not None:
-                            for m in messages:
-                                xc_messages.append(m)
+                            xc_messages.extend(messages)
                     article_converted = id_created and excluded_aop
             else:
-                xc_messages.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(article.order))
+                xc_messages.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(order=article.order))
                 article_converted = False
-
-        return article_converted, excluded_aop, ''.join([html_reports.p_message(item) for item in xc_messages]), aop_status
+        if article_converted is True:
+            xc_messages.append(validation_status.STATUS_INFO + ': ' + _('created/updated {order}.id').format(order=article.order))
+        return (article_converted, excluded_aop, ''.join([html_reports.p_message(item) for item in xc_messages]), aop_status)
 
     def sort_articles_by_status(self):
         self.db_conversion_status = {}
         self.db_conversion_status['converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is True]
         self.db_conversion_status['not converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is False]
 
-        self.db_aop_status = self.articles_aop_status.copy()
-        self.db_aop_status['excluded ex-aop'] = [name for name, result in self.articles_aop_exclusion_status.items() if result is True]
-        self.db_aop_status['not excluded ex-aop'] = [name for name, result in self.articles_aop_exclusion_status.items() if result is False]
+        self.db_aop_status = self.articles_aop_exclusion_status.copy()
+        for name, aop_status in self.articles_aop_status.items():
+            if not aop_status in self.db_aop_status.keys():
+                self.db_aop_status[aop_status] = []
+            self.db_aop_status[aop_status].append(name)
         self.db_aop_status['still aop'] = self.aop_db_manager.still_aop_items()
 
     def convert_articles(self, acron_issue_label, articles, i_record, create_windows_base):
         self.articles_conversion_status = {}
         self.articles_aop_status = {}
         self.articles_aop_exclusion_status = {}
-        self.articles_conversion_validations = {}
+        self.articles_conversion_messages = {}
         self.db_conversion_status = {}
         self.db_aop_status = {}
 
@@ -870,13 +856,12 @@ class ArticlesDBManager(object):
 
         error = False
 
-        for xml_name, article in articles:
+        for xml_name, article in articles.items():
             article_converted, excluded_aop, messages, aop_status = self.convert_article(article, i_record)
             self.articles_conversion_status[xml_name] = article_converted
             self.articles_aop_exclusion_status[xml_name] = excluded_aop
             self.articles_aop_status[xml_name] = aop_status
-            self.articles_conversion_validations[xml_name] = pkg_validations.ValidationResults()
-            self.articles_conversion_validations[xml_name].message = messages
+            self.articles_conversion_messages[xml_name] = messages
             if article_converted is False:
                 error = True
 
@@ -897,14 +882,14 @@ class ArticlesDBManager(object):
 
     def exclude_order_id_filenames(self, changed_orders, excluded_orders):
         messages = []
-        x = [item[0] for item in changed_orders.values()] + excluded_orders
+        x = [item[0] for item in changed_orders.values()] + excluded_orders.values()
         not_excluded_items = self.issue_files.delete_id_files(x)
         if len(not_excluded_items) > 0:
             if len(excluded_orders) > 0:
                 messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(excluded_orders)))
             if len(changed_orders) > 0:
                 messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(changed_orders)))
-            messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}').format(item=', '.join(not_excluded_items))))
+            messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item=', '.join(not_excluded_items))))
         return ''.join(messages)
 
     def finish_conversion(self, i_record):
@@ -987,7 +972,7 @@ class AopDBManager(object):
 
     def get_validated_aop(self, article):
         found_aop = None
-        status = 'new doc'
+        status = 'regular doc'
         messages = []
         if self.journal_has_aop():
             found_aop = self.find_aop(article.doi, article.xml_name)
@@ -996,7 +981,7 @@ class AopDBManager(object):
                 messages = self.check_aop_message(article, found_aop, status)
                 if not status in ['matched aop', 'partially matched aop']:
                     found_aop = None
-        status = (status in ['matched aop', 'partially matched aop', 'new doc'])
+        #status = (status in ['matched aop', 'partially matched aop', 'regular doc'])
         return (found_aop, status, messages)
 
     def compare_article_and_aop(self, article, aop):
@@ -1040,7 +1025,7 @@ class AopDBManager(object):
         if article.doi is not None:
             msg_list.append(_('Checking if {label} has an "aop version"').format(label=article.doi))
 
-        if status == 'new doc':
+        if status == 'regular doc':
             msg_list.append(validation_status.STATUS_WARNING + ': ' + _('Not found an "aop version" of this document.'))
         else:
             msg_list.append(validation_status.STATUS_INFO + ': ' + _('Found: "aop version"'))
@@ -1285,17 +1270,18 @@ class JournalsList(object):
         for issn in [p_issn, e_issn]:
             if issn is not None:
                 for j in self._journals.get(issn, []):
-                    update_list(journal.acron, j.acron)
-                    update_list(journal.p_issn, j.p_issn)
-                    update_list(journal.e_issn, j.e_issn)
-                    update_list(journal.abbrev_title, j.abbrev_title)
-                    update_list(journal.nlm_title, j.nlm_title)
-                    update_list(journal.publisher_name, j.publisher_name)
-                    update_list(journal.license, j.license)
+                    journal.acron = update_list(journal.acron, j.acron)
+                    journal.p_issn = update_list(journal.p_issn, j.p_issn)
+                    journal.e_issn = update_list(journal.e_issn, j.e_issn)
+                    journal.abbrev_title = update_list(journal.abbrev_title, j.abbrev_title)
+                    journal.nlm_title = update_list(journal.nlm_title, j.nlm_title)
+                    
+                    journal.publisher_name = update_list(journal.publisher_name, j.publisher_name)
+                    journal.license = update_list(journal.license, j.license)
 
-                    update_list(journal.collection_acron, j.collection_acron)
-                    update_list(journal.journal_title, j.journal_title)
-                    update_list(journal.issn_id, j.issn_id)
+                    journal.collection_acron = update_list(journal.collection_acron, j.collection_acron)
+                    journal.journal_title = update_list(journal.journal_title, j.journal_title)
+                    journal.issn_id = update_list(journal.issn_id, j.issn_id)
 
         return journal
         #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
@@ -1316,7 +1302,7 @@ def update_list(l, value):
     if value is not None:
         if len(value) > 0:
             l.append(value)
-    l = list(set(l))
+    return list(set(l))
 
 
 class JournalsManager(object):
