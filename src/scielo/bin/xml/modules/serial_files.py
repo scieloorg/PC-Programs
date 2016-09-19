@@ -26,7 +26,7 @@ def new_name_for_pdf_filename(pdf_filename):
 
 class DocumentFiles(object):
 
-    def __init__(self, xml_filename, report_path, wrk_path):
+    def __init__(self, xml_filename, report_path, wrk_path=None):
         self.ctrl_filename = None
         self.html_filename = None
         self.report_path = report_path
@@ -41,8 +41,6 @@ class DocumentFiles(object):
         self.xml_name = basename.replace('.xml', '')
         self.new_name = self.xml_name
 
-        report_name = self.xml_name
-
         if self.is_sgmxml:
             self.wrk_path = wrk_path + '/' + self.xml_name
             if not os.path.isdir(self.wrk_path):
@@ -52,21 +50,63 @@ class DocumentFiles(object):
                 self.html_filename += 'l'
             self.ctrl_filename = self.wrk_path + '/' + self.xml_name + '.ctrl.txt'
 
-        if not os.path.isdir(report_path):
-            os.makedirs(report_path)
-        self.dtd_report_filename = report_path + '/' + report_name + '.dtd.txt'
-        self.style_report_filename = report_path + '/' + report_name + '.rep.html'
-        self.pmc_dtd_report_filename = report_path + '/' + report_name + '.pmc.dtd.txt'
-        self.pmc_style_report_filename = report_path + '/' + report_name + '.pmc.rep.html'
-        self.err_filename = report_path + '/' + report_name + '.err.txt'
-        self.err_filename_html = report_path + '/' + report_name + '.err.html'
-        self.data_report_filename = report_path + '/' + report_name + '.contents.html'
-        self.images_report_filename = report_path + '/' + report_name + '.images.html'
+    @property
+    def report_path(self):
+        return self._report_path
 
-        self.xml_structure_validations_filename = report_path + '/xmlstr-' + report_name
-        self.xml_content_validations_filename = report_path + '/xmlcon-' + report_name
-        self.journal_validations_filename = report_path + '/journal-' + report_name
-        self.issue_validations_filename = report_path + '/issue-' + report_name
+    @report_path.setter
+    def report_path(self, _report_path):
+        if not os.path.isdir(_report_path):
+            os.makedirs(_report_path)
+        self._report_path = _report_path
+
+    @property
+    def dtd_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.dtd.txt'
+
+    @property
+    def style_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.rep.html'
+
+    @property
+    def pmc_dtd_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.pmc.dtd.txt'
+
+    @property
+    def pmc_style_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.pmc.rep.html'
+
+    @property
+    def err_filename(self):
+        return self.report_path + '/' + self.xml_name + '.err.txt'
+
+    @property
+    def err_filename_html(self):
+        return self.report_path + '/' + self.xml_name + '.err.html'
+
+    @property
+    def data_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.contents.html'
+
+    @property
+    def images_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.images.html'
+
+    @property
+    def xml_structure_validations_filename(self):
+        return self.report_path + '/xmlstr-' + self.xml_name
+
+    @property
+    def xml_content_validations_filename(self):
+        return self.report_path + '/xmlcon-' + self.xml_name
+
+    @property
+    def journal_validations_filename(self):
+        return self.report_path + '/journal-' + self.xml_name
+
+    @property
+    def issue_validations_filename(self):
+        return self.report_path + '/issue-' + self.xml_name
 
     def clean(self):
         delete_files([self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename])

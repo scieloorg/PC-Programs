@@ -294,50 +294,14 @@ class XMLContentValidator(object):
 class ArticleValidations(object):
 
     def __init__(self, work_area, is_xml_generation, is_db_generation):
-        self.work_area = work_area
         self.is_xml_generation = is_xml_generation
         self.is_db_generation = is_db_generation
+        self.work_area = work_area
         self.validations_file = {}
         self.validations_file['journal'] = ValidationsFile(self.work_area.journal_validations_filename)
         self.validations_file['issue'] = ValidationsFile(self.work_area.issue_validations_filename)
-        self.validations_file['xmlstructure'] = ValidationsFile(self.work_area.err_filename_html)
-        self.validations_file['xmlcontent'] = ValidationsFile(self.work_area.data_report_filename)
-
-    @property
-    def journal_validation(self):
-        return self.validations_file['journal'].message
-
-    @property
-    def issue_validation(self):
-        return self.validations_file['issue'].message
-
-    @property
-    def xmlcontent_validation(self):
-        return self.validations_file['xmlcontent'].message
-
-    @property
-    def xmlstructure_validation(self):
-        return self.validations_file['xmlstructure'].message
-
-    @journal_validation.setter
-    def journal_validation(self, validation_result):
-        self.validations_file['journal'].message = validation_result
-
-    @issue_validation.setter
-    def issue_validation(self, validation_result):
-        self.validations_file['issue'].message = validation_result
-
-    @xmlstructure_validation.setter
-    def xmlstructure_validation(self, validation_result):
-        self.validations_file['xmlstructure'].message = validation_result
-
-    @xmlcontent_validation.setter
-    def xmlcontent_validation(self, validation_result):
-        self.validations_file['xmlcontent'].message = validation_result
-        if self.is_xml_generation:
-            stats = self.validations_file['xmlcontent'].statistics_display(False)
-            title = [_('Data Quality Control'), self.work_area.new_name]
-            self.validations_file['xmlcontent'].message = html_reports.report_title(title) + stats + self.validations_file['xmlcontent'].message
+        self.validations_file['xmlstructure'] = ValidationsFile(self.work_area.xml_structure_validations_filename)
+        self.validations_file['xmlcontent'] = ValidationsFile(self.work_area.xml_content_validations_filename)
 
     @property
     def fatal_errors(self):
@@ -415,7 +379,7 @@ class ArticlesData(object):
 
 class PreConversionValidator(object):
 
-    def __init__(self, registered_articles, pkg_articles):
+    def __init__(self, registered_articles, pkg_articles, blocking_errors):
         self.registered_articles = registered_articles
         self.pkg_articles = pkg_articles
         self.conflicting_items = {}
@@ -423,6 +387,7 @@ class PreConversionValidator(object):
         self.orders_changed = {}
         self.rejected_names_change = []
         self.rejected_orders_change = {}
+        self.blocking_errors = blocking_errors
         self.actions = {}
         for action in ['add', 'update', 'conditional update', 'reject', 'exclude', 'replace']:
             self.actions[action] = []
@@ -455,7 +420,7 @@ class PreConversionValidator(object):
                 if action == 'update':
                     self.actions['exclude'].append((name, article.order))
             if exclude_name is not None:
-                self.actions['replace'].append([(name, exclude_name), (article.order, self.registered_articles[exclude_name].order)])
+                self.actions['replace'].append([(exclude_name, name), (self.registered_articles[exclude_name].order, article.order)])
             if conflicts is not None:
                 self.conflicting_items[name].append(conflicts)
         return _articles_actions
@@ -535,7 +500,7 @@ class PreConversionValidator(object):
             if not name in self.history_messages.keys():
                 self.history_messages[name] = []
 
-            reg_art = articles.get(name)
+            reg_art = self.registered_articles.get(name)
             registered_order = _('none') if reg_art is None else reg_art.order
             self.history_items[name].append(('package data', article))
             actions, exclude_name, conflict_msg = self.articles_actions[name]
@@ -546,6 +511,9 @@ class PreConversionValidator(object):
                 if exclude_name is not None:
                     self.rejected_names_change.append((exclude_name, name))
                     self.history_messages[name].append(validation_status.STATUS_BLOCKING_ERROR + ' ' + _('Unable to rename: {old} => {new}. ').format(old=exclude_name, new=name))
+                    reg_art = self.registered_articles.get(exclude_name)
+                    if reg_art is not None:
+                        registered_order = reg_art.order
                 if article.order != registered_order:
                     if not name in self.rejected_orders_change.keys():
                         self.rejected_orders_change[name] = []
@@ -559,12 +527,13 @@ class PreConversionValidator(object):
 
                 if exclude_name is not None:
                     self.names_changed.append((exclude_name, name))
-                    self.history_messages[name].append(validation_status.STATUS_INFO + ' ' + _('Renamed: {old} => {new}. ').format(old=exclude_name, new=name))
+                    self.history_messages[name].append(validation_status.STATUS_INFO + ' ' + _('Name change: {old} => {new}. ').format(old=exclude_name, new=name))
                 if article.order != registered_order:
-                    if not name in self.rejected_orders_change.keys():
-                        self.rejected_orders_change[name] = []
+                    if not name in self.orders_changed.keys():
+                        self.orders_changed[name] = []
+
                     self.orders_changed[name].append((registered_order, article.order))
-                    self.history_messages[name].append(validation_status.STATUS_INFO + ' ' + _('Order changed: {old} => {new}. ').format(old=registered_order, new=article.order))
+                    self.history_messages[name].append(validation_status.STATUS_INFO + ' ' + _('Order change: {old} => {new}. ').format(old=registered_order, new=article.order))
         self.names_changed.sort()
         #self.orders_changed.sort()
         self.rejected_names_change.sort()
@@ -711,25 +680,31 @@ class PreConversionValidator(object):
 
     @property
     def names_change_report(self):
-        r = ''
+        r = []
         if len(self.names_changed) > 0:
-            r += html_reports.tag('h3', _('Names changed'))
-            r += ''.join([html_reports.tag('p', '{old} => {new}'.format(old=old, new=new)) for old, new in self.names_changed])
-        if len(self.rejected_names_change) > 0:
-            r += html_reports.tag('h3', _('Rejected names change'))
-            r += ''.join([html_reports.p_message('{status}: {old} => {new}'.format(old=old, new=new, status=validation_status.STATUS_BLOCKING_ERROR)) for old, new in self.rejected_names_change])
-        return r
+            r.append(html_reports.tag('h3', _('Names changes')))
+            for old, new in self.names_changed:
+                r.append(html_reports.tag('p', '{old} => {new}'.format(old=old, new=new), 'info'))
+        if len(self.rejected_orders_change) > 0:
+            r.append(html_reports.tag('h3', _('Rejected names changes')))
+            for old, new in self.rejected_orders_change:
+                r.append(html_reports.p_message('{status}: {old} => {new}'.format(old=old, new=new, status=validation_status.STATUS_BLOCKING_ERROR)))
+        return ''.join(r)
 
     @property
     def orders_change_report(self):
-        r = ''
+        r = []
         if len(self.orders_changed) > 0:
-            r += html_reports.tag('h3', _('Orders changed'))
-            r += ''.join([html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=item[0], new=item[1])) for name, item in self.orders_changed.items()])
+            r.append(html_reports.tag('h3', _('Orders changes')))
+            for name, changes in self.orders_changed.items():
+                for change in changes:
+                    r.append(html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=change[0], new=change[1]), 'info'))
         if len(self.rejected_orders_change) > 0:
-            r += html_reports.tag('h3', _('Rejected orders change'))
-            r += ''.join([html_reports.p_message('{status}: {name}: {old} => {new}'.format(name=name, old=item[0], new=item[1], status=validation_status.STATUS_BLOCKING_ERROR)) for name, item in self.rejected_orders_change.items()])
-        return r
+            r.append(html_reports.tag('h3', _('Rejected orders changes')))
+            for name, changes in self.rejected_orders_change.items():
+                for change in changes:
+                    r.append(html_reports.tag('p', '{status}: {name}: {old} => {new}'.format(name=name, old=change[0], new=change[1], status=validation_status.STATUS_BLOCKING_ERROR)))
+        return ''.join(r)
 
     @property
     def conflicting_report(self):
@@ -753,28 +728,28 @@ class PreConversionValidator(object):
                             not_deleted.append((name, order))
                         else:
                             deleted.append((name, order))
-        r = ''
+        r = []
         if len(deleted) > 0:
             r += html_reports.tag('h3', _('Excluded items'))
             r += ''.join([html_reports.tag('p', '{name} / {order}'.format(name=name, order=order)) for name, order in deleted])
         if len(not_deleted) > 0:
             r += html_reports.tag('h3', _('Items not excluded'))
             r += ''.join([html_reports.p_message('{status}: {name} / {order}'.format(name=name, order=order, status=validation_status.STATUS_BLOCKING_ERROR)) for name, order in not_deleted])
-        return r
+        return ''.join(r)
 
     @property
     def replacements_report(self):
-        r = ''
+        r = []
         if len(self.actions['replace']) > 0:
-            r += html_reports.tag('h2', _('Replaced items'))
-            i = 0
+            r += html_reports.tag('h3', _('Items to replace'))
+            style = ''
+            r += '<ol>'
             for replacements in self.actions['replace']:
-                i += 1
-                r += html_reports.tag('h3', '{i}'.format(i=i))
                 for replacement in replacements:
                     old, new = replacement
-                    r += html_reports.tag('p', '{old} => {new}'.format(old=old, new=new))
-        return r
+                    r += html_reports.tag('li', html_reports.tag('p', '{old} => {new}'.format(old=old, new=new), 'info'))
+            r += '</ol>'
+        return ''.join(r)
 
     @property
     def errors_report(self):
@@ -784,20 +759,8 @@ class PreConversionValidator(object):
         r += self.names_change_report
         r += self.replacements_report
         r += self.exclusions_report
-        #r += self.history_report
-        return r
-
-    def article_report(self, _article):
-        r = ''
-        r += html_reports.tag('p', _article.toc_section, 'toc-section')
-        r += html_reports.tag('p', _article.article_type, 'article-type')
-        r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
-        r += html_reports.tag('p', _article.doi, 'doi')
-        r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
-        a = []
-        for item in article.authors_list(_article.article_contrib_items):
-            a.append(html_reports.tag('span', item))
-        r += html_reports.tag('p', '; '.join(a))
+        if len(r) > 0:
+            r = html_reports.tag('h2', _('Order and Names Report')) + r
         return r
 
     def update_history(self, updated_articles):
@@ -805,6 +768,18 @@ class PreConversionValidator(object):
             if not name in self.history_items.keys():
                 self.history_items[name] = []
             self.history_items[name].append(('updated data', article))
+
+    @property
+    def xc_articles_report(self):
+        #resulting_orders
+        labels = [_('registered'), _('package'), _('result')]
+        widths = {_('registered'): '33', _('package'): '33', _('result'): '33'}
+
+        values = []
+        values.append([article.order + ': ' + name for name, article in articles_sorted_by_order(self.registered_articles)])
+        values.append([article.order + ': ' + name for name, article in articles_sorted_by_order(self.pkg_articles)])
+        values.append([article.order + ': ' + name for name, article in articles_sorted_by_order(self.updated_articles)])
+        return html_reports.tag('h2', _('Registered and Package Articles and Result')) + html_reports.sheet(labels, [label_values(labels, values)], widths=widths)
 
     @property
     def history_report(self):
@@ -822,17 +797,16 @@ class PreConversionValidator(object):
             status_items[status].append(xml_name)
 
         items = []
-        print(status_items.keys())
         for status in ['registered data', 'package data', 'updated data']:
             if status in status_items.keys():
                 for xml_name in status_items[status]:
                     hist = self.history_items[xml_name]
                     values = []
                     values.append(xml_name)
-                    values.append(self.article_report(hist[-1][1]))
+                    values.append(article_report(hist[-1][1]))
                     values.append(self.history_item_report(hist, self.history_messages.get(xml_name)))
                     items.append(label_values(labels, values))
-        return html_reports.tag('h2', _('Registered and Package Articles')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('history')], widths=widths)
+        return html_reports.tag('h2', _('Articles Conversion History')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('history')], widths=widths)
 
     def history_item_report(self, items, messages):
         r = []
@@ -851,6 +825,84 @@ class PreConversionValidator(object):
         return ''.join(r)
 
 
+class MergedArticles(object):
+
+    def __init__(self, registered_articles, pkg_articles):
+        self.registered_articles = registered_articles
+        self.pkg_articles = pkg_articles
+        self.orders = {article.order: name for name, article in self.registered_articles.items()}
+
+    def merge(self):
+        self.resulting_articles = self.registered_articles.copy()
+        for name, article in self.pkg_articles.items():
+            registered, registered_titaut, registered_name, registered_order = self.check_article(name, article)
+
+    def registered_item(self, name, article):
+        found = None
+        registered = self.registered_articles.get(name)
+        if registered is not None:
+            similar, status, msg = self.compare_versions(registered, article)
+            if registered.order == article.order and similar:
+                found = registered
+        return found
+
+    def registered_order(self, order):
+        return [reg_name for reg_name, reg in self.registered_articles.items() if reg.order == order]
+
+    def registered_titles_and_authors(self, article):
+        similar_items = []
+        for name, registered in self.registered_articles.items():
+            similar, status, message = self.compare_versions(registered, article)
+            if similar:
+                similar_items.append(name)
+        return similar_items
+
+    def check_article(self, name, article):
+        registered = self.registered_item(name, article)
+        if registered is None:
+            matched_titaut_article_names = self.registered_titles_and_authors(article)
+            matched_order_article_names = self.registered_order(article.order)
+            registered_titaut = self._found_items(matched_titaut_article_names)
+            registered_order = self._found_items(matched_order_article_names)
+            registered_name = self.registered_articles.get(name)
+        return (registered, registered_titaut, registered_name, registered_order)
+
+    def compare_versions(self, registered, pkg_article):
+        labels = [_('titles'), _('authors'), _('body')]
+        validations = []
+        validations.append((registered.textual_titles, pkg_article.textual_titles))
+        validations.append((registered.textual_contrib_surnames, pkg_article.textual_contrib_surnames))
+
+        if registered.body_words is not None:
+            validations.append((registered.body_words[0:200], pkg_article.body_words[0:200]))
+        exact_comparison_result = [(label, items) for label, items in zip(labels, validations) if not items[0] == items[1]]
+        relaxed_comparison_result = [(label, items) for label, items in zip(labels, validations) if not utils.is_similar(items[0], items[1])]
+
+        valid_titles_and_authors = False
+        status = validation_status.STATUS_BLOCKING_ERROR
+        message = ''
+        if len(exact_comparison_result) == 0:
+            # no changes
+            valid_titles_and_authors = True
+            status = validation_status.STATUS_INFO
+        elif len(relaxed_comparison_result) == 0:
+            # acceptable changes
+            valid_titles_and_authors = True
+            status = validation_status.STATUS_WARNING
+        message = self._differences_message(status, exact_comparison_result)
+        return (valid_titles_and_authors, status, message)
+
+    def _differences_message(self, status, comparison_result):
+        msg = []
+        if len(comparison_result) > 0:
+            for label, differences in comparison_result:
+                msg.append(html_reports.p_message(status))
+                msg.append(html_reports.tag('h5', label))
+                msg.append(html_reports.display_label_value(_('registered'), differences[0]))
+                msg.append(html_reports.display_label_value(_('in the package'), differences[1]))
+        return ''.join(msg)
+
+
 class ArticlesSetValidations(object):
 
     def __init__(self, pkg, articles_data, logger):
@@ -864,7 +916,6 @@ class ArticlesSetValidations(object):
         self.merged_articles = self.registered_articles.copy()
         self.merged_articles.update(pkg.pkg_articles)
         self.articles_validations = {}
-        self.updated_articles = {}
 
         self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_BLOCKING_ERROR, 'doi': validation_status.STATUS_BLOCKING_ERROR, 'elocation id': validation_status.STATUS_BLOCKING_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
         if not self.is_db_generation:
@@ -906,7 +957,7 @@ class ArticlesSetValidations(object):
 
     @property
     def invalid_xml_name_items(self):
-        return sorted([xml_name for xml_name, doc in self.merged_articles.items() if doc.tree is None])
+        return sorted([xml_name for xml_name, doc in self.pkg.pkg_articles.items() if doc.tree is None])
 
     @property
     def missing_required_values(self):
@@ -1036,6 +1087,10 @@ class ArticlesSetValidations(object):
         return articles_sorted_by_order(self.merged_articles)
 
     @property
+    def pkg_articles(self):
+        return articles_sorted_by_order(self.pkg.pkg_articles)
+
+    @property
     def pkg_journal_validations_report_title(self):
         signal = ''
         msg = ''
@@ -1045,7 +1100,7 @@ class ArticlesSetValidations(object):
         return html_reports.tag('h2', _('Journal data: XML files and registered data') + signal) + msg
 
     def validate(self, doi_services, dtd_files, articles_work_area):
-        utils.display_message(_('Validate package ({n} files)').format(n=len(self.merged_articles)))
+        utils.display_message(_('Validate package ({n} files)').format(n=len(self.pkg.pkg_articles)))
         if len(self.registered_articles) > 0:
             utils.display_message(_('Previously registered: ({n} files)').format(n=len(self.registered_articles)))
 
@@ -1061,7 +1116,7 @@ class ArticlesSetValidations(object):
         self.pkg_reg_issue_validations.title = html_reports.tag('h2', _('Checking issue data: XML files and registered data'))
 
         self.logger.register('articles validations - prep')
-        self.articles_validations = {}
+
         xml_journal_data_validator = XMLJournalDataValidator(self.articles_data.journal_data)
         xml_issue_data_validator = XMLIssueDataValidator(self.is_db_generation, self.articles_data.issue_error_msg, self.articles_data.issue_models)
         xml_structure_validator = XMLStructureValidator(dtd_files)
@@ -1071,34 +1126,33 @@ class ArticlesSetValidations(object):
         self.logger.register('articles validations')
         self.articles_validations = {}
 
-        report_path = os.path.dirname(self.pkg.pkg_path) + '/errors'
-        wrk_path = os.path.dirname(self.pkg.pkg_path) + '/work'
+        #for name, article in self.registered_articles.items():
+        #    if not name in self.pkg.pkg_articles.keys():
+        #        registered_article_work_area = serial_files.DocumentFiles(self.pkg.pkg_path + '/' + name + '.xml', self.articles_data.issue_files.base_reports_path)
+        #        self.articles_validations[name] = ArticleValidations(registered_article_work_area, self.pkg.is_xml_generation, self.is_db_generation)
 
-        for name, article in self.merged_articles.items():
-            article_work_area = articles_work_area.get(name)
-            if article_work_area is None:
-                article_work_area = serial_files.DocumentFiles(self.pkg.pkg_path + '/' + name + '.xml', report_path, wrk_path)
-
+        for name, article in self.pkg.pkg_articles.items():
             utils.display_message(_('Validate {name}').format(name=name))
             self.logger.register(' '.join(['validate', name]))
+
+            article_work_area = articles_work_area[name]
             self.articles_validations[name] = ArticleValidations(article_work_area, self.pkg.is_xml_generation, self.is_db_generation)
 
-            if name in self.pkg.pkg_articles.keys():
-                utils.display_message(_(' - validate journal data'))
-                self.logger.register(' '.join([name, 'journal']))
-                self.articles_validations[name].validations_file['journal'].message = xml_journal_data_validator.validate(article)
+            utils.display_message(_(' - validate journal data'))
+            self.logger.register(' journal')
+            self.articles_validations[name].validations_file['journal'].message = xml_journal_data_validator.validate(article)
 
-                utils.display_message(_(' - validate issue data'))
-                self.logger.register(' '.join([name, 'issue']))
-                self.articles_validations[name].validations_file['issue'].message = xml_issue_data_validator.validate(article)
+            utils.display_message(_(' - validate issue data'))
+            self.logger.register(' issue')
+            self.articles_validations[name].validations_file['issue'].message = xml_issue_data_validator.validate(article)
 
-                utils.display_message(_(' - validate XML structure'))
-                self.logger.register(' '.join([name, 'xmlstructure']))
-                self.articles_validations[name].validations_file['xmlstructure'].message = xml_structure_validator.validate(article_work_area)
+            utils.display_message(_(' - validate XML structure'))
+            self.logger.register(' xmlstructure')
+            self.articles_validations[name].validations_file['xmlstructure'].message = xml_structure_validator.validate(article_work_area)
 
-                utils.display_message(_(' - validate XML contents'))
-                self.logger.register(' '.join([name, 'xmlcontent']))
-                self.articles_validations[name].validations_file['xmlcontent'].message, self.articles_validations[name].article_display_report = xml_content_validator.validate(article, self.pkg.pkg_path, article_work_area, self.pkg.is_xml_generation)
+            utils.display_message(_(' - validate XML contents'))
+            self.logger.register(' xmlcontent')
+            self.articles_validations[name].validations_file['xmlcontent'].message, self.articles_validations[name].article_display_report = xml_content_validator.validate(article, self.pkg.pkg_path, article_work_area, self.pkg.is_xml_generation)
 
             self.logger.register(' '.join([name, 'fim']))
 
@@ -1110,7 +1164,7 @@ class ArticlesSetValidations(object):
         self.consistency_validations.message = self.consistency_validations_report
 
         self.logger.register('xc pre validations')
-        self.xc_pre_validator = PreConversionValidator(self.registered_articles, self.pkg.pkg_articles)
+        self.xc_pre_validator = PreConversionValidator(self.registered_articles, self.pkg.pkg_articles, self.consistency_validations.blocking_errors + self.pkg_reg_issue_validations.blocking_errors)
         self.xc_pre_validator.updated_articles
 
         self.xc_pre_validations = ValidationsResult()
@@ -1129,7 +1183,7 @@ class ArticlesSetValidations(object):
         widths[_('reports')] = '10'
         pdf_items = []
         items = []
-        for new_name, article in self.articles:
+        for new_name, article in self.pkg_articles:
             hide_and_show_block_items = self.articles_validations[new_name].hide_and_show_block('view-reports-')
             values = []
             values.append(new_name)
@@ -1151,69 +1205,16 @@ class ArticlesSetValidations(object):
 
     @property
     def toc_extended_report(self):
-        labels = ['file', _('article'), 'pdf']
-        widths = {'file': '10', _('article'): '40', 'pdf': '50'}
+        labels = [_('filename'), 'order', _('article')]
+        widths = {_('filename'): '10', 'order': '5', _('article'): '85'}
         items = []
-        for new_name, article in self.articles:
+        for new_name, article in articles_sorted_by_order(self.xc_pre_validator.updated_articles):
             values = []
             values.append(new_name)
-            if self.articles_validations[new_name].article_display_report is None:
-                values.append('')
-                values.append('')
-            else:
-                values.append(self.articles_validations[new_name].article_display_report.table_of_contents_detailed)
-                values.append(self.articles_validations[new_name].article_display_report.embedded_pdf_items())
+            values.append(article.order)
+            values.append(article_report(article))
             items.append(label_values(labels, values))
-        return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), 'pdf'], widths=widths)
-
-    # FIXME
-    @property
-    def article_db_status_report(self, new_name):
-        labels = [
-            _('type'),
-            _('creation date'),
-            _('last update'),
-            _('order'),
-            _('pages'),
-            _('aop PID'),
-            _('doi'),
-            _('authors'),
-            _('title'),
-        ]
-        rows = []
-        articles = [self.registered_articles.get('new_name'), self.pkg.pkg_articles.get('new_name'), self.updated_articles.get('new_name')]
-        types = [_('registered, before converting'), _('package'), _('registered, after converting')]
-        for tp, a in zip(types, articles):
-            if a is not None:
-                values = []
-                values.append(tp)
-                values.append(a.creation_date_display)
-                values.append(a.last_update_display)
-                values.append(a.order)
-                values.append(a.pages)
-                values.append(a.previous_article_pid)
-                values.append(a.doi)
-                values.append('; '.join(article.authors_list(a.article_contrib_items)))
-                values.append(article.title)
-                rows.append(label_values(labels, values))
-        return html_reports.sheet(labels, rows, table_style='reports-sheet', html_cell_content=['title'])
-
-    @property
-    def db_status_report(self):
-        # FIXME
-        labels = ['file', _('article'), _('processing history')]
-        items = []
-        for new_name, article in self.articles:
-            report_id = 'dbstatus-'
-            block_parent_id = report_id + new_name
-            block_items = [html_reports.HideAndShowBlockItem(block_parent_id, _('processing history'), 'db-hist-' + new_name, 'datarep', self.article_db_status_report(new_name), '')]
-            hide_and_show_block_items = html_reports.HideAndShowBlock(block_parent_id, block_items)
-            values = []
-            values.append(new_name)
-            values.append(self.articles_validations[new_name].article_display_report.table_of_contents)
-            items.append((values, hide_and_show_block_items))
-        report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')])
-        return report.content
+        return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
 
     @property
     def articles_dates_report(self):
@@ -1311,7 +1312,7 @@ class ArticlesSetValidations(object):
             msg = []
             status = ''
             if article.pages == '':
-                msg.append(_('no pagination was found'))
+                msg.append(_('no pagination was found. '))
                 if not article.is_ahead:
                     status = validation_status.STATUS_ERROR
             if fpage is not None and lpage is not None:
@@ -1323,25 +1324,23 @@ class ArticlesSetValidations(object):
                     if int_previous_lpage is not None:
                         if int_previous_lpage > int_fpage:
                             status = validation_status.STATUS_BLOCKING_ERROR if not article.is_epub_only else validation_status.STATUS_WARNING
-                            msg.append(_('Invalid pages') + ': ' + _('check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
+                            msg.append(_('Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage == int_fpage:
                             status = validation_status.STATUS_WARNING
-                            msg.append(_('lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the same').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
+                            msg.append(_('lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the same. ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage + 1 < int_fpage:
                             status = validation_status.STATUS_WARNING
-                            msg.append(_('there is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
+                            msg.append(_('There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                     if int_fpage > int_lpage:
                         status = validation_status.STATUS_BLOCKING_ERROR
-                        msg.append(_('Invalid page range'))
+                        msg.append(_('Invalid page range: {fpage} (fpage) > {lpage} (lpage). '.format(fpage=int_fpage, lpage=int_lpage)))
                     int_previous_lpage = int_lpage
                     previous_lpage = lpage
                     previous_xmlname = xml_name
             #dates = '|'.join([item if item is not None else 'none' for item in [article.epub_ppub_dateiso, article.collection_dateiso, article.epub_dateiso]])
-            msg = '; '.join(msg)
-            if len(msg) > 0:
-                msg = '. ' + msg
-            results.append({'label': xml_name, 'status': status, 'message': article.pages + msg, _('why it is not a valid message?'): ''})
-        return html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message', _('why it is not a valid message?')], results, table_style='validation'))
+            msg = '\n'.join(msg)
+            results.append({'label': xml_name, 'status': status, 'pages': article.pages, 'message': msg, _('why it is not a valid message?'): ''})
+        return html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'pages', 'message', _('why it is not a valid message?')], results, table_style='validation', widths={'label': '10', 'status': '10', 'pages': '5', 'message': '75'}))
 
     @property
     def journal_issue_header_report(self):
@@ -1439,14 +1438,13 @@ class ReportsMaker(object):
         self.articles_set_validations = articles_set_validations
         self.conversion = conversion
         self.xpm_version = xpm_version
-        self.tabs = ['pkg-files', 'summary-report', 'issue-report', 'toc-extended', 'individual-report', 'references', 'dates-report', 'aff-report', 'xc-validations', 'db-report']
+        self.tabs = ['pkg-files', 'summary-report', 'group-validations-report', 'individual-validations-report', 'references', 'dates-report', 'aff-report', 'xc-validations', 'toc-extended']
         self.labels = {
             'pkg-files': _('Files/Folders'),
             'summary-report': _('Summary'),
-            'issue-report': 'journal/issue',
-            'individual-report': _('XML Validations'),
+            'group-validations-report': _('Package Validations'),
+            'individual-validations-report': _('Individual Validations'),
             'xc-validations': _('Conversion'),
-            'db-report': _('Database'),
             'aff-report': _('Affiliations'),
             'dates-report': _('Dates'),
             'references': _('References'),
@@ -1462,23 +1460,22 @@ class ReportsMaker(object):
             components['pkg-files'] += processing_result_location(self.processing_result_location)
 
         components['summary-report'] = ''
-        components['issue-report'] = ''
-        components['individual-report'] = self.articles_set_validations.detailed_report
+        components['group-validations-report'] = ''
+        components['individual-validations-report'] = self.articles_set_validations.detailed_report
         components['aff-report'] = self.articles_set_validations.articles_affiliations_report
         components['dates-report'] = self.articles_set_validations.articles_dates_report
         components['references'] = (self.articles_set_validations.references_overview_report +
             self.articles_set_validations.sources_overview_report)
 
         if not self.articles_set_validations.pkg.is_xml_generation:
+            components['group-validations-report'] += self.articles_set_validations.journal_and_issue_report
             components['toc-extended'] = self.articles_set_validations.toc_extended_report
-            components['issue-report'] += self.articles_set_validations.journal_and_issue_report
 
         if self.conversion is not None:
             if self.articles_set_validations.articles_data.issue_error_msg is not None:
-                components['issue-report'] += self.articles_set_validations.articles_data.issue_error_msg
-            components['xc-validations'] = self.conversion.xc_pre_validator.errors_report + self.conversion.articles_conversion_validations.report(False)
+                components['group-validations-report'] += self.articles_set_validations.articles_data.issue_error_msg
+            components['xc-validations'] = self.conversion.xc_pre_validator.errors_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.xc_pre_validator.xc_articles_report + self.conversion.xc_pre_validator.history_report
 
-            components['db-report'] = self.conversion.xc_pre_validator.history_report
             components['summary-report'] = self.conversion.conclusion_message + self.conversion.conversion_status_report + self.conversion.aop_status_report
 
         self.validations.message = html_reports.join_texts(components.values())
@@ -1659,3 +1656,17 @@ def number_after_words(content, text='Total of errors = '):
 
 def rst_title(title):
     return '\n\n' + title + '\n' + '-'*len(title) + '\n'
+
+
+def article_report(_article):
+    r = ''
+    r += html_reports.tag('p', _article.toc_section, 'toc-section')
+    r += html_reports.tag('p', _article.article_type, 'article-type')
+    r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
+    r += html_reports.tag('p', _article.doi, 'doi')
+    r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
+    a = []
+    for item in article.authors_list(_article.article_contrib_items):
+        a.append(html_reports.tag('span', item))
+    r += html_reports.tag('p', '; '.join(a))
+    return r
