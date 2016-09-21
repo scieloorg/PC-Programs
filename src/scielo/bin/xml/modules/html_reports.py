@@ -462,8 +462,11 @@ def display_labeled_value(label, value, style=''):
     return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value), style)
 
 
-def display_label_value(label, value):
-    return tag('span', label, 'label') + ': ' + format_html_data(value)
+def display_label_value(label, value, _tag=''):
+    r = tag('span', label, 'label') + ': ' + format_html_data(value)
+    if _tag != '':
+        r = tag(_tag, r)
+    return r
 
 
 def thumb_image(path, width='auto', height='auto'):

@@ -1144,7 +1144,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         articles_data.setup(articles_pkg, xc_models.JournalsManager(), db_manager=None)
 
         articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data, xpm_process_logger)
-        articles_set_validations.validate(doi_services, scielo_dtd_files, report_filenames)
+        articles_set_validations.validate(doi_services, scielo_dtd_files, articles_work_area)
 
         reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), display_report=DISPLAY_REPORT)
 

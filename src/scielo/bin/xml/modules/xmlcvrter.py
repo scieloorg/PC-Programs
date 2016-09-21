@@ -81,7 +81,7 @@ class ArticlesConversion(object):
         self.xc_pre_validator = self.articles_set_validations.xc_pre_validator
         self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
         self.aop_status = {}
-        self.articles_conversion_validations = pkg_validations.PackageValidationsResult()
+        self.articles_conversion_validations = pkg_validations.ValidationsResultItems()
         self.error_messages = []
 
     def convert(self):

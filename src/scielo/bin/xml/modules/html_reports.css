@@ -704,21 +704,27 @@ h5 {
 }
 
 .hist-registered {
-  background-color: #5DC0CD;
+  background-color: #9BF0E9;
   color: #451E0F;
 }
 .hist-package {
-  background-color: #F2CACA;  
+  background-color: #EDDE45;  
   color: #451E0F;
 }
 .hist-package-messages {
   background-color: #F2CACA;
   color: #451E0F;
 }
-.hist-updated {
-  background-color: #DEDB00;
+.hist-converted {
+  background-color: #61D2D6;
   color: #451E0F;
 }
 .hist-excluded {
-  background-color: #F0A39B;
+  background-color: #EDE5E2;
+}
+.hist-replaces {
+  background-color: #EA3556;
+}
+.hist-replaced {
+  background-color: #ED146F;
 }
