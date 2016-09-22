@@ -833,15 +833,22 @@ class ArticlesDBManager(object):
         return (article_converted, excluded_aop, ''.join([html_reports.p_message(item) for item in xc_messages]), aop_status)
 
     def sort_articles_by_status(self):
+        self.db_aop_status = {}
         self.db_conversion_status = {}
         self.db_conversion_status['converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is True]
         self.db_conversion_status['not converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is False]
 
-        self.db_aop_status = self.articles_aop_exclusion_status.copy()
-        for name, aop_status in self.articles_aop_status.items():
-            if not aop_status in self.db_aop_status.keys():
-                self.db_aop_status[aop_status] = []
-            self.db_aop_status[aop_status].append(name)
+        for name, status in self.articles_aop_exclusion_status.items():
+            if status is not None:
+                status = 'excluded ex-aop' if status is True else 'not excluded ex-aop'
+                if not status in self.db_aop_status.keys():
+                    self.db_aop_status[status] = []
+                self.db_aop_status[status].append(name)
+        for name, status in self.articles_aop_status.items():
+            if status is not None:
+                if not status in self.db_aop_status.keys():
+                    self.db_aop_status[status] = []
+                self.db_aop_status[status].append(name)
         self.db_aop_status['still aop'] = self.aop_db_manager.still_aop_items()
 
     def convert_articles(self, acron_issue_label, articles, i_record, create_windows_base):
@@ -849,8 +856,6 @@ class ArticlesDBManager(object):
         self.articles_aop_status = {}
         self.articles_aop_exclusion_status = {}
         self.articles_conversion_messages = {}
-        self.db_conversion_status = {}
-        self.db_aop_status = {}
 
         scilista_items = []
 

@@ -1620,7 +1620,8 @@ class ReferenceContentValidation(object):
                         if len(a) > 0:
                             _authors.append(a)
                     elif isinstance(item, article.CorpAuthor):
-                        _authors.append(item.collab)
+                        if item.collab is not None:
+                            _authors.append(item.collab)
                 if len(_authors) > 0:
                     authors = ', '.join(_authors)
             items = [

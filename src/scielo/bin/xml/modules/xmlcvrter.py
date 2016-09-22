@@ -78,7 +78,7 @@ class ArticlesConversion(object):
         self.create_windows_base = create_windows_base
         self.final_report_path = None
         self.final_result_path = None
-        self.xc_pre_validator = self.articles_set_validations.xc_pre_validator
+        self.articles_merger = self.articles_set_validations.articles_merger
         self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
         self.aop_status = {}
         self.articles_conversion_validations = pkg_validations.ValidationsResultItems()
@@ -91,10 +91,13 @@ class ArticlesConversion(object):
         self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
         self.aop_status = {}
 
-        if self.articles_set_validations.blocking_errors == 0 and self.xc_pre_validator.total_to_convert > 0:
-            self.error_messages = self.db.exclude_order_id_filenames(self.xc_pre_validator.orders_changed, self.xc_pre_validator.excluded_orders)
+        self.registered_articles = self.db.registered_articles
+        if self.articles_set_validations.blocking_errors == 0 and self.articles_merger.total_to_convert > 0:
+            self.conversion_status = {}
+            #FIXME
+            self.error_messages = self.db.exclude_order_id_filenames(self.articles_merger.order_changes, self.articles_merger.excluded_orders)
 
-            scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.xc_pre_validator.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
+            scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
 
             self.conversion_status.update(self.db.db_conversion_status)
             self.aop_status.update(self.db.db_aop_status)
@@ -106,7 +109,7 @@ class ArticlesConversion(object):
             if len(scilista_items) > 0:
                 self.db.issue_files.copy_files_to_local_web_app()
                 self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
-                self.xc_pre_validator.update_history(self.db.registered_articles)
+                self.registered_articles = self.db.registered_articles
                 self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
 
                 self.final_report_path = self.articles_set_validations.articles_data.issue_files.base_reports_path
@@ -125,7 +128,7 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.articles_set_validations.blocking_errors > 0:
             result = 'rejected'
-        elif self.xc_pre_validator.total_to_convert == 0:
+        elif self.articles_merger.total_to_convert == 0:
             result = 'ignored'
         elif self.articles_set_validations.fatal_errors > 0:
             result = 'accepted'
@@ -155,9 +158,9 @@ class ArticlesConversion(object):
         if self.xc_status == 'rejected':
             update = False
             status = validation_status.STATUS_BLOCKING_ERROR
-            if self.xc_pre_validator.total_to_convert > 0:
+            if self.articles_merger.total_to_convert > 0:
                 if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted).').format(value=str(self.total_not_converted) + '/' + str(self.xc_pre_validator.total_to_convert))
+                    reason = _('because it is not complete ({value} were not converted).').format(value=str(self.total_not_converted) + '/' + str(self.articles_merger.total_to_convert))
                 else:
                     reason = _('unknown')
             else:
@@ -178,7 +181,7 @@ class ArticlesConversion(object):
         if update:
             action = ''
         text = _('{status}: {issueid} will{action} {result} {reason}.').format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
-        text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.xc_pre_validator.total_to_convert), False) + html_reports.p_message(text, False)
+        text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.articles_merger.total_to_convert), False) + html_reports.p_message(text, False)
         return text
 
 

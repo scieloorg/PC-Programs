@@ -293,45 +293,35 @@ class XMLContentValidator(object):
 
 class ArticleValidations(object):
 
-    def __init__(self, article, work_area, is_db_generation):
-        self.is_xml_generation = is_xml_generation
-        self.is_db_generation = is_db_generation
+    def __init__(self, article, work_area, issue_data_validations):
+        self.issue_data_validations = issue_data_validations
         self.work_area = work_area
-        self.validations_file = {}
-        self.validations_file['journal'] = ValidationsFile(self.work_area.journal_validations_filename)
-        self.validations_file['issue'] = ValidationsFile(self.work_area.issue_validations_filename)
-        self.validations_file['xmlstructure'] = ValidationsFile(self.work_area.xml_structure_validations_filename)
-        self.validations_file['xmlcontent'] = ValidationsFile(self.work_area.xml_content_validations_filename)
+        self.article = article
+        self.validations = {}
+        self.validations['xmlstructure'] = ValidationsResult()
+        self.validations['xmlcontent'] = ValidationsResult()
 
-    def validate(self, pkg, xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator):
-
-        utils.display_message(_(' - validate journal data'))
-        self.logger.register(' journal')
-        self.validations_file['journal'].message = xml_journal_data_validator.validate(article)
-
-        utils.display_message(_(' - validate issue data'))
-        self.logger.register(' issue')
-        self.validations_file['issue'].message = xml_issue_data_validator.validate(article)
+    def validate(self, pkg, xml_structure_validator, xml_content_validator):
 
         utils.display_message(_(' - validate XML structure'))
         self.logger.register(' xmlstructure')
-        self.validations_file['xmlstructure'].message = xml_structure_validator.validate(self.work_area)
+        self.validations['xmlstructure'].message = xml_structure_validator.validate(self.work_area)
 
         utils.display_message(_(' - validate XML contents'))
         self.logger.register(' xmlcontent')
-        self.validations_file['xmlcontent'].message, self.article_display_report = xml_content_validator.validate(article, pkg.pkg_path, self.work_area, pkg.is_xml_generation)
+        self.validations['xmlcontent'].message, self.article_display_report = xml_content_validator.validate(self.article, pkg.pkg_path, self.work_area, pkg.is_xml_generation)
 
     @property
     def fatal_errors(self):
-        return sum([item.fatal_errors for item in self.validations_file.values()])
+        return sum([item.fatal_errors for item in self.validations.values()])
 
     def hide_and_show_block(self, report_id, new_name):
         blocks = []
         block_parent_id = report_id + new_name
-        blocks.append((_('Structure Validations'), 'xmlrep', self.validations_file['xmlstructure']))
-        blocks.append((_('Contents Validations'),  'datarep', self.validations_file['xmlcontent']))
-        if self.is_db_generation:
-            blocks.append((_('Converter Validations'), 'xcrep', self.validations_file['issue']))
+        blocks.append((_('Structure Validations'), 'xmlrep', self.validations['xmlstructure']))
+        blocks.append((_('Contents Validations'),  'datarep', self.validations['xmlcontent']))
+        if self.issue_data_validations:
+            blocks.append((_('Converter Validations'), 'xcrep', self.issue_data_validations))
         _blocks = []
         for label, style, validations_file in blocks:
             if validations_file.total() > 0:
@@ -465,45 +455,44 @@ class RegisteredArticles(dict):
             elif id(registered_titaut) == id(registered_name):
                 # titaut + name != order
                 # rejeitar
-                conflicts = [registered_order, registered_titaut]
+                conflicts = {_('registered article found by the order'): registered_order, _('registered article found by title/authors/name'): registered_titaut}
             elif id(registered_titaut) == id(registered_order):
                 # titaut + order != name
                 # rejeitar
-                conflicts = [registered_order, registered_name]
+                conflicts = {'registered article found by title/authors/order': registered_order, _('registered article found by name'): registered_name}
             elif id(registered_name) == id(registered_order):
                 # order + name != titaut
                 # rejeitar
-                conflicts = [registered_order, registered_titaut]
+                conflicts = {'registered article found by name/order': registered_order, _('registered article found by title/authors'): registered_titaut}
             else:
                 # order != name != titaut
                 # rejeitar
-                conflicts = [registered_name, registered_order, registered_titaut]
-
+                conflicts = {_('name'): registered_name, _('registered article found by the order'): registered_order, _('title/authors'): registered_titaut}
         elif all([registered_titaut, registered_order]):
             if id(registered_titaut) == id(registered_order):
                 actions = 'name change'
                 exclude_name = registered_titaut.xml_name
             else:
-                conflicts = [registered_order, registered_titaut]
+                conflicts = {_('registered article found by the order'): registered_order, _('title/authors'): registered_titaut}
         elif all([registered_titaut, registered_name]):
             if id(registered_titaut) == id(registered_name):
                 actions = 'order change'
             else:
-                conflicts = [registered_titaut, registered_name]
+                conflicts = {_('registered article found by title/authors'): registered_titaut, _('registered article found by name'): registered_name}
         elif all([registered_order, registered_name]):
             if id(registered_order) == id(registered_name):
                 # titulo autores etc muito diferentes
-                conflicts = [registered_order]
+                conflicts = {_('registered article found by the order'): registered_order}
             else:
-                conflicts = [registered_order, registered_name]
+                conflicts = {_('registered article found by the order'): registered_order, _('registered article found by name'): registered_name}
         elif registered_titaut is not None:
             # order e name nao encontrados; order testar antes de atualizar;
             actions = 'order change, name change'
             exclude_name = registered_titaut.xml_name
         elif registered_name is not None:
-            conflicts = [registered_name]
+            conflicts = {_('registered article found by name'): registered_name}
         elif registered_order is not None:
-            conflicts = [registered_order]
+            conflicts = {_('registered article found by the order'): registered_order}
         return (actions, exclude_name, conflicts)
 
 
@@ -568,7 +557,12 @@ class ArticlesMerger(object):
         self.merging_errors = []
         if len(self.registered_conflicts) > 0:
             for name, actions_data in self.registered_conflicts.items():
-                self.merging_errors.append(display_conflicting_data(actions_data[2]))
+                articles = [self.pkg_articles[name]]
+                articles.extend(actions_data[2].values())
+
+                labels = [_('package')]
+                labels.extend(actions_data[2].keys())
+                self.merging_errors.append(display_conflicting_data(articles, labels))
         elif len(self.orders_conflicts):
             self.merging_errors.append(display_order_conflicts(self.orders_conflicts))
         else:
@@ -710,9 +704,9 @@ class ArticlesSetValidations(object):
         if articles_data.articles_db_manager is not None:
             self.registered_articles = articles_data.articles_db_manager.registered_articles
 
-        self.merger = ArticlesMerger(self.registered_articles, self.pkg.pkg_articles)
-        self.merger.merge()
-        self.merged_articles = self.merger.merged_articles
+        self.articles_merger = ArticlesMerger(self.registered_articles, self.pkg.pkg_articles)
+        self.articles_merger.merge()
+        self.merged_articles = self.articles_merger.merged_articles
 
         self.articles_validations = {}
 
@@ -725,7 +719,7 @@ class ArticlesSetValidations(object):
         self.EXPECTED_UNIQUE_VALUE_LABELS = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
 
     @property
-    def articles_common_data(self):
+    def merged_articles_common_data(self):
         data = {}
         for label in self.EXPECTED_COMMON_VALUES_LABELS:
             values = {}
@@ -740,7 +734,7 @@ class ArticlesSetValidations(object):
         return data
 
     @property
-    def articles_unique_data(self):
+    def merged_articles_unique_data(self):
         data = {}
         for label in self.EXPECTED_UNIQUE_VALUE_LABELS:
             values = {}
@@ -755,26 +749,26 @@ class ArticlesSetValidations(object):
         return data
 
     @property
-    def missing_required_values(self):
+    def merged_articles_missing_required_values(self):
         required_items = {}
         for label in self.REQUIRED_DATA:
-            if label in self.articles_common_data.keys():
-                if None in self.articles_common_data[label].keys():
-                    required_items[label] = self.articles_common_data[label][None]
+            if label in self.merged_articles_common_data.keys():
+                if None in self.merged_articles_common_data[label].keys():
+                    required_items[label] = self.merged_articles_common_data[label][None]
         return required_items
 
     @property
-    def conflicting_values(self):
+    def conflicting_values_in_merged_articles(self):
         data = {}
-        for label, values in self.articles_common_data.items():
+        for label, values in self.merged_articles_common_data.items():
             if len(values) > 1:
                 data[label] = values
         return data
 
     @property
-    def duplicated_values(self):
+    def duplicated_values_in_merged_articles(self):
         duplicated_labels = {}
-        for label, values in self.articles_unique_data.items():
+        for label, values in self.merged_articles_unique_data.items():
             if len(values) > 0 and len(values) != len(self.articles):
 
                 duplicated = {value: xml_files for value, xml_files in values.items() if len(xml_files) > 1}
@@ -907,9 +901,9 @@ class ArticlesSetValidations(object):
         self.pkg_journal_validations = ValidationsResultItems()
         self.pkg_journal_validations.title = self.pkg_journal_validations_report_title
 
-        self.logger.register('pkg_reg_issue_validations')
-        self.pkg_reg_issue_validations = ValidationsResultItems()
-        self.pkg_reg_issue_validations.title = html_reports.tag('h2', _('Checking issue data: XML files and registered data'))
+        self.logger.register('pkg_issue_validations')
+        self.pkg_issue_validations = ValidationsResultItems()
+        self.pkg_issue_validations.title = html_reports.tag('h2', _('Checking issue data: XML files and registered data'))
 
         self.logger.register('articles validations - prep')
 
@@ -926,13 +920,19 @@ class ArticlesSetValidations(object):
             utils.display_message(_('Validate {name}').format(name=name))
             self.logger.register(' '.join(['validate', name]))
 
-            self.articles_validations[name] = ArticleValidations(article, articles_work_area[name], self.is_db_generation)
-            self.articles_validations[name].validate(self.pkg, xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
+            utils.display_message(_(' - validate journal data'))
+            self.pkg_journal_validations[name] = ValidationsResult()
+            self.pkg_journal_validations[name].message = xml_journal_data_validator.validate(article)
+
+            utils.display_message(_(' - validate issue data'))
+            self.pkg_issue_validations[name] = ValidationsResult()
+            self.pkg_issue_validations[name].message = xml_issue_data_validator.validate(article)
+
+            self.articles_validations[name] = ArticleValidations(article, articles_work_area[name], self.pkg_issue_validations[name])
+            self.articles_validations[name].logger = self.logger
+            self.articles_validations[name].validate(self.pkg, xml_structure_validator, xml_content_validator)
 
             self.logger.register(' '.join([name, 'fim']))
-
-            self.pkg_journal_validations[name] = self.articles_validations[name].validations_file['journal']
-            self.pkg_reg_issue_validations[name] = self.articles_validations[name].validations_file['issue']
 
         self.logger.register('consistency validations')
         self.consistency_validations = ValidationsResult()
@@ -1055,7 +1055,7 @@ class ArticlesSetValidations(object):
         return h
 
     @property
-    def pages_report(self):
+    def merged_articles_pages_report(self):
         # FIXME
         results = []
         previous_lpage = None
@@ -1100,27 +1100,27 @@ class ArticlesSetValidations(object):
 
     @property
     def journal_issue_header_report(self):
-        articles_common_data = ''
-        for label, values in self.articles_common_data.items():
+        merged_articles_common_data = ''
+        for label, values in self.merged_articles_common_data.items():
             message = ''
             if len(values.keys()) == 1:
-                articles_common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
+                merged_articles_common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
             else:
-                articles_common_data += html_reports.format_list(label + ':', 'ol', values.keys())
-        return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', articles_common_data, 'issue-data')
+                merged_articles_common_data += html_reports.format_list(label + ':', 'ol', values.keys())
+        return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', merged_articles_common_data, 'issue-data')
 
     @property
-    def missing_items_report(self):
+    def missing_items_in_merged_articles_report(self):
         r = ''
-        for label, items in self.missing_required_values.items():
+        for label, items in self.merged_articles_missing_required_values.items():
             r += html_reports.tag('div', html_reports.p_message(_('{status}: missing {label} in: ').format(status=validation_status.STATUS_BLOCKING_ERROR, label=label)))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
         return r
 
     @property
-    def duplicated_values_report(self):
+    def duplicated_values_in_merged_articles_report(self):
         parts = []
-        for label, values in self.duplicated_values.items():
+        for label, values in self.duplicated_values_in_merged_articles.items():
             status = self.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
             _m = _('Unique value for {label} is required for all the documents in the package').format(label=label)
             parts.append(html_reports.p_message(status + ': ' + _m))
@@ -1129,9 +1129,9 @@ class ArticlesSetValidations(object):
         return ''.join(parts)
 
     @property
-    def conflicting_values_report(self):
+    def conflicting_values_in_merged_articles_report(self):
         parts = []
-        for label, values in self.conflicting_values.items():
+        for label, values in self.conflicting_values_in_merged_articles.items():
             compl = ''
             _status = validation_status.STATUS_BLOCKING_ERROR
             if label == 'issue pub date':
@@ -1148,11 +1148,11 @@ class ArticlesSetValidations(object):
     def consistency_validations_report(self):
         text = []
         text += self.pkg.invalid_xml_report
-        text += self.missing_items_report
-        text += self.conflicting_values_report
-        text += self.duplicated_values_report
+        text += self.missing_items_in_merged_articles_report
+        text += self.conflicting_values_in_merged_articles_report
+        text += self.duplicated_values_in_merged_articles_report
         text = html_reports.tag('div', ''.join(text), 'issue-messages')
-        text += self.pages_report
+        text += self.merged_articles_pages_report
         return html_reports.tag('h2', _('Checking issue data consistency')) + text
 
     @property
@@ -1160,19 +1160,19 @@ class ArticlesSetValidations(object):
         report = []
         report.append(self.journal_issue_header_report)
         report.append(self.pkg_journal_validations.report(errors_only=not self.pkg.is_xml_generation))
-        report.append(self.pkg_reg_issue_validations.report(errors_only=not self.pkg.is_xml_generation))
+        report.append(self.pkg_issue_validations.report(errors_only=not self.pkg.is_xml_generation))
         if self.consistency_validations.total() > 0:
             report.append(self.consistency_validations.message)
-        report.append(self.merges_validations.message)
+        report.append(self.articles_merger.validations.message)
         return ''.join(report)
 
     @property
     def blocking_errors(self):
-        return sum([self.consistency_validations.blocking_errors, self.pkg_reg_issue_validations.blocking_errors, self.merges_validations.blocking_errors])
+        return sum([self.consistency_validations.blocking_errors, self.pkg_issue_validations.blocking_errors, self.articles_merger.validations.blocking_errors])
 
     @property
     def fatal_errors(self):
-        return sum([article_validations.fatal_errors for article_validations in self.articles_validations.values()])
+        return sum([v.fatal_errors for v in self.articles_validations.values()])
 
 
 class ReportsMaker(object):
@@ -1214,20 +1214,22 @@ class ReportsMaker(object):
 
         if not self.articles_set_validations.pkg.is_xml_generation:
             components['group-validations-report'] += self.articles_set_validations.journal_and_issue_report
-            #FIXME
-            components['toc-extended'] = self.articles_set_validations.toc_extended_report(self.articles_set_validations.articles_merger.sim_converted_articles)
 
-        if self.conversion is not None:
-            #FIXME
-            components['toc-extended'] = self.articles_set_validations.toc_extended_report(self.articles_set_validations.articles_merger.sim_converted_articles)
+        if self.conversion is None:
+            components['toc-extended'] = '?' + toc_extended_report(self.articles_set_validations.pkg.pkg_articles)
+        else:
+            components['toc-extended'] = self.conversion.conclusion_message + toc_extended_report(self.conversion.registered_articles)
             if self.articles_set_validations.articles_data.issue_error_msg is not None:
                 components['group-validations-report'] += self.articles_set_validations.articles_data.issue_error_msg
-            components['xc-validations'] = self.conversion.articles_merger.changes_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.articles_merger.conversion_simulation_summary_report + self.conversion.articles_merger.simulated_conversion_report
 
-            components['summary-report'] = self.conversion.conclusion_message + self.conversion.conversion_status_report + self.conversion.aop_status_report
+            components['xc-validations'] = self.conversion.conclusion_message + self.conversion.articles_merger.changes_report + self.conversion.conversion_status_report + self.conversion.aop_status_report + self.conversion.articles_merger.conversion_simulation_summary_report + self.conversion.articles_merger.simulated_conversion_report + self.conversion.articles_conversion_validations.report(True)
 
         self.validations.message = html_reports.join_texts(components.values())
-        components['summary-report'] = error_msg_subtitle() + self.validations.statistics_display(False) + components['summary-report']
+
+        components['summary-report'] = error_msg_subtitle() + self.validations.statistics_display(False)
+        if self.conversion is not None:
+            components['summary-report'] += self.conversion.conclusion_message
+
         components = {k: label_errors(v) for k, v in components.items() if v is not None}
         return components
 
@@ -1421,6 +1423,18 @@ def article_report(_article):
     return r
 
 
+def article_data(_article):
+    r = ''
+    r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
+    r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
+    r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
+    a = []
+    for item in article.authors_list(_article.article_contrib_items):
+        a.append(html_reports.tag('span', item))
+    r += html_reports.tag('p', '; '.join(a))
+    return r
+
+
 def compare_articles(article1, article2, label1='article 1', label2='article 2'):
     labels = [_('titles'), _('authors'), _('body')]
     validations = []
@@ -1458,16 +1472,15 @@ def display_articles_differences(status, comparison_result, label1='article 1', 
     return ''.join(msg)
 
 
-def display_conflicting_data(articles):
-    labels = [article.xml_name for article in articles]
-    values = [article_report(article) for article in articles]
-    return html_reports.tag('h5', _('Found conflicts. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus')
+def display_conflicting_data(articles, labels):
+    values = [article_data(article) for article in articles]
+    return html_reports.tag('h3', _('Found conflicts. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
 
 
 def display_order_conflicts(orders_conflicts):
     r = []
     for order, names in orders_conflicts.items():
-        r.append(html_reports.tag('h4', order))
+        r.append(html_reports.tag('h3', order))
         r.append(html_reports.format_html_data(name))
     return ''.join(r)
 
