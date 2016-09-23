@@ -311,6 +311,11 @@ class ArticleValidations(object):
         self.logger.register(' xmlcontent')
         self.validations['xmlcontent'].message, self.article_display_report = xml_content_validator.validate(self.article, pkg.pkg_path, self.work_area, pkg.is_xml_generation)
 
+        if pkg.is_xml_generation:
+            stats = self.validations['xmlcontent'].statistics_display(False)
+            title = [_('Data Quality Control'), self.work_area.new_name]
+            fs_utils.write_file(self.work_area.data_report_filename, html_reports.html(title, stats + self.validations['xmlcontent'].message))
+
     @property
     def fatal_errors(self):
         return sum([item.fatal_errors for item in self.validations.values()])

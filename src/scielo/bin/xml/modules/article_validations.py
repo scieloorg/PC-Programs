@@ -69,10 +69,10 @@ class ArticleDOIValidator(object):
     def __init__(self, doi_services, article):
         self.article = article
         self.doi_data = doi_services.get_doi_data(article.doi)
-        self.journal_doi_prefix = [doi_services.doi_journal_prefix(issn, article.pub_date_year) for issn in [article.e_issn, article.print_issn] if issn is not None]
-        self.journal_doi_prefix = [item for item in self.journal_doi_prefix if item is not None]
-        if len(self.journal_doi_prefix) > 0:
-            self.journal_doi_prefix = self.journal_doi_prefix[0]
+        self.journal_doi_prefix_items = [doi_services.doi_journal_prefix(issn, article.pub_date_year) for issn in [article.e_issn, article.print_issn] if issn is not None]
+        self.journal_doi_prefix_items = [item for item in self.journal_doi_prefix_items if item is not None]
+        if len(self.journal_doi_prefix_items) == 0:
+            self.journal_doi_prefix_items = None
         self.messages = []
 
     def validate(self):
@@ -91,9 +91,13 @@ class ArticleDOIValidator(object):
                 self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}. ').format(value=self.doi_data.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
 
     def validate_doi_prefix(self):
-        if self.journal_doi_prefix is not None:
-            if not self.doi_data.doi.startswith(self.journal_doi_prefix):
-                self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.doi_data.doi, label=self.journal_doi_prefix) + _('{label} must starts with: {expected}. ').format(label='doi', expected=self.journal_doi_prefix)))
+        valid_prefix = False
+        if self.journal_doi_prefix_items is not None:
+            for prefix in self.journal_doi_prefix_items:
+                if self.doi_data.doi.startswith(prefix):
+                    valid_prefix = True
+            if not valid_prefix:
+                self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.doi_data.doi, label=self.journal_doi_prefix_items) + _('{label} must starts with: {expected}. ').format(label='doi', expected=_(' or ').join(self.journal_doi_prefix_items))))
 
     def validate_journal_title(self):
         if not self.doi_data.journal_titles is None:
@@ -621,7 +625,7 @@ class ArticleContentValidation(object):
                 r.append(('related-article/@related-article-type', validation_status.STATUS_FATAL_ERROR,
                     invalid_value_message(related_article.get('related-article-type', _('None')), 'related-article/@related-article-type')))
             if related_article.get('ext-link-type', '') == 'doi':
-                _doi =related_article.get('href', '')
+                _doi = related_article.get('href', '')
                 if _doi != '':
                     doi_data = DOI_Data(_doi)
                     errors = doi_data.validate_doi_format()
