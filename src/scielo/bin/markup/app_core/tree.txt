@@ -233,6 +233,7 @@ orgdiv;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 
 corresp
+label;#FALSE#;#FALSE#
 email;#FALSE#;#TRUE#
 
 country
