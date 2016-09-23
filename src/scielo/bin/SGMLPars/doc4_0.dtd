@@ -173,7 +173,7 @@
                     ((abstract | xmlabstr), kwdgrp) |
                     confgrp | funding | hist | 
                     xmlbody |
-                    ack | glossary | deflist | app |
+                    ack | glossary | deflist | appgrp |
                     refs |
                     fngrp | cc |
                     docresp | subdoc 

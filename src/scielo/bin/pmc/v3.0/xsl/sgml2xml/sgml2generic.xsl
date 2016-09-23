@@ -15,10 +15,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
-	<xsl:variable name="deceased" select="//fngrp[@fntype='deceased']"/>
-	<xsl:variable name="eqcontrib" select="//fngrp[@fntype='equal']"/>
+	<xsl:variable name="fngrp_deceased" select="//fngrp[@fntype='deceased']"/>
+	<xsl:variable name="fngrp_eqcontrib" select="//fngrp[@fntype='equal']"/>
+	<xsl:variable name="fn_deceased" select="//fn[@fntype='deceased']"/>
+	<xsl:variable name="fn_eqcontrib" select="//fn[@fntype='equal']"/>
 	<xsl:variable name="unident_back" select="//back//unidentified"/>
-	<xsl:variable name="fn" select=".//fngrp"/>
+	
+	<xsl:variable name="fn" select=".//*[name()='fn' or name()='fngrp' and @fntype]"/>
+	
 	<xsl:variable name="affs" select=".//aff"/>
 	<xsl:variable name="normalized_affs" select=".//normaff"/>
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
@@ -102,7 +106,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
 	</xsl:template><!-- attributes -->
-	<xsl:template match="fngrp/@id">
+	<xsl:template match="fngrp/@id | fn/@id">
 		<xsl:attribute name="{name()}">fn<xsl:value-of select="string(number(substring(.,3)))"/></xsl:attribute>
 	</xsl:template>
 	
@@ -921,13 +925,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="author/@deceased[.='y']">
-		<xsl:if test="not($deceased)">
+		<xsl:if test="not($fn_deceased) and not($fngrp_deceased">
 			<xsl:attribute name="{name()}">yes</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
 
 	<xsl:template match="author/@eqcontr[.='y']">
-		<xsl:if test="not($eqcontrib)">
+		<xsl:if test="not($fn_eqcontrib) and not($fngrp_eqcontrib)">
 			<xsl:attribute name="equal-contrib">yes</xsl:attribute>
 		</xsl:if>
 	</xsl:template>
@@ -1568,7 +1572,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<!-- BACK -->
 	<xsl:template match="article|text|subart|response" mode="back">
 		<xsl:variable name="test">
-			<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
+			<xsl:apply-templates select="fngrp[@fntype]|fn[@fntype]" mode="notfnauthors"/>
 		</xsl:variable>
 
 		<xsl:if test="$test!='' or back/ack or back/fxmlbody or back/*[@standard]">
@@ -1580,7 +1584,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="doc|subdoc|docresp" mode="back">
 		<xsl:variable name="fngrptest">
-			<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
+			<xsl:if test="not(fngrp/fn)">
+				<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
+			</xsl:if>
 		</xsl:variable>
 		
 		<xsl:if test="ack or $fngrptest!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
@@ -1589,33 +1595,40 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
 				<xsl:if test="$fngrptest!=''">
 					<fn-group>
-						<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
+						<xsl:apply-templates select="fngrp[@fntype]|fn[@fntype]" mode="notfnauthors"/>
 					</fn-group>
+				</xsl:if>
+				<xsl:if test="fngrp/fn">
+					<xsl:apply-templates select="fngrp" mode="fn-group-not-authors"/>
 				</xsl:if>
 				<xsl:apply-templates select="glossary | appgrp"/>				
 			</back>
 		</xsl:if>
 	</xsl:template>
-
+	
+	<xsl:template match="fngrp" mode="fn-group-not-authors">
+		FIXME
+	</xsl:template>
+	
 	<xsl:template match="back">
 		<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 		<xsl:apply-templates select="*[@standard]"/>
 		<xsl:variable name="test">
-			<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
+			<xsl:apply-templates select="fngrp[@fntype]|fn[@fntype]" mode="notfnauthors"/>
 		</xsl:variable>
 		<xsl:if test="$test!=''">
 			<fn-group>
-				<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
+				<xsl:apply-templates select="fngrp[@fntype]|fn[@fntype]" mode="notfnauthors"/>
 			</fn-group>
 		</xsl:if>
 		<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>						
 	</xsl:template>
 	
-	<xsl:template match="fngrp/@label">
+	<xsl:template match="fngrp/@label|fn/@label">
 		<label><xsl:value-of select="normalize-space(.)"/></label>
 	</xsl:template>
 	
-	<xsl:template match="fngrp[@fntype]">
+	<xsl:template match="fngrp[@fntype]|fn[@fntype]">
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
 			<xsl:if test="not(label) and not(@label) and @fntype='other'">
@@ -1627,7 +1640,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</fn>
 	</xsl:template>
 	
-	<xsl:template match="fngrp/@fntype">
+	<xsl:template match="fngrp/@fntype|fn/@fntype">
 		<xsl:attribute name="fn-type">
 			<xsl:choose>
 				<xsl:when test=".='author'">other</xsl:when>

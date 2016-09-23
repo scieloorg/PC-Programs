@@ -285,7 +285,13 @@ fname
 
 *fn
 
+*fngrp
+
 fngrp
+sectitle
+fn
+
+fn
 label;#FALSE#;#FALSE#
 funding;#FALSE#;#FALSE#
 
