@@ -927,7 +927,7 @@ xmlbody;#FALSE#;#FALSE#
 subdoc
 abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
-app;#FALSE#;#TRUE#
+appgrp;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 afftrans;#TRUE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
