@@ -138,8 +138,8 @@ subart;#FALSE#;#TRUE#
 elemattr
 
 app
+label;#FALSE#;#FALSE#
 sectitle;#FALSE#;#FALSE#
-sec;#FALSE#;#TRUE#
 p;#FALSE#;#TRUE#
 
 authgrp
