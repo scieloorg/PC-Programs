@@ -881,7 +881,10 @@ class ArticlePkgMaker(object):
             href_name = href.id
             if '.' in href.src:
                 href_name += href.src[href.src.rfind('.'):]
-        new_href = self.doc_files_info.new_name + '-' + href_type + href_name.replace('image', '').replace('img', '')
+        href_name = href_name.replace('image', '').replace('img', '')
+        if href_name.startswith(href_type):
+            href_type = ''
+        new_href = self.doc_files_info.new_name + '-' + href_type + href_name
         return self.add_extension(href.src, new_href)
 
     def add_extension(self, href, new_href):

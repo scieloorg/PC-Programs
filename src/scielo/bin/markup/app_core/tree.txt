@@ -138,8 +138,8 @@ subart;#FALSE#;#TRUE#
 elemattr
 
 app
+label;#FALSE#;#FALSE#
 sectitle;#FALSE#;#FALSE#
-sec;#FALSE#;#TRUE#
 p;#FALSE#;#TRUE#
 
 authgrp
@@ -233,6 +233,7 @@ orgdiv;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 
 corresp
+label;#FALSE#;#FALSE#
 email;#FALSE#;#TRUE#
 
 country
@@ -927,7 +928,7 @@ xmlbody;#FALSE#;#FALSE#
 subdoc
 abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
-app;#FALSE#;#TRUE#
+appgrp;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 afftrans;#TRUE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
