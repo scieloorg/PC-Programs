@@ -16,7 +16,7 @@ equation;#TRUE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
 *fn;#FALSE#;#TRUE#
-fngrp;#TRUE#;#TRUE#
+fngrp;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
 licinfo;#TRUE#;#TRUE#
@@ -285,11 +285,9 @@ fname
 
 *fn
 
-*fngrp
-
 fngrp
-sectitle
-fn
+sectitle;#FALSE#;#FALSE#
+fn;#FALSE#;#TRUE#
 
 fn
 label;#FALSE#;#FALSE#
@@ -881,7 +879,7 @@ corpauth;#FALSE#;#TRUE#
 docresp;#TRUE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
-fngrp;#TRUE#;#TRUE#
+fngrp;#FALSE#;#TRUE#
 glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
