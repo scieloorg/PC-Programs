@@ -4,33 +4,36 @@ article;#FALSE#;#FALSE#
 text;#FALSE#;#FALSE#
 
 ifloat
-*boxedtxt;#TRUE#;#TRUE#
-boxedtxt;#TRUE#;#TRUE#
-cltrial;#TRUE#;#FALSE#
+*boxedtxt;#FALSE#;#TRUE#
+boxedtxt;#FALSE#;#TRUE#
+cltrial;#FALSE#;#FALSE#
 corresp;#FALSE#;#FALSE#
 cpright;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
 *deflist;#FALSE#;#TRUE#
-element;#TRUE#;#TRUE#
-equation;#TRUE#;#TRUE#
+element;#FALSE#;#TRUE#
+equation;#FALSE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
-*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
+*fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
-ign;#TRUE#;#TRUE#
-licinfo;#TRUE#;#TRUE#
+ign;#FALSE#;#TRUE#
+licinfo;#FALSE#;#TRUE#
 *list;#FALSE#;#TRUE#
 list;#FALSE#;#TRUE#
-product;#TRUE#;#TRUE#
-quote;#TRUE#;#TRUE#
-related;#TRUE#;#TRUE#
+product;#FALSE#;#TRUE#
+quote;#FALSE#;#TRUE#
+related;#FALSE#;#TRUE#
 supplmat;#FALSE#;#TRUE#
 media;#FALSE#;#TRUE#
 tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
 versegrp;#FALSE#;#TRUE#
-xref;#TRUE#;#TRUE#
+xref;#FALSE#;#TRUE#
+
+*fngrp
 
 abnt6023
 acitat;#FALSE#;#TRUE#
@@ -282,8 +285,6 @@ caption;#FALSE#;#FALSE#
 figgrp;#FALSE#;#TRUE#
 
 fname
-
-*fn
 
 fngrp
 sectitle;#FALSE#;#FALSE#
