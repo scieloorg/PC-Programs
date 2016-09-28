@@ -507,16 +507,17 @@ class ArticleContentValidation(object):
     @property
     def disp_formulas(self):
         results = []
-        children = ['graphic', '{http://www.w3.org/1998/Math/MathML}math']
-        for item in self.article.disp_formula_elements:
+        children = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math']
+        for disp_formula_node in self.article.disp_formula_elements:
             found = False
             for name in children:
-                if item.find(name) is not None:
+                child_node = disp_formula_node.find(name)
+                if child_node is not None:
                     if name == 'graphic':
-                        if item.attrib.get('{http://www.w3.org/1999/xlink}href') is not None:
+                        if child_node.attrib.get('{http://www.w3.org/1999/xlink}href') is not None:
                             found = True
-                    elif name == '{http://www.w3.org/1998/Math/MathML}math':
-                        if len(xml_utils.remove_tags(xml_utils.node_text(item))) > 0:
+                    elif name in ['{http://www.w3.org/1998/Math/MathML}math', 'math']:
+                        if len(xml_utils.remove_tags(xml_utils.node_text(child_node))) > 0:
                             found = True
             if not found:
                 results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure. ').format(children=_(' or ').join(children), element='disp-formula'), xml_utils.node_xml(item)))
