@@ -4,33 +4,35 @@ article;#FALSE#;#FALSE#
 text;#FALSE#;#FALSE#
 
 ifloat
-*boxedtxt;#TRUE#;#TRUE#
-boxedtxt;#TRUE#;#TRUE#
-cltrial;#TRUE#;#FALSE#
+*boxedtxt;#FALSE#;#TRUE#
+boxedtxt;#FALSE#;#TRUE#
+cltrial;#FALSE#;#FALSE#
 corresp;#FALSE#;#FALSE#
 cpright;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
 *deflist;#FALSE#;#TRUE#
-element;#TRUE#;#TRUE#
-equation;#TRUE#;#TRUE#
+element;#FALSE#;#TRUE#
+equation;#FALSE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
-*fn;#FALSE#;#TRUE#
-fngrp;#TRUE#;#TRUE#
+*fngrp;#FALSE#;#TRUE#
+fngrp;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
-ign;#TRUE#;#TRUE#
-licinfo;#TRUE#;#TRUE#
+ign;#FALSE#;#TRUE#
+licinfo;#FALSE#;#TRUE#
 *list;#FALSE#;#TRUE#
 list;#FALSE#;#TRUE#
-product;#TRUE#;#TRUE#
-quote;#TRUE#;#TRUE#
-related;#TRUE#;#TRUE#
+product;#FALSE#;#TRUE#
+quote;#FALSE#;#TRUE#
+related;#FALSE#;#TRUE#
 supplmat;#FALSE#;#TRUE#
 media;#FALSE#;#TRUE#
 tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
 versegrp;#FALSE#;#TRUE#
-xref;#TRUE#;#TRUE#
+xref;#FALSE#;#TRUE#
+
+*fngrp
 
 abnt6023
 acitat;#FALSE#;#TRUE#
@@ -176,6 +178,7 @@ iso690;#FALSE#;#FALSE#
 abnt6023;#FALSE#;#FALSE#
 apa;#FALSE#;#FALSE#
 other;#FALSE#;#FALSE#
+*fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 licenses;#FALSE#;#FALSE#
 bbibcom;#FALSE#;#FALSE#
@@ -283,9 +286,11 @@ figgrp;#FALSE#;#TRUE#
 
 fname
 
-*fn
-
 fngrp
+sectitle;#FALSE#;#FALSE#
+fn;#FALSE#;#TRUE#
+
+fn
 label;#FALSE#;#FALSE#
 funding;#FALSE#;#FALSE#
 
@@ -875,7 +880,8 @@ corpauth;#FALSE#;#TRUE#
 docresp;#TRUE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
-fngrp;#TRUE#;#TRUE#
+*fngrp;#FALSE#;#TRUE#
+fngrp;#FALSE#;#TRUE#
 glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
@@ -913,6 +919,7 @@ author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
+*fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
@@ -935,6 +942,7 @@ corpauth;#FALSE#;#TRUE#
 docresp;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
+*fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#

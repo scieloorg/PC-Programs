@@ -112,3 +112,4 @@ msg_help_doc_ahppid,"Mandatory to complete, if the article was ahead of print, w
 msg_help_doc_artdate,"Mandatory to complete with the article publication date (YYYYMMDD) if the article is rolling pass"
 msg_mark_references,"Identify the references before identifying the text"
 msg_help_doc_sps,"Mandatory to complete with the SPS version."
+msg_convert_fngrp_to_fn,"Convert fngrp to fn?"

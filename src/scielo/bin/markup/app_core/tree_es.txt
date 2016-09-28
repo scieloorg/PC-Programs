@@ -44,6 +44,7 @@ extent;Identifica la extensión del documento
 figgrp;Agrupa los elementos de una figura
 figgrps;Identifica figuras compuestas (Fig 1A, 1B,...)
 fname;Identifica los primeros nombres de un autor individual
+fn;Identifica una nota de pie de página
 fngrp;Agrupa los elementos de nota de pie de página
 front;Identifica la parte anterior al cuerpo del documento
 graphic;Identifica una imagen
@@ -193,7 +194,8 @@ text-ref;Identifica la forma original de la cita
 publoc;Identifica la ubicación de la editora
 *publoc-pubname;Identifica automaticámente la ubicación y el nombre de la editora
 *pubname-publoc;Identifica automaticámente el nombre de la editora y de su ubicación
-*fn;Identifica automaticámente todos las notas de pie de página y sus enlaces
+*fn;Identifica automaticámente todos las notas de pie de página del texto, incluso sus enlaces
+*fngrp;Identifica automaticámente un grupo de notas de pie de página
 boxedtxt;Identifica una caja de texto
 *boxedtxt;Identifica automaticámente una caja de texto
 appgrp;Identifica un grupo de apéndices

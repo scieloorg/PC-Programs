@@ -112,3 +112,4 @@ msg_help_doc_ahppid,"Este campo é preenchido com o identificador do ahead of pri
 msg_help_doc_artdate,"Obrigatório completar com a data YYYYMMDD quando for um artigo rolling pass. Rolling pass é um modelo publicação onde o periódico publica seus artigos num volume único a medida em que estes ficam prontos."
 msg_mark_references,"Marque as referências antes de marcar o texto"
 msg_help_doc_sps,"Obrigatório completar com a versão de SPS."
+msg_convert_fngrp_to_fn,"Converter fngrp para fn?"
