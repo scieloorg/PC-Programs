@@ -451,42 +451,46 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:attribute name="article-type">
 			<xsl:choose>
 				<xsl:when test=".='oa'">research-article</xsl:when>
-				<xsl:when test=".='ab'">abstract</xsl:when>
-				<xsl:when test=".='an'">announcement</xsl:when>
 				<xsl:when test=".='co'">article-commentary</xsl:when>
 				<xsl:when test=".='cr'">case-report</xsl:when>
-				<xsl:when test=".='ct'">clinical-trial</xsl:when>
+				<xsl:when test=".='ct'">research-article</xsl:when>
 				<xsl:when test=".='ed'">editorial</xsl:when>
+				<xsl:when test=".='em'">editorial</xsl:when>
+				<xsl:when test=".='er'">correction</xsl:when>
 				<xsl:when test=".='le'">letter</xsl:when>
+				<xsl:when test=".='pr'">in-brief</xsl:when>
 				<xsl:when test=".='ra'">review-article</xsl:when>
-				<xsl:when test=".='sc'">rapid-communication</xsl:when>
-				<xsl:when test=".='??'">addendum</xsl:when>
 				<xsl:when test=".='rc'">book-review</xsl:when>
-				<xsl:when test=".='??'">books-received</xsl:when>
+				<xsl:when test=".='re'">retraction</xsl:when>
 				<xsl:when test=".='rn'">brief-report</xsl:when>
+				<xsl:when test=".='sc'">rapid-communication</xsl:when>
+				<xsl:when test=".='tr'">research-article</xsl:when><!-- technical report -->
+				<xsl:when test=".='zz'">other</xsl:when>
+				
+				<xsl:when test=".='partial-retraction'">partial-retraction</xsl:when>
+				<xsl:when test=".='reply'">reply</xsl:when>
+				
+				<xsl:when test=".='ab'">other</xsl:when>
+				<xsl:when test=".='an'">other</xsl:when>
+				<xsl:when test=".='??'">other</xsl:when>
+				<xsl:when test=".='??'">addendum</xsl:when>
+				<xsl:when test=".='??'">books-received</xsl:when>
 				<xsl:when test=".='??'">calendar</xsl:when>
 				<xsl:when test=".='??'">collection</xsl:when>
-				<xsl:when test=".='er'">correction</xsl:when>
 				<xsl:when test=".='??'">discussion</xsl:when>
 				<xsl:when test=".='??'">dissertation</xsl:when>
-				<xsl:when test=".='pr'">in-brief</xsl:when>
 				<xsl:when test=".='??'">introduction</xsl:when>
 				<xsl:when test=".='??'">meeting-report</xsl:when>
 				<xsl:when test=".='pr'">news</xsl:when>
 				<xsl:when test=".='??'">obituary</xsl:when>
 				<xsl:when test=".='??'">oration</xsl:when>
-				<xsl:when test=".='re'">partial-retraction</xsl:when>
 				<xsl:when test=".='rc'">product-review</xsl:when>
-				<xsl:when test=".='??'">reply</xsl:when>
 				<xsl:when test=".='??'">reprint</xsl:when>
-				<xsl:when test=".='re'">retraction</xsl:when>
 				<xsl:when test=".='??'">translation</xsl:when>
 				<xsl:when test=".='ax'">other</xsl:when>
-				<xsl:when test=".='in'">editorial-material</xsl:when><!-- interview -->
+				<xsl:when test=".='in'">editorial</xsl:when><!-- interview -->
 				<xsl:when test=".='mt'">research-article</xsl:when><!-- methodology -->
-				<xsl:when test=".='pv'">editorial-material</xsl:when><!-- ponto de vista -->
-				<xsl:when test=".='tr'">technical-report</xsl:when><!-- technical report -->
-				<xsl:when test=".='zz'">other</xsl:when>
+				<xsl:when test=".='pv'">editorial</xsl:when><!-- ponto de vista -->
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
