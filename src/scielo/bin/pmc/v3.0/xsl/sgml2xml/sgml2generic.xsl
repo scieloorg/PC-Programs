@@ -192,8 +192,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="caption">
 		<caption>
 			<title>
-				<xsl:apply-templates select="*|text()"/>
+				<xsl:apply-templates select="*[name()!='p']|text()"/>
 			</title>
+			<xsl:apply-templates select="p"></xsl:apply-templates>
 		</caption>
 	</xsl:template>
 
