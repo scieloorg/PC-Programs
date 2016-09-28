@@ -776,9 +776,9 @@ class ArticleContentValidation(object):
             else:
                 if order.isdigit():
                     if int(order) < 1 or int(order) > 99999:
-                        r = (status,  _('Invalid format of {label}. ').format(label=label) + _('Expected values: {expected}. ').format(expected=_('number from 1 to 99999')))
+                        r = (status,  _('Invalid format of {label}. ').format(label='order') + _('Expected values: {expected}. ').format(expected=_('number from 1 to 99999')))
                 else:
-                    r = (status,  _('Invalid format of {label}. ').format(label=label) + _('Expected values: {expected}. ').format(expected=_('number from 1 to 99999')))
+                    r = (status,  _('Invalid format of {label}. ').format(label='order') + _('Expected values: {expected}. ').format(expected=_('number from 1 to 99999')))
             return r
         if self.is_db_generation:
             status = validation_status.STATUS_FATAL_ERROR
