@@ -1293,6 +1293,8 @@ def label_values(labels, values):
 def evaluate_journal_data(items):
     unmatched = []
     for label, value, expected_values, default_status in items:
+        if expected_values is None:
+            expected_values = [None]
         if len(expected_values) == 0:
             expected_values.extend([None, ''])
         status = validation_status.STATUS_OK
