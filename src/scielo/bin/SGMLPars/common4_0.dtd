@@ -43,7 +43,7 @@
           blcktype CDATA     #REQUIRED>
 
 
-<!ELEMENT corresp - - (email+ & (#PCDATA)?)>
+<!ELEMENT corresp - - (label? & email+ & (#PCDATA)?)>
 <!ATTLIST corresp
           id ID    #REQUIRED >
 
@@ -153,12 +153,14 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT sciname - - (#PCDATA) >
 
-<!ELEMENT fngrp - - (label?, ((#PCDATA) & funding?)) +(%i.float;) >
-<!ATTLIST fngrp
+<!ELEMENT fngrp - - (sectitle?, fn+) >
+
+<!ELEMENT fn - - (label?, ((#PCDATA) & funding?)) +(%i.float;) >
+<!ATTLIST fn
           id       CDATA    #REQUIRED
           fntype       CDATA    #REQUIRED 
           
-	 >
+      >
 <!ELEMENT fntable - - (label?, (#PCDATA)) +(%i.float;) >
 <!ATTLIST fntable
           id       CDATA    #REQUIRED 
@@ -306,7 +308,7 @@ filename       CDATA #IMPLIED>
 <!ELEMENT glossary  - - (sectitle?, (glossary | deflist)+)  >
 
 <!ELEMENT appgrp  - - (app+) >
-<!ELEMENT app  - - (sectitle?, (sec | p)*) +(%i.float;) >
+<!ELEMENT app  - - (label, sectitle?, p*) +(%i.float;) >
 <!ATTLIST app 
           id ID #REQUIRED >
 

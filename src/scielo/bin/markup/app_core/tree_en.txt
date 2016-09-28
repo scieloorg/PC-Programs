@@ -44,6 +44,7 @@ extent;Identify the extension of the document (number of pages)
 figgrp;Group the elements of a figure
 figgrps;Group a group of figures (Fig 1A, 1B,...)
 fname;Identify the first names of an individual author
+fn;Identify a footnote
 fngrp;Group the elements of a footnote
 front;Identify the front of a document
 graphic;Identify an image
@@ -193,7 +194,8 @@ text-ref;Identify the original form of the reference
 publoc;Identify the publisher location
 *publoc-pubname;Identify automatically publisher location and name
 *pubname-publoc;Identify automatically publisher name and location
-*fn;Identify all the footnotes and its links
+*fn;Identify all the footnotes in the text, including its links
+*fngrp;Identify a group of footnotes
 boxedtxt;Identify a boxed text
 *boxedtxt;Identify automatically boxed text
 appgrp;Identify a group of appendixes

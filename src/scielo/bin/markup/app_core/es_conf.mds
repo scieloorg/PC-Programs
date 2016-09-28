@@ -112,3 +112,4 @@ msg_help_doc_ahppid,"Obligatorio completar cuando es un artículo que fue ahead o
 msg_help_doc_artdate,"Obligatorio completar con fecha de publicación del artículo YYYYMMDD cuando es un artículo rolling pass. Rolling pass es una modalidad de publicación donde la revista publica sus artículo en un volume único en la medida en que los artículos están listos."
 msg_mark_references,"Identifique las refencias antes de marcar el texto"
 msg_help_doc_sps,"Obligatorio completar con la versión de SPS."
+msg_convert_fngrp_to_fn,"Convertir fngrp para fn?"

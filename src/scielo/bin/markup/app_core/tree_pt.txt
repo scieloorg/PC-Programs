@@ -44,6 +44,7 @@ extent;Identifica a extensão do documento
 figgrp;Agrupa os elementos de uma figura
 figgrps;Identifica figuras compostas (Fig 1A, 1B,...)
 fname;Identifica os primeiros nomes de um autor individual
+fn;Identifica uma nota de rodapé
 fngrp;Agrupa os elementos de uma nota de rodapé
 front;Identifica a parte anterior ao corpo do documento
 graphic;Identifica uma imagem
@@ -193,7 +194,8 @@ text-ref;Identify the original form of the reference
 publoc;Identifica o local da editora
 *publoc-pubname;Identifica automaticamente o local e o nome da editora
 *pubname-publoc;Identifica automaticamente o nome da editora e de seu local
-*fn;Identifica automaticamente todos as notas de rodapé e seus links
+*fn;Identifica automaticamente todas as notas de rodapé no texto, inclusive seus vínculos
+*fngrp;Identifica automaticamente um grupo de notas de rodapé
 boxedtxt;Identifica uma caixa de texto
 *boxedtxt;Identifica automaticamente uma caixa de texto
 appgrp;Identifica um grupo de apêndices
