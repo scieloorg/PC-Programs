@@ -15,7 +15,6 @@ element;#FALSE#;#TRUE#
 equation;#FALSE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
-fn;#FALSE#;#TRUE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
@@ -179,6 +178,7 @@ iso690;#FALSE#;#FALSE#
 abnt6023;#FALSE#;#FALSE#
 apa;#FALSE#;#FALSE#
 other;#FALSE#;#FALSE#
+*fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 licenses;#FALSE#;#FALSE#
 bbibcom;#FALSE#;#FALSE#
@@ -880,6 +880,7 @@ corpauth;#FALSE#;#TRUE#
 docresp;#TRUE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
+*fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
@@ -918,6 +919,7 @@ author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
+*fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
@@ -940,6 +942,7 @@ corpauth;#FALSE#;#TRUE#
 docresp;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
+*fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
