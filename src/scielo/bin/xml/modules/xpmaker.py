@@ -372,19 +372,32 @@ class SGMLXML(object):
                     n = str(int(n))
                     for prefix in prefixes:
                         for number in [n, '0' + n]:
-                            for ext in ['.tiff', '.tif', '.eps', '.jpg']:
+                            for ext in ['.tiff', '.tif', '.eps', '.jpg', '.png']:
                                 href = name + prefix + number + ext
                                 possible_href_names.append(href)
                                 if os.path.isfile(self.src_path + '/' + href):
                                     found.append(href)
                 else:
-                    for ext in ['.tiff', '.tif', '.eps', '.jpg']:
+                    for ext in ['.tiff', '.tif', '.eps', '.jpg', '.png']:
                         href = name + elem_id + ext
                         possible_href_names.append(href)
                         if os.path.isfile(self.src_path + '/' + href):
                             found.append(href)
         new_href = None if len(found) == 0 else found[0]
         return (new_href, list(set(possible_href_names)), alternative_id)
+
+
+def hdimg_to_jpg(source_image_filename, jpg_filename):
+    if IMG_CONVERTER:
+        try:
+            im = Image.open(source_image_filename)
+            im.thumbnail(im.size)
+            im.save(jpg_filename, "JPEG")
+            utils.display_message(jpg_filename)
+            print(jpg_filename)
+        except Exception as inst:
+            utils.display_message('Unable to generate ' + jpg_filename)
+            utils.display_message(inst)
 
 
 def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
@@ -397,15 +410,7 @@ def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
                 doit = True if not os.path.isfile(jpg_filename) else force_update is True
 
                 if doit:
-                    try:
-                        im = Image.open(image_filename)
-                        im.thumbnail(im.size)
-                        im.save(jpg_filename, "JPEG")
-                        utils.display_message(jpg_filename)
-                        print(jpg_filename)
-                    except Exception as inst:
-                        utils.display_message('Unable to generate ' + jpg_filename)
-                        utils.display_message(inst)
+                    hdimg_to_jpg(image_filename, jpg_filename)
 
 
 def href_attach_type(parent_tag, tag):
@@ -596,17 +601,61 @@ class OriginalPackage(object):
 
     def __init__(self, xml_filenames):
         self.xml_filenames = xml_filenames
+        self.articles_files = {}
         self.path = os.path.dirname(xml_filenames[0])
-        self.doc_items = {}
-        self.doc_files_info_items = {}
 
     def setUp(self):
+        self.organize_files()
+        self.convert_images()
+
         hdimages_to_jpeg(self.path, self.path, False)
+
+    def organize_files(self):
+        files = os.listdir(self.path)
+        for filename in self.xml_filenames:
+            xml_name = os.path.basename(filename)[:-4]
+            articles_files = [f for f in files if f.startswith(xml_name + '.') or f.startswith(xml_name + '-')]
+            self.articles_files[xml_name] = OrganizedArticlePackage(self.path, xml_name, article_files)
+            self.articles_files[xml_name].convert_images()
+
+
+class OrganizedArticlePackage(object):
+
+    def __init__(self, path, xml_name, files):
+        self.path = path
+        self.xml_name = xml_name
+        self.files = files
+
+    @property
+    def splitext(self):
+        return [os.path.splitext(f) for f in self.files]
+
+    @property
+    def png_files(self):
+        return [name for name, ext in self.splitext if ext in ['.png']]
+
+    @property
+    def jpg_files(self):
+        return [name for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
+
+    @property
+    def tif_files(self):
+        return [name for name, ext in self.splitext if ext in ['.tif', '.tiff']]
+
+    def convert_images(self):
+        for item in self.tif_files:
+            if not item in self.jpg_files and not item in self.png_files:
+                source_fname = item + '.tif'
+                if not source_fname in self.files:
+                    source_fname = item + '.tiff'
+                hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
+                if os.path.isfile(self.path + '/' + item + '.jpg'):
+                    self.files.append(item + '.jpg')
 
 
 class ArticlePkgMaker(object):
 
-    def __init__(self, doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
+    def __init__(self, organized_article_package, doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
         self.scielo_pkg_path = scielo_pkg_path
         self.version = version
         self.acron = acron
@@ -1021,8 +1070,9 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
     utils.display_message('\n' + _('Make package for {n} files.').format(n=str(len(xml_files))))
     n = '/' + str(len(xml_files))
     index = 0
-    related_files = {}
-    for xml_filename in xml_files:
+
+    for xml_name, organized_article_package in package.articles_files.items():
+        xml_filename = package.path + '/' + xml_name + '.xml'
 
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
@@ -1031,7 +1081,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         item_label = str(index) + n + ': ' + doc_files_info.xml_name
         utils.display_message(item_label)
 
-        article_pkg_maker = ArticlePkgMaker(doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
+        article_pkg_maker = ArticlePkgMaker(organized_article_package, doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
         doc, doc_files_info = article_pkg_maker.make_article_package()
 
         doc_files_info_items[doc_files_info.xml_name] = doc_files_info
