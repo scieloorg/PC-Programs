@@ -24,7 +24,7 @@ def new_name_for_pdf_filename(pdf_filename):
         return lang_suffix + '_' + pdf_filename.replace('-' + lang_suffix + '.pdf', '.pdf')
 
 
-class DocumentFiles(object):
+class ArticleWorkArea(object):
 
     def __init__(self, xml_filename, report_path, wrk_path=None):
         self.ctrl_filename = None

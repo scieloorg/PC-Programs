@@ -79,25 +79,30 @@ def get_href_content(graphic):
     return href
 
 
-def get_components_of_new_href(elem_name, elem_id, alternative_id):
+def get_mkp_href_data(elem_name, elem_id, alternative_id):
     prefixes = []
     possibilities = []
+    n = ''
     if elem_name == 'equation':
         prefixes.append('frm')
         prefixes.append('form')
         prefixes.append('eq')
-        possibilities.append((elem_id, prefixes))
+        n = get_number_from_element_id(elem_id)
     elif elem_name in ['tabwrap', 'equation', 'figgrp']:
         prefixes.append(elem_name[0])
         prefixes.append(elem_name[0:3])
-        possibilities.append((elem_id, prefixes))
+        n = get_number_from_element_id(elem_id)
     else:
         prefixes.append('img')
         prefixes.append('image')
         alternative_id += 1
-        alt_id = str(alternative_id)
-        possibilities.append((alt_id, prefixes))
-    return (possibilities, alternative_id)
+        n = str(alternative_id)
+
+    for prefix in prefixes:
+        possibilities.append(prefix + n)
+        if n != '':
+            possibilities.append(prefix + '0' + n)
+    return (n, possibilities, alternative_id)
 
 
 def xpm_version():
@@ -247,22 +252,25 @@ class SGMLHTML(object):
 
 class SGMLXML(object):
 
-    def __init__(self, sgmxml_filename, sgmlxml_content, xml_name, src_path, html_filename):
+    def __init__(self, article_files, sgmlxml_content, html_filename):
         self.sgml_content = sgmlxml_content
-        self.sgmlhtml = SGMLHTML(xml_name, html_filename)
-        self.xml_name = xml_name
-        self.src_path = src_path
-        self.sgmxml_filename = sgmxml_filename
+        self.article_files = article_files
+        self.xml_name = self.article_files.xml_name
+        self.src_path = self.article_files.path
+        self.sgmxml_filename = self.article_files.xml_filename
+
+        self.sgmlhtml = SGMLHTML(self.xml_name, html_filename)
         self.sorted_graphic_href_items = []
         self.src_folder_graphics = []
         self.xml_content = None
+        self.IMG_EXTENSIONS = ('.tiff', '.tif', '.eps', '.jpg', '.png')
 
     def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
         xpm_process_logger.register('SGMLXML.generate_xml')
         self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
         self.insert_mml_namespace()
-        self.identify_unknown_href_items()
+        self.fix_mkp_href_values()
         self.replace_fontsymbols()
 
         for style in ['italic', 'bold', 'sup', 'sub']:
@@ -306,7 +314,7 @@ class SGMLXML(object):
                 self.sgml_content = self.sgml_content.replace(item, html_fontsymbol_items[i])
                 i += 1
 
-    def identify_unknown_href_items(self):
+    def fix_mkp_href_values(self):
         self.sgml_content = self.sgml_content.replace('href=&quot;?', 'href="?')
         self.sgml_content = self.sgml_content.replace('"">', '">')
         self.sgml_content = self.sgml_content.replace('href=""?', 'href="?')
@@ -331,7 +339,7 @@ class SGMLXML(object):
                     else:
                         href = get_href_content(graphic)
                         elem_name, elem_id = get_previous_element_which_has_id_attribute(parts[i - 1])
-                        src_href, possible_href_names, alternative_id = self.find_href_file_in_src_folder(elem_name, elem_id, alternative_id)
+                        src_href, possible_href_names, alternative_id = self.select_href_file_from_src_folder(elem_name, elem_id, alternative_id)
                         renamed_href = src_href
                         if src_href is not None:
                             self.src_folder_graphics.append(src_href)
@@ -347,42 +355,28 @@ class SGMLXML(object):
                 new_parts.append(part)
             self.sgml_content = ''.join(new_parts)
 
-    def find_href_file_in_src_folder(self, elem_name, elem_id, alternative_id):
+    def select_href_file_from_src_folder(self, elem_name, elem_id, alternative_id):
         filenames = [self.xml_name]
         if 'v' in self.xml_name and self.xml_name.startswith('a'):
             filenames.append(self.xml_name[:self.xml_name.find('v')])
-
         found = []
         possible_href_names = []
-
-        possibilities, alternative_id = get_components_of_new_href(elem_name, elem_id, alternative_id)
-        for name in filenames:
-            for possibility in possibilities:
-                element_id, prefixes = possibility
-                i = 0
-                stop = False
-                while i < len(element_id) and not stop:
-                    stop = element_id[i].isdigit()
-                    i += 1
-                if stop:
-                    n = element_id[i-1:]
-                else:
-                    n = ''
-                if n != '':
-                    n = str(int(n))
-                    for prefix in prefixes:
-                        for number in [n, '0' + n]:
-                            for ext in ['.tiff', '.tif', '.eps', '.jpg', '.png']:
-                                href = name + prefix + number + ext
-                                possible_href_names.append(href)
-                                if os.path.isfile(self.src_path + '/' + href):
-                                    found.append(href)
-                else:
-                    for ext in ['.tiff', '.tif', '.eps', '.jpg', '.png']:
-                        href = name + elem_id + ext
+        number, possibilities, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
+        if number != '':
+            for name in filenames:
+                for prefix_number in possibilities:
+                    for ext in self.IMG_EXTENSIONS:
+                        href = name + prefix_number + ext
                         possible_href_names.append(href)
-                        if os.path.isfile(self.src_path + '/' + href):
+                        if href in self.article_files.files:
                             found.append(href)
+        else:
+            for name in filenames:
+                for ext in self.IMG_EXTENSIONS:
+                    href = name + elem_id + ext
+                    possible_href_names.append(href)
+                    if href in self.article_files.files:
+                        found.append(href)
         new_href = None if len(found) == 0 else found[0]
         return (new_href, list(set(possible_href_names)), alternative_id)
 
@@ -606,25 +600,33 @@ class OriginalPackage(object):
 
     def setUp(self):
         self.organize_files()
-        self.convert_images()
-
         hdimages_to_jpeg(self.path, self.path, False)
 
     def organize_files(self):
         files = os.listdir(self.path)
         for filename in self.xml_filenames:
-            xml_name = os.path.basename(filename)[:-4]
-            articles_files = [f for f in files if f.startswith(xml_name + '.') or f.startswith(xml_name + '-')]
-            self.articles_files[xml_name] = OrganizedArticlePackage(self.path, xml_name, article_files)
-            self.articles_files[xml_name].convert_images()
+            xml_filename = os.path.basename(filename)
+            fname = xml_filename[:-4]
+            if '.sgm' in fname:
+                fname = fname[:-4]
+                article_files = [f for f in files if f.startswith(fname)]
+            else:
+                article_files = [f for f in files if f.startswith(fname + '-') or f.startswith(fname + '.')]
+            self.articles_files[fname] = ArticlePkgFiles(self.path, xml_filename, fname, article_files)
+            self.articles_files[fname].convert_images()
 
 
-class OrganizedArticlePackage(object):
+class ArticlePkgFiles(object):
 
-    def __init__(self, path, xml_name, files):
+    def __init__(self, path, filename, xml_name, files):
         self.path = path
         self.xml_name = xml_name
         self.files = files
+        self.filename = filename
+
+    @property
+    def xml_filename(self):
+        return self.path + '/' + self.filename
 
     @property
     def splitext(self):
@@ -655,7 +657,8 @@ class OrganizedArticlePackage(object):
 
 class ArticlePkgMaker(object):
 
-    def __init__(self, organized_article_package, doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
+    def __init__(self, article_files, doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
+        self.article_files = article_files
         self.scielo_pkg_path = scielo_pkg_path
         self.version = version
         self.acron = acron
@@ -664,10 +667,11 @@ class ArticlePkgMaker(object):
         self.content = fs_utils.read_file(doc_files_info.xml_filename)
         self.text_messages = []
         self.doc = None
-        self.local_href_items = []
+        self.replacements_href_values = []
         self.replacements_related_files_items = []
         self.replacements_href_files_items = []
-        self.href_files_items_not_found_in_src_folder = []
+
+        self.missing_href_files = []
         self.local_href_names = []
         self.version_info = xml_versions.DTDFiles('scielo', version)
         self.sgmlxml = None
@@ -678,7 +682,7 @@ class ArticlePkgMaker(object):
 
     def make_article_package(self):
         self.normalize_xml_content()
-        self.normalize_package_name()
+        self.normalize_filenames()
         self.pack_article_files()
 
         fs_utils.write_file(self.doc_files_info.err_filename, '\n'.join(self.text_messages))
@@ -733,7 +737,7 @@ class ArticlePkgMaker(object):
             self.xml, self.e = xml_utils.load_xml(self.content)
 
     def normalize_sgmlxml(self):
-        self.sgmlxml = SGMLXML(self.doc_files_info.xml_filename, self.content, self.doc_files_info.xml_name, self.doc_files_info.xml_path, self.doc_files_info.html_filename)
+        self.sgmlxml = SGMLXML(self.article_files, self.content, self.doc_files_info.html_filename)
         self.content = self.sgmlxml.generate_xml(self.version)
 
     def replace_mimetypes(self):
@@ -775,7 +779,7 @@ class ArticlePkgMaker(object):
         return r
 
     def report_images_in_the_package(self):
-        #self.local_href_items
+        #self.replacements_href_values
         #self.sgmlxml.sorted_graphic_href_items = []
         #self.sgmlxml.src_folder_graphics = []
         #(elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
@@ -785,7 +789,7 @@ class ArticlePkgMaker(object):
         rows.append(html_reports.tag('p', _('The images are presented in their original dimensions and in the same order they are found in the Markup document.')))
 
         rows.append('<ol>')
-        for name, renamed in self.local_href_items:
+        for name, renamed in self.replacements_href_values:
             rows.append('<li>')
             rows.append(html_reports.tag('h4', renamed))
 
@@ -804,7 +808,7 @@ class ArticlePkgMaker(object):
         return ''.join(rows)
 
     def report_comparison_between_markup_and_src_images(self):
-        #self.local_href_items
+        #self.replacements_href_values
         #self.sgmlxml.sorted_graphic_href_items = []
         #self.sgmlxml.src_folder_graphics = []
         #(elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
@@ -813,7 +817,7 @@ class ArticlePkgMaker(object):
 
             rows.append(html_reports.tag('h2', _('Images Report')))
             rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in the package.')))
-            replacements = {curr_href: new_href for curr_href, new_href in self.local_href_items}
+            replacements = {curr_href: new_href for curr_href, new_href in self.replacements_href_values}
             #print(replacements)
             #print(self.sgmlxml.sorted_graphic_href_items)
             #print(self.sgmlxml.src_folder_graphics)
@@ -861,21 +865,21 @@ class ArticlePkgMaker(object):
             rows.append('<o/l>')
         return ''.join(rows)
 
-    def normalize_package_name(self):
-        xpm_process_logger.register('normalize_package_name')
+    def normalize_filenames(self):
+        xpm_process_logger.register('normalize_filenames')
         self.doc_files_info.new_xml_path = self.scielo_pkg_path
         self.doc = article.Article(self.xml, self.doc_files_info.xml_name)
         self.doc_files_info.new_name = self.doc_files_info.xml_name
         if self.doc.tree is not None:
             if self.doc_files_info.is_sgmxml:
-                self.doc_files_info.new_name = self.generate_doc_files_info_new_name()
-            self.replace_href_items()
+                self.doc_files_info.new_name = self.generate_normalized_package_name()
+            self.normalize_href_values()
         self.doc.new_prefix = self.doc_files_info.new_name
         self.doc_files_info.new_xml_filename = self.doc_files_info.new_xml_path + '/' + self.doc_files_info.new_name + '.xml'
 
-    def generate_doc_files_info_new_name(self):
+    def generate_normalized_package_name(self):
         #doc, acron, self.doc_files_info.xml_name
-        xpm_process_logger.register('generate_doc_files_info_new_name')
+        xpm_process_logger.register('generate_normalized_package_name')
         vol, issueno, fpage, seq, elocation_id, order, doi = self.doc.volume, self.doc.number, self.doc.fpage, self.doc.fpage_seq, self.doc.elocation_id, self.doc.order, self.doc.doi
         issns = [issn for issn in [self.doc.e_issn, self.doc.print_issn] if issn is not None]
         if len(issns) > 0:
@@ -901,17 +905,17 @@ class ArticlePkgMaker(object):
         r = '-'.join([part for part in parts if part is not None and not part == ''])
         return r
 
-    def replace_href_items(self):
+    def normalize_href_values(self):
         href_items = [href for href in self.doc.hrefs if href.is_internal_file]
         if self.doc_files_info.is_sgmxml:
             for href in href_items:
-                self.local_href_items.append((href.src, self.get_new_href(href)))
+                self.replacements_href_values.append((href.src, self.get_normalized_href_value(href)))
         else:
             for href in href_items:
-                self.local_href_items.append((href.src, self.add_extension(href.src, href.src)))
+                self.replacements_href_values.append((href.src, self.add_extension(href.src, href.src)))
         changed = False
-        if len(self.local_href_items) > 0:
-            for current, new in self.local_href_items:
+        if len(self.replacements_href_values) > 0:
+            for current, new in self.replacements_href_values:
                 if current != new:
                     utils.display_message(current + ' => ' + new)
                     self.content = self.content.replace('href="' + current, 'href="' + new)
@@ -920,7 +924,7 @@ class ArticlePkgMaker(object):
             self.xml, self.e = xml_utils.load_xml(self.content)
             self.doc = article.Article(self.xml, self.doc_files_info.xml_name)
 
-    def get_new_href(self, href):
+    def get_normalized_href_value(self, href):
         href_type = href_attach_type(href.parent.tag, href.element.tag)
         if href.id is None:
             href_name = href.src.replace(self.doc_files_info.xml_name, '')
@@ -962,7 +966,7 @@ class ArticlePkgMaker(object):
 
         self.replacements_related_files_items = []
         self.replacements_href_files_items = []
-        self.href_files_items_not_found_in_src_folder = []
+        self.missing_href_files = []
         self.local_href_names = []
         self.eliminate_old_package_files()
 
@@ -970,43 +974,34 @@ class ArticlePkgMaker(object):
             self.text_messages.append(self.e)
             self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.doc_files_info.new_xml_filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily.'))
         else:
-            src_files = [f for f in os.listdir(self.doc_files_info.xml_path) if not f.endswith('.xml')]
-            self.pack_article_href_files(src_files)
-            self.pack_article_related_files(src_files)
+            self.pack_article_href_files()
+            self.pack_article_related_files()
             self.text_messages.append(self.generate_packed_files_report())
 
         self.pack_article_xml_file()
         xpm_process_logger.register('pack_article_files: fim')
 
-    def pack_article_href_files(self, src_files):
+    def pack_article_href_files(self):
         xpm_process_logger.register('pack_article_href_files: inicio')
-
-        in_src_folder = os.listdir(self.doc_files_info.xml_path)
-
         self.replacements_href_files_items = []
-        self.href_files_items_not_found_in_src_folder = []
-        for original_href, changed_href in self.local_href_items:
+        self.missing_href_files = []
+        for original_href, normalized_href in self.replacements_href_values:
             original_href_name, original_href_ext = os.path.splitext(original_href)
-            changed_href_name, changed_href_ext = os.path.splitext(changed_href)
-
+            normalized_href_name, normalized_href_ext = os.path.splitext(normalized_href)
             self.local_href_names.append(original_href_name)
-
-            original_and_changed_fnames = [(src_file, src_file.replace(original_href_name, changed_href_name)) for src_file in src_files if src_file.startswith(original_href_name + '.')]
-
-            for original, changed in original_and_changed_fnames:
-                source_fname = changed if changed in in_src_folder else original
-                self.replacements_href_files_items.append((source_fname, changed))
-                shutil.copyfile(self.doc_files_info.xml_path + '/' + source_fname, self.scielo_pkg_path + '/' + changed)
-            if len(original_and_changed_fnames) == 0:
-                self.href_files_items_not_found_in_src_folder.append((original_href, changed_href))
-
+            original2normalized = [(src_file, src_file.replace(original_href_name, normalized_href_name)) for src_file in self.article_files.files if src_file.startswith(original_href_name + '.')]
+            for original, normalized in original2normalized:
+                self.replacements_href_files_items.append((original, normalized))
+                shutil.copyfile(self.doc_files_info.xml_path + '/' + original, self.scielo_pkg_path + '/' + normalized)
+            if len(original2normalized) == 0:
+                self.missing_href_files.append((original_href, normalized_href))
         xpm_process_logger.register('pack_article_href_files: fim')
 
-    def pack_article_related_files(self, src_files):
+    def pack_article_related_files(self):
         xpm_process_logger.register('pack_article_related_files: inicio')
         self.replacements_related_files_items = []
-        for f in src_files:
-            source_filename = self.doc_files_info.xml_path + '/' + f
+        for f in self.article_files.files:
+            source_filename = self.article_files.path + '/' + f
             dest_filename = self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)
             if f.startswith(self.doc_files_info.xml_name + '.'):
                 self.replacements_related_files_items.append((f, dest_filename))
@@ -1042,8 +1037,8 @@ class ArticlePkgMaker(object):
 
         log.append(message_file_list(_('Total of related files'), format(self.replacements_related_files_items)))
         log.append(message_file_list(_('Total of files in package'), format(self.replacements_href_files_items)))
-        log.append(message_file_list(_('Total of @href in XML'), format(self.local_href_items)))
-        log.append(message_file_list(_('Total of files not found in package'), format(self.href_files_items_not_found_in_src_folder)))
+        log.append(message_file_list(_('Total of @href in XML'), format(self.replacements_href_values)))
+        log.append(message_file_list(_('Total of files not found in package'), format(self.missing_href_files)))
 
         return '\n'.join(log)
 
@@ -1060,34 +1055,31 @@ class ArticlePkgMaker(object):
 
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
-
     package = OriginalPackage(xml_files)
     package.setUp()
 
     doc_items = {}
-    doc_files_info_items = {}
+    article_work_area_items = {}
     xpm_process_logger.register('make packages')
     utils.display_message('\n' + _('Make package for {n} files.').format(n=str(len(xml_files))))
     n = '/' + str(len(xml_files))
     index = 0
 
-    for xml_name, organized_article_package in package.articles_files.items():
-        xml_filename = package.path + '/' + xml_name + '.xml'
-
-        doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, wrk_path)
-        doc_files_info.clean()
+    for xml_name, article_files in package.articles_files.items():
+        article_work_area = serial_files.ArticleWorkArea(article_files.xml_filename, report_path, wrk_path)
+        article_work_area.clean()
 
         index += 1
-        item_label = str(index) + n + ': ' + doc_files_info.xml_name
+        item_label = str(index) + n + ': ' + article_work_area.xml_name
         utils.display_message(item_label)
 
-        article_pkg_maker = ArticlePkgMaker(organized_article_package, doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
-        doc, doc_files_info = article_pkg_maker.make_article_package()
+        article_pkg_maker = ArticlePkgMaker(article_files, article_work_area, scielo_pkg_path, version, acron, is_db_generation)
+        doc, article_work_area = article_pkg_maker.make_article_package()
 
-        doc_files_info_items[doc_files_info.xml_name] = doc_files_info
-        doc_items[doc_files_info.xml_name] = doc
+        article_work_area_items[article_work_area.xml_name] = article_work_area
+        doc_items[article_work_area.xml_name] = doc
 
-    return (doc_items, doc_files_info_items)
+    return (doc_items, article_work_area_items)
 
 
 def make_pmc_report(articles, doc_files_info_items):
@@ -1392,3 +1384,17 @@ def make_pkg_item_zip(xml_filename, dest_path):
         zipf.close()
     except:
         pass
+
+
+def get_number_from_element_id(element_id):
+    n = ''
+    i = 0
+    is_letter = True
+    while i < len(element_id) and is_letter:
+        is_letter = not element_id[i].isdigit()
+        i += 1
+    if not is_letter:
+        n = element_id[i-1:]
+        if n != '':
+            n = str(int(n))
+    return n
