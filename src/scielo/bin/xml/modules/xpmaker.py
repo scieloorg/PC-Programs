@@ -668,11 +668,11 @@ class ArticlePkgMaker(object):
         self.text_messages = []
         self.doc = None
         self.replacements_href_values = []
-        self.replacements_related_files_items = []
-        self.replacements_href_files_items = []
+        self.replacements_related_files_items = {}
+        self.replacements_href_files_items = {}
 
         self.missing_href_files = []
-        self.local_href_names = []
+        self.original_href_filenames = []
         self.version_info = xml_versions.DTDFiles('scielo', version)
         self.sgmlxml = None
         self.xml = None
@@ -964,10 +964,6 @@ class ArticlePkgMaker(object):
     def pack_article_files(self):
         xpm_process_logger.register('pack_article_files: inicio')
 
-        self.replacements_related_files_items = []
-        self.replacements_href_files_items = []
-        self.missing_href_files = []
-        self.local_href_names = []
         self.eliminate_old_package_files()
 
         if self.doc.tree is None:
@@ -983,15 +979,14 @@ class ArticlePkgMaker(object):
 
     def pack_article_href_files(self):
         xpm_process_logger.register('pack_article_href_files: inicio')
-        self.replacements_href_files_items = []
+        self.replacements_href_files_items = {}
         self.missing_href_files = []
         for original_href, normalized_href in self.replacements_href_values:
             original_href_name, original_href_ext = os.path.splitext(original_href)
             normalized_href_name, normalized_href_ext = os.path.splitext(normalized_href)
-            self.local_href_names.append(original_href_name)
             original2normalized = [(src_file, src_file.replace(original_href_name, normalized_href_name)) for src_file in self.article_files.files if src_file.startswith(original_href_name + '.')]
             for original, normalized in original2normalized:
-                self.replacements_href_files_items.append((original, normalized))
+                self.replacements_href_files_items[original] = normalized
                 shutil.copyfile(self.doc_files_info.xml_path + '/' + original, self.scielo_pkg_path + '/' + normalized)
             if len(original2normalized) == 0:
                 self.missing_href_files.append((original_href, normalized_href))
@@ -999,17 +994,16 @@ class ArticlePkgMaker(object):
 
     def pack_article_related_files(self):
         xpm_process_logger.register('pack_article_related_files: inicio')
-        self.replacements_related_files_items = []
+        self.replacements_related_files_items = {}
         for f in self.article_files.files:
             source_filename = self.article_files.path + '/' + f
             dest_filename = self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)
             if f.startswith(self.doc_files_info.xml_name + '.'):
-                self.replacements_related_files_items.append((f, dest_filename))
+                self.replacements_related_files_items[f] = dest_filename
                 shutil.copyfile(source_filename, dest_filename)
             elif f.startswith(self.doc_files_info.xml_name + '-'):
-                item, ext = os.path.splitext(f)
-                if not item in self.local_href_names:
-                    self.replacements_related_files_items.append((f, dest_filename))
+                if not f in self.replacements_href_files_items.keys():
+                    self.replacements_related_files_items[f] = dest_filename
                     shutil.copyfile(source_filename, dest_filename)
         xpm_process_logger.register('pack_article_related_files: fim')
 
@@ -1018,6 +1012,9 @@ class ArticlePkgMaker(object):
 
         def format(files_list):
             return ['   ' + c + ' => ' + n for c, n in files_list]
+
+        def format2(files_list):
+            return ['   ' + k + ' => ' + files_list[k] for k in sorted(files_list.keys())]
 
         xml_name = self.doc_files_info.xml_name
         new_name = self.doc_files_info.new_name
@@ -1035,8 +1032,8 @@ class ArticlePkgMaker(object):
             log.append(_('Source XML name') + ': ' + xml_name)
         log.append(_('Package XML name') + ': ' + new_name)
 
-        log.append(message_file_list(_('Total of related files'), format(self.replacements_related_files_items)))
-        log.append(message_file_list(_('Total of files in package'), format(self.replacements_href_files_items)))
+        log.append(message_file_list(_('Total of related files'), format2(self.replacements_related_files_items)))
+        log.append(message_file_list(_('Total of files in package'), format2(self.replacements_href_files_items)))
         log.append(message_file_list(_('Total of @href in XML'), format(self.replacements_href_values)))
         log.append(message_file_list(_('Total of files not found in package'), format(self.missing_href_files)))
 
