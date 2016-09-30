@@ -1169,16 +1169,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="doc|subdoc|docresp" mode="author-notes">
-		<xsl:variable name="fnauthors"><xsl:apply-templates select="fngrp[@fntype]|.//fn[@fntype]" mode="fnauthors"/></xsl:variable>
+		<xsl:variable name="fnauthors"><xsl:apply-templates select="fngrp[not(fn)]|.//fn" mode="fnauthors"/></xsl:variable>
 		<xsl:if test="corresp or $fnauthors!=''">
 			<author-notes>
 				<xsl:apply-templates select="corresp"/>
-				<xsl:apply-templates select="fngrp[@fntype]|.//fn[@fntype]" mode="fnauthors"/>
+				<xsl:apply-templates select="fngrp[not(fn)]|.//fn" mode="fnauthors"/>
 			</author-notes>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="fngrp[@fntype]|fn[@fntype]" mode="fnauthors">
+	<xsl:template match="fngrp[not(fn)]|fn" mode="fnauthors">
 		<xsl:choose>
 			<xsl:when
 				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)"/>
@@ -1188,7 +1188,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="fngrp[@fntype]|fn[@fntype]" mode="notfnauthors">
+	<xsl:template match="fngrp[not(fn)]|fn" mode="notfnauthors">
 		<xsl:choose>
 			<xsl:when
 				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype) or not(@fntype)">
@@ -1584,7 +1584,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="doc|subdoc|docresp" mode="back">
 		<xsl:variable name="fngrptest">
-			<xsl:apply-templates select="fngrp[@fntype] | .//fn[@fntype]" mode="notfnauthors"/>
+			<xsl:apply-templates select="fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
 		</xsl:variable>
 		
 		<xsl:if test="ack or $fngrptest!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
@@ -1593,7 +1593,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
 				<xsl:if test="$fngrptest!=''">
 						<fn-group>
-							<xsl:apply-templates select="sectitle| fngrp[@fntype]|.//fn[@fntype]" mode="notfnauthors"/>
+							<xsl:apply-templates select="sectitle| fngrp[not(fn)]|.//fn" mode="notfnauthors"/>
 						</fn-group>
 				</xsl:if>
 				<xsl:apply-templates select="glossary | appgrp"/>				
@@ -1605,6 +1605,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<title><xsl:apply-templates select="*|text()"></xsl:apply-templates></title>
 	</xsl:template>
 	
+	<xsl:template match="fngrp[not(fn)]/fn">
+			<xsl:apply-templates select="@*|text()"></xsl:apply-templates>
+	</xsl:template>
 	<xsl:template match="fngrp/fn">
 		<fn>
 			<xsl:apply-templates select="@*|text()"></xsl:apply-templates>
@@ -1621,29 +1624,41 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 		<xsl:apply-templates select="*[@standard]"/>
 		<xsl:variable name="fngrptest">
-			<xsl:apply-templates select="fngrp[@fntype] | .//fn[@fntype]" mode="notfnauthors"/>
+			<xsl:apply-templates select="fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
 		</xsl:variable>
 		<xsl:if test="$fngrptest!=''">
 				<fn-group>
-					<xsl:apply-templates select="sectitle | fngrp[@fntype] | .//fn[@fntype]" mode="notfnauthors"/>
+					<xsl:apply-templates select="sectitle | fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
 				</fn-group>
 		</xsl:if>
 		<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>						
 	</xsl:template>
 	
 	<xsl:template match="fngrp/@label|fn/@label">
-		<label><xsl:value-of select="normalize-space(.)"/></label>
+		<xsl:if test="not(../label)">
+			<label><xsl:value-of select="normalize-space(.)"/></label>
+		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="fngrp[@fntype]|fn[@fntype]">
+	<xsl:template match="fngrp[not(fn)]|fn">
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
 			<xsl:if test="not(label) and not(@label) and @fntype='other'">
 				<label><xsl:value-of select="string(number(substring-after(@id,'fn')))"/></label>
 			</xsl:if>
-			<p>
-				<xsl:apply-templates select="*[name()!='label']|text()"/>
-			</p>
+			<xsl:choose>
+				<xsl:when test="fn">
+					<p>
+						<xsl:apply-templates select="*[name()!='label']|text()"/>
+					</p>
+				</xsl:when>
+				<xsl:otherwise>
+					<p>
+						<xsl:apply-templates select="*[name()!='label']|text()"/>
+					</p>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 		</fn>
 	</xsl:template>
 	
