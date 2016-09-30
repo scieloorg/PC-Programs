@@ -12,6 +12,7 @@ SPS_MIN_DATE = datetime(2012, 06, 01)
 SPS_MIN_DATEISO = 20120601
 
 SPS_versions_expiration_dates = {
+                'sps-1.5': '20171001',
                 'sps-1.4': '20170401',
                 'sps-1.3': '20160901',
                 'sps-1.2': '20160301',
@@ -38,7 +39,7 @@ REFTYPE_AND_TAG_ITEMS = {'aff': ['aff'], 'app': ['app'], 'author-notes': ['fn'],
 DOCTOPIC = {
                 'research-article': 'oa',
                 'editorial': 'ed',
-                'abstract': 'ab',
+                'abstract': 'zz',
                 'announcement': 'zz',
                 'article-commentary': 'co',
                 'case-report': 'cr',
@@ -50,25 +51,25 @@ DOCTOPIC = {
                 'books-received': 'zz',
                 'brief-report': 'rn',
                 'calendar': 'zz',
-                'clinical-trial': 'ct',
+                'clinical-trial': 'oa',
                 'collection': 'zz',
                 'correction': 'er',
-                'discussion': 'em',
-                'dissertation': 'em',
-                'editorial-material': 'em',
+                'discussion': 'ed',
+                'dissertation': 'ed',
+                'editorial-material': 'ed',
                 'in-brief': 'pr',
-                'introduction': 'em',
+                'introduction': 'ed',
                 'meeting-report': 'zz',
                 'news': 'zz',
                 'obituary': 'zz',
                 'oration': 'zz',
-                'partial-retraction': 're',
-                'product-review': 'rc',
-                'reply': 'zz',
+                'partial-retraction': 'partial-retraction',
+                'product-review': 'zz',
+                'reply': 'reply',
                 'reprint': 'zz',
                 'retraction': 're',
                 'translation': 'zz',
-                'technical-report': 'tr',
+                'technical-report': 'oa',
                 'other': 'zz',
 }
 
@@ -77,18 +78,17 @@ DOCTOPIC_IN_USE = [
     'book-review', 
     'brief-report', 
     'case-report', 
-    'clinical-trial', 
     'correction', 
     'editorial', 
-    'editorial-material', 
     'in-brief', 
     'letter', 
     'other', 
     'rapid-communication', 
     'research-article', 
+    'partial-retraction', 
     'retraction', 
+    'reply', 
     'review-article', 
-    'technical-report', 
     ]
 
 AUTHORS_REQUIRED_FOR_DOCTOPIC = [
@@ -107,15 +107,12 @@ AUTHORS_REQUIRED_FOR_DOCTOPIC = [
 ABSTRACT_REQUIRED_FOR_DOCTOPIC = [
     'brief-report', 
     'case-report', 
-    'clinical-trial', 
     'research-article', 
     'review-article', 
-    'technical-report', 
     ]
 
 ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
     'editorial', 
-    'editorial-material', 
     'in-brief', 
     'letter', 
     'other', 
@@ -124,11 +121,9 @@ ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
 REFS_REQUIRED_FOR_DOCTOPIC = [
     'brief-report', 
     'case-report', 
-    'clinical-trial', 
     'rapid-communication', 
     'research-article', 
     'review-article', 
-    'technical-report', 
     ]
 
 TOC_SECTIONS = { 

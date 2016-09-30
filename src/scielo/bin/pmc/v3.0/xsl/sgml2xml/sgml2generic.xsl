@@ -451,42 +451,46 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:attribute name="article-type">
 			<xsl:choose>
 				<xsl:when test=".='oa'">research-article</xsl:when>
-				<xsl:when test=".='ab'">abstract</xsl:when>
-				<xsl:when test=".='an'">announcement</xsl:when>
 				<xsl:when test=".='co'">article-commentary</xsl:when>
 				<xsl:when test=".='cr'">case-report</xsl:when>
-				<xsl:when test=".='ct'">clinical-trial</xsl:when>
+				<xsl:when test=".='ct'">research-article</xsl:when>
 				<xsl:when test=".='ed'">editorial</xsl:when>
+				<xsl:when test=".='em'">editorial</xsl:when>
+				<xsl:when test=".='er'">correction</xsl:when>
 				<xsl:when test=".='le'">letter</xsl:when>
+				<xsl:when test=".='pr'">in-brief</xsl:when>
 				<xsl:when test=".='ra'">review-article</xsl:when>
-				<xsl:when test=".='sc'">rapid-communication</xsl:when>
-				<xsl:when test=".='??'">addendum</xsl:when>
 				<xsl:when test=".='rc'">book-review</xsl:when>
-				<xsl:when test=".='??'">books-received</xsl:when>
+				<xsl:when test=".='re'">retraction</xsl:when>
 				<xsl:when test=".='rn'">brief-report</xsl:when>
+				<xsl:when test=".='sc'">rapid-communication</xsl:when>
+				<xsl:when test=".='tr'">research-article</xsl:when><!-- technical report -->
+				<xsl:when test=".='zz'">other</xsl:when>
+				
+				<xsl:when test=".='partial-retraction'">partial-retraction</xsl:when>
+				<xsl:when test=".='reply'">reply</xsl:when>
+				
+				<xsl:when test=".='ab'">other</xsl:when>
+				<xsl:when test=".='an'">other</xsl:when>
+				<xsl:when test=".='??'">other</xsl:when>
+				<xsl:when test=".='??'">addendum</xsl:when>
+				<xsl:when test=".='??'">books-received</xsl:when>
 				<xsl:when test=".='??'">calendar</xsl:when>
 				<xsl:when test=".='??'">collection</xsl:when>
-				<xsl:when test=".='er'">correction</xsl:when>
 				<xsl:when test=".='??'">discussion</xsl:when>
 				<xsl:when test=".='??'">dissertation</xsl:when>
-				<xsl:when test=".='pr'">in-brief</xsl:when>
 				<xsl:when test=".='??'">introduction</xsl:when>
 				<xsl:when test=".='??'">meeting-report</xsl:when>
 				<xsl:when test=".='pr'">news</xsl:when>
 				<xsl:when test=".='??'">obituary</xsl:when>
 				<xsl:when test=".='??'">oration</xsl:when>
-				<xsl:when test=".='re'">partial-retraction</xsl:when>
 				<xsl:when test=".='rc'">product-review</xsl:when>
-				<xsl:when test=".='??'">reply</xsl:when>
 				<xsl:when test=".='??'">reprint</xsl:when>
-				<xsl:when test=".='re'">retraction</xsl:when>
 				<xsl:when test=".='??'">translation</xsl:when>
 				<xsl:when test=".='ax'">other</xsl:when>
-				<xsl:when test=".='in'">editorial-material</xsl:when><!-- interview -->
+				<xsl:when test=".='in'">editorial</xsl:when><!-- interview -->
 				<xsl:when test=".='mt'">research-article</xsl:when><!-- methodology -->
-				<xsl:when test=".='pv'">editorial-material</xsl:when><!-- ponto de vista -->
-				<xsl:when test=".='tr'">technical-report</xsl:when><!-- technical report -->
-				<xsl:when test=".='zz'">other</xsl:when>
+				<xsl:when test=".='pv'">editorial</xsl:when><!-- ponto de vista -->
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
@@ -1165,16 +1169,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="doc|subdoc|docresp" mode="author-notes">
-		<xsl:variable name="fnauthors"><xsl:apply-templates select="fngrp[@fntype]|.//fn[@fntype]" mode="fnauthors"/></xsl:variable>
+		<xsl:variable name="fnauthors"><xsl:apply-templates select="fngrp[not(fn)]|.//fn" mode="fnauthors"/></xsl:variable>
 		<xsl:if test="corresp or $fnauthors!=''">
 			<author-notes>
 				<xsl:apply-templates select="corresp"/>
-				<xsl:apply-templates select="fngrp[@fntype]|.//fn[@fntype]" mode="fnauthors"/>
+				<xsl:apply-templates select="fngrp[not(fn)]|.//fn" mode="fnauthors"/>
 			</author-notes>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="fngrp[@fntype]|fn[@fntype]" mode="fnauthors">
+	<xsl:template match="fngrp[not(fn)]|fn" mode="fnauthors">
 		<xsl:choose>
 			<xsl:when
 				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)"/>
@@ -1184,7 +1188,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="fngrp[@fntype]|fn[@fntype]" mode="notfnauthors">
+	<xsl:template match="fngrp[not(fn)]|fn" mode="notfnauthors">
 		<xsl:choose>
 			<xsl:when
 				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype) or not(@fntype)">
@@ -1580,7 +1584,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="doc|subdoc|docresp" mode="back">
 		<xsl:variable name="fngrptest">
-			<xsl:apply-templates select="fngrp[@fntype] | .//fn[@fntype]" mode="notfnauthors"/>
+			<xsl:apply-templates select="fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
 		</xsl:variable>
 		
 		<xsl:if test="ack or $fngrptest!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
@@ -1589,7 +1593,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
 				<xsl:if test="$fngrptest!=''">
 						<fn-group>
-							<xsl:apply-templates select="sectitle| fngrp[@fntype]|.//fn[@fntype]" mode="notfnauthors"/>
+							<xsl:apply-templates select="sectitle| fngrp[not(fn)]|.//fn" mode="notfnauthors"/>
 						</fn-group>
 				</xsl:if>
 				<xsl:apply-templates select="glossary | appgrp"/>				
@@ -1601,6 +1605,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<title><xsl:apply-templates select="*|text()"></xsl:apply-templates></title>
 	</xsl:template>
 	
+	<xsl:template match="fngrp[not(fn)]/fn">
+			<xsl:apply-templates select="@*|text()"></xsl:apply-templates>
+	</xsl:template>
 	<xsl:template match="fngrp/fn">
 		<fn>
 			<xsl:apply-templates select="@*|text()"></xsl:apply-templates>
@@ -1617,29 +1624,41 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 		<xsl:apply-templates select="*[@standard]"/>
 		<xsl:variable name="fngrptest">
-			<xsl:apply-templates select="fngrp[@fntype] | .//fn[@fntype]" mode="notfnauthors"/>
+			<xsl:apply-templates select="fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
 		</xsl:variable>
 		<xsl:if test="$fngrptest!=''">
 				<fn-group>
-					<xsl:apply-templates select="sectitle | fngrp[@fntype] | .//fn[@fntype]" mode="notfnauthors"/>
+					<xsl:apply-templates select="sectitle | fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
 				</fn-group>
 		</xsl:if>
 		<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>						
 	</xsl:template>
 	
 	<xsl:template match="fngrp/@label|fn/@label">
-		<label><xsl:value-of select="normalize-space(.)"/></label>
+		<xsl:if test="not(../label)">
+			<label><xsl:value-of select="normalize-space(.)"/></label>
+		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="fngrp[@fntype]|fn[@fntype]">
+	<xsl:template match="fngrp[not(fn)]|fn">
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
 			<xsl:if test="not(label) and not(@label) and @fntype='other'">
 				<label><xsl:value-of select="string(number(substring-after(@id,'fn')))"/></label>
 			</xsl:if>
-			<p>
-				<xsl:apply-templates select="*[name()!='label']|text()"/>
-			</p>
+			<xsl:choose>
+				<xsl:when test="fn">
+					<p>
+						<xsl:apply-templates select="*[name()!='label']|text()"/>
+					</p>
+				</xsl:when>
+				<xsl:otherwise>
+					<p>
+						<xsl:apply-templates select="*[name()!='label']|text()"/>
+					</p>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 		</fn>
 	</xsl:template>
 	
