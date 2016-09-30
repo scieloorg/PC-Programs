@@ -95,7 +95,7 @@ class ArticlesConversion(object):
         if self.articles_set_validations.blocking_errors == 0 and self.articles_merger.total_to_convert > 0:
             self.conversion_status = {}
             #FIXME
-            self.error_messages = self.db.exclude_order_id_filenames(self.articles_merger.order_changes, self.articles_merger.excluded_orders)
+            self.error_messages = self.db.exclude_articles(self.articles_merger.order_changes, self.articles_merger.excluded_orders)
 
             scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
 
@@ -107,7 +107,7 @@ class ArticlesConversion(object):
                 self.articles_conversion_validations[name].message = message
 
             if len(scilista_items) > 0:
-                self.db.issue_files.copy_files_to_local_web_app()
+                self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
                 self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
                 self.registered_articles = self.db.registered_articles
                 self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
@@ -544,7 +544,7 @@ def prepare_env(config):
         converter_env = ConverterEnv()
 
     db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
-    converter_env.db_manager = xc_models.DBManager(db_isis, [config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst'], [config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst'], config.serial_path, config.local_web_app_path)
+    converter_env.db_manager = xc_models.DBManager(db_isis, [config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst'], [config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst'], config.serial_path)
 
     converter_env.local_web_app_path = config.local_web_app_path
     converter_env.version = '1.0'

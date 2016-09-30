@@ -151,11 +151,9 @@ class ArticleFiles(object):
 
 class IssueFiles(object):
 
-    def __init__(self, journal_files, issue_folder, xml_path, web_path):
+    def __init__(self, journal_files, issue_folder):
         self.journal_files = journal_files
         self.issue_folder = issue_folder
-        self.xml_path = xml_path
-        self.web_path = web_path
         self.create_folders()
         self.move_old_id_folder()
         self._articles_files = None
@@ -255,30 +253,30 @@ class IssueFiles(object):
     def windows_base(self):
         return self.windows_base_path + '/' + self.issue_folder
 
-    def copy_files_to_local_web_app(self):
+    def copy_files_to_local_web_app(self, xml_path, web_path):
         msg = ['\n']
-        msg.append('copying files from ' + self.xml_path)
+        msg.append('copying files from ' + xml_path)
 
         path = {}
-        path['pdf'] = self.web_path + '/bases/pdf/' + self.relative_issue_path
-        path['xml'] = self.web_path + '/bases/xml/' + self.relative_issue_path
-        path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
-        path['img'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path
-        xml_files = [f for f in os.listdir(self.xml_path) if f.endswith('.xml') and not f.endswith('.rep.xml')]
-        xml_content = ''.join([fs_utils.read_file(self.xml_path + '/' + xml_filename) for xml_filename in os.listdir(self.xml_path) if xml_filename.endswith('.xml')])
+        path['pdf'] = web_path + '/bases/pdf/' + self.relative_issue_path
+        path['xml'] = web_path + '/bases/xml/' + self.relative_issue_path
+        path['html'] = web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
+        path['img'] = web_path + '/htdocs/img/revistas/' + self.relative_issue_path
+        xml_files = [f for f in os.listdir(xml_path) if f.endswith('.xml') and not f.endswith('.rep.xml')]
+        xml_content = ''.join([fs_utils.read_file(xml_path + '/' + xml_filename) for xml_filename in os.listdir(xml_path) if xml_filename.endswith('.xml')])
 
         for p in path.values():
             if not os.path.isdir(p):
                 os.makedirs(p)
-        for f in os.listdir(self.xml_path):
+        for f in os.listdir(xml_path):
             if f.endswith('.xml.bkp') or f.endswith('.xml.replaced.txt') or f.endswith('.rep.xml'):
                 pass
-            elif os.path.isfile(self.xml_path + '/' + f):
+            elif os.path.isfile(xml_path + '/' + f):
                 ext = f[f.rfind('.')+1:]
 
                 if path.get(ext) is None:
                     if not f.endswith('.tif') and not f.endswith('.tiff'):
-                        shutil.copy(self.xml_path + '/' + f, path['img'])
+                        shutil.copy(xml_path + '/' + f, path['img'])
                         msg.append('  ' + f + ' => ' + path['img'])
                 elif ext == 'pdf':
                     pdf_filenames = [f]
@@ -288,10 +286,10 @@ class IssueFiles(object):
                     for pdf_filename in pdf_filenames:
                         if os.path.isfile(path[ext] + '/' + pdf_filename):
                             os.unlink(path[ext] + '/' + pdf_filename)
-                        shutil.copyfile(self.xml_path + '/' + f, path[ext] + '/' + pdf_filename)
+                        shutil.copyfile(xml_path + '/' + f, path[ext] + '/' + pdf_filename)
                         msg.append('  ' + f + ' => ' + path[ext] + '/' + pdf_filename)
                 else:
-                    shutil.copy(self.xml_path + '/' + f, path[ext])
+                    shutil.copy(xml_path + '/' + f, path[ext])
                     msg.append('  ' + f + ' => ' + path[ext])
         return '\n'.join(['<p>' + item + '</p>' for item in msg])
 

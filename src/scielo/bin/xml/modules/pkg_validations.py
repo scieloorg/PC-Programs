@@ -380,7 +380,7 @@ class ArticlesData(object):
         self._identify_journal_data(pkg.pkg_articles, journals_manager)
         if db_manager is not None:
             self._identify_issue_data(db_manager)
-            self._identify_articles_data(pkg.pkg_path, db_manager)
+            self._identify_articles_data(db_manager)
 
     def _identify_journal_data(self, pkg_articles, journals_manager):
         #journals_manager = xc_models.JournalsManager()
@@ -396,9 +396,9 @@ class ArticlesData(object):
         if db_manager is not None and self.journal is not None:
             self.acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
 
-    def _identify_articles_data(self, pkg_path, db_manager):
+    def _identify_articles_data(self, db_manager):
         if self.issue_error_msg is None:
-            self.issue_files = db_manager.get_issue_files(self.issue_models, pkg_path)
+            self.issue_files = db_manager.get_issue_files(self.issue_models)
             self.articles_db_manager = xc_models.ArticlesDBManager(db_manager.db_isis, self.issue_files)
 
 
