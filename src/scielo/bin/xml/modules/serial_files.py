@@ -250,6 +250,10 @@ class IssueFiles(object):
         return self.base_path + '/' + self.issue_folder
 
     @property
+    def base_filename(self):
+        return self.base + '.mst'
+
+    @property
     def windows_base(self):
         return self.windows_base_path + '/' + self.issue_folder
 
@@ -366,7 +370,7 @@ class JournalFiles(object):
         for issue_id in os.listdir(self.journal_path):
             if os.path.isdir(self.journal_path + '/' + issue_id):
                 if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
-                    self._issues_files[issue_id] = IssueFiles(self, issue_id, None, None)
+                    self._issues_files[issue_id] = IssueFiles(self, issue_id)
 
     @property
     def issues_files(self):
@@ -400,8 +404,8 @@ class JournalFiles(object):
             ex_aop_db_name = 'ex-' + db_name
             ex_aop_issues_files = self.ex_aop_issues_files.get(ex_aop_db_name)
             if ex_aop_issues_files is None:
-                self._issues_files[ex_aop_db_name] = IssueFiles(self, ex_aop_db_name, None, None)
-                ex_aop_issues_files = self._ex_aop_issues_files[ex_aop_db_name]
+                self._issues_files[ex_aop_db_name] = IssueFiles(self, ex_aop_db_name)
+                ex_aop_issues_files = self.ex_aop_issues_files[ex_aop_db_name]
         if self.aop_issue_files is not None:
             aop_issue_files = self.aop_issue_files.get(db_name)
         if aop_issue_files is not None and ex_aop_issues_files is not None:
@@ -409,6 +413,8 @@ class JournalFiles(object):
             errors += fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.id_path + '/' + aop.order + '.id', ex_aop_issues_files.id_path + '/' + aop.order + '.id')
+        if not os.path.isfile(ex_aop_issues_files.id_filename):
+            shutil.copyfile(aop_issue_files.id_filename, ex_aop_issues_files.id_filename)
         if aop_issue_files is not None:
             done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
         return (done, errors)

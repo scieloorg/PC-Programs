@@ -110,6 +110,8 @@ class ArticlesConversion(object):
                 self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
                 self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
                 self.registered_articles = self.db.registered_articles
+                print('db atualizada')
+                print(self.registered_articles.keys())
                 self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
 
                 self.final_report_path = self.articles_set_validations.articles_data.issue_files.base_reports_path

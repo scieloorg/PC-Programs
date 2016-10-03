@@ -380,7 +380,6 @@ class ArticlesData(object):
         self._identify_journal_data(pkg.pkg_articles, journals_manager)
         if db_manager is not None:
             self._identify_issue_data(db_manager)
-            self._identify_articles_data(db_manager)
 
     def _identify_journal_data(self, pkg_articles, journals_manager):
         #journals_manager = xc_models.JournalsManager()
@@ -395,11 +394,9 @@ class ArticlesData(object):
     def _identify_issue_data(self, db_manager):
         if db_manager is not None and self.journal is not None:
             self.acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
-
-    def _identify_articles_data(self, db_manager):
-        if self.issue_error_msg is None:
-            self.issue_files = db_manager.get_issue_files(self.issue_models)
-            self.articles_db_manager = xc_models.ArticlesDBManager(db_manager.db_isis, self.issue_files)
+            if self.issue_error_msg is None:
+                self.issue_files = db_manager.get_issue_files(self.issue_models)
+                self.articles_db_manager = xc_models.ArticlesManager(db_manager.db_isis, self.issue_files)
 
 
 class RegisteredArticles(dict):
@@ -448,10 +445,13 @@ class RegisteredArticles(dict):
         else:
             return {name: self.get(name) for name in found_names}
 
-    def analyze_registered_articles(self, name, registered_titaut, registered_order, registered_name):
+    def analyze_registered_articles(self, name, registered_titaut, registered_name, registered_order):
         actions = None
         conflicts = None
         exclude_name = None
+        print('analyze_registered_articles')
+        print([registered_titaut, registered_name, registered_order])
+        print('-')
         if registered_titaut is None and registered_order is None and registered_name is None:
             actions = 'add'
         elif all([registered_titaut, registered_order, registered_name]):
@@ -460,44 +460,44 @@ class RegisteredArticles(dict):
             elif id(registered_titaut) == id(registered_name):
                 # titaut + name != order
                 # rejeitar
-                conflicts = {_('registered article found by the order'): registered_order, _('registered article found by title/authors/name'): registered_titaut}
+                conflicts = {_('registered article retrieved by the order'): registered_order, _('registered article retrieved by title/authors/name'): registered_titaut}
             elif id(registered_titaut) == id(registered_order):
                 # titaut + order != name
                 # rejeitar
-                conflicts = {'registered article found by title/authors/order': registered_order, _('registered article found by name'): registered_name}
+                conflicts = {'registered article retrieved by title/authors/order': registered_order, _('registered article retrieved by name'): registered_name}
             elif id(registered_name) == id(registered_order):
                 # order + name != titaut
                 # rejeitar
-                conflicts = {'registered article found by name/order': registered_order, _('registered article found by title/authors'): registered_titaut}
+                conflicts = {'registered article retrieved by name/order': registered_order, _('registered article retrieved by title/authors'): registered_titaut}
             else:
                 # order != name != titaut
                 # rejeitar
-                conflicts = {_('name'): registered_name, _('registered article found by the order'): registered_order, _('title/authors'): registered_titaut}
+                conflicts = {_('name'): registered_name, _('registered article retrieved by the order'): registered_order, _('title/authors'): registered_titaut}
         elif all([registered_titaut, registered_order]):
             if id(registered_titaut) == id(registered_order):
                 actions = 'name change'
                 exclude_name = registered_titaut.xml_name
             else:
-                conflicts = {_('registered article found by the order'): registered_order, _('title/authors'): registered_titaut}
+                conflicts = {_('registered article retrieved by the order'): registered_order, _('title/authors'): registered_titaut}
         elif all([registered_titaut, registered_name]):
             if id(registered_titaut) == id(registered_name):
                 actions = 'order change'
             else:
-                conflicts = {_('registered article found by title/authors'): registered_titaut, _('registered article found by name'): registered_name}
+                conflicts = {_('registered article retrieved by title/authors'): registered_titaut, _('registered article retrieved by name'): registered_name}
         elif all([registered_order, registered_name]):
             if id(registered_order) == id(registered_name):
                 # titulo autores etc muito diferentes
-                conflicts = {_('registered article found by the order'): registered_order}
+                conflicts = {_('registered article retrieved by the order'): registered_order}
             else:
-                conflicts = {_('registered article found by the order'): registered_order, _('registered article found by name'): registered_name}
+                conflicts = {_('registered article retrieved by the order'): registered_order, _('registered article retrieved by name'): registered_name}
         elif registered_titaut is not None:
             # order e name nao encontrados; order testar antes de atualizar;
             actions = 'order change, name change'
             exclude_name = registered_titaut.xml_name
         elif registered_name is not None:
-            conflicts = {_('registered article found by name'): registered_name}
+            conflicts = {_('registered article retrieved by name'): registered_name}
         elif registered_order is not None:
-            conflicts = {_('registered article found by the order'): registered_order}
+            conflicts = {_('registered article retrieved by the order'): registered_order}
         return (actions, exclude_name, conflicts)
 
 
@@ -519,6 +519,8 @@ class ArticlesMerger(object):
                 self.history_items[name] = []
             self.history_items[name].append((_('package article'), article))
             registered_titaut, registered_name, registered_order = self.registered_articles.search_articles(name, article)
+            print(['title/author', 'name', 'order'])
+            print([registered_titaut, registered_name, registered_order])
             action, exclude_name, conflicts = self.registered_articles.analyze_registered_articles(name, registered_titaut, registered_name, registered_order)
             self.actions_data[name] = (action, exclude_name, conflicts)
             if action == 'update' and article.marked_to_delete:
@@ -557,6 +559,7 @@ class ArticlesMerger(object):
     def merge(self):
         self.history_items = {}
         self.history_items = {name: [(_('registered article'), article)] for name, article in self.registered_articles.items()}
+        print([(article.xml_name, article.order) for article in self.registered_articles.values()])
         self.analyze_pkg_articles()
 
         self.merging_errors = []
@@ -600,7 +603,7 @@ class ArticlesMerger(object):
                     self.history_items[name].append((_('replaces article'), self.registered_articles[old[0]]))
                 if name in self.sim_converted_articles.keys():
                     if self.sim_converted_articles[name].order != self.pkg_articles[name].order:
-                        self.order_changes[name].append((self.sim_converted_articles[name].order, self.pkg_articles[name].order))
+                        self.order_changes[name] = (self.sim_converted_articles[name].order, self.pkg_articles[name].order)
                 self.sim_converted_articles[name] = self.pkg_articles[name]
                 self.history_items[name].append((_('converted article'), self.sim_converted_articles[name]))
 
@@ -1481,7 +1484,7 @@ def display_articles_differences(status, comparison_result, label1='article 1', 
 
 def display_conflicting_data(articles, labels):
     values = [article_data(article) for article in articles]
-    return html_reports.tag('h3', _('Found conflicts. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
+    return html_reports.tag('h3', validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because of data conflicts. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
 
 
 def display_order_conflicts(orders_conflicts):

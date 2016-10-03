@@ -484,8 +484,8 @@ class ArticleDisplayReport(object):
         items = []
         for item in self.article.related_files:
             items.append(html_reports.tag('p', html_reports.link(
-                item,
-                os.path.basename(item), window=('800', '400'))))
+                self.xml_path + '/' + item,
+                item, window=('800', '400'))))
         return ''.join(items)
 
     def old_embedded_pdf_items(self, page_id='', width='400px', height='400px'):

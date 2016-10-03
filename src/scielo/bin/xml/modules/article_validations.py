@@ -1350,7 +1350,7 @@ class ArticleContentValidation(object):
             if len(missing_xref_list) > 0:
                 for xref in missing_xref_list:
                     message.append(('xref[@ref-type=' + xref_type + ']', validation_status.STATUS_ERROR, 
-                        _('Not found: {label} for {item}. ').format(label='xref[@ref-type=' + xref_type + ']', item=xref)))
+                        _('Not found: {label}. ').format(label='xref[@ref-type="{xreftype}" and rid="{rid}"]'.format(xreftype=xref_type, rid=xref))))
             if self.article.any_xref_ranges.get(xref_type) is not None:
                 for start, end, start_node, end_node in self.article.any_xref_ranges.get(xref_type):
                     if start > end:

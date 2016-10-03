@@ -688,7 +688,7 @@ class ArticlePkgMaker(object):
         fs_utils.write_file(self.doc_files_info.err_filename, '\n'.join(self.text_messages))
         html_reports.save(self.doc_files_info.images_report_filename, '', self.get_images_comparison_report())
         if len(self.replacements_related_files_items) > 0:
-            self.doc.related_files = [item[1] for item in self.replacements_related_files_items]
+            self.doc.related_files = [os.path.basename(f) for f in self.replacements_related_files_items.values()]
 
         return (self.doc, self.doc_files_info)
 
