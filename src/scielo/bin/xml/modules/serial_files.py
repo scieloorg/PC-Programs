@@ -413,8 +413,8 @@ class JournalFiles(object):
             errors += fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.id_path + '/' + aop.order + '.id', ex_aop_issues_files.id_path + '/' + aop.order + '.id')
-        if not os.path.isfile(ex_aop_issues_files.id_filename):
-            shutil.copyfile(aop_issue_files.id_filename, ex_aop_issues_files.id_filename)
+            if not os.path.isfile(ex_aop_issues_files.id_filename):
+                shutil.copyfile(aop_issue_files.id_filename, ex_aop_issues_files.id_filename)
         if aop_issue_files is not None:
             done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
         return (done, errors)

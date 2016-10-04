@@ -711,9 +711,9 @@ class ArticlesManager(object):
     def exclude_aop(self, valid_aop):
         excluded_aop, messages = self.aop_db_manager.manage_ex_aop(valid_aop)
         if excluded_aop is True:
-            self.xc_messages.append(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order))
+            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order)))
         else:
-            self.xc_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item='ex aop: ' + valid_aop.order))
+            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item='ex aop: ' + valid_aop.order)))
             if messages is not None:
                 self.xc_messages.extend(messages)
         return excluded_aop
@@ -725,13 +725,13 @@ class ArticlesManager(object):
         id_created = self.base_manager.save_article(article, i_record)
         article_converted = id_created
         if id_created is True:
-            self.xc_messages.append(validation_status.STATUS_INFO + ': ' + _('created/updated {order}.id').format(order=article.order))
+            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('created/updated {order}.id').format(order=article.order)))
             if valid_aop is not None:
                 excluded_aop = self.exclude_aop(valid_aop)
                 article_converted = excluded_aop
         else:
-            self.xc_messages.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(order=article.order))
-        return (article_converted, excluded_aop, ''.join([html_reports.p_message(item) for item in self.xc_messages]), aop_status)
+            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(order=article.order)))
+        return (article_converted, excluded_aop, ''.join(self.xc_messages), aop_status)
 
     def sort_articles_by_status(self):
         self.db_aop_status = {}
@@ -772,7 +772,7 @@ class ArticlesManager(object):
                 error = True
 
         self.sort_articles_by_status()
-        print('converted?')
+        print('error?')
         print(error)
         if not error:
             q_registered = self.finish_conversion(i_record)
@@ -802,7 +802,6 @@ class BaseManager(object):
         self.issue_files = issue_files
         self.articles_by_doi = {}
         if self.issue_files.is_ex_aop:
-            print((self.issue_files.base_filename))
             if not os.path.isfile(self.issue_files.base_filename):
                 self.create_db()
 
@@ -817,14 +816,24 @@ class BaseManager(object):
             self.create_db()
         records = self.db_isis.get_records(self.issue_files.base)
         self.registered_i_record, self.registered_articles_records = IssueArticlesRecords(records).articles()
-        print(self.registered_articles_records)
 
     @property
     def registered_articles(self):
         self.registered_records()
         _registered_articles = {}
+        print('= registered_articles =')
         for xml_name, registered_article in self.registered_articles_records.items():
             f = self.issue_files.base_source_path + '/' + xml_name + '.xml'
+            if not os.path.isfile(f):
+                folders = []
+                for folder in f.split('/'):
+                    if 'ahead' in folder:
+                        folder = 'ex-' + folder
+                    folders.append(folder)
+                f = '/'.join(folders)
+            print('-')
+            print(xml_name)
+            print(f)
             if os.path.isfile(f):
                 xml, e = xml_utils.load_xml(f)
             else:
@@ -842,9 +851,10 @@ class BaseManager(object):
             _registered_articles[xml_name] = doc
         print('*'*10)
         print(self.issue_files.issue_folder)
-        print('Registered Articles')
+        print('Registered Articles: ')
         print([(article.xml_name, article.order) for article in _registered_articles.values()])
         print('='*10)
+        print('')
         return _registered_articles
 
     def content_formatter(self, content):

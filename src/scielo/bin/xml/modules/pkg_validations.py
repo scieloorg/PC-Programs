@@ -475,13 +475,19 @@ class RegisteredArticles(dict):
                 conflicts = {_('name'): registered_name, _('registered article retrieved by the order'): registered_order, _('title/authors'): registered_titaut}
         elif all([registered_titaut, registered_order]):
             if id(registered_titaut) == id(registered_order):
-                actions = 'name change'
-                exclude_name = registered_titaut.xml_name
+                if registered_order.is_ex_aop:
+                    actions = 'reject'
+                else:
+                    actions = 'name change'
+                    exclude_name = registered_titaut.xml_name
             else:
                 conflicts = {_('registered article retrieved by the order'): registered_order, _('title/authors'): registered_titaut}
         elif all([registered_titaut, registered_name]):
             if id(registered_titaut) == id(registered_name):
-                actions = 'order change'
+                if registered_name.is_ex_aop:
+                    actions = 'reject'
+                else:
+                    actions = 'order change'
             else:
                 conflicts = {_('registered article retrieved by title/authors'): registered_titaut, _('registered article retrieved by name'): registered_name}
         elif all([registered_order, registered_name]):
@@ -492,8 +498,11 @@ class RegisteredArticles(dict):
                 conflicts = {_('registered article retrieved by the order'): registered_order, _('registered article retrieved by name'): registered_name}
         elif registered_titaut is not None:
             # order e name nao encontrados; order testar antes de atualizar;
-            actions = 'order change, name change'
-            exclude_name = registered_titaut.xml_name
+            if registered_titaut.is_ex_aop:
+                actions = 'reject'
+            else:
+                actions = 'order change, name change'
+                exclude_name = registered_titaut.xml_name
         elif registered_name is not None:
             conflicts = {_('registered article retrieved by name'): registered_name}
         elif registered_order is not None:
@@ -519,8 +528,6 @@ class ArticlesMerger(object):
                 self.history_items[name] = []
             self.history_items[name].append((_('package article'), article))
             registered_titaut, registered_name, registered_order = self.registered_articles.search_articles(name, article)
-            print(['title/author', 'name', 'order'])
-            print([registered_titaut, registered_name, registered_order])
             action, exclude_name, conflicts = self.registered_articles.analyze_registered_articles(name, registered_titaut, registered_name, registered_order)
             self.actions_data[name] = (action, exclude_name, conflicts)
             if action == 'update' and article.marked_to_delete:
@@ -681,7 +688,7 @@ class ArticlesMerger(object):
         for xml_name, hist in history:
             values = []
             values.append(xml_name)
-            values.append(article_report(hist[-1][1]))
+            values.append(display_article_data_in_toc(hist[-1][1]))
             values.append(self.history_item_report([item for item in hist if item[0] == _('registered article')]))
             values.append(self.history_item_report([item for item in hist if item[0] != _('registered article')]))
             items.append(label_values(labels, values))
@@ -1419,8 +1426,10 @@ def rst_title(title):
     return '\n\n' + title + '\n' + '-'*len(title) + '\n'
 
 
-def article_report(_article):
+def display_article_data_in_toc(_article):
     r = ''
+    status = _('ex-aop') if _article.is_ex_aop else ''
+    r += html_reports.tag('p', html_reports.tag('strong', status))
     r += html_reports.tag('p', _article.toc_section, 'toc-section')
     r += html_reports.tag('p', _article.article_type, 'article-type')
     r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
@@ -1433,8 +1442,10 @@ def article_report(_article):
     return r
 
 
-def article_data(_article):
+def display_article_data_to_compare(_article):
     r = ''
+    status = _('ex-aop') if _article.is_ex_aop else ''
+    r += html_reports.tag('p', html_reports.tag('strong', status))
     r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
     r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
@@ -1483,7 +1494,7 @@ def display_articles_differences(status, comparison_result, label1='article 1', 
 
 
 def display_conflicting_data(articles, labels):
-    values = [article_data(article) for article in articles]
+    values = [display_article_data_to_compare(article) for article in articles]
     return html_reports.tag('h3', validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because of data conflicts. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
 
 
@@ -1503,7 +1514,7 @@ def toc_extended_report(articles):
         values = []
         values.append(new_name)
         values.append(article.order)
-        values.append(article_report(article))
+        values.append(display_article_data_in_toc(article))
         items.append(label_values(labels, values))
     return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
 
