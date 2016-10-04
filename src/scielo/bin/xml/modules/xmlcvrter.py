@@ -100,7 +100,6 @@ class ArticlesConversion(object):
             scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
 
             self.conversion_status.update(self.db.db_conversion_status)
-            self.aop_status.update(self.db.db_aop_status)
 
             for name, message in self.db.articles_conversion_messages.items():
                 self.articles_conversion_validations[name] = pkg_validations.ValidationsResult()
@@ -116,6 +115,7 @@ class ArticlesConversion(object):
 
                 self.final_report_path = self.articles_set_validations.articles_data.issue_files.base_reports_path
                 self.final_result_path = self.articles_set_validations.articles_data.issue_files.issue_path
+        self.aop_status.update(self.db.db_aop_status)
         return scilista_items
 
     @property
@@ -144,10 +144,10 @@ class ArticlesConversion(object):
 
     @property
     def aop_status_report(self):
-        r = report_status(_('AOP status'), self.aop_status, 'aop-block')
-        if len(r) == 0:
-            r = _('this journal has no aop.')
-        return r
+        r = _('this journal has no aop.')
+        if len(self.aop_status.get('aop', {})) > 0:
+            r = html_reports.format_html_data(self.aop_status.get('aop', {}))
+        return html_reports.tag('h3', _('AOP Articles')) + r
 
     @property
     def conclusion_message(self):

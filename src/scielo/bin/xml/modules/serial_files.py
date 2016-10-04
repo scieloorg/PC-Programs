@@ -366,15 +366,21 @@ class JournalFiles(object):
         self.journal_path = serial_path + '/' + acron
         if not os.path.isdir(self.journal_path):
             os.makedirs(self.journal_path)
-        self._issues_files = {}
-        for issue_id in os.listdir(self.journal_path):
-            if os.path.isdir(self.journal_path + '/' + issue_id):
-                if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
-                    self._issues_files[issue_id] = IssueFiles(self, issue_id)
+        self.set_issues_files()
 
     @property
     def issues_files(self):
         return self._issues_files
+
+    def add_issues_file(self, issue_id):
+        self._issues_files[issue_id] = IssueFiles(self, issue_id)
+
+    def set_issues_files(self):
+        self._issues_files = {}
+        for issue_id in os.listdir(self.journal_path):
+            if os.path.isdir(self.journal_path + '/' + issue_id):
+                if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
+                    self.add_issues_file(issue_id)
 
     def publishes_aop(self):
         return len(self.aop_issue_files) > 0
@@ -404,7 +410,7 @@ class JournalFiles(object):
             ex_aop_db_name = 'ex-' + db_name
             ex_aop_issues_files = self.ex_aop_issues_files.get(ex_aop_db_name)
             if ex_aop_issues_files is None:
-                self._issues_files[ex_aop_db_name] = IssueFiles(self, ex_aop_db_name)
+                self.add_issues_file(ex_aop_db_name)
                 ex_aop_issues_files = self.ex_aop_issues_files[ex_aop_db_name]
         if self.aop_issue_files is not None:
             aop_issue_files = self.aop_issue_files.get(db_name)

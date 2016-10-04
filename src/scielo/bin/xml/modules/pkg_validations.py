@@ -1495,7 +1495,7 @@ def display_articles_differences(status, comparison_result, label1='article 1', 
 
 def display_conflicting_data(articles, labels):
     values = [display_article_data_to_compare(article) for article in articles]
-    return html_reports.tag('h3', validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because of data conflicts. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
+    return html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match.')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
 
 
 def display_order_conflicts(orders_conflicts):

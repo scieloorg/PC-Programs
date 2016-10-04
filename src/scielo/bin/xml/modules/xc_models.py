@@ -682,6 +682,10 @@ class ArticlesManager(object):
         self.base_manager = BaseManager(db_isis, issue_files)
         self.ex_aop_manager = None
         self.aop_db_manager = AopManager(db_isis, self.issue_files.journal_files)
+        self.articles_conversion_status = {}
+        self.articles_aop_status = {}
+        self.articles_aop_exclusion_status = {}
+        self.articles_conversion_messages = {}
 
         print('\n' + issue_files.issue_folder)
         print(self.issue_files.is_aop)
@@ -721,7 +725,10 @@ class ArticlesManager(object):
     def convert_article(self, article, i_record):
         self.xc_messages = []
         excluded_aop = None
-        aop_status, valid_aop = self.get_valid_aop(article)
+        aop_status = None
+        valid_aop = None
+        if not article.is_ahead:
+            aop_status, valid_aop = self.get_valid_aop(article)
         id_created = self.base_manager.save_article(article, i_record)
         article_converted = id_created
         if id_created is True:
@@ -733,24 +740,29 @@ class ArticlesManager(object):
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(order=article.order)))
         return (article_converted, excluded_aop, ''.join(self.xc_messages), aop_status)
 
-    def sort_articles_by_status(self):
-        self.db_aop_status = {}
-        self.db_conversion_status = {}
-        self.db_conversion_status['converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is True]
-        self.db_conversion_status['not converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is False]
+    @property
+    def db_conversion_status(self):
+        status = {}
+        status['converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is True]
+        status['not converted'] = [xml_name for xml_name, result in self.articles_conversion_status.items() if result is False]
+        return status
 
+    @property
+    def db_aop_status(self):
+        status_items = {}
         for name, status in self.articles_aop_exclusion_status.items():
             if status is not None:
                 status = 'excluded ex-aop' if status is True else 'not excluded ex-aop'
-                if not status in self.db_aop_status.keys():
-                    self.db_aop_status[status] = []
-                self.db_aop_status[status].append(name)
+                if not status in status_items.keys():
+                    status_items[status] = []
+                status_items[status].append(name)
         for name, status in self.articles_aop_status.items():
             if status is not None:
-                if not status in self.db_aop_status.keys():
-                    self.db_aop_status[status] = []
-                self.db_aop_status[status].append(name)
-        self.db_aop_status['still aop'] = self.aop_db_manager.still_aop_items()
+                if not status in status_items.keys():
+                    status_items[status] = []
+                status_items[status].append(name)
+        status_items['aop'] = self.aop_db_manager.still_aop_items()
+        return status_items
 
     def convert_articles(self, acron_issue_label, articles, i_record, create_windows_base):
         self.articles_conversion_status = {}
@@ -771,7 +783,6 @@ class ArticlesManager(object):
             if article_converted is False:
                 error = True
 
-        self.sort_articles_by_status()
         print('error?')
         print(error)
         if not error:
@@ -1019,12 +1030,22 @@ class AopManager(object):
             return self.ex_aop_db_items.get(issueid, self.aop_db_items.get(issueid)).registered_articles.get(xml_name)
 
     def still_aop_items(self):
+        r = {}
+        for issue_id in sorted(self.aop_db_items.keys()):
+            r[issue_id] = []
+            for xml_name, article in self.aop_db_items[issue_id].registered_articles.items():
+                r[issue_id].append(article.order + '|' + xml_name + '|' + article.title)
+            r[issue_id].sort()
+        return r
+
+    def old_still_aop_items(self):
         r = []
         for k in sorted(self.xmlname_indexed_by_issueid_and_order.keys()):
-            xml_name = self.xmlname_indexed_by_issueid_and_order[k]
-            aop = self.get_aop_by_xmlname(xml_name)
-            parts = [k, aop.order, aop.filename, aop.short_article_title()]
-            r.append(' | '.join([item for item in parts if item is not None]))
+            if not 'ex-' in k:
+                xml_name = self.xmlname_indexed_by_issueid_and_order[k]
+                aop = self.get_aop_by_xmlname(xml_name)
+                parts = [k, aop.order, aop.filename, aop.short_article_title()]
+                r.append(' | '.join([item for item in parts if item is not None]))
         return sorted(r)
 
     def name(self, db_filename):
