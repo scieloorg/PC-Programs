@@ -595,7 +595,7 @@ class OriginalPackage(object):
 
     def __init__(self, xml_filenames):
         self.xml_filenames = xml_filenames
-        self.articles_files = {}
+        self.article_pkg_files = {}
         self.path = os.path.dirname(xml_filenames[0])
 
     def setUp(self):
@@ -612,8 +612,8 @@ class OriginalPackage(object):
                 article_files = [f for f in files if f.startswith(fname)]
             else:
                 article_files = [f for f in files if f.startswith(fname + '-') or f.startswith(fname + '.')]
-            self.articles_files[fname] = ArticlePkgFiles(self.path, xml_filename, fname, article_files)
-            self.articles_files[fname].convert_images()
+            self.article_pkg_files[fname] = ArticlePkgFiles(self.path, xml_filename, fname, article_files)
+            self.article_pkg_files[fname].convert_images()
 
 
 class ArticlePkgFiles(object):
@@ -1062,15 +1062,15 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
     n = '/' + str(len(xml_files))
     index = 0
 
-    for xml_name, article_files in package.articles_files.items():
-        article_work_area = serial_files.ArticleWorkArea(article_files.xml_filename, report_path, wrk_path)
+    for xml_name, article_pkg_files in package.article_pkg_files.items():
+        article_work_area = serial_files.ArticleWorkArea(article_pkg_files.xml_filename, report_path, wrk_path)
         article_work_area.clean()
 
         index += 1
         item_label = str(index) + n + ': ' + article_work_area.xml_name
         utils.display_message(item_label)
 
-        article_pkg_maker = ArticlePkgMaker(article_files, article_work_area, scielo_pkg_path, version, acron, is_db_generation)
+        article_pkg_maker = ArticlePkgMaker(article_pkg_files, article_work_area, scielo_pkg_path, version, acron, is_db_generation)
         doc, article_work_area = article_pkg_maker.make_article_package()
 
         article_work_area_items[article_work_area.xml_name] = article_work_area
@@ -1079,79 +1079,121 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
     return (doc_items, article_work_area_items)
 
 
-def make_pmc_report(articles, doc_files_info_items):
-    for xml_name, doc in articles.items():
-        msg = _('generating report...')
-        if doc.tree is None:
-            msg = _('Unable to generate the XML file.')
-        else:
-            if doc.journal_id_nlm_ta is None:
-                msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.')
-        html_reports.save(doc_files_info_items[xml_name].pmc_style_report_filename, 'PMC Style Checker', msg)
+class PackageMaker(object):
 
+    def __init__(self, xml_files, results_path, version, acron, is_db_generation=False):
+        self.version = version
+        self.acron = acron
+        self.is_db_generation = is_db_generation
+        self.xml_files = xml_files
+        self.results_path = results_path
+        self.scielo_pkg_path = results_path + '/scielo_package'
+        self.pmc_pkg_path = results_path + '/pmc_package'
+        self.report_path = results_path + '/errors'
+        self.wrk_path = results_path + '/work'
 
-def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files):
-    do_it = False
+        for d in [self.scielo_pkg_path, self.pmc_pkg_path, self.report_path, self.wrk_path]:
+            if not os.path.isdir(d):
+                os.makedirs(d)
+        self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
+        self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
+        self.article_items = {}
+        self.article_work_area_items = {}
+        self.is_pmc_journal = False
 
-    utils.display_message('\n')
-    utils.display_message(_('Generating PMC Package'))
-    n = '/' + str(len(articles))
-    index = 0
+    def make_sps_package(self):
+        package = OriginalPackage(self.xml_files)
+        package.setUp()
 
-    for xml_name, doc in articles.items():
-        doc_files_info = doc_files_info_items[xml_name]
-        if doc.journal_id_nlm_ta is None:
-            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
-        else:
-            do_it = True
+        xpm_process_logger.register('make packages')
+        utils.display_message('\n' + _('Make package for {n} files.').format(n=str(len(self.xml_files))))
+        n = '/' + str(len(self.xml_files))
+        index = 0
+
+        for xml_name, article_files in package.article_pkg_files.items():
+            article_work_area = serial_files.ArticleWorkArea(article_files.xml_filename, self.report_path, self.wrk_path)
+            article_work_area.clean()
 
             index += 1
-            item_label = str(index) + n + ': ' + doc_files_info.xml_name
+            item_label = str(index) + n + ': ' + article_work_area.xml_name
             utils.display_message(item_label)
 
-            pmc_xml_filename = pmc_pkg_path + '/' + doc_files_info.new_name + '.xml'
-            xml_output(doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
+            article_pkg_maker = ArticlePkgMaker(article_files, article_work_area, self.scielo_pkg_path, self.version, self.acron, self.is_db_generation)
+            self.article_items[xml_name], self.article_work_area_items[xml_name] = article_pkg_maker.make_article_package()
+            if self.article_items[xml_name] is not None:
+                if self.article_items[xml_name].journal_id_nlm_ta is not None:
+                    self.is_pmc_journal = True
 
-            xpchecker.style_validation(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
-            xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
+    def make_pmc_report(self):
+        for xml_name, doc in self.article_items.items():
+            msg = _('generating report...')
+            if doc.tree is None:
+                msg = _('Unable to generate the XML file.')
+            else:
+                if doc.journal_id_nlm_ta is None:
+                    msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.')
+            html_reports.save(self.article_work_area_items[xml_name].pmc_style_report_filename, 'PMC Style Checker', msg)
 
-            add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, doc.language)
+    def make_pmc_package(self):
+        do_it = False
 
-    if do_it:
-        make_pkg_zip(pmc_pkg_path)
+        utils.display_message('\n')
+        utils.display_message(_('Generating PMC Package'))
+        n = '/' + str(len(self.article_items))
+        index = 0
 
+        for xml_name, doc in self.article_items.items():
+            article_work_area = self.article_work_area_items[xml_name]
+            if doc.journal_id_nlm_ta is None:
+                html_reports.save(article_work_area.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
+            else:
+                do_it = True
 
-def validate_pmc_image(img_filename):
-    img = utils.tiff_image(img_filename)
-    if img is not None:
-        if img.info is not None:
-            if img.info.get('dpi') < 300:
-                print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
+                index += 1
+                item_label = str(index) + n + ': ' + article_work_area.xml_name
+                utils.display_message(item_label)
 
+                pmc_xml_filename = self.pmc_pkg_path + '/' + article_work_area.new_name + '.xml'
+                xml_output(article_work_area.new_xml_filename, self.scielo_dtd_files.doctype_with_local_path, self.scielo_dtd_files.xsl_output, pmc_xml_filename)
 
-def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
-    dest_path = os.path.dirname(pmc_xml_filename)
-    xml_name = os.path.basename(pmc_xml_filename)[:-4]
-    xml, e = xml_utils.load_xml(pmc_xml_filename)
-    doc = article.Article(xml, xml_name)
-    if language == 'en':
-        if os.path.isfile(scielo_pkg_path + '/' + xml_name + '.pdf'):
-            shutil.copyfile(scielo_pkg_path + '/' + xml_name + '.pdf', dest_path + '/' + xml_name + '.pdf')
-        for item in doc.href_files:
-            if os.path.isfile(scielo_pkg_path + '/' + item.src):
-                shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
-                validate_pmc_image(dest_path + '/' + item.src)
-    else:
-        if os.path.isfile(scielo_pkg_path + '/' + xml_name + '-en.pdf'):
-            shutil.copyfile(scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
-        content = fs_utils.read_file(pmc_xml_filename)
-        for item in doc.href_files:
-            new = item.src.replace('-en.', '.')
-            content = content.replace(item.src, new)
-            if os.path.isfile(scielo_pkg_path + '/' + item.src):
-                shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
-                validate_pmc_image(dest_path + '/' + new)
-        fs_utils.write_file(pmc_xml_filename, content)
+                xpchecker.style_validation(pmc_xml_filename, self.pmc_dtd_files.doctype_with_local_path, article_work_area.pmc_style_report_filename, self.pmc_dtd_files.xsl_prep_report, self.pmc_dtd_files.xsl_report, self.pmc_dtd_files.database_name)
+                xml_output(pmc_xml_filename, self.pmc_dtd_files.doctype_with_local_path, self.pmc_dtd_files.xsl_output, pmc_xml_filename)
+
+                self.add_files_to_pmc_package(pmc_xml_filename, doc.language)
+
+        if do_it:
+            make_pkg_zip(self.pmc_pkg_path)
+
+    def validate_pmc_image(self, img_filename):
+        img = utils.tiff_image(img_filename)
+        if img is not None:
+            if img.info is not None:
+                if img.info.get('dpi') < 300:
+                    print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
+
+    def add_files_to_pmc_package(self, pmc_xml_filename, language):
+        dest_path = os.path.dirname(pmc_xml_filename)
+        xml_name = os.path.basename(pmc_xml_filename)[:-4]
+        xml, e = xml_utils.load_xml(pmc_xml_filename)
+        doc = article.Article(xml, xml_name)
+        if language == 'en':
+            if os.path.isfile(self.scielo_pkg_path + '/' + xml_name + '.pdf'):
+                shutil.copyfile(self.scielo_pkg_path + '/' + xml_name + '.pdf', dest_path + '/' + xml_name + '.pdf')
+            for item in doc.href_files:
+                if os.path.isfile(self.scielo_pkg_path + '/' + item.src):
+                    shutil.copyfile(self.scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
+                    self.validate_pmc_image(dest_path + '/' + item.src)
+        else:
+            if os.path.isfile(self.scielo_pkg_path + '/' + xml_name + '-en.pdf'):
+                shutil.copyfile(self.scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
+            content = fs_utils.read_file(pmc_xml_filename)
+            for item in doc.href_files:
+                new = item.src.replace('-en.', '.')
+                content = content.replace(item.src, new)
+                if os.path.isfile(self.scielo_pkg_path + '/' + item.src):
+                    shutil.copyfile(self.scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
+                    self.validate_pmc_image(dest_path + '/' + new)
+            fs_utils.write_file(pmc_xml_filename, content)
 
 
 def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=False):
@@ -1159,69 +1201,46 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     global GENERATE_PMC
     is_xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
 
-    scielo_pkg_path = results_path + '/scielo_package'
-    pmc_pkg_path = results_path + '/pmc_package'
-    report_path = results_path + '/errors'
-    wrk_path = results_path + '/work'
-
-    report_components = {}
-
-    pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
-    scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
-
-    for d in [scielo_pkg_path, pmc_pkg_path, report_path, wrk_path]:
-        if not os.path.isdir(d):
-            os.makedirs(d)
-
     if len(xml_files) == 0:
         utils.display_message(_('No files to process'))
     else:
-        articles, articles_work_area = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
+        pkg_maker = PackageMaker(xml_files, results_path, acron, version, is_db_generation)
+        pkg_maker.make_sps_package()
 
         doi_services = article_validations.DOI_Services()
 
-        articles_pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles, is_xml_generation)
+        articles_pkg = pkg_validations.ArticlesPackage(pkg_maker.scielo_pkg_path, pkg_maker.article_items, is_xml_generation)
 
         articles_data = pkg_validations.ArticlesData()
         articles_data.setup(articles_pkg, xc_models.JournalsManager(), db_manager=None)
 
         articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data, xpm_process_logger)
-        articles_set_validations.validate(doi_services, scielo_dtd_files, articles_work_area)
+        articles_set_validations.validate(doi_services, pkg_maker.scielo_dtd_files, pkg_maker.article_work_area_items)
 
-        reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), None, display_report=DISPLAY_REPORT)
+        files_final_location = serial_files.FilesFinalLocation(pkg_maker.scielo_pkg_path, articles_data.acron, articles_data.issue_label, web_app_path=None)
+
+        reports = pkg_validations.ReportsMaker(articles_set_validations, files_final_location, xpm_version(), None)
 
         if not is_xml_generation:
-            filename = report_path + '/xml_package_maker.html'
-            reports.processing_result_location = os.path.dirname(report_path)
-            reports.save_report(report_path, 'xml_package_maker.html', _('XML Package Maker Report'))
+            reports.processing_result_location = os.path.dirname(pkg_maker.report_path)
+            reports.save_report(pkg_maker.report_path, 'xpm.html', _('XML Package Maker Report'))
+            if DISPLAY_REPORT:
+                html_reports.display_report(pkg_maker.report_path + '/xpm.html')
 
         if not is_db_generation:
             if is_xml_generation:
-                make_pmc_report(articles, articles_work_area)
-            if is_pmc_journal(articles):
+                pkg_maker.make_pmc_report()
+            if pkg_maker.is_pmc_journal:
                 if GENERATE_PMC:
-                    make_pmc_package(articles, articles_work_area, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                    pkg_maker.make_pmc_package()
                 else:
                     print('='*10)
                     print(_('To generate PMC package, add -pmc as parameter'))
                     print('='*10)
 
-            #make_pkg_zip(scielo_pkg_path)
-            #if not is_xml_generation:
-            #    make_pkg_items_zip(scielo_pkg_path)
-
         utils.display_message(_('Result of the processing:'))
-        utils.display_message(results_path)
-        xpm_process_logger.write(report_path + '/log.txt')
-
-
-def is_pmc_journal(articles):
-    r = False
-    for doc in articles.values():
-        if doc.journal_id_nlm_ta is not None:
-            r = True
-            break
-    return r
+        utils.display_message(pkg_maker.results_path)
+        xpm_process_logger.write(pkg_maker.report_path + '/log.txt')
 
 
 def get_xml_package_folders_info(input_pkg_path):
@@ -1230,7 +1249,7 @@ def get_xml_package_folders_info(input_pkg_path):
 
     if os.path.isdir(input_pkg_path):
         xml_files = sorted([input_pkg_path + '/' + f for f in os.listdir(input_pkg_path) if f.endswith('.xml') and not f.endswith('.sgm.xml')])
-        results_path = input_pkg_path + '_xml_package_maker_result'
+        results_path = input_pkg_path + '_xpm'
         fs_utils.delete_file_or_folder(results_path)
         os.makedirs(results_path)
 
@@ -1260,7 +1279,7 @@ def get_xml_package_folders_info(input_pkg_path):
             xml_files = [src_path + '/' + fname]
         elif input_pkg_path.endswith('.xml'):
             xml_files = [input_pkg_path]
-            results_path = os.path.dirname(input_pkg_path) + '_xml_package_maker_result'
+            results_path = os.path.dirname(input_pkg_path) + '_xpm'
             if not os.path.isdir(results_path):
                 os.makedirs(results_path)
     return (xml_files, results_path)

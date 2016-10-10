@@ -1454,9 +1454,9 @@ class ArticleContentValidation(object):
                         status_message.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=os.path.basename(file_location), item=_('package'))))
                 hreflocation = 'file:///' + file_location
                 if hrefitem.is_image:
-                    display = html_reports.thumb_image(hreflocation)
+                    display = html_reports.thumb_image(hreflocation.replace(path, '{IMG_PATH}'))
                 else:
-                    display = html_reports.link(hreflocation, hrefitem.src)
+                    display = html_reports.link(hreflocation.replace(path, '{PDF_PATH}'), hrefitem.src)
                 if len(status_message) == 0:
                     status_message.append((validation_status.STATUS_INFO, ''))
                 href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}

@@ -13,8 +13,8 @@ import dbm_isis
 import xc_models
 import article_validations
 import pkg_validations
+import serial_files
 import xml_utils
-import xml_versions
 import xpmaker
 import xc
 import xc_config
@@ -24,6 +24,8 @@ CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 CONFIG_PATH = CURRENT_PATH + '/../config/'
 converter_env = None
+
+ALTERNATIVE_WEB_PATH = os.path.dirname(os.path.dirname(CURRENT_PATH)) + '/web'
 
 
 categories_messages = {
@@ -64,37 +66,36 @@ class ConverterEnv(object):
         self.db_manager = None
 
 
-def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
-    xml_filenames = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
-    articles, doc_file_info_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron', is_db_generation=True)
-    return (articles, doc_file_info_items)
-
-
 class ArticlesConversion(object):
 
     def __init__(self, articles_set_validations, db, create_windows_base=False):
         self.articles_set_validations = articles_set_validations
         self.db = db
         self.create_windows_base = create_windows_base
-        self.final_report_path = None
-        self.final_result_path = None
+        self.report_path = None
+        self.results_path = None
         self.articles_merger = self.articles_set_validations.articles_merger
         self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
         self.aop_status = {}
         self.articles_conversion_validations = pkg_validations.ValidationsResultItems()
         self.error_messages = []
+        self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, None, None)
+        self.statistics_display = ''
 
     def convert(self):
         scilista_items = []
-        self.acron_issue_label = 'not registered'
+        self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
+        base_report_path = None
 
         self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
         self.aop_status = {}
 
+        self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, self.articles_set_validations.articles_data.serial_path, converter_env.local_web_app_path)
+
         self.registered_articles = self.db.registered_articles
         if self.articles_set_validations.blocking_errors == 0 and self.articles_merger.total_to_convert > 0:
+
             self.conversion_status = {}
-            #FIXME
             self.error_messages = self.db.exclude_articles(self.articles_merger.order_changes, self.articles_merger.excluded_orders)
 
             scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
@@ -106,17 +107,30 @@ class ArticlesConversion(object):
                 self.articles_conversion_validations[name].message = message
 
             if len(scilista_items) > 0:
+                self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, self.articles_set_validations.articles_data.serial_path, converter_env.local_web_app_path)
                 self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
                 self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
                 self.registered_articles = self.db.registered_articles
-                print('db atualizada')
-                print(self.registered_articles.keys())
+
                 self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
 
-                self.final_report_path = self.articles_set_validations.articles_data.issue_files.base_reports_path
-                self.final_result_path = self.articles_set_validations.articles_data.issue_files.issue_path
         self.aop_status.update(self.db.db_aop_status)
+        self.generate_report(base_report_path)
         return scilista_items
+
+    def generate_report(self, base_report_path=None):
+        reports = pkg_validations.ReportsMaker(self.articles_set_validations, self.files_final_location, None, self)
+        if converter_env.is_windows:
+            reports.processing_result_location = self.files_final_location.result_path
+        self.report_location = self.files_final_location.report_path + '/xc.html'
+        reports.save_report(self.files_final_location.report_path, 'xc.html', _('XML Conversion (XML to Database)'))
+        self.statistics_display = reports.validations.statistics_display()
+        if converter_env.is_windows:
+            if base_report_path is not None:
+                reports.save_report(base_report_path, 'xc.html', _('XML Conversion (XML to Database)'))
+                html_reports.display_report(base_report_path + '/xc.html')
+            else:
+                html_reports.display_report(self.report_location)
 
     @property
     def total_converted(self):
@@ -187,25 +201,11 @@ class ArticlesConversion(object):
         return text
 
 
-def package_paths_preparation(src_path):
-    result_path = src_path + '_xml_converter_result'
-    wrk_path = result_path + '/work'
-    pkg_path = result_path + '/scielo_package'
-    report_path = result_path + '/errors'
-
-    for path in [result_path, wrk_path, pkg_path, report_path]:
-        if not os.path.isdir(path):
-            os.makedirs(path)
-    return (report_path, wrk_path, pkg_path, result_path)
-
-
 def convert_package(src_path):
     xc_process_logger = fs_utils.ProcessLogger()
 
     scilista_items = []
     is_xml_generation = False
-
-    scielo_dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
 
     pkg_name = os.path.basename(src_path)[:-4]
 
@@ -214,41 +214,36 @@ def convert_package(src_path):
     log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
 
     fs_utils.append_file(log_package, 'preparing')
-    tmp_report_path, wrk_path, scielo_pkg_path, tmp_result_path = package_paths_preparation(src_path)
-    final_result_path = tmp_result_path
-    final_report_path = tmp_report_path
+    tmp_result_path = src_path + '_xc'
 
     fs_utils.append_file(log_package, 'normalized_package')
-    articles, articles_work_area = normalized_package(src_path, tmp_report_path, wrk_path, scielo_pkg_path, converter_env.version)
+    xml_files = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
+    pkg_maker = xpmaker.PackageMaker(xml_files, tmp_result_path, 'acron', converter_env.version, is_db_generation=True)
+    pkg_maker.make_sps_package()
 
     #, converter_env.is_windows
     doi_services = article_validations.DOI_Services()
 
-    articles_pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles, is_xml_generation)
+    articles_pkg = pkg_validations.ArticlesPackage(pkg_maker.scielo_pkg_path, pkg_maker.article_items, is_xml_generation)
 
     articles_data = pkg_validations.ArticlesData()
     articles_data.setup(articles_pkg, xc_models.JournalsManager(), db_manager=converter_env.db_manager)
 
     articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data, xc_process_logger)
-    articles_set_validations.validate(doi_services, scielo_dtd_files, articles_work_area)
+    articles_set_validations.validate(doi_services, pkg_maker.scielo_dtd_files, pkg_maker.article_work_area_items)
 
     conversion = ArticlesConversion(articles_set_validations, articles_data.articles_db_manager, not converter_env.is_windows)
-    conversion.final_result_path = final_result_path
-    conversion.final_report_path = final_report_path
     scilista_items = conversion.convert()
 
-    reports = pkg_validations.ReportsMaker(articles_set_validations, None, conversion, display_report=converter_env.is_windows)
+    #reports.validations.statistics_display()
+    #conversion.statistics_display
+    #report_location
+    #conversion.report_location
 
-    reports.processing_result_location = conversion.final_result_path
-    report_location = conversion.final_report_path + '/xml_converter.html'
-    reports.save_report(conversion.final_report_path, 'xml_converter.html', _('XML Conversion (XML to Database)'))
-
-    if not converter_env.is_windows:
-        format_reports_for_web(conversion.final_report_path, scielo_pkg_path, conversion.acron_issue_label.replace(' ', '/'))
-    if tmp_result_path != final_result_path:
+    if tmp_result_path != conversion.results_path:
         fs_utils.delete_file_or_folder(tmp_result_path)
     os.unlink(log_package)
-    return (scilista_items, conversion.xc_status, reports.validations.statistics_display(), report_location)
+    return (scilista_items, conversion.xc_status, conversion.statistics_display, conversion.report_location)
 
 
 def format_reports_for_web(report_path, pkg_path, issue_path):
@@ -513,12 +508,9 @@ def execute_converter(package_paths, collection_name=None):
                         transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
 
                 if report_location is not None:
-                    if config.is_windows:
-                        pkg_validations.display_report(report_location)
-
                     if config.email_subject_package_evaluation is not None:
                         results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
-                        link = converter_env.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
+                        link = config.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
                         report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 
                         transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
@@ -547,6 +539,8 @@ def prepare_env(config):
 
     db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
     converter_env.db_manager = xc_models.DBManager(db_isis, [config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst'], [config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst'], config.serial_path)
+    if config.local_web_app_path is None:
+        config.local_web_app_path = ALTERNATIVE_WEB_PATH
 
     converter_env.local_web_app_path = config.local_web_app_path
     converter_env.version = '1.0'

@@ -714,7 +714,14 @@ class ArticlesManager(object):
 
     def exclude_aop(self, valid_aop):
         excluded_aop, messages = self.aop_db_manager.manage_ex_aop(valid_aop)
-        if excluded_aop is True:
+        print('@@@@@@@@')
+        print(valid_aop)
+        print(excluded_aop)
+        print(valid_aop.is_ex_aop and excluded_aop is False)
+        if valid_aop.is_ex_aop and excluded_aop is False:
+            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('{item} is already excluded.').format(item='ex aop: ' + valid_aop.order)))
+            excluded_aop = True
+        elif excluded_aop is True:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order)))
         else:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item='ex aop: ' + valid_aop.order)))
@@ -1014,20 +1021,21 @@ class AopManager(object):
             for xml_name, registered in self.ex_aop_db_items[issue_files.issue_folder].registered_articles.items():
                 if registered.doi is not None:
                     self.xmlname_indexed_by_doi[registered.doi] = registered.xml_name
-                self.xmlname_indexed_by_issueid_and_order[issue_files.issue_folder + '|' + registered.order] = registered.xml_name
-                self.issueid_indexed_by_xmlname[xml_name] = issue_files.issue_folder
+                if not xml_name in self.issueid_indexed_by_xmlname.keys():
+                    self.xmlname_indexed_by_issueid_and_order[issue_files.issue_folder + '|' + registered.order] = registered.xml_name
+                    self.issueid_indexed_by_xmlname[xml_name] = issue_files.issue_folder
 
     def get_aop_by_doi(self, doi):
         xml_name = self.xmlname_indexed_by_doi.get(doi.lower())
         if xml_name is not None:
             issueid = self.issueid_indexed_by_xmlname[xml_name]
-            found = self.ex_aop_db_items.get(issueid, self.aop_db_items.get(issueid))
+            found = self.aop_db_items.get(issueid, self.ex_aop_db_items.get(issueid))
             return found.registered_articles.get(xml_name)
 
     def get_aop_by_xmlname(self, xml_name):
         issueid = self.issueid_indexed_by_xmlname.get(xml_name)
         if issueid is not None:
-            return self.ex_aop_db_items.get(issueid, self.aop_db_items.get(issueid)).registered_articles.get(xml_name)
+            return self.aop_db_items.get(issueid, self.ex_aop_db_items.get(issueid)).registered_articles.get(xml_name)
 
     def still_aop_items(self):
         r = {}
@@ -1037,16 +1045,6 @@ class AopManager(object):
                 r[issue_id].append(article.order + '|' + xml_name + '|' + article.title)
             r[issue_id].sort()
         return r
-
-    def old_still_aop_items(self):
-        r = []
-        for k in sorted(self.xmlname_indexed_by_issueid_and_order.keys()):
-            if not 'ex-' in k:
-                xml_name = self.xmlname_indexed_by_issueid_and_order[k]
-                aop = self.get_aop_by_xmlname(xml_name)
-                parts = [k, aop.order, aop.filename, aop.short_article_title()]
-                r.append(' | '.join([item for item in parts if item is not None]))
-        return sorted(r)
 
     def name(self, db_filename):
         return os.path.basename(db_filename)
@@ -1158,15 +1156,18 @@ class AopManager(object):
 
     def manage_ex_aop(self, aop):
         if aop.pid is not None:
-            issueid = self.issueid_indexed_by_xmlname[aop.xml_name]
-            done, msg = self.journal_files.archive_ex_aop_files(aop, issueid)
-            if done:
-                self.mark_aop_as_deleted(aop)
-                if not issueid in self.updated_issue_bases:
-                    self.updated_issue_bases.append(issueid)
-                if not 'ex-' + issueid in self.updated_issue_bases:
-                    self.updated_issue_bases.append('ex-' + issueid)
-            print(self.updated_issue_bases)
+            aop_issueid = self.issueid_indexed_by_xmlname[aop.xml_name]
+            if aop_issueid.startswith('ex-'):
+                done = True
+                msg = [html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('{item} is aop').format(item=aop.xml_name))]
+            else:
+                done, msg = self.journal_files.archive_ex_aop_files(aop, aop_issueid)
+                if done:
+                    self.mark_aop_as_deleted(aop)
+                    if not aop_issueid in self.updated_issue_bases:
+                        self.updated_issue_bases.append(aop_issueid)
+                    if not 'ex-' + aop_issueid in self.updated_issue_bases:
+                        self.updated_issue_bases.append('ex-' + aop_issueid)
         return (done, msg)
 
     @property

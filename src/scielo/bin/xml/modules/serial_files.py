@@ -407,14 +407,19 @@ class JournalFiles(object):
         done = False
         errors = []
         if self.ex_aop_issues_files is not None:
+            print('1')
             ex_aop_db_name = 'ex-' + db_name
             ex_aop_issues_files = self.ex_aop_issues_files.get(ex_aop_db_name)
             if ex_aop_issues_files is None:
                 self.add_issues_file(ex_aop_db_name)
                 ex_aop_issues_files = self.ex_aop_issues_files[ex_aop_db_name]
         if self.aop_issue_files is not None:
+            print('2')
+            print(db_name)
+            print(self.aop_issue_files.keys())
             aop_issue_files = self.aop_issue_files.get(db_name)
         if aop_issue_files is not None and ex_aop_issues_files is not None:
+            print('3')
             errors += fs_utils.move_file(aop_issue_files.markup_path + '/' + aop.filename, ex_aop_issues_files.markup_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
@@ -423,5 +428,56 @@ class JournalFiles(object):
                 shutil.copyfile(aop_issue_files.id_filename, ex_aop_issues_files.id_filename)
         if aop_issue_files is not None:
             done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
+            print('4')
         return (done, errors)
 
+
+class FilesFinalLocation(object):
+
+    def __init__(self, pkg_path, acron, issue_label, serial_path=None, web_app_path=None):
+        self.web_app_path = web_app_path
+        self.pkg_path = pkg_path
+        self.issue_path = acron + '/' + issue_label
+        self.serial_path = serial_path
+
+    @property
+    def work_area_path(self):
+        if self.serial_path is None:
+            return os.path.dirname(self.pkg_path)
+        else:
+            return self.serial_path + '/' + self.issue_path + '/base_xml/base_reports'
+
+    @property
+    def img_path(self):
+        if self.web_app_path is None:
+            return self.pkg_path
+        else:
+            return self.web_app_path + '/htdocs/img/' + self.issue_path
+
+    @property
+    def pdf_path(self):
+        if self.web_app_path is None:
+            return self.pkg_path
+        else:
+            return self.web_app_path + '/bases/pdf/' + self.issue_path
+
+    @property
+    def xml_path(self):
+        if self.web_app_path is None:
+            return self.pkg_path
+        else:
+            return self.web_app_path + '/bases/xml/' + self.issue_path
+
+    @property
+    def report_path(self):
+        if self.web_app_path is None:
+            return self.work_area_path + '/errors'
+        else:
+            return self.web_app_path + '/htdocs/reports/' + self.issue_path
+
+    @property
+    def result_path(self):
+        if self.serial_path is None:
+            return self.work_area_path
+        else:
+            return self.serial_path + '/' + self.issue_path

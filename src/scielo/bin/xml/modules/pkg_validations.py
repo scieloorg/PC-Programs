@@ -375,11 +375,13 @@ class ArticlesData(object):
         self.issue_models = None
         self.issue_error_msg = None
         self.issue_files = None
+        self.serial_path = None
 
     def setup(self, pkg, journals_manager, db_manager):
         self._identify_journal_data(pkg.pkg_articles, journals_manager)
         if db_manager is not None:
             self._identify_issue_data(db_manager)
+            self.serial_path = db_manager.serial_path
 
     def _identify_journal_data(self, pkg_articles, journals_manager):
         #journals_manager = xc_models.JournalsManager()
@@ -395,6 +397,7 @@ class ArticlesData(object):
         if db_manager is not None and self.journal is not None:
             self.acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
             if self.issue_error_msg is None:
+                self.acron = self.acron_issue_label.split(' ')[0]
                 self.issue_files = db_manager.get_issue_files(self.issue_models)
                 self.articles_db_manager = xc_models.ArticlesManager(db_manager.db_isis, self.issue_files)
 
@@ -1178,7 +1181,10 @@ class ArticlesSetValidations(object):
         report.append(self.pkg_issue_validations.report(errors_only=not self.pkg.is_xml_generation))
         if self.consistency_validations.total() > 0:
             report.append(self.consistency_validations.message)
-        report.append(self.articles_merger.validations.message)
+
+        if self.articles_merger.validations.total() > 0:
+            report.append(html_reports.tag('h2', _('Data Conflicts Report')))
+            report.append(self.articles_merger.validations.message)
         return ''.join(report)
 
     @property
@@ -1192,12 +1198,13 @@ class ArticlesSetValidations(object):
 
 class ReportsMaker(object):
 
-    def __init__(self, articles_set_validations, xpm_version=None, conversion=None, display_report=False):
-        self.display_report = display_report
+    def __init__(self, articles_set_validations, files_location, xpm_version=None, conversion=None):
         self.processing_result_location = None
         self.articles_set_validations = articles_set_validations
         self.conversion = conversion
         self.xpm_version = xpm_version
+        self.files_location = files_location
+
         self.tabs = ['pkg-files', 'summary-report', 'group-validations-report', 'individual-validations-report', 'references', 'dates-report', 'aff-report', 'xc-validations', 'toc-extended']
         self.labels = {
             'pkg-files': _('Files/Folders'),
@@ -1231,7 +1238,7 @@ class ReportsMaker(object):
             components['group-validations-report'] += self.articles_set_validations.journal_and_issue_report
 
         if self.conversion is None:
-            components['toc-extended'] = '?' + toc_extended_report(self.articles_set_validations.pkg.pkg_articles)
+            components['toc-extended'] = toc_extended_report(self.articles_set_validations.pkg.pkg_articles)
         else:
             components['toc-extended'] = self.conversion.conclusion_message + toc_extended_report(self.conversion.registered_articles)
             if self.articles_set_validations.articles_data.issue_error_msg is not None:
@@ -1256,8 +1263,23 @@ class ReportsMaker(object):
         return content
 
     def save_report(self, report_path, report_filename, report_title):
-        self.tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, 'summary-report', self.footnote)
-        self.tabbed_report.save_report(report_path, report_filename, report_title, self.display_report)
+        filename = report_path + '/' + report_filename
+        if os.path.isfile(filename):
+            bkp_filename = report_path + '/' + report_filename + '-'.join(utils.now()) + '.html'
+            shutil.copyfile(filename, bkp_filename)
+
+        html_reports.save(filename, report_title, self.content)
+        print('Saved report: {f}'.format(f=filename))
+
+    @property
+    def content(self):
+        tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, 'summary-report')
+        content = tabbed_report.report_content
+        origin = ['{IMG_PATH}', '{PDF_PATH}', '{XML_PATH}', '{RES_PATH}', '{REP_PATH}']
+        replac = [self.files_location.img_path, self.files_location.pdf_path, self.files_location.xml_path, self.files_location.result_path, self.files_location.report_path]
+        for o, r in zip(origin, replac):
+            content = content.replace(o, r)
+        return content + self.footnote
 
 
 def extract_report_core(content):
@@ -1330,13 +1352,6 @@ def evaluate_journal_data(items):
 
 def processing_result_location(result_path):
     return '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' + html_reports.link('file:///' + result_path, result_path) + '</p>'
-
-
-def display_report(report_filename):
-    try:
-        webbrowser.open('file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()), new=2)
-    except:
-        pass
 
 
 def articles_sorted_by_order(articles):
@@ -1428,8 +1443,8 @@ def rst_title(title):
 
 def display_article_data_in_toc(_article):
     r = ''
-    status = _('ex-aop') if _article.is_ex_aop else ''
-    r += html_reports.tag('p', html_reports.tag('strong', status))
+    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article.') if _article.is_ex_aop else ''
+    r += html_reports.p_message(status)
     r += html_reports.tag('p', _article.toc_section, 'toc-section')
     r += html_reports.tag('p', _article.article_type, 'article-type')
     r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
@@ -1444,8 +1459,9 @@ def display_article_data_in_toc(_article):
 
 def display_article_data_to_compare(_article):
     r = ''
-    status = _('ex-aop') if _article.is_ex_aop else ''
-    r += html_reports.tag('p', html_reports.tag('strong', status))
+    style = 'excluded' if _article.is_ex_aop else None
+    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article.') if _article.is_ex_aop else ''
+    r += html_reports.p_message(status)
     r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
     r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
@@ -1453,7 +1469,7 @@ def display_article_data_to_compare(_article):
     for item in article.authors_list(_article.article_contrib_items):
         a.append(html_reports.tag('span', item))
     r += html_reports.tag('p', '; '.join(a))
-    return r
+    return html_reports.tag('div', r, style)
 
 
 def compare_articles(article1, article2, label1='article 1', label2='article 2'):
@@ -1511,10 +1527,11 @@ def toc_extended_report(articles):
     widths = {_('filename'): '10', 'order': '5', _('article'): '85'}
     items = []
     for new_name, article in articles_sorted_by_order(articles):
-        values = []
-        values.append(new_name)
-        values.append(article.order)
-        values.append(display_article_data_in_toc(article))
-        items.append(label_values(labels, values))
+        if not article.is_ex_aop:
+            values = []
+            values.append(new_name)
+            values.append(article.order)
+            values.append(display_article_data_in_toc(article))
+            items.append(label_values(labels, values))
     return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
 
