@@ -391,4 +391,10 @@
 	</xsl:template>
 	
 	<xsl:template match="funding-group"></xsl:template>
+	<xsl:template match="product">
+		<product>
+			<xsl:apply-templates select="@*|*"></xsl:apply-templates>
+		</product>
+	</xsl:template>
+	
 </xsl:stylesheet>
