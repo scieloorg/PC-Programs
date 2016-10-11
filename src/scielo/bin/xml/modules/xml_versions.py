@@ -61,7 +61,7 @@ XPM_FILES['pmc1.0']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
 
 
 def xsl_sgml2xml(version):
-    return XSL_SGML2XML.get(version, DEFAULT_VERSION)
+    return XSL_SGML2XML.get(version, XSL_SGML2XML.get(DEFAULT_VERSION))
 
 
 class DTDFiles(object):

@@ -194,7 +194,7 @@ text-ref;Identify the original form of the reference
 publoc;Identify the publisher location
 *publoc-pubname;Identify automatically publisher location and name
 *pubname-publoc;Identify automatically publisher name and location
-*fn;Identify all the footnotes in the text, including its links
+*fn;Identify automatically a footnote and its elements
 *fngrp;Identify a group of footnotes
 boxedtxt;Identify a boxed text
 *boxedtxt;Identify automatically boxed text

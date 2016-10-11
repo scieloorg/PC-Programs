@@ -127,6 +127,7 @@ def zip_report(report_filename):
 
 def update_file_content_if_there_is_new_items(new_content, filename):
     current_content = u''
+    print(filename)
     if os.path.isfile(filename):
         current_content = read_file(filename)
     current_items = current_content.split('\n')
@@ -137,7 +138,7 @@ def update_file_content_if_there_is_new_items(new_content, filename):
         new_content = new_content.decode('utf-8')
     new_items = new_content.split('\n')
 
-    allow_update = (len(new_items) > len(current_items)) or (len(new_items) == len(current_items) and new_content != current_content)
+    allow_update = (len(new_items) != len(current_items)) or (len(new_items) == len(current_items) and new_content != current_content)
 
     if allow_update is True:
         write_file(filename, new_content)

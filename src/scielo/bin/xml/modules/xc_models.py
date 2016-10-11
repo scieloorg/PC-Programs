@@ -1329,7 +1329,6 @@ class JournalsList(object):
     def __init__(self):
         ws_requester.wsr.update_journals_file()
         self._journals = {}
-
         with open(ws_requester.wsr.downloaded_journals_filename, 'rb') as csvfile:
             spamreader = csv.reader(csvfile, delimiter='\t')
             for item in spamreader:
@@ -1349,7 +1348,6 @@ class JournalsList(object):
                         j.publisher_name = item[9]
                         if len(item) == 12:
                             j.license = item[11]
-
                         for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
                             if not issn in self._journals.keys():
                                 self._journals[issn] = []
@@ -1374,24 +1372,23 @@ class JournalsList(object):
                     journal.e_issn = update_list(journal.e_issn, j.e_issn)
                     journal.abbrev_title = update_list(journal.abbrev_title, j.abbrev_title)
                     journal.nlm_title = update_list(journal.nlm_title, j.nlm_title)
-                    
                     journal.publisher_name = update_list(journal.publisher_name, j.publisher_name)
                     journal.license = update_list(journal.license, j.license)
-
                     journal.collection_acron = update_list(journal.collection_acron, j.collection_acron)
                     journal.journal_title = update_list(journal.journal_title, j.journal_title)
                     journal.issn_id = update_list(journal.issn_id, j.issn_id)
-
         return journal
         #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
 
     def get_journal(self, p_issn, e_issn, journal_title):
+        print((p_issn, e_issn, journal_title))
         journal = Journal()
         for issn in [p_issn, e_issn]:
             if issn is not None:
                 for j in self._journals.get(issn, []):
                     journal = j
                     #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
+        print(journal)
         return journal
 
 
@@ -1413,6 +1410,8 @@ class JournalsManager(object):
     def journal(self, p_issn, e_issn, journal_title):
         j = None
         j_data = None
+        print(self.journals_db)
+        print((p_issn, e_issn, journal_title))
         if self.journals_db is None:
             j = self.journals_list.get_journal(p_issn, e_issn, journal_title)
             j_data = self.journals_list.get_journal_data(p_issn, e_issn, journal_title)

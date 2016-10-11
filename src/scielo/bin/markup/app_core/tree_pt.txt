@@ -194,7 +194,7 @@ text-ref;Identify the original form of the reference
 publoc;Identifica o local da editora
 *publoc-pubname;Identifica automaticamente o local e o nome da editora
 *pubname-publoc;Identifica automaticamente o nome da editora e de seu local
-*fn;Identifica automaticamente todas as notas de rodapé no texto, inclusive seus vínculos
+*fn;Identifica automaticamente uma nota de rodapé e seus elementos
 *fngrp;Identifica automaticamente um grupo de notas de rodapé
 boxedtxt;Identifica uma caixa de texto
 *boxedtxt;Identifica automaticamente uma caixa de texto

@@ -385,13 +385,16 @@ class ArticlesData(object):
 
     def _identify_journal_data(self, pkg_articles, journals_manager):
         #journals_manager = xc_models.JournalsManager()
+        print([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in pkg_articles.values()])
         journals = [(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in pkg_articles.values() if a.journal_title is not None and a.issue_label is not None and (a.print_issn is not None or a.e_issn is not None)]
         journals = list(set(journals))
+        print(journals)
         if len(journals) > 0:
             journal = article.Journal()
             if len(journals[0]) == 4:
                 journal.journal_title, journal.p_issn, journal.e_issn, self.issue_label = journals[0]
                 self.journal, self.journal_data = journals_manager.journal(journal.p_issn, journal.e_issn, journal.journal_title)
+                self.acron = self.journal.acron
 
     def _identify_issue_data(self, db_manager):
         if db_manager is not None and self.journal is not None:

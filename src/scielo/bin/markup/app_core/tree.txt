@@ -15,8 +15,6 @@ element;#FALSE#;#TRUE#
 equation;#FALSE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
-*fngrp;#FALSE#;#TRUE#
-fngrp;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#FALSE#;#TRUE#
 licinfo;#FALSE#;#TRUE#
@@ -33,6 +31,8 @@ versegrp;#FALSE#;#TRUE#
 xref;#FALSE#;#TRUE#
 
 *fngrp
+
+*fn
 
 abnt6023
 acitat;#FALSE#;#TRUE#
@@ -180,6 +180,8 @@ apa;#FALSE#;#FALSE#
 other;#FALSE#;#FALSE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
 licenses;#FALSE#;#FALSE#
 bbibcom;#FALSE#;#FALSE#
 glossary;#FALSE#;#FALSE#
@@ -883,6 +885,8 @@ doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
 glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
@@ -922,6 +926,8 @@ doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
@@ -945,6 +951,8 @@ doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#

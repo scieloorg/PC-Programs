@@ -335,7 +335,7 @@ class SGMLXML(object):
                     html_href = html_unknown_href_items[i - 1]
                     if html_href == 'None':
                         # remove <graphic *> e </graphic>, mantendo o restante de item
-                        part = part.replace(graphic, '')
+                        part = part.replace('<graphic', '<nographic').replace('</graphic>', '</nographic>')
                     else:
                         href = get_href_content(graphic)
                         elem_name, elem_id = get_previous_element_which_has_id_attribute(parts[i - 1])
@@ -1081,7 +1081,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
 
 class PackageMaker(object):
 
-    def __init__(self, xml_files, results_path, version, acron, is_db_generation=False):
+    def __init__(self, xml_files, results_path, acron, version, is_db_generation=False):
         self.version = version
         self.acron = acron
         self.is_db_generation = is_db_generation
@@ -1344,7 +1344,7 @@ def call_make_packages(args, version):
             messages.append('\n'.join(errors))
             utils.display_message('\n'.join(messages))
         else:
-            make_packages(path, acron)
+            make_packages(path, acron, version)
 
 
 def validate_inputs(xml_path, acron):

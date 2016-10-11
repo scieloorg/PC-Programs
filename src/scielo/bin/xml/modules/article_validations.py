@@ -457,7 +457,7 @@ class ArticleContentValidation(object):
         items.append(self.article_type)
 
         if self.article.article_meta is None:
-            items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(elem='journal-meta')))
+            items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='journal-meta')))
         else:
             items.append(self.journal_title)
             items.append(self.publisher_name)
@@ -466,7 +466,7 @@ class ArticleContentValidation(object):
             items.append(self.journal_issns)
 
         if self.article.article_meta is None:
-            items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(elem='article-meta')))
+            items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='article-meta')))
         else:
             items.append(self.months_seasons)
             items.append(self.issue_label)

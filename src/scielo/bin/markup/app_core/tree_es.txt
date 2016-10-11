@@ -192,12 +192,12 @@ orgdiv2;Identifica la segunda división abajo de la organización
 orgdiv3;Identifica la tercera división abajdo de la organización
 text-ref;Identifica la forma original de la cita
 publoc;Identifica la ubicación de la editora
-*publoc-pubname;Identifica automaticámente la ubicación y el nombre de la editora
-*pubname-publoc;Identifica automaticámente el nombre de la editora y de su ubicación
-*fn;Identifica automaticámente todos las notas de pie de página del texto, incluso sus enlaces
-*fngrp;Identifica automaticámente un grupo de notas de pie de página
+*publoc-pubname;Identifica automáticamente la ubicación y el nombre de la editora
+*pubname-publoc;Identifica automáticamente el nombre de la editora y de su ubicación
+*fn;Identifica automáticamente una nota de pie de página y sus elementos
+*fngrp;Identifica automáticamente un grupo de notas de pie de página
 boxedtxt;Identifica una caja de texto
-*boxedtxt;Identifica automaticámente una caja de texto
+*boxedtxt;Identifica automáticamente una caja de texto
 appgrp;Identifica un grupo de apéndices
 series;Identifica seriada
 versegrp;Identifica canción, poema, verso
