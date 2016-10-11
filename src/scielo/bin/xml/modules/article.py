@@ -1374,6 +1374,7 @@ class Article(ArticleXML):
         self.normalized_affiliations = None
         self.article_records = None
         self.related_files = []
+        self.is_ex_aop = False
 
     def package_files(self, pkg_path):
         files = [item for item in os.listdir(pkg_path) if item.startswith(self.new_prefix) and not item.endswith('.xml')]
@@ -1712,7 +1713,7 @@ class ReferenceXML(object):
         if self.element_citation is not None:
             for person_group in self.element_citation.findall('.//person-group'):
                 role = person_group.attrib.get('person-group-type', 'author')
-                authors = [get_author(contrib) for contrib in person_group.findall('*')]
+                authors = [get_author(contrib, role) for contrib in person_group.findall('*')]
                 authors = [a for a in authors if a is not None]
 
                 groups.append(authors)

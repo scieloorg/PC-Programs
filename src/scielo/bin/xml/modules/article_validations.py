@@ -1350,7 +1350,7 @@ class ArticleContentValidation(object):
             if len(missing_xref_list) > 0:
                 for xref in missing_xref_list:
                     message.append(('xref[@ref-type=' + xref_type + ']', validation_status.STATUS_ERROR, 
-                        _('Not found: {label} for {item}. ').format(label='xref[@ref-type=' + xref_type + ']', item=xref)))
+                        _('Not found: {label}. ').format(label='xref[@ref-type="{xreftype}" and rid="{rid}"]'.format(xreftype=xref_type, rid=xref))))
             if self.article.any_xref_ranges.get(xref_type) is not None:
                 for start, end, start_node, end_node in self.article.any_xref_ranges.get(xref_type):
                     if start > end:
@@ -1454,9 +1454,9 @@ class ArticleContentValidation(object):
                         status_message.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=os.path.basename(file_location), item=_('package'))))
                 hreflocation = 'file:///' + file_location
                 if hrefitem.is_image:
-                    display = html_reports.thumb_image(hreflocation)
+                    display = html_reports.thumb_image(hreflocation.replace(path, '{IMG_PATH}'))
                 else:
-                    display = html_reports.link(hreflocation, hrefitem.src)
+                    display = html_reports.link(hreflocation.replace(path, '{PDF_PATH}'), hrefitem.src)
                 if len(status_message) == 0:
                     status_message.append((validation_status.STATUS_INFO, ''))
                 href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}

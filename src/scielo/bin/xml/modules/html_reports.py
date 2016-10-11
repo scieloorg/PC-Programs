@@ -18,27 +18,14 @@ CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 class TabbedReport(object):
 
-    def __init__(self, labels, tabs, tabbed_content, pre_selected, footnote='', style_selected='selected-tab-content', style_not_selected='not-selected-tab-content'):
+    def __init__(self, labels, tabs, tabbed_content, pre_selected, style_selected='selected-tab-content', style_not_selected='not-selected-tab-content'):
         self.labels = labels
         self.tabs = tabs
         self.tabbed_content = tabbed_content
         self.style_selected = style_selected
         self.style_not_selected = style_not_selected
         self.pre_selected = pre_selected
-        self.footnote = footnote
         self.display_report = display_report
-
-    def save_report(self, report_path, report_filename, report_title, _display_report):
-        filename = report_path + '/' + report_filename
-        if os.path.isfile(filename):
-            bkp_filename = report_path + '/' + report_filename + '-'.join(utils.now()) + '.html'
-            shutil.copyfile(filename, bkp_filename)
-
-        save(filename, report_title, self.report_content)
-        print(_('Report:\n  {filename}').format(filename=filename))
-        print(_display_report)
-        if _display_report:
-            display_report(filename)
 
     @property
     def report_content(self):
@@ -50,8 +37,7 @@ class TabbedReport(object):
             if c is not None:
                 style = self.style_selected if tab_id == self.pre_selected else self.style_not_selected
                 content += tab_block(tab_id, c, style)
-
-        return content + self.footnote
+        return content
 
 
 class HideAndShowBlocksReport(object):
@@ -444,6 +430,9 @@ def save(filename, title, body):
     r = html(title, body)
     if isinstance(r, unicode):
         r = r.encode('utf-8')
+    d = os.path.dirname(filename)
+    if not os.path.isdir(d):
+        os.makedirs(d)
     open(filename, 'w').write(r)
 
 
@@ -555,6 +544,8 @@ def label_values(labels, values):
 
 
 def display_report(report_filename):
+    print(_('Report:\n  {filename}').format(filename=report_filename.encode(encoding=sys.getfilesystemencoding())))
+
     try:
         webbrowser.open('file://' + report_filename.encode(encoding=sys.getfilesystemencoding()), new=2)
     except Exception as e:

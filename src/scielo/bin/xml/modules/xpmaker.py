@@ -79,25 +79,30 @@ def get_href_content(graphic):
     return href
 
 
-def get_components_of_new_href(elem_name, elem_id, alternative_id):
+def get_mkp_href_data(elem_name, elem_id, alternative_id):
     prefixes = []
     possibilities = []
+    n = ''
     if elem_name == 'equation':
         prefixes.append('frm')
         prefixes.append('form')
         prefixes.append('eq')
-        possibilities.append((elem_id, prefixes))
+        n = get_number_from_element_id(elem_id)
     elif elem_name in ['tabwrap', 'equation', 'figgrp']:
         prefixes.append(elem_name[0])
         prefixes.append(elem_name[0:3])
-        possibilities.append((elem_id, prefixes))
+        n = get_number_from_element_id(elem_id)
     else:
         prefixes.append('img')
         prefixes.append('image')
         alternative_id += 1
-        alt_id = str(alternative_id)
-        possibilities.append((alt_id, prefixes))
-    return (possibilities, alternative_id)
+        n = str(alternative_id)
+
+    for prefix in prefixes:
+        possibilities.append(prefix + n)
+        if n != '':
+            possibilities.append(prefix + '0' + n)
+    return (n, possibilities, alternative_id)
 
 
 def xpm_version():
@@ -247,22 +252,25 @@ class SGMLHTML(object):
 
 class SGMLXML(object):
 
-    def __init__(self, sgmxml_filename, sgmlxml_content, xml_name, src_path, html_filename):
+    def __init__(self, article_files, sgmlxml_content, html_filename):
         self.sgml_content = sgmlxml_content
-        self.sgmlhtml = SGMLHTML(xml_name, html_filename)
-        self.xml_name = xml_name
-        self.src_path = src_path
-        self.sgmxml_filename = sgmxml_filename
+        self.article_files = article_files
+        self.xml_name = self.article_files.xml_name
+        self.src_path = self.article_files.path
+        self.sgmxml_filename = self.article_files.xml_filename
+
+        self.sgmlhtml = SGMLHTML(self.xml_name, html_filename)
         self.sorted_graphic_href_items = []
         self.src_folder_graphics = []
         self.xml_content = None
+        self.IMG_EXTENSIONS = ('.tiff', '.tif', '.eps', '.jpg', '.png')
 
     def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
         xpm_process_logger.register('SGMLXML.generate_xml')
         self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
         self.insert_mml_namespace()
-        self.identify_unknown_href_items()
+        self.fix_mkp_href_values()
         self.replace_fontsymbols()
 
         for style in ['italic', 'bold', 'sup', 'sub']:
@@ -306,7 +314,7 @@ class SGMLXML(object):
                 self.sgml_content = self.sgml_content.replace(item, html_fontsymbol_items[i])
                 i += 1
 
-    def identify_unknown_href_items(self):
+    def fix_mkp_href_values(self):
         self.sgml_content = self.sgml_content.replace('href=&quot;?', 'href="?')
         self.sgml_content = self.sgml_content.replace('"">', '">')
         self.sgml_content = self.sgml_content.replace('href=""?', 'href="?')
@@ -331,7 +339,7 @@ class SGMLXML(object):
                     else:
                         href = get_href_content(graphic)
                         elem_name, elem_id = get_previous_element_which_has_id_attribute(parts[i - 1])
-                        src_href, possible_href_names, alternative_id = self.find_href_file_in_src_folder(elem_name, elem_id, alternative_id)
+                        src_href, possible_href_names, alternative_id = self.select_href_file_from_src_folder(elem_name, elem_id, alternative_id)
                         renamed_href = src_href
                         if src_href is not None:
                             self.src_folder_graphics.append(src_href)
@@ -347,44 +355,43 @@ class SGMLXML(object):
                 new_parts.append(part)
             self.sgml_content = ''.join(new_parts)
 
-    def find_href_file_in_src_folder(self, elem_name, elem_id, alternative_id):
+    def select_href_file_from_src_folder(self, elem_name, elem_id, alternative_id):
         filenames = [self.xml_name]
         if 'v' in self.xml_name and self.xml_name.startswith('a'):
             filenames.append(self.xml_name[:self.xml_name.find('v')])
-
         found = []
         possible_href_names = []
-
-        possibilities, alternative_id = get_components_of_new_href(elem_name, elem_id, alternative_id)
-        for name in filenames:
-            for possibility in possibilities:
-                element_id, prefixes = possibility
-                i = 0
-                stop = False
-                while i < len(element_id) and not stop:
-                    stop = element_id[i].isdigit()
-                    i += 1
-                if stop:
-                    n = element_id[i-1:]
-                else:
-                    n = ''
-                if n != '':
-                    n = str(int(n))
-                    for prefix in prefixes:
-                        for number in [n, '0' + n]:
-                            for ext in ['.tiff', '.tif', '.eps', '.jpg']:
-                                href = name + prefix + number + ext
-                                possible_href_names.append(href)
-                                if os.path.isfile(self.src_path + '/' + href):
-                                    found.append(href)
-                else:
-                    for ext in ['.tiff', '.tif', '.eps', '.jpg']:
-                        href = name + elem_id + ext
+        number, possibilities, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
+        if number != '':
+            for name in filenames:
+                for prefix_number in possibilities:
+                    for ext in self.IMG_EXTENSIONS:
+                        href = name + prefix_number + ext
                         possible_href_names.append(href)
-                        if os.path.isfile(self.src_path + '/' + href):
+                        if href in self.article_files.files:
                             found.append(href)
+        else:
+            for name in filenames:
+                for ext in self.IMG_EXTENSIONS:
+                    href = name + elem_id + ext
+                    possible_href_names.append(href)
+                    if href in self.article_files.files:
+                        found.append(href)
         new_href = None if len(found) == 0 else found[0]
         return (new_href, list(set(possible_href_names)), alternative_id)
+
+
+def hdimg_to_jpg(source_image_filename, jpg_filename):
+    if IMG_CONVERTER:
+        try:
+            im = Image.open(source_image_filename)
+            im.thumbnail(im.size)
+            im.save(jpg_filename, "JPEG")
+            utils.display_message(jpg_filename)
+            print(jpg_filename)
+        except Exception as inst:
+            utils.display_message('Unable to generate ' + jpg_filename)
+            utils.display_message(inst)
 
 
 def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
@@ -397,15 +404,7 @@ def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
                 doit = True if not os.path.isfile(jpg_filename) else force_update is True
 
                 if doit:
-                    try:
-                        im = Image.open(image_filename)
-                        im.thumbnail(im.size)
-                        im.save(jpg_filename, "JPEG")
-                        utils.display_message(jpg_filename)
-                        print(jpg_filename)
-                    except Exception as inst:
-                        utils.display_message('Unable to generate ' + jpg_filename)
-                        utils.display_message(inst)
+                    hdimg_to_jpg(image_filename, jpg_filename)
 
 
 def href_attach_type(parent_tag, tag):
@@ -596,17 +595,70 @@ class OriginalPackage(object):
 
     def __init__(self, xml_filenames):
         self.xml_filenames = xml_filenames
+        self.article_pkg_files = {}
         self.path = os.path.dirname(xml_filenames[0])
-        self.doc_items = {}
-        self.doc_files_info_items = {}
 
     def setUp(self):
+        self.organize_files()
         hdimages_to_jpeg(self.path, self.path, False)
+
+    def organize_files(self):
+        files = os.listdir(self.path)
+        for filename in self.xml_filenames:
+            xml_filename = os.path.basename(filename)
+            fname = xml_filename[:-4]
+            if '.sgm' in fname:
+                fname = fname[:-4]
+                article_files = [f for f in files if f.startswith(fname)]
+            else:
+                article_files = [f for f in files if f.startswith(fname + '-') or f.startswith(fname + '.')]
+            self.article_pkg_files[fname] = ArticlePkgFiles(self.path, xml_filename, fname, article_files)
+            self.article_pkg_files[fname].convert_images()
+
+
+class ArticlePkgFiles(object):
+
+    def __init__(self, path, filename, xml_name, files):
+        self.path = path
+        self.xml_name = xml_name
+        self.files = files
+        self.filename = filename
+
+    @property
+    def xml_filename(self):
+        return self.path + '/' + self.filename
+
+    @property
+    def splitext(self):
+        return [os.path.splitext(f) for f in self.files]
+
+    @property
+    def png_files(self):
+        return [name for name, ext in self.splitext if ext in ['.png']]
+
+    @property
+    def jpg_files(self):
+        return [name for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
+
+    @property
+    def tif_files(self):
+        return [name for name, ext in self.splitext if ext in ['.tif', '.tiff']]
+
+    def convert_images(self):
+        for item in self.tif_files:
+            if not item in self.jpg_files and not item in self.png_files:
+                source_fname = item + '.tif'
+                if not source_fname in self.files:
+                    source_fname = item + '.tiff'
+                hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
+                if os.path.isfile(self.path + '/' + item + '.jpg'):
+                    self.files.append(item + '.jpg')
 
 
 class ArticlePkgMaker(object):
 
-    def __init__(self, doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
+    def __init__(self, article_files, doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
+        self.article_files = article_files
         self.scielo_pkg_path = scielo_pkg_path
         self.version = version
         self.acron = acron
@@ -615,11 +667,12 @@ class ArticlePkgMaker(object):
         self.content = fs_utils.read_file(doc_files_info.xml_filename)
         self.text_messages = []
         self.doc = None
-        self.local_href_items = []
-        self.replacements_related_files_items = []
-        self.replacements_href_files_items = []
-        self.href_files_items_not_found_in_src_folder = []
-        self.local_href_names = []
+        self.replacements_href_values = []
+        self.replacements_related_files_items = {}
+        self.replacements_href_files_items = {}
+
+        self.missing_href_files = []
+        self.original_href_filenames = []
         self.version_info = xml_versions.DTDFiles('scielo', version)
         self.sgmlxml = None
         self.xml = None
@@ -629,13 +682,13 @@ class ArticlePkgMaker(object):
 
     def make_article_package(self):
         self.normalize_xml_content()
-        self.normalize_package_name()
+        self.normalize_filenames()
         self.pack_article_files()
 
         fs_utils.write_file(self.doc_files_info.err_filename, '\n'.join(self.text_messages))
         html_reports.save(self.doc_files_info.images_report_filename, '', self.get_images_comparison_report())
         if len(self.replacements_related_files_items) > 0:
-            self.doc.related_files = [item[1] for item in self.replacements_related_files_items]
+            self.doc.related_files = [os.path.basename(f) for f in self.replacements_related_files_items.values()]
 
         return (self.doc, self.doc_files_info)
 
@@ -684,7 +737,7 @@ class ArticlePkgMaker(object):
             self.xml, self.e = xml_utils.load_xml(self.content)
 
     def normalize_sgmlxml(self):
-        self.sgmlxml = SGMLXML(self.doc_files_info.xml_filename, self.content, self.doc_files_info.xml_name, self.doc_files_info.xml_path, self.doc_files_info.html_filename)
+        self.sgmlxml = SGMLXML(self.article_files, self.content, self.doc_files_info.html_filename)
         self.content = self.sgmlxml.generate_xml(self.version)
 
     def replace_mimetypes(self):
@@ -726,7 +779,7 @@ class ArticlePkgMaker(object):
         return r
 
     def report_images_in_the_package(self):
-        #self.local_href_items
+        #self.replacements_href_values
         #self.sgmlxml.sorted_graphic_href_items = []
         #self.sgmlxml.src_folder_graphics = []
         #(elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
@@ -736,7 +789,7 @@ class ArticlePkgMaker(object):
         rows.append(html_reports.tag('p', _('The images are presented in their original dimensions and in the same order they are found in the Markup document.')))
 
         rows.append('<ol>')
-        for name, renamed in self.local_href_items:
+        for name, renamed in self.replacements_href_values:
             rows.append('<li>')
             rows.append(html_reports.tag('h4', renamed))
 
@@ -755,7 +808,7 @@ class ArticlePkgMaker(object):
         return ''.join(rows)
 
     def report_comparison_between_markup_and_src_images(self):
-        #self.local_href_items
+        #self.replacements_href_values
         #self.sgmlxml.sorted_graphic_href_items = []
         #self.sgmlxml.src_folder_graphics = []
         #(elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href)
@@ -764,7 +817,7 @@ class ArticlePkgMaker(object):
 
             rows.append(html_reports.tag('h2', _('Images Report')))
             rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in the package.')))
-            replacements = {curr_href: new_href for curr_href, new_href in self.local_href_items}
+            replacements = {curr_href: new_href for curr_href, new_href in self.replacements_href_values}
             #print(replacements)
             #print(self.sgmlxml.sorted_graphic_href_items)
             #print(self.sgmlxml.src_folder_graphics)
@@ -812,21 +865,21 @@ class ArticlePkgMaker(object):
             rows.append('<o/l>')
         return ''.join(rows)
 
-    def normalize_package_name(self):
-        xpm_process_logger.register('normalize_package_name')
+    def normalize_filenames(self):
+        xpm_process_logger.register('normalize_filenames')
         self.doc_files_info.new_xml_path = self.scielo_pkg_path
         self.doc = article.Article(self.xml, self.doc_files_info.xml_name)
         self.doc_files_info.new_name = self.doc_files_info.xml_name
         if self.doc.tree is not None:
             if self.doc_files_info.is_sgmxml:
-                self.doc_files_info.new_name = self.generate_doc_files_info_new_name()
-            self.replace_href_items()
+                self.doc_files_info.new_name = self.generate_normalized_package_name()
+            self.normalize_href_values()
         self.doc.new_prefix = self.doc_files_info.new_name
         self.doc_files_info.new_xml_filename = self.doc_files_info.new_xml_path + '/' + self.doc_files_info.new_name + '.xml'
 
-    def generate_doc_files_info_new_name(self):
+    def generate_normalized_package_name(self):
         #doc, acron, self.doc_files_info.xml_name
-        xpm_process_logger.register('generate_doc_files_info_new_name')
+        xpm_process_logger.register('generate_normalized_package_name')
         vol, issueno, fpage, seq, elocation_id, order, doi = self.doc.volume, self.doc.number, self.doc.fpage, self.doc.fpage_seq, self.doc.elocation_id, self.doc.order, self.doc.doi
         issns = [issn for issn in [self.doc.e_issn, self.doc.print_issn] if issn is not None]
         if len(issns) > 0:
@@ -852,17 +905,17 @@ class ArticlePkgMaker(object):
         r = '-'.join([part for part in parts if part is not None and not part == ''])
         return r
 
-    def replace_href_items(self):
+    def normalize_href_values(self):
         href_items = [href for href in self.doc.hrefs if href.is_internal_file]
         if self.doc_files_info.is_sgmxml:
             for href in href_items:
-                self.local_href_items.append((href.src, self.get_new_href(href)))
+                self.replacements_href_values.append((href.src, self.get_normalized_href_value(href)))
         else:
             for href in href_items:
-                self.local_href_items.append((href.src, self.add_extension(href.src, href.src)))
+                self.replacements_href_values.append((href.src, self.add_extension(href.src, href.src)))
         changed = False
-        if len(self.local_href_items) > 0:
-            for current, new in self.local_href_items:
+        if len(self.replacements_href_values) > 0:
+            for current, new in self.replacements_href_values:
                 if current != new:
                     utils.display_message(current + ' => ' + new)
                     self.content = self.content.replace('href="' + current, 'href="' + new)
@@ -871,7 +924,7 @@ class ArticlePkgMaker(object):
             self.xml, self.e = xml_utils.load_xml(self.content)
             self.doc = article.Article(self.xml, self.doc_files_info.xml_name)
 
-    def get_new_href(self, href):
+    def get_normalized_href_value(self, href):
         href_type = href_attach_type(href.parent.tag, href.element.tag)
         if href.id is None:
             href_name = href.src.replace(self.doc_files_info.xml_name, '')
@@ -911,61 +964,46 @@ class ArticlePkgMaker(object):
     def pack_article_files(self):
         xpm_process_logger.register('pack_article_files: inicio')
 
-        self.replacements_related_files_items = []
-        self.replacements_href_files_items = []
-        self.href_files_items_not_found_in_src_folder = []
-        self.local_href_names = []
         self.eliminate_old_package_files()
 
         if self.doc.tree is None:
             self.text_messages.append(self.e)
             self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.doc_files_info.new_xml_filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily.'))
         else:
-            src_files = [f for f in os.listdir(self.doc_files_info.xml_path) if not f.endswith('.xml')]
-            self.pack_article_href_files(src_files)
-            self.pack_article_related_files(src_files)
+            self.pack_article_href_files()
+            self.pack_article_related_files()
             self.text_messages.append(self.generate_packed_files_report())
 
         self.pack_article_xml_file()
         xpm_process_logger.register('pack_article_files: fim')
 
-    def pack_article_href_files(self, src_files):
+    def pack_article_href_files(self):
         xpm_process_logger.register('pack_article_href_files: inicio')
-
-        in_src_folder = os.listdir(self.doc_files_info.xml_path)
-
-        self.replacements_href_files_items = []
-        self.href_files_items_not_found_in_src_folder = []
-        for original_href, changed_href in self.local_href_items:
+        self.replacements_href_files_items = {}
+        self.missing_href_files = []
+        for original_href, normalized_href in self.replacements_href_values:
             original_href_name, original_href_ext = os.path.splitext(original_href)
-            changed_href_name, changed_href_ext = os.path.splitext(changed_href)
-
-            self.local_href_names.append(original_href_name)
-
-            original_and_changed_fnames = [(src_file, src_file.replace(original_href_name, changed_href_name)) for src_file in src_files if src_file.startswith(original_href_name + '.')]
-
-            for original, changed in original_and_changed_fnames:
-                source_fname = changed if changed in in_src_folder else original
-                self.replacements_href_files_items.append((source_fname, changed))
-                shutil.copyfile(self.doc_files_info.xml_path + '/' + source_fname, self.scielo_pkg_path + '/' + changed)
-            if len(original_and_changed_fnames) == 0:
-                self.href_files_items_not_found_in_src_folder.append((original_href, changed_href))
-
+            normalized_href_name, normalized_href_ext = os.path.splitext(normalized_href)
+            original2normalized = [(src_file, src_file.replace(original_href_name, normalized_href_name)) for src_file in self.article_files.files if src_file.startswith(original_href_name + '.')]
+            for original, normalized in original2normalized:
+                self.replacements_href_files_items[original] = normalized
+                shutil.copyfile(self.doc_files_info.xml_path + '/' + original, self.scielo_pkg_path + '/' + normalized)
+            if len(original2normalized) == 0:
+                self.missing_href_files.append((original_href, normalized_href))
         xpm_process_logger.register('pack_article_href_files: fim')
 
-    def pack_article_related_files(self, src_files):
+    def pack_article_related_files(self):
         xpm_process_logger.register('pack_article_related_files: inicio')
-        self.replacements_related_files_items = []
-        for f in src_files:
-            source_filename = self.doc_files_info.xml_path + '/' + f
+        self.replacements_related_files_items = {}
+        for f in self.article_files.files:
+            source_filename = self.article_files.path + '/' + f
             dest_filename = self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)
             if f.startswith(self.doc_files_info.xml_name + '.'):
-                self.replacements_related_files_items.append((f, dest_filename))
+                self.replacements_related_files_items[f] = dest_filename
                 shutil.copyfile(source_filename, dest_filename)
             elif f.startswith(self.doc_files_info.xml_name + '-'):
-                item, ext = os.path.splitext(f)
-                if not item in self.local_href_names:
-                    self.replacements_related_files_items.append((f, dest_filename))
+                if not f in self.replacements_href_files_items.keys():
+                    self.replacements_related_files_items[f] = dest_filename
                     shutil.copyfile(source_filename, dest_filename)
         xpm_process_logger.register('pack_article_related_files: fim')
 
@@ -974,6 +1012,9 @@ class ArticlePkgMaker(object):
 
         def format(files_list):
             return ['   ' + c + ' => ' + n for c, n in files_list]
+
+        def format2(files_list):
+            return ['   ' + k + ' => ' + files_list[k] for k in sorted(files_list.keys())]
 
         xml_name = self.doc_files_info.xml_name
         new_name = self.doc_files_info.new_name
@@ -991,10 +1032,10 @@ class ArticlePkgMaker(object):
             log.append(_('Source XML name') + ': ' + xml_name)
         log.append(_('Package XML name') + ': ' + new_name)
 
-        log.append(message_file_list(_('Total of related files'), format(self.replacements_related_files_items)))
-        log.append(message_file_list(_('Total of files in package'), format(self.replacements_href_files_items)))
-        log.append(message_file_list(_('Total of @href in XML'), format(self.local_href_items)))
-        log.append(message_file_list(_('Total of files not found in package'), format(self.href_files_items_not_found_in_src_folder)))
+        log.append(message_file_list(_('Total of related files'), format2(self.replacements_related_files_items)))
+        log.append(message_file_list(_('Total of files in package'), format2(self.replacements_href_files_items)))
+        log.append(message_file_list(_('Total of @href in XML'), format(self.replacements_href_values)))
+        log.append(message_file_list(_('Total of files not found in package'), format(self.missing_href_files)))
 
         return '\n'.join(log)
 
@@ -1011,108 +1052,148 @@ class ArticlePkgMaker(object):
 
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
-
     package = OriginalPackage(xml_files)
     package.setUp()
 
     doc_items = {}
-    doc_files_info_items = {}
+    article_work_area_items = {}
     xpm_process_logger.register('make packages')
     utils.display_message('\n' + _('Make package for {n} files.').format(n=str(len(xml_files))))
     n = '/' + str(len(xml_files))
     index = 0
-    related_files = {}
-    for xml_filename in xml_files:
 
-        doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, wrk_path)
-        doc_files_info.clean()
+    for xml_name, article_pkg_files in package.article_pkg_files.items():
+        article_work_area = serial_files.ArticleWorkArea(article_pkg_files.xml_filename, report_path, wrk_path)
+        article_work_area.clean()
 
         index += 1
-        item_label = str(index) + n + ': ' + doc_files_info.xml_name
+        item_label = str(index) + n + ': ' + article_work_area.xml_name
         utils.display_message(item_label)
 
-        article_pkg_maker = ArticlePkgMaker(doc_files_info, scielo_pkg_path, version, acron, is_db_generation)
-        doc, doc_files_info = article_pkg_maker.make_article_package()
+        article_pkg_maker = ArticlePkgMaker(article_pkg_files, article_work_area, scielo_pkg_path, version, acron, is_db_generation)
+        doc, article_work_area = article_pkg_maker.make_article_package()
 
-        doc_files_info_items[doc_files_info.xml_name] = doc_files_info
-        doc_items[doc_files_info.xml_name] = doc
+        article_work_area_items[article_work_area.xml_name] = article_work_area
+        doc_items[article_work_area.xml_name] = doc
 
-    return (doc_items, doc_files_info_items)
-
-
-def make_pmc_report(articles, doc_files_info_items):
-    for xml_name, doc in articles.items():
-        msg = _('generating report...')
-        if doc.tree is None:
-            msg = _('Unable to generate the XML file.')
-        else:
-            if doc.journal_id_nlm_ta is None:
-                msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.')
-        html_reports.save(doc_files_info_items[xml_name].pmc_style_report_filename, 'PMC Style Checker', msg)
+    return (doc_items, article_work_area_items)
 
 
-def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files):
-    do_it = False
+class PackageMaker(object):
 
-    utils.display_message('\n')
-    utils.display_message(_('Generating PMC Package'))
-    n = '/' + str(len(articles))
-    index = 0
+    def __init__(self, xml_files, results_path, version, acron, is_db_generation=False):
+        self.version = version
+        self.acron = acron
+        self.is_db_generation = is_db_generation
+        self.xml_files = xml_files
+        self.results_path = results_path
+        self.scielo_pkg_path = results_path + '/scielo_package'
+        self.pmc_pkg_path = results_path + '/pmc_package'
+        self.report_path = results_path + '/errors'
+        self.wrk_path = results_path + '/work'
 
-    for xml_name, doc in articles.items():
-        doc_files_info = doc_files_info_items[xml_name]
-        if doc.journal_id_nlm_ta is None:
-            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
-        else:
-            do_it = True
+        for d in [self.scielo_pkg_path, self.pmc_pkg_path, self.report_path, self.wrk_path]:
+            if not os.path.isdir(d):
+                os.makedirs(d)
+        self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
+        self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
+        self.article_items = {}
+        self.article_work_area_items = {}
+        self.is_pmc_journal = False
+
+    def make_sps_package(self):
+        package = OriginalPackage(self.xml_files)
+        package.setUp()
+
+        xpm_process_logger.register('make packages')
+        utils.display_message('\n' + _('Make package for {n} files.').format(n=str(len(self.xml_files))))
+        n = '/' + str(len(self.xml_files))
+        index = 0
+
+        for xml_name, article_files in package.article_pkg_files.items():
+            article_work_area = serial_files.ArticleWorkArea(article_files.xml_filename, self.report_path, self.wrk_path)
+            article_work_area.clean()
 
             index += 1
-            item_label = str(index) + n + ': ' + doc_files_info.xml_name
+            item_label = str(index) + n + ': ' + article_work_area.xml_name
             utils.display_message(item_label)
 
-            pmc_xml_filename = pmc_pkg_path + '/' + doc_files_info.new_name + '.xml'
-            xml_output(doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
+            article_pkg_maker = ArticlePkgMaker(article_files, article_work_area, self.scielo_pkg_path, self.version, self.acron, self.is_db_generation)
+            self.article_items[xml_name], self.article_work_area_items[xml_name] = article_pkg_maker.make_article_package()
+            if self.article_items[xml_name] is not None:
+                if self.article_items[xml_name].journal_id_nlm_ta is not None:
+                    self.is_pmc_journal = True
 
-            xpchecker.style_validation(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
-            xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
+    def make_pmc_report(self):
+        for xml_name, doc in self.article_items.items():
+            msg = _('generating report...')
+            if doc.tree is None:
+                msg = _('Unable to generate the XML file.')
+            else:
+                if doc.journal_id_nlm_ta is None:
+                    msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.')
+            html_reports.save(self.article_work_area_items[xml_name].pmc_style_report_filename, 'PMC Style Checker', msg)
 
-            add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, doc.language)
+    def make_pmc_package(self):
+        do_it = False
 
-    if do_it:
-        make_pkg_zip(pmc_pkg_path)
+        utils.display_message('\n')
+        utils.display_message(_('Generating PMC Package'))
+        n = '/' + str(len(self.article_items))
+        index = 0
 
+        for xml_name, doc in self.article_items.items():
+            article_work_area = self.article_work_area_items[xml_name]
+            if doc.journal_id_nlm_ta is None:
+                html_reports.save(article_work_area.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
+            else:
+                do_it = True
 
-def validate_pmc_image(img_filename):
-    img = utils.tiff_image(img_filename)
-    if img is not None:
-        if img.info is not None:
-            if img.info.get('dpi') < 300:
-                print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
+                index += 1
+                item_label = str(index) + n + ': ' + article_work_area.xml_name
+                utils.display_message(item_label)
 
+                pmc_xml_filename = self.pmc_pkg_path + '/' + article_work_area.new_name + '.xml'
+                xml_output(article_work_area.new_xml_filename, self.scielo_dtd_files.doctype_with_local_path, self.scielo_dtd_files.xsl_output, pmc_xml_filename)
 
-def add_files_to_pmc_package(scielo_pkg_path, pmc_xml_filename, language):
-    dest_path = os.path.dirname(pmc_xml_filename)
-    xml_name = os.path.basename(pmc_xml_filename)[:-4]
-    xml, e = xml_utils.load_xml(pmc_xml_filename)
-    doc = article.Article(xml, xml_name)
-    if language == 'en':
-        if os.path.isfile(scielo_pkg_path + '/' + xml_name + '.pdf'):
-            shutil.copyfile(scielo_pkg_path + '/' + xml_name + '.pdf', dest_path + '/' + xml_name + '.pdf')
-        for item in doc.href_files:
-            if os.path.isfile(scielo_pkg_path + '/' + item.src):
-                shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
-                validate_pmc_image(dest_path + '/' + item.src)
-    else:
-        if os.path.isfile(scielo_pkg_path + '/' + xml_name + '-en.pdf'):
-            shutil.copyfile(scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
-        content = fs_utils.read_file(pmc_xml_filename)
-        for item in doc.href_files:
-            new = item.src.replace('-en.', '.')
-            content = content.replace(item.src, new)
-            if os.path.isfile(scielo_pkg_path + '/' + item.src):
-                shutil.copyfile(scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
-                validate_pmc_image(dest_path + '/' + new)
-        fs_utils.write_file(pmc_xml_filename, content)
+                xpchecker.style_validation(pmc_xml_filename, self.pmc_dtd_files.doctype_with_local_path, article_work_area.pmc_style_report_filename, self.pmc_dtd_files.xsl_prep_report, self.pmc_dtd_files.xsl_report, self.pmc_dtd_files.database_name)
+                xml_output(pmc_xml_filename, self.pmc_dtd_files.doctype_with_local_path, self.pmc_dtd_files.xsl_output, pmc_xml_filename)
+
+                self.add_files_to_pmc_package(pmc_xml_filename, doc.language)
+
+        if do_it:
+            make_pkg_zip(self.pmc_pkg_path)
+
+    def validate_pmc_image(self, img_filename):
+        img = utils.tiff_image(img_filename)
+        if img is not None:
+            if img.info is not None:
+                if img.info.get('dpi') < 300:
+                    print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
+
+    def add_files_to_pmc_package(self, pmc_xml_filename, language):
+        dest_path = os.path.dirname(pmc_xml_filename)
+        xml_name = os.path.basename(pmc_xml_filename)[:-4]
+        xml, e = xml_utils.load_xml(pmc_xml_filename)
+        doc = article.Article(xml, xml_name)
+        if language == 'en':
+            if os.path.isfile(self.scielo_pkg_path + '/' + xml_name + '.pdf'):
+                shutil.copyfile(self.scielo_pkg_path + '/' + xml_name + '.pdf', dest_path + '/' + xml_name + '.pdf')
+            for item in doc.href_files:
+                if os.path.isfile(self.scielo_pkg_path + '/' + item.src):
+                    shutil.copyfile(self.scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
+                    self.validate_pmc_image(dest_path + '/' + item.src)
+        else:
+            if os.path.isfile(self.scielo_pkg_path + '/' + xml_name + '-en.pdf'):
+                shutil.copyfile(self.scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
+            content = fs_utils.read_file(pmc_xml_filename)
+            for item in doc.href_files:
+                new = item.src.replace('-en.', '.')
+                content = content.replace(item.src, new)
+                if os.path.isfile(self.scielo_pkg_path + '/' + item.src):
+                    shutil.copyfile(self.scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
+                    self.validate_pmc_image(dest_path + '/' + new)
+            fs_utils.write_file(pmc_xml_filename, content)
 
 
 def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=False):
@@ -1120,69 +1201,46 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     global GENERATE_PMC
     is_xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
 
-    scielo_pkg_path = results_path + '/scielo_package'
-    pmc_pkg_path = results_path + '/pmc_package'
-    report_path = results_path + '/errors'
-    wrk_path = results_path + '/work'
-
-    report_components = {}
-
-    pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
-    scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
-
-    for d in [scielo_pkg_path, pmc_pkg_path, report_path, wrk_path]:
-        if not os.path.isdir(d):
-            os.makedirs(d)
-
     if len(xml_files) == 0:
         utils.display_message(_('No files to process'))
     else:
-        articles, articles_work_area = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation)
+        pkg_maker = PackageMaker(xml_files, results_path, acron, version, is_db_generation)
+        pkg_maker.make_sps_package()
 
         doi_services = article_validations.DOI_Services()
 
-        articles_pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, articles, is_xml_generation)
+        articles_pkg = pkg_validations.ArticlesPackage(pkg_maker.scielo_pkg_path, pkg_maker.article_items, is_xml_generation)
 
         articles_data = pkg_validations.ArticlesData()
         articles_data.setup(articles_pkg, xc_models.JournalsManager(), db_manager=None)
 
         articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data, xpm_process_logger)
-        articles_set_validations.validate(doi_services, scielo_dtd_files, articles_work_area)
+        articles_set_validations.validate(doi_services, pkg_maker.scielo_dtd_files, pkg_maker.article_work_area_items)
 
-        reports = pkg_validations.ReportsMaker(articles_set_validations, xpm_version(), None, display_report=DISPLAY_REPORT)
+        files_final_location = serial_files.FilesFinalLocation(pkg_maker.scielo_pkg_path, articles_data.acron, articles_data.issue_label, web_app_path=None)
+
+        reports = pkg_validations.ReportsMaker(articles_set_validations, files_final_location, xpm_version(), None)
 
         if not is_xml_generation:
-            filename = report_path + '/xml_package_maker.html'
-            reports.processing_result_location = os.path.dirname(report_path)
-            reports.save_report(report_path, 'xml_package_maker.html', _('XML Package Maker Report'))
+            reports.processing_result_location = os.path.dirname(pkg_maker.report_path)
+            reports.save_report(pkg_maker.report_path, 'xpm.html', _('XML Package Maker Report'))
+            if DISPLAY_REPORT:
+                html_reports.display_report(pkg_maker.report_path + '/xpm.html')
 
         if not is_db_generation:
             if is_xml_generation:
-                make_pmc_report(articles, articles_work_area)
-            if is_pmc_journal(articles):
+                pkg_maker.make_pmc_report()
+            if pkg_maker.is_pmc_journal:
                 if GENERATE_PMC:
-                    make_pmc_package(articles, articles_work_area, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                    pkg_maker.make_pmc_package()
                 else:
                     print('='*10)
                     print(_('To generate PMC package, add -pmc as parameter'))
                     print('='*10)
 
-            #make_pkg_zip(scielo_pkg_path)
-            #if not is_xml_generation:
-            #    make_pkg_items_zip(scielo_pkg_path)
-
         utils.display_message(_('Result of the processing:'))
-        utils.display_message(results_path)
-        xpm_process_logger.write(report_path + '/log.txt')
-
-
-def is_pmc_journal(articles):
-    r = False
-    for doc in articles.values():
-        if doc.journal_id_nlm_ta is not None:
-            r = True
-            break
-    return r
+        utils.display_message(pkg_maker.results_path)
+        xpm_process_logger.write(pkg_maker.report_path + '/log.txt')
 
 
 def get_xml_package_folders_info(input_pkg_path):
@@ -1191,7 +1249,7 @@ def get_xml_package_folders_info(input_pkg_path):
 
     if os.path.isdir(input_pkg_path):
         xml_files = sorted([input_pkg_path + '/' + f for f in os.listdir(input_pkg_path) if f.endswith('.xml') and not f.endswith('.sgm.xml')])
-        results_path = input_pkg_path + '_xml_package_maker_result'
+        results_path = input_pkg_path + '_xpm'
         fs_utils.delete_file_or_folder(results_path)
         os.makedirs(results_path)
 
@@ -1221,7 +1279,7 @@ def get_xml_package_folders_info(input_pkg_path):
             xml_files = [src_path + '/' + fname]
         elif input_pkg_path.endswith('.xml'):
             xml_files = [input_pkg_path]
-            results_path = os.path.dirname(input_pkg_path) + '_xml_package_maker_result'
+            results_path = os.path.dirname(input_pkg_path) + '_xpm'
             if not os.path.isdir(results_path):
                 os.makedirs(results_path)
     return (xml_files, results_path)
@@ -1342,3 +1400,17 @@ def make_pkg_item_zip(xml_filename, dest_path):
         zipf.close()
     except:
         pass
+
+
+def get_number_from_element_id(element_id):
+    n = ''
+    i = 0
+    is_letter = True
+    while i < len(element_id) and is_letter:
+        is_letter = not element_id[i].isdigit()
+        i += 1
+    if not is_letter:
+        n = element_id[i-1:]
+        if n != '':
+            n = str(int(n))
+    return n

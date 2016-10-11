@@ -699,7 +699,7 @@ h5 {
 }
 
 .blockingerror {
-  background-color: #B7A2D6;
+  background-color: #B575CC;
   color: white;
 }
 
@@ -727,4 +727,8 @@ h5 {
 }
 .hist-replaced {
   background-color: #ED146F;
+}
+.excluded {
+  background-color: #B8AA95;
+  color: #5E5A54;
 }

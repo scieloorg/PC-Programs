@@ -375,12 +375,13 @@ class ArticlesData(object):
         self.issue_models = None
         self.issue_error_msg = None
         self.issue_files = None
+        self.serial_path = None
 
     def setup(self, pkg, journals_manager, db_manager):
         self._identify_journal_data(pkg.pkg_articles, journals_manager)
         if db_manager is not None:
             self._identify_issue_data(db_manager)
-            self._identify_articles_data(pkg.pkg_path, db_manager)
+            self.serial_path = db_manager.serial_path
 
     def _identify_journal_data(self, pkg_articles, journals_manager):
         #journals_manager = xc_models.JournalsManager()
@@ -395,11 +396,10 @@ class ArticlesData(object):
     def _identify_issue_data(self, db_manager):
         if db_manager is not None and self.journal is not None:
             self.acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
-
-    def _identify_articles_data(self, pkg_path, db_manager):
-        if self.issue_error_msg is None:
-            self.issue_files = db_manager.get_issue_files(self.issue_models, pkg_path)
-            self.articles_db_manager = xc_models.ArticlesDBManager(db_manager.db_isis, self.issue_files)
+            if self.issue_error_msg is None:
+                self.acron = self.acron_issue_label.split(' ')[0]
+                self.issue_files = db_manager.get_issue_files(self.issue_models)
+                self.articles_db_manager = xc_models.ArticlesManager(db_manager.db_isis, self.issue_files)
 
 
 class RegisteredArticles(dict):
@@ -448,10 +448,13 @@ class RegisteredArticles(dict):
         else:
             return {name: self.get(name) for name in found_names}
 
-    def analyze_registered_articles(self, name, registered_titaut, registered_order, registered_name):
+    def analyze_registered_articles(self, name, registered_titaut, registered_name, registered_order):
         actions = None
         conflicts = None
         exclude_name = None
+        print('analyze_registered_articles')
+        print([registered_titaut, registered_name, registered_order])
+        print('-')
         if registered_titaut is None and registered_order is None and registered_name is None:
             actions = 'add'
         elif all([registered_titaut, registered_order, registered_name]):
@@ -460,44 +463,53 @@ class RegisteredArticles(dict):
             elif id(registered_titaut) == id(registered_name):
                 # titaut + name != order
                 # rejeitar
-                conflicts = {_('registered article found by the order'): registered_order, _('registered article found by title/authors/name'): registered_titaut}
+                conflicts = {_('registered article retrieved by the order'): registered_order, _('registered article retrieved by title/authors/name'): registered_titaut}
             elif id(registered_titaut) == id(registered_order):
                 # titaut + order != name
                 # rejeitar
-                conflicts = {'registered article found by title/authors/order': registered_order, _('registered article found by name'): registered_name}
+                conflicts = {'registered article retrieved by title/authors/order': registered_order, _('registered article retrieved by name'): registered_name}
             elif id(registered_name) == id(registered_order):
                 # order + name != titaut
                 # rejeitar
-                conflicts = {'registered article found by name/order': registered_order, _('registered article found by title/authors'): registered_titaut}
+                conflicts = {'registered article retrieved by name/order': registered_order, _('registered article retrieved by title/authors'): registered_titaut}
             else:
                 # order != name != titaut
                 # rejeitar
-                conflicts = {_('name'): registered_name, _('registered article found by the order'): registered_order, _('title/authors'): registered_titaut}
+                conflicts = {_('name'): registered_name, _('registered article retrieved by the order'): registered_order, _('title/authors'): registered_titaut}
         elif all([registered_titaut, registered_order]):
             if id(registered_titaut) == id(registered_order):
-                actions = 'name change'
-                exclude_name = registered_titaut.xml_name
+                if registered_order.is_ex_aop:
+                    actions = 'reject'
+                else:
+                    actions = 'name change'
+                    exclude_name = registered_titaut.xml_name
             else:
-                conflicts = {_('registered article found by the order'): registered_order, _('title/authors'): registered_titaut}
+                conflicts = {_('registered article retrieved by the order'): registered_order, _('title/authors'): registered_titaut}
         elif all([registered_titaut, registered_name]):
             if id(registered_titaut) == id(registered_name):
-                actions = 'order change'
+                if registered_name.is_ex_aop:
+                    actions = 'reject'
+                else:
+                    actions = 'order change'
             else:
-                conflicts = {_('registered article found by title/authors'): registered_titaut, _('registered article found by name'): registered_name}
+                conflicts = {_('registered article retrieved by title/authors'): registered_titaut, _('registered article retrieved by name'): registered_name}
         elif all([registered_order, registered_name]):
             if id(registered_order) == id(registered_name):
                 # titulo autores etc muito diferentes
-                conflicts = {_('registered article found by the order'): registered_order}
+                conflicts = {_('registered article retrieved by the order'): registered_order}
             else:
-                conflicts = {_('registered article found by the order'): registered_order, _('registered article found by name'): registered_name}
+                conflicts = {_('registered article retrieved by the order'): registered_order, _('registered article retrieved by name'): registered_name}
         elif registered_titaut is not None:
             # order e name nao encontrados; order testar antes de atualizar;
-            actions = 'order change, name change'
-            exclude_name = registered_titaut.xml_name
+            if registered_titaut.is_ex_aop:
+                actions = 'reject'
+            else:
+                actions = 'order change, name change'
+                exclude_name = registered_titaut.xml_name
         elif registered_name is not None:
-            conflicts = {_('registered article found by name'): registered_name}
+            conflicts = {_('registered article retrieved by name'): registered_name}
         elif registered_order is not None:
-            conflicts = {_('registered article found by the order'): registered_order}
+            conflicts = {_('registered article retrieved by the order'): registered_order}
         return (actions, exclude_name, conflicts)
 
 
@@ -557,6 +569,7 @@ class ArticlesMerger(object):
     def merge(self):
         self.history_items = {}
         self.history_items = {name: [(_('registered article'), article)] for name, article in self.registered_articles.items()}
+        print([(article.xml_name, article.order) for article in self.registered_articles.values()])
         self.analyze_pkg_articles()
 
         self.merging_errors = []
@@ -600,7 +613,7 @@ class ArticlesMerger(object):
                     self.history_items[name].append((_('replaces article'), self.registered_articles[old[0]]))
                 if name in self.sim_converted_articles.keys():
                     if self.sim_converted_articles[name].order != self.pkg_articles[name].order:
-                        self.order_changes[name].append((self.sim_converted_articles[name].order, self.pkg_articles[name].order))
+                        self.order_changes[name] = (self.sim_converted_articles[name].order, self.pkg_articles[name].order)
                 self.sim_converted_articles[name] = self.pkg_articles[name]
                 self.history_items[name].append((_('converted article'), self.sim_converted_articles[name]))
 
@@ -678,7 +691,7 @@ class ArticlesMerger(object):
         for xml_name, hist in history:
             values = []
             values.append(xml_name)
-            values.append(article_report(hist[-1][1]))
+            values.append(display_article_data_in_toc(hist[-1][1]))
             values.append(self.history_item_report([item for item in hist if item[0] == _('registered article')]))
             values.append(self.history_item_report([item for item in hist if item[0] != _('registered article')]))
             items.append(label_values(labels, values))
@@ -1168,7 +1181,10 @@ class ArticlesSetValidations(object):
         report.append(self.pkg_issue_validations.report(errors_only=not self.pkg.is_xml_generation))
         if self.consistency_validations.total() > 0:
             report.append(self.consistency_validations.message)
-        report.append(self.articles_merger.validations.message)
+
+        if self.articles_merger.validations.total() > 0:
+            report.append(html_reports.tag('h2', _('Data Conflicts Report')))
+            report.append(self.articles_merger.validations.message)
         return ''.join(report)
 
     @property
@@ -1182,12 +1198,13 @@ class ArticlesSetValidations(object):
 
 class ReportsMaker(object):
 
-    def __init__(self, articles_set_validations, xpm_version=None, conversion=None, display_report=False):
-        self.display_report = display_report
+    def __init__(self, articles_set_validations, files_location, xpm_version=None, conversion=None):
         self.processing_result_location = None
         self.articles_set_validations = articles_set_validations
         self.conversion = conversion
         self.xpm_version = xpm_version
+        self.files_location = files_location
+
         self.tabs = ['pkg-files', 'summary-report', 'group-validations-report', 'individual-validations-report', 'references', 'dates-report', 'aff-report', 'xc-validations', 'toc-extended']
         self.labels = {
             'pkg-files': _('Files/Folders'),
@@ -1221,7 +1238,7 @@ class ReportsMaker(object):
             components['group-validations-report'] += self.articles_set_validations.journal_and_issue_report
 
         if self.conversion is None:
-            components['toc-extended'] = '?' + toc_extended_report(self.articles_set_validations.pkg.pkg_articles)
+            components['toc-extended'] = toc_extended_report(self.articles_set_validations.pkg.pkg_articles)
         else:
             components['toc-extended'] = self.conversion.conclusion_message + toc_extended_report(self.conversion.registered_articles)
             if self.articles_set_validations.articles_data.issue_error_msg is not None:
@@ -1246,8 +1263,23 @@ class ReportsMaker(object):
         return content
 
     def save_report(self, report_path, report_filename, report_title):
-        self.tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, 'summary-report', self.footnote)
-        self.tabbed_report.save_report(report_path, report_filename, report_title, self.display_report)
+        filename = report_path + '/' + report_filename
+        if os.path.isfile(filename):
+            bkp_filename = report_path + '/' + report_filename + '-'.join(utils.now()) + '.html'
+            shutil.copyfile(filename, bkp_filename)
+
+        html_reports.save(filename, report_title, self.content)
+        print('Saved report: {f}'.format(f=filename))
+
+    @property
+    def content(self):
+        tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, 'summary-report')
+        content = tabbed_report.report_content
+        origin = ['{IMG_PATH}', '{PDF_PATH}', '{XML_PATH}', '{RES_PATH}', '{REP_PATH}']
+        replac = [self.files_location.img_path, self.files_location.pdf_path, self.files_location.xml_path, self.files_location.result_path, self.files_location.report_path]
+        for o, r in zip(origin, replac):
+            content = content.replace(o, r)
+        return content + self.footnote
 
 
 def extract_report_core(content):
@@ -1320,13 +1352,6 @@ def evaluate_journal_data(items):
 
 def processing_result_location(result_path):
     return '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' + html_reports.link('file:///' + result_path, result_path) + '</p>'
-
-
-def display_report(report_filename):
-    try:
-        webbrowser.open('file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()), new=2)
-    except:
-        pass
 
 
 def articles_sorted_by_order(articles):
@@ -1416,8 +1441,10 @@ def rst_title(title):
     return '\n\n' + title + '\n' + '-'*len(title) + '\n'
 
 
-def article_report(_article):
+def display_article_data_in_toc(_article):
     r = ''
+    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article.') if _article.is_ex_aop else ''
+    r += html_reports.p_message(status)
     r += html_reports.tag('p', _article.toc_section, 'toc-section')
     r += html_reports.tag('p', _article.article_type, 'article-type')
     r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
@@ -1430,8 +1457,11 @@ def article_report(_article):
     return r
 
 
-def article_data(_article):
+def display_article_data_to_compare(_article):
     r = ''
+    style = 'excluded' if _article.is_ex_aop else None
+    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article.') if _article.is_ex_aop else ''
+    r += html_reports.p_message(status)
     r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
     r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
@@ -1439,7 +1469,7 @@ def article_data(_article):
     for item in article.authors_list(_article.article_contrib_items):
         a.append(html_reports.tag('span', item))
     r += html_reports.tag('p', '; '.join(a))
-    return r
+    return html_reports.tag('div', r, style)
 
 
 def compare_articles(article1, article2, label1='article 1', label2='article 2'):
@@ -1480,8 +1510,8 @@ def display_articles_differences(status, comparison_result, label1='article 1', 
 
 
 def display_conflicting_data(articles, labels):
-    values = [article_data(article) for article in articles]
-    return html_reports.tag('h3', _('Found conflicts. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
+    values = [display_article_data_to_compare(article) for article in articles]
+    return html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match.')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
 
 
 def display_order_conflicts(orders_conflicts):
@@ -1497,10 +1527,11 @@ def toc_extended_report(articles):
     widths = {_('filename'): '10', 'order': '5', _('article'): '85'}
     items = []
     for new_name, article in articles_sorted_by_order(articles):
-        values = []
-        values.append(new_name)
-        values.append(article.order)
-        values.append(article_report(article))
-        items.append(label_values(labels, values))
+        if not article.is_ex_aop:
+            values = []
+            values.append(new_name)
+            values.append(article.order)
+            values.append(display_article_data_in_toc(article))
+            items.append(label_values(labels, values))
     return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
 

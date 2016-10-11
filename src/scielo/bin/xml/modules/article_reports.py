@@ -223,7 +223,7 @@ class ArticleDisplayReport(object):
                     table_data += html_reports.tag('div', t.table, 'element-table')
                 if t.graphic:
                     #table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
-                    table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('file:///' + self.xml_path), 'value')
+                    table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('file:///{IMG_PATH}'), 'value')
                 r += header + html_reports.tag('div', table_data, 'block')
         return r
 
@@ -367,7 +367,7 @@ class ArticleDisplayReport(object):
             row = {}
             row['ID'] = t.graphic_parent.id
             row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
-            row['table/graphic'] = t.table + html_reports.thumb_image('file:///' + self.xml_path)
+            row['table/graphic'] = t.table + html_reports.thumb_image('file:///{IMG_PATH}')
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 
@@ -448,7 +448,7 @@ class ArticleDisplayReport(object):
         r += '<div>'
         #r += html_reports.tag('h7', self.work_area.xml_name)
         r += self.table_of_contents_data
-        r += self.link_to_pdf_items()
+        r += self.link_to_pdf_and_xml_files()
         r += '</div>'
         return r
 
@@ -458,7 +458,7 @@ class ArticleDisplayReport(object):
         r += '<div>'
         r += self.table_of_contents_data
         r += self.table_of_contents_data_with_lang
-        r += self.link_to_pdf_items()
+        r += self.link_to_pdf_and_xml_files()
         r += '</div>'
         return r
 
@@ -480,36 +480,13 @@ class ArticleDisplayReport(object):
                 os.path.basename(item), page_id + item, width, height)))
         return ''.join(items)
 
-    def link_to_pdf_items(self):
+    def link_to_pdf_and_xml_files(self):
         items = []
         for item in self.article.related_files:
+            location = 'file:///{PDF_PATH}/' if item.endswith('.pdf') else 'file:///{XML_PATH}/'
             items.append(html_reports.tag('p', html_reports.link(
-                item,
-                os.path.basename(item), window=('800', '400'))))
-        return ''.join(items)
-
-    def old_embedded_pdf_items(self, page_id='', width='400px', height='400px'):
-        items = []
-        pdf = self.xml_path + '/' + self.xml_name + '.pdf'
-        if os.path.isfile(pdf):
-            #items.append('<object id="' + pdf_id + '" data="file://' + pdf + '" width="100%" height="100%"><param name="view" value="Fit" /></object>')
-            items.append(html_reports.tag('p', html_reports.display_embedded_object(pdf, os.path.basename(pdf), page_id + self.xml_name, width, height)))
-        for lang in self.article.trans_languages:
-            pdf = self.xml_path + '/' + self.xml_name + '-' + lang + '.pdf'
-            if os.path.isfile(pdf):
-                items.append(html_reports.tag('p', html_reports.display_embedded_object(pdf, os.path.basename(pdf), page_id + self.xml_name + '_' + lang, width, height)))
-        return ''.join(items)
-
-    def old_link_to_pdf_items(self, page_id=''):
-        items = []
-        pdf = self.xml_path + '/' + self.xml_name + '.pdf'
-        if os.path.isfile(pdf):
-            #items.append('<object id="' + pdf_id + '" data="file://' + pdf + '" width="100%" height="100%"><param name="view" value="Fit" /></object>')
-            items.append(html_reports.link(pdf, os.path.basename(pdf)))
-        for lang in self.article.trans_languages:
-            pdf = self.xml_path + '/' + self.xml_name + '-' + lang + '.pdf'
-            if os.path.isfile(pdf):
-                items.append(html_reports.link(pdf, os.path.basename(pdf)))
+                location + item,
+                item, window=('800', '400'))))
         return ''.join(items)
 
 
@@ -561,7 +538,7 @@ class ArticleValidationReport(object):
                 ref_result = [(label, status, msg) for label, status, msg in ref_result if status != validation_status.STATUS_OK]
 
             if len(found_errors) > 0:
-                rows += html_reports.tag('h3', 'Reference ' + ref.id)
+                rows += html_reports.tag('h3', _('Reference {id}').format(id=ref.id))
                 rows += validations_table(ref_result)
         return rows
 
