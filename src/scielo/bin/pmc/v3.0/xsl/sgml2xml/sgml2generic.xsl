@@ -3495,7 +3495,7 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="product" mode="product-in-article-meta">
 		<product product-type="{@prodtype}">
-			<xsl:apply-templates select="*" mode="product-in-article-meta"></xsl:apply-templates>
+			<xsl:apply-templates select="*|text()" mode="product-in-article-meta"></xsl:apply-templates>
 		</product>
 	</xsl:template>
 	
@@ -3555,7 +3555,7 @@ et al.</copyright-statement>
 	</xsl:template>
 	
 	<xsl:template match="p//product">
-		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="p//product//text()">
 		<xsl:value-of select="normalize-space(.)"/>
