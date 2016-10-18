@@ -212,3 +212,6 @@ cpright;Agroup copyright statement, year and holder
 cpyear;Identify copyright year
 cpholder;Identify copyright holder
 licinfo;Identify license
+*page-fn;Identify all the notes that are in the page footers
+prefix;Identify the prefix of an author such as Mr., Prof., etc
+suffix;Identify the suffix of an author such as Sr., Jr., etc

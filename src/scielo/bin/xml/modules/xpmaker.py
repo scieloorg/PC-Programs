@@ -44,8 +44,9 @@ GENERATE_PMC = False
 xpm_process_logger = fs_utils.ProcessLogger()
 
 
-def format_last_part(fpage, seq, elocation_id, order, doi, issn):
+def format_last_part(fpage, seq, elocation_id, order, doi, issn, publisher_article_id):
     #utils.debugging((fpage, seq, elocation_id, order, doi, issn))
+    article_id = doi if doi is not None else publisher_article_id
     r = None
     if r is None:
         if fpage is not None:
@@ -58,12 +59,12 @@ def format_last_part(fpage, seq, elocation_id, order, doi, issn):
         if elocation_id is not None:
             r = elocation_id
     if r is None:
-        if doi is not None:
-            doi = doi[doi.find('/')+1:]
-            if issn in doi:
-                doi = doi[doi.find(issn) + len(issn):]
-            doi = doi.replace('.', '_').replace('-', '_')
-            r = doi
+        if article_id is not None:
+            article_id = article_id[article_id.find('/')+1:]
+            if issn in article_id:
+                article_id = article_id[article_id.find(issn) + len(issn):]
+            article_id = article_id.replace('.', '_').replace('-', '_')
+            r = article_id
     if r is None:
         if order is not None:
             r = order.zfill(5)
@@ -609,9 +610,9 @@ class OriginalPackage(object):
             fname = xml_filename[:-4]
             if '.sgm' in fname:
                 fname = fname[:-4]
-                article_files = [f for f in files if f.startswith(fname)]
+                article_files = [f for f in files if f.startswith(fname) and not f.endswith('.sgm.xml')]
             else:
-                article_files = [f for f in files if f.startswith(fname + '-') or f.startswith(fname + '.')]
+                article_files = [f for f in files if f.startswith(fname + '-') or f.startswith(fname + '.') and not f.endswith('.sgm.xml')]
             self.article_pkg_files[fname] = ArticlePkgFiles(self.path, xml_filename, fname, article_files)
             self.article_pkg_files[fname].convert_images()
 
@@ -718,7 +719,6 @@ class ArticlePkgMaker(object):
             self.content = self.content.replace('&amp;#', '&#')
             self.content = self.content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
 
-            self.content = self.content.replace('ext-link-type="clinical-trial"', 'ext-link-type="ClinicalTrial"')
             self.content = self.content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
             self.content = self.content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
             self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
@@ -880,7 +880,7 @@ class ArticlePkgMaker(object):
     def generate_normalized_package_name(self):
         #doc, acron, self.doc_files_info.xml_name
         xpm_process_logger.register('generate_normalized_package_name')
-        vol, issueno, fpage, seq, elocation_id, order, doi = self.doc.volume, self.doc.number, self.doc.fpage, self.doc.fpage_seq, self.doc.elocation_id, self.doc.order, self.doc.doi
+        vol, issueno, fpage, seq, elocation_id, order, doi, publisher_article_id = self.doc.volume, self.doc.number, self.doc.fpage, self.doc.fpage_seq, self.doc.elocation_id, self.doc.order, self.doc.doi, self.doc.publisher_article_id
         issns = [issn for issn in [self.doc.e_issn, self.doc.print_issn] if issn is not None]
         if len(issns) > 0:
             if self.doc_files_info.xml_name[0:9] in issns:
@@ -890,7 +890,7 @@ class ArticlePkgMaker(object):
 
         suppl = self.doc.volume_suppl if self.doc.volume_suppl else self.doc.number_suppl
 
-        last = format_last_part(fpage, seq, elocation_id, order, doi, issn)
+        last = format_last_part(fpage, seq, elocation_id, order, doi, issn, publisher_article_id)
         if issueno:
             if issueno == 'ahead' or int(issueno) == 0:
                 issueno = None
@@ -998,10 +998,10 @@ class ArticlePkgMaker(object):
         for f in self.article_files.files:
             source_filename = self.article_files.path + '/' + f
             dest_filename = self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)
-            if f.startswith(self.doc_files_info.xml_name + '.'):
+            if f.startswith(self.doc_files_info.xml_name + '.') and not f.endswith('.sgm.xml'):
                 self.replacements_related_files_items[f] = dest_filename
                 shutil.copyfile(source_filename, dest_filename)
-            elif f.startswith(self.doc_files_info.xml_name + '-'):
+            elif f.startswith(self.doc_files_info.xml_name + '-') and f.endswith('.pdf'):
                 if not f in self.replacements_href_files_items.keys():
                     self.replacements_related_files_items[f] = dest_filename
                     shutil.copyfile(source_filename, dest_filename)

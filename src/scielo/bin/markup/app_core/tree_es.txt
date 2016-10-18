@@ -212,3 +212,6 @@ cpright;Agrupa declaración, año y detenedor de los derechos autorales
 cpdate;Identifica año de los derechos autorales
 cpholder;Identifica el detenedor de los derechos autorales
 licinfo;Identifica licencia
+*page-fn;Identifica todos las notas que están en los pies de página
+prefix;Identifica el prefijo de un autor como Sr., Prof., etc
+suffix;Identifica el sufijo de un autor como Hijo, Nieto, etc

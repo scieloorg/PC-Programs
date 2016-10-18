@@ -544,11 +544,12 @@ def label_values(labels, values):
 
 
 def display_report(report_filename):
-    print(_('Report:\n  {filename}').format(filename=report_filename.encode(encoding=sys.getfilesystemencoding())))
+    f = report_filename.encode(encoding=sys.getfilesystemencoding()
+    print(_('Report:\n  {filename}').format(filename=f).decode(sys.getfilesystemencoding()))
 
     try:
-        webbrowser.open('file://' + report_filename.encode(encoding=sys.getfilesystemencoding()), new=2)
+        webbrowser.open('file://' + f, new=2)
     except Exception as e:
         print('unable to open')
-        print(report_filename)
+        print(f.decode(sys.getfilesystemencoding())
         print(e)

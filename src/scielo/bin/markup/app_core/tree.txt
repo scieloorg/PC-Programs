@@ -11,6 +11,7 @@ corresp;#FALSE#;#FALSE#
 cpright;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
 *deflist;#FALSE#;#TRUE#
+*page-fn;#FALSE#;#TRUE#
 element;#FALSE#;#TRUE#
 equation;#FALSE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
@@ -155,6 +156,8 @@ fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
+prefix;#FALSE#;#FALSE#
+suffix;#FALSE#;#FALSE#
 role;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 authorid;#TRUE#;#TRUE#
@@ -168,8 +171,8 @@ orgdiv;#FALSE#;#FALSE#
 fname-surname;#FALSE#;#FALSE#
 fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
-surname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
 
 back
 ack;#FALSE#;#FALSE#
@@ -676,6 +679,8 @@ fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
+prefix;#FALSE#;#FALSE#
+suffix;#FALSE#;#FALSE#
 
 sigblock
 sig;#FALSE#;#TRUE#
@@ -1027,6 +1032,8 @@ fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
+prefix;#FALSE#;#FALSE#
+suffix;#FALSE#;#FALSE#
 
 *pauthor
 
@@ -1114,4 +1121,10 @@ cpyear
 cpholder
 
 licinfo
+
+suffix
+
+prefix
+
+*page-fn
 

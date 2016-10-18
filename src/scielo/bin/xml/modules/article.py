@@ -862,6 +862,13 @@ class ArticleXML(object):
                 return _doi.lower()
 
     @property
+    def publisher_article_id(self):
+        if self.article_meta is not None:
+            _publisher_article_id = self.article_meta.findtext('article-id[@pub-id-type="publisher-id"]')
+            if _publisher_article_id is not None:
+                return _publisher_article_id.lower()
+
+    @property
     def marked_to_delete(self):
         if self.article_meta is not None:
             return self.article_meta.findtext('article-id[@specific-use="delete"]')
