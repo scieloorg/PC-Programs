@@ -772,14 +772,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:otherwise>0</xsl:otherwise>
 			</xsl:choose></xsl:variable>
 			
-			<xsl:choose>
-				<xsl:when test="not(front/doi) and not(doi)">
-					<article-id pub-id-type="publisher-id"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>						
-				</xsl:when>
-				<xsl:when test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
-					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
-				</xsl:when>
-			</xsl:choose>
+			<xsl:if test="not(front/doi) and not(doi)">
+				<article-id pub-id-type="publisher-id"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>						
+			</xsl:if>
+			<xsl:if test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
+				<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
+			</xsl:if>
 			
 			<xsl:if test="@ahppid!=''"><article-id specific-use="previous-pid"><xsl:value-of select="@ahppid"/></article-id></xsl:if>
 

@@ -156,9 +156,9 @@ def link(href, label, window=None):
     href = href.replace('\\', '/')
     if window is not None:
         width, height = window
-        r = '<a href="{href}" onclick="w = window.open(\'{href}\', \'newwindow\', \'resizeable=yes, width={width}, height={height}\'); w.focus(); return false;">{label}</a>'.format(href=href, label=label, width=width, height=height)
+        r = u'<a href="{href}" onclick="w = window.open(\'{href}\', \'newwindow\', \'resizeable=yes, width={width}, height={height}\'); w.focus(); return false;">{label}</a>'.format(href=href, label=label, width=width, height=height)
     else:
-        r = '<a href="' + href + '" target="_blank">' + label + '</a>'
+        r = u'<a href="' + href + '" target="_blank">' + label + '</a>'
     return r
 
 
@@ -544,12 +544,12 @@ def label_values(labels, values):
 
 
 def display_report(report_filename):
-    f = report_filename.encode(encoding=sys.getfilesystemencoding()
-    print(_('Report:\n  {filename}').format(filename=f).decode(sys.getfilesystemencoding()))
+    print(_('Report:\n  {filename}').format(filename=report_filename))
 
     try:
+        f = report_filename.encode(encoding=sys.getfilesystemencoding())
         webbrowser.open('file://' + f, new=2)
     except Exception as e:
         print('unable to open')
-        print(f.decode(sys.getfilesystemencoding())
+        print(report_filename)
         print(e)

@@ -1230,6 +1230,9 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         if not is_db_generation:
             if is_xml_generation:
                 pkg_maker.make_pmc_report()
+
+            print(pkg_maker.is_pmc_journal)
+            print(GENERATE_PMC)
             if pkg_maker.is_pmc_journal:
                 if GENERATE_PMC:
                     pkg_maker.make_pmc_package()

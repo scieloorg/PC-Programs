@@ -520,7 +520,7 @@ class ArticleContentValidation(object):
                         if len(xml_utils.remove_tags(xml_utils.node_text(child_node))) > 0:
                             found = True
             if not found:
-                results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure. ').format(children=_(' or ').join(children), element='disp-formula'), xml_utils.node_xml(item)))
+                results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure. ').format(children=_(' or ').join(children), element='disp-formula'), xml_utils.node_xml(disp_formula_node)))
         return results
 
     @property
@@ -1765,6 +1765,9 @@ class ReferenceContentValidation(object):
                 for item in validate_element_is_found_in_mixed_citation(label, data, self.reference.mixed_citation):
                     if item is not None:
                         r.append(item)
+            if '_'*6 in self.reference.mixed_citation:
+                if len(self.reference.authors_list) == 0:
+                    r.append(_('This reference contains ' + '_'*6 + ', which means the authors of this reference are the same as the previous reference. You must replicate the corresponding person-group of previous reference to this reference. '))
         return r
 
     @property

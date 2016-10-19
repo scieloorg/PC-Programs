@@ -1,5 +1,6 @@
 # code = utf-8
 
+import sys
 import os
 import webbrowser
 import shutil
@@ -1272,7 +1273,14 @@ class ReportsMaker(object):
             shutil.copyfile(filename, bkp_filename)
 
         html_reports.save(filename, report_title, self.content)
-        print('Saved report: {f}'.format(f=filename))
+        print(type(filename))
+        msg = _('Saved report: {f}').format(f=filename)
+        print(type(msg))
+        e = sys.getfilesystemencoding()
+        print(e)
+        #msg = msg.encode(encoding=sys.getfilesystemencoding()).decode(sys.getfilesystemencoding())
+        #print(type(msg))
+        print(msg)
 
     @property
     def content(self):
