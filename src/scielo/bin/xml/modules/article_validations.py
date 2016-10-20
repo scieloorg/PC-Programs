@@ -545,11 +545,12 @@ class ArticleContentValidation(object):
             article_dateiso = self.article.issue_pub_dateiso
 
         if article_dateiso is not None:
-            if not str(self.article.sps) in attributes.sps_current_versions():
+            current_versions = attributes.sps_current_versions()
+            if not str(self.article.sps) in current_versions:
                 expected_values = attributes.expected_sps_versions(article_dateiso)
                 if not str(self.article.sps) in expected_values:
                     status = validation_status.STATUS_ERROR
-                    msg = invalid_value_message(self.article.sps, label, ', '.join(aff_ids))
+                    msg = invalid_value_message(self.article.sps, label, ', '.join(current_versions))
         r.append((label, status, msg))
         return r
 

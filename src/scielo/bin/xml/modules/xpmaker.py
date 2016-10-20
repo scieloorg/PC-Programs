@@ -701,7 +701,7 @@ class ArticlePkgMaker(object):
         xpm_process_logger.register('convert_entities_to_chars')
         self.content, replaced_named_ent = xml_utils.convert_entities_to_chars(self.content)
         if len(replaced_named_ent) > 0:
-            self.messsages.append('Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30)
+            self.messages.append('Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30)
 
         if self.doc_files_info.is_sgmxml:
             self.normalize_sgmlxml()
