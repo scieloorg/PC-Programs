@@ -1400,7 +1400,7 @@ msgstr "Valor único para {label} é obrigatório para todos os documentos no pa
 #: modules/pkg_validations.py:1150
 #, python-brace-format
 msgid "found {label}=\"{value}\" in:"
-msgstr "encontrado {label}=\"{value}\" em:""
+msgstr "encontrado {label}=\"{value}\" em:"
 
 #: modules/pkg_validations.py:1164
 #, python-brace-format

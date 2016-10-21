@@ -534,11 +534,6 @@ msgid "package"
 msgstr ""
 
 #: modules/article_validations.py:1453
-#, python-brace-format
-msgid "Not found {label} in the {item}. "
-msgstr ""
-
-#: modules/article_validations.py:1453
 msgid "extension"
 msgstr ""
 
