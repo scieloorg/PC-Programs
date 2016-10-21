@@ -104,7 +104,7 @@ msgstr "{item} está registrado como pertencente a {owner}. "
 #: modules/article_validations.py:132
 #, python-brace-format
 msgid "Be sure that {item} belongs to this journal. "
-msgstr "Assegure-se de que {item} pertença a este periódico. "
+msgstr "Certifique-se de que {item} pertença a este periódico. "
 
 #: modules/article_validations.py:158
 #, python-brace-format
@@ -125,7 +125,7 @@ msgstr "Valores esperados: {expected}. "
 #: modules/article_validations.py:184 modules/attributes.py:632
 #, python-brace-format
 msgid "Be sure that the elements {elem1} and {elem2} are properly identified. "
-msgstr "Assegure-se de que os elementos {elem1} e {elem2} estão corretamente identificados. "
+msgstr "Certifique-se de que os elementos {elem1} e {elem2} estão corretamente identificados. "
 
 #: modules/article_validations.py:187
 #, python-brace-format
@@ -147,7 +147,7 @@ msgstr "largura: {width} pixels. "
 msgid ""
 "Be sure that {img} has valid height. Recommended: min={min} and max={max}. "
 "The images must be proportional among themselves. "
-msgstr "Assegure-se de que {img} tem altura válida. Recomendado: min={min} e max={max}. As imagens devem ser proporcionais entre elas mesmas."
+msgstr "Certifique-se de que {img} tem altura válida. Recomendado: min={min} e max={max}. As imagens devem ser proporcionais entre elas mesmas. "
 
 #: modules/article_validations.py:228
 #, python-brace-format
@@ -162,40 +162,40 @@ msgstr "{value} começa com caracteres inválidos: {invalid_chars}. "
 
 #: modules/article_validations.py:286 modules/article_validations.py:288
 msgid "space"
-msgstr ""
+msgstr "espaço"
 
 #: modules/article_validations.py:288
 #, python-brace-format
 msgid "{value} ends with invalid characters: {invalid_chars}. "
-msgstr ""
+msgstr "{value} terminam com caracteres inválidos: {invalid_chars}. "
 
 #: modules/article_validations.py:291
 msgid "dot"
-msgstr ""
+msgstr "ponto"
 
 #: modules/article_validations.py:294 modules/article_validations.py:360
 #: modules/article_validations.py:402
 #, python-brace-format
 msgid "{value} contains invalid {invalid_items_name}: {invalid_items}. "
-msgstr ""
+msgstr "{value} contém {invalid_items_name} inválidos: {invalid_items}. "
 
 #: modules/article_validations.py:294 modules/article_validations.py:360
 msgid "characters"
-msgstr ""
+msgstr "caracteres"
 
 #: modules/article_validations.py:309 modules/article_validations.py:795
 #, python-brace-format
 msgid "{label} is required, {condition}. "
-msgstr ""
+msgstr "{label} é obrigatório, {condition}. "
 
 #: modules/article_validations.py:309
 msgid "if applicable"
-msgstr ""
+msgstr "se aplicável"
 
 #: modules/article_validations.py:313 modules/article_validations.py:708
 #, python-brace-format
 msgid "It is required at least one {label}. "
-msgstr ""
+msgstr "É obrigatório pelo menos um {label}. "
 
 #: modules/article_validations.py:318 modules/article_validations.py:320
 #: modules/article_validations.py:460 modules/article_validations.py:469
@@ -205,55 +205,55 @@ msgstr ""
 #: modules/attributes.py:651
 #, python-brace-format
 msgid "{label} is required. "
-msgstr ""
+msgstr "{label} é obrigatório. "
 
 #: modules/article_validations.py:385 modules/article_validations.py:1671
 #: modules/article_validations.py:1710 modules/article_validations.py:1712
 #, python-brace-format
 msgid "Be sure that {item} is correct. "
-msgstr ""
+msgstr "Certifique-se de que {item} esteja correto. "
 
 #: modules/article_validations.py:402
 msgid "terms"
-msgstr ""
+msgstr "termos"
 
 #: modules/article_validations.py:403
 #, python-brace-format
 msgid "{value} must be identified as {label}. "
-msgstr ""
+msgstr "{value} deve estar identificado como {label}. "
 
 #: modules/article_validations.py:417
 #, python-brace-format
 msgid "{item} has no {missing_item}. "
-msgstr ""
+msgstr "{item} não tem nenhum {missing_item}. "
 
 #: modules/article_validations.py:523
 #, python-brace-format
 msgid ""
 "{element} is not complete, it requires {children} with valid structure. "
-msgstr ""
+msgstr "{element} não está completo, esperado {children} com estrutura válida. "
 
 #: modules/article_validations.py:560
 #, python-brace-format
 msgid "{version} expires in {days} days. "
-msgstr ""
+msgstr "{version} expira em {days} dias. "
 
 #: modules/article_validations.py:607
 #, python-brace-format
 msgid ""
 "initial month and final month must be separated by hyphen. E.g.: Jan-Feb. "
 "Expected values for the months: {months}. "
-msgstr ""
+msgstr "Mês inicial e final devem ser separados por hífen. Ex.: Jan-Feb. Valores esperados para os meses: {months}. "
 
 #: modules/article_validations.py:627 modules/article_validations.py:1028
 #: modules/article_validations.py:1053 modules/article_validations.py:1783
 msgid "None"
-msgstr ""
+msgstr "Nenhum"
 
 #: modules/article_validations.py:652
 #, python-brace-format
 msgid "Check the value of {label}. "
-msgstr ""
+msgstr "Verifique o valor de {label}. "
 
 #: modules/article_validations.py:653
 msgid "quantity of reference types"
@@ -267,73 +267,73 @@ msgstr "fontes de informação"
 #: modules/article_validations.py:999 modules/attributes.py:446
 #, python-brace-format
 msgid "{requirer} requires {required}. "
-msgstr ""
+msgstr "{requirer} espera {required}. "
 
 #: modules/article_validations.py:720 modules/article_validations.py:723
 msgid "contrib names or collabs"
-msgstr ""
+msgstr "contrib names ou collabs"
 
 #: modules/article_validations.py:741
 msgid "Use only the ID"
-msgstr ""
+msgstr "Use somente o ID"
 
 #: modules/article_validations.py:747 modules/article_validations.py:801
 #: modules/article_validations.py:1033 modules/article_validations.py:1133
 #: modules/article_validations.py:1353
 #, python-brace-format
 msgid "Not found: {label}. "
-msgstr ""
+msgstr "Não encontrado: {label}. "
 
 #: modules/article_validations.py:775 modules/article_validations.py:779
 #: modules/article_validations.py:781
 msgid "number from 1 to 99999"
-msgstr ""
+msgstr "número de 1 a 99999"
 
 #: modules/article_validations.py:779 modules/article_validations.py:781
 #, python-brace-format
 msgid "Invalid format of {label}. "
-msgstr ""
+msgstr "Valor inválido de {label}. "
 
 #: modules/article_validations.py:795
 msgid "if there is no first page or first page is not a number"
-msgstr ""
+msgstr "Se não existe nenhuma página inicial ou se a página inicial não é numérica"
 
 #: modules/article_validations.py:801
 #, python-brace-format
-msgid "{item} will be considered ahead of print."
-msgstr ""
+msgid "{item} will be considered ahead of print. "
+msgstr "{item} será considerado ahead of print. "
 
 #: modules/article_validations.py:801 modules/pkg_validations.py:177
 #: modules/xc_models.py:586 modules/xc_models.py:593 modules/xc_models.py:602
 msgid "issue"
-msgstr ""
+msgstr "fascículo"
 
 #: modules/article_validations.py:858 modules/article_validations.py:861
 #, python-brace-format
 msgid "Found {items} in {element}. "
-msgstr ""
+msgstr "Encontrados {items} em {element}. "
 
 #: modules/article_validations.py:858 modules/article_validations.py:861
 msgid "numbers"
-msgstr ""
+msgstr "números"
 
 #: modules/article_validations.py:910
 #, python-brace-format
 msgid ". E.g.: Use {this} instead of {that}. "
-msgstr ""
+msgstr ". Por exemplo: Use {this} no lugar de {that}. "
 
 #: modules/article_validations.py:926 modules/article_validations.py:928
 #, python-brace-format
 msgid "Be sure that {value} is a division of {orgname}. "
-msgstr ""
+msgstr "Certifique-se de que {value} é uma divisão de {orgname}. "
 
 #: modules/article_validations.py:928
 msgid "an organization"
-msgstr ""
+msgstr "uma organização"
 
 #: modules/article_validations.py:936
 msgid "Unable to confirm/find the normalized institution name for "
-msgstr "Não foi possível confirmar ou encontrar o nome normalizado para "
+msgstr "Não é possível confirmar ou encontrar o nome normalizado para "
 
 #: modules/article_validations.py:942
 msgid ". Check if any option of the list is the normalized name: "
@@ -350,25 +350,25 @@ msgstr "Válido: "
 #: modules/article_validations.py:953
 #, python-brace-format
 msgid "Use {right} instead of {wrong}. "
-msgstr ""
+msgstr "Use {right} no lugar de {wrong}. "
 
 #: modules/article_validations.py:961
 #, python-brace-format
-msgid "only one occurrence of {label} is allowed."
-msgstr ""
+msgid "only one occurrence of {label} is allowed. "
+msgstr "somente uma ocorrência de {label} é permitida. "
 
 #: modules/article_validations.py:977 modules/article_validations.py:985
 msgid "numbers greater or equal to 0"
-msgstr ""
+msgstr "números maiores ou iguais a 0"
 
 #: modules/article_validations.py:983
 #, python-brace-format
 msgid "{label1} and {label2} must have the same value. "
-msgstr ""
+msgstr "{label1} e {label2} devem ter o mesmo valor. "
 
 #: modules/article_validations.py:991
 msgid "total of pages"
-msgstr ""
+msgstr "total de páginas"
 
 #: modules/article_validations.py:996 modules/article_validations.py:999
 msgid "total of references"
@@ -376,7 +376,7 @@ msgstr "total de referências"
 
 #: modules/article_validations.py:999
 msgid "references"
-msgstr ""
+msgstr "referências"
 
 #: modules/article_validations.py:1004
 msgid "total of tables"
@@ -395,16 +395,16 @@ msgstr "total de figuras"
 msgid ""
 "Required only one {item} for each language. Values found for @xml:lang="
 "\"{lang}\": {values}. "
-msgstr ""
+msgstr "Obrigatório somente um {item} para cada idioma. Valores encontrados para @xml:lang={lang}: {values}. "
 
 #: modules/article_validations.py:1058
 #, python-brace-format
 msgid "Required at least {quantity} items. "
-msgstr ""
+msgstr "Obrigatório pelo menos {quantity} items. "
 
 #: modules/article_validations.py:1065
 msgid "not found"
-msgstr ""
+msgstr "não encontrado"
 
 #: modules/article_validations.py:1067 modules/pkg_reports.py:711
 #: modules/pkg_reports.py:727
@@ -416,34 +416,34 @@ msgstr "encontrado"
 msgid ""
 "Required only unique values of {label} for each language. Found duplicated "
 "values for @xml:lang=\"{lang}\": {values}. "
-msgstr ""
+msgstr "Obrigatório somente valores únicos de {label} para cada idioma. Encontrado valores duplicados para @xml:lang=\"{lang}\": {values}. "
 
 #: modules/article_validations.py:1100
 #, python-brace-format
 msgid ""
 "Expected {expected} for {demander}. Be sure that \"{demander}\" is correct. "
-msgstr ""
+msgstr "Esperado {expected} para {demander}. Certifique-se de que {demander} esteja correto. "
 
 #: modules/article_validations.py:1103
 #, python-brace-format
 msgid ""
 "Unexpected {unexpected} for {demander}. Be sure that {demander} is correct. "
-msgstr ""
+msgstr "Inesperado {unexpected} para {demander}. Certifique-se de que {demander} esteja correto. "
 
 #: modules/article_validations.py:1130
 #, python-brace-format
 msgid "{date1} must be before {date2}. "
-msgstr ""
+msgstr "{date1} deve ser antes de {date2}. "
 
 #: modules/article_validations.py:1157
 #, python-brace-format
 msgid "It is highly recommended identifying {elem}, if applicable. "
-msgstr ""
+msgstr "É fortemente recomendado identificar {elem}, se aplicável. "
 
 #: modules/article_validations.py:1166
 #, python-brace-format
 msgid "It is highly recommended identifying {elem}. "
-msgstr ""
+msgstr "É fortemente recomendado identificar {elem}. "
 
 #: modules/article_validations.py:1196
 msgid "press release id"
@@ -494,12 +494,12 @@ msgstr "PID anterior"
 msgid ""
 "Unmatched {value} and {label}: {value1} is valid for {label1}, and {value2} "
 "is valid for {label2}"
-msgstr ""
+msgstr "Não correspondem {value} e {label}: {value1} é válido para {label1}, e {value2} é válido para {label2}"
 
 #: modules/article_validations.py:1300
 #, python-brace-format
 msgid "Not found: {label} for {item}. "
-msgstr ""
+msgstr "Não encontrado: {label} para {item}. "
 
 #: modules/article_validations.py:1300 modules/article_validations.py:1312
 msgid " and/or "
@@ -507,15 +507,12 @@ msgstr " e/ou "
 
 #: modules/article_validations.py:1321
 msgid "paragraphs"
-msgstr ""
+msgstr "parágrapos"
 
-#: modules/article_validations.py:1387 modules/article_validations.py:1449
-#: modules/article_validations.py:1451 modules/article_validations.py:1454
-#: modules/article_validations.py:1489 modules/article_validations.py:1493
-#: modules/article_validations.py:1519 modules/article_validations.py:1534
+#: modules/article_validations.py:1453
 #, python-brace-format
 msgid "Not found {label} in the {item}. "
-msgstr ""
+msgstr "Não encontrado {label} em {item}. "
 
 #: modules/article_validations.py:1446
 msgid "missing extension of "
@@ -528,69 +525,64 @@ msgstr "faltando extensão de "
 #: modules/pkg_validations.py:585 modules/pkg_validations.py:676
 #: modules/pkg_validations.py:677
 msgid "package"
-msgstr ""
-
-#: modules/article_validations.py:1453
-#, python-brace-format
-msgid "Not found {label} in the {item}."
-msgstr ""
+msgstr "pacote"
 
 #: modules/article_validations.py:1453
 msgid "extension"
-msgstr ""
+msgstr "extensão"
 
 #: modules/article_validations.py:1469
-msgid "Be sure that there is no missing character such as _."
-msgstr "Tenha certeza de que não haja caracteres faltantes, tais como _"
+msgid "Be sure that there is no missing character such as _. "
+msgstr "Certifique-se de que não haja caracteres faltantes, tais como _"
 
 #: modules/article_validations.py:1489 modules/article_validations.py:1493
 #: modules/article_validations.py:1503 modules/article_validations.py:1506
 #: modules/article_validations.py:1513 modules/article_validations.py:1519
 #: modules/article_validations.py:1531 modules/article_validations.py:1534
 msgid "file"
-msgstr ""
+msgstr "arquivo"
 
 #: modules/article_validations.py:1503 modules/article_validations.py:1513
 #: modules/article_validations.py:1531
 #, python-brace-format
 msgid "Found {label} in the {item}. "
-msgstr ""
+msgstr "Encontrado {label} em {item}. "
 
 #: modules/article_validations.py:1506
 #, python-brace-format
 msgid "{label} must start with {prefix}. "
-msgstr ""
+msgstr "{label} deve iniciar com {prefix}. "
 
 #: modules/article_validations.py:1523
 #, python-brace-format
 msgid "Found {label} in {item}. "
-msgstr ""
+msgstr "Encontrado {label} em {item}. "
 
 #: modules/article_validations.py:1526
 #, python-brace-format
 msgid "PDF ({lang}). "
-msgstr ""
+msgstr "PDF ({lang}). "
 
 #: modules/article_validations.py:1526
 #, python-brace-format
 msgid " must not have -{lang} in PDF name. "
-msgstr ""
+msgstr " não deve ter -{lang} no nome do PDF. "
 
 #: modules/article_validations.py:1529
 #, python-brace-format
 msgid "Not found {label} in {item}. "
-msgstr ""
+msgstr "Não encontrado {label} em {item}. "
 
 #: modules/article_validations.py:1589
 #, python-brace-format
 msgid "\"{value}\" starts or ends with space characters. "
-msgstr ""
+msgstr "\"{value}\" começa ou termina com caracteres de espaço. "
 
 #: modules/article_validations.py:1671 modules/article_validations.py:1710
 #: modules/article_validations.py:1712
 #, python-brace-format
 msgid "This reference looks like {publication_type}. "
-msgstr ""
+msgstr "Esta referência parece ser {publication_type}. "
 
 #: modules/article_validations.py:1723 modules/article_validations.py:1725
 msgid ""
@@ -609,8 +601,8 @@ msgid "Incomplete Reference"
 msgstr "Referência incompleta"
 
 #: modules/article_validations.py:1729
-msgid "Check if the elements of this reference are properly identified."
-msgstr ""
+msgid "Check if the elements of this reference are properly identified. "
+msgstr "Verifique se os elementos desta referência estão adequadamente identificados. "
 
 #: modules/article_validations.py:1733
 msgid " ignored "
@@ -627,12 +619,12 @@ msgstr "autores"
 #: modules/article_validations.py:1794
 #, python-brace-format
 msgid "{value} must not be greater than {year}. "
-msgstr ""
+msgstr "{value} não deve ser maior que {year}. "
 
 #: modules/article_validations.py:1802
 #, python-brace-format
-msgid "{value} is not a number nor is in an expected format."
-msgstr ""
+msgid "{value} is not a number nor is in an expected format. "
+msgstr "{value} não é um número nem um formato esperado. "
 
 #: modules/attributes.py:193
 msgid "English"
@@ -797,7 +789,7 @@ msgstr ""
 #: modules/attributes.py:447
 #, python-brace-format
 msgid "If the reference has no {label}, ignore this message. "
-msgstr ""
+msgstr "Se a referência não tem nenhum {label}, ignore esta mensagem. "
 
 #: modules/attributes.py:448
 msgid "the elements of this reference"
@@ -806,11 +798,11 @@ msgstr "os elementos desta referência"
 #: modules/attributes.py:451
 #, python-brace-format
 msgid "{label} is not allowed for {item}. "
-msgstr ""
+msgstr "{label} não é permitido para {item}. "
 
 #: modules/attributes.py:454
 msgid ". Be sure that you have correctly identified: "
-msgstr ". Tenha certeza de que tenha identificado corretamente: "
+msgstr ". Certifique-se de que tenha identificado corretamente: "
 
 #: modules/attributes.py:632
 msgid "section title"
@@ -822,11 +814,11 @@ msgstr "ou"
 
 #: modules/html_reports.py:183
 msgid "hide"
-msgstr ""
+msgstr "esconder"
 
 #: modules/html_reports.py:185
 msgid "show"
-msgstr ""
+msgstr "mostrar"
 
 #: modules/html_reports.py:509 modules/xml_gui.py:58
 msgid "close"
@@ -837,7 +829,8 @@ msgstr "fechar"
 msgid ""
 "Report:\n"
 "  {filename}"
-msgstr ""
+msgstr "Relatório:\n"
+"  {filename}"
 
 #: modules/pkg_reports.py:123 modules/pkg_validations.py:350
 msgid "XML path"
@@ -870,8 +863,7 @@ msgstr "referências por tipo (element-citation/@publication-type)"
 
 #: modules/pkg_reports.py:310 modules/pkg_validations.py:1049
 msgid "same sources as different types references"
-msgstr ""
-"mesmas fontes (source) com difentes tipos de referências (element-citation/"
+msgstr "mesmas fontes (source) com difentes tipos de referências (element-citation/"
 "@publication-type)"
 
 #: modules/pkg_reports.py:317 modules/pkg_validations.py:1056
@@ -926,24 +918,21 @@ msgstr "Páginas inválidas"
 #: modules/pkg_reports.py:576
 #, python-brace-format
 msgid "check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})"
-msgstr ""
-"verifique lpage={lpage} ({previous_article}) e fpage={fpage} ({xml_name})"
+msgstr "verifique lpage={lpage} ({previous_article}) e fpage={fpage} ({xml_name})"
 
 #: modules/pkg_reports.py:579
 #, python-brace-format
 msgid ""
 "lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the "
 "same"
-msgstr ""
-"lpage={lpage} ({previous_article}) e fpage={fpage} ({xml_name}) são iguais "
+msgstr "lpage={lpage} ({previous_article}) e fpage={fpage} ({xml_name}) são iguais "
 
 #: modules/pkg_reports.py:582
 #, python-brace-format
 msgid ""
 "there is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} "
 "({xml_name})"
-msgstr ""
-"há um espaço entre lpage={lpage} ({previous_article}) e fpage={fpage} "
+msgstr "há um espaço entre lpage={lpage} ({previous_article}) e fpage={fpage} "
 "({xml_name})"
 
 #: modules/pkg_reports.py:585
@@ -1001,10 +990,10 @@ msgstr "Validações de dados do periódico: arquivos XML e dados registrados"
 #: modules/pkg_reports.py:670
 msgid ""
 "If the data in the XML files are correct, please, ignore the error messages "
-"and report the errors found in the registered data."
+"and report the errors found in the registered data. "
 msgstr ""
 "Se os dados nos XML estão corretos, por favor, ignore as mensagens de erro e "
-"informe-nos dos erros encontrados nos dados registrados."
+"informe-nos dos erros encontrados nos dados registrados. "
 
 #: modules/pkg_reports.py:670
 msgid "Consult the registered data"
@@ -1015,8 +1004,8 @@ msgid "Checking issue data: XML files and registered data"
 msgstr "Validações de dados do fascículo: arquivos XML e dados registrados"
 
 #: modules/pkg_reports.py:694
-msgid "Invalid XML files."
-msgstr "Arquivos XML inválidos."
+msgid "Invalid XML files. "
+msgstr "Arquivos XML inválidos. "
 
 #: modules/pkg_reports.py:697
 msgid "Missing"
@@ -1131,149 +1120,149 @@ msgstr "finalizado"
 
 #: modules/pkg_validations.py:113
 msgid "Total of "
-msgstr ""
+msgstr "Total de "
 
 #: modules/pkg_validations.py:150 modules/pkg_validations.py:177
 #, python-brace-format
 msgid "Unable to identify {unidentified}. "
-msgstr ""
+msgstr "Não é possível identificar {unidentified}. "
 
 #: modules/pkg_validations.py:150
 msgid "journal"
-msgstr ""
+msgstr "periódico"
 
 #: modules/pkg_validations.py:199
 msgid "Name errors"
-msgstr ""
+msgstr "Erros no nome de arquivo XML"
 
 #: modules/pkg_validations.py:199
 #, python-brace-format
 msgid "{value} has forbidden characters, which are {forbidden_characters}"
-msgstr ""
+msgstr "{value} tem caracteres inválidos, que são {forbidden_characters}"
 
 #: modules/pkg_validations.py:218
 msgid "DTD errors"
-msgstr ""
+msgstr "Erros em estrutura do XML"
 
 #: modules/pkg_validations.py:225
 msgid "XML file is invalid"
-msgstr ""
+msgstr "Arquivo XML inválido"
 
 #: modules/pkg_validations.py:228
 msgid "XML file has DTD errors"
-msgstr ""
+msgstr "Arquivo XML tem erros de estrutura"
 
 #: modules/pkg_validations.py:231
 msgid "XML file has name errors"
-msgstr ""
+msgstr "Arquivo XML tem erro em seu nome"
 
 #: modules/pkg_validations.py:234 modules/pkg_validations.py:1215
 msgid "Summary"
-msgstr ""
+msgstr "Resumo"
 
 #: modules/pkg_validations.py:268
 #, python-brace-format
-msgid "Unable to get data from {item}."
-msgstr ""
+msgid "Unable to get data from {item}. "
+msgstr "Não foi posível obter dados de {item}. "
 
 #: modules/pkg_validations.py:307
 msgid " - validate XML structure"
-msgstr ""
+msgstr " - validar estrutura de XML"
 
 #: modules/pkg_validations.py:311
 msgid " - validate XML contents"
-msgstr ""
+msgstr " - validar conteúdo de XML"
 
 #: modules/pkg_validations.py:364
 #, python-brace-format
-msgid "{status}: invalid XML files."
-msgstr ""
+msgid "{status}: invalid XML files. "
+msgstr "{status}: arquivos XML inválidos. "
 
 #: modules/pkg_validations.py:418 modules/pkg_validations.py:429
 #: modules/pkg_validations.py:676 modules/pkg_validations.py:677
 msgid "registered"
-msgstr ""
+msgstr "registrado"
 
 #: modules/pkg_validations.py:470 modules/pkg_validations.py:482
 #: modules/pkg_validations.py:491 modules/pkg_validations.py:503
 #: modules/pkg_validations.py:505 modules/pkg_validations.py:516
 msgid "registered article retrieved by the order"
-msgstr ""
+msgstr "artigo registrado recuperado pelo order"
 
 #: modules/pkg_validations.py:470
 msgid "registered article retrieved by title/authors/name"
-msgstr ""
+msgstr "artigo registrado recuperado por título/autores/nome do arquivo"
 
 #: modules/pkg_validations.py:474 modules/pkg_validations.py:499
 #: modules/pkg_validations.py:505 modules/pkg_validations.py:514
 msgid "registered article retrieved by name"
-msgstr ""
+msgstr "artigo registrado recuperado por nome de arquivo"
 
 #: modules/pkg_validations.py:478 modules/pkg_validations.py:499
 msgid "registered article retrieved by title/authors"
-msgstr ""
+msgstr "artigo registrado recuperado por título/autores"
 
 #: modules/pkg_validations.py:482 modules/pkg_validations.py:709
 msgid "name"
-msgstr ""
+msgstr "nome"
 
 #: modules/pkg_validations.py:482 modules/pkg_validations.py:491
 msgid "title/authors"
-msgstr ""
+msgstr "título/autores"
 
 #: modules/pkg_validations.py:536
 msgid "package article"
-msgstr ""
+msgstr "artigo do pacote"
 
 #: modules/pkg_validations.py:575 modules/pkg_validations.py:699
 #: modules/pkg_validations.py:700
 msgid "registered article"
-msgstr ""
+msgstr "artigo registrado"
 
 #: modules/pkg_validations.py:605 modules/pkg_validations.py:609
 msgid "excluded article"
-msgstr ""
+msgstr "artigo excluído"
 
 #: modules/pkg_validations.py:611
 msgid "replaced by"
-msgstr ""
+msgstr "substituído por"
 
 #: modules/pkg_validations.py:617
 msgid "replaces article"
-msgstr ""
+msgstr "substitui artigo"
 
 #: modules/pkg_validations.py:622
 msgid "converted article"
-msgstr ""
+msgstr "artigo convertido"
 
 #: modules/pkg_validations.py:645
 msgid "Names changes"
-msgstr ""
+msgstr "Mudança de nomes"
 
 #: modules/pkg_validations.py:654
 msgid "Orders changes"
-msgstr ""
+msgstr "Mudanças de orders"
 
 #: modules/pkg_validations.py:659
 msgid "Orders exclusions"
-msgstr ""
+msgstr "Exclusão de orders"
 
 #: modules/pkg_validations.py:670
 msgid "Changes Report"
-msgstr ""
+msgstr "Relatório de mudanças"
 
 #: modules/pkg_validations.py:676 modules/pkg_validations.py:677
 msgid "simulated result"
-msgstr ""
+msgstr "resultado simulado"
 
 #: modules/pkg_validations.py:683
 msgid "Simulated Conversion Summary Report"
-msgstr ""
+msgstr "Relatório resumido da simulação de conversão"
 
 #: modules/pkg_validations.py:688 modules/pkg_validations.py:689
 #: modules/pkg_validations.py:1537 modules/pkg_validations.py:1538
 msgid "filename"
-msgstr ""
+msgstr "nome de arquivo"
 
 #: modules/pkg_validations.py:688 modules/pkg_validations.py:689
 #: modules/pkg_validations.py:702 modules/pkg_validations.py:967
@@ -1282,97 +1271,98 @@ msgstr ""
 #: modules/pkg_validations.py:1547 modules/xc_models.py:586
 #: modules/xc_models.py:593 modules/xc_models.py:602
 msgid "article"
-msgstr ""
+msgstr "artigo"
 
 #: modules/pkg_validations.py:688 modules/pkg_validations.py:689
 #: modules/pkg_validations.py:702
 msgid "last update"
-msgstr ""
+msgstr "última atualização"
 
 #: modules/pkg_validations.py:688 modules/pkg_validations.py:689
 #: modules/pkg_validations.py:702
 msgid "activities"
-msgstr ""
+msgstr "atividades"
 
 #: modules/pkg_validations.py:702
 msgid "Simulated Conversion Report"
-msgstr ""
+msgstr "Relatório de simulação de conversão"
 
 #: modules/pkg_validations.py:711
 msgid "creation date"
-msgstr ""
+msgstr "data de criação"
 
 #: modules/pkg_validations.py:712
 msgid "last update date"
-msgstr ""
+msgstr "data de última atualização"
 
 #: modules/pkg_validations.py:911
 #, python-brace-format
 msgid "Journal data in the XML files must be consistent with {link}"
-msgstr ""
+msgstr "Dados de periódico nos arquivos XML devem ser consistente com {link}"
 
 #: modules/pkg_validations.py:912
 msgid "Journal data: XML files and registered data"
-msgstr ""
+msgstr "Dados do periódico: arquivos XML e dados registrados"
 
 #: modules/pkg_validations.py:915
 #, python-brace-format
 msgid "Validate package ({n} files)"
-msgstr ""
+msgstr "Validar pacote ({n} arquivos)"
 
 #: modules/pkg_validations.py:917
 #, python-brace-format
 msgid "Previously registered: ({n} files)"
-msgstr ""
+msgstr "Registrados anteriormente: ({n} arquivos)"
 
 #: modules/pkg_validations.py:942
 #, python-brace-format
 msgid "Validate {name}"
-msgstr ""
+msgstr "Validar {name}"
 
 #: modules/pkg_validations.py:945
 msgid " - validate journal data"
-msgstr ""
+msgstr " - validar dados do periódico"
 
 #: modules/pkg_validations.py:949
 msgid " - validate issue data"
-msgstr ""
+msgstr " - validar dados de fascículo"
 
 #: modules/pkg_validations.py:967 modules/pkg_validations.py:971
 msgid "pages"
-msgstr ""
+msgstr "páginas"
 
 #: modules/pkg_validations.py:967 modules/pkg_validations.py:974
 msgid "reports"
-msgstr ""
+msgstr "relatórios"
 
 #: modules/pkg_validations.py:1016
 msgid "year"
-msgstr ""
+msgstr "ano"
 
 #: modules/pkg_validations.py:1016 modules/pkg_validations.py:1068
 #: modules/pkg_validations.py:1075
 msgid "location"
-msgstr ""
+msgstr "localização"
 
 #: modules/pkg_validations.py:1025
 msgid "Articles Dates Report"
-msgstr ""
+msgstr "Relatório de datas dos artigos"
 
 #: modules/pkg_validations.py:1029
 msgid "Affiliations Report"
-msgstr ""
+msgstr "Relatório de afiliações"
 
 #: modules/pkg_validations.py:1093
 msgid "no pagination was found. "
-msgstr ""
+msgstr "nenhuma informação de página foi encontrada. "
 
 #: modules/pkg_validations.py:1105
 #, python-brace-format
 msgid ""
 "Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) "
 "and fpage={fpage} ({xml_name}). "
-msgstr ""
+msgstr "Valor inválido para fpage e lpage. Verifique lpage={lpage} ({previous_article}) "
+"e fpage={fpage} ({xml_name}). "
 
 #: modules/pkg_validations.py:1108
 #, python-brace-format
@@ -1380,139 +1370,143 @@ msgid ""
 "lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the "
 "same. "
 msgstr ""
+"lpage={lpage} ({previous_article}) e fpage={fpage} ({xml_name}) são o "
+"mesmo. "
 
 #: modules/pkg_validations.py:1111
 #, python-brace-format
 msgid ""
 "There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} "
 "({xml_name}). "
-msgstr ""
+msgstr "Há um intervalo vazio entre lpage={lpage} ({previous_article}) e fpage={fpage} "
+"({xml_name}). "
 
 #: modules/pkg_validations.py:1114
 #, python-brace-format
 msgid "Invalid page range: {fpage} (fpage) > {lpage} (lpage). "
-msgstr ""
+msgstr "Intervalo de páginas inválido: {fpage} (fpage) > {lpage} (lpage). "
 
 #: modules/pkg_validations.py:1138
 #, python-brace-format
 msgid "{status}: missing {label} in: "
-msgstr ""
+msgstr "{status}: faltando {label} em: "
 
 #: modules/pkg_validations.py:1147
 #, python-brace-format
 msgid ""
 "Unique value for {label} is required for all the documents in the package"
-msgstr ""
+msgstr "Valor único para {label} é obrigatório para todos os documentos no pacote"
 
 #: modules/pkg_validations.py:1150
 #, python-brace-format
 msgid "found {label}=\"{value}\" in:"
-msgstr ""
+msgstr "encontrado {label}=\"{value}\" em:""
 
 #: modules/pkg_validations.py:1164
 #, python-brace-format
 msgid ""
 "{status}: same value for {label} is required for all the documents in the "
-"package."
+"package. "
 msgstr ""
+"{status}: mesmo valor para {label} é obrigatório para todos os documentos no pacote. "
 
 #: modules/pkg_validations.py:1178
 msgid "Checking issue data consistency"
-msgstr ""
+msgstr "Verificação de consistência de dados de fascículo"
 
 #: modules/pkg_validations.py:1190
 msgid "Data Conflicts Report"
-msgstr ""
+msgstr "Relatório de conflitos de dados"
 
 #: modules/pkg_validations.py:1216
 msgid "Group Validations"
-msgstr ""
+msgstr "Validações do Conjunto"
 
 #: modules/pkg_validations.py:1217
 msgid "Individual Validations"
-msgstr ""
+msgstr "Validações individuais"
 
 #: modules/pkg_validations.py:1218
 msgid "Conversion"
-msgstr ""
+msgstr "Conversão"
 
 #: modules/pkg_validations.py:1219
 msgid "Affiliations"
-msgstr ""
+msgstr "Afiliações"
 
 #: modules/pkg_validations.py:1220
 msgid "Dates"
-msgstr ""
+msgstr "Datas"
 
 #: modules/pkg_validations.py:1221
 msgid "References"
-msgstr ""
+msgstr "Referências"
 
 #: modules/pkg_validations.py:1222
 msgid "ToC"
-msgstr ""
+msgstr "Sumário"
 
 #: modules/pkg_validations.py:1277
 #, python-brace-format
 msgid "Saved report: {f}"
-msgstr ""
+msgstr "Relatório gerado: {f}"
 
 #: modules/pkg_validations.py:1355
 msgid "none"
-msgstr ""
+msgstr "nenhum"
 
 #: modules/pkg_validations.py:1397
 msgid "Blocking error - indicates errors of data consistency"
-msgstr ""
+msgstr "Erro bloqueante - indica erros de consistência de dados"
 
 #: modules/pkg_validations.py:1457 modules/pkg_validations.py:1474
 msgid "This article is an ex-aop article. "
-msgstr ""
+msgstr "Este artigo é um ex-aop, isto é, está publicado em um fascículo, mas teve uma versão como ahead of print. "
 
 #: modules/pkg_validations.py:1457 modules/pkg_validations.py:1474
 msgid ""
-"Order of ex-aop is reserved, it is not allowed to reuse it for other article."
-msgstr ""
+"Order of ex-aop is reserved, it is not allowed to reuse it for other article. "
+msgstr "Order de ex-aop é reservado, não é permitido reusá-lo para outro artigo. "
 
 #: modules/pkg_validations.py:1487
 msgid "titles"
-msgstr ""
+msgstr "títulos"
 
 #: modules/pkg_validations.py:1487
 msgid "body"
-msgstr ""
+msgstr "corpo do artigo"
 
 #: modules/pkg_validations.py:1525
 msgid ""
 "Unable to update because the registered article data and the package article "
-"data do not match."
-msgstr ""
+"data do not match. "
+msgstr "Não é possível atualizar porque os dados registrados do artigo e os dados do pacote não correspondem. "
 
 #: modules/validation_status.py:15
 msgid "blocking errors"
-msgstr ""
+msgstr "erros bloqueantes"
 
 #: modules/validation_status.py:16
 msgid "fatal errors"
-msgstr ""
+msgstr "erros fatais"
 
 #: modules/validation_status.py:17
 msgid "errors"
-msgstr ""
+msgstr "erros"
 
 #: modules/validation_status.py:18
 msgid "warnings"
-msgstr ""
+msgstr "avisos"
 
 #: modules/ws_requester.py:36
 msgid ""
 "This tool requires Internet access to validate DOI, affiliations, and other "
 "data, and also to get journals data from SciELO. Inform the required data, "
-"if applies."
+"if applies. "
 msgstr ""
 "Esta ferramenta necessita acesso a Internet para validar DOI, afiliações, e "
 "outros dados, e também, para obter os dados dos periódicos SciELO. Informe "
-"os dados solicitados, se aplicável."
+"os dados solicitados, se aplicável. "
 
 #: modules/ws_requester.py:53
 msgid "user"
@@ -1536,7 +1530,7 @@ msgstr "Informação de proxy"
 
 #: modules/xc_models.py:568
 msgid "journal title"
-msgstr ""
+msgstr "título do periódico"
 
 #: modules/xc_models.py:569
 msgid "issue label"
@@ -1548,77 +1542,77 @@ msgstr ""
 
 #: modules/xc_models.py:571
 msgid "journal e-ISSN"
-msgstr ""
+msgstr "e-ISSN"
 
 #: modules/xc_models.py:571
 msgid "journal print ISSN"
-msgstr ""
+msgstr "ISSN impresso"
 
 #: modules/xc_models.py:571
 msgid "issue year"
-msgstr ""
+msgstr "Ano do fascículo"
 
 #: modules/xc_models.py:586 modules/xc_models.py:593 modules/xc_models.py:602
 #, python-brace-format
 msgid "{label}: {value1} ({label1}) and {value2} ({label2}) do not match. "
-msgstr ""
+msgstr "{label}: {value1} ({label1}) e {value2} ({label2}) não correspondem. "
 
 #: modules/xc_models.py:599
 #, python-brace-format
 msgid "Unable to identify {item}"
-msgstr ""
+msgstr "Não é possível identificar {item}"
 
 #: modules/xc_models.py:599
 msgid "issue license"
-msgstr ""
+msgstr "licença do fascículo"
 
 #: modules/xc_models.py:609 modules/xc_models.py:612 modules/xc_models.py:625
 #: modules/xc_models.py:627 modules/xc_models.py:631
 msgid "table of contents section"
-msgstr ""
+msgstr "seção do sumário"
 
 #: modules/xc_models.py:609
 msgid "Issue has no table of contents sections. "
-msgstr ""
+msgstr "Fascículo não tem seções de sumário"
 
 #: modules/xc_models.py:612
 msgid "Article has no subject. "
-msgstr ""
+msgstr "Artigo sem nenhuma seção. "
 
 #: modules/xc_models.py:625
 #, python-brace-format
 msgid "{value} is a invalid value for {label}. "
-msgstr ""
+msgstr "{value} é um valor inválido para {label}. "
 
 #: modules/xc_models.py:627
 #, python-brace-format
 msgid "{incorrect} was changed to {fixed}. "
-msgstr ""
+msgstr "{incorrect} mudou para {fixed}. "
 
 #: modules/xc_models.py:722
 #, python-brace-format
-msgid "{item} is already excluded."
-msgstr ""
+msgid "{item} is already excluded. "
+msgstr "{item} já está excluído. "
 
 #: modules/xc_models.py:725
 #, python-brace-format
 msgid "Excluded {item}"
-msgstr ""
+msgstr "Excluído {item}"
 
 #: modules/xc_models.py:727 modules/xc_models.py:949 modules/xc_models.py:970
 #, python-brace-format
 msgid "Unable to exclude {item}. "
-msgstr ""
+msgstr "Não é possível excluir {item}. "
 
 #: modules/xc_models.py:742
 #, python-brace-format
 msgid "created/updated {order}.id"
-msgstr ""
+msgstr "criado/atualizado {order}.id"
 
 #: modules/xc_models.py:747
 #, python-brace-format
 msgid "Unable to create/update {order}.id"
-msgstr ""
+msgstr "Não é possível criar/atualizar {order}.id"
 
 #: modules/xc_models.py:1107
 msgid "title/author"
@@ -1627,11 +1621,11 @@ msgstr "título/autor"
 #: modules/xc_models.py:1111 modules/xc_models.py:1113
 #, python-brace-format
 msgid "Checking if {label} has an \"aop version\""
-msgstr ""
+msgstr "Verificar se {label} tem uma versão \"aop\""
 
 #: modules/xc_models.py:1116
-msgid "Not found an \"aop version\" of this document."
-msgstr "Não encontrado uma versão \"aop\" deste documento."
+msgid "Not found an \"aop version\" of this document. "
+msgstr "Não encontrado uma versão \"aop\" deste documento. "
 
 #: modules/xc_models.py:1118
 msgid "Found: \"aop version\""
@@ -1639,8 +1633,8 @@ msgstr "Encontrado uma versão \"aop\""
 
 #: modules/xc_models.py:1120
 #, python-brace-format
-msgid "the {data} of article and its \"aop version\" are similar."
-msgstr "{data} do artigo e de sua versão \"aop\" são similares."
+msgid "the {data} of article and its \"aop version\" are similar. "
+msgstr "{data} do artigo e de sua versão \"aop\" são similares. "
 
 #: modules/xc_models.py:1122
 msgid "the \"aop version\" has no PID"
@@ -1648,16 +1642,16 @@ msgstr "a uma versão \"aop\" não tem PID"
 
 #: modules/xc_models.py:1125
 #, python-brace-format
-msgid "the {data} of article and \"aop version\" are different."
-msgstr "{data} do artigo e de sua versão \"aop\" são diferentes."
+msgid "the {data} of article and \"aop version\" are different. "
+msgstr "{data} do artigo e de sua versão \"aop\" são diferentes. "
 
 #: modules/xc_models.py:1129
 msgid "doc body"
-msgstr ""
+msgstr "corpo do artigo"
 
 #: modules/xc_models.py:1131
 msgid "aop body"
-msgstr ""
+msgstr "corpo do aop"
 
 #: modules/xc_models.py:1134
 msgid "doc title"
@@ -1682,11 +1676,11 @@ msgstr "Verificando a existência da versão aop"
 #: modules/xc_models.py:1162
 #, python-brace-format
 msgid "{item} is aop"
-msgstr ""
+msgstr "{item} é aop"
 
 #: modules/xc_models.py:1288
 msgid "Unable to identify the article's issue"
-msgstr "Não foi possível identificar o fascículo deste artigo"
+msgstr "Não é possível identificar o fascículo deste artigo"
 
 #: modules/xc_models.py:1293
 msgid "Issue "
@@ -1702,7 +1696,7 @@ msgstr " usando ISSN: "
 
 #: modules/xc_models.py:1300
 msgid "Unable to get journal data"
-msgstr "Não foi possível obter os dados do periódico"
+msgstr "Não é possível obter os dados do periódico"
 
 #: modules/xml2pubmed.py:98
 msgid "issue folder (located in serial folder):"
@@ -1729,8 +1723,8 @@ msgid "Select the issue folder"
 msgstr "selecione a pasta do fascículo"
 
 #: modules/xml2pubmed.py:150
-msgid "Select the issue folder (serial/<acron>/<issue number>)."
-msgstr "Selecione a pasta do fascículo (serial/<acron>/<issue number>)."
+msgid "Select the issue folder (serial/<acron>/<issue number>). "
+msgstr "Selecione a pasta do fascículo (serial/<acron>/<issue number>). "
 
 #: modules/xml2pubmed.py:359 modules/xmlcvrter.py:438 modules/xpmaker.py:1341
 msgid "Incorrect parameters"
@@ -1758,19 +1752,19 @@ msgstr "cisis esperado"
 
 #: modules/xml_gui.py:41
 msgid "SPS XML Package Folder:"
-msgstr ""
+msgstr "Pasta que contém arquivos XML"
 
 #: modules/xml_gui.py:51
 msgid "generate PMC Package"
-msgstr ""
+msgstr "gerar pacote PMC"
 
 #: modules/xml_gui.py:75
 msgid "Select a SPS XML package folder"
-msgstr ""
+msgstr "Selecione uma pasta que contenha arquivos XML"
 
 #: modules/xml_gui.py:107 modules/xml_gui.py:120
-msgid "Select a folder which contains the SPS XML Files."
-msgstr "Selecione uma pasta que contenha arquivos XML SPS."
+msgid "Select a folder which contains the SPS XML Files. "
+msgstr "Selecione uma pasta que contenha arquivos XML SPS. "
 
 #: modules/xml_gui.py:109
 msgid "Executing XML Package Maker for "
@@ -1782,19 +1776,19 @@ msgstr "Executando XML Converter para "
 
 #: modules/xml_utils.py:434
 msgid "ERROR here"
-msgstr ""
+msgstr "Erro aqui"
 
 #: modules/xml_utils.py:548
-msgid "Missing XML location."
-msgstr "Faltando localização do XML."
+msgid "Missing XML location. "
+msgstr "Faltando localização do XML. "
 
 #: modules/xml_utils.py:552
-msgid "Invalid file. XML file required."
-msgstr "Arquivo inválido. Arquivo XML requerido."
+msgid "Invalid file. XML file required. "
+msgstr "Arquivo inválido. Arquivo XML requerido. "
 
 #: modules/xml_utils.py:554
-msgid "Invalid folder. Folder must have XML files."
-msgstr "Pasta inválida. Pasta deve conter arquivos XML."
+msgid "Invalid folder. Folder must have XML files. "
+msgstr "Pasta inválida. Pasta deve conter arquivos XML. "
 
 #: modules/xmlcvrter.py:32 modules/xmlcvrter.py:200
 msgid "converted"
@@ -1885,12 +1879,12 @@ msgid "Conversion results"
 msgstr "Resultados da conversão"
 
 #: modules/xmlcvrter.py:161
-msgid "this journal has no aop."
+msgid "this journal has no aop. "
 msgstr "este periódico não possui aop"
 
 #: modules/xmlcvrter.py:164
 msgid "AOP Articles"
-msgstr ""
+msgstr "Artigos aop"
 
 #: modules/xmlcvrter.py:169
 msgid "scielo web site"
@@ -1899,33 +1893,33 @@ msgstr "sitio Web do SciELO"
 #: modules/xmlcvrter.py:171
 #, python-brace-format
 msgid "be updated/published on {app_site}"
-msgstr ""
+msgstr "atualizado/publicado em {app_site}"
 
 #: modules/xmlcvrter.py:179
 #, python-brace-format
-msgid "because it is not complete ({value} were not converted)."
-msgstr ""
+msgid "because it is not complete ({value} were not converted). "
+msgstr "porque não está completo ({value} não foi convertido). "
 
 #: modules/xmlcvrter.py:183 modules/xmlcvrter.py:195
-msgid "because there are blocking errors in the package."
-msgstr "porque há erros críticos no pacote."
+msgid "because there are blocking errors in the package. "
+msgstr "porque há erros críticos no pacote. "
 
 #: modules/xmlcvrter.py:186
-msgid "because no document was changed."
-msgstr "porque nenhum documento foi modificado."
+msgid "because no document was changed. "
+msgstr "porque nenhum documento foi modificado. "
 
 #: modules/xmlcvrter.py:189
 msgid ""
 " even though there are some fatal errors. Note: These errors must be fixed "
-"in order to have good quality of bibliometric indicators and services."
+"in order to have good quality of bibliometric indicators and services. "
 msgstr ""
 " mesmo que haja alguns erros fatais. Nota: Estes erros devem ser corrigidos "
-"para que haja uma boa qualidade dos indicadores bibliométricos e serviços."
+"para que haja uma boa qualidade dos indicadores bibliométricos e serviços. "
 
 #: modules/xmlcvrter.py:199
 #, python-brace-format
-msgid "{status}: {issueid} will{action} {result} {reason}."
-msgstr ""
+msgid "{status}: {issueid} will{action} {result} {reason}. "
+msgstr "{status}: {issueid} {action}será {result} {reason}. "
 
 #: modules/xmlcvrter.py:396
 msgid "Missing collection acronym"
@@ -1953,12 +1947,12 @@ msgstr "acrônimo da coleção"
 
 #: modules/xpchecker.py:150 modules/xpchecker.py:184
 msgid "Unable to create"
-msgstr "Não foi possível criar"
+msgstr "Não é possível criar"
 
 #: modules/xpchecker.py:261 modules/xpchecker.py:295 modules/xpmaker.py:971
 #, python-brace-format
 msgid "Unable to load {xml}. "
-msgstr ""
+msgstr "Não é possível carregar {xml}. "
 
 #: modules/xpmaker.py:788 modules/xpmaker.py:818
 msgid "Images Report"
@@ -1967,10 +1961,10 @@ msgstr "Relatório de Imagens"
 #: modules/xpmaker.py:789
 msgid ""
 "The images are presented in their original dimensions and in the same order "
-"they are found in the Markup document."
+"they are found in the Markup document. "
 msgstr ""
 "As imagens apresentadas em suas dimensões originais e na mesma ordem em que "
-"estão no documento Markup."
+"estão no documento Markup. "
 
 #: modules/xpmaker.py:798 modules/xpmaker.py:843
 msgid "* images presented in the same order they are in the XML file"
@@ -1983,10 +1977,10 @@ msgstr "* dimensões originais"
 #: modules/xpmaker.py:819
 msgid ""
 "This report presents the comparison between the images found in Markup "
-"document and in the package."
+"document and in the package. "
 msgstr ""
 "Este relatório apresenta a comparação entre as imagens inseridas no .doc e "
-"no pacote."
+"no pacote. "
 
 #: modules/xpmaker.py:849
 msgid "Image inserted into the package was gotten from src folder"
@@ -2001,8 +1995,8 @@ msgid "Image in the .doc file"
 msgstr "Imagem no arquivo .doc"
 
 #: modules/xpmaker.py:971
-msgid "Open it with XML Editor or Web Browser to find the errors easily."
-msgstr ""
+msgid "Open it with XML Editor or Web Browser to find the errors easily. "
+msgstr "Abra-o com um editor de XML ou Web Browser para localizar os erros mais facilmente. "
 
 #: modules/xpmaker.py:1026
 msgid "Report of files"
@@ -2038,27 +2032,27 @@ msgstr "Total de @href no XML"
 
 #: modules/xpmaker.py:1038
 msgid "Total of files not found in package"
-msgstr ""
+msgstr "Total de arquivos não encontrados no pacote"
 
 #: modules/xpmaker.py:1061 modules/xpmaker.py:1109
 #, python-brace-format
-msgid "Make package for {n} files."
-msgstr ""
+msgid "Make package for {n} files. "
+msgstr "Fazer pacote para {n} arquivos. "
 
 #: modules/xpmaker.py:1129
-msgid "generating report..."
-msgstr "gerando relatório..."
+msgid "generating report... "
+msgstr "gerando relatório... "
 
 #: modules/xpmaker.py:1131
-msgid "Unable to generate the XML file."
-msgstr "Não foi possível gerar o arquivo XML."
+msgid "Unable to generate the XML file. "
+msgstr "Não é possível gerar o arquivo XML. "
 
 #: modules/xpmaker.py:1134
 msgid ""
-"It is not PMC article or unable to find journal-id (nlm-ta) in the XML file."
+"It is not PMC article or unable to find journal-id (nlm-ta) in the XML file. "
 msgstr ""
 "Não é artigo PMC ou não foi possível encontrar journal-id (nlm-ta) no "
-"arquivo XML."
+"arquivo XML. "
 
 #: modules/xpmaker.py:1141
 msgid "Generating PMC Package"
@@ -2067,7 +2061,7 @@ msgstr "Gerando o pacote PMC"
 #: modules/xpmaker.py:1148
 #, python-brace-format
 msgid "{label} is a mandatory data, and it was not informed. "
-msgstr ""
+msgstr "{label} é um dado obrigatório, e não foi informado. "
 
 #: modules/xpmaker.py:1172
 #, python-brace-format
@@ -2084,7 +2078,7 @@ msgstr "Relatório do XML Package Maker"
 
 #: modules/xpmaker.py:1241
 msgid "To generate PMC package, add -pmc as parameter"
-msgstr ""
+msgstr "Para gerar o pacote PMC, acrescente -pmc como parâmetro"
 
 #: modules/xpmaker.py:1345
 msgid "XML filename or path which contains XML files"

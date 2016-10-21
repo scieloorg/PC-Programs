@@ -980,8 +980,7 @@ class ArticleContentValidation(object):
         elif count is not None:
             if count.isdigit():
                 if total != int(count):
-                    label_count + ' (' + count + ') x ' + label_total + ' (' + str(total) + ')'
-                    r.append(('{label_count} ({count}) x {label_total} ({total})'.format(label_count=label_count, count=count, label_total=label_total, total=total), validation_status.STATUS_ERROR, _('{label1} and {label2} must have the same value. ').format(label1=label_count, label2=label_total)))
+                    r.append((u'{label_count} ({count}) x {label_total} ({total})'.format(label_count=label_count, count=count, label_total=label_total, total=total), validation_status.STATUS_ERROR, _('{label1} and {label2} must have the same value. ').format(label1=label_count, label2=label_total)))
             else:
                 msg = invalid_value_message(count, label_count, _('numbers greater or equal to 0'))
                 r.append((label_count, validation_status.STATUS_FATAL_ERROR, msg))

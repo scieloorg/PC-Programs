@@ -534,8 +534,8 @@ class ArticleValidationReport(object):
         found_errors = []
         for ref, ref_result in self.article_validation.references:
             if not display_all:
-                found_errors = [status for label, status, msg in ref_result if status in [validation_status.STATUS_WARNING, validation_status.STATUS_ERROR, validation_status.STATUS_FATAL_ERROR]]
-                ref_result = [(label, status, msg) for label, status, msg in ref_result if status != validation_status.STATUS_OK]
+                found_errors = [res[1] for res in ref_result if res[1] in [validation_status.STATUS_WARNING, validation_status.STATUS_ERROR, validation_status.STATUS_FATAL_ERROR]]
+                ref_result = [res for res in ref_result if res[1] != validation_status.STATUS_OK]
 
             if len(found_errors) > 0:
                 rows += html_reports.tag('h3', _('Reference {id}').format(id=ref.id))
