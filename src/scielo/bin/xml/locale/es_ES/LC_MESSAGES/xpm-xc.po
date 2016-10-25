@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-25 16:27-0200\n"
+"POT-Creation-Date: 2016-10-25 16:54-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,6 +53,7 @@ msgstr "Archivos en el paquete"
 #: modules/pkg_validations.py:1057 modules/pkg_validations.py:1059
 #: modules/pkg_validations.py:1061 modules/pkg_validations.py:1119
 #: modules/pkg_validations.py:1355 modules/pkg_validations.py:1359
+#: modules/pkg_validations.py:1349 modules/pkg_validations.py:1353
 msgid "why it is not a valid message?"
 msgstr "¿por qué no es un mensaje válido?"
 
@@ -99,6 +100,7 @@ msgstr "{label} deve começar com: {expected}. "
 #: modules/pkg_reports.py:629 modules/pkg_validations.py:1356
 #: modules/xc_models.py:612 modules/xc_models.py:1293
 #: modules/pkg_validations.py:1355 modules/xc_models.py:1289
+#: modules/pkg_validations.py:1349
 msgid " or "
 msgstr " o "
 
@@ -648,7 +650,7 @@ msgid "This reference contains _"
 msgstr ""
 
 #: modules/article_validations.py:1783 modules/pkg_validations.py:1487
-#: modules/pkg_validations.py:1486
+#: modules/pkg_validations.py:1486 modules/pkg_validations.py:1480
 msgid "authors"
 msgstr ""
 
@@ -1029,6 +1031,7 @@ msgstr "ningun valor"
 #: modules/pkg_reports.py:646 modules/pkg_reports.py:650
 #: modules/pkg_validations.py:1356 modules/pkg_validations.py:1360
 #: modules/pkg_validations.py:1355 modules/pkg_validations.py:1359
+#: modules/pkg_validations.py:1349 modules/pkg_validations.py:1353
 msgid "data"
 msgstr "datos"
 
@@ -1039,6 +1042,7 @@ msgstr "en XML"
 #: modules/pkg_reports.py:646 modules/pkg_reports.py:650
 #: modules/pkg_validations.py:1356 modules/pkg_validations.py:1360
 #: modules/pkg_validations.py:1355 modules/pkg_validations.py:1359
+#: modules/pkg_validations.py:1349 modules/pkg_validations.py:1353
 msgid "registered journal data"
 msgstr "registrados"
 
@@ -1131,7 +1135,7 @@ msgid "Converter Validations"
 msgstr "Validaciones del Converter"
 
 #: modules/pkg_reports.py:965 modules/pkg_validations.py:1398
-#: modules/pkg_validations.py:1397
+#: modules/pkg_validations.py:1397 modules/pkg_validations.py:1391
 msgid ""
 "Fatal error - indicates errors which impact on the quality of the "
 "bibliometric indicators and other services"
@@ -1140,12 +1144,12 @@ msgstr ""
 "bibliométricos y otros servicios"
 
 #: modules/pkg_reports.py:966 modules/pkg_validations.py:1399
-#: modules/pkg_validations.py:1398
+#: modules/pkg_validations.py:1398 modules/pkg_validations.py:1392
 msgid "Error - indicates the other kinds of errors"
 msgstr "Error - indica otro tipo de errores"
 
 #: modules/pkg_reports.py:967 modules/pkg_validations.py:1400
-#: modules/pkg_validations.py:1399
+#: modules/pkg_validations.py:1399 modules/pkg_validations.py:1393
 msgid ""
 "Warning - indicates that something can be an error or something needs more "
 "attention"
@@ -1153,7 +1157,7 @@ msgstr "Warning - indica que algo puede estar incorrecto o necesita atención"
 
 #: modules/pkg_reports.py:992 modules/pkg_validations.py:1365
 #: modules/xpmaker.py:1244 modules/pkg_validations.py:1364
-#: modules/xpmaker.py:1241
+#: modules/xpmaker.py:1241 modules/pkg_validations.py:1358
 msgid "Result of the processing:"
 msgstr "Resultado del proceso:"
 
@@ -1351,6 +1355,7 @@ msgstr ""
 #: modules/pkg_validations.py:688 modules/pkg_validations.py:689
 #: modules/pkg_validations.py:1537 modules/pkg_validations.py:1538
 #: modules/pkg_validations.py:687 modules/pkg_validations.py:1536
+#: modules/pkg_validations.py:1530 modules/pkg_validations.py:1531
 msgid "filename"
 msgstr ""
 
@@ -1363,7 +1368,8 @@ msgstr ""
 #: modules/pkg_validations.py:687 modules/pkg_validations.py:701
 #: modules/pkg_validations.py:966 modules/pkg_validations.py:971
 #: modules/pkg_validations.py:993 modules/pkg_validations.py:1536
-#: modules/pkg_validations.py:1546
+#: modules/pkg_validations.py:1546 modules/pkg_validations.py:1530
+#: modules/pkg_validations.py:1531 modules/pkg_validations.py:1540
 msgid "article"
 msgstr ""
 
@@ -1541,39 +1547,47 @@ msgid "ToC"
 msgstr ""
 
 #: modules/pkg_validations.py:1277 modules/pkg_validations.py:1276
+#: modules/pkg_validations.py:1275
 #, python-brace-format
 msgid "Saved report: {f}"
 msgstr ""
 
 #: modules/pkg_validations.py:1355 modules/pkg_validations.py:1354
+#: modules/pkg_validations.py:1348
 msgid "none"
 msgstr ""
 
 #: modules/pkg_validations.py:1397 modules/pkg_validations.py:1396
+#: modules/pkg_validations.py:1390
 msgid "Blocking error - indicates errors of data consistency"
 msgstr ""
 
 #: modules/pkg_validations.py:1457 modules/pkg_validations.py:1474
 #: modules/pkg_validations.py:1456 modules/pkg_validations.py:1473
+#: modules/pkg_validations.py:1450 modules/pkg_validations.py:1467
 msgid "This article is an ex-aop article. "
 msgstr ""
 
 #: modules/pkg_validations.py:1457 modules/pkg_validations.py:1474
 #: modules/pkg_validations.py:1456 modules/pkg_validations.py:1473
+#: modules/pkg_validations.py:1450 modules/pkg_validations.py:1467
 msgid ""
 "Order of ex-aop is reserved, it is not allowed to reuse it for other "
 "article. "
 msgstr ""
 
 #: modules/pkg_validations.py:1487 modules/pkg_validations.py:1486
+#: modules/pkg_validations.py:1480
 msgid "titles"
 msgstr ""
 
 #: modules/pkg_validations.py:1487 modules/pkg_validations.py:1486
+#: modules/pkg_validations.py:1480
 msgid "body"
 msgstr ""
 
 #: modules/pkg_validations.py:1525 modules/pkg_validations.py:1524
+#: modules/pkg_validations.py:1518
 msgid ""
 "Unable to update because the registered article data and the package article "
 "data do not match. "
@@ -1602,23 +1616,23 @@ msgid ""
 "if applies. "
 msgstr ""
 
-#: modules/ws_requester.py:53
+#: modules/ws_requester.py:53 modules/ws_requester.py:75
 msgid "user"
 msgstr ""
 
-#: modules/ws_requester.py:60
+#: modules/ws_requester.py:60 modules/ws_requester.py:82
 msgid "password"
 msgstr ""
 
-#: modules/ws_requester.py:68
+#: modules/ws_requester.py:68 modules/ws_requester.py:90
 msgid "Cancel"
 msgstr ""
 
-#: modules/ws_requester.py:71
+#: modules/ws_requester.py:71 modules/ws_requester.py:93
 msgid "OK"
 msgstr ""
 
-#: modules/ws_requester.py:82
+#: modules/ws_requester.py:82 modules/ws_requester.py:104
 msgid "Proxy information"
 msgstr ""
 
@@ -2210,4 +2224,13 @@ msgstr ""
 
 #: modules/xml2pubmed.py:150
 msgid "Select the issue folder (serial/<acron>/<issue number>)."
+msgstr ""
+
+#: modules/ws_requester.py:54
+msgid ""
+"This tool requires Internet access for some services, such as DOI, "
+"affiliations, and other data validations, and also to get journals data from "
+"SciELO.\n"
+"\n"
+"If you do not use a proxy to access the Internet, and click on Cancel button."
 msgstr ""
