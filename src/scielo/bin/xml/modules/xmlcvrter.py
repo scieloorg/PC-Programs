@@ -158,7 +158,7 @@ class ArticlesConversion(object):
 
     @property
     def aop_status_report(self):
-        r = _('this journal has no aop.')
+        r = _('this journal has no aop. ')
         if len(self.aop_status.get('aop', {})) > 0:
             r = html_reports.format_html_data(self.aop_status.get('aop', {}))
         return html_reports.tag('h3', _('AOP Articles')) + r
@@ -176,27 +176,27 @@ class ArticlesConversion(object):
             status = validation_status.STATUS_BLOCKING_ERROR
             if self.articles_merger.total_to_convert > 0:
                 if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted).').format(value=str(self.total_not_converted) + '/' + str(self.articles_merger.total_to_convert))
+                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.articles_merger.total_to_convert))
                 else:
                     reason = _('unknown')
             else:
-                reason = _('because there are blocking errors in the package.')
+                reason = _('because there are blocking errors in the package. ')
         elif self.xc_status == 'ignored':
             update = False
-            reason = _('because no document was changed.')
+            reason = _('because no document was changed. ')
         elif self.xc_status == 'accepted':
             status = validation_status.STATUS_WARNING
-            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
+            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services. ')
         elif self.xc_status == 'approved':
             status = validation_status.STATUS_OK
             reason = ''
         else:
             status = validation_status.STATUS_FATAL_ERROR
-            reason = _('because there are blocking errors in the package.')
+            reason = _('because there are blocking errors in the package. ')
         action = ' not'
         if update:
             action = ''
-        text = _('{status}: {issueid} will{action} {result} {reason}.').format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
+        text = _('{status}: {issueid} will{action} {result} {reason}. ').format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
         text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.articles_merger.total_to_convert), False) + html_reports.p_message(text, False)
         return text
 

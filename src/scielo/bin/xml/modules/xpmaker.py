@@ -389,7 +389,6 @@ def hdimg_to_jpg(source_image_filename, jpg_filename):
             im.thumbnail(im.size)
             im.save(jpg_filename, "JPEG")
             utils.display_message(jpg_filename)
-            print(jpg_filename)
         except Exception as inst:
             utils.display_message('Unable to generate ' + jpg_filename)
             utils.display_message(inst)
@@ -786,7 +785,7 @@ class ArticlePkgMaker(object):
         rows = []
 
         rows.append(html_reports.tag('h2', _('Images Report')))
-        rows.append(html_reports.tag('p', _('The images are presented in their original dimensions and in the same order they are found in the Markup document.')))
+        rows.append(html_reports.tag('p', _('The images are presented in their original dimensions and in the same order they are found in the Markup document. ')))
 
         rows.append('<ol>')
         for name, renamed in self.replacements_href_values:
@@ -816,7 +815,7 @@ class ArticlePkgMaker(object):
         if self.sgmlxml is not None:
 
             rows.append(html_reports.tag('h2', _('Images Report')))
-            rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in the package.')))
+            rows.append(html_reports.tag('p', _('This report presents the comparison between the images found in Markup document and in the package. ')))
             replacements = {curr_href: new_href for curr_href, new_href in self.replacements_href_values}
             #print(replacements)
             #print(self.sgmlxml.sorted_graphic_href_items)
@@ -968,7 +967,7 @@ class ArticlePkgMaker(object):
 
         if self.doc.tree is None:
             self.text_messages.append(self.e)
-            self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.doc_files_info.new_xml_filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily.'))
+            self.text_messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.doc_files_info.new_xml_filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily. '))
         else:
             self.pack_article_href_files()
             self.pack_article_related_files()
@@ -1058,7 +1057,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
     doc_items = {}
     article_work_area_items = {}
     xpm_process_logger.register('make packages')
-    utils.display_message('\n' + _('Make package for {n} files.').format(n=str(len(xml_files))))
+    utils.display_message('\n' + _('Make package for {n} files. ').format(n=str(len(xml_files))))
     n = '/' + str(len(xml_files))
     index = 0
 
@@ -1106,7 +1105,7 @@ class PackageMaker(object):
         package.setUp()
 
         xpm_process_logger.register('make packages')
-        utils.display_message('\n' + _('Make package for {n} files.').format(n=str(len(self.xml_files))))
+        utils.display_message('\n' + _('Make package for {n} files. ').format(n=str(len(self.xml_files))))
         n = '/' + str(len(self.xml_files))
         index = 0
 
@@ -1126,12 +1125,12 @@ class PackageMaker(object):
 
     def make_pmc_report(self):
         for xml_name, doc in self.article_items.items():
-            msg = _('generating report...')
+            msg = _('generating report... ')
             if doc.tree is None:
-                msg = _('Unable to generate the XML file.')
+                msg = _('Unable to generate the XML file. ')
             else:
                 if doc.journal_id_nlm_ta is None:
-                    msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.')
+                    msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file. ')
             html_reports.save(self.article_work_area_items[xml_name].pmc_style_report_filename, 'PMC Style Checker', msg)
 
     def make_pmc_package(self):
@@ -1231,8 +1230,6 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             if is_xml_generation:
                 pkg_maker.make_pmc_report()
 
-            print(pkg_maker.is_pmc_journal)
-            print(GENERATE_PMC)
             if pkg_maker.is_pmc_journal:
                 if GENERATE_PMC:
                     pkg_maker.make_pmc_package()

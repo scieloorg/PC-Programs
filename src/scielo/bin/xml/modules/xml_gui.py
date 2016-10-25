@@ -104,7 +104,7 @@ class XMLAppGUI(object):
         color = 'green' if self.is_valid_folder() else 'red'
         msg = ''
         if self.selected_folder == '':
-            msg += _('Select a folder which contains the SPS XML Files.') + '\n'
+            msg += _('Select a folder which contains the SPS XML Files. ') + '\n'
         if len(msg) == 0:
             msg = _('Executing XML Package Maker for ') + self.selected_folder + '\n'
         self.display_message(msg, color)
@@ -117,7 +117,7 @@ class XMLAppGUI(object):
         color = 'green' if self.is_valid_folder() else 'red'
         msg = ''
         if self.selected_folder == '':
-            msg += _('Select a folder which contains the SPS XML Files.') + '\n'
+            msg += _('Select a folder which contains the SPS XML Files. ') + '\n'
         if len(msg) == 0:
             msg = _('Executing XML Converter for ') + self.selected_folder + '\n'
         self.display_message(msg, color)

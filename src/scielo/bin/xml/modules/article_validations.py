@@ -799,7 +799,7 @@ class ArticleContentValidation(object):
     @property
     def issue_label(self):
         if not self.article.volume and not self.article.number:
-            return ('issue label', validation_status.STATUS_WARNING, _('Not found: {label}. ').format(label='volume, issue') + _('{item} will be considered ahead of print.').format(item=_('issue')))
+            return ('issue label', validation_status.STATUS_WARNING, _('Not found: {label}. ').format(label='volume, issue') + _('{item} will be considered ahead of print. ').format(item=_('issue')))
         else:
             return [self.volume, self.number]
 
@@ -931,7 +931,7 @@ class ArticleContentValidation(object):
             norm_aff, found_institutions = article_utils.normalized_institution(aff)
 
             #if aff.norgname is None or aff.norgname == '':
-            #    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element.')))
+            #    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element. ')))
 
             if norm_aff is None:
                 msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([aff.orgname, aff.norgname])), ' or ')
@@ -959,7 +959,7 @@ class ArticleContentValidation(object):
             for label in labels:
                 if values[i] is not None:
                     if '|' in values[i]:
-                        r.append((label, validation_status.STATUS_FATAL_ERROR, _('only one occurrence of {label} is allowed.').format(label=label)))
+                        r.append((label, validation_status.STATUS_FATAL_ERROR, _('only one occurrence of {label} is allowed. ').format(label=label)))
                 i += 1
 
         return r
@@ -1450,7 +1450,7 @@ class ArticleContentValidation(object):
                     elif file_location.endswith('.jpg') and (hrefitem.src.endswith('.tif') or hrefitem.src.endswith('.tiff')):
                         status_message.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=os.path.basename(file_location), item=_('package'))))
                     elif file_location.endswith('.jpg') and not '.' in hrefitem.src:
-                        status_message.append((validation_status.STATUS_WARNING, _('Not found {label} in the {item}.').format(label=_('extension'), item=hrefitem.src)))
+                        status_message.append((validation_status.STATUS_WARNING, _('Not found {label} in the {item}. ').format(label=_('extension'), item=hrefitem.src)))
                         status_message.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=os.path.basename(file_location), item=_('package'))))
                 hreflocation = 'file:///' + file_location
                 if hrefitem.is_image:
@@ -1466,7 +1466,7 @@ class ArticleContentValidation(object):
                     if not ws_requester.wsr.is_valid_url(hrefitem.src, 30):
                         message = invalid_value_message(hrefitem.src, 'URL')
                         if ('scielo' in hrefitem.src and not hrefitem.src.endswith('.pdf')):
-                            message += _('Be sure that there is no missing character such as _.')
+                            message += _('Be sure that there is no missing character such as _. ')
                         status_message.append((validation_status.STATUS_WARNING, hrefitem.src + message))
                         if hrefitem.is_image:
                             display = html_reports.thumb_image(hreflocation)
@@ -1726,7 +1726,7 @@ class ReferenceContentValidation(object):
 
         else:
             if self.reference.ref_status == 'display-only':
-                items.append((_('Incomplete Reference'), validation_status.STATUS_WARNING, _('Check if the elements of this reference are properly identified.')))
+                items.append((_('Incomplete Reference'), validation_status.STATUS_WARNING, _('Check if the elements of this reference are properly identified. ')))
                 items = []
                 for label, status, message in r:
                     if status != validation_status.STATUS_OK:
@@ -1799,7 +1799,7 @@ class ReferenceContentValidation(object):
             elif 's/d' in _y:
                 r.append(('year', validation_status.STATUS_INFO, _y))
             else:
-                r.append(('year', validation_status.STATUS_FATAL_ERROR, _('{value} is not a number nor is in an expected format.').format(value=_y)))
+                r.append(('year', validation_status.STATUS_FATAL_ERROR, _('{value} is not a number nor is in an expected format. ').format(value=_y)))
         return r
 
     @property

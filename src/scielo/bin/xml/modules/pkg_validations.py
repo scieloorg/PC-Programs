@@ -1,3 +1,4 @@
+
 # code = utf-8
 
 import sys
@@ -265,7 +266,7 @@ class XMLContentValidator(object):
         article_validation = None
 
         if article.tree is None:
-            content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}.').format(item=work_area.new_name)
+            content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}. ').format(item=work_area.new_name)
         else:
             article_validation = article_validations.ArticleContentValidation(self.doi_services, self.articles_data.journal, article, (self.articles_data.articles_db_manager is not None), False)
             article_display_report = article_reports.ArticleDisplayReport(article_validation, pkg_path, work_area.new_name)
@@ -304,11 +305,11 @@ class ArticleValidations(object):
 
     def validate(self, pkg, xml_structure_validator, xml_content_validator):
 
-        utils.display_message(_(' - validate XML structure'))
+        #utils.display_message(_(' - validate XML structure'))
         self.logger.register(' xmlstructure')
         self.validations['xmlstructure'].message = xml_structure_validator.validate(self.work_area)
 
-        utils.display_message(_(' - validate XML contents'))
+        #utils.display_message(_(' - validate XML contents'))
         self.logger.register(' xmlcontent')
         self.validations['xmlcontent'].message, self.article_display_report = xml_content_validator.validate(self.article, pkg.pkg_path, self.work_area, pkg.is_xml_generation)
 
@@ -361,7 +362,7 @@ class ArticlesPackage(object):
     def invalid_xml_report(self):
         r = ''
         if len(self.invalid_xml_name_items) > 0:
-            r += html_reports.tag('div', html_reports.p_message(_('{status}: invalid XML files.').format(status=validation_status.STATUS_BLOCKING_ERROR)))
+            r += html_reports.tag('div', html_reports.p_message(_('{status}: invalid XML files. ').format(status=validation_status.STATUS_BLOCKING_ERROR)))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', self.invalid_xml_name_items, 'issue-problem'))
         return r
 
@@ -940,11 +941,11 @@ class ArticlesSetValidations(object):
             utils.display_message(_('Validate {name}').format(name=name))
             self.logger.register(' '.join(['validate', name]))
 
-            utils.display_message(_(' - validate journal data'))
+            #utils.display_message(_(' - validate journal data'))
             self.pkg_journal_validations[name] = ValidationsResult()
             self.pkg_journal_validations[name].message = xml_journal_data_validator.validate(article)
 
-            utils.display_message(_(' - validate issue data'))
+            #utils.display_message(_(' - validate issue data'))
             self.pkg_issue_validations[name] = ValidationsResult()
             self.pkg_issue_validations[name].message = xml_issue_data_validator.validate(article)
 
@@ -1159,7 +1160,7 @@ class ArticlesSetValidations(object):
                     _status = validation_status.STATUS_WARNING
             elif label == 'license':
                 _status = validation_status.STATUS_WARNING
-            _m = _('{status}: same value for {label} is required for all the documents in the package.').format(status=_status, label=label)
+            _m = _('{status}: same value for {label} is required for all the documents in the package. ').format(status=_status, label=label)
             parts.append(html_reports.p_message(_m))
             parts.append(html_reports.tag('div', html_reports.format_html_data(values), 'issue-problem'))
         return ''.join(parts)
@@ -1452,7 +1453,7 @@ def rst_title(title):
 
 def display_article_data_in_toc(_article):
     r = ''
-    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article.') if _article.is_ex_aop else ''
+    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article. ') if _article.is_ex_aop else ''
     r += html_reports.p_message(status)
     r += html_reports.tag('p', _article.toc_section, 'toc-section')
     r += html_reports.tag('p', _article.article_type, 'article-type')
@@ -1469,7 +1470,7 @@ def display_article_data_in_toc(_article):
 def display_article_data_to_compare(_article):
     r = ''
     style = 'excluded' if _article.is_ex_aop else None
-    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article.') if _article.is_ex_aop else ''
+    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article. ') if _article.is_ex_aop else ''
     r += html_reports.p_message(status)
     r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
     r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
@@ -1520,7 +1521,7 @@ def display_articles_differences(status, comparison_result, label1='article 1', 
 
 def display_conflicting_data(articles, labels):
     values = [display_article_data_to_compare(article) for article in articles]
-    return html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match.')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
+    return html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
 
 
 def display_order_conflicts(orders_conflicts):
