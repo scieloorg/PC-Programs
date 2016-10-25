@@ -714,12 +714,8 @@ class ArticlesManager(object):
 
     def exclude_aop(self, valid_aop):
         excluded_aop, messages = self.aop_db_manager.manage_ex_aop(valid_aop)
-        print('@@@@@@@@')
-        print(valid_aop)
-        print(excluded_aop)
-        print(valid_aop.is_ex_aop and excluded_aop is False)
         if valid_aop.is_ex_aop and excluded_aop is False:
-            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('{item} is already excluded.').format(item='ex aop: ' + valid_aop.order)))
+            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('{item} is already excluded. ').format(item='ex aop: ' + valid_aop.order)))
             excluded_aop = True
         elif excluded_aop is True:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order)))
@@ -1113,16 +1109,16 @@ class AopManager(object):
             msg_list.append(_('Checking if {label} has an "aop version"').format(label=article.doi))
 
         if status == 'regular doc':
-            msg_list.append(validation_status.STATUS_WARNING + ': ' + _('Not found an "aop version" of this document.'))
+            msg_list.append(validation_status.STATUS_WARNING + ': ' + _('Not found an "aop version" of this document. '))
         else:
             msg_list.append(validation_status.STATUS_INFO + ': ' + _('Found: "aop version"'))
             if status == 'partially matched aop':
-                msg_list.append(validation_status.STATUS_INFO + ': ' + _('the {data} of article and its "aop version" are similar.').format(data=label))
+                msg_list.append(validation_status.STATUS_INFO + ': ' + _('the {data} of article and its "aop version" are similar. ').format(data=label))
             elif status == 'aop missing PID':
                 msg_list.append(validation_status.STATUS_ERROR + ': ' + _('the "aop version" has no PID'))
             elif status == 'unmatched aop':
                 status = 'unmatched aop'
-                msg_list.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('the {data} of article and "aop version" are different.').format(data=label))
+                msg_list.append(validation_status.STATUS_FATAL_ERROR + ': ' + _('the {data} of article and "aop version" are different. ').format(data=label))
 
             if article.article_type == 'correction':
                 t = '' if article.body_words is None else article.body_words[0:300]
