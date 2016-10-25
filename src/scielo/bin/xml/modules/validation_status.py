@@ -23,11 +23,11 @@ STYLE_CHECKER_ERROR_TYPES = ['', 'Total of fatal errors = ', 'Total of errors = 
 
 def message_style(label_and_number_items):
     s = 'ok'
-    for label, number in label_and_number_items:
+    for status, label, number in label_and_number_items:
         if int(number) > 0:
-            s = label
+            s = style(status)
             break
-    return s.replace(' ', '')[:-1]
+    return s.replace(' ', '')
 
 
 def style(value):

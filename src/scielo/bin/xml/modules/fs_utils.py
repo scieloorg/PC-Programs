@@ -127,7 +127,6 @@ def zip_report(report_filename):
 
 def update_file_content_if_there_is_new_items(new_content, filename):
     current_content = u''
-    print(filename)
     if os.path.isfile(filename):
         current_content = read_file(filename)
     current_items = current_content.split('\n')

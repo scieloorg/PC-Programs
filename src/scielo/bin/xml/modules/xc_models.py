@@ -1377,14 +1377,12 @@ class JournalsList(object):
         #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
 
     def get_journal(self, p_issn, e_issn, journal_title):
-        print((p_issn, e_issn, journal_title))
         journal = Journal()
         for issn in [p_issn, e_issn]:
             if issn is not None:
                 for j in self._journals.get(issn, []):
                     journal = j
                     #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
-        print(journal)
         return journal
 
 
@@ -1406,8 +1404,6 @@ class JournalsManager(object):
     def journal(self, p_issn, e_issn, journal_title):
         j = None
         j_data = None
-        print(self.journals_db)
-        print((p_issn, e_issn, journal_title))
         if self.journals_db is None:
             j = self.journals_list.get_journal(p_issn, e_issn, journal_title)
             j_data = self.journals_list.get_journal_data(p_issn, e_issn, journal_title)

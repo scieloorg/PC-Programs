@@ -87,7 +87,7 @@ class ValidationsResult(object):
     def statistics_label_and_number(self):
         items = []
         for status in validation_status.STATUS_LEVEL_ORDER:
-            items.append((validation_status.STATUS_LABELS.get(status), str(self.numbers.get(status, 0))))
+            items.append((status, validation_status.STATUS_LABELS.get(status), str(self.numbers.get(status, 0))))
         return items
 
     @property
@@ -108,10 +108,10 @@ class ValidationsResult(object):
 
     def statistics_display(self, inline=True):
         tag_name = 'span'
-        text = ' | '.join([k + ': ' + v for k, v in self.statistics_label_and_number if v != '0'])
+        text = ' | '.join([k + ': ' + v for ign, k, v in self.statistics_label_and_number if v != '0'])
         if not inline:
             tag_name = 'div'
-            text = ''.join([html_reports.tag('p', html_reports.display_label_value(_('Total of ') + k, v)) for k, v in self.statistics_label_and_number])
+            text = ''.join([html_reports.tag('p', html_reports.display_label_value(_('Total of ') + k, v)) for ign, k, v in self.statistics_label_and_number])
         style = validation_status.message_style(self.statistics_label_and_number)
         r = html_reports.tag(tag_name, text, style)
         return r
@@ -455,9 +455,9 @@ class RegisteredArticles(dict):
         actions = None
         conflicts = None
         exclude_name = None
-        print('analyze_registered_articles')
-        print([registered_titaut, registered_name, registered_order])
-        print('-')
+        #print('analyze_registered_articles')
+        #print([registered_titaut, registered_name, registered_order])
+        #print('-')
         if registered_titaut is None and registered_order is None and registered_name is None:
             actions = 'add'
         elif all([registered_titaut, registered_order, registered_name]):
@@ -572,7 +572,7 @@ class ArticlesMerger(object):
     def merge(self):
         self.history_items = {}
         self.history_items = {name: [(_('registered article'), article)] for name, article in self.registered_articles.items()}
-        print([(article.xml_name, article.order) for article in self.registered_articles.values()])
+        #print([(article.xml_name, article.order) for article in self.registered_articles.values()])
         self.analyze_pkg_articles()
 
         self.merging_errors = []
@@ -1272,14 +1272,8 @@ class ReportsMaker(object):
             shutil.copyfile(filename, bkp_filename)
 
         html_reports.save(filename, report_title, self.content)
-        print(type(filename))
         msg = _('Saved report: {f}').format(f=filename)
-        print(type(msg))
-        e = sys.getfilesystemencoding()
-        print(e)
-        #msg = msg.encode(encoding=sys.getfilesystemencoding()).decode(sys.getfilesystemencoding())
-        #print(type(msg))
-        print(msg)
+        utils.display_message(msg)
 
     @property
     def content(self):
