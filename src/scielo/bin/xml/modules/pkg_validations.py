@@ -370,20 +370,31 @@ class ArticlesPackage(object):
 class ArticlesData(object):
 
     def __init__(self):
-        self.articles_db_manager = None
-        self.journal = None
-        self.journal_data = None
-        self.acron_issue_label = None
         self.issue_models = None
         self.issue_error_msg = None
         self.issue_files = None
+        self.journal = None
+        self.journal_data = None
         self.serial_path = None
+        self.articles_db_manager = None
 
     def setup(self, pkg, journals_manager, db_manager):
         self._identify_journal_data(pkg.pkg_articles, journals_manager)
         if db_manager is not None:
             self._identify_issue_data(db_manager)
             self.serial_path = db_manager.serial_path
+
+    @property
+    def acron(self):
+        a = 'unknown_acron'
+        if self.journal is not None:
+            if self.journal.acron is not None:
+                a = self.journal.acron
+        return a
+
+    @property
+    def acron_issue_label(self):
+        return self.acron + ' ' + self.issue_label
 
     def _identify_journal_data(self, pkg_articles, journals_manager):
         #journals_manager = xc_models.JournalsManager()
@@ -393,14 +404,15 @@ class ArticlesData(object):
             journal = article.Journal()
             if len(journals[0]) == 4:
                 journal.journal_title, journal.p_issn, journal.e_issn, self.issue_label = journals[0]
-                self.journal, self.journal_data = journals_manager.journal(journal.p_issn, journal.e_issn, journal.journal_title)
-                self.acron = self.journal.acron
+                j, self.journal_data = journals_manager.journal(journal.p_issn, journal.e_issn, journal.journal_title)
+                if j.acron is not None:
+                    journal = j
+            self.journal = journal
 
     def _identify_issue_data(self, db_manager):
         if db_manager is not None and self.journal is not None:
-            self.acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
+            ign, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
             if self.issue_error_msg is None:
-                self.acron = self.acron_issue_label.split(' ')[0]
                 self.issue_files = db_manager.get_issue_files(self.issue_models)
                 self.articles_db_manager = xc_models.ArticlesManager(db_manager.db_isis, self.issue_files)
 
@@ -1522,7 +1534,7 @@ def display_order_conflicts(orders_conflicts):
     r = []
     for order, names in orders_conflicts.items():
         r.append(html_reports.tag('h3', order))
-        r.append(html_reports.format_html_data(name))
+        r.append(html_reports.format_html_data(names))
     return ''.join(r)
 
 
