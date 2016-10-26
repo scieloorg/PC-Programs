@@ -202,11 +202,12 @@ def format_wayta_results(result, filter_country=None):
     r = []
     keys = ['score', 'value', 'city', 'state', 'iso3166', 'country']
     try:
-        results = json.loads(result)
-        if filter_country is None:
-            r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '']
-        else:
-            r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '' and filter_country == item.get('country')]
+        if result is not None:
+            results = json.loads(result)
+            if filter_country is None:
+                r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '']
+            else:
+                r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '' and filter_country == item.get('country')]
     except Exception as e:
         print('format_wayta_results:')
         print(e)

@@ -388,7 +388,6 @@ def hdimg_to_jpg(source_image_filename, jpg_filename):
             im = Image.open(source_image_filename)
             im.thumbnail(im.size)
             im.save(jpg_filename, "JPEG")
-            utils.display_message(jpg_filename)
         except Exception as inst:
             utils.display_message('Unable to generate ' + jpg_filename)
             utils.display_message(inst)
@@ -916,7 +915,7 @@ class ArticlePkgMaker(object):
         if len(self.replacements_href_values) > 0:
             for current, new in self.replacements_href_values:
                 if current != new:
-                    utils.display_message(current + ' => ' + new)
+                    #utils.display_message(current + ' => ' + new)
                     self.content = self.content.replace('href="' + current, 'href="' + new)
                     changed = True
         if changed:

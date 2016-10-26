@@ -2,45 +2,65 @@
 ====================
 - General:
   - (new) [#2287] Solve HTTP Error Proxy Authentication Required
-  - (improvement): Reestructure the XC and XPM core
   - (new) [#2325, #2356]: article-id (publisher-id) instead of DOI, if DOI does not exist
-
+  - (improvement): Reestructure the reports generator
+- Title Manager:
+  - (bug) [#2282] Fix the edition of issue data: missing some ISSN previously filled.
 - Markup:
+  - (new) [#2368]: New element fn; fngrp converts to fn-group and fn to fn; fngrp has sectitle
+  - (new) [#2389]: *fn has changed to *page-fn; *fngrp for automatic markup of one fngrp; *fn for automatic markup of one fn
   - (new) [#2379]: New elements prefix and suffix
   - (new) [#2364]: Update the values for the attribute reltp (related-article-type)
   - (new) [#2375]: Keep all the unidentified text in product element 
   - (new) [#2370]: New element caption in p 
+  - (new) [#2357]: Consider the png imagens in src folder with priority over the embedded images of .doc
+  - (improvement) [#2285]: Select the images from src folder with priority over the embedded images of .doc
+  - (improvement) [#2378]: Change the reftype list, displaying the code values instead of the text values
+  - (improvement) [#2360]: Include label in corresp
+  - (bug) [#2221]: Fix the license, missing license-p
   - (bug) [#2372]: Fix the values for doctype (article-type)
+  - (bug) [#2387]: Fix the generation of app/sectitle to app/title
   - (bug) [#2362]: Exclude sec and include label in app element
   - (bug) [#2355]: Include appgrp in subdoc
   - (bug) [#2345]: Excluir o @content-type="cited" de comment
   - (bug) [#2366]: Fix filename of formulas
   - (bug) [#2294]: Fix sub, sup, italic automatic identification in markup program
-  - (improvement) [#2378]: Change the reftype list, displaying the code values instead of the text values
-  - (improvement) [#2360]: Include label in corresp
+  - (bug) [#2300]: Fix problem as trying to use the automata1 for article/text
+  - (bug) [#2290] Fix ext-link/@xlink:href generation if @xlink:href has no protocol informed
+  - (bug) [#2289] Remove " - " from the end of title element
+  - (bug) [#2273] Markup fixed sub, sup, italic only in footnotes
+  - (bug) [#2265] Word 2010 as saving HTML to generate .sgm.xml
+  - (bug) [#2294] Fix sub, sup, italic identification, when the styles are in the same text.
 - XPM:
-  - (bug) [#2350]: DOI value is no case sensitive
+  - (improvement) [#2303]: Remodel the reports in order to have better usability
+  - (improvement) [#2344]: Check if disp-formula is complete
+  - (improvement) [#2242]: Generate PMC Package by demand (-pmc parameter)
+  - (bug) [#2350]: DOI value is not case sensitive
   - (bug) [#2354]: Fix contrib-id error message 
   - (bug) [#2353]: Fix subdoc/aff error message 
-  - (bug) [#2384, ]: Fix fn-group issues
   - (bug) [#2127]: Display the error line number of XML invalid
   - (bug) [#2302]: Fix subdoc/contrib/@rid error message
   - (bug) [#2219]: Fix validation of figures count (subdoc)
   - (bug) [#2301]: Fix clinical trial element generation
   - (bug) [#2220]: Fix source error message (e-Cadernos)
   - (bug) [#2336]: Fix license error message
-  - (bug) [#2336]: Fix license error message
   - (bug) [#2290]: Fix url validation, when it has not protocol informed
-  - (new) [#2300]: Fix problem as trying to use the automata1 for article/text
-  - (improvement) [#2303]: Remodel the reports in order to have better usability
-  - (improvement) [#2344]: Check if disp-formula is complete
-  - (improvement) [#2242]: Generate PMC Package by demand (-pmc parameter)
-  - (improvement) [#2285]: Select the images from src folder with higher priority than get them from .doc
+  - (bug) [#2264] Fix problem as identifying the xref ranges existing in different levels of XML tree.
+  - (bug) Fix unexpected error because of article-title that has @xml:lang and xref. 
+  - (bug) [#2272] Fix ext-link in mixed-citation
 - XC: 
+  - (improvement) [#2303]: Remodel the reports in order to have better usability
   - (bug) [#2260]: Handle intents of reusing an order of ex aop
   - (bug) [#2301]: Fix clinical trial registration
+  - (bug) [#2236] Retraction considered errornously as press release
+  - (bug) [#2252] Unexpect error because of missing subject 
 - PubMed:
-  - (new) [#2335, #2334, #2289, #2288, #2283, #2279]: Implement new demands from PubMed
+  - (new) [#2335, #2334, #2289, #2279]: Implement new demands from PubMed
+  - (new) [#2243] Update the PubMed XML according to "new rules" of PubMed (errata, mult aff, etc)
+  - (new) [#2288] ElocationID (doi)
+  - (new) [#2304] Clinical trial  
+  - (bug) [#2243] Fix limitation of quantity of authors
+  - (bug) [#2283] Fix affiliation content and do not exclude @article-type=other
 
 
 4.0.091 - 07/07/2016 (beta)
