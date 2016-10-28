@@ -1300,7 +1300,7 @@ class ReportsMaker(object):
         tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, 'summary-report')
         content = tabbed_report.report_content
         origin = ['{IMG_PATH}', '{PDF_PATH}', '{XML_PATH}', '{RES_PATH}', '{REP_PATH}']
-        replac = [self.files_location.img_path, self.files_location.pdf_path, self.files_location.xml_path, self.files_location.result_path, self.files_location.report_path]
+        replac = [self.files_location.img_link, self.files_location.pdf_link, self.files_location.xml_link, self.files_location.result_path, self.files_location.report_path]
         for o, r in zip(origin, replac):
             content = content.replace(o, r)
         return content + self.footnote

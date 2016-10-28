@@ -434,18 +434,19 @@ class JournalFiles(object):
 
 class FilesFinalLocation(object):
 
-    def __init__(self, pkg_path, acron, issue_label, serial_path=None, web_app_path=None):
+    def __init__(self, pkg_path, acron, issue_label, serial_path=None, web_app_path=None, web_url=None):
         self.web_app_path = web_app_path
         self.pkg_path = pkg_path
         self.issue_path = acron + '/' + issue_label
         self.serial_path = serial_path
+        self.web_url = web_url
 
     @property
-    def work_area_path(self):
+    def result_path(self):
         if self.serial_path is None:
             return os.path.dirname(self.pkg_path)
         else:
-            return self.serial_path + '/' + self.issue_path + '/base_xml/base_reports'
+            return self.serial_path + '/' + self.issue_path
 
     @property
     def img_path(self):
@@ -471,13 +472,32 @@ class FilesFinalLocation(object):
     @property
     def report_path(self):
         if self.web_app_path is None:
-            return self.work_area_path + '/errors'
+            return self.result_path + '/errors'
         else:
             return self.web_app_path + '/htdocs/reports/' + self.issue_path
 
     @property
-    def result_path(self):
-        if self.serial_path is None:
-            return self.work_area_path
+    def base_report_path(self):
+        if self.serial_path is not None:
+            return self.serial_path + '/' + self.issue_path + '/base_xml/base_reports'
+
+    @property
+    def img_link(self):
+        if self.web_url is None:
+            return self.pkg_path
         else:
-            return self.serial_path + '/' + self.issue_path
+            return self.web_url + '/img/' + self.issue_path
+
+    @property
+    def pdf_link(self):
+        if self.web_url is None:
+            return self.pkg_path
+        else:
+            return self.web_url + '/pdf/' + self.issue_path
+
+    @property
+    def xml_link(self):
+        if self.web_url is None:
+            return self.pkg_path
+        else:
+            return self.web_url + '/xml/' + self.issue_path

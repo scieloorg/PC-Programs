@@ -79,18 +79,14 @@ class ArticlesConversion(object):
         self.aop_status = {}
         self.articles_conversion_validations = pkg_validations.ValidationsResultItems()
         self.error_messages = []
-        self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, None, None)
+        self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label)
         self.statistics_display = ''
 
     def convert(self):
         scilista_items = []
-        self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
-        base_report_path = None
 
         self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
         self.aop_status = {}
-
-        self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, self.articles_set_validations.articles_data.serial_path, converter_env.local_web_app_path)
 
         if self.articles_set_validations.blocking_errors == 0 and self.articles_merger.total_to_convert > 0:
 
@@ -106,20 +102,25 @@ class ArticlesConversion(object):
                 self.articles_conversion_validations[name].message = message
 
             if len(scilista_items) > 0:
-                self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, self.articles_set_validations.articles_data.serial_path, converter_env.local_web_app_path)
+                self.files_final_location.web_app_path = converter_env.local_web_app_path
+                self.files_final_location.serial_path = self.articles_set_validations.articles_data.serial_path
+                self.files_final_location.web_url = converter_env.web_app_site
+
                 self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
                 self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
 
-                self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
-
-        self.aop_status.update(self.db.db_aop_status)
-        self.generate_report(base_report_path)
+            self.aop_status.update(self.db.db_aop_status)
+        self.generate_report()
         return scilista_items
 
     @property
     def registered_articles(self):
         if self.db is not None:
             return self.db.registered_articles
+
+    @property
+    def acron_issue_label(self):
+        return self.articles_set_validations.articles_data.acron_issue_label
 
     def generate_report(self, base_report_path=None):
         reports = pkg_validations.ReportsMaker(self.articles_set_validations, self.files_final_location, None, self)
@@ -129,11 +130,12 @@ class ArticlesConversion(object):
         reports.save_report(self.files_final_location.report_path, 'xc.html', _('XML Conversion (XML to Database)'))
         self.statistics_display = reports.validations.statistics_display(html_format=False)
         if converter_env.is_windows:
-            if base_report_path is not None:
-                reports.save_report(base_report_path, 'xc.html', _('XML Conversion (XML to Database)'))
-                html_reports.display_report(base_report_path + '/xc.html')
-            else:
-                html_reports.display_report(self.report_location)
+            # FIXME
+            if self.files_final_location.base_report_path is not None:
+                reports.save_report(self.files_final_location.base_report_path, 'xc.html', _('XML Conversion (XML to Database)'))
+                html_reports.display_report(self.files_final_location.base_report_path + '/xc.html')
+
+            html_reports.display_report(self.report_location)
 
     @property
     def total_converted(self):
