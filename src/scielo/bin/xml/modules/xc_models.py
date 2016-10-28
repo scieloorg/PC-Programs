@@ -831,23 +831,23 @@ class BaseManager(object):
         records = self.db_isis.get_records(self.issue_files.base)
         self.registered_i_record, self.registered_articles_records = IssueArticlesRecords(records).articles()
 
+    def registered_xml_file(self, xml_name):
+        f = self.issue_files.base_source_path + '/' + xml_name + '.xml'
+        if not os.path.isfile(f):
+            folders = []
+            for folder in f.split('/'):
+                if 'ahead' in folder:
+                    folder = 'ex-' + folder
+                folders.append(folder)
+            f = '/'.join(folders)
+        return f
+
     @property
     def registered_articles(self):
         self.registered_records()
         _registered_articles = {}
-        print('= registered_articles =')
         for xml_name, registered_article in self.registered_articles_records.items():
-            f = self.issue_files.base_source_path + '/' + xml_name + '.xml'
-            if not os.path.isfile(f):
-                folders = []
-                for folder in f.split('/'):
-                    if 'ahead' in folder:
-                        folder = 'ex-' + folder
-                    folders.append(folder)
-                f = '/'.join(folders)
-            print('-')
-            print(xml_name)
-            print(f)
+            f = self.registered_xml_file(xml_name)
             if os.path.isfile(f):
                 xml, e = xml_utils.load_xml(f)
             else:
@@ -863,12 +863,6 @@ class BaseManager(object):
             if doc.doi is not None:
                 self.articles_by_doi[doc.doi] = xml_name
             _registered_articles[xml_name] = doc
-        print('*'*10)
-        print(self.issue_files.issue_folder)
-        print('Registered Articles: ')
-        print([(article.xml_name, article.order) for article in _registered_articles.values()])
-        print('='*10)
-        print('')
         return _registered_articles
 
     def content_formatter(self, content):
