@@ -5,6 +5,7 @@ import sys
 import os
 import webbrowser
 import shutil
+from datetime import datetime
 
 from __init__ import _
 from . import attributes
@@ -983,11 +984,10 @@ class ArticlesSetValidations(object):
 
     @property
     def detailed_report(self):
-        labels = ['file', 'order', _('pages'), _('article'), 'aop pid/related', _('reports')]
+        labels = [_('filename'), 'order', _('article'), 'aop pid/related', _('reports')]
         widths = {}
-        widths['file'] = '10'
+        widths[_('filename')] = '10'
         widths['order'] = '5'
-        widths[_('pages')] = '5'
         widths[_('article')] = '60'
         widths['aop pid/related'] = '10'
         widths[_('reports')] = '10'
@@ -998,7 +998,6 @@ class ArticlesSetValidations(object):
             values = []
             values.append(new_name)
             values.append(article.order)
-            values.append(article.pages)
             if self.articles_validations[new_name].article_display_report is None:
                 values.append('')
             else:
@@ -1547,15 +1546,18 @@ def display_order_conflicts(orders_conflicts):
 
 
 def toc_extended_report(articles):
-    labels = [_('filename'), 'order', _('article')]
-    widths = {_('filename'): '10', 'order': '5', _('article'): '85'}
+    labels = [_('filename'), 'order', _('last update'), _('article')]
+    widths = {_('filename'): '5', 'order': '2', _('last update'): '5', _('article'): '88'}
     items = []
     for new_name, article in articles_sorted_by_order(articles):
         if not article.is_ex_aop:
             values = []
             values.append(new_name)
             values.append(article.order)
+            last_update_display = article.last_update_display
+            if last_update_display[:10] == datetime.now().isoformat()[:10]:
+                last_update_display = html_reports.tag('span', last_update_display, 'report-date')
+            values.append(last_update_display)
             values.append(display_article_data_in_toc(article))
             items.append(label_values(labels, values))
-    return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
-
+    return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)

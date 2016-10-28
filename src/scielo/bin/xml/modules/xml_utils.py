@@ -471,7 +471,6 @@ def minidom_pretty_print(content):
         if isinstance(content, unicode):
             content = content.encode('utf-8')
 
-        print(content[content.find('Stern et al'):content.find('Stern et al')+400])
         doc = xml.dom.minidom.parseString(content)
         pretty = doc.toprettyxml().strip()
         if not isinstance(pretty, unicode):

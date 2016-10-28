@@ -223,7 +223,7 @@ class ArticleDisplayReport(object):
                     table_data += html_reports.tag('div', t.table, 'element-table')
                 if t.graphic:
                     #table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
-                    table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('file:///{IMG_PATH}'), 'value')
+                    table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('{IMG_PATH}'), 'value')
                 r += header + html_reports.tag('div', table_data, 'block')
         return r
 
@@ -367,7 +367,7 @@ class ArticleDisplayReport(object):
             row = {}
             row['ID'] = t.graphic_parent.id
             row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
-            row['table/graphic'] = t.table + html_reports.thumb_image('file:///{IMG_PATH}')
+            row['table/graphic'] = t.table + html_reports.thumb_image('{IMG_PATH}')
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 
@@ -483,7 +483,7 @@ class ArticleDisplayReport(object):
     def link_to_pdf_and_xml_files(self):
         items = []
         for item in self.article.related_files:
-            location = 'file:///{PDF_PATH}/' if item.endswith('.pdf') else 'file:///{XML_PATH}/'
+            location = '{PDF_PATH}/' if item.endswith('.pdf') else '{XML_PATH}/'
             items.append(html_reports.tag('p', html_reports.link(
                 location + item,
                 item, window=('800', '400'))))

@@ -687,8 +687,6 @@ class ArticlesManager(object):
         self.articles_aop_exclusion_status = {}
         self.articles_conversion_messages = {}
 
-        print('\n' + issue_files.issue_folder)
-        print(self.issue_files.is_aop)
         if self.issue_files.is_aop:
             self.ex_aop_manager = BaseManager(db_isis, serial_files.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
 
@@ -697,8 +695,6 @@ class ArticlesManager(object):
         r = {}
         if self.ex_aop_manager is not None:
             r = self.ex_aop_manager.registered_articles
-            print('ex aop:')
-            print(r)
         r.update(self.base_manager.registered_articles)
         return r
 
@@ -786,12 +782,8 @@ class ArticlesManager(object):
             if article_converted is False:
                 error = True
 
-        print('error?')
-        print(error)
         if not error:
             q_registered = self.finish_conversion(i_record)
-            print(q_registered)
-            print(len(articles))
             converted = q_registered >= len(articles)
             if converted:
                 if create_windows_base:
@@ -799,7 +791,6 @@ class ArticlesManager(object):
 
                 scilista_items.extend(self.aop_db_manager.scilista_items)
                 scilista_items.append(acron_issue_label)
-        print(scilista_items)
         return scilista_items
 
     def finish_conversion(self, i_record):
@@ -814,7 +805,7 @@ class BaseManager(object):
     def __init__(self, db_isis, issue_files):
         self.db_isis = db_isis
         self.issue_files = issue_files
-        self.articles_by_doi = {}
+        self.articles_by_id = {}
         if self.issue_files.is_ex_aop:
             if not os.path.isfile(self.issue_files.base_filename):
                 self.create_db()
@@ -860,8 +851,8 @@ class BaseManager(object):
             doc.last_update_display = registered_article.last_update_display
             doc.article_records = registered_article.article_records
             doc.is_ex_aop = self.issue_files.is_ex_aop
-            if doc.doi is not None:
-                self.articles_by_doi[doc.doi] = xml_name
+            if doc.article_id is not None:
+                self.articles_by_id[doc.article_id] = xml_name
             _registered_articles[xml_name] = doc
         return _registered_articles
 
@@ -976,11 +967,9 @@ class AopManager(object):
     def __init__(self, db_isis, journal_files):
         self.db_isis = db_isis
         self.journal_files = journal_files
-
         self.xmlname_indexed_by_issueid_and_order = {}
-        self.xmlname_indexed_by_doi = {}
+        self.xmlname_indexed_by_article_id = {}
         self.issueid_indexed_by_xmlname = {}
-
         self.updated_issue_bases = []
         self.setup()
 
@@ -999,8 +988,8 @@ class AopManager(object):
         for name, issue_files in self.journal_files.aop_issue_files.items():
             self.aop_db_items[issue_files.issue_folder] = BaseManager(self.db_isis, issue_files)
             for xml_name, registered in self.aop_db_items[issue_files.issue_folder].registered_articles.items():
-                if registered.doi is not None:
-                    self.xmlname_indexed_by_doi[registered.doi] = registered.xml_name
+                if registered.article_id is not None:
+                    self.xmlname_indexed_by_article_id[registered.article_id] = registered.xml_name
                 self.xmlname_indexed_by_issueid_and_order[issue_files.issue_folder + '|' + registered.order] = registered.xml_name
                 self.issueid_indexed_by_xmlname[xml_name] = issue_files.issue_folder
 
@@ -1009,14 +998,14 @@ class AopManager(object):
         for name, issue_files in self.journal_files.ex_aop_issues_files.items():
             self.ex_aop_db_items[issue_files.issue_folder] = BaseManager(self.db_isis, issue_files)
             for xml_name, registered in self.ex_aop_db_items[issue_files.issue_folder].registered_articles.items():
-                if registered.doi is not None:
-                    self.xmlname_indexed_by_doi[registered.doi] = registered.xml_name
+                if registered.article_id is not None:
+                    self.xmlname_indexed_by_article_id[registered.article_id] = registered.xml_name
                 if not xml_name in self.issueid_indexed_by_xmlname.keys():
                     self.xmlname_indexed_by_issueid_and_order[issue_files.issue_folder + '|' + registered.order] = registered.xml_name
                     self.issueid_indexed_by_xmlname[xml_name] = issue_files.issue_folder
 
-    def get_aop_by_doi(self, doi):
-        xml_name = self.xmlname_indexed_by_doi.get(doi.lower())
+    def get_aop_by_article_id(self, article_id):
+        xml_name = self.xmlname_indexed_by_article_id.get(article_id.lower())
         if xml_name is not None:
             issueid = self.issueid_indexed_by_xmlname[xml_name]
             found = self.aop_db_items.get(issueid, self.ex_aop_db_items.get(issueid))
@@ -1039,10 +1028,10 @@ class AopManager(object):
     def name(self, db_filename):
         return os.path.basename(db_filename)
 
-    def find_aop(self, doi, xml_name):
+    def find_aop(self, article_id, xml_name):
         aop = None
-        if doi is not None:
-            aop = self.get_aop_by_doi(doi)
+        if article_id is not None:
+            aop = self.get_aop_by_article_id(article_id)
         if aop is None:
             aop = self.get_aop_by_xmlname(xml_name)
         return aop
@@ -1052,7 +1041,7 @@ class AopManager(object):
         status = 'regular doc'
         messages = []
         if self.journal_has_aop():
-            found_aop = self.find_aop(article.doi, article.xml_name)
+            found_aop = self.find_aop(article.article_id, article.xml_name)
             if found_aop is not None:
                 status = self.compare_article_and_aop(article, found_aop)
                 messages = self.check_aop_message(article, found_aop, status)
@@ -1099,8 +1088,8 @@ class AopManager(object):
         msg_list = []
 
         msg_list.append(_('Checking if {label} has an "aop version"').format(label=article.xml_name))
-        if article.doi is not None:
-            msg_list.append(_('Checking if {label} has an "aop version"').format(label=article.doi))
+        if article.article_id is not None:
+            msg_list.append(_('Checking if {label} has an "aop version"').format(label=article.article_id))
 
         if status == 'regular doc':
             msg_list.append(validation_status.STATUS_WARNING + ': ' + _('Not found an "aop version" of this document. '))
@@ -1138,8 +1127,8 @@ class AopManager(object):
         """
         Mark as deleted
         """
-        if aop.doi is not None:
-            del self.xmlname_indexed_by_doi[aop.doi]
+        if aop.article_id is not None:
+            del self.xmlname_indexed_by_article_id[aop.article_id]
         issue_folder = self.issueid_indexed_by_xmlname[aop.xml_name]
         del self.issueid_indexed_by_xmlname[aop.xml_name]
         del self.xmlname_indexed_by_issueid_and_order[issue_folder + '|' + aop.order]
@@ -1368,7 +1357,6 @@ class JournalsList(object):
                     journal.journal_title = update_list(journal.journal_title, j.journal_title)
                     journal.issn_id = update_list(journal.issn_id, j.issn_id)
         return journal
-        #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
 
     def get_journal(self, p_issn, e_issn, journal_title):
         journal = Journal()
@@ -1376,7 +1364,6 @@ class JournalsList(object):
             if issn is not None:
                 for j in self._journals.get(issn, []):
                     journal = j
-                    #journal.doi_prefix = journal_doi_prefix([journal.e_issn, journal.p_issn])
         return journal
 
 

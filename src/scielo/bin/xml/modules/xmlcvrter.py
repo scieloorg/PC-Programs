@@ -130,11 +130,6 @@ class ArticlesConversion(object):
         reports.save_report(self.files_final_location.report_path, 'xc.html', _('XML Conversion (XML to Database)'))
         self.statistics_display = reports.validations.statistics_display(html_format=False)
         if converter_env.is_windows:
-            # FIXME
-            if self.files_final_location.base_report_path is not None:
-                reports.save_report(self.files_final_location.base_report_path, 'xc.html', _('XML Conversion (XML to Database)'))
-                html_reports.display_report(self.files_final_location.base_report_path + '/xc.html')
-
             html_reports.display_report(self.report_location)
 
     @property
@@ -201,7 +196,7 @@ class ArticlesConversion(object):
         action = _('will not be')
         if update:
             action = _('will be')
-        text = u'{status}: {issueid} {action} {result} {reason}. '.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
+        text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
         text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.articles_merger.total_to_convert), False) + html_reports.p_message(text, False)
         return text
 

@@ -855,6 +855,13 @@ class ArticleXML(object):
         return k
 
     @property
+    def article_id(self):
+        if self.doi is not None:
+            return self.doi
+        elif self.publisher_article_id is not None:
+            return self.publisher_article_id
+
+    @property
     def doi(self):
         if self.article_meta is not None:
             _doi = self.article_meta.findtext('article-id[@pub-id-type="doi"]')
