@@ -6,7 +6,10 @@ import socket
 import urllib2
 from datetime import datetime
 
-import Tkinter
+try:
+    import Tkinter
+except:
+    pass
 
 import fs_utils
 

@@ -92,7 +92,6 @@ class ArticlesConversion(object):
 
         self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, self.articles_set_validations.articles_data.serial_path, converter_env.local_web_app_path)
 
-        self.registered_articles = self.db.registered_articles
         if self.articles_set_validations.blocking_errors == 0 and self.articles_merger.total_to_convert > 0:
 
             self.conversion_status = {}
@@ -110,7 +109,6 @@ class ArticlesConversion(object):
                 self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, self.articles_set_validations.articles_data.serial_path, converter_env.local_web_app_path)
                 self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
                 self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
-                self.registered_articles = self.db.registered_articles
 
                 self.acron_issue_label = self.articles_set_validations.articles_data.acron_issue_label
 
@@ -118,13 +116,18 @@ class ArticlesConversion(object):
         self.generate_report(base_report_path)
         return scilista_items
 
+    @property
+    def registered_articles(self):
+        if self.db is not None:
+            return self.db.registered_articles
+
     def generate_report(self, base_report_path=None):
         reports = pkg_validations.ReportsMaker(self.articles_set_validations, self.files_final_location, None, self)
         if converter_env.is_windows:
             reports.processing_result_location = self.files_final_location.result_path
         self.report_location = self.files_final_location.report_path + '/xc.html'
         reports.save_report(self.files_final_location.report_path, 'xc.html', _('XML Conversion (XML to Database)'))
-        self.statistics_display = reports.validations.statistics_display()
+        self.statistics_display = reports.validations.statistics_display(html_format=False)
         if converter_env.is_windows:
             if base_report_path is not None:
                 reports.save_report(base_report_path, 'xc.html', _('XML Conversion (XML to Database)'))
@@ -168,7 +171,7 @@ class ArticlesConversion(object):
         text = ''.join(self.error_messages)
         app_site = converter_env.web_app_site if converter_env.web_app_site is not None else _('scielo web site')
         status = ''
-        result = _('be updated/published on {app_site}').format(app_site=app_site)
+        result = _('updated/published on {app_site}').format(app_site=app_site)
         reason = ''
         update = True
         if self.xc_status == 'rejected':
@@ -178,12 +181,12 @@ class ArticlesConversion(object):
                 if self.total_not_converted > 0:
                     reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.articles_merger.total_to_convert))
                 else:
-                    reason = _('unknown')
+                    reason = _('because of unexpected reason')
             else:
                 reason = _('because there are blocking errors in the package. ')
         elif self.xc_status == 'ignored':
             update = False
-            reason = _('because no document was changed. ')
+            reason = _('because no document has changed. ')
         elif self.xc_status == 'accepted':
             status = validation_status.STATUS_WARNING
             reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services. ')
@@ -193,10 +196,10 @@ class ArticlesConversion(object):
         else:
             status = validation_status.STATUS_FATAL_ERROR
             reason = _('because there are blocking errors in the package. ')
-        action = ' not'
+        action = _('will not be')
         if update:
-            action = ''
-        text = _('{status}: {issueid} will{action} {result} {reason}. ').format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
+            action = _('will be')
+        text = u'{status}: {issueid} {action} {result} {reason}. '.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
         text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.articles_merger.total_to_convert), False) + html_reports.p_message(text, False)
         return text
 

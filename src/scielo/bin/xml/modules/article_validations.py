@@ -210,7 +210,7 @@ def evaluate_tiff(img_filename, min_height=None, max_height=None):
         dpi = None if tiff_im.info is None else tiff_im.info.get('dpi', [_('unknown')])[0]
 
         info = []
-        info.append('{dpi} dpi'.format(dpi=dpi))
+        info.append(u'{dpi} dpi'.format(dpi=dpi))
         info.append(_('height: {height} pixels. ').format(height=tiff_im.size[1]))
         info.append(_('width: {width} pixels. ').format(width=tiff_im.size[0]))
 
@@ -1025,14 +1025,14 @@ class ArticleContentValidation(object):
                 values = [item.title for item in sorted_by_lang]
         if all(values) is True:
             if lang is None:
-                errors.append(invalid_value_message(_('None'), label_xml_lang, '|'.join(values)))
+                errors.append(invalid_value_message(_('None'), label_xml_lang, ' | '.join(values)))
             else:
-                valid.append((label_xml_lang, validation_status.STATUS_INFO, '|'.join(values)))
+                valid.append((label_xml_lang, validation_status.STATUS_INFO, ' | '.join(values)))
         else:
             label = label_title_group if sorted_by_lang is None else label_title
             errors.append((label, err_level, _('Not found: {label}. ').format(label=label)))
         if len(values) > 1:
-            errors.append((label_title, validation_status.STATUS_FATAL_ERROR, _('Required only one {item} for each language. Values found for @xml:lang="{lang}": {values}. ').format(item='article-title' + _(' or ') + 'trans-title', values='|'.join(values), lang=lang)))
+            errors.append((label_title, validation_status.STATUS_FATAL_ERROR, _('Required only one {item} for each language. Values found for @xml:lang="{lang}": {values}. ').format(item='article-title' + _(' or ') + 'trans-title', values=' | '.join(values), lang=lang)))
         return (values, valid, errors)
 
     def texts_by_lang(self, lang, err_level, elem_group_name, elem_item_name, text_elements, mininum=0):
@@ -1050,9 +1050,9 @@ class ArticleContentValidation(object):
         if all(values) is True:
             if lang is None:
                 errors.append((label_lang, err_level,
-                    invalid_value_message(_('None'), label_lang, '|'.join(values))))
+                    invalid_value_message(_('None'), label_lang, ' | '.join(values))))
             else:
-                valid.append((label_elem, validation_status.STATUS_INFO, '|'.join(values)))
+                valid.append((label_elem, validation_status.STATUS_INFO, ' | '.join(values)))
                 if mininum > 0:
                     if 1 < len(values) < mininum:
                         errors.append((label_elem, err_level, _('Required at least {quantity} items. ').format(quantity=mininum)))
@@ -1068,7 +1068,7 @@ class ArticleContentValidation(object):
             errors.append((label_elem, err_level, res))
         if mininum == 0:
             if len(values) > 1:
-                errors.append((elem_item_name + ' (@xml:lang="' + lang + '")', validation_status.STATUS_FATAL_ERROR, _('Required only one {item} for each language. Values found for @xml:lang="{lang}": {values}. ').format(lang=lang, item=elem_item_name, values='|'.join(values))))
+                errors.append((elem_item_name + ' (@xml:lang="' + lang + '")', validation_status.STATUS_FATAL_ERROR, _('Required only one {item} for each language. Values found for @xml:lang="{lang}": {values}. ').format(lang=lang, item=elem_item_name, values=' | '.join(values))))
         else:
             if len(values) != len(list(set(values))):
                 duplicated = {}
@@ -1076,7 +1076,7 @@ class ArticleContentValidation(object):
                     if not value in duplicated.keys():
                         duplicated[value] = 0
                     duplicated[value] += 1
-                errors.append((elem_item_name, validation_status.STATUS_FATAL_ERROR, _('Required only unique values of {label} for each language. Found duplicated values for @xml:lang="{lang}": {values}. ').format(lang=lang, label=elem_item_name, values='|'.join([k for k, c in duplicated.items() if c > 1]))))
+                errors.append((elem_item_name, validation_status.STATUS_FATAL_ERROR, _('Required only unique values of {label} for each language. Found duplicated values for @xml:lang="{lang}": {values}. ').format(lang=lang, label=elem_item_name, values=' | '.join([k for k, c in duplicated.items() if c > 1]))))
         return (values, valid, errors)
 
     @property

@@ -553,7 +553,7 @@ def check_lang(lang):
     if lang in LANGUAGES.keys():
         return (True, LANGUAGES.get(lang))
     else:
-        return (False, _('{value} is an invalid value for {label}. ').format(value=lang, label='@xml:lang') + _('Expected values: {expected}. ').format(expected=', '.join(sorted(LANGUAGES.keys())) + '. ' + '|'.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()]))))
+        return (False, _('{value} is an invalid value for {label}. ').format(value=lang, label='@xml:lang') + _('Expected values: {expected}. ').format(expected=', '.join(sorted(LANGUAGES.keys())) + '. ' + ' | '.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()]))))
 
 
 def expected_sps_versions(article_dateiso):

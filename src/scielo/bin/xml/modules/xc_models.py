@@ -16,7 +16,6 @@ import attributes
 from dbm_isis import IDFile
 import article_utils
 import serial_files
-import pkg_reports
 import institutions_service
 import html_reports
 import article_reports
@@ -604,6 +603,7 @@ class IssueModels(object):
 
             # section
             fixed_sectitle = None
+            article_section = None
             if len(self.section_titles) == 0:
                 if article.toc_section is not None:
                     results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('Issue has no table of contents sections. ')))

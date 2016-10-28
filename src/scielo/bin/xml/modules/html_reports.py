@@ -271,7 +271,7 @@ def sheet_row_style(table_header, row_style, row_content):
 
 
 def hidden_row(columns_number, label, data):
-    return '<td colspan="' + columns_number + '" class="' + label + '-hidden-block">' + data + '</td>'
+    return '<td colspan="' + columns_number + '" class="reports-hidden-block">' + data + '</td>'
 
 
 def sheet_col_style(label, colums_styles):

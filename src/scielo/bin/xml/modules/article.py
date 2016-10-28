@@ -1390,6 +1390,7 @@ class Article(ArticleXML):
         self.article_records = None
         self.related_files = []
         self.is_ex_aop = False
+        self.section_code = None
 
     def package_files(self, pkg_path):
         files = [item for item in os.listdir(pkg_path) if item.startswith(self.new_prefix) and not item.endswith('.xml')]

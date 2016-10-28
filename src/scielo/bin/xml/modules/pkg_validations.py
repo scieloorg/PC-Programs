@@ -106,14 +106,17 @@ class ValidationsResult(object):
     def warnings(self):
         return self.numbers.get(validation_status.STATUS_WARNING, 0)
 
-    def statistics_display(self, inline=True):
+    def statistics_display(self, inline=True, html_format=True):
         tag_name = 'span'
         text = ' | '.join([k + ': ' + v for ign, k, v in self.statistics_label_and_number if v != '0'])
         if not inline:
             tag_name = 'div'
             text = ''.join([html_reports.tag('p', html_reports.display_label_value(_('Total of ') + k, v)) for ign, k, v in self.statistics_label_and_number])
-        style = validation_status.message_style(self.statistics_label_and_number)
-        r = html_reports.tag(tag_name, text, style)
+        if html_format:
+            style = validation_status.message_style(self.statistics_label_and_number)
+            r = html_reports.tag(tag_name, text, style)
+        else:
+            r = text
         return r
 
 
@@ -156,7 +159,7 @@ class XMLJournalDataValidator(object):
                 license_url = article.article_licenses.values()[0].get('href')
 
             items.append([_('NLM title'), article.journal_id_nlm_ta, self.journal_data.nlm_title, validation_status.STATUS_FATAL_ERROR])
-            items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal_data.acron, validation_status.STATUS_FATAL_ERROR])
+            #items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal_data.acron, validation_status.STATUS_FATAL_ERROR])
             items.append([_('e-ISSN'), article.e_issn, self.journal_data.e_issn, validation_status.STATUS_FATAL_ERROR])
             items.append([_('print ISSN'), article.print_issn, self.journal_data.p_issn, validation_status.STATUS_FATAL_ERROR])
             items.append([_('publisher name'), article.publisher_name, self.journal_data.publisher_name, validation_status.STATUS_ERROR])
@@ -747,7 +750,7 @@ class ArticlesSetValidations(object):
         if not self.is_db_generation:
             self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
 
-        self.EXPECTED_COMMON_VALUES_LABELS = ['journal-title', 'journal-id (publisher-id)', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', 'license']
+        self.EXPECTED_COMMON_VALUES_LABELS = ['journal-title', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', 'license']
         self.REQUIRED_DATA = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         self.EXPECTED_UNIQUE_VALUE_LABELS = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
 
@@ -969,7 +972,12 @@ class ArticlesSetValidations(object):
 
         self.logger.register('consistency validations')
         self.consistency_validations = ValidationsResult()
-        self.consistency_validations.message = self.consistency_validations_report
+
+        issue_message = self.consistency_validations_report
+        if self.articles_data.issue_error_msg is not None:
+            issue_message = self.articles_data.issue_error_msg + issue_message
+
+        self.consistency_validations.message = issue_message
 
         self.logger.register('xc pre validations - fim')
 
