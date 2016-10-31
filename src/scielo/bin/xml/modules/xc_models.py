@@ -1222,9 +1222,9 @@ class DBManager(object):
 
     def search_journal_expr(self, pissn, eissn, journal_title):
         _expr = []
-        if pissn is not None:
+        if pissn is not None and len(pissn) == 9:
             _expr.append(pissn)
-        if eissn is not None:
+        if eissn is not None and len(eissn) == 9:
             _expr.append(eissn)
         if journal_title is not None:
             _expr.append(journal_title.replace('(', '').replace(')', ''))

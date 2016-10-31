@@ -478,7 +478,7 @@ h5 {
   border: 1px solid white;
   border-top-left-radius: 1em;
   border-top-right-radius: 1em;
-
+  max-width: 100px;
 }
 .selected-tab {
   background-color: #4677A6;
@@ -488,7 +488,7 @@ h5 {
   border: 1px solid white;
   border-top-left-radius: 1em;
   border-top-right-radius: 1em;
-
+  max-width: 100px;
 }
 .not-selected-tab-content {
   display: none;
