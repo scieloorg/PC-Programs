@@ -4,6 +4,7 @@ import shutil
 from datetime import datetime
 
 import fs_utils
+from article import Article
 
 
 def filename_language_suffix(filename):
@@ -23,40 +24,89 @@ def new_name_for_pdf_filename(pdf_filename):
         return lang_suffix + '_' + pdf_filename.replace('-' + lang_suffix + '.pdf', '.pdf')
 
 
-class DocumentFiles(object):
+class ArticleWorkArea(object):
 
-    def __init__(self, xml_filename, report_path, wrk_path):
+    def __init__(self, xml_filename, report_path, wrk_path=None):
         self.ctrl_filename = None
         self.html_filename = None
-
+        self.report_path = report_path
+        self.wrk_path = wrk_path
+        self.related_files = []
         self.is_sgmxml = xml_filename.endswith('.sgm.xml')
         self.xml_filename = xml_filename
+        self.new_xml_filename = self.xml_filename
         self.xml_path = os.path.dirname(xml_filename)
 
         basename = os.path.basename(xml_filename).replace('.sgm.xml', '')
         self.xml_name = basename.replace('.xml', '')
         self.new_name = self.xml_name
 
-        report_name = self.xml_name
-
         if self.is_sgmxml:
-            wrk_path = wrk_path + '/' + self.xml_name
-            if not os.path.isdir(wrk_path):
-                os.makedirs(wrk_path)
-            self.html_filename = wrk_path + '/' + self.xml_name + '.temp.htm'
+            self.wrk_path = wrk_path + '/' + self.xml_name
+            if not os.path.isdir(self.wrk_path):
+                os.makedirs(self.wrk_path)
+            self.html_filename = self.wrk_path + '/' + self.xml_name + '.temp.htm'
             if not os.path.isfile(self.html_filename):
                 self.html_filename += 'l'
-            self.ctrl_filename = wrk_path + '/' + self.xml_name + '.ctrl.txt'
+            self.ctrl_filename = self.wrk_path + '/' + self.xml_name + '.ctrl.txt'
 
-        if not os.path.isdir(report_path):
-            os.makedirs(report_path)
-        self.dtd_report_filename = report_path + '/' + report_name + '.dtd.txt'
-        self.style_report_filename = report_path + '/' + report_name + '.rep.html'
-        self.pmc_dtd_report_filename = report_path + '/' + report_name + '.pmc.dtd.txt'
-        self.pmc_style_report_filename = report_path + '/' + report_name + '.pmc.rep.html'
-        self.err_filename = report_path + '/' + report_name + '.err.txt'
-        self.data_report_filename = report_path + '/' + report_name + '.contents.html'
-        self.images_report_filename = report_path + '/' + report_name + '.images.html'
+    @property
+    def report_path(self):
+        return self._report_path
+
+    @report_path.setter
+    def report_path(self, _report_path):
+        if not os.path.isdir(_report_path):
+            os.makedirs(_report_path)
+        self._report_path = _report_path
+
+    @property
+    def dtd_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.dtd.txt'
+
+    @property
+    def style_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.rep.html'
+
+    @property
+    def pmc_dtd_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.pmc.dtd.txt'
+
+    @property
+    def pmc_style_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.pmc.rep.html'
+
+    @property
+    def err_filename(self):
+        return self.report_path + '/' + self.xml_name + '.err.txt'
+
+    @property
+    def err_filename_html(self):
+        return self.report_path + '/' + self.xml_name + '.err.html'
+
+    @property
+    def data_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.contents.html'
+
+    @property
+    def images_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.images.html'
+
+    @property
+    def xml_structure_validations_filename(self):
+        return self.report_path + '/xmlstr-' + self.xml_name
+
+    @property
+    def xml_content_validations_filename(self):
+        return self.report_path + '/xmlcon-' + self.xml_name
+
+    @property
+    def journal_validations_filename(self):
+        return self.report_path + '/journal-' + self.xml_name
+
+    @property
+    def issue_validations_filename(self):
+        return self.report_path + '/issue-' + self.xml_name
 
     def clean(self):
         delete_files([self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename])
@@ -101,14 +151,16 @@ class ArticleFiles(object):
 
 class IssueFiles(object):
 
-    def __init__(self, journal_files, issue_folder, xml_path, web_path):
+    def __init__(self, journal_files, issue_folder):
         self.journal_files = journal_files
         self.issue_folder = issue_folder
-        self.xml_path = xml_path
-        self.web_path = web_path
         self.create_folders()
         self.move_old_id_folder()
         self._articles_files = None
+        self.is_aop = issue_folder.endswith('ahead') and not issue_folder.startswith('ex-')
+        self.is_ex_aop = issue_folder.endswith('ahead') and issue_folder.startswith('ex-')
+        self.is_pr = issue_folder.endswith('pr') and not issue_folder.startswith('ex-')
+        self.is_regular = not self.is_aop and not self.is_ex_aop and not self.is_pr
 
     @property
     def articles_files(self):
@@ -190,37 +242,45 @@ class IssueFiles(object):
         return [self.base_source_path + '/' + item for item in os.listdir(self.base_source_path) if item.endswith('.xml')]
 
     @property
+    def xml_files(self):
+        return {item: self.base_source_path + '/' + item for item in os.listdir(self.base_source_path) if item.endswith('.xml')}
+
+    @property
     def base(self):
         return self.base_path + '/' + self.issue_folder
+
+    @property
+    def base_filename(self):
+        return self.base + '.mst'
 
     @property
     def windows_base(self):
         return self.windows_base_path + '/' + self.issue_folder
 
-    def copy_files_to_local_web_app(self):
+    def copy_files_to_local_web_app(self, xml_path, web_path):
         msg = ['\n']
-        msg.append('copying files from ' + self.xml_path)
+        msg.append('copying files from ' + xml_path)
 
         path = {}
-        path['pdf'] = self.web_path + '/bases/pdf/' + self.relative_issue_path
-        path['xml'] = self.web_path + '/bases/xml/' + self.relative_issue_path
-        path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
-        path['img'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path
-        xml_files = [f for f in os.listdir(self.xml_path) if f.endswith('.xml') and not f.endswith('.rep.xml')]
-        xml_content = ''.join([fs_utils.read_file(self.xml_path + '/' + xml_filename) for xml_filename in os.listdir(self.xml_path) if xml_filename.endswith('.xml')])
+        path['pdf'] = web_path + '/bases/pdf/' + self.relative_issue_path
+        path['xml'] = web_path + '/bases/xml/' + self.relative_issue_path
+        path['html'] = web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
+        path['img'] = web_path + '/htdocs/img/revistas/' + self.relative_issue_path
+        xml_files = [f for f in os.listdir(xml_path) if f.endswith('.xml') and not f.endswith('.rep.xml')]
+        xml_content = ''.join([fs_utils.read_file(xml_path + '/' + xml_filename) for xml_filename in os.listdir(xml_path) if xml_filename.endswith('.xml')])
 
         for p in path.values():
             if not os.path.isdir(p):
                 os.makedirs(p)
-        for f in os.listdir(self.xml_path):
+        for f in os.listdir(xml_path):
             if f.endswith('.xml.bkp') or f.endswith('.xml.replaced.txt') or f.endswith('.rep.xml'):
                 pass
-            elif os.path.isfile(self.xml_path + '/' + f):
+            elif os.path.isfile(xml_path + '/' + f):
                 ext = f[f.rfind('.')+1:]
 
                 if path.get(ext) is None:
                     if not f.endswith('.tif') and not f.endswith('.tiff'):
-                        shutil.copy(self.xml_path + '/' + f, path['img'])
+                        shutil.copy(xml_path + '/' + f, path['img'])
                         msg.append('  ' + f + ' => ' + path['img'])
                 elif ext == 'pdf':
                     pdf_filenames = [f]
@@ -230,10 +290,10 @@ class IssueFiles(object):
                     for pdf_filename in pdf_filenames:
                         if os.path.isfile(path[ext] + '/' + pdf_filename):
                             os.unlink(path[ext] + '/' + pdf_filename)
-                        shutil.copyfile(self.xml_path + '/' + f, path[ext] + '/' + pdf_filename)
+                        shutil.copyfile(xml_path + '/' + f, path[ext] + '/' + pdf_filename)
                         msg.append('  ' + f + ' => ' + path[ext] + '/' + pdf_filename)
                 else:
-                    shutil.copy(self.xml_path + '/' + f, path[ext])
+                    shutil.copy(xml_path + '/' + f, path[ext])
                     msg.append('  ' + f + ' => ' + path[ext])
         return '\n'.join(['<p>' + item + '</p>' for item in msg])
 
@@ -304,52 +364,42 @@ class JournalFiles(object):
             serial_path = serial_path[0:-1]
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
-        self._issues_files = None
-        self._aop_issues_files = None
-        self._ex_aop_issues_files = None
-        self._regular_issues_files = None
-        self._pr_issues_files = None
+        if not os.path.isdir(self.journal_path):
+            os.makedirs(self.journal_path)
+        self.set_issues_files()
 
     @property
     def issues_files(self):
-        if self._issues_files is None:
-            self._issues_files = {}
-            for issue_id in os.listdir(self.journal_path):
-                if os.path.isdir(self.journal_path + '/' + issue_id):
-                    if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
-                        self._issues_files[issue_id] = IssueFiles(self, issue_id, None, None)
         return self._issues_files
+
+    def add_issues_file(self, issue_id):
+        self._issues_files[issue_id] = IssueFiles(self, issue_id)
+
+    def set_issues_files(self):
+        self._issues_files = {}
+        for issue_id in os.listdir(self.journal_path):
+            if os.path.isdir(self.journal_path + '/' + issue_id):
+                if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
+                    self.add_issues_file(issue_id)
 
     def publishes_aop(self):
         return len(self.aop_issue_files) > 0
 
     @property
     def pr_issues_files(self):
-        if self._pr_issues_files is None:
-            if self.issue_files is not None:
-                self._pr_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('pr') and not k.startswith('ex-')}
-        return self._pr_issues_files
+        return {k:v for k, v in self.issues_files.items() if v.is_pr}
 
     @property
     def regular_issues_files(self):
-        if self._regular_issues_files is None:
-            if self.issue_files is not None:
-                self._regular_issues_files = {k:v for k, v in self.issues_files.items() if k is not self.aop_issue_files.keys() and k is not self.ex_aop_issues_files.keys() and k is not self.pr_issue_files.keys()}
-        return self._regular_issues_files
+        return {k:v for k, v in self.issues_files.items() if v.is_regular}
 
     @property
     def aop_issue_files(self):
-        if self._aop_issues_files is None:
-            if self.issues_files is not None:
-                self._aop_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and not k.startswith('ex-')}
-        return self._aop_issues_files
+        return {k:v for k, v in self.issues_files.items() if v.is_aop}
 
     @property
     def ex_aop_issues_files(self):
-        if self._ex_aop_issues_files is None:
-            if self.issues_files is not None:
-                self._ex_aop_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and k.startswith('ex-')}
-        return self._ex_aop_issues_files
+        return {k:v for k, v in self.issues_files.items() if v.is_ex_aop}
 
     def archive_ex_aop_files(self, aop, db_name):
         aop_issue_files = None
@@ -357,12 +407,11 @@ class JournalFiles(object):
         done = False
         errors = []
         if self.ex_aop_issues_files is not None:
-            print('self.ex_aop_issues_files is not None')
-            ex_aop_issues_files = self.ex_aop_issues_files.get('ex-' + db_name)
+            ex_aop_db_name = 'ex-' + db_name
+            ex_aop_issues_files = self.ex_aop_issues_files.get(ex_aop_db_name)
             if ex_aop_issues_files is None:
-                self._issues_files['ex-' + db_name] = IssueFiles(self, 'ex-' + db_name, None, None)
-                self._ex_aop_issues_files['ex-' + db_name] = self._issues_files['ex-' + db_name]
-                ex_aop_issues_files = self._ex_aop_issues_files['ex-' + db_name]
+                self.add_issues_file(ex_aop_db_name)
+                ex_aop_issues_files = self.ex_aop_issues_files[ex_aop_db_name]
         if self.aop_issue_files is not None:
             aop_issue_files = self.aop_issue_files.get(db_name)
         if aop_issue_files is not None and ex_aop_issues_files is not None:
@@ -370,10 +419,81 @@ class JournalFiles(object):
             errors += fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
             errors += fs_utils.move_file(aop_issue_files.id_path + '/' + aop.order + '.id', ex_aop_issues_files.id_path + '/' + aop.order + '.id')
-            print(errors)
+            if not os.path.isfile(ex_aop_issues_files.id_filename):
+                shutil.copyfile(aop_issue_files.id_filename, ex_aop_issues_files.id_filename)
         if aop_issue_files is not None:
-            print('aop_issue_files.id_path')
-            print(aop_issue_files.id_path + '/' + aop.order + '.id')
-            print(os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
             done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
         return (done, errors)
+
+
+class FilesFinalLocation(object):
+
+    def __init__(self, pkg_path, acron, issue_label, serial_path=None, web_app_path=None, web_url=None):
+        self.web_app_path = web_app_path
+        self.pkg_path = pkg_path
+        self.issue_path = acron + '/' + issue_label
+        self.serial_path = serial_path
+        self.web_url = web_url
+
+    @property
+    def result_path(self):
+        if self.serial_path is not None:
+            return self.serial_path + '/' + self.issue_path
+        else:
+            return os.path.dirname(self.pkg_path)
+
+    @property
+    def img_path(self):
+        if self.web_app_path is not None:
+            return self.web_app_path + '/htdocs/img/' + self.issue_path
+        else:
+            return self.pkg_path
+
+    @property
+    def pdf_path(self):
+        if self.web_app_path is not None:
+            return self.web_app_path + '/bases/pdf/' + self.issue_path
+        else:
+            return self.pkg_path
+
+    @property
+    def xml_path(self):
+        if self.web_app_path is not None:
+            return self.web_app_path + '/bases/xml/' + self.issue_path
+        elif self.serial_path is not None:
+            return self.serial_path + '/' + self.issue_path + '/base_xml/base_source'
+        else:
+            return self.pkg_path
+
+    @property
+    def report_path(self):
+        if self.web_app_path is not None:
+            return self.web_app_path + '/htdocs/reports/' + self.issue_path
+        else:
+            return self.result_path + '/errors'
+
+    @property
+    def base_report_path(self):
+        if self.serial_path is not None:
+            return self.serial_path + '/' + self.issue_path + '/base_xml/base_reports'
+
+    @property
+    def img_link(self):
+        if self.web_url is not None:
+            return self.web_url + '/img/' + self.issue_path
+        else:
+            return 'file://' + self.img_path
+
+    @property
+    def pdf_link(self):
+        if self.web_url is not None:
+            return self.web_url + '/pdf/' + self.issue_path + '/'
+        else:
+            return 'file://' + self.pdf_path + '/'
+
+    @property
+    def xml_link(self):
+        if self.web_url is not None:
+            return 'xc.xml.html#'
+        else:
+            return 'file://' + self.xml_path + '/'

@@ -2,8 +2,10 @@
 import os
 import shutil
 import tempfile
+from datetime import datetime
 
 import files_extractor
+import zipfile
 
 
 def read_file(filename, encode='utf-8'):
@@ -117,7 +119,6 @@ def fix_path(path):
 
 
 def zip_report(report_filename):
-    import zipfile
     zip_path = report_filename.replace('.html', '.zip')
     myZipFile = zipfile.ZipFile(zip_path, "w")
     myZipFile.write(report_filename, os.path.basename(report_filename), zipfile.ZIP_DEFLATED)
@@ -136,12 +137,26 @@ def update_file_content_if_there_is_new_items(new_content, filename):
         new_content = new_content.decode('utf-8')
     new_items = new_content.split('\n')
 
-    allow_update = len(new_items) > len(current_items) or (len(new_items) == len(current_items) and new_content != current_content)
+    allow_update = (len(new_items) != len(current_items)) or (len(new_items) == len(current_items) and new_content != current_content)
 
     if allow_update is True:
         write_file(filename, new_content)
 
 
 def last_modified_datetime(filename):
-    from datetime import datetime
     return datetime.fromtimestamp(os.path.getmtime(filename))
+
+
+class ProcessLogger(object):
+
+    def __init__(self):
+        self.logged_items = []
+
+    def register(self, text):
+        self.logged_items.append(datetime.now().isoformat() + ' ' + text)
+
+    def write(self, filename):
+        write_file(filename, '\n'.join(self.logged_items))
+
+    def display(self):
+        print('\n'.join(self.logged_items))

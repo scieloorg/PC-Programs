@@ -746,7 +746,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template-->
 	<xsl:template match="cltrial" mode="front-clinical-trial">
 		<ext-link>
-			<xsl:attribute name="ext-link-type">ClinicalTrial</xsl:attribute>
+			<xsl:attribute name="ext-link-type">clinical-trial</xsl:attribute>
 			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
 			<xsl:apply-templates select=".//text()"></xsl:apply-templates>
 		</ext-link>
@@ -772,14 +772,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:otherwise>0</xsl:otherwise>
 			</xsl:choose></xsl:variable>
 			
-			<xsl:choose>
-				<xsl:when test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
-					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
-				</xsl:when>
-				<xsl:when test="not(front/doi) and not(doi)">
-					<article-id pub-id-type="publisher-id"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>						
-				</xsl:when>
-			</xsl:choose>
+			<xsl:if test="not(front/doi) and not(doi)">
+				<article-id pub-id-type="publisher-id"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>						
+			</xsl:if>
+			<xsl:if test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
+				<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
+			</xsl:if>
 			
 			<xsl:if test="@ahppid!=''"><article-id specific-use="previous-pid"><xsl:value-of select="@ahppid"/></article-id></xsl:if>
 
@@ -1157,47 +1155,65 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="article|text|subart|response" mode="author-notes">
-		<xsl:variable name="fnauthors">
-			<xsl:apply-templates select="$fn" mode="fnauthors"/>
+		<xsl:variable name="selectedfn">
+			<xsl:apply-templates select="fngrp|fn">
+				<xsl:with-param name="fntype">author-notes</xsl:with-param>
+			</xsl:apply-templates>
 		</xsl:variable>
-		<xsl:if test="$corresp or $fnauthors!='' ">
+		<xsl:if test="$corresp or $selectedfn!='' ">
 			<author-notes>
 				<xsl:apply-templates select="$corresp"/>
-				<xsl:apply-templates select="$fn" mode="fnauthors"/>
+				<xsl:apply-templates select="fngrp|fn" mode="select-authors-fn"/>
 			</author-notes>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="doc|subdoc|docresp" mode="author-notes">
-		<xsl:variable name="fnauthors"><xsl:apply-templates select="fngrp[not(fn)]|.//fn" mode="fnauthors"/></xsl:variable>
-		<xsl:if test="corresp or $fnauthors!=''">
+		<xsl:variable name="selectedfn"><xsl:apply-templates select="fngrp|fn" mode="select-authors-fn"/></xsl:variable>
+		<xsl:if test="corresp or $selectedfn!=''">
 			<author-notes>
 				<xsl:apply-templates select="corresp"/>
-				<xsl:apply-templates select="fngrp[not(fn)]|.//fn" mode="fnauthors"/>
+				<xsl:apply-templates select="fngrp|fn" mode="select-authors-fn"/>
 			</author-notes>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="fngrp[not(fn)]|fn" mode="fnauthors">
-		<xsl:choose>
-			<xsl:when
-				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)"/>
-			<xsl:when test="not(@fntype)"/>
-			<xsl:otherwise>
-				<xsl:apply-templates select="."/>
-			</xsl:otherwise>
-		</xsl:choose>
+	<xsl:template match="*" mode="other-fn-items">
+		<xsl:variable name="selectedfn"><xsl:apply-templates select="fngrp | fn" mode="select-other-fn"></xsl:apply-templates></xsl:variable>
+		<xsl:if test="$selectedfn!=''">
+			<xsl:apply-templates select="fngrp | fn" mode="select-other-fn"/>
+		</xsl:if>
 	</xsl:template>
-	<xsl:template match="fngrp[not(fn)]|fn" mode="notfnauthors">
-		<xsl:choose>
-			<xsl:when
-				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype) or not(@fntype)">
-				<xsl:apply-templates select="."/>
-			</xsl:when>
-			<xsl:otherwise> </xsl:otherwise>
-		</xsl:choose>
+	
+	<xsl:template match="fngrp[not(@fntype)]" mode="select-other-fn">
+		<xsl:variable name="selectedfn"><xsl:apply-templates select="fn" mode="select-other-fn"></xsl:apply-templates></xsl:variable>
+		<xsl:if test="$selectedfn!=''">
+			<fn-group>
+				<xsl:apply-templates select="sectitle"></xsl:apply-templates>
+				<xsl:apply-templates select="fn" mode="select-other-fn"></xsl:apply-templates>
+			</fn-group>
+		</xsl:if>
 	</xsl:template>
-
+	
+	<xsl:template match="fngrp[not(@fntype)]" mode="select-authors-fn">
+		<xsl:variable name="selectedfn"><xsl:apply-templates select="fn" mode="select-authors-fn"></xsl:apply-templates></xsl:variable>
+		<xsl:if test="$selectedfn!=''">
+			<xsl:apply-templates select="fn" mode="select-authors-fn"></xsl:apply-templates>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="fngrp[@fntype]|fn" mode="select-other-fn">
+		<xsl:if test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)">
+			<xsl:apply-templates select="."/>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="fngrp[@fntype]|fn" mode="select-authors-fn">
+		<xsl:if test="not(contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype))">
+			<xsl:apply-templates select="."/>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="@volid">
 		<volume>
 			<xsl:choose>
@@ -1564,7 +1580,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				mode="xref-in-sectitle"/>
 		</title>
 	</xsl:template>
-	<xsl:template match="app/sectitle">
+	<xsl:template match="app/sectitle"> 
+		<!-- #2387 -->
 		<label>
 			<xsl:apply-templates select="*|text()"/>
 			<xsl:apply-templates select="following-sibling::node()[1 and name()='xref']"
@@ -1583,83 +1600,38 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="doc|subdoc|docresp" mode="back">
-		<xsl:variable name="fngrptest">
-			<xsl:apply-templates select="fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
+		<xsl:variable name="otherfntest">
+			<xsl:apply-templates select="." mode="other-fn-items"></xsl:apply-templates>
 		</xsl:variable>
 		
-		<xsl:if test="ack or $fngrptest!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
+		<xsl:if test="ack or $otherfntest!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp or fngrp[fn]">
 			<back>
 				<xsl:apply-templates select="ack"/>
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
-				<xsl:if test="$fngrptest!=''">
-						<fn-group>
-							<xsl:apply-templates select="sectitle| fngrp[not(fn)]|.//fn" mode="notfnauthors"/>
-						</fn-group>
-				</xsl:if>
+				<xsl:apply-templates select="." mode="other-fn-items"></xsl:apply-templates>
 				<xsl:apply-templates select="glossary | appgrp"/>				
 			</back>
 		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="fngrp/sectitle">
-		<title><xsl:apply-templates select="*|text()"></xsl:apply-templates></title>
-	</xsl:template>
-	
-	<xsl:template match="fngrp[not(fn)]/fn">
-			<xsl:apply-templates select="@*|text()"></xsl:apply-templates>
-	</xsl:template>
-	<xsl:template match="fngrp/fn">
-		<fn>
-			<xsl:apply-templates select="@*|text()"></xsl:apply-templates>
-		</fn>
-	</xsl:template>
-	
-	<xsl:template match="fngrp[fn]" mode="fn-group-not-authors">
-		<fn-group>
-			<xsl:apply-templates select="*|text()"/>
-		</fn-group>
 	</xsl:template>
 	
 	<xsl:template match="back">
 		<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 		<xsl:apply-templates select="*[@standard]"/>
 		<xsl:variable name="fngrptest">
-			<xsl:apply-templates select="fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
+			<xsl:apply-templates select="." mode="other-fn-items"></xsl:apply-templates>
 		</xsl:variable>
-		<xsl:if test="$fngrptest!=''">
-				<fn-group>
-					<xsl:apply-templates select="sectitle | fngrp[not(fn)] | .//fn" mode="notfnauthors"/>
-				</fn-group>
-		</xsl:if>
+		<xsl:apply-templates select="." mode="other-fn-items"></xsl:apply-templates>
 		<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>						
+	</xsl:template>
+	
+	<xsl:template match="fngrp/sectitle">
+		<title><xsl:apply-templates select="*|text()"></xsl:apply-templates></title>
 	</xsl:template>
 	
 	<xsl:template match="fngrp/@label|fn/@label">
 		<xsl:if test="not(../label)">
 			<label><xsl:value-of select="normalize-space(.)"/></label>
 		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="fngrp[not(fn)]|fn">
-		<fn>
-			<xsl:apply-templates select="@*|label"/>
-			<xsl:if test="not(label) and not(@label) and @fntype='other'">
-				<label><xsl:value-of select="string(number(substring-after(@id,'fn')))"/></label>
-			</xsl:if>
-			<xsl:choose>
-				<xsl:when test="fn">
-					<p>
-						<xsl:apply-templates select="*[name()!='label']|text()"/>
-					</p>
-				</xsl:when>
-				<xsl:otherwise>
-					<p>
-						<xsl:apply-templates select="*[name()!='label']|text()"/>
-					</p>
-				</xsl:otherwise>
-			</xsl:choose>
-			
-		</fn>
 	</xsl:template>
 	
 	<xsl:template match="fngrp/@fntype|fn/@fntype">
@@ -1673,6 +1645,52 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:attribute>
 	</xsl:template>
 
+	<xsl:template match="fngrp[not(fn)]|*[name()!='fngrp']/fn | fn">
+		
+		<xsl:choose>
+			<xsl:when test="parent::node()[name()='fngrp']">
+				<xsl:comment>fn...</xsl:comment>
+				<fn>
+					<xsl:apply-templates select="@*|label"/>
+					<xsl:if test="not(label) and not(@label) and @fntype='other'">
+						<label><xsl:value-of select="string(number(substring-after(@id,'fn')))"/></label>
+					</xsl:if>
+					<p>
+						<xsl:apply-templates select="*[name()!='label']|text()"/>
+					</p>
+				</fn>
+			</xsl:when>
+			<xsl:otherwise>
+				<fn-group>
+					<fn>
+						<xsl:apply-templates select="@*|label"/>
+						<xsl:if test="not(label) and not(@label) and @fntype='other'">
+							<label><xsl:value-of select="string(number(substring-after(@id,'fn')))"/></label>
+						</xsl:if>
+						<p>
+							<xsl:apply-templates select="*[name()!='label']|text()"/>
+						</p>
+					</fn>
+				</fn-group>
+			</xsl:otherwise>
+		</xsl:choose>
+		
+	</xsl:template>
+	
+	<xsl:template match="fngrp/fn">
+		<fn>
+			<xsl:apply-templates select="@*|label"/>
+			<xsl:if test="not(label) and not(@label) and @fntype='other'">
+				<label><xsl:value-of select="string(number(substring-after(@id,'fn')))"/></label>
+			</xsl:if>
+			<p>
+				<xsl:apply-templates select="*[name()!='label']|text()"/>
+			</p>
+		</fn>
+	</xsl:template>
+	
+	
+	
 	<xsl:template match="unidentified"> </xsl:template>
 
 	<xsl:template match="fxmlbody[@type='ack']">
@@ -1931,11 +1949,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="$ok='true'">
 				<surname><xsl:value-of select="$surname"/></surname>
 				<given-names><xsl:value-of select="$f"/></given-names>
+				<xsl:apply-templates select="prefix"></xsl:apply-templates>
 				<suffix><xsl:value-of select="$suffix"/></suffix>
 			</xsl:when>
 			<xsl:otherwise>
 				<surname><xsl:value-of select="$s"/></surname>
 				<given-names><xsl:value-of select="$f"/></given-names>			
+				<xsl:apply-templates select="prefix"></xsl:apply-templates>
 				<xsl:if test="suffix"><suffix><xsl:value-of select="suffix"/></suffix></xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -3553,7 +3573,12 @@ et al.</copyright-statement>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
+	<xsl:template match="nographic">
+		<xsl:comment>markup: graphic is identifying a text, not a graphical element</xsl:comment>
+		<graphic>
+			<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
+		</graphic>
+	</xsl:template>
 	<xsl:template match="p//product">
 		<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
 	</xsl:template>
@@ -3821,7 +3846,18 @@ et al.</copyright-statement>
 	<xsl:template match="licinfo" mode="license">
 		<license>
 			<xsl:attribute name="license-type">open-access</xsl:attribute>
-			<xsl:apply-templates select="@*|*|text()"/>
+			<xsl:apply-templates select="@*"/>
+			<xsl:choose>
+				<xsl:when test="not(*)">
+					<license-p>
+						<xsl:apply-templates select="text()"/>
+					</license-p>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="*|text()"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 		</license>
 	</xsl:template>
 </xsl:stylesheet>

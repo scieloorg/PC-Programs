@@ -129,7 +129,7 @@
 				
 				<History>
 					<xsl:apply-templates select=".//article-meta//history/*"/>
-					<xsl:if test="count(.//article-meta//pub-date)=1">
+					<xsl:if test="count(.//article-meta//pub-date)&gt;1">
 						<xsl:if test=".//article-meta//pub-date[@pub-type='epub' and day]">
 							<xsl:apply-templates select=".//article-meta//pub-date[@pub-type='epub' and day]" mode="history"/>
 						</xsl:if>
@@ -377,7 +377,7 @@
 		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test=".='epub' and $issueid=''">aheadofprint</xsl:when>
-			<xsl:when test=".='epub' and $issueid!=''">ppublish</xsl:when>
+			<xsl:when test=".='epub' and $issueid!=''">epublish</xsl:when>
 			<xsl:when test=".='epub' and ../day">aheadofprint</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
 			<xsl:when test=".='epub-ppub'">ppublish</xsl:when>
@@ -405,7 +405,7 @@
 					<xsl:apply-templates select="month|season"/>
 					<xsl:apply-templates select="day"/>	
 				</xsl:when>
-				<xsl:when test="@pub-type='epub' and $issueid!=''"><!-- rolling pass --></xsl:when>
+				<xsl:when test="@pub-type='epub' and $issueid!=''"><!-- rolling pass --><xsl:apply-templates select="month|season"/><xsl:apply-templates select="day"/></xsl:when>
 				<xsl:when test="month='Jan-Dec' or season='Jan-Dec'"></xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="month|season"/>

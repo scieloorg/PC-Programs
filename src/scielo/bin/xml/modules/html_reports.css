@@ -14,14 +14,41 @@ p {
 div {
     border: none;
 }
+ul li{
+  list-style: square;
+}
+ol{
+  counter-reset: myCounter;
+}
+ol li{
+  list-style: none;
+  
+}
+ol li:before {
+  counter-increment: myCounter;
+  content:counter(myCounter);
+  color: white;
+  background: #9FD6D2;
+  display: inline-block;
+  text-align: center;
+  font-family: Verdana;
+  font-weight: bold;
+  font-size: 60%;
+  margin: 1px;
+  padding: 5px;
+  border-radius: 30px;
+}
+
+
 
 td {
   vertical-align: top;
+  padding: 1px;
 }
 .subtitle {
   margin: 5px;
   font-size: 8pt;
-  font-family: Arial;
+  font-family: Verdana;
   color: #3D3832;
   background-color: #F0CEC2;
   padding: 5px;
@@ -126,12 +153,11 @@ h5 {
 } 
 .td_regular {
    border: 1px dotted gray;
-   font-family: Arial;
+   font-family: Verdana;
    font-size: 9pt;
    color: black;
    vertical-align: top;
-   word-wrap:break-word;
-   width:20%;  
+   max-width:20%;  
 } 
 .fatalerror .td_label {
    border: 1px solid gray;
@@ -163,7 +189,7 @@ h5 {
 } 
 .validation th {
   border: 1px solid gray;
-  background-color: #A6C1BC;
+  background-color: #547980;
   color: white;
 }
 .sheet {
@@ -227,7 +253,7 @@ h5 {
     padding: 2px;
 }
 .info {
-    background-color: #FFFFF7;
+    background-color: #D8DD47;
     padding: 2px;
 }
 .label {
@@ -287,7 +313,7 @@ h5 {
 }
 /* MESSAGES */
 .issue-messages{
-    background-color: #9ECFA2;
+    background-color: #547980;
     border: 1px solid gray;
     color: white;
 }
@@ -374,7 +400,6 @@ h5 {
   max-width: 100%;
   word-wrap:break-word;
   margin: 5px;
-  padding: 1px;
   font-family: Verdana;
   font-size: 8pt;
 } 
@@ -391,7 +416,12 @@ h5 {
 .report-date {
   text-align: left;
   font-size: 9pt;
-  font-family: Verdana
+  font-family: Verdana;
+  font-weight: bold;
+  color: #4677A6;
+  background-color: #F8C751;
+  border-radius: 1em;
+  padding: 5px;
 }
 .endreport {
   text-align: center;
@@ -442,23 +472,30 @@ h5 {
 }
 .not-selected-tab {
   /* background-color: #CAC7BE; */
-  background-color: #99B2B7;
+  background-color: #A7B3C6;
   color: white;
   padding: 10px;
   border: 1px solid white;
+  border-top-left-radius: 1em;
+  border-top-right-radius: 1em;
+  max-width: 100px;
 }
 .selected-tab {
-  background-color: #004C75;
+  background-color: #4677A6;
   color: #C8E7EA;
   padding: 10px;
   font-weight: bold;
   border: 1px solid white;
+  border-top-left-radius: 1em;
+  border-top-right-radius: 1em;
+  max-width: 100px;
 }
 .not-selected-tab-content {
   display: none;
-  border: 5px solid #004C75;
+  border: 5px solid #C7DEEB;
   margin: 5px;
   padding: 5px;
+
 }
 .selected-tab-content {
   display: block;
@@ -528,7 +565,7 @@ h5 {
 } 
 .reports-sheet th {
   border: 0.5px solid gray;
-    background-color: #CCADBC;
+    background-color: #BBACAF;
     color: white;
     font-family: Verdana;
 }
@@ -594,6 +631,7 @@ h5 {
 } 
 
 .report-block-xmlrep {
+    font-family: "Courier";
     border: 5px solid #55C3DC;
     padding: 2px;
     display: none;
@@ -620,7 +658,7 @@ h5 {
 }
 
 .smaller {
-  font-size: 65%
+  font-size: 75%
 }
 
 .note {
@@ -658,4 +696,46 @@ h5 {
   border-radius: 10px;
   margin: 5px;
   padding: 5px;
+}
+
+.blockingerror {
+  background-color: #B575CC;
+  color: white;
+}
+
+.hist-registered {
+  background-color: #9BF0E9;
+  color: #451E0F;
+}
+.hist-package {
+  background-color: #EDDE45;  
+  color: #451E0F;
+}
+.hist-package-messages {
+  background-color: #F2CACA;
+  color: #451E0F;
+}
+.hist-converted {
+  background-color: #61D2D6;
+  color: #451E0F;
+}
+.hist-excluded {
+  background-color: #EDE5E2;
+}
+.hist-replaces {
+  background-color: #EA3556;
+}
+.hist-replaced {
+  background-color: #ED146F;
+}
+.excluded {
+  background-color: #B8AA95;
+  color: #5E5A54;
+}
+
+.author {
+  text-align: left;
+  color: #2F3559;
+  background-color: #D0E0EB;
+  border-radius: 1em;
 }

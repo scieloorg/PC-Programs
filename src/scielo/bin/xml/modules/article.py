@@ -3,12 +3,11 @@ import os
 from datetime import datetime
 
 from __init__ import _
-import institutions_service
+
 import article_utils
 import xml_utils
 import attributes
 import utils
-import institutions_service
 import ws_requester
 
 
@@ -69,6 +68,21 @@ def format_author(author):
     return r
 
 
+def authors_list(authors):
+    items = []
+    for item in authors:
+        if isinstance(item, PersonAuthor):
+            if item.surname is not None and item.fname is not None:
+                items.append(item.surname + ', ' + item.fname)
+            elif item.surname is not None:
+                items.append(item.surname + ', ')
+            elif item.fname is not None:
+                items.append(', ' + item.fname)
+        else:
+            items.append(item.collab)
+    return items
+
+
 def get_affiliation(aff):
     a = Affiliation()
 
@@ -94,6 +108,61 @@ def get_affiliation(aff):
     a.city = nodetext(aff.findall('addr-line/named-content[@content-type="city"]'))
     a.state = nodetext(aff.findall('addr-line/named-content[@content-type="state"]'))
     return a
+
+
+def get_author(contrib, role=None):
+    c = None
+    if contrib.find('name') is not None:
+        c = PersonAuthor()
+        c.fname = contrib.findtext('name/given-names')
+        c.surname = contrib.findtext('name/surname')
+        c.suffix = contrib.findtext('name/suffix')
+        c.prefix = contrib.findtext('name/prefix')
+        for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
+            c.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
+        c.role = contrib.attrib.get('contrib-type')
+        for xref_item in contrib.findall('xref[@ref-type="aff"]'):
+            c.xref.append(xref_item.attrib.get('rid'))
+    elif contrib.tag == 'name':
+        c = PersonAuthor()
+        c.fname = contrib.findtext('given-names')
+        c.surname = contrib.findtext('surname')
+        c.suffix = contrib.findtext('suffix')
+        c.prefix = contrib.findtext('prefix')
+        c.role = role
+    elif contrib.find('collab') is not None:
+        c = CorpAuthor()
+        c.role = contrib.attrib.get('contrib-type')
+        c.collab = contrib.findtext('collab')
+    elif contrib.tag == 'collab':
+        c = CorpAuthor()
+        c.collab = contrib.text
+    return c
+
+
+def get_title(node, lang):
+    t = Title()
+    content = node.find('article-title')
+    if content is None:
+        content = node.find('trans-title')
+    t.title = article_utils.remove_xref(xml_utils.node_text(content))
+
+    content = node.find('article-subtitle')
+    if content is None:
+        content = node.find('trans-subtitle')
+    t.subtitle = article_utils.remove_xref(xml_utils.node_text(content))
+    t.language = lang
+    return t
+
+
+def items_by_lang(items):
+    r = {}
+    for item in items:
+        if item is not None:
+            if not item.language in r.keys():
+                r[item.language] = []
+            r[item.language].append(item)
+    return r
 
 
 class Table(object):
@@ -157,6 +226,12 @@ class PersonAuthor(object):
         self.role = ''
         self.xref = []
 
+    @property
+    def fullname(self):
+        a = self.fname if self.fname is not None else ''
+        a += ' ' + self.surname if self.surname is not None else ''
+        return a
+
 
 class CorpAuthor(object):
 
@@ -210,31 +285,12 @@ class ArticleXML(object):
         self.translations = []
         self.sub_articles = []
         self.responses = []
-        self._hrefs = None
-        self._title_abstract_kwd_languages = None
-        self._language = None
-        self._trans_languages = None
-        self._titles_by_lang = None
-        self._abstracts_by_lang = None
-        self._keywords_by_lang = None
-        self._collection_date = None
-        self._epub_date = None
-        self._epub_ppub_date = None
-        self._received_date = None
-        self._accepted_date = None
-        self._bibr_xref_ranges = None
-        self._bibr_xref_parent_nodes = None
-        self._is_bibr_xref_number = None
-        self._bibr_xref_nodes = None
-        self._any_xref_ranges = None
-        self._any_xref_parent_nodes = None
-        self._any_xref_nodes = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
             self.article_meta = self.tree.find('./front/article-meta')
-            self.body = self.tree.find('./body')
-            self.back = self.tree.find('./back')
+            self.body = self.tree.find('.//body')
+            self.back = self.tree.find('.//back')
             self.translations = self.tree.findall('./sub-article[@article-type="translation"]')
             for s in self.tree.findall('./sub-article'):
                 if s.attrib.get('article-type') != 'translation':
@@ -314,143 +370,137 @@ class ArticleXML(object):
 
     @property
     def any_xref_ranges(self):
-        if self._any_xref_ranges is None:
-            self._any_xref_ranges = {}
-            for xref_type, xref_type_nodes in self.any_xref_parent_nodes.items():
-                if xref_type is not None:
-                    if not xref_type in self._any_xref_ranges.keys():
-                        self._any_xref_ranges[xref_type] = []
-                    for xref_parent_node, xref_node_items in xref_type_nodes:
-                        # nodes de um tipo de xref
-                        xref_parent_xml = xml_utils.tostring(xref_parent_node)
-                        parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
-                        parts = [item for item in parts if ' ref-type="' + xref_type + '"' in item]
-                        k = 0
-                        for item in parts:
-                            text = ''
-                            delimiter = ''
-                            if '</xref>' in item:
-                                delimiter = '</xref>'
-                            elif '/>' in item:
-                                delimiter = '/>'
-                            if len(delimiter) > 0:
-                                if delimiter in item:
-                                    text = item[item.find(delimiter)+len(delimiter):]
-                            if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
-                                start = None
-                                end = None
-                                n = xref_node_items[k].attrib.get('rid')
-                                if n is not None:
-                                    n = n[1:]
-                                    if n.isdigit():
-                                        start = int(n)
-                                if k + 1 < len(xref_node_items):
-                                    n = xref_node_items[k+1].attrib.get('rid')
-                                    if n is not None:
-                                        n = n[1:]
-                                        if n.isdigit():
-                                            end = int(n)
-                                    if not None in [start, end]:
-                                        self._any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
-                            #else:
-                            #    print(text)
-                            k += 1
-        return self._any_xref_ranges
-
-    @property
-    def any_xref_parent_nodes(self):
-        if self._any_xref_parent_nodes is None:
-            self._any_xref_parent_nodes = {}
-            if self.tree is not None:
-                for xref_parent_node in self.tree.findall('.//*[xref]'):
-                    xref_nodes = {}
-                    for xref_node in xref_parent_node.findall('.//xref'):
-                        xref_type = xref_node.attrib.get('ref-type')
-                        if not xref_type in xref_nodes.keys():
-                            xref_nodes[xref_type] = []
-                        xref_nodes[xref_type].append(xref_node)
-
-                        if not xref_type in self._any_xref_parent_nodes.keys():
-                            self._any_xref_parent_nodes[xref_type] = []
-
-                    for xref_type, xref_type_nodes in xref_nodes.items():
-                        if len(xref_type_nodes) > 1:
-                            # considerar apenas quando há mais de 1 xref[@ref-type='<any>']
-                            # pois range somente éh possível a partir de 2
-                            self._any_xref_parent_nodes[xref_type].append((xref_parent_node, xref_type_nodes))
-        return self._any_xref_parent_nodes
-
-    @property
-    def bibr_xref_ranges(self):
-        if self._bibr_xref_ranges is None:
-            self._bibr_xref_ranges = []
-            for xref_parent_node, bibr_xref_node_items in self.bibr_xref_parent_nodes:
-                xref_parent_xml = xml_utils.tostring(xref_parent_node)
-                parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
-                if len(bibr_xref_node_items) != len(parts) - 1:
-                    parts = xref_parent_xml.replace('<xref ref-type="bibr', '~BREAK~<xref ref-type="bibr').split('~BREAK~')
-
-                if len(bibr_xref_node_items) == len(parts) - 1:
-                    if len(bibr_xref_node_items) > 1:
-                        for k in range(1, len(bibr_xref_node_items)):
-                            text = ''
-                            delimiter = ''
-                            if '</xref>' in parts[k]:
-                                delimiter = '</xref>'
-                            elif '/>' in parts[k]:
-                                delimiter = '/>'
-                            if len(delimiter) > 0:
-                                if delimiter in parts[k]:
-                                    text = parts[k][parts[k].find(delimiter)+len(delimiter):]
-                            if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
-                                start = None
-                                end = None
-                                n = bibr_xref_node_items[k-1].attrib.get('rid')
-                                if n is not None:
-                                    n = n[1:]
-                                    if n.isdigit():
-                                        start = int(n)
-                                n = bibr_xref_node_items[k].attrib.get('rid')
+        _any_xref_ranges = {}
+        for xref_type, xref_type_nodes in self.any_xref_parent_nodes.items():
+            if xref_type is not None:
+                if not xref_type in _any_xref_ranges.keys():
+                    _any_xref_ranges[xref_type] = []
+                for xref_parent_node, xref_node_items in xref_type_nodes:
+                    # nodes de um tipo de xref
+                    xref_parent_xml = xml_utils.tostring(xref_parent_node)
+                    parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+                    parts = [item for item in parts if ' ref-type="' + xref_type + '"' in item]
+                    k = 0
+                    for item in parts:
+                        text = ''
+                        delimiter = ''
+                        if '</xref>' in item:
+                            delimiter = '</xref>'
+                        elif '/>' in item:
+                            delimiter = '/>'
+                        if len(delimiter) > 0:
+                            if delimiter in item:
+                                text = item[item.find(delimiter)+len(delimiter):]
+                        if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
+                            start = None
+                            end = None
+                            n = xref_node_items[k].attrib.get('rid')
+                            if n is not None:
+                                n = n[1:]
+                                if n.isdigit():
+                                    start = int(n)
+                            if k + 1 < len(xref_node_items):
+                                n = xref_node_items[k+1].attrib.get('rid')
                                 if n is not None:
                                     n = n[1:]
                                     if n.isdigit():
                                         end = int(n)
                                 if not None in [start, end]:
-                                    self._bibr_xref_ranges.append([start, end, bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
-                            #elif '-' in text:
-                            #    print(text)
-        return self._bibr_xref_ranges
+                                    _any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
+                        #else:
+                        #    print(text)
+                        k += 1
+        return _any_xref_ranges
+
+    @property
+    def any_xref_parent_nodes(self):
+        _any_xref_parent_nodes = {}
+        if self.tree is not None:
+            for xref_parent_node in self.tree.findall('.//*[xref]'):
+                xref_nodes = {}
+                for xref_node in xref_parent_node.findall('.//xref'):
+                    xref_type = xref_node.attrib.get('ref-type')
+                    if not xref_type in xref_nodes.keys():
+                        xref_nodes[xref_type] = []
+                    xref_nodes[xref_type].append(xref_node)
+
+                    if not xref_type in _any_xref_parent_nodes.keys():
+                        _any_xref_parent_nodes[xref_type] = []
+
+                for xref_type, xref_type_nodes in xref_nodes.items():
+                    if len(xref_type_nodes) > 1:
+                        # considerar apenas quando há mais de 1 xref[@ref-type='<any>']
+                        # pois range somente éh possível a partir de 2
+                        _any_xref_parent_nodes[xref_type].append((xref_parent_node, xref_type_nodes))
+        return _any_xref_parent_nodes
+
+    @property
+    def bibr_xref_ranges(self):
+        _bibr_xref_ranges = []
+        for xref_parent_node, bibr_xref_node_items in self.bibr_xref_parent_nodes:
+            xref_parent_xml = xml_utils.tostring(xref_parent_node)
+            parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+            if len(bibr_xref_node_items) != len(parts) - 1:
+                parts = xref_parent_xml.replace('<xref ref-type="bibr', '~BREAK~<xref ref-type="bibr').split('~BREAK~')
+
+            if len(bibr_xref_node_items) == len(parts) - 1:
+                if len(bibr_xref_node_items) > 1:
+                    for k in range(1, len(bibr_xref_node_items)):
+                        text = ''
+                        delimiter = ''
+                        if '</xref>' in parts[k]:
+                            delimiter = '</xref>'
+                        elif '/>' in parts[k]:
+                            delimiter = '/>'
+                        if len(delimiter) > 0:
+                            if delimiter in parts[k]:
+                                text = parts[k][parts[k].find(delimiter)+len(delimiter):]
+                        if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
+                            start = None
+                            end = None
+                            n = bibr_xref_node_items[k-1].attrib.get('rid')
+                            if n is not None:
+                                n = n[1:]
+                                if n.isdigit():
+                                    start = int(n)
+                            n = bibr_xref_node_items[k].attrib.get('rid')
+                            if n is not None:
+                                n = n[1:]
+                                if n.isdigit():
+                                    end = int(n)
+                            if not None in [start, end]:
+                                _bibr_xref_ranges.append([start, end, bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
+                        #elif '-' in text:
+                        #    print(text)
+        return _bibr_xref_ranges
 
     @property
     def is_bibr_xref_number(self):
-        if self._is_bibr_xref_number is None:
-            if self.bibr_xref_nodes is not None:
-                for bibr_xref in self.bibr_xref_nodes:
-                    if bibr_xref.text is not None:
-                        if bibr_xref.text.replace('(', '')[0].isdigit():
-                            self._is_bibr_xref_number = True
-                        else:
-                            self._is_bibr_xref_number = False
-                        break
-        return self._is_bibr_xref_number
+        _is_bibr_xref_number = False
+        if self.bibr_xref_nodes is not None:
+            for bibr_xref in self.bibr_xref_nodes:
+                if bibr_xref.text is not None:
+                    if bibr_xref.text.replace('(', '')[0].isdigit():
+                        _is_bibr_xref_number = True
+                    else:
+                        _is_bibr_xref_number = False
+                    break
+        return _is_bibr_xref_number
 
     @property
     def bibr_xref_parent_nodes(self):
-        if self._bibr_xref_parent_nodes is None:
-            self._bibr_xref_parent_nodes = []
-            if self.tree is not None:
-                for node in self.tree.findall('.//*[xref]'):
-                    bibr_xref = node.findall('xref[@ref-type="bibr"]')
-                    if len(bibr_xref) > 0:
-                        self._bibr_xref_parent_nodes.append((node, bibr_xref))
-        return self._bibr_xref_parent_nodes
+        _bibr_xref_parent_nodes = []
+        if self.tree is not None:
+            for node in self.tree.findall('.//*[xref]'):
+                bibr_xref = node.findall('xref[@ref-type="bibr"]')
+                if len(bibr_xref) > 0:
+                    _bibr_xref_parent_nodes.append((node, bibr_xref))
+        return _bibr_xref_parent_nodes
 
     @property
     def bibr_xref_nodes(self):
-        if self._bibr_xref_nodes is None:
-            if self.tree is not None:
-                self._bibr_xref_nodes = self.tree.findall('.//xref[@ref-type="bibr"]')
-        return self._bibr_xref_nodes
+        if self.tree is not None:
+            return self.tree.findall('.//xref[@ref-type="bibr"]')
 
     @property
     def xref_nodes(self):
@@ -498,10 +548,8 @@ class ArticleXML(object):
 
     @property
     def language(self):
-        if self._language is None:
-            if self.tree is not None:
-                self._language = xml_utils.element_lang(self.tree.find('.'))
-        return self._language
+        if self.tree is not None:
+            return xml_utils.element_lang(self.tree.find('.'))
 
     @property
     def related_articles(self):
@@ -614,26 +662,24 @@ class ArticleXML(object):
                     for s in nodes:
                         r.append(s.text)
         return sorted(r)
+
     @property
     def normalized_toc_section(self):
         return attributes.normalized_toc_section(self.toc_section)
 
     @property
     def keywords_by_lang(self):
-        if self._keywords_by_lang is None:
-            k = {}
-            for item in self.keywords:
-                if not item['l'] in k.keys():
-                    k[item['l']] = []
+        k = {}
+        for item in self.keywords:
+            if not item['l'] in k.keys():
+                k[item['l']] = []
 
-                t = Text()
-                t.language = item['l']
-                t.text = item['k']
+            t = Text()
+            t.language = item['l']
+            t.text = item['k']
 
-                k[item['l']].append(t)
-
-            self._keywords_by_lang = k
-        return self._keywords_by_lang
+            k[item['l']].append(t)
+        return k
 
     @property
     def article_keywords(self):
@@ -661,38 +707,38 @@ class ArticleXML(object):
 
     @property
     def contrib_names(self):
+        items = []
+        for item in self.article_contrib_items:
+            if isinstance(item, PersonAuthor):
+                items.append(item)
+        for subartid, subarticlecontrib in self.subarticles_contrib_items.items():
+            if isinstance(subarticlecontrib, PersonAuthor):
+                items.append(subarticlecontrib)
+        return items
+
+    @property
+    def article_contrib_items(self):
         k = []
         if self.article_meta is not None:
             for contrib in self.article_meta.findall('.//contrib'):
-                if contrib.findall('name'):
-                    p = PersonAuthor()
-                    p.fname = contrib.findtext('name/given-names')
-                    p.surname = contrib.findtext('name/surname')
-                    p.suffix = contrib.findtext('name/suffix')
-                    p.prefix = contrib.findtext('name/prefix')
-                    for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
-                        p.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
-                    p.role = contrib.attrib.get('contrib-type')
-                    for xref_item in contrib.findall('xref[@ref-type="aff"]'):
-                        p.xref.append(xref_item.attrib.get('rid'))
-                    k.append(p)
-            if self.sub_articles is not None:
-                for subart in self.sub_articles:
-                    if subart.attrib.get('article-type') != 'translation':
-                        for contrib in subart.findall('.//contrib'):
-                            if contrib.findall('name'):
-                                p = PersonAuthor()
-                                p.fname = contrib.findtext('name/given-names')
-                                p.surname = contrib.findtext('name/surname')
-                                p.suffix = contrib.findtext('name/suffix')
-                                p.prefix = contrib.findtext('name/prefix')
-                                for contrib_id in contrib.findall('contrib-id[@contrib-id-type]'):
-                                    p.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.text
-                                p.role = contrib.attrib.get('contrib-type')
-                                for xref_item in contrib.findall('xref[@ref-type="aff"]'):
-                                    p.xref.append(xref_item.attrib.get('rid'))
-                                k.append(p)
+                a = get_author(contrib)
+                if a is not None:
+                    k.append(a)
+        k = [item for item in k if item is not None]
         return k
+
+    @property
+    def subarticles_contrib_items(self):
+        contribs = {}
+        if self.sub_articles is not None:
+            for subart in self.sub_articles:
+                if subart.attrib.get('article-type') != 'translation':
+                    contribs[subart.attrib.get('id')] = []
+                    for contrib in subart.findall('.//contrib'):
+                        a = get_author(contrib)
+                        if a is not None:
+                            contribs[subart.attrib.get('id')].append(a)
+        return contribs
 
     @property
     def authors_aff_xref_stats(self):
@@ -729,10 +775,9 @@ class ArticleXML(object):
         k = []
         if self.article_meta is not None:
             for contrib in self.article_meta.findall('.//contrib[collab]'):
-                collab = CorpAuthor()
-                collab.role = contrib.attrib.get('contrib-type')
-                collab.collab = contrib.findtext('collab')
-                k.append(collab)
+                a = get_author(contrib)
+                if a is not None:
+                    k.append(a)
         return k
 
     def short_article_title(self, size=None):
@@ -745,10 +790,6 @@ class ArticleXML(object):
                 return self.title[0:size] + '...'
             else:
                 return self.title
-
-    @property
-    def title(self):
-        return self.titles[0].title if len(self.titles) > 0 else None
 
     @property
     def title_group_title(self):
@@ -792,37 +833,52 @@ class ArticleXML(object):
         return self.title_group_title + self.trans_title_group_titles + self.translations_title_group_titles
 
     @property
+    def title(self):
+        if len(self.titles) > 0:
+            return self.titles[0].title
+
+    @property
     def titles_by_lang(self):
-        if self._titles_by_lang is None:
-            k = {}
-            for item in self.titles:
-                if not item.language in k.keys():
-                    k[item.language] = []
-                k[item.language].append(item)
-            self._titles_by_lang = k
-        return self._titles_by_lang
+        return items_by_lang(self.titles)
 
     @property
     def title_abstract_kwd_languages(self):
-        if self._title_abstract_kwd_languages is None:
-            self._title_abstract_kwd_languages = list(set(self.keywords_by_lang.keys() + self.abstracts_by_lang.keys() + self.titles_by_lang.keys()))
-            self._title_abstract_kwd_languages = [item for item in self._title_abstract_kwd_languages if item is not None]
-        return self._title_abstract_kwd_languages
+        r = list(set(self.keywords_by_lang.keys() + self.abstracts_by_lang.keys() + self.titles_by_lang.keys()))
+        return [item for item in r if item is not None]
 
     @property
     def trans_languages(self):
-        if self._trans_languages is None:
-            k = []
-            if self.translations is not None:
-                for node in self.translations:
-                    k.append(xml_utils.element_lang(node))
-            self._trans_languages = k
-        return self._trans_languages
+        k = []
+        if self.translations is not None:
+            for node in self.translations:
+                k.append(xml_utils.element_lang(node))
+        return k
+
+    @property
+    def article_id(self):
+        if self.doi is not None:
+            return self.doi
+        elif self.publisher_article_id is not None:
+            return self.publisher_article_id
 
     @property
     def doi(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
+            _doi = self.article_meta.findtext('article-id[@pub-id-type="doi"]')
+            if _doi is not None:
+                return _doi.lower()
+
+    @property
+    def publisher_article_id(self):
+        if self.article_meta is not None:
+            _publisher_article_id = self.article_meta.findtext('article-id[@pub-id-type="publisher-id"]')
+            if _publisher_article_id is not None:
+                return _publisher_article_id.lower()
+
+    @property
+    def marked_to_delete(self):
+        if self.article_meta is not None:
+            return self.article_meta.findtext('article-id[@specific-use="delete"]')
 
     @property
     def previous_article_pid(self):
@@ -944,7 +1000,9 @@ class ArticleXML(object):
         #FIXME nao existe clinical-trial 
         #<uri content-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
         if self.article_meta is not None:
-            node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
+            node = self.article_meta.find('.//uri[@content-type="clinical-trial"]')
+            if node is None:
+                node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
             if node is not None:
                 return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
@@ -953,7 +1011,9 @@ class ArticleXML(object):
         #FIXME nao existe clinical-trial 
         #<uri content-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
         if self.article_meta is not None:
-            node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
+            node = self.article_meta.find('.//uri[@content-type="clinical-trial"]')
+            if node is None:
+                node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
             if node is not None:
                 return xml_utils.node_text(node)
 
@@ -962,7 +1022,9 @@ class ArticleXML(object):
         #FIXME nao existe clinical-trial 
         #<ext-link ext-link-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
         if self.article_meta is not None:
-            node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
+            node = self.article_meta.find('.//ext-link[@ext-link-type="clinical-trial"]')
+            if node is None:
+                node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
             if node is not None:
                 return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
@@ -971,7 +1033,9 @@ class ArticleXML(object):
         #FIXME nao existe clinical-trial 
         #<ext-link ext-link-type="ClinicalTrial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
         if self.article_meta is not None:
-            node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
+            node = self.article_meta.find('.//ext-link[@ext-link-type="clinical-trial"]')
+            if node is None:
+                node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
             if node is not None:
                 return xml_utils.node_text(node)
 
@@ -1102,14 +1166,7 @@ class ArticleXML(object):
 
     @property
     def abstracts_by_lang(self):
-        if self._abstracts_by_lang is None:
-            r = {}
-            for item in self.abstracts:
-                if not item.language in r.keys():
-                    r[item.language] = []
-                r[item.language].append(item)
-            self._abstracts_by_lang = r
-        return self._abstracts_by_lang
+        return items_by_lang(self.abstracts)
 
     @property
     def abstracts(self):
@@ -1154,41 +1211,31 @@ class ArticleXML(object):
 
     @property
     def received(self):
-        if self._received_date is None:
-            if self.article_meta is not None:
-                self._received_date = xml_utils.date_element(self.article_meta.find('history/date[@date-type="received"]'))
-        return self._received_date
+        if self.article_meta is not None:
+            return xml_utils.date_element(self.article_meta.find('history/date[@date-type="received"]'))
 
     @property
     def accepted(self):
-        if self._accepted_date is None:
-            if self.article_meta is not None:
-                self._accepted_date = xml_utils.date_element(self.article_meta.find('history/date[@date-type="accepted"]'))
-        return self._accepted_date
+        if self.article_meta is not None:
+            return xml_utils.date_element(self.article_meta.find('history/date[@date-type="accepted"]'))
 
     @property
     def collection_date(self):
-        if self._collection_date is None:
-            if self.article_meta is not None:
-                self._collection_date = xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="collection"]'))
-        return self._collection_date
+        if self.article_meta is not None:
+            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="collection"]'))
 
     @property
     def epub_ppub_date(self):
-        if self._epub_ppub_date is None:
-            if self.article_meta is not None:
-                self._epub_ppub_date = xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="epub-ppub"]'))
-        return self._epub_ppub_date
+        if self.article_meta is not None:
+            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="epub-ppub"]'))
 
     @property
     def epub_date(self):
-        if self._epub_date is None:
-            if self.article_meta is not None:
-                date_node = self.article_meta.find('pub-date[@pub-type="epub"]')
-                if date_node is None:
-                    date_node = self.article_meta.find('pub-date[@date-type="preprint"]')
-                self._epub_date = xml_utils.date_element(date_node)
-        return self._epub_date
+        if self.article_meta is not None:
+            date_node = self.article_meta.find('pub-date[@pub-type="epub"]')
+            if date_node is None:
+                date_node = self.article_meta.find('pub-date[@date-type="preprint"]')
+            return xml_utils.date_element(date_node)
 
     @property
     def is_article_press_release(self):
@@ -1285,15 +1332,14 @@ class ArticleXML(object):
 
     @property
     def hrefs(self):
-        if self._hrefs is None:
-            self._hrefs = []
-            if self.tree is not None:
-                for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
-                    for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
-                        href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                        _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
-                        self._hrefs.append(_href)
-        return self._hrefs
+        items = []
+        if self.tree is not None:
+            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+                for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
+                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
+                    items.append(_href)
+        return items
 
     @property
     def inline_graphics(self):
@@ -1349,6 +1395,9 @@ class Article(ArticleXML):
         self._previous_pid = None
         self.normalized_affiliations = None
         self.article_records = None
+        self.related_files = []
+        self.is_ex_aop = False
+        self.section_code = None
 
     def package_files(self, pkg_path):
         files = [item for item in os.listdir(pkg_path) if item.startswith(self.new_prefix) and not item.endswith('.xml')]
@@ -1401,6 +1450,7 @@ class Article(ArticleXML):
     def doi_pid(self):
         return self.doi_data.get('pid')
 
+    @property
     def summary(self):
         data = {}
         data['journal-title'] = self.journal_title
@@ -1497,20 +1547,18 @@ class Article(ArticleXML):
             if not pid is None:
                 r = (len(pid) == 23) or (pid.isdigit() and 0 < int(pid) <= 99999)
             return r
+        d = None
         if not self.is_ahead:
-            if self._previous_pid is None:
-                d = None
-                if self.previous_article_pid is not None:
-                    if is_valid(self.previous_article_pid):
-                        d = self.previous_article_pid
-                if d is None:
-                    if self.registered_aop_pid is not None:
-                        if is_valid(self.registered_aop_pid):
-                            d = self.registered_aop_pid
-                if d is None:
-                    d = ''
-                self._previous_pid = d
-        return self._previous_pid
+            if self.previous_article_pid is not None:
+                if is_valid(self.previous_article_pid):
+                    d = self.previous_article_pid
+            if d is None:
+                if self.registered_aop_pid is not None:
+                    if is_valid(self.registered_aop_pid):
+                        d = self.registered_aop_pid
+            if d is None:
+                d = ''
+        return d
 
     @property
     def collection_dateiso(self):
@@ -1614,14 +1662,11 @@ class ReferenceXML(object):
     def __init__(self, root):
         self.root = root
         self.element_citation = self.root.find('.//element-citation') if self.root is not None else None
-        self._source = None
 
     @property
     def source(self):
-        if self._source is None:
-            if self.element_citation is not None:
-                self._source = xml_utils.node_text(self.element_citation.find('.//source'))
-        return self._source
+        if self.element_citation is not None:
+            return xml_utils.node_text(self.element_citation.find('.//source'))
 
     @property
     def id(self):
@@ -1679,21 +1724,10 @@ class ReferenceXML(object):
     @property
     def authors_list(self):
         r = []
-        if self.element_citation is not None:
-            for person_group in self.element_citation.findall('.//person-group'):
-                person_group_id = person_group.attrib.get('person-group-type', 'author')
-                for person in person_group.findall('.//name'):
-                    p = PersonAuthor()
-                    p.fname = person.findtext('given-names')
-                    p.surname = person.findtext('surname')
-                    p.suffix = person.findtext('suffix')
-                    p.role = person_group_id
-                    r.append(p)
-                for collab in person_group.findall('.//collab'):
-                    c = CorpAuthor()
-                    c.collab = xml_utils.node_text(collab)
-                    c.role = person_group_id
-                    r.append(c)
+        for grp in self.authors_by_group:
+            for contrib in grp:
+                r.append(contrib)
+
         return r
 
     @property
@@ -1702,19 +1736,9 @@ class ReferenceXML(object):
         if self.element_citation is not None:
             for person_group in self.element_citation.findall('.//person-group'):
                 role = person_group.attrib.get('person-group-type', 'author')
-                authors = []
-                for person in person_group.findall('.//name'):
-                    p = PersonAuthor()
-                    p.fname = person.findtext('given-names')
-                    p.surname = person.findtext('surname')
-                    p.suffix = person.findtext('suffix')
-                    p.role = role
-                    authors.append(p)
-                for collab in person_group.findall('.//collab'):
-                    c = CorpAuthor()
-                    c.collab = xml_utils.node_text(collab)
-                    c.role = role
-                    authors.append(c)
+                authors = [get_author(contrib, role) for contrib in person_group.findall('*')]
+                authors = [a for a in authors if a is not None]
+
                 groups.append(authors)
         return groups
 
@@ -1928,6 +1952,7 @@ class Journal(object):
         self.license = None
 
 
+#FIXME
 def doi_data(doi):
     results = {}
     url = ws_requester.wsr.article_doi_checker_url(doi)

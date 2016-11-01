@@ -1,31 +1,103 @@
 # coding=utf-8
 
 import os
+import sys
+import shutil
+import webbrowser
 
 from datetime import datetime
 
 from __init__ import _
-from . import validation_status
 from . import xml_utils
-
+from . import utils
+from . import validation_status
 
 ENABLE_COMMENTS = False
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+
+
+class TabbedReport(object):
+
+    def __init__(self, labels, tabs, tabbed_content, pre_selected, style_selected='selected-tab-content', style_not_selected='not-selected-tab-content'):
+        self.labels = labels
+        self.tabs = tabs
+        self.tabbed_content = tabbed_content
+        self.style_selected = style_selected
+        self.style_not_selected = style_not_selected
+        self.pre_selected = pre_selected
+        self.display_report = display_report
+
+    @property
+    def report_content(self):
+        # tabs
+        content = tabs_items([(tab_id, self.labels[tab_id]) for tab_id in self.tabs if self.tabbed_content.get(tab_id) is not None], self.pre_selected)
+        # tabs content
+        for tab_id in self.tabs:
+            c = self.tabbed_content.get(tab_id)
+            if c is not None:
+                style = self.style_selected if tab_id == self.pre_selected else self.style_not_selected
+                content += tab_block(tab_id, c, style)
+        return content
+
+
+class HideAndShowBlocksReport(object):
+
+    def __init__(self, labels, data, pdf_items=None, html_cell_content=[], widths=None):
+        self.labels = labels
+        self.data = data
+        self.html_cell_content = html_cell_content
+        self.html_cell_content.append(labels[-1])
+        self.pdf_items = pdf_items
+        self.widths = widths
+
+    @property
+    def content(self):
+        items = []
+        for i, data in zip(range(len(self.data)), self.data):
+            values, block = data
+            values.append(block.links)
+            items.append(label_values(self.labels, values))
+            if self.pdf_items is not None:
+                items.append({'pdf': self.pdf_items[i]})
+            items.append({'hidden': block.block})
+        return sheet(self.labels, items, table_style='reports-sheet', html_cell_content=self.html_cell_content, widths=self.widths)
+
+
+class HideAndShowBlockItem(object):
+
+    def __init__(self, block_parent_id, label, block_id, block_style, block_content, status=''):
+        self.block_parent_id = block_parent_id
+        self.block_id = block_id
+        self.label = label
+        self.block_content = block_content
+        self.status = status
+        self.block_style = block_style
+
+    @property
+    def link(self):
+        _link = block_link(self.block_id, self.label, self.block_style, self.block_parent_id)
+        if self.status != '':
+            _link += tag('span', self.status, 'smaller')
+        return _link
+
+    @property
+    def block(self):
+        return block_element(self.block_id, self.block_content, self.block_style, self.block_parent_id)
+
+
+class HideAndShowBlock(object):
+
+    def __init__(self, block_parent_id, block_items):
+        self.links = '<a name="' + block_parent_id + '"/>'
+        self.block = ''
+        for item in block_items:
+            self.links += item.link
+            self.block += item.block
 
 
 def report_date():
     procdate = datetime.now().isoformat()
-    return tag('p', procdate[0:10] + ' ' + procdate[11:19], 'report-date')
-
-
-def statistics(content, word):
-    return len(content.split(word)) - 1
-
-
-def statistics_numbers(content):
-    e = statistics(content, validation_status.STATUS_ERROR)
-    f = statistics(content, validation_status.STATUS_FATAL_ERROR)
-    w = statistics(content, validation_status.STATUS_WARNING)
-    return (f, e, w)
+    return tag('p', tag('span', procdate[0:10] + ' ' + procdate[11:19], 'report-date'))
 
 
 def get_unicode(text):
@@ -50,8 +122,9 @@ def join_texts(texts):
 
 
 def styles():
-    css = '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/html_reports.css', 'r').read() + '</style>'
-    js = open(os.path.dirname(os.path.realpath(__file__)) + '/html_reports_collapsible.js', 'r').read()
+    css_file = CURRENT_PATH + '/html_reports.css'
+    css = '<style>' + open(css_file, 'r').read() + '</style>'
+    js = open(CURRENT_PATH + '/html_reports_collapsible.js', 'r').read()
     return css + js + save_report_js()
 
 
@@ -79,8 +152,66 @@ def collapsible_block(section_id, section_title, content, status='ok'):
     return r
 
 
-def link(href, label):
-    return '<a href="' + href + '" target="_blank">' + label + '</a>'
+def link(href, label, window=None):
+    href = href.replace('\\', '/')
+    if window is not None:
+        width, height = window
+        r = u'<a href="{href}" onclick="w = window.open(\'{href}\', \'newwindow\', \'resizeable=yes, width={width}, height={height}\'); w.focus(); return false;">{label}</a>'.format(href=href, label=label, width=width, height=height)
+    else:
+        r = u'<a href="' + href + '" target="_blank">' + label + '</a>'
+    return r
+
+
+def display_embedded_object(href, label, element_id, width='400px', height='400px'):
+    js_load_pdf = 'document.getElementById("{element_id}_pdf").data="{href}";'.format(
+        element_id=element_id, href=href)
+    js_show_close_button = 'document.getElementById("{element_id}_close_button").style.display="block";'.format(
+        element_id=element_id)
+    js_show_pdf_button = 'document.getElementById("{element_id}_pdf_button").style.display="block";'.format(
+        element_id=element_id)
+    js_unload_pdf = 'document.getElementById("{element_id}_pdf").data="";'.format(
+        element_id=element_id)
+    js_hide_close_button = 'document.getElementById("{element_id}_close_button").style.display="none";'.format(
+        element_id=element_id)
+    js_hide_pdf_button = 'document.getElementById("{element_id}_pdf_button").style.display="none";'.format(
+        element_id=element_id)
+    js_close_button = ''.join([item.replace('"', "'") for item in [js_hide_close_button, js_unload_pdf, js_show_pdf_button]])
+    js_pdf_button = ''.join([item.replace('"', "'") for item in [js_show_close_button, js_load_pdf, js_hide_pdf_button]])
+
+    block_pdf = tag('object', '', attributes={'id': element_id + '_pdf', 'data': '', 'width': width, 'height': height})
+    block_close_button = '<span id="{element_id}_close_button" style="display: none;" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
+        element_id=element_id, label=_('hide') + ' ' + label, js=js_close_button)
+    block_pdf_button = '<span id="{element_id}_pdf_button" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
+        element_id=element_id, label=_('show') + ' ' + label, js=js_pdf_button)
+    return block_pdf_button + block_close_button + block_pdf
+
+
+def embedded_object(href, label, element_id, width='400px', height='400px'):
+    js_load_embedded = 'document.getElementById("{element_id}").data="{href}";'.format(
+        element_id=element_id, href=href)
+    js_show_close_button = 'document.getElementById("{element_id}_close_button").style.display="block";'.format(
+        element_id=element_id)
+    js_show_embedded_button = 'document.getElementById("{element_id}_button").style.display="block";'.format(
+        element_id=element_id)
+    js_unload_embedded = 'document.getElementById("{element_id}").data="";'.format(
+        element_id=element_id)
+    js_hide_close_button = 'document.getElementById("{element_id}_close_button").style.display="none";'.format(
+        element_id=element_id)
+    js_hide_embedded_button = 'document.getElementById("{element_id}_button").style.display="none";'.format(
+        element_id=element_id)
+    js_close_button = ''.join([item.replace('"', "'") for item in [js_hide_close_button, js_unload_embedded, js_show_embedded_button]])
+    js_embedded_button = ''.join([item.replace('"', "'") for item in [js_show_close_button, js_load_embedded, js_hide_embedded_button]])
+
+    block_embedded = tag('object', '', attributes={'id': element_id + '_embedded', 'data': '', 'width': width, 'height': height})
+    block_close_button = '<span id="{element_id}_close_button" style="display: none;" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
+        element_id=element_id, label=_('hide') + ' ' + label, js=js_close_button)
+    block_embedded_button = '<span id="{element_id}_button" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
+        element_id=element_id, label=_('show') + ' ' + label, js=js_embedded_button)
+    return block_embedded_button + block_close_button + block_embedded
+
+
+def display_xml_file(label, element_id, width='800px', height='400px'):
+    return tag('h3', label) + '<a name="' + element_id + '"/>' + '<div><iframe src="' + label + '" style="width:' + width + '; height:' + height + ';"><!-- --> </iframe></div>'
 
 
 def tag(tag_name, content, style=None, attributes={}):
@@ -90,6 +221,13 @@ def tag(tag_name, content, style=None, attributes={}):
         tag_name = 'div'
     style = attr('class', style) if style is not None else ''
     return '<' + tag_name + style + ' '.join([attr(name, val) for name, val in attributes.items()]) + '>' + content + '</' + tag_name + '>'
+
+
+def report_title(titles):
+    s = ''
+    if not isinstance(titles, list):
+        titles = [titles]
+    return ''.join([tag('h1', item) for item in titles])
 
 
 def html(title, body):
@@ -108,11 +246,7 @@ def html(title, body):
     s += '</head>'
     s += '<body>'
     s += report_date()
-    if isinstance(title, list):
-        s += tag('h1', title[0])
-        s += tag('h1', title[1])
-    else:
-        s += tag('h1', title)
+    s += report_title(title)
     s += body
     s += '</body>'
     s += '</html>'
@@ -120,74 +254,105 @@ def html(title, body):
     return s
 
 
-def statistics_display(validations_results, inline=True):
-    if inline:
-        tag_name = 'span'
-        stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(validations_results.fatal_errors)), ('errors', str(validations_results.errors)), ('warnings', str(validations_results.warnings))]])
-    else:
-        tag_name = 'div'
-        stats = [('Total of fatal errors', validations_results.fatal_errors), ('Total of errors', validations_results.errors), ('Total of warnings', validations_results.warnings)]
-        stats = ''.join([tag('p', display_label_value(l, str(v))) for l, v in stats])
-    return tag(tag_name, stats, get_stats_numbers_style(validations_results.fatal_errors, validations_results.errors, validations_results.warnings))
-
-
-def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):
+def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[], widths=None):
     if ENABLE_COMMENTS is True:
         html_cell_content.append(_('why it is not a valid message?'))
     else:
         if _('why it is not a valid message?') in table_header:
             table_header = [item for item in table_header if item != _('why it is not a valid message?')]
-    return sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content)
-
-
-def sheet_build(table_header, table_data, table_style='sheet', row_style=None, colums_styles={}, html_cell_content=[]):
     r = ''
-    if not table_header is None:
-        width = 70 if len(table_header) > 4 else int(float(140) / len(table_header))
-        th = ''.join([tag('th', label, 'th') for label in table_header])
-        if len(table_data) == 0:
-            tr_items = [tag('tr', ''.join(['<td>-</td>' for label in table_header]))]
-        else:
-            tr_items = []
-            for row in table_data:
-                td_items = []
-                if len(row) == 1 and len(table_header) > 1:
-                    # hidden tr
-                    td_items.append('<td colspan="' + str(len(table_header)) + '" class="' + label + '-hidden-block">' + row.get(label, '') + '</td>')
-                elif len(table_header) <= len(row):
-                    for label in table_header:
-                        td_content = row.get(label, '')
-                        td_style = None
-                        if label == _('why it is not a valid message?'):
-                            if 'ERROR' in row.get('status', '') or 'WARNING' in row.get('status', ''):
-                                td_content = '<textarea rows="5" cols="40"> </textarea>'
-                            else:
-                                td_content = ' - '
-                        else:
-                            # cell style
-                            td_style = colums_styles.get(label)
-                            if td_style is None:
-                                if label in ['label', 'message', 'status', 'xml']:
-                                    td_style = 'td_' + label
-                            if td_style is None:
-                                td_style = 'td_regular'
-                            if not label in html_cell_content:
-                                td_content = format_html_data(td_content, width)
-                                if table_style == 'sheet':
-                                    td_content = color_text(td_content)
-                        td_items.append(tag('td', td_content, td_style))
-
-                # row style
-                tr_style = None
-                if row_style is None:
-                    if 'status' in table_header:
-                        row_style = 'status'
-                if row_style is not None:
-                    tr_style = get_message_style(row.get(row_style))
-
-                tr_items.append(tag('tr', ''.join(td_items), tr_style))
-        r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', ''.join(tr_items)), table_style))
+    try:
+        r = sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content, widths)
+    except Exception as e:
+        print(e)
+        print(table_header)
+        print(table_data)
+        raise
     return r
+
+
+def sheet_column(data, _tag='td', style=None, width=None):
+    _style = ''
+    if style is not None:
+        _style = ' class="' + style + '"'
+    _width = ''
+    if width is not None:
+        _width = ' width="' + width + '%"'
+    return '<' + _tag + _style + _width + '>' + data + '</' + _tag + '>'
+
+
+def sheet_row(data, style=None):
+    _style = ''
+    if style is not None:
+        _style = ' class="' + style + '"'
+    return '<tr' + _style + '>' + data + '</tr>'
+
+
+def sheet_row_style(table_header, row_style, row_content):
+    tr_style = None
+    if row_style is None:
+        if 'status' in table_header:
+            row_style = 'status'
+    if row_style is not None:
+        tr_style = get_message_style(row_content)
+    return tr_style
+
+
+def hidden_row(columns_number, label, data):
+    return '<td colspan="' + columns_number + '" class="reports-hidden-block">' + data + '</td>'
+
+
+def sheet_col_style(label, colums_styles):
+    style = colums_styles.get(label)
+    if style is None:
+        if label in ['label', 'message', 'status', 'xml']:
+            style = 'td_' + label
+    if style is None:
+        style = 'td_regular'
+    return style
+
+
+def sheet_column_value(data, width, is_html_format, _color_text=False):
+    value = data
+    if not is_html_format:
+        value = format_html_data(data, width)
+        if _color_text:
+            value = color_text(value)
+    return value
+
+
+def sheet_build(table_header, table_rows_data, table_style='sheet', style4row=None, columns_styles={}, html_cell_content=[], widths=None):
+    _color_text = (table_style == 'sheet')
+    th = ''.join([tag('th', label, 'th') for label in table_header])
+    if len(table_rows_data) == 0:
+        table_rows_data = [{table_header[-1]: '-' for item in table_header}]
+    if widths is None:
+        w = str(int(float(100) / len(table_header)))
+        widths = {label: w for label in table_header}
+    rows = ''
+    for row_data in table_rows_data:
+        if len(row_data) == 1 and len(table_header) > 1:
+            key = row_data.keys()[0]
+            if key == 'hidden':
+                columns = hidden_row(str(len(table_header)), table_header[-1], row_data.get(key))
+            else:
+                columns = '<td colspan="' + str(len(table_header)) + '">' + row_data.get(key) + '</td>'
+        elif len(table_header) <= len(row_data):
+            columns = ''
+            for label in table_header:
+                col_style = sheet_col_style(label, columns_styles)
+
+                if label == _('why it is not a valid message?'):
+                    if 'ERROR' in row_data.get('status', '') or 'WARNING' in row_data.get('status', ''):
+                        col_value = '<textarea rows="5" cols="40"> </textarea>'
+                    else:
+                        col_value = ' - '
+                else:
+                    col_value = sheet_column_value(row_data.get(label), widths[label], (label in html_cell_content), _color_text)
+                columns += sheet_column(col_value, style=col_style, width=widths[label])
+        row_style = sheet_row_style(table_header, style4row, columns)
+        rows += sheet_row(columns, row_style)
+    return tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', rows), table_style))
 
 
 def break_words(value, width=40):
@@ -219,7 +384,7 @@ def p_message(value, display_justification_input=True):
     style = get_message_style(value, '')
     justification_input = ''
     if display_justification_input is True and ENABLE_COMMENTS is True:
-        if style in ['error', 'fatalerror', 'warning']:
+        if style in ['error', 'fatalerror', 'warning', 'blockingerror']:
             justification_input = tag('p', tag('textarea', ' ', attributes={'cols': '100', 'rows': '5'}))
     return tag('p', value, style) + justification_input
 
@@ -229,6 +394,7 @@ def color_text(value):
 
 
 def format_list(label, list_type, list_items, style=''):
+    li_items = ''
     if isinstance(list_items, dict):
         list_items = format_html_data_dict(list_items, list_type)
     elif isinstance(list_items, list):
@@ -237,11 +403,17 @@ def format_list(label, list_type, list_items, style=''):
 
 
 def format_html_data_dict(value, list_type='ul'):
-    r = '<' + list_type + '>'
-    for k in sorted(value.keys()):
-        v = value[k]
-        r += tag('li', display_label_value(k, v))
-    r += '</' + list_type + '>'
+    r = ''
+    if len(value) == 1:
+        for k in sorted(value.keys()):
+            v = value[k]
+            r += display_label_value(k, v)
+    else:
+        r = '<' + list_type + '>'
+        for k in sorted(value.keys()):
+            v = value[k]
+            r += tag('li', display_label_value(k, v))
+        r += '</' + list_type + '>'
     return r
 
 
@@ -286,37 +458,18 @@ def save(filename, title, body):
     r = html(title, body)
     if isinstance(r, unicode):
         r = r.encode('utf-8')
+    d = os.path.dirname(filename)
+    if not os.path.isdir(d):
+        os.makedirs(d)
     open(filename, 'w').write(r)
 
 
 def get_message_style(value, default=''):
     if value is None:
         value = ''
-    if validation_status.STATUS_FATAL_ERROR in value:
-        r = 'fatalerror'
-    elif validation_status.STATUS_ERROR in value:
-        r = 'error'
-    elif validation_status.STATUS_WARNING in value:
-        r = 'warning'
-    elif validation_status.STATUS_OK in value:
-        r = 'ok'
-    elif validation_status.STATUS_INFO in value:
-        r = 'info'
-    elif validation_status.STATUS_VALID in value:
-        r = 'valid'
-    else:
+    r = validation_status.style(value)
+    if r is None:
         r = default
-    return r
-
-
-def get_stats_numbers_style(f, e, w):
-    r = 'success'
-    if f > 0:
-        r = 'fatalerror'
-    elif e > 0:
-        r = 'error'
-    elif w > 0:
-        r = 'warning'
     return r
 
 
@@ -326,8 +479,11 @@ def display_labeled_value(label, value, style=''):
     return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value), style)
 
 
-def display_label_value(label, value):
-    return tag('span', label, 'label') + ': ' + format_html_data(value)
+def display_label_value(label, value, _tag=''):
+    r = tag('span', label, 'label') + ': ' + format_html_data(value)
+    if _tag != '':
+        r = tag(_tag, r)
+    return r
 
 
 def thumb_image(path, width='auto', height='auto'):
@@ -371,14 +527,14 @@ def tabs_items(tabs, selected):
     return '<div class="tabs">' + r + '</div>'
 
 
-def report_link(report_id, report_label, style, location):
-    return '<a name="begin_label-' + report_id + '"/>&#160;<p id="label-' + report_id + '" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\', \'' + location + '\')" class="report-link-' + style + '">' + report_label.replace(' ', '&#160;') + '</p>'
+def block_link(block_id, block_label, style, location):
+    return '<a name="begin_label-' + block_id + '"/>&#160;<p id="label-' + block_id + '" onClick="display_article_report(\'' + block_id + '\', \'label-' + block_id + '\', \'' + location + '\')" class="report-link-' + style + '">' + block_label.replace(' ', '&#160;') + '</p>'
 
 
-def report_block(report_id, content, style, location):
-    r = '<div id="' + report_id + '" class="report-block-' + style + '">'
+def block_element(block_id, content, style, location):
+    r = '<div id="' + block_id + '" class="report-block-' + style + '">'
     r += content
-    r += '<div class="endreport"><span class="button" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\', \'' + location + '\')"> ' + _('close') + ' </span></div>'
+    r += '<div class="endreport"><span class="button" onClick="display_article_report(\'' + block_id + '\', \'label-' + block_id + '\', \'' + location + '\')"> ' + _('close') + ' </span></div>'
     r += '</div>'
     return r
 
@@ -406,3 +562,22 @@ def save_form(display, filename):
 
         r = tag('div', ''.join(s), 'tabs')
     return r
+
+
+def label_values(labels, values):
+    r = {}
+    for i in range(0, len(labels)):
+        r[labels[i]] = values[i]
+    return r
+
+
+def display_report(report_filename):
+    print(_('Report:\n  {filename}').format(filename=report_filename))
+
+    try:
+        f = report_filename.encode(encoding=sys.getfilesystemencoding())
+        webbrowser.open('file://' + f, new=2)
+    except Exception as e:
+        print('unable to open')
+        print(report_filename)
+        print(e)

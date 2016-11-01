@@ -912,7 +912,6 @@ def delete_irrelevant_reports(ctrl_filename, is_valid_style, dtd_validation_repo
 
 
 def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
-
     xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, dtd_report, style_report)
     f, e, w = valid_style
     update_err_filename(err_filename, dtd_report)

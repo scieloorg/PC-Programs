@@ -364,9 +364,7 @@ def convert_entities_to_chars(content, debug=False):
         content = htmlent2char(content)
         content = content.replace('&mldr;', u"\u2026")
         content, replaced_named_ent = named_ent_to_char(content)
-
         register_remaining_named_entities(content)
-
         content = restore_xml_entities(content)
     return content, replaced_named_ent
 
@@ -473,7 +471,6 @@ def minidom_pretty_print(content):
         if isinstance(content, unicode):
             content = content.encode('utf-8')
 
-        print(content[content.find('Stern et al'):content.find('Stern et al')+400])
         doc = xml.dom.minidom.parseString(content)
         pretty = doc.toprettyxml().strip()
         if not isinstance(pretty, unicode):
@@ -489,9 +486,10 @@ def minidom_pretty_print(content):
     except Exception as e:
         print('ERROR in pretty')
         print(e)
-        #print(content)
+        print(content)
         #print(pretty)
         fs_utils.write_file('./pretty_print.xml', content)
+        raise
     return pretty
 
 
@@ -546,13 +544,13 @@ def is_valid_xml_dir(xml_path):
 def is_valid_xml_path(xml_path):
     errors = []
     if xml_path is None:
-        errors.append(_('Missing XML location.'))
+        errors.append(_('Missing XML location. '))
     else:
         if os.path.isfile(xml_path):
             if not xml_path.endswith('.xml'):
-                errors.append(_('Invalid file. XML file required.'))
+                errors.append(_('Invalid file. XML file required. '))
         elif not is_valid_xml_dir(xml_path):
-            errors.append(_('Invalid folder. Folder must have XML files.'))
+            errors.append(_('Invalid folder. Folder must have XML files. '))
     return errors
 
 
@@ -665,6 +663,8 @@ class PrettyXML(object):
         except Exception as e:
             print('ERROR in minidom_pretty_print')
             print(e)
+            print(self._xml)
+            raise
 
     @property
     def xml(self):
@@ -716,31 +716,17 @@ class PrettyXML(object):
                 self._xml = self._xml.replace('</' + style + '> <' + style + '>', ' ')
             doit = (curr_value != self._xml)
 
-    def normalize_spaces_in_xml_item(self, item):
-        debug = False
-        if debug:
-            print('1{' + item + '}')
-
-        if item.startswith('<') and item.endswith('>'):
-            item = '<' + ' '.join(item[1:-1].split()) + '>'
-        elif item.strip() == '':
+    def normalize_spaces_in_xml_item(self, text):
+        if text.startswith('<') and text.endswith('>'):
+            text = '<' + ' '.join(text[1:-1].split()) + '>'
+        elif text.strip() == '':
             pass
         else:
-            item = item.replace(' ', 'PRESERVESPACES')
-            if debug:
-                print('2{' + item + '}')
-            item = item.replace('\n', 'PRESERVESPACES')
-            if debug:
-                print('3{' + item + '}')
-            item = ' '.join(item.split())
-            if debug:
-                print('4{' + item + '}')
-            while 'PRESERVESPACESPRESERVESPACES' in item:
-                item = item.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
-            if debug:
-                print('5{' + item + '}')
-
-        return item
+            text = text.replace(' ', 'PRESERVESPACES').replace('\n', 'PRESERVESPACES')
+            text = ' '.join(text.split())
+            while 'PRESERVESPACESPRESERVESPACES' in text:
+                text = text.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
+        return text
 
     def fix_line(self, item):
         if item.strip() != '':

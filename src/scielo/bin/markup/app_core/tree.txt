@@ -11,12 +11,11 @@ corresp;#FALSE#;#FALSE#
 cpright;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
 *deflist;#FALSE#;#TRUE#
+*page-fn;#FALSE#;#TRUE#
 element;#FALSE#;#TRUE#
 equation;#FALSE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
-*fngrp;#FALSE#;#TRUE#
-fngrp;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#FALSE#;#TRUE#
 licinfo;#FALSE#;#TRUE#
@@ -33,6 +32,8 @@ versegrp;#FALSE#;#TRUE#
 xref;#FALSE#;#TRUE#
 
 *fngrp
+
+*fn
 
 abnt6023
 acitat;#FALSE#;#TRUE#
@@ -155,6 +156,8 @@ fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
+prefix;#FALSE#;#FALSE#
+suffix;#FALSE#;#FALSE#
 role;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 authorid;#TRUE#;#TRUE#
@@ -168,8 +171,8 @@ orgdiv;#FALSE#;#FALSE#
 fname-surname;#FALSE#;#FALSE#
 fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
-surname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
 
 back
 ack;#FALSE#;#FALSE#
@@ -180,6 +183,8 @@ apa;#FALSE#;#FALSE#
 other;#FALSE#;#FALSE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
 licenses;#FALSE#;#FALSE#
 bbibcom;#FALSE#;#FALSE#
 glossary;#FALSE#;#FALSE#
@@ -674,6 +679,8 @@ fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
+prefix;#FALSE#;#FALSE#
+suffix;#FALSE#;#FALSE#
 
 sigblock
 sig;#FALSE#;#TRUE#
@@ -883,6 +890,8 @@ doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
 glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
@@ -922,6 +931,8 @@ doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
@@ -945,6 +956,8 @@ doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 *fngrp;#FALSE#;#TRUE#
 fngrp;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fn;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
@@ -1019,6 +1032,8 @@ fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
+prefix;#FALSE#;#FALSE#
+suffix;#FALSE#;#FALSE#
 
 *pauthor
 
@@ -1106,4 +1121,10 @@ cpyear
 cpholder
 
 licinfo
+
+suffix
+
+prefix
+
+*page-fn
 
