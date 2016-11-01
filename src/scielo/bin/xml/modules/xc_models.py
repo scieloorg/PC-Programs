@@ -1021,7 +1021,7 @@ class AopManager(object):
         for issue_id in sorted(self.aop_db_items.keys()):
             r[issue_id] = []
             for xml_name, article in self.aop_db_items[issue_id].registered_articles.items():
-                r[issue_id].append(article.order + '|' + xml_name + '|' + article.title)
+                r[issue_id].append(article.order + ' | ' + xml_name + ' | ' + article.title)
             r[issue_id].sort()
         return r
 

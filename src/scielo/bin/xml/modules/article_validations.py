@@ -1115,6 +1115,7 @@ class ArticleContentValidation(object):
         received = self.article.received_dateiso
         accepted = self.article.accepted_dateiso
         r = []
+        error_level = validation_status.STATUS_FATAL_ERROR if self.article.article_type in attributes.HISTORY_REQUIRED_FOR_DOCTOPIC else validation_status.STATUS_INFO
         if received is not None and accepted is not None:
             dates = []
             if not received < accepted:
@@ -1130,12 +1131,12 @@ class ArticleContentValidation(object):
                     r.append(('history', validation_status.STATUS_FATAL_ERROR, _('{date1} must be before {date2}. ').format(date1=date[0], date2=date[1])))
 
         elif received is None and accepted is None:
-            r = [('history', validation_status.STATUS_INFO, _('Not found: {label}. ').format(label='history'))]
+            r = [('history', error_level, _('Not found: {label}. ').format(label='history'))]
         else:
             if received is None:
-                r.append(required('history: received', received, validation_status.STATUS_ERROR))
+                r.append(required('history: received', received, error_level))
             if accepted is None:
-                r.append(required('history: accepted', accepted, validation_status.STATUS_ERROR))
+                r.append(required('history: accepted', accepted, error_level))
 
         return r
 

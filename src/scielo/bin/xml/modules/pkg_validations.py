@@ -1578,7 +1578,7 @@ def article_history(articles):
         text.append(html_reports.tag('h4', status))
         text.append(html_reports.display_label_value(_('name'), article.xml_name, 'p'))
         text.append(html_reports.display_label_value('order', article.order, 'p'))
-        if article.creation_date_display != '-':
+        if article.creation_date_display is not None:
             text.append(html_reports.display_label_value(_('creation date'), article.creation_date_display, 'p'))
             text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
         r.append(html_reports.tag('div', ''.join(text), 'hist-' + status))

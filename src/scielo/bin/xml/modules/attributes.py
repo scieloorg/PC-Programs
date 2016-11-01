@@ -91,6 +91,11 @@ DOCTOPIC_IN_USE = [
     'review-article', 
     ]
 
+HISTORY_REQUIRED_FOR_DOCTOPIC = [
+    'case-report', 
+    'research-article',    
+]
+
 AUTHORS_REQUIRED_FOR_DOCTOPIC = [
     'article-commentary', 
     'book-review', 
