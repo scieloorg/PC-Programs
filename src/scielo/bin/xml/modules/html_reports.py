@@ -186,6 +186,34 @@ def display_embedded_object(href, label, element_id, width='400px', height='400p
     return block_pdf_button + block_close_button + block_pdf
 
 
+def embedded_object(href, label, element_id, width='400px', height='400px'):
+    js_load_embedded = 'document.getElementById("{element_id}").data="{href}";'.format(
+        element_id=element_id, href=href)
+    js_show_close_button = 'document.getElementById("{element_id}_close_button").style.display="block";'.format(
+        element_id=element_id)
+    js_show_embedded_button = 'document.getElementById("{element_id}_button").style.display="block";'.format(
+        element_id=element_id)
+    js_unload_embedded = 'document.getElementById("{element_id}").data="";'.format(
+        element_id=element_id)
+    js_hide_close_button = 'document.getElementById("{element_id}_close_button").style.display="none";'.format(
+        element_id=element_id)
+    js_hide_embedded_button = 'document.getElementById("{element_id}_button").style.display="none";'.format(
+        element_id=element_id)
+    js_close_button = ''.join([item.replace('"', "'") for item in [js_hide_close_button, js_unload_embedded, js_show_embedded_button]])
+    js_embedded_button = ''.join([item.replace('"', "'") for item in [js_show_close_button, js_load_embedded, js_hide_embedded_button]])
+
+    block_embedded = tag('object', '', attributes={'id': element_id + '_embedded', 'data': '', 'width': width, 'height': height})
+    block_close_button = '<span id="{element_id}_close_button" style="display: none;" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
+        element_id=element_id, label=_('hide') + ' ' + label, js=js_close_button)
+    block_embedded_button = '<span id="{element_id}_button" onClick="javascript: {js}">[<u>{label}</u>]</span>'.format(
+        element_id=element_id, label=_('show') + ' ' + label, js=js_embedded_button)
+    return block_embedded_button + block_close_button + block_embedded
+
+
+def display_xml_file(label, element_id, width='800px', height='400px'):
+    return tag('h3', label) + '<a name="' + element_id + '"/>' + '<div><iframe src="' + label + '" style="width:' + width + '; height:' + height + ';"><!-- --> </iframe></div>'
+
+
 def tag(tag_name, content, style=None, attributes={}):
     if content is None:
         content = ''

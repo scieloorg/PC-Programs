@@ -438,7 +438,7 @@ class ArticleDisplayReport(object):
         r += html_reports.tag('p', html_reports.tag('strong', self.article.title), 'article-title')
         a = []
         for item in authors_list(self.article.article_contrib_items):
-            a.append(html_reports.tag('span', item))
+            a.append(html_reports.tag('span', item, 'author'))
         r += html_reports.tag('p', '; '.join(a))
         return r
 
@@ -483,10 +483,10 @@ class ArticleDisplayReport(object):
     def link_to_pdf_and_xml_files(self):
         items = []
         for item in self.article.related_files:
-            location = '{PDF_PATH}/' if item.endswith('.pdf') else '{XML_PATH}/'
+            location = '{PDF_PATH}' if item.endswith('.pdf') else '{XML_PATH}'
             items.append(html_reports.tag('p', html_reports.link(
                 location + item,
-                item, window=('800', '400'))))
+                item, window=('1000', '400'))))
         return ''.join(items)
 
 

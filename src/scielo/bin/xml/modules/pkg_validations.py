@@ -688,8 +688,8 @@ class ArticlesMerger(object):
     @property
     def conversion_simulation_summary_report(self):
         #resulting_orders
-        labels = [_('registered') + '/' + _('before conversion'), _('package'), _('expected actions, after conversion')]
-        widths = {_('registered') + '/' + _('before conversion'): '33', _('package'): '33', _('expected actions, after conversion'): '33'}
+        labels = [_('registered') + '/' + _('before conversion'), _('package'), _('expected results after conversion')]
+        widths = {_('registered') + '/' + _('before conversion'): '33', _('package'): '33', _('expected results after conversion'): '33'}
 
         values = []
         values.append([article.order + ': ' + name for name, article in articles_sorted_by_order(self.registered_articles)])
@@ -700,8 +700,8 @@ class ArticlesMerger(object):
     @property
     def simulated_conversion_report(self):
         #resulting_orders
-        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected actions')]
-        widths = {_('article'): '25', _('registered') + '/' + _('before conversion'): '25', _('package'): '25', _('expected actions'): '25'}
+        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results')]
+        widths = {_('article'): '25', _('registered') + '/' + _('before conversion'): '25', _('package'): '25', _('expected results'): '25'}
 
         history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.history_items.items()])
         history = [(xml_name, self.history_items[xml_name]) for order, xml_name in history]
@@ -714,7 +714,7 @@ class ArticlesMerger(object):
             values.append(article_history([item for item in hist if item[0] == _('package article')]))
             values.append(article_history([item for item in hist if not item[0] in [_('registered article'), _('package article')]]))
             items.append(label_values(labels, values))
-        return html_reports.tag('h2', _('Conversions Report')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected actions')], widths=widths)
+        return html_reports.tag('h2', _('Conversions Report')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results')], widths=widths)
 
 
 class ArticlesSetValidations(object):
@@ -991,7 +991,7 @@ class ArticlesSetValidations(object):
             else:
                 values.append(self.articles_validations[new_name].article_display_report.table_of_contents)
             related = {}
-            for k, v in {'aop doi': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
+            for k, v in {'article-id(previous-pid)': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
                 if v is not None:
                     if len(v) > 0:
                         related[k] = v
@@ -1255,7 +1255,7 @@ class ReportsMaker(object):
                 components['group-validations-report'] += self.articles_set_validations.articles_data.issue_error_msg
 
             #components['xc-validations'] = self.conversion.conclusion_message + self.conversion.articles_merger.changes_report + self.conversion.conversion_status_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
-            components['xc-validations'] = self.conversion.conclusion_message + self.conversion.articles_merger.changes_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
+            components['xc-validations'] = html_reports.tag('h3', _('Conversion Result')) + self.conversion.conclusion_message + self.conversion.articles_merger.changes_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
 
         self.validations.message = html_reports.join_texts(components.values())
 
@@ -1284,6 +1284,7 @@ class ReportsMaker(object):
         html_reports.save(filename, report_title, self.content)
         msg = _('Saved report: {f}').format(f=filename)
         utils.display_message(msg)
+        self.xml_report(report_path)
 
     @property
     def content(self):
@@ -1294,6 +1295,17 @@ class ReportsMaker(object):
         for o, r in zip(origin, replac):
             content = content.replace(o, r)
         return content + self.footnote
+
+    def xml_report(self, report_path):
+        if self.files_location.web_url is None:
+            print('xml report is not necessary')
+        else:
+            items = []
+            print(self.articles_set_validations.pkg.xml_names)
+            for item in self.articles_set_validations.pkg.xml_names:
+                items.append(html_reports.display_xml_file(item, item))
+                shutil.copyfile(self.articles_set_validations.pkg.pkg_path + '/' + item, report_path + '/' + item)
+            html_reports.save(report_path + '/xc.xml.html', _('XML Files'), ''.join(items))
 
 
 def extract_report_core(content):
@@ -1466,7 +1478,7 @@ def display_article_data_in_toc(_article):
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
     a = []
     for item in article.authors_list(_article.article_contrib_items):
-        a.append(html_reports.tag('span', item))
+        a.append(html_reports.tag('span', item, 'author'))
     r += html_reports.tag('p', '; '.join(a))
     return r
 
@@ -1481,7 +1493,7 @@ def display_article_data_to_compare(_article):
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
     a = []
     for item in article.authors_list(_article.article_contrib_items):
-        a.append(html_reports.tag('span', item))
+        a.append(html_reports.tag('span', item, 'author'))
     r += html_reports.tag('p', '; '.join(a))
     return html_reports.tag('div', r, style)
 
@@ -1549,6 +1561,8 @@ def toc_extended_report(articles):
                 values.append(new_name)
                 values.append(article.order)
                 last_update_display = article.last_update_display
+                if last_update_display is None:
+                    last_update_display = ''
                 if last_update_display[:10] == datetime.now().isoformat()[:10]:
                     last_update_display = html_reports.tag('span', last_update_display, 'report-date')
                 values.append(last_update_display)
@@ -1564,7 +1578,8 @@ def article_history(articles):
         text.append(html_reports.tag('h4', status))
         text.append(html_reports.display_label_value(_('name'), article.xml_name, 'p'))
         text.append(html_reports.display_label_value('order', article.order, 'p'))
-        text.append(html_reports.display_label_value(_('creation date'), article.creation_date_display, 'p'))
-        text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
+        if article.creation_date_display != '-':
+            text.append(html_reports.display_label_value(_('creation date'), article.creation_date_display, 'p'))
+            text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
         r.append(html_reports.tag('div', ''.join(text), 'hist-' + status))
     return ''.join(r)

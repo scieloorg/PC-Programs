@@ -487,13 +487,13 @@ class FilesFinalLocation(object):
     @property
     def pdf_link(self):
         if self.web_url is not None:
-            return self.web_url + '/pdf/' + self.issue_path
+            return self.web_url + '/pdf/' + self.issue_path + '/'
         else:
-            return 'file://' + self.pdf_path
+            return 'file://' + self.pdf_path + '/'
 
     @property
     def xml_link(self):
         if self.web_url is not None:
-            return self.web_url + '/xml/' + self.issue_path
+            return 'xc.xml.html#'
         else:
-            return 'file://' + self.xml_path
+            return 'file://' + self.xml_path + '/'

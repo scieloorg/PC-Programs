@@ -112,8 +112,8 @@ class ArticlesConversion(object):
     @property
     def conversion_report(self):
         #resulting_orders
-        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected actions'), _('results')]
-        widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('expected actions'): '20',  _('results'): '20'}
+        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results'), _('achieved results')]
+        widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('expected results'): '20',  _('achieved results'): '20'}
 
         history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.articles_merger.history_items.items()])
         history = [(xml_name, self.articles_merger.history_items[xml_name]) for order, xml_name in history]
@@ -131,7 +131,7 @@ class ArticlesConversion(object):
                 res = self.articles_conversion_validations[xml_name].message
             values.append(res)
             items.append(pkg_validations.label_values(labels, values))
-        return html_reports.tag('h2', _('Conversions Report')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected actions'), _('results')], widths=widths)
+        return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results'), _('achieved results')], widths=widths)
 
     @property
     def registered_articles(self):

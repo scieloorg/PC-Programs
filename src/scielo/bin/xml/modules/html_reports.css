@@ -732,6 +732,10 @@ h5 {
   background-color: #B8AA95;
   color: #5E5A54;
 }
-.today {
-  background-color: #FF7C8A;
+
+.author {
+  text-align: left;
+  color: #2F3559;
+  background-color: #D0E0EB;
+  border-radius: 1em;
 }
