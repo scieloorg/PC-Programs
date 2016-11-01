@@ -1287,6 +1287,7 @@ class ArticleXML(object):
                             _article_licenses[lang]['code-and-version'] = None
                 _article_licenses[lang]['type'] = license_node.attrib.get('license-type')
                 _article_licenses[lang]['text'] = xml_utils.node_text(license_node.find('.//license-p'))
+                _article_licenses[lang]['xml'] = xml_utils.node_xml(license_node)
         return _article_licenses
 
     @property

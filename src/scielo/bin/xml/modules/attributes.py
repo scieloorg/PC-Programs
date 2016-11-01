@@ -554,6 +554,13 @@ def normalize_section_title(text):
     return text
 
 
+def translate_code_languages(lang_items):
+    items = []
+    for item in lang_items:
+        items.append(LANGUAGES.get(item))
+    return [item for item in items if item is not None]
+
+
 def check_lang(lang):
     if lang in LANGUAGES.keys():
         return (True, LANGUAGES.get(lang))
