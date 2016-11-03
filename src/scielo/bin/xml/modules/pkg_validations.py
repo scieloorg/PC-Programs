@@ -1476,10 +1476,7 @@ def display_article_data_in_toc(_article):
     r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
     r += html_reports.tag('p', _article.doi, 'doi')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
-    a = []
-    for item in article.authors_list(_article.article_contrib_items):
-        a.append(html_reports.tag('span', item, 'author'))
-    r += html_reports.tag('p', '; '.join(a))
+    r += html_reports.tag('p', article_reports.display_authors(_article.article_contrib_items, '; '))
     return r
 
 
@@ -1491,10 +1488,7 @@ def display_article_data_to_compare(_article):
     r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
     r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
-    a = []
-    for item in article.authors_list(_article.article_contrib_items):
-        a.append(html_reports.tag('span', item, 'author'))
-    r += html_reports.tag('p', '; '.join(a))
+    r += html_reports.tag('p', article_reports.display_authors(_article.article_contrib_items, '<br/>'))
     return html_reports.tag('div', r, style)
 
 

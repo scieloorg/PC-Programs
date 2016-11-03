@@ -732,10 +732,31 @@ h5 {
   color: #5E5A54;
 }
 
-.author {
+.surname {
   text-align: left;
   color: #2F3559;
   background-color: #CAD7B2;
+  border-radius: 1em;
+   margin: 10px;
+}
+.suffix {
+  text-align: left;
+  color: #2F3559;
+  background-color: #F56991;
+  border-radius: 1em;
+   margin: 10px;
+}
+.name {
+  text-align: left;
+  color: #2F3559;
+  background-color: #FFC48C;
+  border-radius: 1em;
+   margin: 10px;
+}
+.collab {
+  text-align: left;
+  color: #2F3559;
+  background-color: #DCD2E5;
   border-radius: 1em;
    margin: 10px;
 }

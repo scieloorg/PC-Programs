@@ -9,6 +9,7 @@ import xml_utils
 import attributes
 import utils
 import ws_requester
+import html_reports
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
@@ -68,19 +69,7 @@ def format_author(author):
     return r
 
 
-def authors_list(authors):
-    items = []
-    for item in authors:
-        if isinstance(item, PersonAuthor):
-            if item.surname is not None and item.fname is not None:
-                items.append(item.surname + ', ' + item.fname)
-            elif item.surname is not None:
-                items.append(item.surname + ', ')
-            elif item.fname is not None:
-                items.append(', ' + item.fname)
-        else:
-            items.append(item.collab)
-    return items
+
 
 
 def get_affiliation(aff):

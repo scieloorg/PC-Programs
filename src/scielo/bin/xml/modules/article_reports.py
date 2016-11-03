@@ -8,7 +8,7 @@ import xml_utils
 import article_utils
 import attributes
 import html_reports
-from article import PersonAuthor, CorpAuthor, format_author, authors_list
+from article import PersonAuthor, CorpAuthor, format_author
 
 
 log_items = []
@@ -16,6 +16,26 @@ log_items = []
 
 def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
+
+
+def display_author(author):
+    text = ''
+    if isinstance(author, PersonAuthor):
+        if author.surname is not None:
+            text += html_reports.tag('span', author.surname, 'surname')
+
+        if author.suffix is not None:
+            text += ' ' + html_reports.tag('span', author.suffix, 'suffix')
+
+        if author.fname is not None:
+            text += ', ' + html_reports.tag('span', author.fname, 'name')
+    else:
+        text += html_reports.tag('span', author.collab, 'collab')
+    return text
+
+
+def display_authors(authors_list, sep):
+    return sep.join([display_author(item) for item in authors_list])
 
 
 class ArticleDisplayReport(object):
@@ -436,10 +456,7 @@ class ArticleDisplayReport(object):
         r += html_reports.tag('p', html_reports.tag('strong', self.article.pages), 'fpage')
         r += html_reports.tag('p', self.article.doi, 'doi')
         r += html_reports.tag('p', html_reports.tag('strong', self.article.title), 'article-title')
-        a = []
-        for item in authors_list(self.article.article_contrib_items):
-            a.append(html_reports.tag('span', item, 'author'))
-        r += html_reports.tag('p', '; '.join(a))
+        r += html_reports.tag('p', display_authors(self.article.article_contrib_items, '<br/>'))
         return r
 
     @property

@@ -417,7 +417,8 @@ SPS_HELP_ELEMENTS = [
     'year',
 ]
 
-SUFFIX_LIST = [u'Nieto',
+SUFFIX_LIST = [u'Netto',
+               u'Nieto',
                u'Sobrino',
                u'Hijo',
                u'Neto',
