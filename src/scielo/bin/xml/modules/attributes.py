@@ -417,6 +417,24 @@ SPS_HELP_ELEMENTS = [
     'year',
 ]
 
+SUFFIX_LIST = [u'Nieto',
+               u'Sobrino',
+               u'Hijo',
+               u'Neto',
+               u'Sobrinho',
+               u'Filho',
+               u'Júnior',
+               u'Junior',
+               u'Senior',
+               'Jr.',
+               'Jr',
+               'Sr',
+               ]
+
+
+def identified_suffixes():
+    return SUFFIX_LIST + [item.upper() for item in SUFFIX_LIST]
+
 
 def normalize_doctopic(_doctopic):
     r = DOCTOPIC.get(_doctopic)

@@ -391,18 +391,12 @@ def validate_surname(label, value):
     label, status, msg = required(label, value, validation_status.STATUS_ERROR)
     if status == validation_status.STATUS_OK:
         msg = value
-        suffix_list = [item.upper() for item in [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'Junior', u'Senior']]
-
         parts = value.split(' ')
-        if len(parts) > 1:
-            rejected = [item for item in parts if item.upper() in suffix_list or item in ['Jr.', 'Jr', 'Sr']]
-            suffix = ' '.join(rejected)
-
-            if len(suffix) > 0:
-                msg = _('{value} contains invalid {invalid_items_name}: {invalid_items}. ').format(value='<data>' + value + '</data> ', invalid_items_name=_('terms'), invalid_items=suffix)
-                msg += _('{value} must be identified as {label}. ').format(value=suffix, label=' <suffix>' + suffix + '</suffix>')
-                status = validation_status.STATUS_ERROR
-                r.append((label, status, msg))
+        if parts[-1] in attributes.identified_suffixes():
+            msg = _('{label} contains invalid {invalid_items_name}: {invalid_items}. ').format(label=u'<surname>{v}</surname>'.format(v=value), invalid_items_name=_('terms'), invalid_items=parts[-1])
+            msg += _('{value} must be identified as {label}. ').format(value=parts[-1], label=u' <suffix>' + parts[-1] + '</suffix>')
+            status = validation_status.STATUS_ERROR
+            r.append((label, status, msg))
     _test_number = warn_unexpected_numbers(label, value)
     if _test_number is not None:
         r.append(_test_number)
