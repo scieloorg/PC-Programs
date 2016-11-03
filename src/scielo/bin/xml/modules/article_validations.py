@@ -908,7 +908,7 @@ class ArticleContentValidation(object):
 
             r.append(required('aff/institution/[@content-type="original"]', aff.original, validation_status.STATUS_ERROR, False))
             resp = required('aff/country', aff.country, validation_status.STATUS_FATAL_ERROR)
-            resp = (resp[0], resp[1], resp[2] + _('. E.g.: Use {this} instead of {that}. ').format(this='<country country="BR">Brasil</country>', that='<country country="BR"/>'))
+            resp = (resp[0], resp[1], resp[2] + _('E.g.: Use {this} instead of {that}. ').format(this='<country country="BR">Brasil</country>', that='<country country="BR"/>'))
             r.append(resp)
 
             for i_country_validation in attributes.validate_iso_country_code(aff.i_country):
@@ -1160,6 +1160,7 @@ class ArticleContentValidation(object):
 
     @property
     def article_permissions(self):
+        text_languages = sorted(list(set(self.article.trans_languages + [self.article.language] + ['en'])))
         r = []
         if self.article.sps_version_number >= 1.4:
             for cp_elem in ['statement', 'year', 'holder']:
@@ -1169,8 +1170,8 @@ class ArticleContentValidation(object):
             if lang is None:
                 if self.article.sps_version_number >= 1.4:
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{label} is required. ').format(label='license/@xml:lang')))
-            else:
-                r.append(('license/@xml:lang', validation_status.STATUS_INFO, lang))
+            elif not lang in text_languages:
+                r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('The license text must be written in {langs}. ').format(langs=_(' or ').join(attributes.translate_code_languages(text_languages))) + _('Expected values for {label}: {expected}. ').format(label='xml:lang', expected=_(' or ').join(text_languages)), license['xml']))
             result = attributes.validate_license_href(license.get('href'))
             if result is not None:
                 r.append(result)

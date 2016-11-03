@@ -110,7 +110,6 @@ h5 {
 }
 .td_xml {
     color: #113F8C;
-    background-color: white;
     font-size: 7pt;
     font-family: Courier;
     word-wrap:break-word;
@@ -736,6 +735,7 @@ h5 {
 .author {
   text-align: left;
   color: #2F3559;
-  background-color: #9BF1F0;
+  background-color: #CAD7B2;
   border-radius: 1em;
+   margin: 10px;
 }
