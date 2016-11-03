@@ -1165,8 +1165,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=c:\src\scielo\bin\xml\modules\pkg_reports.py
-  Destination=%PROGDIR%\xml\modules\pkg_reports.py
+  Source=c:\src\scielo\bin\xml\modules\pkg_validations.py
+  Destination=%PROGDIR%\xml\modules\pkg_validations.py
   Flags=0000000010000010
 end
 item: Install File

@@ -1165,7 +1165,7 @@ class ArticleContentValidation(object):
                 if self.article.sps_version_number >= 1.4:
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{label} is required. ').format(label='license/@xml:lang')))
             elif not lang in text_languages:
-                r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('The license text must be written in {langs}. ').format(langs=_(' or ').join(attributes.translate_code_languages(text_languages))) + _('Expected values for {label}: {expected}. ').format(label='xml:lang', expected=_(' or ').join(text_languages)), license['xml']))
+                r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=lang, label='license/@xml:lang') + _('The license text must be written in {langs}. ').format(langs=_(' or ').join(attributes.translate_code_languages(text_languages))) + _('Expected values for {label}: {expected}. ').format(label='xml:lang', expected=_(' or ').join(text_languages)), license['xml']))
             result = attributes.validate_license_href(license.get('href'))
             if result is not None:
                 r.append(result)
