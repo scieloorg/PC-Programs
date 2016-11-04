@@ -736,7 +736,7 @@ class ArticlesManager(object):
                 excluded_aop = self.exclude_aop(valid_aop)
                 article_converted = excluded_aop
         else:
-            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to create/update {order}.id').format(order=article.order)))
+            self.xc_messages.append(html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to create/update {order}.id').format(order=article.order)))
         return (article_converted, excluded_aop, ''.join(self.xc_messages), aop_status)
 
     @property
@@ -784,7 +784,8 @@ class ArticlesManager(object):
 
         if not error:
             q_registered = self.finish_conversion(i_record)
-            converted = q_registered >= len(articles)
+            print(q_registered)
+            converted = q_registered >= len(articles) and q_registered > 0
             if converted:
                 if create_windows_base:
                     self.base_manager.generate_windows_version()

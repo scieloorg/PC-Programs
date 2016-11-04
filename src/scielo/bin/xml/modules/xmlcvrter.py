@@ -83,23 +83,21 @@ class ArticlesConversion(object):
         self.statistics_display = ''
 
     def convert(self):
-        scilista_items = []
-        if self.articles_set_validations.articles_data.issue_error_msg is not None:
-            scilista_items.append(self.articles_set_validations.articles_data.acron_issue_label)
-
-        elif self.articles_set_validations.blocking_errors == 0 and self.articles_merger.total_to_convert > 0:
+        scilista_items = [self.articles_set_validations.articles_data.acron_issue_label]
+        if self.articles_set_validations.blocking_errors == 0 and self.total_to_convert > 0:
             self.conversion_status = {}
             self.error_messages = self.db.exclude_articles(self.articles_merger.order_changes, self.articles_merger.excluded_orders)
 
-            scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
-
+            _scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
+            scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
+            print(self.db.db_conversion_status)
             for name, message in self.db.articles_conversion_messages.items():
                 self.articles_conversion_validations[name] = pkg_validations.ValidationsResult()
                 self.articles_conversion_validations[name].message = message
 
-            if len(scilista_items) > 0:
+            if len(_scilista_items) > 0:
                 self.files_final_location.serial_path = self.articles_set_validations.articles_data.serial_path
 
                 self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
@@ -153,6 +151,10 @@ class ArticlesConversion(object):
             html_reports.display_report(self.report_location)
 
     @property
+    def total_to_convert(self):
+        return self.articles_merger.total_to_convert
+
+    @property
     def total_converted(self):
         return len(self.conversion_status.get('converted', []))
 
@@ -164,9 +166,11 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.articles_set_validations.blocking_errors > 0:
             result = 'rejected'
-        elif self.articles_merger.total_to_convert == 0:
+        elif self.total_to_convert == 0:
             result = 'ignored'
-        elif self.articles_set_validations.fatal_errors > 0:
+        elif self.articles_conversion_validations.blocking_errors > 0:
+            result = 'rejected'
+        elif self.articles_conversion_validations.fatal_errors > 0:
             result = 'accepted'
         else:
             result = 'approved'
@@ -194,9 +198,9 @@ class ArticlesConversion(object):
         if self.xc_status == 'rejected':
             update = False
             status = validation_status.STATUS_BLOCKING_ERROR
-            if self.articles_merger.total_to_convert > 0:
+            if self.total_to_convert > 0:
                 if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.articles_merger.total_to_convert))
+                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.total_to_convert))
                 else:
                     reason = _('because there are blocking errors in the package. ')
             else:
@@ -217,7 +221,7 @@ class ArticlesConversion(object):
         if update:
             action = _('will be')
         text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
-        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.articles_merger.total_to_convert), False) + html_reports.p_message(text, False)
+        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.total_to_convert), False) + html_reports.p_message(text, False)
         return text
 
 
@@ -514,26 +518,25 @@ def execute_converter(package_paths, collection_name=None):
                     send_message(mailer, config.email_to_adm, '[Step 1]' + config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
                 if len(package_paths) == 1:
                     raise
-
+            print(scilista_items)
             try:
-                if len(scilista_items) > 0:
-                    acron, issue_id = scilista_items[0].split(' ')
+                acron, issue_id = scilista_items[0].split(' ')
 
-                    if xc_status in ['accepted', 'approved']:
-                        if config.collection_scilista is not None:
-                            open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
+                if xc_status in ['accepted', 'approved']:
+                    if config.collection_scilista is not None:
+                        open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
 
-                        if config.is_enabled_transference:
-                            transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
+                    if config.is_enabled_transference:
+                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
 
-                    if report_location is not None:
-                        if config.email_subject_package_evaluation is not None:
-                            results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
-                            link = config.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
-                            report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
+                if report_location is not None:
+                    if config.email_subject_package_evaluation is not None:
+                        results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
+                        link = config.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
+                        report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 
-                            transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
-                            send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
+                        transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
+                        send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
 
             except Exception as e:
                 if config.email_subject_invalid_packages is not None:
