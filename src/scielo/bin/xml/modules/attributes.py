@@ -5,30 +5,19 @@ from datetime import datetime
 from __init__ import _
 import validation_status
 import article_utils
-import ws_requester
 
 
-SPS_MIN_DATE = datetime(2012, 06, 01)
-SPS_MIN_DATEISO = 20120601
+SPS_expiration_dates = [
+    ('sps-1.5', ['20161001', '20171001']),
+    ('sps-1.4', ['20160401', '20170401']),
+    ('sps-1.3', ['20150901', '20160901']),
+    ('sps-1.2', ['20150301', '20160301']),
+    ('sps-1.1', ['20140901', '20150901']),
+    ('sps-1.0', ['20140301', '20150301']),
+    ('None', ['00000000', '20140901']),
+]
 
-SPS_versions_expiration_dates = {
-                'sps-1.5': '20171001',
-                'sps-1.4': '20170401',
-                'sps-1.3': '20160901',
-                'sps-1.2': '20160301',
-                'sps-1.1': '20150901',
-                'sps-1.0': '20150301',
-                'pre-sps': '20140901',
-}
-
-# pre-sps: 2012-06 a 2014-09
-# sps-1.0: 2014-03 a 2015-03
-# sps-1.1: 2014-09 a 2015-09
-# sps-1.2: 2015-03 a 2016-03
-# sps-1.3: 2015-09 a 2016-09
-
-
-SPS_expiration_dates_versions = {v: k for k, v in SPS_versions_expiration_dates.items()}
+dict_SPS_expiration_dates = dict(SPS_expiration_dates)
 
 REFTYPE_AND_TAG_ITEMS = {'aff': ['aff'], 'app': ['app'], 'author-notes': ['fn'], 'bibr': ['ref'], 'boxed-text': ['boxed-text'], 'contrib': ['fn'], 'corresp': ['corresp'], 'disp-formula': ['disp-formula'], 
             'fig': ['fig', 'fig-group'], 
@@ -588,54 +577,28 @@ def check_lang(lang):
 
 
 def expected_sps_versions(article_dateiso):
-    sps_dateiso_items = sorted(SPS_expiration_dates_versions.keys())
-    sps_datetime_items = [article_utils.dateiso2datetime(item) for item in sps_dateiso_items]
-    article_datetime = article_utils.dateiso2datetime(article_dateiso)
-    min_version = str(None)
-    max_version = SPS_expiration_dates_versions.get(sps_dateiso_items[len(sps_dateiso_items)-1])
-    valid_versions = [min_version, max_version]
+    if article_dateiso <= SPS_expiration_dates[-1][1][0]:
+        # qualquer versao
+        return [item[0] for item in SPS_expiration_dates]
 
-    if article_datetime is not None:
-        diff = SPS_MIN_DATE - article_datetime
-        if diff.days > 0:
-            # data do artigo é antiga, anterior a 2012
-            # permitido qualquer versão
-            valid_versions = [item for item in SPS_expiration_dates_versions.values() if item != 'pre-sps']
-        else:
-            i = 0
-            k = 0
-            for sps_datetime in sps_datetime_items:
-                diff = article_datetime - sps_datetime
-                if diff.days < 0:
-                    valid_versions = []
-                    for k in range(i, len(sps_dateiso_items)):
-                        _sps_value = SPS_expiration_dates_versions.get(sps_dateiso_items[k])
-                        if _sps_value == 'pre-sps':
-                            _sps_value = 'None'
-                        valid_versions.append(_sps_value)
-                    break
-                i += 1
-    return list(set(sorted(valid_versions)))
+    valid_versions = []
+    for version, dates in SPS_expiration_dates:
+        if dates[0] <= article_dateiso <= dates[1]:
+            valid_versions.append(version)
+    return valid_versions
 
 
 def sps_current_versions():
-    sps_dateiso_items = sorted(SPS_expiration_dates_versions.keys())
-    sps_dateiso_items.reverse()
-    currents = []
-    for item in sps_dateiso_items[:2]:
-        currents.append(SPS_expiration_dates_versions.get(item))
-    return list(set(sorted(currents)))
+    return [item[0] for item in SPS_expiration_dates[:2]]
 
 
 def sps_version_expiration_days(sps_version):
     days = None
-    if sps_version is None:
-        sps_version = 'pre-sps'
-    sps_version_datetime = SPS_versions_expiration_dates.get(sps_version)
-    if sps_version_datetime is not None:
-        sps_version_datetime = article_utils.dateiso2datetime(sps_version_datetime)
+    sps_dates = dict_SPS_expiration_dates.get(sps_version)
+    if sps_dates is not None:
+        sps_dates = article_utils.dateiso2datetime(sps_dates[1])
         now = datetime.now()
-        diff = sps_version_datetime - now
+        diff = sps_dates - now
         days = diff.days
     return days
 
