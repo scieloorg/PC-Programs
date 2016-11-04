@@ -549,7 +549,8 @@ class ArticlesMerger(object):
             action, old_name, conflicts = self.analyze_pkg_article(name, article)
             if conflicts is not None:
                 self._conflicts[name] = conflicts
-            self._actions[name] = action
+            if action is not None:
+                self._actions[name] = action
 
             if action == 'update' and pkg_article.marked_to_delete:
                 self._exclusions.append(name)
@@ -569,12 +570,10 @@ class ArticlesMerger(object):
         return self._merged_articles
 
     def merge(self):
-        #FIXME
         self.analyze_pkg_articles()
         self.update_articles()
 
     def update_articles(self):
-        #FIXME
         self.history_items = {}
         self.history_items = {name: [(_('registered article'), article)] for name, article in self.registered_articles.items()}
 
@@ -582,68 +581,23 @@ class ArticlesMerger(object):
             self.history_items[name].append((_('excluded article'), self._merged_articles[name]))
             del self._merged_articles[name]
 
+        for name, article in self.pkg_articles.items():
+            self.history_items[name].append((_('package'), article))
+
         for previous_name, name in self._name_changes.items():
-            self.history_items[previous_name].append((_('excluded article'), self._merged_articles[previous_name]))
             self.history_items[previous_name].append((_('replaced by'), self.pkg_articles[name]))
             self.history_items[name].append((_('replaces'), self._merged_articles[previous_name]))
             del self._merged_articles[previous_name]
 
         for name, article in self.pkg_articles.items():
-            if self._actions.get(name) in ['update', 'name change', 'order change, name change', 'add', 'order change']:
-
+            action = self._actions.get(name)
+            if name in self._conflicts.keys():
+                action = 'reject'
+            if action in ['reject', None]:
+                self.history_items[name].append((_('rejected update'), self._merged_articles[name]))
+            else:
                 self._merged_articles[name] = self.pkg_articles[name]
                 self.history_items[name].append((_('converted article'), self._merged_articles[name]))
-        print(self._merged_articles)
-
-    def _update_articles(self):
-        #FIXME
-        items = {name: article.order for name, article in articles.items()}
-        # ['update', 'name change', 'order change, name change', 'add', 'order change']
-        # update: exclude name (1)
-        # name change: exclude name (1); item[name] = order (2)
-        # order change, name change: exclude name (1); item[name] = order (2)
-        # add: item[name] = order (2)
-        # order change: item[name] = order (2)
-        for name in self.excluded_names:
-            del items[name]
-        for name in self.name_changes.keys():
-            del items[name]
-        for name, actions in self.actions_data.items():
-            if actions[0] in ['name change', 'order change, name change', 'add', 'order change']:
-                items[name] = self.pkg_articles[name].order
-        orders = {}
-        for name, order in items.items():
-            if not order in orders.keys():
-                orders[order] = []
-            orders[order].append(name)
-
-        return {order: names for order, names in orders.items() if len(names) > 1}
-
-    def _update_history(self):
-        self.history_items = {}
-        self.history_items = {name: [(_('registered article'), article)] for name, article in self.registered_articles.items()}
-
-        for name in self.excluded_names:
-            self.history_items[name].append((_('excluded article'), self._merged_articles[name]))
-            del self._merged_articles[name]
-
-        for previous_name, name in self.name_changes.items():
-            self.history_items[previous_name].append((_('excluded article'), self._merged_articles[previous_name]))
-            del self._merged_articles[previous_name]
-            self.history_items[previous_name].append((_('replaced by'), self.pkg_articles[name]))
-
-        for name, actions in self.actions_data.items():
-            if actions[0] in ['update', 'name change', 'order change, name change', 'add', 'order change']:
-                if name in self.name_changes.values():
-                    old = [k for k, v in self.name_changes.items() if v == name]
-                    self.history_items[name].append((_('replaces article'), self.registered_articles[old[0]]))
-                if name in self._merged_articles.keys():
-                    if self._merged_articles[name].order != self.pkg_articles[name].order:
-                        self.order_changes[name] = (self._merged_articles[name].order, self.pkg_articles[name].order)
-                if self.pkg_articles[name].order 
-                self._merged_articles[name] = self.pkg_articles[name]
-                self.history_items[name].append((_('converted article'), self._merged_articles[name]))
-        print(self._merged_articles)
 
     def registered_data_conflicts_report(self):
         merging_errors = []
@@ -657,6 +611,7 @@ class ArticlesMerger(object):
         return ''.join(merging_errors)
 
     def order_conflicts_reports(self):
+        #FIXME
         if len(self.orders_conflicts) == 0:
             return ''
         return display_order_conflicts(self.orders_conflicts)
@@ -672,6 +627,7 @@ class ArticlesMerger(object):
         return len(self.pkg_articles)
 
     def orders_conflicts(self, articles):
+        #FIXME
         orders = {}
         for name, article.order in articles.items():
             if not article.order in orders.keys():
@@ -705,8 +661,9 @@ class ArticlesMerger(object):
 
     @property
     def orders_change_report(self):
+        #FIXME
         r = []
-        if len(self.order_changes) > 0:
+        if len(self._order_changes) > 0:
             r.append(html_reports.tag('h3', _('Orders changes')))
             for name, changes in self.order_changes.items():
                 for change in changes:
