@@ -56,7 +56,7 @@ class ArticleDisplayReport(object):
             r += self.toc_section
             r += self.article_type
             r += self.display_titles()
-            r += self.doi
+            r += self.article_id
             r += self.article_id_other
             r += self.previous_article_pid
             r += self.order
@@ -158,8 +158,11 @@ class ArticleDisplayReport(object):
         return self.display_labeled_value('order', self.article.order, 'order')
 
     @property
-    def doi(self):
-        return self.display_labeled_value('doi', self.article.doi, 'doi')
+    def article_id(self):
+        if self.article.doi is not None:
+            return self.display_labeled_value('doi', self.article.doi, 'doi')
+        if self.article.publisher_article_id is not None:
+            return self.display_labeled_value('article-id (publisher)', self.article.publisher_article_id, 'doi')
 
     @property
     def fpage(self):

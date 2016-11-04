@@ -467,6 +467,7 @@ class ArticleContentValidation(object):
             items.append(self.toc_section)
             items.append(self.order)
             items.append(self.doi)
+            items.append(self.article_id)
             items.append(self.pagination)
             items.append(self.total_of_pages)
             items.append(self.total_of_equations)
@@ -758,6 +759,11 @@ class ArticleContentValidation(object):
     @property
     def trans_languages(self):
         return article_utils.display_values('trans languages', self.article.trans_languages)
+
+    @property
+    def article_id(self):
+        if self.article.article_id is None:
+            return ('article-id', validation_status.STATUS_ERROR, _('{label} is required. ').format(label=_(' or ').join(['article-id[@pub-id-type=\"doi\"]', 'article-id[@pub-id-type=\"publisher-id\"]'])))
 
     @property
     def doi(self):
