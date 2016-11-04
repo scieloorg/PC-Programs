@@ -19,14 +19,6 @@ _MONTHS = {v: k for k, v in MONTHS.items()}
 MONTHS_ABBREV = '|' + '|'.join([_MONTHS[k] for k in sorted(_MONTHS.keys()) if k != '00']) + '|'
 
 
-def display_date(dateiso):
-    if dateiso is None:
-        dateiso = ''
-    else:
-        dateiso = dateiso[0:4] + '/' + dateiso[4:6] + '/' + dateiso[6:8]
-    return dateiso
-
-
 def dateiso2datetime(dateiso):
     r = None
     if dateiso is not None:

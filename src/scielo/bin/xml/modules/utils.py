@@ -12,14 +12,17 @@ def now():
     return now.split(' ')
 
 
-def display_datetime(dateiso, timeiso):
-    y = dateiso[0:4]
-    md = dateiso[4:]
-    y = y + '-' + '-'.join([md[i*2:i*2+2] for i in range(0, 2)])
+def display_datetime(dateiso, timeiso=None):
+    if dateiso is None:
+        return ''
+    y = dateiso[:4]
+    m = dateiso[4:6]
+    d = dateiso[6:8]
+    r = '/'.join([item for item in [d, m, y] if int(item) > 0])
     if timeiso is not None:
         if len(timeiso) > 0:
-            y += ' ' + ':'.join([timeiso[i*2:i*2+2] for i in range(0, 2)])
-    return y
+            r += ' ' + ':'.join([timeiso[i*2:i*2+2] for i in range(0, 2)])
+    return r
 
 
 def is_similar(text, items, min_rate=0.8):

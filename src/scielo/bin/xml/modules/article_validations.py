@@ -444,8 +444,7 @@ class ArticleContentValidation(object):
         #utils.debugging(datetime.now().isoformat() + ' validations 1')
         items = []
         items.append(self.sps)
-        if self.expiration_sps is not None:
-            items.append(self.expiration_sps)
+        items.append(self.expiration_sps)
         items.append(self.language)
         items.append(self.languages)
         items.append(self.article_type)
@@ -528,31 +527,41 @@ class ArticleContentValidation(object):
 
     @property
     def sps(self):
+        version = str(self.article.sps)
         label = 'article/@specific-use'
         status = validation_status.STATUS_INFO
-        msg = str(self.article.sps)
+        msg = version
 
-        r = []
+        if version in attributes.sps_current_versions():
+            return [(label, status, msg)]
 
         article_dateiso = self.article.article_pub_dateiso
         if article_dateiso is None:
             article_dateiso = self.article.issue_pub_dateiso
+        if article_dateiso is None:
+            return [(label, validation_status.STATUS_ERROR, _('Unable to validate sps version because article has no publication date. '))]
 
-        if article_dateiso is not None:
-            current_versions = attributes.sps_current_versions()
-            if not str(self.article.sps) in current_versions:
-                expected_values = attributes.expected_sps_versions(article_dateiso)
-                if not str(self.article.sps) in expected_values:
-                    status = validation_status.STATUS_ERROR
-                    msg = invalid_value_message(self.article.sps, label, ', '.join(current_versions))
-        r.append((label, status, msg))
-        return r
+        expected_versions = list(set(attributes.expected_sps_versions(article_dateiso) + attributes.sps_current_versions()))
+        expected_versions.sort()
+
+        if version in expected_versions:
+            status = validation_status.STATUS_INFO
+            msg = _('For articles published on {pubdate}, {sps_version} is valid. ').format(pubdate=utils.display_datetime(article_dateiso, None), sps_version=version)
+        else:
+            status = validation_status.STATUS_ERROR
+            msg = _('For articles published on {pubdate}, {sps_version} is not valid. ').format(pubdate=utils.display_datetime(article_dateiso, None), sps_version=version) + _('Expected SPS versions for this article: {sps_versions}. ').format(sps_versions=_(' or ').join(expected_versions))
+        return [(label, status, msg)]
 
     @property
     def expiration_sps(self):
-        days = attributes.sps_version_expiration_days(self.article.sps)
-        if days > 0 and days < (365/2):
-            return [('sps version', validation_status.STATUS_INFO, _('{version} expires in {days} days. ').format(version=self.article.sps, days=days))]
+        version = str(self.article.sps)
+        days = attributes.sps_version_expiration_days(version)
+        if days is None:
+            return [(_('sps expiration date'), validation_status.STATUS_WARNING, _('Unable to identify expiration date of SPS version={version}. ').format(version=version))]
+        if days < 0:
+            return [(_('sps expiration date'), validation_status.STATUS_INFO, _('{version} has expired {days} days ago. ').format(version=version, days=-1 * days))]
+        if days > 0:
+            return [(_('sps expiration date'), validation_status.STATUS_INFO, _('{version} expires in {days} days. ').format(version=version, days=days))]
 
     @property
     def language(self):
