@@ -202,8 +202,8 @@ class ArticlesConversion(object):
     def aop_report(self, status, status_items):
         if status_items is None:
             return ''
+        r = ''
         if len(status_items) > 0:
-            r = html_reports.tag('h3', _(status))
             labels = []
             widths = {}
             if status == 'aop':
