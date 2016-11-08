@@ -12,6 +12,7 @@ import html_reports
 import dbm_isis
 import xc_models
 import article_validations
+import article_reports
 import pkg_validations
 import serial_files
 import xml_utils
@@ -92,7 +93,6 @@ class ArticlesConversion(object):
             scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
-            print(self.db.db_conversion_status)
             for name, message in self.db.articles_conversion_messages.items():
                 self.articles_conversion_validations[name] = pkg_validations.ValidationsResult()
                 self.articles_conversion_validations[name].message = message
@@ -110,8 +110,19 @@ class ArticlesConversion(object):
     @property
     def conversion_report(self):
         #resulting_orders
-        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results'), _('achieved results')]
-        widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('expected results'): '20',  _('achieved results'): '20'}
+        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')]
+        widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('executed actions'): '20',  _('achieved results'): '20'}
+
+        #print(self.articles_merger.history_items)
+        for status, status_items in self.aop_status.items():
+            for status_data in status_items:
+                if status != 'aop':
+                    name = status_data
+                    article = self.articles_merger.xc_articles[name]
+                    self.articles_merger.history_items[name].append((status, article))
+        for status, names in self.conversion_status.items():
+            for name in names:
+                self.articles_merger.history_items[name].append((status, self.articles_merger.xc_articles[name]))
 
         history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.articles_merger.history_items.items()])
         history = [(xml_name, self.articles_merger.history_items[xml_name]) for order, xml_name in history]
@@ -119,17 +130,14 @@ class ArticlesConversion(object):
         items = []
         for xml_name, hist in history:
             values = []
-            values.append(pkg_validations.display_article_data_in_toc(hist[-1][1]))
-            values.append(pkg_validations.article_history([item for item in hist if item[0] == _('registered article')]))
-            values.append(pkg_validations.article_history([item for item in hist if item[0] == _('package article')]))
-            values.append(pkg_validations.article_history([item for item in hist if not item[0] in [_('registered article'), _('package article')]]))
+            values.append(article_reports.display_article_data_in_toc(hist[-1][1]))
+            values.append(article_reports.article_history([item for item in hist if item[0] == 'registered article']))
+            values.append(article_reports.article_history([item for item in hist if item[0] == 'package']))
+            values.append(article_reports.article_history([item for item in hist if not item[0] in ['registered article', 'package', 'rejected', 'converted', 'not converted']]))
+            values.append(article_reports.article_history([item for item in hist if item[0] in ['rejected', 'converted', 'not converted']]))
 
-            res = ''
-            if xml_name in self.articles_conversion_validations.keys():
-                res = self.articles_conversion_validations[xml_name].message
-            values.append(res)
             items.append(pkg_validations.label_values(labels, values))
-        return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results'), _('achieved results')], widths=widths)
+        return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')], widths=widths)
 
     @property
     def registered_articles(self):
@@ -182,10 +190,48 @@ class ArticlesConversion(object):
 
     @property
     def aop_status_report(self):
-        r = _('this journal has no aop. ')
-        if len(self.aop_status.get('aop', {})) > 0:
-            r = html_reports.format_html_data(self.aop_status.get('aop', {}))
-        return html_reports.tag('h3', _('AOP Articles')) + r
+        if len(self.aop_status) == 0:
+            return _('this journal has no aop. ')
+        r = ''
+        for status in sorted(self.aop_status.keys()):
+            if status != 'aop':
+                r += self.aop_report(status, self.aop_status[status])
+        r += self.aop_report('aop', self.aop_status.get('aop'))
+        return r
+
+    def aop_report(self, status, status_items):
+        if status_items is None:
+            return ''
+        if len(status_items) > 0:
+            r = html_reports.tag('h3', _(status))
+            labels = []
+            widths = {}
+            if status == 'aop':
+                labels = [_('issue')]
+                widths = {_('issue'): '5'}
+            labels.extend([_('filename'), 'order', _('article')])
+            widths.update({_('filename'): '5', 'order': '2', _('article'): '88'})
+
+            report_items = []
+            for item in status_items:
+                issueid = None
+                article = None
+                if status == 'aop':
+                    issueid, name, article = item
+                else:
+                    name = item
+                    article = self.articles_merger.merged_articles.get(name)
+                if article is not None:
+                    if not article.is_ex_aop:
+                        values = []
+                        if issueid is not None:
+                            values.append(issueid)
+                        values.append(name)
+                        values.append(article.order)
+                        values.append(article.title)
+                        report_items.append(pkg_validations.label_values(labels, values))
+            r = html_reports.tag('h3', _(status)) + html_reports.sheet(labels, report_items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
+        return r
 
     @property
     def conclusion_message(self):

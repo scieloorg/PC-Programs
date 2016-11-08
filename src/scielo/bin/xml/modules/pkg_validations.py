@@ -544,6 +544,7 @@ class ArticlesMerger(object):
         self._conflicts = {}
         self._actions = {}
         self._name_changes = {}
+        self.order_changes = {}
 
         for name, article in self.pkg_articles.items():
             action, old_name, conflicts = self.analyze_pkg_article(name, article)
@@ -551,14 +552,13 @@ class ArticlesMerger(object):
                 self._conflicts[name] = conflicts
             if action is not None:
                 self._actions[name] = action
-
-            if action == 'update' and pkg_article.marked_to_delete:
+            if action == 'update' and article.marked_to_delete:
                 self._exclusions.append(name)
             if old_name is not None:
                 self._name_changes[old_name] = name
             if name in self.registered_articles.keys():
                 if article.order != self.registered_articles[name].order:
-                    self._order_changes[name] = (self.registered_articles[name].order, article.order)
+                    self.order_changes[name] = (self.registered_articles[name].order, article.order)
 
     def analyze_pkg_article(self, name, pkg_article):
         registered_titaut, registered_name, registered_order = self.registered_articles.search_articles(name, pkg_article)
@@ -570,34 +570,48 @@ class ArticlesMerger(object):
         return self._merged_articles
 
     def merge(self):
-        self.analyze_pkg_articles()
+        self.analyze_pkg()
         self.update_articles()
 
     def update_articles(self):
         self.history_items = {}
-        self.history_items = {name: [(_('registered article'), article)] for name, article in self.registered_articles.items()}
+        # starts history with registered articles data
+        self.history_items = {name: [('registered article', article)] for name, article in self.registered_articles.items()}
 
+        # exclude registered items
         for name in self._exclusions:
-            self.history_items[name].append((_('excluded article'), self._merged_articles[name]))
+            self.history_items[name].append(('excluded article', self._merged_articles[name]))
             del self._merged_articles[name]
 
+        # indicates package articles reception
         for name, article in self.pkg_articles.items():
-            self.history_items[name].append((_('package'), article))
+            if not name in self.history_items.keys():
+                self.history_items[name] = []
+            self.history_items[name].append(('package', article))
 
+        # indicates names changes, and exclude old names
         for previous_name, name in self._name_changes.items():
-            self.history_items[previous_name].append((_('replaced by'), self.pkg_articles[name]))
-            self.history_items[name].append((_('replaces'), self._merged_articles[previous_name]))
+            self.history_items[previous_name].append(('replaced by', self.pkg_articles[name]))
+
+            self.history_items[name].append(('replaces', self._merged_articles[previous_name]))
             del self._merged_articles[previous_name]
 
+        # merge pkg and registered, considering some of them are rejected
+        orders_to_check = []
         for name, article in self.pkg_articles.items():
             action = self._actions.get(name)
             if name in self._conflicts.keys():
                 action = 'reject'
-            if action in ['reject', None]:
-                self.history_items[name].append((_('rejected update'), self._merged_articles[name]))
-            else:
-                self._merged_articles[name] = self.pkg_articles[name]
-                self.history_items[name].append((_('converted article'), self._merged_articles[name]))
+            if not action in ['reject', None]:
+                if name in self._merged_articles.keys():
+                    if not self._merged_articles[name].order == self.pkg_articles[name].order:
+                        self._merged_articles[name] = self.pkg_articles[name]
+                else:
+                    self._merged_articles[name] = self.pkg_articles[name]
+
+        #for name, article in self.merged_articles.items():
+        #    if article.order in self.orders_conflicts(self.merged_articles).keys() or self._actions.get(name) in ['reject', None]:
+        #        self.history_items[name].append(('rejected', self._merged_articles[name]))
 
     def registered_data_conflicts_report(self):
         merging_errors = []
@@ -605,21 +619,15 @@ class ArticlesMerger(object):
             for name, conflicts in self._conflicts.items():
                 articles = [self.pkg_articles[name]]
                 articles.extend(conflicts.values())
-                labels = [_('package')]
+                labels = ['package']
                 labels.extend(conflicts.keys())
                 merging_errors += display_conflicting_data(articles, labels)
         return ''.join(merging_errors)
 
-    def order_conflicts_reports(self):
-        #FIXME
-        if len(self.orders_conflicts) == 0:
-            return ''
-        return display_order_conflicts(self.orders_conflicts)
-
     @property
     def validations(self):
         v = ValidationsResult()
-        v.message = ''.join([self.order_conflicts_reports() + self.registered_data_conflicts_report()])
+        v.message = ''.join([display_order_conflicts(self.orders_conflicts(self.merged_articles)) + self.registered_data_conflicts_report()])
         return v
 
     @property
@@ -627,18 +635,15 @@ class ArticlesMerger(object):
         return len(self.pkg_articles)
 
     def orders_conflicts(self, articles):
-        #FIXME
         orders = {}
-        for name, article.order in articles.items():
+        for name, article in articles.items():
             if not article.order in orders.keys():
                 orders[article.order] = []
             orders[article.order].append(name)
-
         return {order: names for order, names in orders.items() if len(names) > 1}
 
     @property
     def excluded_orders(self):
-        #FIXME
         items = {}
         orders = [article.order for article in self._merged_articles.values()]
         for name, article in self.registered_articles.items():
@@ -661,9 +666,8 @@ class ArticlesMerger(object):
 
     @property
     def orders_change_report(self):
-        #FIXME
         r = []
-        if len(self._order_changes) > 0:
+        if len(self.order_changes) > 0:
             r.append(html_reports.tag('h3', _('Orders changes')))
             for name, changes in self.order_changes.items():
                 for change in changes:
@@ -682,37 +686,6 @@ class ArticlesMerger(object):
         if len(r) > 0:
             r = html_reports.tag('h2', _('Changes Report')) + r
         return r
-
-    @property
-    def conversion_simulation_summary_report(self):
-        #resulting_orders
-        labels = [_('registered') + '/' + _('before conversion'), _('package'), _('expected results after conversion')]
-        widths = {_('registered') + '/' + _('before conversion'): '33', _('package'): '33', _('expected results after conversion'): '33'}
-
-        values = []
-        values.append([article.order + ': ' + name for name, article in articles_sorted_by_order(self.registered_articles)])
-        values.append([article.order + ': ' + name for name, article in articles_sorted_by_order(self.pkg_articles)])
-        values.append([article.order + ': ' + name for name, article in articles_sorted_by_order(self._merged_articles)])
-        return html_reports.tag('h2', _('Simulated Conversion Summary Report')) + html_reports.sheet(labels, [label_values(labels, values)], widths=widths)
-
-    @property
-    def simulated_conversion_report(self):
-        #resulting_orders
-        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results')]
-        widths = {_('article'): '25', _('registered') + '/' + _('before conversion'): '25', _('package'): '25', _('expected results'): '25'}
-
-        history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.history_items.items()])
-        history = [(xml_name, self.history_items[xml_name]) for order, xml_name in history]
-
-        items = []
-        for xml_name, hist in history:
-            values = []
-            values.append(display_article_data_in_toc(hist[-1][1]))
-            values.append(article_history([item for item in hist if item[0] == _('registered article')]))
-            values.append(article_history([item for item in hist if item[0] == _('package article')]))
-            values.append(article_history([item for item in hist if not item[0] in [_('registered article'), _('package article')]]))
-            items.append(label_values(labels, values))
-        return html_reports.tag('h2', _('Conversions Report')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results')], widths=widths)
 
 
 class ArticlesSetValidations(object):
@@ -1127,7 +1100,6 @@ class ArticlesSetValidations(object):
     @property
     def journal_issue_header_report(self):
         merged_articles_common_data = ''
-        print(self.merged_articles_common_data)
         for label, values in self.merged_articles_common_data.items():
             if len(values.keys()) == 1:
                 merged_articles_common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
@@ -1275,9 +1247,9 @@ class ReportsMaker(object):
         filename = report_path + '/' + report_filename
         if not os.path.isdir(report_path):
             os.makedirs(report_path)
-        if os.path.isfile(filename):
-            bkp_filename = report_path + '/' + report_filename + '-'.join(utils.now()) + '.html'
-            shutil.copyfile(filename, bkp_filename)
+        #if os.path.isfile(filename):
+        #    bkp_filename = report_path + '/' + report_filename + '-'.join(utils.now()) + '.html'
+        #    shutil.copyfile(filename, bkp_filename)
 
         html_reports.save(filename, report_title, self.content)
         msg = _('Saved report: {f}').format(f=filename)
@@ -1461,31 +1433,6 @@ def rst_title(title):
     return '\n\n' + title + '\n' + '-'*len(title) + '\n'
 
 
-def display_article_data_in_toc(_article):
-    r = ''
-    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article. ') if _article.is_ex_aop else ''
-    r += html_reports.p_message(status)
-    r += html_reports.tag('p', _article.toc_section, 'toc-section')
-    r += html_reports.tag('p', _article.article_type, 'article-type')
-    r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
-    r += html_reports.tag('p', _article.doi, 'doi')
-    r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
-    r += html_reports.tag('p', article_reports.display_authors(_article.article_contrib_items, '; '))
-    return r
-
-
-def display_article_data_to_compare(_article):
-    r = ''
-    style = 'excluded' if _article.is_ex_aop else None
-    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article. ') if _article.is_ex_aop else ''
-    r += html_reports.p_message(status)
-    r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
-    r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
-    r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
-    r += html_reports.tag('p', article_reports.display_authors(_article.article_contrib_items, '<br/>'))
-    return html_reports.tag('div', r, style)
-
-
 def compare_articles(article1, article2, label1='article 1', label2='article 2'):
     labels = [_('titles'), _('authors'), _('body')]
     validations = []
@@ -1524,15 +1471,17 @@ def display_articles_differences(status, comparison_result, label1='article 1', 
 
 
 def display_conflicting_data(articles, labels):
-    values = [display_article_data_to_compare(article) for article in articles]
+    values = [article_reports.display_article_data_to_compare(article) for article in articles]
     return html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
 
 
 def display_order_conflicts(orders_conflicts):
     r = []
-    for order, names in orders_conflicts.items():
-        r.append(html_reports.tag('h3', order))
-        r.append(html_reports.format_html_data(names))
+    if len(orders_conflicts) > 0:
+        html_reports.tag('h2', _('Order conflicts'))
+        for order, names in orders_conflicts.items():
+            r.append(html_reports.tag('h3', order))
+            r.append(html_reports.format_html_data(names))
     return ''.join(r)
 
 
@@ -1554,20 +1503,6 @@ def toc_extended_report(articles):
                 if last_update_display[:10] == datetime.now().isoformat()[:10]:
                     last_update_display = html_reports.tag('span', last_update_display, 'report-date')
                 values.append(last_update_display)
-                values.append(display_article_data_in_toc(article))
+                values.append(article_reports.display_article_metadata(article))
                 items.append(label_values(labels, values))
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)
-
-
-def article_history(articles):
-    r = []
-    for status, article in articles:
-        text = []
-        text.append(html_reports.tag('h4', status))
-        text.append(html_reports.display_label_value(_('name'), article.xml_name, 'p'))
-        text.append(html_reports.display_label_value('order', article.order, 'p'))
-        if article.creation_date_display is not None:
-            text.append(html_reports.display_label_value(_('creation date'), article.creation_date_display, 'p'))
-            text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
-        r.append(html_reports.tag('div', ''.join(text), 'hist-' + status))
-    return ''.join(r)

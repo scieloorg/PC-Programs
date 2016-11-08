@@ -754,12 +754,17 @@ class ArticlesManager(object):
                 status = 'excluded ex-aop' if status is True else 'not excluded ex-aop'
                 if not status in status_items.keys():
                     status_items[status] = []
-                status_items[status].append(name)
+                status_items[status].append((self.articles_orders[name], name))
         for name, status in self.articles_aop_status.items():
             if status is not None:
                 if not status in status_items.keys():
                     status_items[status] = []
-                status_items[status].append(name)
+                status_items[status].append((self.articles_orders[name], name))
+        for k in status_items.keys():
+            status_items[k].sort()
+        for k in status_items.keys():
+            status_items[k] = [item[1] for item in status_items[k]]
+
         status_items['aop'] = self.aop_db_manager.still_aop_items()
         return status_items
 
@@ -768,12 +773,13 @@ class ArticlesManager(object):
         self.articles_aop_status = {}
         self.articles_aop_exclusion_status = {}
         self.articles_conversion_messages = {}
-
+        self.articles_orders = {}
         scilista_items = []
 
         error = False
 
         for xml_name, article in articles.items():
+            self.articles_orders[xml_name] = article.order
             article_converted, excluded_aop, messages, aop_status = self.convert_article(article, i_record)
             self.articles_conversion_status[xml_name] = article_converted
             self.articles_aop_exclusion_status[xml_name] = excluded_aop
@@ -1018,13 +1024,16 @@ class AopManager(object):
             return self.aop_db_items.get(issueid, self.ex_aop_db_items.get(issueid)).registered_articles.get(xml_name)
 
     def still_aop_items(self):
-        r = {}
+        articles = []
         for issue_id in sorted(self.aop_db_items.keys()):
-            r[issue_id] = []
+            items = []
             for xml_name, article in self.aop_db_items[issue_id].registered_articles.items():
-                r[issue_id].append(article.order + ' | ' + xml_name + ' | ' + article.title)
-            r[issue_id].sort()
-        return r
+                items.append((article.order, xml_name))
+            items.sort()
+
+            for order, xml_name in items:
+                articles.append((issue_id, xml_name, self.aop_db_items[issue_id].registered_articles[xml_name]))
+        return articles
 
     def name(self, db_filename):
         return os.path.basename(db_filename)
@@ -1039,7 +1048,7 @@ class AopManager(object):
 
     def get_validated_aop(self, article):
         found_aop = None
-        status = 'regular doc'
+        status = 'article was not published ahead of print'
         messages = []
         if self.journal_has_aop():
             found_aop = self.find_aop(article.article_id, article.xml_name)
@@ -1048,7 +1057,7 @@ class AopManager(object):
                 messages = self.check_aop_message(article, found_aop, status)
                 if not status in ['matched aop', 'partially matched aop']:
                     found_aop = None
-        #status = (status in ['matched aop', 'partially matched aop', 'regular doc'])
+        #status = (status in ['matched aop', 'partially matched aop', 'article was not published ahead of print'])
         return (found_aop, status, messages)
 
     def compare_article_and_aop(self, article, aop):
@@ -1088,11 +1097,11 @@ class AopManager(object):
         data = []
         msg_list = []
 
-        msg_list.append(_('Checking if {label} has an "aop version"').format(label=article.xml_name))
+        msg_list.append(_('Checking if {label} was published ahead of print').format(label=article.xml_name))
         if article.article_id is not None:
-            msg_list.append(_('Checking if {label} has an "aop version"').format(label=article.article_id))
+            msg_list.append(_('Checking if {label} was published ahead of print').format(label=article.article_id))
 
-        if status == 'regular doc':
+        if status == 'article was not published ahead of print':
             msg_list.append(validation_status.STATUS_WARNING + ': ' + _('Not found an "aop version" of this document. '))
         else:
             msg_list.append(validation_status.STATUS_INFO + ': ' + _('Found: "aop version"'))
