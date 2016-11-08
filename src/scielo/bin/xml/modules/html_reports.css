@@ -585,7 +585,7 @@ h5 {
   cursor:pointer;
   text-decoration:underline;
   color: white;
-  background-color: #55C3DC;
+  background-color: #00B4CC;
   margin: 5px;
   padding: 5px;
 }
@@ -601,7 +601,7 @@ h5 {
   cursor:pointer;
   text-decoration:underline;
   color: white;
-  background-color: #EFBDC0;
+  background-color: #008C9E;
   margin: 5px;
   padding: 5px;
 }
@@ -617,7 +617,7 @@ h5 {
   cursor:pointer;
   color: white;
   text-decoration:underline;
-  background-color: #A6D1C8;
+  background-color: #005F6B;
   margin: 5px;
   padding: 5px;
 }
@@ -715,9 +715,10 @@ h5 {
   color: #451E0F;
 }
 .hist-converted {
-  background-color: #61D2D6;
+  background-color: #68D13E;
   color: #451E0F;
 }
+
 .hist-excluded {
   background-color: #EDE5E2;
 }
@@ -725,7 +726,13 @@ h5 {
   background-color: #EA3556;
 }
 .hist-replaced {
-  background-color: #ED146F;
+  background-color: #D8C8B8;
+}
+.hist-rejected {
+  background-color: #D81A36;
+}
+.hist-not {
+  background-color: #D81A36;
 }
 .excluded {
   background-color: #B8AA95;

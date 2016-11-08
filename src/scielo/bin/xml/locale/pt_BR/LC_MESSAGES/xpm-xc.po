@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-04 10:24-0200\n"
+"POT-Creation-Date: 2016-11-08 10:12-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,18 +80,23 @@ msgstr "Arquivos no pacote"
 #: modules/article_reports.py:573 modules/article_reports.py:408
 #: modules/article_reports.py:420 modules/article_reports.py:426
 #: modules/article_reports.py:434 modules/article_reports.py:575
-#: modules/article_reports.py:576
+#: modules/article_reports.py:576 modules/pkg_validations.py:1367
+#: modules/pkg_validations.py:1015 modules/pkg_validations.py:1033
+#: modules/pkg_validations.py:1035 modules/pkg_validations.py:1039
+#: modules/pkg_validations.py:1097 modules/pkg_validations.py:1098
+#: modules/pkg_validations.py:1337 modules/pkg_validations.py:1341
+#: modules/article_reports.py:568 modules/article_reports.py:569
 msgid "why it is not a valid message?"
 msgstr "por que não é uma mensagem válida?"
 
 #: modules/article_reports.py:469 modules/article_validations.py:210
 #: modules/xmlcvrter.py:181 modules/article_reports.py:486
-#: modules/article_reports.py:489
+#: modules/article_reports.py:489 modules/article_reports.py:482
 msgid "unknown"
 msgstr "não reconhecido"
 
 #: modules/article_reports.py:541 modules/article_reports.py:558
-#: modules/article_reports.py:561
+#: modules/article_reports.py:561 modules/article_reports.py:554
 #, python-brace-format
 msgid "Reference {id}"
 msgstr "Referência {id}"
@@ -157,7 +162,9 @@ msgstr "{label} deve começar com: {expected}. "
 #: modules/article_validations.py:1030 modules/article_validations.py:1031
 #: modules/article_validations.py:1044 modules/article_validations.py:1183
 #: modules/article_validations.py:1651 modules/article_validations.py:1708
-#: modules/article_validations.py:1763
+#: modules/article_validations.py:1763 modules/pkg_validations.py:1367
+#: modules/xc_models.py:1273 modules/pkg_validations.py:1337
+#: modules/xc_models.py:1282
 msgid " or "
 msgstr " ou "
 
@@ -479,6 +486,7 @@ msgstr "{item} será considerado ahead of print. "
 #: modules/xc_models.py:592 modules/xc_models.py:601
 #: modules/pkg_validations.py:182 modules/article_validations.py:796
 #: modules/article_validations.py:805 modules/article_validations.py:811
+#: modules/xmlcvrter.py:210 modules/xmlcvrter.py:211
 msgid "issue"
 msgstr "fascículo"
 
@@ -837,6 +845,8 @@ msgstr "faltando extensão de "
 #: modules/article_validations.py:1460 modules/article_validations.py:1462
 #: modules/article_validations.py:1465 modules/article_validations.py:1500
 #: modules/article_validations.py:1504 modules/article_validations.py:1514
+#: modules/xmlcvrter.py:113 modules/xmlcvrter.py:114 modules/xmlcvrter.py:132
+#: modules/xmlcvrter.py:112 modules/xmlcvrter.py:140
 msgid "package"
 msgstr "pacote"
 
@@ -988,6 +998,7 @@ msgstr "Esta referência contém _"
 #: modules/pkg_validations.py:1502 modules/article_validations.py:1778
 #: modules/article_validations.py:1779 modules/article_validations.py:1788
 #: modules/pkg_validations.py:1496 modules/article_validations.py:1794
+#: modules/pkg_validations.py:1462 modules/pkg_validations.py:1437
 msgid "authors"
 msgstr "autores"
 
@@ -1288,20 +1299,21 @@ msgstr "Visão geral das afiliações"
 #: modules/pkg_validations.py:1044 modules/pkg_validations.py:1051
 #: modules/pkg_validations.py:1052 modules/pkg_validations.py:1050
 #: modules/pkg_validations.py:1038 modules/pkg_validations.py:1039
+#: modules/pkg_validations.py:1009 modules/pkg_validations.py:1010
 msgid "files"
 msgstr "arquivos"
 
 #: modules/pkg_reports.py:301 modules/pkg_validations.py:1041
 #: modules/pkg_validations.py:1040 modules/pkg_validations.py:1052
 #: modules/pkg_validations.py:1060 modules/pkg_validations.py:1059
-#: modules/pkg_validations.py:1047
+#: modules/pkg_validations.py:1047 modules/pkg_validations.py:1018
 msgid "references by type"
 msgstr "referências por tipo (element-citation/@publication-type)"
 
 #: modules/pkg_reports.py:310 modules/pkg_validations.py:1049
 #: modules/pkg_validations.py:1048 modules/pkg_validations.py:1060
 #: modules/pkg_validations.py:1068 modules/pkg_validations.py:1067
-#: modules/pkg_validations.py:1055
+#: modules/pkg_validations.py:1055 modules/pkg_validations.py:1026
 msgid "same sources as different types references"
 msgstr ""
 "mesmas fontes (source) com difentes tipos de referências (element-citation/"
@@ -1310,35 +1322,35 @@ msgstr ""
 #: modules/pkg_reports.py:317 modules/pkg_validations.py:1056
 #: modules/pkg_validations.py:1055 modules/pkg_validations.py:1067
 #: modules/pkg_validations.py:1075 modules/pkg_validations.py:1074
-#: modules/pkg_validations.py:1062
+#: modules/pkg_validations.py:1062 modules/pkg_validations.py:1033
 msgid "references missing source"
 msgstr "referências que não contém fonte (source)"
 
 #: modules/pkg_reports.py:319 modules/pkg_validations.py:1058
 #: modules/pkg_validations.py:1057 modules/pkg_validations.py:1069
 #: modules/pkg_validations.py:1077 modules/pkg_validations.py:1076
-#: modules/pkg_validations.py:1064
+#: modules/pkg_validations.py:1064 modules/pkg_validations.py:1035
 msgid "references missing year"
 msgstr "referências que não contém ano (year)"
 
 #: modules/pkg_reports.py:321 modules/pkg_validations.py:1060
 #: modules/pkg_validations.py:1059 modules/pkg_validations.py:1071
 #: modules/pkg_validations.py:1079 modules/pkg_validations.py:1078
-#: modules/pkg_validations.py:1066
+#: modules/pkg_validations.py:1066 modules/pkg_validations.py:1037
 msgid "references with unusual value for source"
 msgstr "referências com valor não usual para fonte (source)"
 
 #: modules/pkg_reports.py:323 modules/pkg_validations.py:1062
 #: modules/pkg_validations.py:1061 modules/pkg_validations.py:1073
 #: modules/pkg_validations.py:1081 modules/pkg_validations.py:1080
-#: modules/pkg_validations.py:1068
+#: modules/pkg_validations.py:1068 modules/pkg_validations.py:1039
 msgid "references with unusual value for year"
 msgstr "referências com valor não usual para ano (year)"
 
 #: modules/pkg_reports.py:325 modules/pkg_validations.py:1064
 #: modules/pkg_validations.py:1063 modules/pkg_validations.py:1075
 #: modules/pkg_validations.py:1083 modules/pkg_validations.py:1082
-#: modules/pkg_validations.py:1070
+#: modules/pkg_validations.py:1070 modules/pkg_validations.py:1041
 msgid "Package references overview"
 msgstr "Visão geral das referências do pacote"
 
@@ -1351,6 +1363,8 @@ msgstr "Visão geral das referências do pacote"
 #: modules/pkg_validations.py:830 modules/pkg_validations.py:838
 #: modules/pkg_validations.py:820 modules/pkg_validations.py:831
 #: modules/pkg_validations.py:839 modules/pkg_validations.py:808
+#: modules/pkg_validations.py:779 modules/pkg_validations.py:790
+#: modules/pkg_validations.py:798
 msgid "authors without aff"
 msgstr "autores sem aff"
 
@@ -1360,7 +1374,8 @@ msgstr "autores sem aff"
 #: modules/pkg_validations.py:817 modules/pkg_validations.py:833
 #: modules/pkg_validations.py:820 modules/pkg_validations.py:836
 #: modules/pkg_validations.py:837 modules/pkg_validations.py:809
-#: modules/pkg_validations.py:825
+#: modules/pkg_validations.py:825 modules/pkg_validations.py:780
+#: modules/pkg_validations.py:796
 msgid "authors with more than 1 affs"
 msgstr "autores com mais de uma aff"
 
@@ -1371,6 +1386,7 @@ msgstr "autores com mais de uma aff"
 #: modules/pkg_validations.py:821 modules/pkg_validations.py:834
 #: modules/pkg_validations.py:822 modules/pkg_validations.py:835
 #: modules/pkg_validations.py:810 modules/pkg_validations.py:823
+#: modules/pkg_validations.py:781 modules/pkg_validations.py:794
 msgid "authors with invalid xref[@ref-type=aff]"
 msgstr "autores com xref[@ref-type=aff] inválido"
 
@@ -1381,6 +1397,7 @@ msgstr "autores com xref[@ref-type=aff] inválido"
 #: modules/pkg_validations.py:822 modules/pkg_validations.py:841
 #: modules/pkg_validations.py:823 modules/pkg_validations.py:842
 #: modules/pkg_validations.py:811 modules/pkg_validations.py:830
+#: modules/pkg_validations.py:782 modules/pkg_validations.py:801
 msgid "incomplete affiliations"
 msgstr "afiliações incompletas"
 
@@ -1467,7 +1484,8 @@ msgstr "nenhum valor"
 #: modules/pkg_validations.py:1369 modules/pkg_validations.py:1373
 #: modules/pkg_validations.py:1368 modules/pkg_validations.py:1372
 #: modules/pkg_validations.py:1363 modules/pkg_validations.py:1371
-#: modules/pkg_validations.py:1375
+#: modules/pkg_validations.py:1375 modules/pkg_validations.py:1367
+#: modules/pkg_validations.py:1337 modules/pkg_validations.py:1341
 msgid "data"
 msgstr "dados"
 
@@ -1483,7 +1501,8 @@ msgstr "no XML"
 #: modules/pkg_validations.py:1369 modules/pkg_validations.py:1373
 #: modules/pkg_validations.py:1368 modules/pkg_validations.py:1372
 #: modules/pkg_validations.py:1363 modules/pkg_validations.py:1371
-#: modules/pkg_validations.py:1375
+#: modules/pkg_validations.py:1375 modules/pkg_validations.py:1367
+#: modules/pkg_validations.py:1337 modules/pkg_validations.py:1341
 msgid "registered journal data"
 msgstr "dados registrados"
 
@@ -1506,7 +1525,7 @@ msgstr "Consulte os dados registrados"
 #: modules/pkg_reports.py:683 modules/pkg_validations.py:928
 #: modules/pkg_validations.py:927 modules/pkg_validations.py:939
 #: modules/pkg_validations.py:942 modules/pkg_validations.py:943
-#: modules/pkg_validations.py:931
+#: modules/pkg_validations.py:931 modules/pkg_validations.py:902
 msgid "Checking issue data: XML files and registered data"
 msgstr "Validações de dados do fascículo: arquivos XML e dados registrados"
 
@@ -1536,7 +1555,7 @@ msgstr ": valor único de %s é obrigatório para todos os documentos no pacote"
 #: modules/pkg_reports.py:730 modules/pkg_validations.py:1121
 #: modules/pkg_validations.py:1120 modules/pkg_validations.py:1132
 #: modules/pkg_validations.py:1140 modules/pkg_validations.py:1139
-#: modules/pkg_validations.py:1127
+#: modules/pkg_validations.py:1127 modules/pkg_validations.py:1098
 msgid "Pages Report"
 msgstr "Relatório de páginas"
 
@@ -1547,7 +1566,7 @@ msgstr "Validações de consistências de dados do fascículo completo"
 #: modules/pkg_reports.py:746 modules/pkg_validations.py:1132
 #: modules/pkg_validations.py:1131 modules/pkg_validations.py:1143
 #: modules/pkg_validations.py:1151 modules/pkg_validations.py:1150
-#: modules/pkg_validations.py:1138
+#: modules/pkg_validations.py:1138 modules/pkg_validations.py:1108
 msgid "Data in the XML Files"
 msgstr "Dados encontrados nos arquivos XML"
 
@@ -1580,6 +1599,7 @@ msgstr "Validações de conteúdo"
 #: modules/pkg_reports.py:871 modules/pkg_validations.py:330
 #: modules/pkg_validations.py:331 modules/pkg_validations.py:334
 #: modules/pkg_validations.py:335 modules/pkg_validations.py:1224
+#: modules/pkg_validations.py:1194
 msgid "Converter Validations"
 msgstr "Validações do Converter"
 
@@ -1587,7 +1607,8 @@ msgstr "Validações do Converter"
 #: modules/pkg_validations.py:1397 modules/pkg_validations.py:1391
 #: modules/pkg_validations.py:1403 modules/pkg_validations.py:1411
 #: modules/pkg_validations.py:1410 modules/pkg_validations.py:1401
-#: modules/pkg_validations.py:1413
+#: modules/pkg_validations.py:1413 modules/pkg_validations.py:1409
+#: modules/pkg_validations.py:1379
 msgid ""
 "Fatal error - indicates errors which impact on the quality of the "
 "bibliometric indicators and other services"
@@ -1599,7 +1620,8 @@ msgstr ""
 #: modules/pkg_validations.py:1398 modules/pkg_validations.py:1392
 #: modules/pkg_validations.py:1404 modules/pkg_validations.py:1412
 #: modules/pkg_validations.py:1411 modules/pkg_validations.py:1402
-#: modules/pkg_validations.py:1414
+#: modules/pkg_validations.py:1414 modules/pkg_validations.py:1410
+#: modules/pkg_validations.py:1380
 msgid "Error - indicates the other kinds of errors"
 msgstr "Error - indica os demais tipos de erros"
 
@@ -1607,7 +1629,8 @@ msgstr "Error - indica os demais tipos de erros"
 #: modules/pkg_validations.py:1399 modules/pkg_validations.py:1393
 #: modules/pkg_validations.py:1405 modules/pkg_validations.py:1413
 #: modules/pkg_validations.py:1412 modules/pkg_validations.py:1403
-#: modules/pkg_validations.py:1415
+#: modules/pkg_validations.py:1415 modules/pkg_validations.py:1411
+#: modules/pkg_validations.py:1381
 msgid ""
 "Warning - indicates that something can be an error or something needs more "
 "attention"
@@ -1619,18 +1642,20 @@ msgstr "Warning - indica que algo pode ser erro ou que precisa de atenção"
 #: modules/pkg_validations.py:1370 modules/xpmaker.py:1240
 #: modules/pkg_validations.py:1378 modules/pkg_validations.py:1377
 #: modules/pkg_validations.py:1368 modules/pkg_validations.py:1380
+#: modules/pkg_validations.py:1376 modules/pkg_validations.py:1346
 msgid "Result of the processing:"
 msgstr "Resultado do processamento:"
 
 #: modules/pkg_reports.py:997 modules/pkg_validations.py:1266
 #: modules/pkg_validations.py:1265 modules/pkg_validations.py:1277
 #: modules/pkg_validations.py:1285 modules/pkg_validations.py:1284
-#: modules/pkg_validations.py:1273
+#: modules/pkg_validations.py:1273 modules/pkg_validations.py:1243
 msgid "report generated by XPM "
 msgstr "relatório gerado por XPM "
 
 #: modules/pkg_reports.py:1015 modules/xmlcvrter.py:200
 #: modules/xmlcvrter.py:203 modules/pkg_validations.py:1264
+#: modules/pkg_validations.py:1234
 msgid "Summary report"
 msgstr "Relatório resumido"
 
@@ -1645,7 +1670,7 @@ msgstr "Conversão"
 #: modules/pkg_reports.py:1018 modules/pkg_validations.py:1214
 #: modules/pkg_validations.py:1213 modules/pkg_validations.py:1225
 #: modules/pkg_validations.py:1233 modules/pkg_validations.py:1232
-#: modules/pkg_validations.py:1220
+#: modules/pkg_validations.py:1220 modules/pkg_validations.py:1190
 msgid "Files/Folders"
 msgstr "Arquivos/Pastas"
 
@@ -1662,6 +1687,8 @@ msgstr "Visão geral do pacote"
 #: modules/pkg_validations.py:1275 modules/pkg_validations.py:1283
 #: modules/xmlcvrter.py:534 modules/pkg_validations.py:1282
 #: modules/pkg_validations.py:1271 modules/xmlcvrter.py:550
+#: modules/xmlcvrter.py:553 modules/pkg_validations.py:1241
+#: modules/xmlcvrter.py:569 modules/xmlcvrter.py:599
 msgid "finished"
 msgstr "finalizado"
 
@@ -1719,6 +1746,7 @@ msgstr "Arquivo XML tem erro em seu nome"
 #: modules/pkg_validations.py:1226 modules/pkg_validations.py:238
 #: modules/pkg_validations.py:1234 modules/pkg_validations.py:239
 #: modules/pkg_validations.py:1233 modules/pkg_validations.py:1221
+#: modules/pkg_validations.py:1191
 msgid "Summary"
 msgstr "Resumo"
 
@@ -1753,6 +1781,8 @@ msgstr "{status}: arquivos XML inválidos. "
 #: modules/pkg_validations.py:692 modules/pkg_validations.py:703
 #: modules/pkg_validations.py:704 modules/pkg_validations.py:717
 #: modules/xmlcvrter.py:115 modules/xmlcvrter.py:116 modules/xmlcvrter.py:134
+#: modules/xmlcvrter.py:113 modules/xmlcvrter.py:114 modules/xmlcvrter.py:132
+#: modules/xmlcvrter.py:112 modules/xmlcvrter.py:140
 msgid "registered"
 msgstr "registrado"
 
@@ -1804,7 +1834,8 @@ msgstr "artigo registrado recuperado por título/autores"
 #: modules/pkg_validations.py:496 modules/pkg_validations.py:723
 #: modules/pkg_validations.py:497 modules/pkg_validations.py:724
 #: modules/pkg_validations.py:1565 modules/pkg_validations.py:1579
-#: modules/pkg_validations.py:1573
+#: modules/pkg_validations.py:1573 modules/pkg_validations.py:1569
+#: modules/pkg_validations.py:1541 modules/article_reports.py:618
 msgid "name"
 msgstr "nome"
 
@@ -1820,7 +1851,7 @@ msgstr "título/autores"
 #: modules/pkg_validations.py:547 modules/pkg_validations.py:550
 #: modules/pkg_validations.py:551 modules/pkg_validations.py:714
 #: modules/pkg_validations.py:715 modules/xmlcvrter.py:126
-#: modules/xmlcvrter.py:127
+#: modules/xmlcvrter.py:127 modules/xmlcvrter.py:124 modules/xmlcvrter.py:125
 msgid "package article"
 msgstr "artigo do pacote"
 
@@ -1831,7 +1862,7 @@ msgstr "artigo do pacote"
 #: modules/pkg_validations.py:589 modules/pkg_validations.py:713
 #: modules/pkg_validations.py:714 modules/pkg_validations.py:590
 #: modules/pkg_validations.py:715 modules/xmlcvrter.py:125
-#: modules/xmlcvrter.py:127
+#: modules/xmlcvrter.py:127 modules/xmlcvrter.py:123
 msgid "registered article"
 msgstr "artigo registrado"
 
@@ -1863,25 +1894,25 @@ msgstr "artigo convertido"
 
 #: modules/pkg_validations.py:645 modules/pkg_validations.py:644
 #: modules/pkg_validations.py:656 modules/pkg_validations.py:659
-#: modules/pkg_validations.py:660
+#: modules/pkg_validations.py:660 modules/pkg_validations.py:662
 msgid "Names changes"
 msgstr "Mudança de nomes"
 
 #: modules/pkg_validations.py:654 modules/pkg_validations.py:653
 #: modules/pkg_validations.py:665 modules/pkg_validations.py:668
-#: modules/pkg_validations.py:669
+#: modules/pkg_validations.py:669 modules/pkg_validations.py:671
 msgid "Orders changes"
 msgstr "Mudanças de orders"
 
 #: modules/pkg_validations.py:659 modules/pkg_validations.py:658
 #: modules/pkg_validations.py:670 modules/pkg_validations.py:673
-#: modules/pkg_validations.py:674
+#: modules/pkg_validations.py:674 modules/pkg_validations.py:676
 msgid "Orders exclusions"
 msgstr "Exclusão de orders"
 
 #: modules/pkg_validations.py:670 modules/pkg_validations.py:669
 #: modules/pkg_validations.py:681 modules/pkg_validations.py:684
-#: modules/pkg_validations.py:685
+#: modules/pkg_validations.py:685 modules/pkg_validations.py:687
 msgid "Changes Report"
 msgstr "Relatório de mudanças"
 
@@ -1910,6 +1941,12 @@ msgstr "Relatório resumido da simulação de conversão"
 #: modules/pkg_validations.py:1549 modules/pkg_validations.py:975
 #: modules/pkg_validations.py:977 modules/pkg_validations.py:1544
 #: modules/pkg_validations.py:1555 modules/pkg_validations.py:1556
+#: modules/pkg_validations.py:1545 modules/pkg_validations.py:1546
+#: modules/pkg_validations.py:946 modules/pkg_validations.py:948
+#: modules/pkg_validations.py:1517 modules/pkg_validations.py:1518
+#: modules/xmlcvrter.py:187 modules/xmlcvrter.py:188
+#: modules/pkg_validations.py:1492 modules/pkg_validations.py:1493
+#: modules/xmlcvrter.py:212 modules/xmlcvrter.py:213
 msgid "filename"
 msgstr "nome de arquivo"
 
@@ -1943,6 +1980,15 @@ msgstr "nome de arquivo"
 #: modules/xmlcvrter.py:116 modules/xmlcvrter.py:134
 #: modules/pkg_validations.py:1555 modules/pkg_validations.py:1556
 #: modules/pkg_validations.py:1571 modules/pkg_validations.py:1565
+#: modules/pkg_validations.py:1545 modules/pkg_validations.py:1561
+#: modules/xmlcvrter.py:113 modules/xmlcvrter.py:114 modules/xmlcvrter.py:132
+#: modules/pkg_validations.py:946 modules/pkg_validations.py:950
+#: modules/pkg_validations.py:1517 modules/pkg_validations.py:1518
+#: modules/pkg_validations.py:1533 modules/xmlcvrter.py:112
+#: modules/xmlcvrter.py:187 modules/xmlcvrter.py:188 modules/xmlcvrter.py:203
+#: modules/pkg_validations.py:1492 modules/pkg_validations.py:1493
+#: modules/pkg_validations.py:1508 modules/xmlcvrter.py:140
+#: modules/xmlcvrter.py:212 modules/xmlcvrter.py:213 modules/xmlcvrter.py:233
 msgid "article"
 msgstr "artigo"
 
@@ -1956,6 +2002,11 @@ msgstr "artigo"
 #: modules/pkg_validations.py:1544 modules/pkg_validations.py:1557
 #: modules/pkg_validations.py:1555 modules/pkg_validations.py:1556
 #: modules/pkg_validations.py:1571 modules/pkg_validations.py:1565
+#: modules/pkg_validations.py:1545 modules/pkg_validations.py:1546
+#: modules/pkg_validations.py:1561 modules/pkg_validations.py:1517
+#: modules/pkg_validations.py:1518 modules/pkg_validations.py:1533
+#: modules/xmlcvrter.py:203 modules/pkg_validations.py:1492
+#: modules/pkg_validations.py:1493 modules/pkg_validations.py:1508
 msgid "last update"
 msgstr "última atualização"
 
@@ -1976,6 +2027,8 @@ msgstr "Relatório de simulação de conversão"
 #: modules/pkg_validations.py:722 modules/pkg_validations.py:725
 #: modules/pkg_validations.py:726 modules/pkg_validations.py:1568
 #: modules/pkg_validations.py:1582 modules/pkg_validations.py:1576
+#: modules/pkg_validations.py:1572 modules/pkg_validations.py:1544
+#: modules/article_reports.py:623
 msgid "creation date"
 msgstr "data de criação"
 
@@ -1983,12 +2036,15 @@ msgstr "data de criação"
 #: modules/pkg_validations.py:723 modules/pkg_validations.py:726
 #: modules/pkg_validations.py:727 modules/pkg_validations.py:1569
 #: modules/pkg_validations.py:1583 modules/pkg_validations.py:1577
+#: modules/pkg_validations.py:1573 modules/pkg_validations.py:1545
+#: modules/article_reports.py:624
 msgid "last update date"
 msgstr "data de última atualização"
 
 #: modules/pkg_validations.py:911 modules/pkg_validations.py:910
 #: modules/pkg_validations.py:922 modules/pkg_validations.py:925
 #: modules/pkg_validations.py:926 modules/pkg_validations.py:914
+#: modules/pkg_validations.py:885
 #, python-brace-format
 msgid "Journal data in the XML files must be consistent with {link}"
 msgstr "Dados de periódico nos arquivos XML devem ser consistente com {link}"
@@ -1996,12 +2052,14 @@ msgstr "Dados de periódico nos arquivos XML devem ser consistente com {link}"
 #: modules/pkg_validations.py:912 modules/pkg_validations.py:911
 #: modules/pkg_validations.py:923 modules/pkg_validations.py:926
 #: modules/pkg_validations.py:927 modules/pkg_validations.py:915
+#: modules/pkg_validations.py:886
 msgid "Journal data: XML files and registered data"
 msgstr "Dados do periódico: arquivos XML e dados registrados"
 
 #: modules/pkg_validations.py:915 modules/pkg_validations.py:914
 #: modules/pkg_validations.py:926 modules/pkg_validations.py:929
 #: modules/pkg_validations.py:930 modules/pkg_validations.py:918
+#: modules/pkg_validations.py:889
 #, python-brace-format
 msgid "Validate package ({n} files)"
 msgstr "Validar pacote ({n} arquivos)"
@@ -2009,6 +2067,7 @@ msgstr "Validar pacote ({n} arquivos)"
 #: modules/pkg_validations.py:917 modules/pkg_validations.py:916
 #: modules/pkg_validations.py:928 modules/pkg_validations.py:931
 #: modules/pkg_validations.py:932 modules/pkg_validations.py:920
+#: modules/pkg_validations.py:891
 #, python-brace-format
 msgid "Previously registered: ({n} files)"
 msgstr "Registrados anteriormente: ({n} arquivos)"
@@ -2016,6 +2075,7 @@ msgstr "Registrados anteriormente: ({n} arquivos)"
 #: modules/pkg_validations.py:942 modules/pkg_validations.py:941
 #: modules/pkg_validations.py:953 modules/pkg_validations.py:956
 #: modules/pkg_validations.py:957 modules/pkg_validations.py:945
+#: modules/pkg_validations.py:916
 #, python-brace-format
 msgid "Validate {name}"
 msgstr "Validar {name}"
@@ -2040,13 +2100,15 @@ msgstr "páginas"
 #: modules/pkg_validations.py:978 modules/pkg_validations.py:985
 #: modules/pkg_validations.py:986 modules/pkg_validations.py:993
 #: modules/pkg_validations.py:987 modules/pkg_validations.py:975
-#: modules/pkg_validations.py:981
+#: modules/pkg_validations.py:981 modules/pkg_validations.py:946
+#: modules/pkg_validations.py:952
 msgid "reports"
 msgstr "relatórios"
 
 #: modules/pkg_validations.py:1016 modules/pkg_validations.py:1015
 #: modules/pkg_validations.py:1027 modules/pkg_validations.py:1035
 #: modules/pkg_validations.py:1034 modules/pkg_validations.py:1022
+#: modules/pkg_validations.py:993
 msgid "year"
 msgstr "ano"
 
@@ -2058,30 +2120,36 @@ msgstr "ano"
 #: modules/pkg_validations.py:1087 modules/pkg_validations.py:1094
 #: modules/pkg_validations.py:1034 modules/pkg_validations.py:1093
 #: modules/pkg_validations.py:1022 modules/pkg_validations.py:1081
+#: modules/pkg_validations.py:993 modules/pkg_validations.py:1045
+#: modules/pkg_validations.py:1052
 msgid "location"
 msgstr "localização"
 
 #: modules/pkg_validations.py:1025 modules/pkg_validations.py:1024
 #: modules/pkg_validations.py:1036 modules/pkg_validations.py:1044
 #: modules/pkg_validations.py:1043 modules/pkg_validations.py:1031
+#: modules/pkg_validations.py:1002
 msgid "Articles Dates Report"
 msgstr "Relatório de datas dos artigos"
 
 #: modules/pkg_validations.py:1029 modules/pkg_validations.py:1028
 #: modules/pkg_validations.py:1040 modules/pkg_validations.py:1048
 #: modules/pkg_validations.py:1047 modules/pkg_validations.py:1035
+#: modules/pkg_validations.py:1006
 msgid "Affiliations Report"
 msgstr "Relatório de afiliações"
 
 #: modules/pkg_validations.py:1093 modules/pkg_validations.py:1092
 #: modules/pkg_validations.py:1104 modules/pkg_validations.py:1112
 #: modules/pkg_validations.py:1111 modules/pkg_validations.py:1099
+#: modules/pkg_validations.py:1070
 msgid "no pagination was found. "
 msgstr "nenhuma informação de página foi encontrada. "
 
 #: modules/pkg_validations.py:1105 modules/pkg_validations.py:1104
 #: modules/pkg_validations.py:1116 modules/pkg_validations.py:1124
 #: modules/pkg_validations.py:1123 modules/pkg_validations.py:1111
+#: modules/pkg_validations.py:1082
 #, python-brace-format
 msgid ""
 "Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) "
@@ -2093,6 +2161,7 @@ msgstr ""
 #: modules/pkg_validations.py:1108 modules/pkg_validations.py:1107
 #: modules/pkg_validations.py:1119 modules/pkg_validations.py:1127
 #: modules/pkg_validations.py:1126 modules/pkg_validations.py:1114
+#: modules/pkg_validations.py:1085
 #, python-brace-format
 msgid ""
 "lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the "
@@ -2103,6 +2172,7 @@ msgstr ""
 #: modules/pkg_validations.py:1111 modules/pkg_validations.py:1110
 #: modules/pkg_validations.py:1122 modules/pkg_validations.py:1130
 #: modules/pkg_validations.py:1129 modules/pkg_validations.py:1117
+#: modules/pkg_validations.py:1088
 #, python-brace-format
 msgid ""
 "There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} "
@@ -2114,6 +2184,7 @@ msgstr ""
 #: modules/pkg_validations.py:1114 modules/pkg_validations.py:1113
 #: modules/pkg_validations.py:1125 modules/pkg_validations.py:1133
 #: modules/pkg_validations.py:1132 modules/pkg_validations.py:1120
+#: modules/pkg_validations.py:1091
 #, python-brace-format
 msgid "Invalid page range: {fpage} (fpage) > {lpage} (lpage). "
 msgstr "Intervalo de páginas inválido: {fpage} (fpage) > {lpage} (lpage). "
@@ -2121,6 +2192,7 @@ msgstr "Intervalo de páginas inválido: {fpage} (fpage) > {lpage} (lpage). "
 #: modules/pkg_validations.py:1138 modules/pkg_validations.py:1137
 #: modules/pkg_validations.py:1149 modules/pkg_validations.py:1157
 #: modules/pkg_validations.py:1156 modules/pkg_validations.py:1144
+#: modules/pkg_validations.py:1114
 #, python-brace-format
 msgid "{status}: missing {label} in: "
 msgstr "{status}: faltando {label} em: "
@@ -2128,6 +2200,7 @@ msgstr "{status}: faltando {label} em: "
 #: modules/pkg_validations.py:1147 modules/pkg_validations.py:1146
 #: modules/pkg_validations.py:1158 modules/pkg_validations.py:1166
 #: modules/pkg_validations.py:1165 modules/pkg_validations.py:1153
+#: modules/pkg_validations.py:1123
 #, python-brace-format
 msgid ""
 "Unique value for {label} is required for all the documents in the package"
@@ -2137,6 +2210,7 @@ msgstr ""
 #: modules/pkg_validations.py:1150 modules/pkg_validations.py:1149
 #: modules/pkg_validations.py:1161 modules/pkg_validations.py:1169
 #: modules/pkg_validations.py:1168 modules/pkg_validations.py:1156
+#: modules/pkg_validations.py:1126
 #, python-brace-format
 msgid "found {label}=\"{value}\" in:"
 msgstr "encontrado {label}=\"{value}\" em:"
@@ -2144,6 +2218,7 @@ msgstr "encontrado {label}=\"{value}\" em:"
 #: modules/pkg_validations.py:1164 modules/pkg_validations.py:1163
 #: modules/pkg_validations.py:1175 modules/pkg_validations.py:1183
 #: modules/pkg_validations.py:1182 modules/pkg_validations.py:1170
+#: modules/pkg_validations.py:1140
 #, python-brace-format
 msgid ""
 "{status}: same value for {label} is required for all the documents in the "
@@ -2155,24 +2230,28 @@ msgstr ""
 #: modules/pkg_validations.py:1178 modules/pkg_validations.py:1177
 #: modules/pkg_validations.py:1189 modules/pkg_validations.py:1197
 #: modules/pkg_validations.py:1196 modules/pkg_validations.py:1184
+#: modules/pkg_validations.py:1154
 msgid "Checking issue data consistency"
 msgstr "Verificação de consistência de dados de fascículo"
 
 #: modules/pkg_validations.py:1190 modules/pkg_validations.py:1189
 #: modules/pkg_validations.py:1201 modules/pkg_validations.py:1209
 #: modules/pkg_validations.py:1208 modules/pkg_validations.py:1196
+#: modules/pkg_validations.py:1166
 msgid "Data Conflicts Report"
 msgstr "Relatório de conflitos de dados"
 
 #: modules/pkg_validations.py:1216 modules/pkg_validations.py:1215
 #: modules/pkg_validations.py:1227 modules/pkg_validations.py:1235
 #: modules/pkg_validations.py:1234 modules/pkg_validations.py:1222
+#: modules/pkg_validations.py:1192
 msgid "Group Validations"
 msgstr "Validações do Conjunto"
 
 #: modules/pkg_validations.py:1217 modules/pkg_validations.py:1216
 #: modules/pkg_validations.py:1228 modules/pkg_validations.py:1236
 #: modules/pkg_validations.py:1235 modules/pkg_validations.py:1223
+#: modules/pkg_validations.py:1193
 msgid "Individual Validations"
 msgstr "Validações individuais"
 
@@ -2185,18 +2264,21 @@ msgstr "Conversão"
 #: modules/pkg_validations.py:1219 modules/pkg_validations.py:1218
 #: modules/pkg_validations.py:1230 modules/pkg_validations.py:1238
 #: modules/pkg_validations.py:1237 modules/pkg_validations.py:1225
+#: modules/pkg_validations.py:1195
 msgid "Affiliations"
 msgstr "Afiliações"
 
 #: modules/pkg_validations.py:1220 modules/pkg_validations.py:1219
 #: modules/pkg_validations.py:1231 modules/pkg_validations.py:1239
 #: modules/pkg_validations.py:1238 modules/pkg_validations.py:1226
+#: modules/pkg_validations.py:1196
 msgid "Dates"
 msgstr "Datas"
 
 #: modules/pkg_validations.py:1221 modules/pkg_validations.py:1220
 #: modules/pkg_validations.py:1232 modules/pkg_validations.py:1240
 #: modules/pkg_validations.py:1239 modules/pkg_validations.py:1227
+#: modules/pkg_validations.py:1197
 msgid "References"
 msgstr "Referências"
 
@@ -2209,7 +2291,7 @@ msgstr "Sumário"
 #: modules/pkg_validations.py:1277 modules/pkg_validations.py:1276
 #: modules/pkg_validations.py:1275 modules/pkg_validations.py:1287
 #: modules/pkg_validations.py:1295 modules/pkg_validations.py:1294
-#: modules/pkg_validations.py:1285
+#: modules/pkg_validations.py:1285 modules/pkg_validations.py:1255
 #, python-brace-format
 msgid "Saved report: {f}"
 msgstr "Relatório gerado: {f}"
@@ -2218,6 +2300,7 @@ msgstr "Relatório gerado: {f}"
 #: modules/pkg_validations.py:1348 modules/pkg_validations.py:1360
 #: modules/pkg_validations.py:1368 modules/pkg_validations.py:1367
 #: modules/pkg_validations.py:1358 modules/pkg_validations.py:1370
+#: modules/pkg_validations.py:1366 modules/pkg_validations.py:1336
 msgid "none"
 msgstr "nenhum"
 
@@ -2225,6 +2308,7 @@ msgstr "nenhum"
 #: modules/pkg_validations.py:1390 modules/pkg_validations.py:1402
 #: modules/pkg_validations.py:1410 modules/pkg_validations.py:1409
 #: modules/pkg_validations.py:1400 modules/pkg_validations.py:1412
+#: modules/pkg_validations.py:1408 modules/pkg_validations.py:1378
 msgid "Blocking error - indicates errors of data consistency"
 msgstr "Erro crítico - indica erros de consistência de dados"
 
@@ -2236,6 +2320,9 @@ msgstr "Erro crítico - indica erros de consistência de dados"
 #: modules/pkg_validations.py:1469 modules/pkg_validations.py:1486
 #: modules/pkg_validations.py:1460 modules/pkg_validations.py:1477
 #: modules/pkg_validations.py:1472 modules/pkg_validations.py:1489
+#: modules/pkg_validations.py:1468 modules/pkg_validations.py:1482
+#: modules/pkg_validations.py:1438 modules/pkg_validations.py:1452
+#: modules/article_reports.py:607
 msgid "This article is an ex-aop article. "
 msgstr ""
 "Este artigo é um ex-aop, isto é, está publicado em um fascículo, mas teve "
@@ -2249,17 +2336,22 @@ msgstr ""
 #: modules/pkg_validations.py:1469 modules/pkg_validations.py:1486
 #: modules/pkg_validations.py:1460 modules/pkg_validations.py:1477
 #: modules/pkg_validations.py:1472 modules/pkg_validations.py:1489
+#: modules/pkg_validations.py:1468 modules/pkg_validations.py:1482
+#: modules/pkg_validations.py:1438 modules/pkg_validations.py:1452
+#: modules/article_reports.py:607
 msgid ""
 "Order of ex-aop is reserved, it is not allowed to reuse it for other "
 "article. "
 msgstr ""
-"Order de ex-aop é reservado, não é permitido reusá-lo para outro artigo. "
+"Order de ahead of print é reservado, não é permitido reusá-lo para outro "
+"artigo. "
 
 #: modules/pkg_validations.py:1487 modules/pkg_validations.py:1486
 #: modules/pkg_validations.py:1480 modules/pkg_validations.py:1492
 #: modules/pkg_validations.py:1500 modules/pkg_validations.py:1499
 #: modules/pkg_validations.py:1490 modules/pkg_validations.py:1502
-#: modules/pkg_validations.py:1496
+#: modules/pkg_validations.py:1496 modules/pkg_validations.py:1462
+#: modules/pkg_validations.py:1437
 msgid "titles"
 msgstr "títulos"
 
@@ -2267,7 +2359,8 @@ msgstr "títulos"
 #: modules/pkg_validations.py:1480 modules/pkg_validations.py:1492
 #: modules/pkg_validations.py:1500 modules/pkg_validations.py:1499
 #: modules/pkg_validations.py:1490 modules/pkg_validations.py:1502
-#: modules/pkg_validations.py:1496
+#: modules/pkg_validations.py:1496 modules/pkg_validations.py:1462
+#: modules/pkg_validations.py:1437
 msgid "body"
 msgstr "corpo do artigo"
 
@@ -2275,7 +2368,8 @@ msgstr "corpo do artigo"
 #: modules/pkg_validations.py:1518 modules/pkg_validations.py:1530
 #: modules/pkg_validations.py:1538 modules/pkg_validations.py:1537
 #: modules/pkg_validations.py:1528 modules/pkg_validations.py:1540
-#: modules/pkg_validations.py:1534
+#: modules/pkg_validations.py:1534 modules/pkg_validations.py:1500
+#: modules/pkg_validations.py:1475
 msgid ""
 "Unable to update because the registered article data and the package article "
 "data do not match. "
@@ -2409,6 +2503,8 @@ msgstr "Excluído {item}"
 #: modules/xc_models.py:727 modules/xc_models.py:949 modules/xc_models.py:970
 #: modules/xc_models.py:723 modules/xc_models.py:945 modules/xc_models.py:966
 #: modules/xc_models.py:719 modules/xc_models.py:930 modules/xc_models.py:951
+#: modules/xc_models.py:931 modules/xc_models.py:952 modules/xc_models.py:937
+#: modules/xc_models.py:958
 #, python-brace-format
 msgid "Unable to exclude {item}. "
 msgstr "Não é possível excluir {item}. "
@@ -2424,107 +2520,128 @@ msgid "Unable to create/update {order}.id"
 msgstr "Não é possível criar/atualizar {order}.id"
 
 #: modules/xc_models.py:1107 modules/xc_models.py:1103
-#: modules/xc_models.py:1086
+#: modules/xc_models.py:1086 modules/xc_models.py:1087
+#: modules/xc_models.py:1096
 msgid "title/author"
 msgstr "título/autor"
 
 #: modules/xc_models.py:1111 modules/xc_models.py:1113
 #: modules/xc_models.py:1107 modules/xc_models.py:1109
 #: modules/xc_models.py:1090 modules/xc_models.py:1092
+#: modules/xc_models.py:1091 modules/xc_models.py:1093
+#: modules/xc_models.py:1100 modules/xc_models.py:1102
 #, python-brace-format
 msgid "Checking if {label} has an \"aop version\""
-msgstr "Verificar se {label} tem uma versão \"aop\""
+msgstr "Verificar se {label} tem uma versão \"ahead of print\""
 
 #: modules/xc_models.py:1116 modules/xc_models.py:1112
-#: modules/xc_models.py:1095
+#: modules/xc_models.py:1095 modules/xc_models.py:1096
+#: modules/xc_models.py:1105
 msgid "Not found an \"aop version\" of this document. "
-msgstr "Não encontrado uma versão \"aop\" deste documento. "
+msgstr "Não encontrado uma versão \"ahead of print\" deste documento. "
 
 #: modules/xc_models.py:1118 modules/xc_models.py:1114
-#: modules/xc_models.py:1097
+#: modules/xc_models.py:1097 modules/xc_models.py:1098
+#: modules/xc_models.py:1107
 msgid "Found: \"aop version\""
-msgstr "Encontrado uma versão \"aop\""
+msgstr "Encontrado uma versão \"ahead of print\""
 
 #: modules/xc_models.py:1120 modules/xc_models.py:1116
-#: modules/xc_models.py:1099
+#: modules/xc_models.py:1099 modules/xc_models.py:1100
+#: modules/xc_models.py:1109
 #, python-brace-format
 msgid "the {data} of article and its \"aop version\" are similar. "
-msgstr "{data} do artigo e de sua versão \"aop\" são similares. "
+msgstr "{data} do artigo e de sua versão \"ahead of print\" são similares. "
 
 #: modules/xc_models.py:1122 modules/xc_models.py:1118
-#: modules/xc_models.py:1101
+#: modules/xc_models.py:1101 modules/xc_models.py:1102
+#: modules/xc_models.py:1111
 msgid "the \"aop version\" has no PID"
-msgstr "a uma versão \"aop\" não tem PID"
+msgstr "a uma versão \"ahead of print\" não tem PID"
 
 #: modules/xc_models.py:1125 modules/xc_models.py:1121
-#: modules/xc_models.py:1104
+#: modules/xc_models.py:1104 modules/xc_models.py:1105
+#: modules/xc_models.py:1114
 #, python-brace-format
 msgid "the {data} of article and \"aop version\" are different. "
-msgstr "{data} do artigo e de sua versão \"aop\" são diferentes. "
+msgstr "{data} do artigo e de sua versão \"ahead of print\" são diferentes. "
 
 #: modules/xc_models.py:1129 modules/xc_models.py:1125
-#: modules/xc_models.py:1108
+#: modules/xc_models.py:1108 modules/xc_models.py:1109
+#: modules/xc_models.py:1118
 msgid "doc body"
 msgstr "corpo do artigo"
 
 #: modules/xc_models.py:1131 modules/xc_models.py:1127
-#: modules/xc_models.py:1110
+#: modules/xc_models.py:1110 modules/xc_models.py:1111
+#: modules/xc_models.py:1120
 msgid "aop body"
-msgstr "corpo do aop"
+msgstr "corpo do ahead of print"
 
 #: modules/xc_models.py:1134 modules/xc_models.py:1130
-#: modules/xc_models.py:1113
+#: modules/xc_models.py:1113 modules/xc_models.py:1114
+#: modules/xc_models.py:1123
 msgid "doc title"
 msgstr "título do artigo"
 
 #: modules/xc_models.py:1136 modules/xc_models.py:1132
-#: modules/xc_models.py:1115
+#: modules/xc_models.py:1115 modules/xc_models.py:1116
+#: modules/xc_models.py:1125
 msgid "aop title"
-msgstr "título do aop"
+msgstr "título do ahead of print"
 
 #: modules/xc_models.py:1138 modules/xc_models.py:1134
-#: modules/xc_models.py:1117
+#: modules/xc_models.py:1117 modules/xc_models.py:1118
+#: modules/xc_models.py:1127
 msgid "doc first author"
 msgstr "primeiro autor do artigo"
 
 #: modules/xc_models.py:1140 modules/xc_models.py:1136
-#: modules/xc_models.py:1119
+#: modules/xc_models.py:1119 modules/xc_models.py:1120
+#: modules/xc_models.py:1129
 msgid "aop first author"
-msgstr "primeiro autor do aop"
+msgstr "primeiro autor do ahead of print"
 
 #: modules/xc_models.py:1142 modules/xc_models.py:1138
-#: modules/xc_models.py:1121
+#: modules/xc_models.py:1121 modules/xc_models.py:1122
+#: modules/xc_models.py:1131
 msgid "Checking existence of aop version"
-msgstr "Verificando a existência da versão aop"
+msgstr "Verificando a existência da versão ahead of print"
 
 #: modules/xc_models.py:1162 modules/xc_models.py:1158
-#: modules/xc_models.py:1141
+#: modules/xc_models.py:1141 modules/xc_models.py:1142
+#: modules/xc_models.py:1151
 #, python-brace-format
 msgid "{item} is aop"
-msgstr "{item} é aop"
+msgstr "{item} é ahead of print"
 
 #: modules/xc_models.py:1288 modules/xc_models.py:1284
-#: modules/xc_models.py:1267
+#: modules/xc_models.py:1267 modules/xc_models.py:1268
+#: modules/xc_models.py:1277
 msgid "Unable to identify the article's issue"
 msgstr "Não é possível identificar o fascículo deste artigo"
 
 #: modules/xc_models.py:1293 modules/xc_models.py:1289
-#: modules/xc_models.py:1272
+#: modules/xc_models.py:1272 modules/xc_models.py:1273
+#: modules/xc_models.py:1282
 msgid "Issue "
 msgstr "Fascículo "
 
 #: modules/xc_models.py:1293 modules/xc_models.py:1289
-#: modules/xc_models.py:1272
+#: modules/xc_models.py:1272 modules/xc_models.py:1273
+#: modules/xc_models.py:1282
 msgid " is not registered in "
 msgstr " não está registrado em "
 
 #: modules/xc_models.py:1293 modules/xc_models.py:1289
-#: modules/xc_models.py:1272
+#: modules/xc_models.py:1272 modules/xc_models.py:1273
+#: modules/xc_models.py:1282
 msgid " using ISSN: "
 msgstr " usando ISSN: "
 
 #: modules/xc_models.py:1300 modules/xc_models.py:1296
-#: modules/xc_models.py:1279
+#: modules/xc_models.py:1279 modules/xc_models.py:1280
+#: modules/xc_models.py:1289
 msgid "Unable to get journal data"
 msgstr "Não é possível obter os dados do periódico"
 
@@ -2558,19 +2675,22 @@ msgstr "Selecione a pasta do fascículo (serial/<acron>/<issue number>). "
 
 #: modules/xml2pubmed.py:359 modules/xmlcvrter.py:438 modules/xpmaker.py:1341
 #: modules/xpmaker.py:1338 modules/xpmaker.py:1337 modules/xmlcvrter.py:441
-#: modules/xmlcvrter.py:458
+#: modules/xmlcvrter.py:458 modules/xmlcvrter.py:462 modules/xmlcvrter.py:478
+#: modules/xmlcvrter.py:508
 msgid "Incorrect parameters"
 msgstr "Parâmetros incorretos"
 
 #: modules/xml2pubmed.py:360 modules/xmlcvrter.py:439 modules/xpmaker.py:1342
 #: modules/xpmaker.py:1339 modules/xpmaker.py:1338 modules/xmlcvrter.py:442
-#: modules/xmlcvrter.py:459
+#: modules/xmlcvrter.py:459 modules/xmlcvrter.py:463 modules/xmlcvrter.py:479
+#: modules/xmlcvrter.py:509
 msgid "Usage"
 msgstr "Uso"
 
 #: modules/xml2pubmed.py:362 modules/xmlcvrter.py:441 modules/xpmaker.py:1344
 #: modules/xpmaker.py:1341 modules/xpmaker.py:1340 modules/xmlcvrter.py:444
-#: modules/xmlcvrter.py:461
+#: modules/xmlcvrter.py:461 modules/xmlcvrter.py:465 modules/xmlcvrter.py:481
+#: modules/xmlcvrter.py:511
 msgid "where"
 msgstr "onde"
 
@@ -2627,104 +2747,113 @@ msgid "Invalid folder. Folder must have XML files. "
 msgstr "Pasta inválida. Pasta deve conter arquivos XML. "
 
 #: modules/xmlcvrter.py:32 modules/xmlcvrter.py:200 modules/xmlcvrter.py:203
-#: modules/xmlcvrter.py:220
+#: modules/xmlcvrter.py:220 modules/xmlcvrter.py:224 modules/xmlcvrter.py:240
+#: modules/xmlcvrter.py:33 modules/xmlcvrter.py:270
 msgid "converted"
 msgstr "convertido"
 
-#: modules/xmlcvrter.py:33
+#: modules/xmlcvrter.py:33 modules/xmlcvrter.py:34
 msgid "rejected"
 msgstr "rejeitado"
 
-#: modules/xmlcvrter.py:34
+#: modules/xmlcvrter.py:34 modules/xmlcvrter.py:35
 msgid "not converted"
 msgstr "não convertido"
 
-#: modules/xmlcvrter.py:35
+#: modules/xmlcvrter.py:35 modules/xmlcvrter.py:36
 msgid "skipped conversion"
 msgstr "não foi necessária a conversão"
 
-#: modules/xmlcvrter.py:36
+#: modules/xmlcvrter.py:36 modules/xmlcvrter.py:37
 msgid "excluded ex-aop"
-msgstr "ex aop excluído"
+msgstr "ahead of print excluído"
 
-#: modules/xmlcvrter.py:37
+#: modules/xmlcvrter.py:37 modules/xmlcvrter.py:38
 msgid "excluded incorrect order"
 msgstr "excluído artigo cujo order é incorreto"
 
-#: modules/xmlcvrter.py:38
+#: modules/xmlcvrter.py:38 modules/xmlcvrter.py:39
 msgid "not excluded incorrect order"
 msgstr "não excluído artigo cujo order é incorreto"
 
-#: modules/xmlcvrter.py:39
+#: modules/xmlcvrter.py:39 modules/xmlcvrter.py:40
 msgid "not excluded ex-aop"
-msgstr "não excluído ex aop"
+msgstr "não excluído ahead of print"
 
-#: modules/xmlcvrter.py:40
+#: modules/xmlcvrter.py:40 modules/xmlcvrter.py:41
 msgid "aop version"
-msgstr "versão aop"
+msgstr "versão ahead of print"
 
-#: modules/xmlcvrter.py:41
+#: modules/xmlcvrter.py:41 modules/xmlcvrter.py:42
 msgid "doc has no aop"
-msgstr "documento não tem versão aop"
+msgstr "documento não foi publicado anteriormente com ahead of print"
 
-#: modules/xmlcvrter.py:42
+#: modules/xmlcvrter.py:42 modules/xmlcvrter.py:43
 msgid "aop is published in an issue"
-msgstr "aop foi publicado en um fascículo"
+msgstr "ahead of print foi publicado em um fascículo"
 
-#: modules/xmlcvrter.py:43
+#: modules/xmlcvrter.py:43 modules/xmlcvrter.py:44
 msgid "doc has aop version"
-msgstr "documento tem a versão aop"
+msgstr "documento foi publicado anteriormente com ahead of print"
 
-#: modules/xmlcvrter.py:44
+#: modules/xmlcvrter.py:44 modules/xmlcvrter.py:45
 msgid "doc has aop version partially matched (title/author are similar)"
-msgstr "documento tem a versão aop com dados (title/author) similares"
+msgstr ""
+"documento tem a versão ahead of print com dados (title/author) similares"
 
-#: modules/xmlcvrter.py:45
+#: modules/xmlcvrter.py:45 modules/xmlcvrter.py:46
 msgid "doc has aop version which has no PID"
-msgstr "documento tem versão aop que não tem PID"
+msgstr "documento tem versão ahead of print que não tem PID"
 
-#: modules/xmlcvrter.py:46
+#: modules/xmlcvrter.py:46 modules/xmlcvrter.py:47
 msgid "doc has an invalid aop version (title/author are not the same)"
-msgstr "documento tem uma versão aop inválida (title/author não são iguais)"
+msgstr ""
+"documento tem uma versão ahead of print inválida (title/author não são "
+"iguais)"
 
-#: modules/xmlcvrter.py:52
+#: modules/xmlcvrter.py:52 modules/xmlcvrter.py:53
 msgid " REJECTED "
 msgstr " REJEITADO "
 
-#: modules/xmlcvrter.py:53
+#: modules/xmlcvrter.py:53 modules/xmlcvrter.py:54
 msgid "IGNORED"
 msgstr "IGNORADO"
 
-#: modules/xmlcvrter.py:54
+#: modules/xmlcvrter.py:54 modules/xmlcvrter.py:55
 msgid " ACCEPTED but corrections required "
 msgstr " ACEITO mas correções são necessárias"
 
-#: modules/xmlcvrter.py:55
+#: modules/xmlcvrter.py:55 modules/xmlcvrter.py:56
 msgid " APPROVED "
 msgstr " APROVADO "
 
-#: modules/xmlcvrter.py:56
+#: modules/xmlcvrter.py:56 modules/xmlcvrter.py:57
 msgid " NOT PROCESSED "
 msgstr " NÃO PROCESSADO "
 
 #: modules/xmlcvrter.py:126 modules/xmlcvrter.py:130 modules/xmlcvrter.py:129
-#: modules/xmlcvrter.py:133 modules/xmlcvrter.py:150
+#: modules/xmlcvrter.py:133 modules/xmlcvrter.py:150 modules/xmlcvrter.py:148
+#: modules/xmlcvrter.py:156
 msgid "XML Conversion (XML to Database)"
 msgstr "XML Conversion (XML para base de dados)"
 
 #: modules/xmlcvrter.py:157 modules/xmlcvrter.py:160 modules/xmlcvrter.py:177
+#: modules/xmlcvrter.py:181 modules/xmlcvrter.py:189
 msgid "Conversion results"
 msgstr "Resultados da conversão"
 
 #: modules/xmlcvrter.py:161 modules/xmlcvrter.py:164 modules/xmlcvrter.py:181
+#: modules/xmlcvrter.py:185 modules/xmlcvrter.py:194
 msgid "this journal has no aop. "
-msgstr "este periódico não possui aop"
+msgstr "este periódico não possui artigos ahead of print"
 
 #: modules/xmlcvrter.py:164 modules/xmlcvrter.py:167 modules/xmlcvrter.py:184
+#: modules/xmlcvrter.py:188 modules/xmlcvrter.py:203
 msgid "AOP Articles"
-msgstr "Artigos aop"
+msgstr "Artigos em versão ahead of print"
 
 #: modules/xmlcvrter.py:169 modules/xmlcvrter.py:172 modules/xmlcvrter.py:189
+#: modules/xmlcvrter.py:193 modules/xmlcvrter.py:209 modules/xmlcvrter.py:239
 msgid "scielo web site"
 msgstr "sitio Web do SciELO"
 
@@ -2734,13 +2863,17 @@ msgid "be updated/published on {app_site}"
 msgstr "atualizado/publicado em {app_site}"
 
 #: modules/xmlcvrter.py:179 modules/xmlcvrter.py:182 modules/xmlcvrter.py:199
+#: modules/xmlcvrter.py:203 modules/xmlcvrter.py:219 modules/xmlcvrter.py:249
 #, python-brace-format
 msgid "because it is not complete ({value} were not converted). "
 msgstr "porque não está completo ({value} não foi convertido). "
 
 #: modules/xmlcvrter.py:183 modules/xmlcvrter.py:195 modules/xmlcvrter.py:186
 #: modules/xmlcvrter.py:198 modules/xmlcvrter.py:201 modules/xmlcvrter.py:203
-#: modules/xmlcvrter.py:215
+#: modules/xmlcvrter.py:215 modules/xmlcvrter.py:205 modules/xmlcvrter.py:207
+#: modules/xmlcvrter.py:219 modules/xmlcvrter.py:221 modules/xmlcvrter.py:223
+#: modules/xmlcvrter.py:235 modules/xmlcvrter.py:251 modules/xmlcvrter.py:253
+#: modules/xmlcvrter.py:265
 msgid "because there are blocking errors in the package. "
 msgstr "porque há erros críticos no pacote. "
 
@@ -2749,6 +2882,7 @@ msgid "because no document was changed. "
 msgstr "porque nenhum documento foi modificado. "
 
 #: modules/xmlcvrter.py:189 modules/xmlcvrter.py:192 modules/xmlcvrter.py:209
+#: modules/xmlcvrter.py:213 modules/xmlcvrter.py:229 modules/xmlcvrter.py:259
 msgid ""
 " even though there are some fatal errors. Note: These errors must be fixed "
 "in order to have good quality of bibliometric indicators and services. "
@@ -2762,28 +2896,35 @@ msgid "{status}: {issueid} will{action} {result} {reason}. "
 msgstr "{status}: {issueid} {action}será {result} {reason}. "
 
 #: modules/xmlcvrter.py:396 modules/xmlcvrter.py:399 modules/xmlcvrter.py:416
+#: modules/xmlcvrter.py:420 modules/xmlcvrter.py:436 modules/xmlcvrter.py:466
 msgid "Missing collection acronym"
 msgstr "Faltando o acrônimo da coleção"
 
 #: modules/xmlcvrter.py:414 modules/xmlcvrter.py:417 modules/xmlcvrter.py:437
 #: modules/xmlcvrter.py:420 modules/xmlcvrter.py:440 modules/xmlcvrter.py:434
-#: modules/xmlcvrter.py:457
+#: modules/xmlcvrter.py:457 modules/xmlcvrter.py:438 modules/xmlcvrter.py:441
+#: modules/xmlcvrter.py:461 modules/xmlcvrter.py:454 modules/xmlcvrter.py:477
+#: modules/xmlcvrter.py:484 modules/xmlcvrter.py:487 modules/xmlcvrter.py:507
 msgid "ATTENTION"
 msgstr "ATENÇÃO"
 
 #: modules/xmlcvrter.py:415 modules/xmlcvrter.py:418 modules/xmlcvrter.py:435
+#: modules/xmlcvrter.py:439 modules/xmlcvrter.py:455 modules/xmlcvrter.py:485
 msgid "No configuration file was informed"
 msgstr "Nenhum arquivo de configuração foi informado"
 
 #: modules/xmlcvrter.py:418 modules/xmlcvrter.py:421 modules/xmlcvrter.py:438
+#: modules/xmlcvrter.py:442 modules/xmlcvrter.py:458 modules/xmlcvrter.py:488
 msgid "unable to read XML Converter configuration file: "
 msgstr "não foi possível ler o arquivo de configuração de XML Converter"
 
 #: modules/xmlcvrter.py:442 modules/xmlcvrter.py:445 modules/xmlcvrter.py:462
+#: modules/xmlcvrter.py:466 modules/xmlcvrter.py:482 modules/xmlcvrter.py:512
 msgid "path of folder which contains"
 msgstr "localização da pasta que contenha"
 
 #: modules/xmlcvrter.py:443 modules/xmlcvrter.py:446 modules/xmlcvrter.py:463
+#: modules/xmlcvrter.py:467 modules/xmlcvrter.py:483 modules/xmlcvrter.py:513
 msgid "collection acron"
 msgstr "acrônimo da coleção"
 
@@ -2971,6 +3112,7 @@ msgid "Be sure that you have correctly identified: "
 msgstr "Certifique-se de que tenham sido identificados corretamente: "
 
 #: modules/xmlcvrter.py:174 modules/xmlcvrter.py:171 modules/xmlcvrter.py:191
+#: modules/xmlcvrter.py:195 modules/xmlcvrter.py:211 modules/xmlcvrter.py:241
 #, python-brace-format
 msgid "updated/published on {app_site}"
 msgstr "atualizado/publicado em {app_site}"
@@ -2980,21 +3122,26 @@ msgid "because of unexpected reason"
 msgstr "devido a uma razão não reconhecida"
 
 #: modules/xmlcvrter.py:189 modules/xmlcvrter.py:186 modules/xmlcvrter.py:206
+#: modules/xmlcvrter.py:210 modules/xmlcvrter.py:226 modules/xmlcvrter.py:256
 msgid "because no document has changed. "
 msgstr "devido a nenhum documento ter sido modificado. "
 
 #: modules/xmlcvrter.py:199 modules/xmlcvrter.py:196 modules/xmlcvrter.py:216
+#: modules/xmlcvrter.py:220 modules/xmlcvrter.py:236 modules/xmlcvrter.py:266
 msgid "will not be"
 msgstr "não será"
 
 #: modules/xmlcvrter.py:201 modules/xmlcvrter.py:198 modules/xmlcvrter.py:218
+#: modules/xmlcvrter.py:222 modules/xmlcvrter.py:238 modules/xmlcvrter.py:268
 msgid "will be"
 msgstr "será"
 
 #: modules/pkg_validations.py:691 modules/pkg_validations.py:692
 #: modules/pkg_validations.py:703 modules/pkg_validations.py:704
 #: modules/pkg_validations.py:717 modules/xmlcvrter.py:115
-#: modules/xmlcvrter.py:116 modules/xmlcvrter.py:134
+#: modules/xmlcvrter.py:116 modules/xmlcvrter.py:134 modules/xmlcvrter.py:113
+#: modules/xmlcvrter.py:114 modules/xmlcvrter.py:132 modules/xmlcvrter.py:112
+#: modules/xmlcvrter.py:140
 msgid "before conversion"
 msgstr "antes da conversão"
 
@@ -3004,7 +3151,8 @@ msgstr "resultado esperado após conversão"
 
 #: modules/pkg_validations.py:703 modules/pkg_validations.py:704
 #: modules/pkg_validations.py:717 modules/xmlcvrter.py:115
-#: modules/xmlcvrter.py:116 modules/xmlcvrter.py:134
+#: modules/xmlcvrter.py:116 modules/xmlcvrter.py:134 modules/xmlcvrter.py:113
+#: modules/xmlcvrter.py:114 modules/xmlcvrter.py:132
 msgid "expected results"
 msgstr "resultado esperados"
 
@@ -3012,11 +3160,11 @@ msgstr "resultado esperados"
 msgid "Conversion Simulation Report"
 msgstr "Relatório de simulação de conversão"
 
-#: modules/pkg_validations.py:1228
+#: modules/pkg_validations.py:1228 modules/pkg_validations.py:1198
 msgid "Website"
 msgstr ""
 
-#: modules/pkg_validations.py:1258
+#: modules/pkg_validations.py:1258 modules/pkg_validations.py:1228
 msgid "Conversion Result"
 msgstr "Resultado da conversão"
 
@@ -3024,7 +3172,7 @@ msgstr "Resultado da conversão"
 msgid "results"
 msgstr "resultados"
 
-#: modules/xmlcvrter.py:134
+#: modules/xmlcvrter.py:134 modules/xmlcvrter.py:132 modules/xmlcvrter.py:140
 msgid "Conversion steps"
 msgstr "Passos da conversão"
 
@@ -3033,6 +3181,8 @@ msgid "expected results after conversion"
 msgstr "resultados esperados depois da conversão"
 
 #: modules/xmlcvrter.py:115 modules/xmlcvrter.py:116 modules/xmlcvrter.py:134
+#: modules/xmlcvrter.py:113 modules/xmlcvrter.py:114 modules/xmlcvrter.py:132
+#: modules/xmlcvrter.py:112 modules/xmlcvrter.py:140
 msgid "achieved results"
 msgstr "resultados atingidos"
 
@@ -3104,3 +3254,35 @@ msgstr "Não foi possível identificar da data de expiração de {version}. "
 #, python-brace-format
 msgid "{version} has expired {days} days ago. "
 msgstr "{version} expirou {days} dias atrás. "
+
+#: modules/article_validations.py:798
+msgid ""
+"order is a number used to create the article PID which must be a number and "
+"unique and it is generated from fpage or article-id (other). "
+msgstr ""
+
+#: modules/article_validations.py:798
+msgid ""
+"order is a 5-digits number generated from fpage or article-id (other) to "
+"compose the article PID. "
+msgstr ""
+"order é um número de 5 dígitos gerado a partir de fpage ou article-id "
+"(other) para compor o PID do artigo. "
+
+#: modules/pkg_validations.py:1506 modules/pkg_validations.py:1481
+msgid "Order conflicts"
+msgstr "Conflitos de order"
+
+#: modules/xmlcvrter.py:112 modules/xmlcvrter.py:113 modules/xmlcvrter.py:132
+#: modules/xmlcvrter.py:114 modules/xmlcvrter.py:140
+msgid "executed actions"
+msgstr "ações executadas"
+
+#: modules/article_reports.py:620
+msgid "status"
+msgstr ""
+
+#: modules/xc_models.py:1100 modules/xc_models.py:1102
+#, python-brace-format
+msgid "Checking if {label} was published ahead of print"
+msgstr "Verificando se {label} foi publicado ahead of print"

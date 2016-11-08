@@ -453,14 +453,7 @@ class ArticleDisplayReport(object):
 
     @property
     def table_of_contents_data(self):
-        r = ''
-        r += html_reports.tag('p', self.article.toc_section, 'toc-section')
-        r += html_reports.tag('p', self.article.article_type, 'article-type')
-        r += html_reports.tag('p', html_reports.tag('strong', self.article.pages), 'fpage')
-        r += html_reports.tag('p', self.article.doi, 'doi')
-        r += html_reports.tag('p', html_reports.tag('strong', self.article.title), 'article-title')
-        r += html_reports.tag('p', display_authors(self.article.article_contrib_items, '<br/>'))
-        return r
+        return display_article_metadata(self.article)
 
     @property
     def table_of_contents(self):
@@ -583,3 +576,51 @@ def sps_help(label):
         href = 'http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/tagset/elemento-{label}.html'.format(label=label)
         r += ' ' + html_reports.link(href, '[?]')
     return r
+
+
+def display_article_metadata(_article, sep='<br/>'):
+    r = ''
+    r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
+    r += html_reports.tag('p', _article.publisher_article_id, 'doi')
+    r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
+    r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
+    r += html_reports.tag('p', display_authors(_article.article_contrib_items, sep))
+    return r
+
+
+def display_article_data_in_toc(_article):
+    r = ''
+    style = 'excluded' if _article.is_ex_aop else None
+    #status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article. ') if _article.is_ex_aop else ''
+
+    #r += html_reports.p_message(status)
+    r += html_reports.tag('p', _article.toc_section, 'toc-section')
+    r += html_reports.tag('p', _article.article_type, 'article-type')
+
+    r += display_article_metadata(_article, '; ')
+    return html_reports.tag('div', r, style)
+
+
+def display_article_data_to_compare(_article):
+    r = ''
+    style = 'excluded' if _article.is_ex_aop else None
+    status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article. ') if _article.is_ex_aop else ''
+    r += html_reports.p_message(status)
+    r += display_article_metadata(_article, '<br/>')
+    return html_reports.tag('div', r, style)
+
+
+def article_history(articles):
+    r = []
+    for status, article in articles:
+        text = []
+        text.append(html_reports.tag('h4', _(status)))
+        text.append(html_reports.display_label_value(_('name'), article.xml_name, 'p'))
+        if article.is_ex_aop:
+            text.append(html_reports.display_label_value(_('status'), 'ex-aop', 'p'))
+        text.append(html_reports.display_label_value('order', article.order, 'p'))
+        if article.creation_date_display is not None:
+            text.append(html_reports.display_label_value(_('creation date'), article.creation_date_display, 'p'))
+            text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
+        r.append(html_reports.tag('div', ''.join(text), 'hist-' + status))
+    return ''.join(r)

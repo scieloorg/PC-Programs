@@ -494,6 +494,6 @@ class FilesFinalLocation(object):
     @property
     def xml_link(self):
         if self.web_url is not None:
-            return 'xc.xml.html#'
+            return ''
         else:
             return 'file://' + self.xml_path + '/'

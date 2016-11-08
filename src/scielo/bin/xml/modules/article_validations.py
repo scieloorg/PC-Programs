@@ -791,11 +791,11 @@ class ArticleContentValidation(object):
                     r = (status,  _('Invalid format of {label}. ').format(label='order') + _('Expected values: {expected}. ').format(expected=_('number from 1 to 99999')))
             return r
         if self.is_db_generation:
-            status = validation_status.STATUS_FATAL_ERROR
+            status = validation_status.STATUS_BLOCKING_ERROR
         else:
             status = validation_status.STATUS_ERROR
         status, msg = valid(self.article.order, status)
-        return ('order', status, msg)
+        return [('order', validation_status.STATUS_INFO, _('order is a 5-digits number generated from fpage or article-id (other) to compose the article PID. ')), ('order', status, msg)]
 
     @property
     def article_id_other(self):

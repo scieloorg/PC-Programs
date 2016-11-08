@@ -12,6 +12,7 @@ import html_reports
 import dbm_isis
 import xc_models
 import article_validations
+import article_reports
 import pkg_validations
 import serial_files
 import xml_utils
@@ -83,23 +84,20 @@ class ArticlesConversion(object):
         self.statistics_display = ''
 
     def convert(self):
-        scilista_items = []
-        if self.articles_set_validations.articles_data.issue_error_msg is not None:
-            scilista_items.append(self.articles_set_validations.articles_data.acron_issue_label)
-
-        elif self.articles_set_validations.blocking_errors == 0 and self.articles_merger.total_to_convert > 0:
+        scilista_items = [self.articles_set_validations.articles_data.acron_issue_label]
+        if self.articles_set_validations.blocking_errors == 0 and self.total_to_convert > 0:
             self.conversion_status = {}
             self.error_messages = self.db.exclude_articles(self.articles_merger.order_changes, self.articles_merger.excluded_orders)
 
-            scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
-
+            _scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
+            scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
             for name, message in self.db.articles_conversion_messages.items():
                 self.articles_conversion_validations[name] = pkg_validations.ValidationsResult()
                 self.articles_conversion_validations[name].message = message
 
-            if len(scilista_items) > 0:
+            if len(_scilista_items) > 0:
                 self.files_final_location.serial_path = self.articles_set_validations.articles_data.serial_path
 
                 self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
@@ -112,8 +110,19 @@ class ArticlesConversion(object):
     @property
     def conversion_report(self):
         #resulting_orders
-        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results'), _('achieved results')]
-        widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('expected results'): '20',  _('achieved results'): '20'}
+        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')]
+        widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('executed actions'): '20',  _('achieved results'): '20'}
+
+        #print(self.articles_merger.history_items)
+        for status, status_items in self.aop_status.items():
+            for status_data in status_items:
+                if status != 'aop':
+                    name = status_data
+                    article = self.articles_merger.xc_articles[name]
+                    self.articles_merger.history_items[name].append((status, article))
+        for status, names in self.conversion_status.items():
+            for name in names:
+                self.articles_merger.history_items[name].append((status, self.articles_merger.xc_articles[name]))
 
         history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.articles_merger.history_items.items()])
         history = [(xml_name, self.articles_merger.history_items[xml_name]) for order, xml_name in history]
@@ -121,17 +130,14 @@ class ArticlesConversion(object):
         items = []
         for xml_name, hist in history:
             values = []
-            values.append(pkg_validations.display_article_data_in_toc(hist[-1][1]))
-            values.append(pkg_validations.article_history([item for item in hist if item[0] == _('registered article')]))
-            values.append(pkg_validations.article_history([item for item in hist if item[0] == _('package article')]))
-            values.append(pkg_validations.article_history([item for item in hist if not item[0] in [_('registered article'), _('package article')]]))
+            values.append(article_reports.display_article_data_in_toc(hist[-1][1]))
+            values.append(article_reports.article_history([item for item in hist if item[0] == 'registered article']))
+            values.append(article_reports.article_history([item for item in hist if item[0] == 'package']))
+            values.append(article_reports.article_history([item for item in hist if not item[0] in ['registered article', 'package', 'rejected', 'converted', 'not converted']]))
+            values.append(article_reports.article_history([item for item in hist if item[0] in ['rejected', 'converted', 'not converted']]))
 
-            res = ''
-            if xml_name in self.articles_conversion_validations.keys():
-                res = self.articles_conversion_validations[xml_name].message
-            values.append(res)
             items.append(pkg_validations.label_values(labels, values))
-        return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('expected results'), _('achieved results')], widths=widths)
+        return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')], widths=widths)
 
     @property
     def registered_articles(self):
@@ -153,6 +159,10 @@ class ArticlesConversion(object):
             html_reports.display_report(self.report_location)
 
     @property
+    def total_to_convert(self):
+        return self.articles_merger.total_to_convert
+
+    @property
     def total_converted(self):
         return len(self.conversion_status.get('converted', []))
 
@@ -164,9 +174,11 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.articles_set_validations.blocking_errors > 0:
             result = 'rejected'
-        elif self.articles_merger.total_to_convert == 0:
+        elif self.total_to_convert == 0:
             result = 'ignored'
-        elif self.articles_set_validations.fatal_errors > 0:
+        elif self.articles_conversion_validations.blocking_errors > 0:
+            result = 'rejected'
+        elif self.articles_conversion_validations.fatal_errors > 0:
             result = 'accepted'
         else:
             result = 'approved'
@@ -178,10 +190,48 @@ class ArticlesConversion(object):
 
     @property
     def aop_status_report(self):
-        r = _('this journal has no aop. ')
-        if len(self.aop_status.get('aop', {})) > 0:
-            r = html_reports.format_html_data(self.aop_status.get('aop', {}))
-        return html_reports.tag('h3', _('AOP Articles')) + r
+        if len(self.aop_status) == 0:
+            return _('this journal has no aop. ')
+        r = ''
+        for status in sorted(self.aop_status.keys()):
+            if status != 'aop':
+                r += self.aop_report(status, self.aop_status[status])
+        r += self.aop_report('aop', self.aop_status.get('aop'))
+        return r
+
+    def aop_report(self, status, status_items):
+        if status_items is None:
+            return ''
+        if len(status_items) > 0:
+            r = html_reports.tag('h3', _(status))
+            labels = []
+            widths = {}
+            if status == 'aop':
+                labels = [_('issue')]
+                widths = {_('issue'): '5'}
+            labels.extend([_('filename'), 'order', _('article')])
+            widths.update({_('filename'): '5', 'order': '2', _('article'): '88'})
+
+            report_items = []
+            for item in status_items:
+                issueid = None
+                article = None
+                if status == 'aop':
+                    issueid, name, article = item
+                else:
+                    name = item
+                    article = self.articles_merger.merged_articles.get(name)
+                if article is not None:
+                    if not article.is_ex_aop:
+                        values = []
+                        if issueid is not None:
+                            values.append(issueid)
+                        values.append(name)
+                        values.append(article.order)
+                        values.append(article.title)
+                        report_items.append(pkg_validations.label_values(labels, values))
+            r = html_reports.tag('h3', _(status)) + html_reports.sheet(labels, report_items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
+        return r
 
     @property
     def conclusion_message(self):
@@ -194,9 +244,9 @@ class ArticlesConversion(object):
         if self.xc_status == 'rejected':
             update = False
             status = validation_status.STATUS_BLOCKING_ERROR
-            if self.articles_merger.total_to_convert > 0:
+            if self.total_to_convert > 0:
                 if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.articles_merger.total_to_convert))
+                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.total_to_convert))
                 else:
                     reason = _('because there are blocking errors in the package. ')
             else:
@@ -217,7 +267,7 @@ class ArticlesConversion(object):
         if update:
             action = _('will be')
         text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
-        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.articles_merger.total_to_convert), False) + html_reports.p_message(text, False)
+        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.total_to_convert), False) + html_reports.p_message(text, False)
         return text
 
 
@@ -514,26 +564,25 @@ def execute_converter(package_paths, collection_name=None):
                     send_message(mailer, config.email_to_adm, '[Step 1]' + config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
                 if len(package_paths) == 1:
                     raise
-
+            print(scilista_items)
             try:
-                if len(scilista_items) > 0:
-                    acron, issue_id = scilista_items[0].split(' ')
+                acron, issue_id = scilista_items[0].split(' ')
 
-                    if xc_status in ['accepted', 'approved']:
-                        if config.collection_scilista is not None:
-                            open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
+                if xc_status in ['accepted', 'approved']:
+                    if config.collection_scilista is not None:
+                        open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
 
-                        if config.is_enabled_transference:
-                            transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
+                    if config.is_enabled_transference:
+                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
 
-                    if report_location is not None:
-                        if config.email_subject_package_evaluation is not None:
-                            results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
-                            link = config.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
-                            report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
+                if report_location is not None:
+                    if config.email_subject_package_evaluation is not None:
+                        results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
+                        link = config.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
+                        report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 
-                            transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
-                            send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
+                        transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
+                        send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
 
             except Exception as e:
                 if config.email_subject_invalid_packages is not None:
