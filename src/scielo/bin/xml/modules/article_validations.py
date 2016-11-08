@@ -394,7 +394,7 @@ def validate_surname(label, value):
         parts = value.split(' ')
         if parts[-1] in attributes.identified_suffixes():
             msg = _('{label} contains invalid {invalid_items_name}: {invalid_items}. ').format(label=u'<surname>{v}</surname>'.format(v=value), invalid_items_name=_('terms'), invalid_items=parts[-1])
-            msg += _('{value} must be identified as {label}. ').format(value=parts[-1], label=u' <suffix>' + parts[-1] + '</suffix>')
+            msg += _(u'{value} should be identified as {label}, if {term} is the surname, ignore this message. ').format(value=parts[-1], label=u' <suffix>' + parts[-1] + '</suffix>', term=parts[-1])
             status = validation_status.STATUS_ERROR
             r.append((label, status, msg))
     _test_number = warn_unexpected_numbers(label, value)
@@ -888,6 +888,8 @@ class ArticleContentValidation(object):
 
     @property
     def pagination(self):
+        if all([self.article.fpage, self.article.elocation_id]) is True:
+            return (('fpage', validation_status.STATUS_ERROR, _('Use only fpage and lpage. ')))
         r = ('fpage', validation_status.STATUS_OK, self.article.fpage)
         if self.article.fpage is None:
             r = required('elocation-id', self.article.elocation_id, validation_status.STATUS_ERROR)
@@ -903,7 +905,7 @@ class ArticleContentValidation(object):
         labels.append('institution[@content-type="orgname"]')
         labels.append('institution[@content-type="orgdiv1"]')
         labels.append('institution[@content-type="orgdiv2"]')
-        labels.append('institution[@content-type="orgdiv3"]')
+        #labels.append('institution[@content-type="orgdiv3"]')
         labels.append('addr-line/named-content[@content-type="city"]')
         labels.append('addr-line/named-content[@content-type="state"]')
         labels.append('country')
@@ -924,7 +926,10 @@ class ArticleContentValidation(object):
                 r.append(i_country_validation)
 
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, validation_status.STATUS_FATAL_ERROR))
-            for item in [aff.orgdiv1, aff.orgdiv2, aff.orgdiv3]:
+
+            if aff.orgdiv3 is not None:
+                r.append(('aff/institution/[@content-type="orgdiv3"]', validation_status.STATUS_ERROR, _('Remove this institution(orgdiv3). Use only one orgdiv1 and one orgdiv2. Other levels are not allowed. ')))
+            for item in [aff.orgdiv1, aff.orgdiv2]:
                 if item is not None:
                     status = ''
                     if 'univers' in item.lower():
@@ -963,7 +968,7 @@ class ArticleContentValidation(object):
                     message = _('Use {right} instead of {wrong}. ').format(right=norm_aff.norgname, wrong=aff.norgname)
                 r.append(('aff/institution/[@content-type="normalized"]', status, message))
 
-            values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
+            values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.city, aff.state, aff.i_country, aff.country]
             i = 0
             for label in labels:
                 if values[i] is not None:
