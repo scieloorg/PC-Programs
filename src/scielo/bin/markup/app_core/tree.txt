@@ -294,6 +294,7 @@ fname
 
 fngrp
 sectitle;#FALSE#;#FALSE#
+*fn;#FALSE#;#TRUE#
 fn;#FALSE#;#TRUE#
 
 fn
