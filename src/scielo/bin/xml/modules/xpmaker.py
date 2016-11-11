@@ -180,7 +180,24 @@ class SGMLHTML(object):
             if os.path.isdir(html_path + '/' + item) and item.startswith(html_name):
                 path = html_path + '/' + item
                 break
+        if path is None:
+            path = self.create_html_images(html_path, html_name)
+        if path is None:
+            path = html_path
+        print(self.html_filename)
+        print(os.listdir(path))
         return path
+
+    def create_html_images(self, html_path, html_name):
+        #name_image001
+        new_html_folder = html_path + '/' + html_name + '_arquivosalt'
+        if not os.path.isdir(new_html_folder):
+            os.makedirs(new_html_folder)
+        for item in os.listdir(html_path):
+            if os.path.isfile(html_path + '/' + item) and item.startswith(html_name + '_image'):
+                new_name = item[len(html_name)+1:]
+                shutil.copyfile(html_path + '/' + item, new_html_folder + '/' + new_name)
+        return new_html_folder
 
     @property
     def unknown_href_items(self):
