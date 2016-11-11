@@ -1468,7 +1468,7 @@ class ArticleContentValidation(object):
                     elif file_location.endswith('.jpg') and not '.' in hrefitem.src:
                         status_message.append((validation_status.STATUS_WARNING, _('Not found {label} in the {item}. ').format(label=_('extension'), item=hrefitem.src)))
                         status_message.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=os.path.basename(file_location), item=_('package'))))
-                hreflocation = 'file:///' + file_location
+                hreflocation = file_location
                 if hrefitem.is_image:
                     display = html_reports.thumb_image(hreflocation.replace(path, '{IMG_PATH}'))
                 else:
