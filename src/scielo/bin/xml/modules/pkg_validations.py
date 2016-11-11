@@ -1503,6 +1503,6 @@ def toc_extended_report(articles):
                 if last_update_display[:10] == datetime.now().isoformat()[:10]:
                     last_update_display = html_reports.tag('span', last_update_display, 'report-date')
                 values.append(last_update_display)
-                values.append(article_reports.display_article_metadata(article))
+                values.append(article_reports.display_article_data_in_toc(article))
                 items.append(label_values(labels, values))
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)

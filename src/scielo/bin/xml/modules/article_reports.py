@@ -453,7 +453,7 @@ class ArticleDisplayReport(object):
 
     @property
     def table_of_contents_data(self):
-        return display_article_metadata(self.article)
+        return display_article_data_in_toc(self.article)
 
     @property
     def table_of_contents(self):
