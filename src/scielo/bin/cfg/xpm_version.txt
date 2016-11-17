@@ -1,4 +1,4 @@
-﻿4.0.092 - 09/11/2016
+﻿4.0.092 - 16/11/2016
 ====================
 - General:
   - (new) [#2287] Solve HTTP Error Proxy Authentication Required

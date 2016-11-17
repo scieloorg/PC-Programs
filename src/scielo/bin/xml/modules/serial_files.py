@@ -480,7 +480,7 @@ class FilesFinalLocation(object):
     @property
     def img_link(self):
         if self.web_url is not None:
-            return self.web_url + '/img/' + self.issue_path
+            return self.web_url + '/img/revistas/' + self.issue_path
         else:
             return 'file://' + self.img_path
 

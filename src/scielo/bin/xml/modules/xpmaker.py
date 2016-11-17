@@ -184,8 +184,6 @@ class SGMLHTML(object):
             path = self.create_html_images(html_path, html_name)
         if path is None:
             path = html_path
-        print(self.html_filename)
-        print(os.listdir(path))
         return path
 
     def create_html_images(self, html_path, html_name):
@@ -922,6 +920,7 @@ class ArticlePkgMaker(object):
 
     def normalize_href_values(self):
         href_items = [href for href in self.doc.hrefs if href.is_internal_file]
+
         if self.doc_files_info.is_sgmxml:
             for href in href_items:
                 self.replacements_href_values.append((href.src, self.get_normalized_href_value(href)))
@@ -933,7 +932,7 @@ class ArticlePkgMaker(object):
             for current, new in self.replacements_href_values:
                 if current != new:
                     #utils.display_message(current + ' => ' + new)
-                    self.content = self.content.replace('href="' + current, 'href="' + new)
+                    self.content = self.content.replace('href="' + current + '"', 'href="' + new + '"')
                     changed = True
         if changed:
             self.xml, self.e = xml_utils.load_xml(self.content)
