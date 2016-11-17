@@ -709,7 +709,7 @@ class ArticlesSetValidations(object):
         self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_BLOCKING_ERROR, 'doi': validation_status.STATUS_BLOCKING_ERROR, 'elocation id': validation_status.STATUS_BLOCKING_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
         if not self.is_db_generation:
             self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
-
+        self.IGNORE_NONE = ['journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', ]
         self.EXPECTED_COMMON_VALUES_LABELS = ['journal-title', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', 'license']
         self.REQUIRED_DATA = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         self.EXPECTED_UNIQUE_VALUE_LABELS = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
@@ -721,10 +721,12 @@ class ArticlesSetValidations(object):
             values = {}
             for xml_name, article in self.merged_articles.items():
                 value = article.summary[label]
-
-                if not value in values:
-                    values[value] = []
-                values[value].append(xml_name)
+                if label in self.IGNORE_NONE and value is None:
+                    pass
+                else:
+                    if not value in values:
+                        values[value] = []
+                    values[value].append(xml_name)
 
             data[label] = values
         return data
@@ -1500,7 +1502,7 @@ def toc_extended_report(articles):
                 last_update_display = article.last_update_display
                 if last_update_display is None:
                     last_update_display = ''
-                if last_update_display[:10] == datetime.now().isoformat()[:10]:
+                if last_update_display[:10] == utils.display_datetime(utils.now()[0]):
                     last_update_display = html_reports.tag('span', last_update_display, 'report-date')
                 values.append(last_update_display)
                 values.append(article_reports.display_article_data_in_toc(article))

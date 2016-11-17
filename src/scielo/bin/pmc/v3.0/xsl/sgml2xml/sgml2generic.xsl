@@ -159,7 +159,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		
 		<xsl:choose>
 			<xsl:when test="not(*) and normalize-space(translate(text(),'(),.-:;[]/','          '))=''">
-				<!-- sup, sub, bold, italic é vazio: ignore --> 
+				<!-- sup, sub, bold, italic é vazio: ignore -->
 			</xsl:when>
 			<xsl:when test="normalize-space($parent_textonly)=normalize-space($textonly)">
 				<!-- ignore styles -->
@@ -174,6 +174,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="ref/sup | ref/sub | ref/bold | ref/italic | ref/text()">
+		<!-- ignore -->
 	</xsl:template>	
 	
 	<xsl:template match="@href">
@@ -2082,7 +2085,28 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="label" mode="create-mixed-citation">
 	</xsl:template>
 	
-	<xsl:template match="url | italic | sup | sub" mode="create-mixed-citation">
+	<xsl:template match="italic" mode="create-mixed-citation">
+		<xsl:variable name="text"><xsl:value-of select="normalize-space(text())"/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="* or string-length($text)&gt;1">
+				<italic><xsl:apply-templates select="*|text()" mode="create-mixed-citation"></xsl:apply-templates></italic>
+			</xsl:when>
+			<xsl:when test="string-length($text)&lt;=1">
+				<xsl:value-of select="text()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<italic><xsl:apply-templates select="*|text()" mode="create-mixed-citation"></xsl:apply-templates></italic>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="sup | sub" mode="create-mixed-citation">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="*|text()" mode="create-mixed-citation"></xsl:apply-templates>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="url" mode="create-mixed-citation">
 		<xsl:apply-templates select="."/>
 	</xsl:template>
 	

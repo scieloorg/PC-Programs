@@ -3354,3 +3354,7 @@ msgid ""
 msgstr ""
 "Exclua o elemento institution(orgdiv3). Use somente um orgdiv1 e um orgdiv2. "
 "Outros níveis não são permitidos. "
+
+#: modules/xc_models.py:1051
+msgid "article was not published ahead of print"
+msgstr "artigo não foi publicado como ahead of print"

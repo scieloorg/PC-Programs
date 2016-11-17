@@ -3395,3 +3395,7 @@ msgid ""
 msgstr ""
 "Elimine esta división de la institución(orgdiv3). Solo se permiten orgdiv1 y "
 "orgdiv2. "
+
+#: modules/xc_models.py:1051
+msgid "article was not published ahead of print"
+msgstr "artigo no fue publicado como ahead of print"
