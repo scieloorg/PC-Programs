@@ -9,6 +9,7 @@ import article_utils
 import attributes
 import html_reports
 from article import PersonAuthor, CorpAuthor, format_author
+import utils
 
 
 log_items = []
@@ -579,10 +580,16 @@ def sps_help(label):
 
 
 def display_article_metadata(_article, sep='<br/>'):
+    dates_labels = ['collection', 'aop', 'epub', 'epub-ppub']
+    dates = [_article.collection_dateiso, _article.ahpdate_dateiso, _article.epub_dateiso, _article.epub_ppub_dateiso]
+
     r = ''
     r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
     r += html_reports.tag('p', _article.publisher_article_id, 'doi')
     r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
+    for l, d in zip(dates_labels, dates):
+        if d is not None:
+            r += html_reports.display_label_value(_('date') + ' (' + l + ')', utils.display_datetime(d), 'p')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
     r += html_reports.tag('p', display_authors(_article.article_contrib_items, sep))
     return r
