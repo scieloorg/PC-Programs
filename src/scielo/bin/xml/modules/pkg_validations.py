@@ -854,20 +854,7 @@ class ArticlesSetValidations(object):
 
     @property
     def is_rolling_pass(self):
-        _is_rolling_pass = False
-        if not self.is_aop_issue:
-            epub_dates = list(set([a.epub_dateiso for a in self.merged_articles.values() if a.epub_dateiso is not None]))
-            epub_ppub_dates = [a.epub_ppub_dateiso for a in self.merged_articles.values() if a.epub_ppub_dateiso is not None]
-            collection_dates = [a.collection_dateiso for a in self.merged_articles.values() if a.collection_dateiso is not None]
-            other_dates = list(set(epub_ppub_dates + collection_dates))
-            if len(epub_dates) > 0:
-                if len(other_dates) == 0:
-                    _is_rolling_pass = True
-                elif len(other_dates) > 1:
-                    _is_rolling_pass = True
-                elif len([None for a in self.merged_articles.values() if a.collection_dateiso is None]) > 0:
-                    _is_rolling_pass = True
-        return _is_rolling_pass
+        return all([a for a in self.merged_articles.values() if a.is_epub_only])
 
     @property
     def articles(self):
