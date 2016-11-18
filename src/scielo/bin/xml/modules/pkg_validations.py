@@ -179,8 +179,8 @@ class XMLIssueDataValidator(object):
     def validate(self, article):
         r = ''
         if self.is_db_generation:
-            r = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify {unidentified}. ').format(unidentified=_('issue'))
             if self.issue_error_msg is not None:
+                r = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify {unidentified}. ').format(unidentified=_('issue'))
                 r += self.issue_error_msg
             if self.issue_models:
                 r = self.issue_models.validate_article_issue_data(article)
