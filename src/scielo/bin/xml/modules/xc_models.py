@@ -489,6 +489,8 @@ class IssueModels(object):
     def __init__(self, record):
         self.record = record
         self._issue = None
+        self.seccode_items = {}
+        self.sectitle_items = {}
 
     @property
     def sections(self):
@@ -605,8 +607,10 @@ class IssueModels(object):
                     results.append(('license', validation_status.STATUS_ERROR, _msg))
 
             # section
+            article_sectitle = None
+            article_seccode = None
             fixed_sectitle = None
-            article_section = None
+
             if len(self.section_titles) == 0:
                 if article.toc_section is not None:
                     results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('Issue has no table of contents sections. ')))
@@ -614,32 +618,46 @@ class IssueModels(object):
                 if article.toc_section is None:
                     results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('Article has no subject. ') + _('Expected values: {expected}. ').format(expected=_(' or ').join(self.section_titles))))
                 else:
-                    found = False
-                    for article_section in article.toc_sections:
-                        if article_section in self.section_titles:
-                            found = True
+                    for name in article.toc_sections:
+                        if name in self.seccode_items.keys():
+                            article_seccode = self.seccode_items.get(name)
+                            article_sectitle = self.sectitle_items.get(name)
                             break
-                    if not found:
-                        fixed_sectitle = None
-                        for article_section in article.toc_sections:
-                            section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article_section)
-                            if matched_rate != 1:
-                                if section_code is None:
-                                    results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('{value} is a invalid value for {label}. ').format(value=article_section, label=_(_('table of contents section')))))
-                                else:
-                                    results.append((_('table of contents section'), validation_status.STATUS_WARNING, _('{incorrect} was changed to {fixed}. ').format(incorrect=article_section, fixed=fixed_sectitle)))
-                                    break
-                            else:
+                    #print(article_seccode, article_sectitle)
+                    if article_seccode is None:
+                        rate = 0
+                        article_section_titles = _(' or ').join(article.toc_sections)
+                        for a_section in article.toc_sections:
+                            section_code, matched_rate, section_title = self.most_similar_section_code(a_section)
+                            #print(section_code, matched_rate, section_title)
+                            if matched_rate == 1:
+                                rate = matched_rate
+                                article_seccode = section_code
+                                article_sectitle = section_title
                                 break
-                        results.append((_('table of contents section'), validation_status.STATUS_INFO, _('Expected values: {expected}. ').format(expected=' | '.join(self.section_titles))))
+                            elif section_code is not None:
+                                if matched_rate > rate:
+                                    rate = matched_rate
+                                    article_seccode = section_code
+                                    article_sectitle = section_title
+                                    fixed_sectitle = section_title
+                    if article_seccode is None:
+                        results.append((_('table of contents section'), validation_status.STATUS_ERROR, _('{value} is a invalid value for {label}. ').format(value=article_section_titles, label=_('table of contents section'))))
+                    if fixed_sectitle is not None:
+                        results.append((_('table of contents section'), validation_status.STATUS_WARNING, _('{incorrect} was changed to {fixed}. ').format(incorrect=article_section_titles, fixed=fixed_sectitle)))
+                    results.append((_('table of contents section'), validation_status.STATUS_INFO, _('Expected values: {expected}. ').format(expected=' | '.join(self.section_titles))))
+                    if article_seccode is not None:
+                        for name in article.toc_sections:
+                            self.seccode_items[name] = article_seccode
+                            self.sectitle_items[name] = name
 
             # @article-type
-            _sectitle = article_section if fixed_sectitle is None else fixed_sectitle
-            if _sectitle is not None:
-                for item in attributes.validate_article_type_and_section(article.article_type, _sectitle, len(article.abstracts) > 0):
-                    results.append(item)
-                article.section_code = section_code
-        return (html_reports.tag('div', article_reports.validations_table(results)))
+            #_sectitle = article_section if fixed_sectitle is None else fixed_sectitle
+            if article_sectitle is not None:
+                results.extend(attributes.validate_article_type_and_section(article.article_type, article_sectitle, len(article.abstracts) > 0))
+            article.section_code = article_seccode
+
+        return html_reports.tag('div', article_reports.validations_table(results))
 
 
 class IssueArticlesRecords(object):
