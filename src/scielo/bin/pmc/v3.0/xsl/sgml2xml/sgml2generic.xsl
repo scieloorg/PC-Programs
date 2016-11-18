@@ -1008,7 +1008,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="normalize-space(.//label//text())=''">
 				<!-- nao gerar label -->
 			</xsl:when>
-			<xsl:otherwise><xsl:apply-templates select="label"></xsl:apply-templates></xsl:otherwise>
+			<xsl:when test="label[sup]">
+				<sup><label><xsl:value-of select="label"/></label></sup>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="label"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="aff | normaff | afftrans">
