@@ -1119,6 +1119,7 @@ class ArticlesSetValidations(object):
     def conflicting_values_in_merged_articles_report(self):
         parts = []
         for label, values in self.conflicting_values_in_merged_articles.items():
+            print(label)
             compl = ''
             _status = validation_status.STATUS_BLOCKING_ERROR
             if label == 'issue pub date':

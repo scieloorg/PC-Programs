@@ -126,13 +126,16 @@ def zip_report(report_filename):
 
 
 def update_file_content_if_there_is_new_items(new_content, filename):
-    current_content = u''
+    current_content = ''
+    if not os.path.isfile(filename):
+        write_file(filename, '')
+
     if os.path.isfile(filename):
         current_content = read_file(filename)
     current_items = current_content.split('\n')
 
     if new_content is None:
-        new_content = current_content
+        new_content = ''
     if not isinstance(new_content, unicode):
         new_content = new_content.decode('utf-8')
     new_items = new_content.split('\n')

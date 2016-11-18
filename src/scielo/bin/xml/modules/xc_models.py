@@ -560,16 +560,19 @@ class IssueModels(object):
         results = []
         section_code = None
         if article.tree is not None:
-            a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
-            i_year = self.issue.dateiso[0:4] if self.issue.dateiso is not None else ''
-
             validations = []
             validations.append((_('journal title'), article.journal_title, self.issue.journal_title, validation_status.STATUS_BLOCKING_ERROR))
             validations.append((_('issue label'), article.issue_label, self.issue.issue_label, validation_status.STATUS_BLOCKING_ERROR))
 
             labels = [_('journal-id (nlm-ta)'), _('journal e-ISSN'), _('journal print ISSN'), _('issue year')]
-            article_items = [article.journal_id_nlm_ta, article.e_issn, article.print_issn, a_year]
-            issue_items = [self.issue.journal_id_nlm_ta, self.issue.e_issn, self.issue.print_issn, i_year]
+            article_items = [article.journal_id_nlm_ta, article.e_issn, article.print_issn]
+            issue_items = [self.issue.journal_id_nlm_ta, self.issue.e_issn, self.issue.print_issn]
+
+            if article.is_epub_only is False:
+                a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
+                i_year = self.issue.dateiso[0:4] if self.issue.dateiso is not None else ''
+                article_items.append(a_year)
+                issue_items.append(i_year)
 
             for label, article_data, issue_data in zip(labels, article_items, issue_items):
                 if article_data is not None:
