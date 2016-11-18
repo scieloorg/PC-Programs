@@ -48,15 +48,23 @@ class ProxyChecker(object):
         if url is None:
             url = JOURNALS_CSV_URL
         self.url = JOURNALS_CSV_URL
+        # ProxyInfo = tem proxy
+        # False = nao tem proxy
+        # None = ?
+        self.proxy_info = None
 
-    @property
-    def is_proxy_info_required(self):
-        response, http_error_proxy_auth, error_message = try_request(self.url)
-        if http_error_proxy_auth == 407:
-            return True
-        if response is None and error_message == 'URLError':
-            return True
-        return response is None
+    def check_internet_access(self, url=None):
+        if url is None:
+            url = self.url
+        response, http_error_proxy_auth, error_message = try_request(url)
+        if response is not None:
+            r = True
+        elif http_error_proxy_auth == 407:
+            r = False
+        elif response is None and error_message == 'URLError':
+            r = False
+        print('internet access:', r, self.proxy_info)
+        return r
 
     def ask_data(self, server='', port=''):
         proxy_info = display_proxy_form(server, port)
@@ -67,17 +75,24 @@ class ProxyChecker(object):
 
     @property
     def proxy_status(self):
-        status = None
-        if self.is_proxy_info_required is True:
-            status = False
-            proxy_info = ProxyInfo()
-            new = self.ask_data(proxy_info.server, proxy_info.port)
-            if new is not None:
-                registry_proxy_opener(proxy_info.handler_data)
-                if self.is_proxy_info_required is False:
-                    status = True
-                    new.save()
-        return status
+        # returns False, None, ProxyInfo()
+        print('proxy_status?')
+        if self.proxy_info is None:
+            if self.check_internet_access():
+                self.proxy_info = False
+            else:
+                self.proxy_info = self.update_proxy_info()
+        print(self.proxy_info)
+        return self.proxy_info
+
+    def update_proxy_info(self):
+        current_info = ProxyInfo()
+        new_info = self.ask_data(current_info.server, current_info.port)
+        if new_info is not None:
+            registry_proxy_opener(new_info.handler_data)
+            if self.check_internet_access():
+                new_info.save()
+                return new_info
 
 
 class ProxyInfo(object):
@@ -92,14 +107,15 @@ class ProxyInfo(object):
 
     @property
     def handler_data(self):
+        r = {}
         proxy_handler_data = ''
         if self.user is not None and self.password is not None:
             proxy_handler_data = self.user + ':' + self.password + '@'
         if self.server is not None and self.port is not None:
             proxy_handler_data += fix_ip(self.server) + ':' + self.port
-        if len(proxy_handler_data) == 0:
-            return {}
-        return {'http': 'http://'+proxy_handler_data, 'https': 'https://'+proxy_handler_data}
+        if len(proxy_handler_data) > 0:
+            r = {'http': 'http://'+proxy_handler_data, 'https': 'https://'+proxy_handler_data}
+        return r
 
     def load(self):
         if os.path.isfile(self.file):
@@ -128,12 +144,12 @@ class ProxyGUI(object):
         self.tkFrame.labelframe_window = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.labelframe_window.pack(fill="both", expand="yes")
 
-        self.tkFrame.labelframe_message = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=50)
+        self.tkFrame.labelframe_message = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
         self.tkFrame.labelframe_message.pack(fill="both", expand="yes")
-        self.tkFrame.label_message = Tkinter.Label(self.tkFrame.labelframe_message, text=_('This tool requires Internet access for some services, such as DOI, affiliations, and other data validations, and also to get journals data from SciELO.\n\nIf you do not use a proxy to access the Internet, and click on Cancel button.'), font="Verdana 12 bold")
+        self.tkFrame.label_message = Tkinter.Label(self.tkFrame.labelframe_message, text=_('This tool requires Internet access for some services, such as DOI, affiliations, and other data validations, and also to get journals data from SciELO.\n\nIf you do not use a proxy to access the Internet, and click on Cancel button.'), font="Verdana 12 bold", wraplength=450)
         self.tkFrame.label_message.pack()
 
-        self.tkFrame.labelframe_proxy_ip = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=50)
+        self.tkFrame.labelframe_proxy_ip = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
         self.tkFrame.labelframe_proxy_ip.pack(fill="both", expand="yes")
         self.tkFrame.label_proxy_ip = Tkinter.Label(self.tkFrame.labelframe_proxy_ip, text='Proxy IP', font="Verdana 12 bold")
         self.tkFrame.label_proxy_ip.pack(fill="both", expand="yes")
@@ -149,14 +165,14 @@ class ProxyGUI(object):
         self.tkFrame.entry_proxy_port.insert(0, registered_port)
         self.tkFrame.entry_proxy_port.pack()
 
-        self.tkFrame.labelframe_proxy_user = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=50)
+        self.tkFrame.labelframe_proxy_user = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
         self.tkFrame.labelframe_proxy_user.pack(fill="both", expand="yes")
         self.tkFrame.label_proxy_user = Tkinter.Label(self.tkFrame.labelframe_proxy_user, text=_('user'), font="Verdana 12 bold")
         self.tkFrame.label_proxy_user.pack(fill="both", expand="yes")
         self.tkFrame.entry_proxy_user = Tkinter.Entry(self.tkFrame.labelframe_proxy_user)
         self.tkFrame.entry_proxy_user.pack()
 
-        self.tkFrame.labelframe_proxy_password = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=50)
+        self.tkFrame.labelframe_proxy_password = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
         self.tkFrame.labelframe_proxy_password.pack(fill="both", expand="yes")
         self.tkFrame.label_proxy_password = Tkinter.Label(self.tkFrame.labelframe_proxy_password, text=_('password'), font="Verdana 12 bold")
         self.tkFrame.label_proxy_password.pack(fill="both", expand="yes")
@@ -241,7 +257,6 @@ class WebServicesRequester(object):
         self.requests = {}
         self.skip = []
         self.proxy_checker = ProxyChecker()
-        self.USE_PROXY = self.proxy_checker.proxy_status
 
     def __new__(self):
         if not hasattr(self, 'instance'):
@@ -249,13 +264,9 @@ class WebServicesRequester(object):
         return self.instance
 
     def request(self, url, timeout=30, debug=False, force_error=False):
-        status = None
-        if self.USE_PROXY is not None:
-            status = self.proxy_checker.proxy_status
-            print('proxy status:', status)
-        if status is not False:
+        status = self.proxy_checker.proxy_status
+        if status is not None:
             return self._request(url, timeout, debug, force_error)
-        self.request(url, timeout, debug, force_error)
 
     def _request(self, url, timeout=30, debug=False, force_error=False):
         response = self.requests.get(url)
