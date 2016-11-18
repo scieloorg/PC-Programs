@@ -15,6 +15,7 @@ import fs_utils
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+JOURNALS_CSV_URL = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
 
 
 def local_gettext(text):
@@ -41,11 +42,86 @@ def get_servername(url):
     return server
 
 
+class ProxyChecker(object):
+
+    def __init__(self, url=None):
+        if url is None:
+            url = JOURNALS_CSV_URL
+        self.url = JOURNALS_CSV_URL
+
+    @property
+    def is_proxy_info_required(self):
+        response, http_error_proxy_auth, error_message = try_request(self.url)
+        if http_error_proxy_auth == 407:
+            return True
+        if response is None and error_message == 'URLError':
+            return True
+        return response is None
+
+    def ask_data(self, server='', port=''):
+        proxy_info = display_proxy_form(server, port)
+        if proxy_info is not None:
+            ip, port, user, password = proxy_info
+            proxy_info = ProxyInfo(ip, port, user, password)
+        return proxy_info
+
+    @property
+    def proxy_status(self):
+        status = None
+        if self.is_proxy_info_required is True:
+            status = False
+            proxy_info = ProxyInfo()
+            new = self.ask_data(proxy_info.server, proxy_info.port)
+            if new is not None:
+                registry_proxy_opener(proxy_info.handler_data)
+                if self.is_proxy_info_required is False:
+                    status = True
+                    new.save()
+        return status
+
+
+class ProxyInfo(object):
+
+    def __init__(self, server=None, port=None, user=None, password=None):
+        self.server = server
+        self.port = port
+        self.user = user
+        self.password = password
+        self.file = CURRENT_PATH + '/proxy.info'
+        self.load()
+
+    @property
+    def handler_data(self):
+        proxy_handler_data = ''
+        if self.user is not None and self.password is not None:
+            proxy_handler_data = self.user + ':' + self.password + '@'
+        if self.server is not None and self.port is not None:
+            proxy_handler_data += fix_ip(self.server) + ':' + self.port
+        if len(proxy_handler_data) == 0:
+            return {}
+        return {'http': 'http://'+proxy_handler_data, 'https': 'https://'+proxy_handler_data}
+
+    def load(self):
+        if os.path.isfile(self.file):
+            content = open(self.file).read()
+            if ',' in content:
+                self.server, self.port = content.split(',')
+
+    def save(self):
+        if all([self.server, self.port]):
+            open(self.file, 'w').write(self.server + ',' + self.port)
+
+
 class ProxyGUI(object):
 
     def __init__(self, tkFrame, registered_ip, registered_port, debug=False):
         self.info = None
         self.debug = False
+
+        if registered_ip is None:
+            registered_ip = ''
+        if registered_port is None:
+            registered_port = ''
 
         self.tkFrame = tkFrame
 
@@ -102,10 +178,11 @@ class ProxyGUI(object):
         self.tkFrame.quit()
 
 
-def ask_proxy_info(registered_ip, registered_port, debug=False):
+def display_proxy_form(registered_ip, registered_port, debug=False):
     tk_root = Tkinter.Tk()
     tk_root.title(_('Proxy information'))
     tkFrame = Tkinter.Frame(tk_root)
+
     main = ProxyGUI(tkFrame, registered_ip, registered_port, debug)
     main.tkFrame.pack(side="top", fill="both", expand=True)
 
@@ -121,18 +198,8 @@ def ask_proxy_info(registered_ip, registered_port, debug=False):
     return r
 
 
-def registry_proxy(proxy_server=None, proxy_port=None, proxy_user=None, proxy_password=None):
-    proxy_info = ''
-    if proxy_user is not None and proxy_password is not None:
-        proxy_info = proxy_user + ':' + proxy_password + '@'
-
-    if proxy_server is not None and proxy_port is not None:
-        proxy_info += fix_ip(proxy_server) + ':' + proxy_port
-
-    if len(proxy_info) > 0:
-        proxy_handler = urllib2.ProxyHandler({'http': 'http://'+proxy_info, 'https': 'https://'+proxy_info})
-    else:
-        proxy_handler = urllib2.ProxyHandler({})
+def registry_proxy_opener(proxy_handler_data):
+    proxy_handler = urllib2.ProxyHandler(proxy_handler_data)
     opener = urllib2.build_opener(proxy_handler)
     urllib2.install_opener(opener)
 
@@ -147,12 +214,10 @@ def try_request(url, timeout=30, debug=False, force_error=False):
     error_message = ''
     try:
         response = urllib2.urlopen(req, timeout=timeout).read()
-
     except urllib2.HTTPError as e:
         if e.code == 407:
             http_error_proxy_auth = e.code
         error_message = e.read()
-
     except urllib2.URLError as e:
         if '10061' in str(e.reason):
             http_error_proxy_auth = e.reason
@@ -174,31 +239,25 @@ class WebServicesRequester(object):
 
     def __init__(self):
         self.requests = {}
-        self.registered_ip = ''
-        self.registered_port = ''
-        self.USE_PROXY = None
-        self.proxy_info = None
-        self.read_proxy_server_data()
         self.skip = []
+        self.proxy_checker = ProxyChecker()
+        self.USE_PROXY = self.proxy_checker.proxy_status
 
     def __new__(self):
         if not hasattr(self, 'instance'):
             self.instance = super(WebServicesRequester, self).__new__(self)
         return self.instance
 
-    def read_proxy_server_data(self):
-        if os.path.isfile(CURRENT_PATH + '/proxy.info'):
-            content = open(CURRENT_PATH + '/proxy.info').read()
-            if ',' in content:
-                self.registered_ip, self.registered_port = content.split(',')
-
-    def update(self, ip, port):
-        if ip != self.registered_ip or port != self.registered_port:
-            self.registered_ip = ip
-            self.registered_port = port
-            open(CURRENT_PATH + '/proxy.info', 'w').write(ip + ',' + port)
-
     def request(self, url, timeout=30, debug=False, force_error=False):
+        status = None
+        if self.USE_PROXY is not None:
+            status = self.proxy_checker.proxy_status
+            print('proxy status:', status)
+        if status is not False:
+            return self._request(url, timeout, debug, force_error)
+        self.request(url, timeout, debug, force_error)
+
+    def _request(self, url, timeout=30, debug=False, force_error=False):
         response = self.requests.get(url)
         if response is None and not url in self.requests.keys():
             server = get_servername(url)
@@ -206,17 +265,7 @@ class WebServicesRequester(object):
                 response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
                 if response is None and error_message != '':
                     self.skip.append(server)
-                if response is None and http_error_proxy_auth is not None and self.USE_PROXY in [True, None]:
-                    self.proxy_info = ask_proxy_info(self.registered_ip, self.registered_port)
-                    if self.proxy_info is None:
-                        self.USE_PROXY = False
-                    else:
-                        ip, port, user, password = self.proxy_info
-                        registry_proxy(ip, port, user, password)
-                        self.update(ip, port)
-                        response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
                 self.requests[url] = response
-
         return response
 
     def json_result_request(self, url, timeout=30, debug=False):
@@ -236,7 +285,7 @@ class PublishingWebServicesRequester(WebServicesRequester):
 
     def __init__(self):
         WebServicesRequester.__init__(self)
-        self.journals_url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
+        self.journals_url = JOURNALS_CSV_URL
         self.journals_file_content = ''
 
     def journal_doi_prefix_url(self, issn, year=None):
