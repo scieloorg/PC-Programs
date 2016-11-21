@@ -51,9 +51,11 @@ class ProxyChecker(object):
         # ProxyInfo = tem proxy
         # False = nao tem proxy
         # None = ?
+        self.has_proxy = None
         self.proxy_info = None
 
     def check_internet_access(self, url=None):
+        print('check_internet_access')
         if url is None:
             url = self.url
         response, http_error_proxy_auth, error_message = try_request(url)
@@ -66,28 +68,16 @@ class ProxyChecker(object):
         print('internet access:', r, self.proxy_info)
         return r
 
-    def ask_data(self, server='', port=''):
-        proxy_info = display_proxy_form(server, port)
-        if proxy_info is not None:
-            ip, port, user, password = proxy_info
-            proxy_info = ProxyInfo(ip, port, user, password)
-        return proxy_info
-
-    @property
-    def proxy_status(self):
+    def check_status(self):
         # returns False, None, ProxyInfo()
-        print('proxy_status?')
-        if self.proxy_info is None:
-            if self.check_internet_access():
-                self.proxy_info = False
-            else:
-                self.proxy_info = self.update_proxy_info()
-        print(self.proxy_info)
-        return self.proxy_info
+        if self.has_proxy is None:
+            self.has_proxy = not self.check_internet_access()
+        if self.has_proxy is True and self.proxy_info is None:
+            self.proxy_info = self.update_proxy_info()
 
     def update_proxy_info(self):
         current_info = ProxyInfo()
-        new_info = self.ask_data(current_info.server, current_info.port)
+        new_info = ask_data(current_info.server, current_info.port)
         if new_info is not None:
             registry_proxy_opener(new_info.handler_data)
             if self.check_internet_access():
@@ -151,7 +141,7 @@ class ProxyGUI(object):
 
         self.tkFrame.labelframe_proxy_ip = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
         self.tkFrame.labelframe_proxy_ip.pack(fill="both", expand="yes")
-        self.tkFrame.label_proxy_ip = Tkinter.Label(self.tkFrame.labelframe_proxy_ip, text='Proxy IP', font="Verdana 12 bold")
+        self.tkFrame.label_proxy_ip = Tkinter.Label(self.tkFrame.labelframe_proxy_ip, text='Proxy IP / server', font="Verdana 12 bold")
         self.tkFrame.label_proxy_ip.pack(fill="both", expand="yes")
         self.tkFrame.entry_proxy_ip = Tkinter.Entry(self.tkFrame.labelframe_proxy_ip)
         self.tkFrame.entry_proxy_ip.insert(0, registered_ip)
@@ -192,6 +182,14 @@ class ProxyGUI(object):
         r = [self.tkFrame.entry_proxy_ip.get(), self.tkFrame.entry_proxy_port.get(), self.tkFrame.entry_proxy_user.get(), self.tkFrame.entry_proxy_password.get()]
         self.info = [None if item == '' else item for item in r]
         self.tkFrame.quit()
+
+
+def ask_data(server='', port=''):
+    proxy_info = display_proxy_form(server, port)
+    if proxy_info is not None:
+        ip, port, user, password = proxy_info
+        proxy_info = ProxyInfo(ip, port, user, password)
+    return proxy_info
 
 
 def display_proxy_form(registered_ip, registered_port, debug=False):
@@ -264,15 +262,13 @@ class WebServicesRequester(object):
         return self.instance
 
     def request(self, url, timeout=30, debug=False, force_error=False):
-        status = self.proxy_checker.proxy_status
-        if status is not None:
-            return self._request(url, timeout, debug, force_error)
-
-    def _request(self, url, timeout=30, debug=False, force_error=False):
+        print(url)
         response = self.requests.get(url)
         if response is None and not url in self.requests.keys():
             server = get_servername(url)
             if not server in self.skip:
+                print(' ==> request')
+                self.proxy_checker.check_status()
                 response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
                 if response is None and error_message != '':
                     self.skip.append(server)
