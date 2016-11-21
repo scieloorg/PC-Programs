@@ -55,7 +55,7 @@ class ProxyChecker(object):
         self.proxy_info = None
 
     def check_internet_access(self, url=None):
-        print('check_internet_access')
+        #print('check_internet_access')
         if url is None:
             url = self.url
         response, http_error_proxy_auth, error_message = try_request(url)
@@ -65,7 +65,7 @@ class ProxyChecker(object):
             r = False
         elif response is None and error_message == 'URLError':
             r = False
-        print('internet access:', r, self.proxy_info)
+        #print('internet access:', r, self.proxy_info)
         return r
 
     def check_status(self):
@@ -262,12 +262,12 @@ class WebServicesRequester(object):
         return self.instance
 
     def request(self, url, timeout=30, debug=False, force_error=False):
-        print(url)
+        #print(url)
         response = self.requests.get(url)
         if response is None and not url in self.requests.keys():
             server = get_servername(url)
             if not server in self.skip:
-                print(' ==> request')
+                #print(' ==> request')
                 self.proxy_checker.check_status()
                 response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
                 if response is None and error_message != '':
