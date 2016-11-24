@@ -540,6 +540,8 @@ class IssueModels(object):
         i.journal_id_publisher_id = record.get('930').lower()
         i.journal_issns = issue_issns(record)
         i.publisher_name = record.get('62', record.get('480'))
+        if isinstance(i.publisher_name, list):
+            i.publisher_name = '; '.join(i.publisher_name)
         i.license = record.get('541')
         return i
 
@@ -1295,12 +1297,12 @@ class DBManager(object):
         msg = None
         acron_issue_label = 'unidentified issue'
         if issue_label is None:
-            msg = html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to identify the article\'s issue'), False)
+            msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify the article\'s issue'), False)
         else:
             i_record = self.find_i_record(issue_label, p_issn, e_issn)
             if i_record is None:
                 acron_issue_label = 'not_registered issue'
-                msg = html_reports.p_message(validation_status.STATUS_FATAL_ERROR + ': ' + _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.', False)
+                msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.', False)
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label

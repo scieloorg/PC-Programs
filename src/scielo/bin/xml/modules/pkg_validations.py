@@ -182,7 +182,7 @@ class XMLIssueDataValidator(object):
             if self.issue_error_msg is not None:
                 r = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify {unidentified}. ').format(unidentified=_('issue'))
                 r += self.issue_error_msg
-            if self.issue_models:
+            elif self.issue_models:
                 r = self.issue_models.validate_article_issue_data(article)
         return r
 
@@ -416,6 +416,7 @@ class ArticlesData(object):
         if db_manager is not None and self.journal is not None:
             acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
             ign, self.issue_label = acron_issue_label.split(' ')
+            print(self.issue_error_msg)
             if self.issue_error_msg is None:
                 self.issue_files = db_manager.get_issue_files(self.issue_models)
                 self.articles_db_manager = xc_models.ArticlesManager(db_manager.db_isis, self.issue_files)
