@@ -336,6 +336,8 @@ class ArticleRecords(object):
                         a['n'] = author.fname
                         a['s'] = author.surname
                         if author.suffix is not None:
+                            if a['s'] is None:
+                                a['s'] = ''
                             if author.suffix != '':
                                 a['s'] += ' ' + author.suffix
                         #a['z'] = author.suffix
