@@ -1011,7 +1011,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="label[sup]">
 				<label><xsl:value-of select="label"/></label>
 			</xsl:when>
-			<xsl:otherwise><xsl:value-of select="label"/></xsl:otherwise>
+			<xsl:otherwise><label><xsl:value-of select="label"/></label></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="aff | normaff | afftrans">
