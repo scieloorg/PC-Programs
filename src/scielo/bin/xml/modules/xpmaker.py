@@ -284,7 +284,9 @@ class SGMLXML(object):
     def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
         xpm_process_logger.register('SGMLXML.generate_xml')
+        xml, e = xml_utils.load_xml(self.sgml_content)
         self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
+
         self.insert_mml_namespace()
         self.fix_mkp_href_values()
         self.replace_fontsymbols()
@@ -293,7 +295,6 @@ class SGMLXML(object):
             s = '<' + style + '>'
             e = '</' + style + '>'
             self.sgml_content = self.sgml_content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
-
         xml, e = xml_utils.load_xml(self.sgml_content)
         if xml is None:
             xml_fixer = xml_utils.XMLContent(self.sgml_content)
@@ -708,6 +709,11 @@ class ArticlePkgMaker(object):
 
     def normalize_xml_content(self):
         xpm_process_logger.register('normalize_xml_content')
+        
+        self.xml, self.e = xml_utils.load_xml(self.content)
+        if self.e is not None:
+            print(1)
+            print(self.e)
 
         self.content = xml_utils.complete_entity(self.content)
 

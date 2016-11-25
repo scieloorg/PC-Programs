@@ -692,25 +692,27 @@ class ArticleContentValidation(object):
 
     @property
     def journal_id_nlm_ta(self):
-        if self.journal.nlm_title is not None:
-            if len(self.journal.nlm_title) > 0:
-                if self.article.journal_id_nlm_ta is not None:
-                    if not self.article.journal_id_nlm_ta in self.journal.nlm_title:
-                        msg = invalid_value_message(self.article.journal_id_nlm_ta, 'journal-id (nlm-ta)', '|'.join(self.journal.nlm_title))
-                        return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, msg))
+        if self.journal is not None:
+            if self.journal.nlm_title is not None:
+                if len(self.journal.nlm_title) > 0:
+                    if self.article.journal_id_nlm_ta is not None:
+                        if not self.article.journal_id_nlm_ta in self.journal.nlm_title:
+                            msg = invalid_value_message(self.article.journal_id_nlm_ta, 'journal-id (nlm-ta)', '|'.join(self.journal.nlm_title))
+                            return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, msg))
 
     @property
     def journal_issns(self):
         _valid = []
-        for k, v in self.article.journal_issns.items():
-            valid = False
-            if v[4:5] == '-':
-                if len(v) == 9:
-                    valid = True
-            status = validation_status.STATUS_OK if valid else validation_status.STATUS_FATAL_ERROR
-            _valid.append((k + ' ISSN', status, v))
-        if len(_valid) == 0:
-            _valid.append(('ISSN', validation_status.STATUS_FATAL_ERROR, _('It is required at least one {label}. ').format(label='ISSN')))
+        if self.article.journal_issns is not None:
+            for k, v in self.article.journal_issns.items():
+                valid = False
+                if v[4:5] == '-':
+                    if len(v) == 9:
+                        valid = True
+                status = validation_status.STATUS_OK if valid else validation_status.STATUS_FATAL_ERROR
+                _valid.append((k + ' ISSN', status, v))
+            if len(_valid) == 0:
+                _valid.append(('ISSN', validation_status.STATUS_FATAL_ERROR, _('It is required at least one {label}. ').format(label='ISSN')))
         return _valid
 
     @property
