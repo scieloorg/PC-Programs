@@ -1274,6 +1274,8 @@ class DBManager(object):
             _expr.append(eissn + issue_id)
         if acron is not None:
             _expr.append(acron)
+        _expr = [item for item in _expr if item != '' and not None]
+        
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
     def update_and_search(self, db, expr, source_db, fst_filename):

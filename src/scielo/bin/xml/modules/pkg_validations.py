@@ -374,6 +374,12 @@ class ArticlesPackage(object):
 class ArticlesData(object):
 
     def __init__(self):
+        self.pkg_journal_title = None
+        self.pkg_p_issn = None
+        self.pkg_e_issn = None
+        self.pkg_issue_label = None
+        
+        self._issue_label = None
         self.issue_models = None
         self.issue_error_msg = None
         self.issue_files = None
@@ -400,23 +406,24 @@ class ArticlesData(object):
     def acron_issue_label(self):
         return self.acron + ' ' + self.issue_label
 
+    @property
+    def issue_label(self):
+        return self._issue_label if self._issue_label else self.pkg_issue_label
+
     def _identify_journal_data(self, pkg_articles, journals_manager):
-        journals = [(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in pkg_articles.values() if a.journal_title is not None and a.issue_label is not None and (a.print_issn is not None or a.e_issn is not None)]
-        journals = list(set(journals))
-        if len(journals) > 0:
-            journal = article.Journal()
-            if len(journals[0]) == 4:
-                journal.journal_title, journal.p_issn, journal.e_issn, self.issue_label = journals[0]
-                j, self.journal_data = journals_manager.journal(journal.p_issn, journal.e_issn, journal.journal_title)
-                if j.acron is not None:
-                    journal = j
-            self.journal = journal
+        data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in pkg_articles.values()]))
+        data.sort(reverse=True)
+
+        if len(data) > 0:
+            data = list(data[0])
+            if any(data):
+                self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = data
+                self.journal, self.journal_data = journals_manager.journal(self.pkg_p_issn, self.pkg_e_issn, self.pkg_journal_title)
 
     def _identify_issue_data(self, db_manager):
         if db_manager is not None and self.journal is not None:
-            acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.journal.journal_title, self.issue_label, self.journal.p_issn, self.journal.e_issn)
-            ign, self.issue_label = acron_issue_label.split(' ')
-            print(self.issue_error_msg)
+            acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.pkg_journal_title, self.pkg_issue_label, self.pkg_p_issn, self.pkg_e_issn)
+            ign, self._issue_label = acron_issue_label.split(' ')
             if self.issue_error_msg is None:
                 self.issue_files = db_manager.get_issue_files(self.issue_models)
                 self.articles_db_manager = xc_models.ArticlesManager(db_manager.db_isis, self.issue_files)

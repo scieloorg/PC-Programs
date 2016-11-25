@@ -1496,12 +1496,11 @@ class ArticleContentValidation(object):
     def package_files(self, pkg_path):
         _pkg_files = {}
         #from XML, find files
-        article_pkg_files = self.article.package_files(pkg_path)
-        pdf_langs = [item[-6:-4] for item in article_pkg_files if item.endswith('.pdf') and item[-7:-6] == '-']
+        pdf_langs = [item[-6:-4] for item in self.article.package_files if item.endswith('.pdf') and item[-7:-6] == '-']
         if self.article.language is not None:
             filename = self.article.new_prefix + '.pdf'
             _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_INFO, 'PDF ({lang}). '.format(lang=self.article.language))
-            if not filename in article_pkg_files:
+            if not filename in self.article.package_files:
                 _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_ERROR, _('Not found {label} in the {item}. ').format(label=_('file'), item=_('package')))
         for lang in self.article.trans_languages:
             if not lang in pdf_langs:
@@ -1511,7 +1510,7 @@ class ArticleContentValidation(object):
         #from files, find in XML
         href_items_in_xml = [item.name_without_extension for item in self.article.href_files]
         href_items_in_xml += [item.src for item in self.article.href_files]
-        for item in article_pkg_files:
+        for item in self.article.package_files:
             fname, ext = os.path.splitext(item)
 
             if item.startswith(self.article.new_prefix):
