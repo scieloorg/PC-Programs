@@ -624,9 +624,7 @@ class OriginalPackage(object):
             fname = xml_filename[:-4]
             if '.sgm' in fname:
                 fname = fname[:-4]
-                article_files = [f for f in files if f.startswith(fname) and not f.endswith('.sgm.xml')]
-            else:
-                article_files = [f for f in files if f.startswith(fname + '-') or f.startswith(fname + '.') and not f.endswith('.sgm.xml')]
+            article_files = package_files(self.path, xml_filename)
             self.article_pkg_files[fname] = ArticlePkgFiles(self.path, xml_filename, fname, article_files)
             self.article_pkg_files[fname].convert_images()
 
@@ -704,6 +702,8 @@ class ArticlePkgMaker(object):
         html_reports.save(self.doc_files_info.images_report_filename, '', self.get_images_comparison_report())
         if len(self.replacements_related_files_items) > 0:
             self.doc.related_files = [os.path.basename(f) for f in self.replacements_related_files_items.values()]
+        
+        self.doc.package_files = package_files(self.scielo_pkg_path, self.doc.new_prefix)
 
         return (self.doc, self.doc_files_info)
 
@@ -1021,7 +1021,7 @@ class ArticlePkgMaker(object):
             if f.startswith(self.doc_files_info.xml_name + '.') and not f.endswith('.sgm.xml'):
                 self.replacements_related_files_items[f] = dest_filename
                 shutil.copyfile(source_filename, dest_filename)
-            elif f.startswith(self.doc_files_info.xml_name + '-') and f.endswith('.pdf'):
+            elif f.startswith(self.doc_files_info.xml_name + '-'):
                 if not f in self.replacements_href_files_items.keys():
                     self.replacements_related_files_items[f] = dest_filename
                     shutil.copyfile(source_filename, dest_filename)
@@ -1070,33 +1070,6 @@ class ArticlePkgMaker(object):
         fs_utils.write_file(self.doc_files_info.new_xml_filename, self.content)
         xpm_process_logger.register('pack_article_xml_file: fim')
 
-
-def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron, is_db_generation=False):
-    package = OriginalPackage(xml_files)
-    package.setUp()
-
-    doc_items = {}
-    article_work_area_items = {}
-    xpm_process_logger.register('make packages')
-    utils.display_message('\n' + _('Make package for {n} files. ').format(n=str(len(xml_files))))
-    n = '/' + str(len(xml_files))
-    index = 0
-
-    for xml_name, article_pkg_files in package.article_pkg_files.items():
-        article_work_area = serial_files.ArticleWorkArea(article_pkg_files.xml_filename, report_path, wrk_path)
-        article_work_area.clean()
-
-        index += 1
-        item_label = str(index) + n + ': ' + article_work_area.xml_name
-        utils.display_message(item_label)
-
-        article_pkg_maker = ArticlePkgMaker(article_pkg_files, article_work_area, scielo_pkg_path, version, acron, is_db_generation)
-        doc, article_work_area = article_pkg_maker.make_article_package()
-
-        article_work_area_items[article_work_area.xml_name] = article_work_area
-        doc_items[article_work_area.xml_name] = doc
-
-    return (doc_items, article_work_area_items)
 
 
 class PackageMaker(object):
@@ -1435,3 +1408,14 @@ def get_number_from_element_id(element_id):
         if n != '':
             n = str(int(n))
     return n
+
+
+def package_files(pkg_path, xml_filename):
+    fname = xml_filename
+    if xml_filename.endswith('.xml'):
+        fname, ext = os.path.splitext(xml_filename)
+        if fname.endswith('.sgm'):
+            fname = fname[:-4]
+    r = [item for item in os.listdir(pkg_path) if (item.startswith(fname + '-') or item.startswith(fname + '.')) and not item.endswith('.xml')]
+    return [item for item in r if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
+    

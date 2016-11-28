@@ -1389,14 +1389,7 @@ class Article(ArticleXML):
         self.related_files = []
         self.is_ex_aop = False
         self.section_code = None
-
-    def package_files(self, pkg_path):
-        files = [item for item in os.listdir(pkg_path) if item.startswith(self.new_prefix) and not item.endswith('.xml')]
-        for hrefitem in self.href_files:
-            file_location = hrefitem.file_location(pkg_path)
-            if os.path.isfile(file_location):
-                files.append(hrefitem.src)
-        return list(set(files))
+        self.package_files = None
 
     @property
     def clinical_trial_url(self):

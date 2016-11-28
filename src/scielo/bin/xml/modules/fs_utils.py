@@ -163,3 +163,4 @@ class ProcessLogger(object):
 
     def display(self):
         print('\n'.join(self.logged_items))
+
