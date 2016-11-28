@@ -608,6 +608,7 @@ class ArticleXML(object):
     def journal_issns(self):
         if self.journal_meta is not None:
             return {item.attrib.get('pub-type', 'epub'):item.text for item in self.journal_meta.findall('issn')}
+        return {}
 
     @property
     def print_issn(self):
