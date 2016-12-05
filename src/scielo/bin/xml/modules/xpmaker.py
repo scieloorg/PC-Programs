@@ -993,12 +993,19 @@ class ArticlePkgMaker(object):
 
     def pack_article_href_files(self):
         xpm_process_logger.register('pack_article_href_files: inicio')
+        src_files = []
+        if self.is_xml_generation:
+            src_files = os.listdir(self.doc_files_info.xml_path)
         self.replacements_href_files_items = {}
         self.missing_href_files = []
         for original_href, normalized_href in self.replacements_href_values:
             original_href_name, original_href_ext = os.path.splitext(original_href)
             normalized_href_name, normalized_href_ext = os.path.splitext(normalized_href)
             original2normalized = [(src_file, src_file.replace(original_href_name, normalized_href_name)) for src_file in self.article_files.files if src_file.startswith(original_href_name + '.')]
+            if self.is_xml_generation:
+                original2normalized += [(src_file, src_file.replace(original_href_name, normalized_href_name)) for src_file in src_files if src_file.startswith(original_href_name + '.')]
+                original2normalized = list(set(original2normalized))
+
             for original, normalized in original2normalized:
                 self.replacements_href_files_items[original] = normalized
                 shutil.copyfile(self.doc_files_info.xml_path + '/' + original, self.scielo_pkg_path + '/' + normalized)
