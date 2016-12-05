@@ -59,6 +59,7 @@ class ProxyChecker(object):
         if url is None:
             url = self.url
         response, http_error_proxy_auth, error_message = try_request(url)
+        r = None
         if response is not None:
             r = True
         elif http_error_proxy_auth == 407:
