@@ -281,10 +281,9 @@ class XMLContentValidator(object):
             if is_xml_generation:
                 content.append(article_display_report.issue_header)
                 content.append(article_display_report.article_front)
-
                 content.append(article_validation_report.validations(display_all_message_types=False))
                 content.append(article_display_report.table_tables)
-
+                content.append(open(work_area.images_report_filename).read())
                 content.append(article_display_report.article_body)
                 content.append(article_display_report.article_back)
 
@@ -292,7 +291,8 @@ class XMLContentValidator(object):
                 content.append(article_validation_report.validations(display_all_message_types=False))
                 content.append(article_display_report.table_tables)
                 content.append(article_display_report.files_and_href())
-
+                content.append(open(work_area.images_report_filename).read())
+                
             content = html_reports.join_texts(content)
         return content, article_display_report
 
@@ -400,6 +400,8 @@ class ArticlesData(object):
         if self.journal is not None:
             if self.journal.acron is not None:
                 a = self.journal.acron
+        if a is None:
+            a = 'None'
         return a
 
     @property
@@ -408,7 +410,10 @@ class ArticlesData(object):
 
     @property
     def issue_label(self):
-        return self._issue_label if self._issue_label else self.pkg_issue_label
+        r = self._issue_label if self._issue_label else self.pkg_issue_label
+        if r is None:
+            r = 'None'
+        return r
 
     def _identify_journal_data(self, pkg_articles, journals_manager):
         data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in pkg_articles.values()]))
