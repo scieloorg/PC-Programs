@@ -353,6 +353,7 @@ class SGMLXML(object):
                     href = get_href_content(graphic)
                     elem_name, elem_id = get_previous_element_which_has_id_attribute(previous_part)
                     src_href, possible_href_names, alternative_id = self.select_href_file_from_src_folder(elem_name, elem_id, alternative_id)
+
                     renamed_href = src_href
                     if src_href is not None:
                         self.src_folder_graphics.append(src_href)
@@ -818,12 +819,12 @@ class ArticlePkgMaker(object):
                     
             # imagem final
             if self.sgmlxml is not None:
-                origin = html_reports.tag('h5', _('Came from src folder'))
                 if name in fixed_markup_href_items.keys():
                     # name eh fixed markup href 
-                    if not name in self.sgmlxml.src_folder_graphics:
-                        origin = html_reports.tag('h5', _('Extracted from the .doc file'))
-                rows.append(origin)
+                    origin = html_reports.tag('h5', _('Extracted from the .doc file'))
+                    if name in self.sgmlxml.src_folder_graphics:
+                        origin = html_reports.tag('h5', _('Came from src folder'))
+                    rows.append(origin)
 
             rows.append('<div class="compare_images">')
             #rows.append(html_reports.tag('h5', _('* images presented in the same order they are in the XML file')))
