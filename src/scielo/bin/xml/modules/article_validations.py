@@ -501,7 +501,7 @@ class ArticleContentValidation(object):
     @property
     def disp_formulas(self):
         results = []
-        children = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math']
+        children = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']
         for disp_formula_node in self.article.disp_formula_elements:
             found = False
             for name in children:
@@ -510,7 +510,7 @@ class ArticleContentValidation(object):
                     if name == 'graphic':
                         if child_node.attrib.get('{http://www.w3.org/1999/xlink}href') is not None:
                             found = True
-                    elif name in ['{http://www.w3.org/1998/Math/MathML}math', 'math']:
+                    elif name in ['{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']:
                         if len(xml_utils.remove_tags(xml_utils.node_text(child_node))) > 0:
                             found = True
             if not found:

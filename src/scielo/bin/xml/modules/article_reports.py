@@ -265,6 +265,18 @@ class ArticleDisplayReport(object):
         return r
 
     @property
+    def display_formulas(self):
+        labels = ['id', 'code', 'graphic', 'xml']
+        formulas_data = []
+        for formula_data in self.article.formulas_data:
+            if formula_data['graphic'] is not None:
+                formula_data['graphic'] = html_reports.link(formula_data['graphic'], html_reports.image(formula_data['graphic']))
+            if formula_data['code'] is not None:
+                formula_data['code'] = formula_data['code'].replace('mml:', '')
+            formulas_data.append(formula_data)
+        return html_reports.tag('h1', _('Equations')) + html_reports.sheet(labels, formulas_data, html_cell_content=['code'])
+
+    @property
     def affiliations(self):
         r = html_reports.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:

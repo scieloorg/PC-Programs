@@ -14,6 +14,7 @@ from . import validation_status
 
 ENABLE_COMMENTS = False
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+MathJax_PATH = CURRENT_PATH + '/../MathJax'
 
 
 class TabbedReport(object):
@@ -234,6 +235,7 @@ def html(title, body):
     s = ''
     s += '<html>'
     s += '<head>'
+
     if title is None:
         title = ''
     if body is None:
@@ -242,7 +244,22 @@ def html(title, body):
         s += '<meta charset="utf-8"/><title>' + ' - '.join(title) + '</title>'
     else:
         s += '<meta charset="utf-8"/><title>' + title + '</title>'
+    s += '    <meta Content-math-Type="text/mathml"/>'
     s += styles()
+    s += """<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  config: ["MMLorHTML.js"],
+  jax: ["input/TeX","input/MathML","output/HTML-CSS","output/NativeMML", "output/PreviewHTML"],
+  extensions: ["tex2jax.js","mml2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js", "AssistiveMML.js", "[Contrib]/a11y/accessibility-menu.js"],
+  TeX: {
+    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+  }
+});
+</script>"""
+    if os.path.isfile(MathJax_PATH+'/MathJax.js'):
+        s += '<script type="text/javascript" src="{mathjax_path}/MathJax.js?config=MML_HTMLorMM-full"></script>'.format(mathjax_path=MathJax_PATH)
+    else:
+        s += '<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>'
     s += '</head>'
     s += '<body>'
     s += report_date()

@@ -281,17 +281,30 @@ class XMLContentValidator(object):
             if is_xml_generation:
                 content.append(article_display_report.issue_header)
                 content.append(article_display_report.article_front)
+                
                 content.append(article_validation_report.validations(display_all_message_types=False))
+                content.append(article_display_report.display_formulas)
                 content.append(article_display_report.table_tables)
-                content.append(open(work_area.images_report_filename).read())
+                r = open(work_area.images_report_filename).read()
+                r = r[r.find('<body'):]
+                r = r[r.find('>')+1:]
+                r = r[:r.find('</body>')]
+                content.append(r)
+                
                 content.append(article_display_report.article_body)
                 content.append(article_display_report.article_back)
 
             else:
                 content.append(article_validation_report.validations(display_all_message_types=False))
+                content.append(article_display_report.display_formulas)
                 content.append(article_display_report.table_tables)
+                r = open(work_area.images_report_filename).read()
+                r = r[r.find('<body'):]
+                r = r[r.find('>')+1:]
+                r = r[:r.find('</body>')]
+                content.append(r)
+                
                 content.append(article_display_report.files_and_href())
-                content.append(open(work_area.images_report_filename).read())
                 
             content = html_reports.join_texts(content)
         return content, article_display_report
