@@ -1113,6 +1113,37 @@ class ArticleXML(object):
         return r
 
     @property
+    def formulas_nodes(self):
+        r = []
+        if self.tree is not None:
+            if self.tree.findall('.//disp-formula') is not None:
+                for item in self.tree.findall('.//disp-formula'):
+                    r.append(item)
+            if self.tree.findall('.//inline-formula') is not None:
+                for item in self.tree.findall('.//inline-formula'):
+                    r.append(item)
+        return r
+
+    @property
+    def formulas_data(self):
+        data = []
+        for formula in self.formulas_nodes:
+            eqid = None
+            if formula.attrib is not None:
+                eqid = formula.attrib.get('id')
+            maths = [formula.findall('.//math'), formula.findall('{http://www.w3.org/1998/Math/MathML}math'), formula.findall('tex-math')]
+            coded = []
+            for math in maths:
+                if math is not None:
+                    coded.extend([xml_utils.node_text(node) if node.tag == 'tex-math' else xml_utils.node_xml(node) for node in math])
+            href = None
+            graphic = formula.find('.//graphic')
+            if graphic is not None:
+                href = graphic.attrib.get('href', graphic.attrib.get('{http://www.w3.org/1999/xlink}href'))
+            data.append({'xml': xml_utils.node_xml(formula), 'id': eqid, 'code': ''.join(coded), 'graphic': href})
+        return data
+
+    @property
     def disp_formula_elements(self):
         r = []
         if self.tree is not None:
