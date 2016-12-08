@@ -751,7 +751,7 @@ class ArticleContentValidation(object):
                     r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR, msg))
         for affid in aff_ids:
             if not affid in author_xref_items:
-                r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Not found: {label}. ').format(label='xref[@ref-type="aff"]/@rid="' + affid + '"')))
+                r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Not found: {label}. ').format(label='<xref ref-type="aff" rid="' + affid + '"/>')))
         return r
 
     @property
@@ -1359,14 +1359,14 @@ class ArticleContentValidation(object):
                             msg = invalid_value_message(str(item['ref-type']), 'xref[@rid="' + str(item['rid']) + '"]/@ref-type', [str(xref_type)])
                             message.append(('xref/@ref-type', validation_status.STATUS_FATAL_ERROR, msg))
 
-        for xref_type, missing_xref_list in missing.items():
+        for xref_type, missing_xref_type_items in missing.items():
             if self.article.any_xref_ranges.get(xref_type) is None:
                 print(xref_type + ' has no xref ranges???')
             else:
-                missing_xref_list = confirm_missing_xref_items(missing_xref_list, self.article.any_xref_ranges.get(xref_type))
+                missing_xref_type_items = confirm_missing_xref_items(missing_xref_type_items, self.article.any_xref_ranges.get(xref_type))
 
-            if len(missing_xref_list) > 0:
-                for xref in missing_xref_list:
+            if len(missing_xref_type_items) > 0:
+                for xref in missing_xref_type_items:
                     message.append(('xref[@ref-type=' + xref_type + ']', validation_status.STATUS_ERROR, 
                         _('Not found: {label}. ').format(label='xref[@ref-type="{xreftype}" and rid="{rid}"]'.format(xreftype=xref_type, rid=xref))))
             if self.article.any_xref_ranges.get(xref_type) is not None:
