@@ -10,6 +10,7 @@ import attributes
 import utils
 import ws_requester
 import html_reports
+import xml_utils
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
@@ -701,9 +702,8 @@ class ArticleXML(object):
         for item in self.article_contrib_items:
             if isinstance(item, PersonAuthor):
                 items.append(item)
-        for subartid, subarticlecontrib in self.subarticles_contrib_items.items():
-            if isinstance(subarticlecontrib, PersonAuthor):
-                items.append(subarticlecontrib)
+        for subartid, subarticle_contrib_items in self.subarticles_contrib_items.items():
+            items.extend([subarticlecontrib for subarticlecontrib in subarticle_contrib_items if isinstance(subarticlecontrib, PersonAuthor)])
         return items
 
     @property
@@ -974,10 +974,19 @@ class ArticleXML(object):
 
     @property
     def affiliations(self):
+        return self.article_affiliations + self.subarticles_affiliations
+
+    @property
+    def article_affiliations(self):
         affs = []
         if self.article_meta is not None:
             for aff in self.article_meta.findall('.//aff'):
                 affs.append(get_affiliation(aff))
+        return affs
+
+    @property
+    def subarticles_affiliations(self):
+        affs = []
         if self.sub_articles is not None:
             for sub_art in self.sub_articles:
                 if sub_art.attrib.get('article-type') != 'translation':
