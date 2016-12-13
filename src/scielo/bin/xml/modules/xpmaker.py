@@ -284,6 +284,7 @@ class SGMLXML(object):
     def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
         xpm_process_logger.register('SGMLXML.generate_xml')
+        self.fix_quotes()
         self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
         self.insert_mml_namespace()
         self.fix_mkp_href_values()
@@ -308,6 +309,16 @@ class SGMLXML(object):
             return self.sgml_content
         else:
             return java_xml_utils.xml_content_transform(self.sgml_content, xml_versions.xsl_sgml2xml(version))
+
+    def fix_quotes(self):
+        if u'“' in self.sgml_content or u'”' in self.sgml_content:
+            items = []
+            for item in self.sgml_content.replace('<', '~BREAK~<').split('~BREAK~'):
+                if u'“' in item or u'”' in item and item.startswith('<'):
+                    elem = item[:item.find('>')]
+                    item = item.replace(elem, elem.replace(u'“', '"').replace(u'”', '"'))
+                items.append(item)
+            self.sgml_content = ''.join(items)
 
     def insert_mml_namespace(self):
         if '>' in self.sgml_content:
