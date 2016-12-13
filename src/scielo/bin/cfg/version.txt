@@ -1,4 +1,21 @@
-﻿4.0.092 - 21/11/2016
+﻿4.0.092 - 21/11/2016 Release 12/12/2016
+=======================================
+- Markup
+  - (bug) Fix *fngrp function
+- Markup/XPM
+  - (bug) [#2450] Fix the missing images in the package
+  - (bug) [#2439] Fix aff/label generation
+- XPM
+  - (bug) [#2451, #2440, #2436] Fix images report
+  - (bug) [#2454] Fix missing preview of equation
+  - (bug) [#2302] Invalid error about missing xref (aff) em sub-article
+- XC
+  - (bug) [#2443] Fix identification of issue as converting a package
+  - (bug) [#2443] Fix error level for not registered issue
+  - () [#2423, #2422] Make issue / title data more flexible
+
+
+4.0.092 - 21/11/2016
 ====================
 - General:
   - (new) [#2287] Solve HTTP Error Proxy Authentication Required
