@@ -989,7 +989,7 @@ class ArticlePkgMaker(object):
 
     def eliminate_old_package_files(self):
         for item in os.listdir(self.scielo_pkg_path):
-            if item.startswith(self.doc_files_info.new_name) or item.endswith('.sgm.xml'):
+            if item.startswith(self.doc_files_info.new_name + '-') or item.startswith(self.doc_files_info.new_name + '.') or item.endswith('.sgm.xml'):
                 eliminate = (item.endswith('incorrect.xml') or item.endswith('.sgm.xml'))
                 if eliminate is False:
                     eliminate = not item.endswith('.xml')
@@ -1025,7 +1025,7 @@ class ArticlePkgMaker(object):
         for original_href, normalized_href in self.replacements_href_values:
             original_href_name, original_href_ext = os.path.splitext(original_href)
             normalized_href_name, normalized_href_ext = os.path.splitext(normalized_href)
-            original2normalized = [(src_file, src_file.replace(original_href_name, normalized_href_name)) for src_file in self.article_files.files if src_file.startswith(original_href_name + '.')]
+            original2normalized = [(src_file, src_file.replace(original_href_name+'.', normalized_href_name+'.')) for src_file in self.article_files.files if src_file.startswith(original_href_name + '.')]
 
             for original, normalized in original2normalized:
                 self.replacements_href_files_items[original] = normalized
@@ -1039,7 +1039,7 @@ class ArticlePkgMaker(object):
         self.replacements_related_files_items = {}
         for f in self.article_files.files:
             source_filename = self.article_files.path + '/' + f
-            dest_filename = self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name, self.doc_files_info.new_name)
+            dest_filename = self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name + '.', self.doc_files_info.new_name + '.')
             if f.startswith(self.doc_files_info.xml_name + '.') and not f.endswith('.sgm.xml'):
                 self.replacements_related_files_items[f] = dest_filename
                 shutil.copyfile(source_filename, dest_filename)
@@ -1204,7 +1204,7 @@ class PackageMaker(object):
             content = fs_utils.read_file(pmc_xml_filename)
             for item in doc.href_files:
                 new = item.src.replace('-en.', '.')
-                content = content.replace(item.src, new)
+                content = content.replace(item.src +'.', new+'.')
                 if os.path.isfile(self.scielo_pkg_path + '/' + item.src):
                     shutil.copyfile(self.scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
                     self.validate_pmc_image(dest_path + '/' + new)

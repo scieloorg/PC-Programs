@@ -458,41 +458,6 @@ def split_prefix(content):
     return (prefix.replace('{PRESERVE_SPACE}', ''), content)
 
 
-def minidom_pretty_print(content):
-    pretty = None
-
-    try:
-        content = content.replace('\r', '')
-        content = ' '.join([item for item in content.split('\n')])
-        content = preserve_styles(content)
-        content = remove_exceeding_spaces_in_all_tags(content)
-        prefix, content = split_prefix(content)
-
-        if isinstance(content, unicode):
-            content = content.encode('utf-8')
-
-        doc = xml.dom.minidom.parseString(content)
-        pretty = doc.toprettyxml().strip()
-        if not isinstance(pretty, unicode):
-            pretty = pretty.decode('utf-8')
-
-        ign, pretty = split_prefix(pretty)
-        pretty = '\n'.join([item for item in pretty.split('\n') if item.strip() != ''])
-
-        pretty = remove_break_lines_off_element_content(pretty)
-
-        pretty = restore_styles(pretty)
-        pretty = prefix + remove_exceding_style_tags(pretty).strip()
-    except Exception as e:
-        print('ERROR in pretty')
-        print(e)
-        print(content)
-        #print(pretty)
-        fs_utils.write_file('./pretty_print.xml', content)
-        raise
-    return pretty
-
-
 def preserve_styles(content):
     content = content.replace('> ', '>{PRESERVE_SPACE}')
     content = content.replace(' <', '{PRESERVE_SPACE}<')
@@ -621,21 +586,6 @@ def remove_exceding_style_tags(content):
     return new
 
 
-def format_text_as_xml(text):
-    prefix = '<root'
-    for n_id, n_link in namespaces.items():
-        prefix += ' xmlns:' + n_id + '=' + '"' + n_link + '"'
-    prefix += '>'
-
-    pretty = pretty_print(prefix + text + '</root>')
-    if pretty is not None:
-        if '<root' in pretty:
-            pretty = pretty[pretty.find('<root'):]
-            pretty = pretty[pretty.find('>') + 1:].replace('</root>', '')
-            text = pretty
-    return text
-
-
 class PrettyXML(object):
 
     def __init__(self, xml):
@@ -655,7 +605,6 @@ class PrettyXML(object):
         return prefix
 
     def minidom_pretty_print(self):
-        import xml.dom.minidom
         try:
             doc = xml.dom.minidom.parseString(get_string(self._xml))
             self._xml = get_unicode(doc.toprettyxml().strip())
@@ -668,16 +617,19 @@ class PrettyXML(object):
 
     @property
     def xml(self):
-        prefix = self.split_prefix()
-        self.normalize_spaces_in_xml()
-        self.preserve_styles()
-        self.minidom_pretty_print()
-        self.remove_inconvenient_break_lines()
-        self.restore_styles()
-        self.remove_exceding_style_tags()
-        while ' '*2 in self._xml:
-            self._xml = self._xml.replace(' '*2, ' ')
-        return prefix + self._xml
+        node, e = load_xml(self._xml)
+        if node is not None:
+            prefix = self.split_prefix()
+            self.normalize_spaces_in_xml()
+            self.preserve_styles()
+            self.minidom_pretty_print()
+            self.remove_inconvenient_break_lines()
+            self.restore_styles()
+            self.remove_exceding_style_tags()
+            while ' '*2 in self._xml:
+                self._xml = self._xml.replace(' '*2, ' ')
+            return prefix + self._xml
+        return self._xml
 
     def preserve_styles(self):
         for tag in ['italic', 'bold', 'sup', 'sub']:

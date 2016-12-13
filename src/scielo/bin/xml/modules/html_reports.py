@@ -385,10 +385,25 @@ def break_words(value, width=40):
     return value
 
 
+def format_text_as_xml(text):
+    xml, e = xml_utils.load_xml(text)
+    if xml is not None:
+        prefix = '<root'
+        for n_id, n_link in xml_utils.namespaces.items():
+            prefix += ' xmlns:' + n_id + '=' + '"' + n_link + '"'
+        prefix += '>'
+
+        pretty = xml_utils.pretty_print(prefix + text + '</root>')
+        if pretty is not None:
+            if '<root' in pretty:
+                pretty = pretty[pretty.find('<root'):]
+                pretty = pretty[pretty.find('>') + 1:].replace('</root>', '')
+                text = pretty
+    return text
+
+
 def display_xml(value, width=40):
-    if '<' in value or '>' in value:
-        value = xml_utils.format_text_as_xml(value)
-    #value = break_words(value, width)
+    value = format_text_as_xml(value)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
     value = value.replace('\t', '&nbsp;'*2)
