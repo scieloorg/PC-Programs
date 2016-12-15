@@ -279,7 +279,7 @@ class SGMLXML(object):
         self.sorted_graphic_href_items = []
         self.src_folder_graphics = []
         self.xml_content = None
-        self.IMG_EXTENSIONS = ('.tiff', '.tif', '.eps', '.jpg', '.png')
+        self.IMG_EXTENSIONS = ('.svg', '.tiff', '.tif', '.eps', '.jpg', '.png')
 
     def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
@@ -385,7 +385,9 @@ class SGMLXML(object):
             filenames.append(self.xml_name[:self.xml_name.find('v')])
         found = []
         possible_href_names = []
+        print(filenames)
         number, possibilities, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
+        print(possibilities)
         if number != '':
             for name in filenames:
                 for prefix_number in possibilities:
@@ -1453,8 +1455,11 @@ def package_files(pkg_path, xml_filename):
     
     if '.sgm.xml' in xml_filename:
         if xml_filename[3] == 'v' and xml_filename[0] == 'a':
-            fname = xml_filename[0:3]
+            fname = xml_filename[:-8]
             r += [item for item in os.listdir(pkg_path) if item.startswith(fname)]
+            
+            fname = xml_filename[0:3]
+            r += [item for item in os.listdir(pkg_path) if item.startswith(fname) and item[3]!='v']
             r = list(set(r))
     r = [item for item in r if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
 
