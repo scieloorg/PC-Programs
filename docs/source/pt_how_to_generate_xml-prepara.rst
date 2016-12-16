@@ -127,9 +127,28 @@ Exemplo: a01eq1.svg, a01eq1.tiff, a01eq1.jpg, a01eq1.png, a01eq1.gif, ...
 
 No arquivo marcado, o Markup rotula automaticamente os objetos gráficos, identificando-os da seguinte forma [graphic href="?a01"] {elemento gráfico fica aqui} [/graphic]. Este valor não deve ser alterado, pois desta forma, o Markup é capaz de associar esta referência com os arquivos localizados na pasta src.
 
-No entanto, quando não existe os arquivos correspondentes na pasta src, o Markup exporta a imagem inserida no próprio documento .doc, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta src antes da geração do XML.
+.. image:: img/src_img_report_01.jpg
+
+
 
 O Markup também renomeia as imagens para o padrão já estabelecido. 
+
+
+.. image:: img/src_img_report_02.jpg
+
+
+No entanto, quando não existe os arquivos correspondentes na pasta src, o Markup exporta a imagem inserida no próprio documento .doc, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta src antes da geração do XML.
+
+O relatório indica de onde as imagens foram obtidas, se da pasta src ou extraídas do documento.
+
+
+.. image:: img/src_img_report_03.jpg
+
+
+O Markup também ajusta automaticamente o nome dos arquivos no XML.
+
+.. image:: img/src_img_report_04.jpg
+
 
 
 .. raw:: html
