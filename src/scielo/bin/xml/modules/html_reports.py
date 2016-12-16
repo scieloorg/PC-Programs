@@ -528,8 +528,10 @@ def image(path, width='auto', height='auto', style='graphic'):
         dim += ' width="' + width + '"'
     if height is not None:
         dim += ' height="' + height + '"'
-
-    return '<img class="' + style + '" src="' + path + '" ' + dim + '/>'
+    note = ''
+    if path.endswith('.svg'):
+        note = tag('p', _('Previous versions of Word can not display SVG images'))
+    return note + '<img class="' + style + '" src="' + path + '" ' + dim + '/>'
 
 
 def section(title, content):
