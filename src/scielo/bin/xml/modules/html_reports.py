@@ -530,7 +530,7 @@ def image(path, width='auto', height='auto', style='graphic'):
         dim += ' height="' + height + '"'
     note = ''
     if path.endswith('.svg'):
-        note = tag('p', _('Word is unable to display SVG images'))
+        note = tag('p', _('Previous versions of Word can not display SVG images'))
     return note + '<img class="' + style + '" src="' + path + '" ' + dim + '/>'
 
 
