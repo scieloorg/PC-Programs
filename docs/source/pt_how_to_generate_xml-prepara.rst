@@ -86,6 +86,52 @@ Veja que dentro da pasta "markup_xml" foram inseridas duas pastas, no mesmo nív
 ..  note:: Se a recomendação de estrutura apresentada acima não for seguida, o processo de marcação não será iniciado.
 
 
+Pasta src
+---------
+
+Os arquivos que são referenciados no arquivo marcado, ou seja, aqueles que ficam identicados em href, devem ficar na pasta src e os seus nomes devem coincidir com o nome do .doc (ou .docx). Devem estar aí todos os arquivos que farão parte do pacote final, ou seja, todas as extensões desejadas. 
+
+Exemplo: 
+
+Em scielo_markup, há o arquivo a01.doc, que corresponde ao artigo 1.
+
+Em src, devem ficar os seus arquivos relacionados, inclusive PDF.
+
+A nomeação destes arquivos deve seguir a regra:
+
+
+Figura
+``````
+  * mesmo nome do arquivo .doc (sem a extensão) + f + identificação da figura + extensão do arquivo de imagem
+  * mesmo nome do arquivo .doc (sem a extensão) + fig + identificação da figura + extensão do arquivo de imagem
+
+Exemplo: a01f01.svg, a01f01.tiff, a01f01.jpg, a01f01.png, a01f01.gif, ...
+
+  
+Tabela
+``````
+  * mesmo nome do arquivo .doc (sem a extensão) + t + identificação da tabela + extensão do arquivo de imagem
+  * mesmo nome do arquivo .doc (sem a extensão) + tab + identificação da tabela + extensão do arquivo de imagem
+
+Exemplo: a01t01.svg, a01t01.tiff, a01t01.jpg, a01t01.png, a01t01.gif, ...
+ 
+
+Equation
+````````
+  * mesmo nome do arquivo .doc (sem a extensão) + eq + identificação da equação + extensão do arquivo de imagem
+  * mesmo nome do arquivo .doc (sem a extensão) + frm + identificação da equação + extensão do arquivo de imagem
+  * mesmo nome do arquivo .doc (sem a extensão) + form + identificação da equação + extensão do arquivo de imagem
+
+Exemplo: a01eq1.svg, a01eq1.tiff, a01eq1.jpg, a01eq1.png, a01eq1.gif, ...
+
+
+No arquivo marcado, o Markup rotula automaticamente os objetos gráficos, identificando-os da seguinte forma [graphic href="?a01"] {elemento gráfico fica aqui} [/graphic]. Este valor não deve ser alterado, pois desta forma, o Markup é capaz de associar esta referência com os arquivos localizados na pasta src.
+
+No entanto, quando não existe os arquivos correspondentes na pasta src, o Markup exporta a imagem inserida no próprio documento .doc, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta src antes da geração do XML.
+
+O Markup também renomeia as imagens para o padrão já estabelecido. 
+
+
 .. raw:: html
 
    <iframe width="854" height="480" src="https://www.youtube.com/embed/RLizVtt5Ca8?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
