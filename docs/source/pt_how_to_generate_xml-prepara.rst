@@ -86,8 +86,17 @@ Veja que dentro da pasta "markup_xml" foram inseridas duas pastas, no mesmo nív
 ..  note:: Se a recomendação de estrutura apresentada acima não for seguida, o processo de marcação não será iniciado.
 
 
+
+
+.. raw:: html
+
+   <iframe width="854" height="480" src="https://www.youtube.com/embed/RLizVtt5Ca8?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+
+
+.. _estrutura-de-pastas-src:
+
 Pasta src
----------
+.........
 
 Os arquivos que são referenciados no arquivo marcado, ou seja, aqueles que ficam identicados em href, devem ficar na pasta src e os seus nomes devem coincidir com o nome do .doc (ou .docx). Devem estar aí todos os arquivos que farão parte do pacote final, ou seja, todas as extensões desejadas. 
 
@@ -101,7 +110,8 @@ A nomeação destes arquivos deve seguir a regra:
 
 
 Figura
-``````
+------
+
   * mesmo nome do arquivo .doc (sem a extensão) + f + identificação da figura + extensão do arquivo de imagem
   * mesmo nome do arquivo .doc (sem a extensão) + fig + identificação da figura + extensão do arquivo de imagem
 
@@ -109,7 +119,8 @@ Exemplo: a01f01.svg, a01f01.tiff, a01f01.jpg, a01f01.png, a01f01.gif, ...
 
   
 Tabela
-``````
+------
+
   * mesmo nome do arquivo .doc (sem a extensão) + t + identificação da tabela + extensão do arquivo de imagem
   * mesmo nome do arquivo .doc (sem a extensão) + tab + identificação da tabela + extensão do arquivo de imagem
 
@@ -117,7 +128,8 @@ Exemplo: a01t01.svg, a01t01.tiff, a01t01.jpg, a01t01.png, a01t01.gif, ...
  
 
 Equation
-````````
+--------
+
   * mesmo nome do arquivo .doc (sem a extensão) + eq + identificação da equação + extensão do arquivo de imagem
   * mesmo nome do arquivo .doc (sem a extensão) + frm + identificação da equação + extensão do arquivo de imagem
   * mesmo nome do arquivo .doc (sem a extensão) + form + identificação da equação + extensão do arquivo de imagem
@@ -152,10 +164,6 @@ O Markup também ajusta automaticamente o nome dos arquivos no XML.
 .. image:: img/src_img_report_04.png
 
 
-
-.. raw:: html
-
-   <iframe width="854" height="480" src="https://www.youtube.com/embed/RLizVtt5Ca8?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
 .. _formato-scielo:
 
