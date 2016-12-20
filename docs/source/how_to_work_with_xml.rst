@@ -7,7 +7,7 @@ Workflow of the XML Files
 
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     how_to_generate_xml-prepara.rst
 
