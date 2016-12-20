@@ -1,3 +1,8 @@
+
+
+`Español <es_how_to_generate_xml-prepara.html>`_ | `Português <pt_how_to_generate_xml-prepara.html>`_ 
+
+
 .. _pt_how_to_generate_xml-prepara:
 
 How to prepare the files for Markup Program

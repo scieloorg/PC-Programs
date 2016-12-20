@@ -11,7 +11,7 @@ Flujo de Trabajo con XML
 
     es_how_to_generate_xml-markup.rst
 
-    es_how_to_generate_xml-results
+    es_how_to_generate_xml-results.rst
     
     es_how_to_validate_xml_package.rst
     

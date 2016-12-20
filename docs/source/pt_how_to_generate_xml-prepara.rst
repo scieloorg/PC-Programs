@@ -1,3 +1,7 @@
+
+`Español <es_how_to_generate_xml-prepara.html>`_ | `English <how_to_generate_xml-prepara.html>`_ 
+
+
 .. _pt_how_to_generate_xml-prepara:
 
 =============================================

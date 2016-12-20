@@ -1,4 +1,7 @@
-.. pt_how_to_generate_xml-markup:
+
+`Español <es_how_to_generate_xml-markup.html>`_ | `Português <pt_how_to_generate_xml-markup.html>`_ 
+
+.. _how_to_generate_xml-markup:
 
 =============================
 How to use the Markup Program
