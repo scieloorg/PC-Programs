@@ -1,3 +1,6 @@
+
+`Português <pt_how_to_generate_xml-markup.html>`_ | `English <how_to_generate_xml-markup.html>`_ 
+
 .. es_how_to_generate_xml-markup:
 
 ===================

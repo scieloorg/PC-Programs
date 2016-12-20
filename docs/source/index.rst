@@ -15,11 +15,6 @@ Welcome to SciELO PC Programs' documentation!
     installation.rst
 
     programs.rst
-<<<<<<< HEAD
-    how_to_use_the_programs.rst
-    
-    support.rst
-=======
 
     how_to_generate_sgml.rst
 
@@ -32,7 +27,6 @@ Welcome to SciELO PC Programs' documentation!
     concepts.rst
     
     code_database.rst
->>>>>>> 1881f7f0cd5ffeb078b7e3d1ee4c609af60edea2
     
     annexes.rst
 

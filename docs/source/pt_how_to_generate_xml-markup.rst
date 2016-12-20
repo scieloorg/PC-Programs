@@ -1,3 +1,7 @@
+
+`Español <es_how_to_generate_xml-markup.html>`_ | `English <how_to_generate_xml-markup.html>`_ 
+
+
 .. pt_how_to_generate_xml-markup:
 
 ==================
@@ -12,7 +16,7 @@ Este manual tem como objetivo apresentar o uso do programa de marcação `Markup
 
 .. _sugestao-id:
 
-Sugestão de Atribuição de “ID”
+Sugestão de Atribuição de "ID"
 ==============================
 
 O atributo "ID" é usado para identificar alguns elementos, tornando possível estabelecer referências cruzadas entre sua chamada no decorrer do texto e o elemento em si, como figuras, tabelas, afiliações etc.

@@ -1,4 +1,8 @@
+
+`Español <es_how_to_generate_xml-results.html>`_ | `English <how_to_generate_xml-results.html>`_ 
+
 .. pt_how_to_generate_xml-results:
+
 
 Gerando o Arquivo .xml
 ======================
