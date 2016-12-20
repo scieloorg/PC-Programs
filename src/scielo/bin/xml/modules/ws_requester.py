@@ -241,7 +241,7 @@ def try_request(url, timeout=30, debug=False, force_error=False):
         error_message = 'Time out!'
     except Exception as e:
         error_message = 'Unknown!'
-        raise
+        #raise
     if force_error is True:
         response = None
         http_error_proxy_auth = True
