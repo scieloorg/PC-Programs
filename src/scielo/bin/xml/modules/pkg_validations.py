@@ -1454,7 +1454,7 @@ def compare_articles(article1, article2, label1='article 1', label2='article 2')
     validations.append((article1.textual_titles, article2.textual_titles))
     validations.append((article1.textual_contrib_surnames, article2.textual_contrib_surnames))
 
-    if article1.body_words is not None:
+    if article1.body_words is not None and article2.body_words is not None:
         validations.append((article1.body_words[0:200], article2.body_words[0:200]))
     exact_comparison_result = [(label, items) for label, items in zip(labels, validations) if not items[0] == items[1]]
     relaxed_comparison_result = [(label, items) for label, items in zip(labels, validations) if not utils.is_similar(items[0], items[1])]

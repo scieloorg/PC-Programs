@@ -155,7 +155,7 @@ class DOI_Data(object):
 
 
 def invalid_labels_and_values(labels_and_values):
-    return _('The items are not correct. Check: {values}. ').format(values='; '.join([label + '="' + value + '"' for label, value in labels_and_values]))
+    return _('The items are not correct. Check: {values}. ').format(values='; '.join([label + '="' + str(value) + '"' for label, value in labels_and_values]))
 
 
 def invalid_value_message(invalid_value, label, expected_values=None):
