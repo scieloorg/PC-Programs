@@ -69,6 +69,8 @@ class ArticleDOIValidator(object):
     def __init__(self, doi_services, article):
         self.article = article
         self.doi_data = doi_services.get_doi_data(article.doi)
+        if self.doi_data is None and article.doi is not None:
+            self.doi_data = DOI_Data(article.doi)
         self.journal_doi_prefix_items = [doi_services.doi_journal_prefix(issn, article.pub_date_year) for issn in [article.e_issn, article.print_issn] if issn is not None]
         self.journal_doi_prefix_items = [item for item in self.journal_doi_prefix_items if item is not None]
         if len(self.journal_doi_prefix_items) == 0:
@@ -77,18 +79,16 @@ class ArticleDOIValidator(object):
 
     def validate(self):
         self.messages = []
-        if self.doi_data is not None:
-            self.validate_format()
-            self.validate_doi_prefix()
-            self.validate_journal_title()
-            self.validate_article_title()
-            self.validate_issn()
+        self.validate_format()
+        self.validate_doi_prefix()
+        self.validate_journal_title()
+        self.validate_article_title()
+        self.validate_issn()
 
     def validate_format(self):
-        if self.doi_data is not None:
-            invalid_chars = self.doi_data.validate_doi_format()
-            if len(invalid_chars) > 0:
-                self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}. ').format(value=self.doi_data.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
+        invalid_chars = self.doi_data.validate_doi_format()
+        if len(invalid_chars) > 0:
+            self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} has {q} invalid characteres ({invalid}). Valid characters are: {valid_characters}. ').format(value=self.doi_data.doi, valid_characters=_('numbers, letters no diacritics, and -._;()/'), invalid=' '.join(invalid_chars), q=str(len(invalid_chars)))))
 
     def validate_doi_prefix(self):
         valid_prefix = False
@@ -142,15 +142,16 @@ class DOI_Data(object):
 
     def validate_doi_format(self):
         errors = []
-        for item in self.doi:
-            if item.isdigit():
-                pass
-            elif item in '-.-;()/':
-                pass
-            elif item in 'abcdefghijklmnopqrstuvwxyz' or item in 'abcdefghijklmnopqrstuvwxyz'.upper():
-                pass
-            else:
-                errors.append(item)
+        if self.doi is not None:
+            for item in self.doi:
+                if item.isdigit():
+                    pass
+                elif item in '-.-;()/':
+                    pass
+                elif item in 'abcdefghijklmnopqrstuvwxyz' or item in 'abcdefghijklmnopqrstuvwxyz'.upper():
+                    pass
+                else:
+                    errors.append(item)
         return errors
 
 
