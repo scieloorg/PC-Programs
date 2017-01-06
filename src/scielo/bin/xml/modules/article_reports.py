@@ -508,7 +508,7 @@ class ArticleDisplayReport(object):
 
     def link_to_pdf_and_xml_files(self):
         items = []
-        for item in self.article.related_files:
+        for item in self.article.related_files + [self.article.filename]:
             location = '{PDF_PATH}' if item.endswith('.pdf') else '{XML_PATH}'
             items.append(html_reports.tag('p', html_reports.link(
                 location + item,
