@@ -1,4 +1,20 @@
-﻿4.0.092 - 16/12/2016
+﻿4.0.092 - 16/12/2016 Release 09/01/2017
+=======================================
+- Markup/XPM
+  - (bug) Fix identification of article files because of unexpected name pattern 
+- XPM
+  - (bug) Fix DOI validation: format was checked only after registration checking. Format checking must be done independent on DOI is registered or not.
+  - (bug) Fix URL validation: Do not interrupt the program if the data is not a URL or bad URL format
+  - (bug) Fix xref validation: do not interrupt the program if any xref is incomplete, such as missing @rid or content.
+  - (bug) Fix Pretty Print: do not interrupt the program if the data is not a well formated XML
+  - (bug) Display link to XML file
+  - (improvement) Report: only insert MathJax on demand
+
+- XC
+  - (bug) Although the article was deleted, it was inserted again
+
+
+4.0.092 - 16/12/2016
 ====================
 - Markup/XPM
   - (new) [#2463] Accept/include SVG files in the package 

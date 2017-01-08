@@ -369,9 +369,14 @@ class SGMLXML(object):
                     if src_href is not None:
                         self.src_folder_graphics.append(src_href)
                     if renamed_href is None and html_href is not None:
+                        #print('Extract from .doc', elem_name, elem_id)
                         if os.path.isfile(self.sgmlhtml.html_img_path + '/' + html_href):
                             renamed_href = self.xml_name + html_href.replace('image', '')
                             shutil.copyfile(self.sgmlhtml.html_img_path + '/' + html_href, self.src_path + '/' + renamed_href)
+                            self.article_files.files.append(renamed_href)
+                            #print(self.sgmlhtml.html_img_path + '/' + html_href, self.src_path + '/' + renamed_href)
+                            #print('Extract from .doc', html_href, renamed_href)
+                        
                     self.sorted_graphic_href_items.append((renamed_href, elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href))
                     if renamed_href is not None:
                         part = part.replace(graphic, graphic.replace(href, renamed_href))
@@ -385,9 +390,7 @@ class SGMLXML(object):
             filenames.append(self.xml_name[:self.xml_name.find('v')])
         found = []
         possible_href_names = []
-        print(filenames)
         number, possibilities, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
-        print(possibilities)
         if number != '':
             for name in filenames:
                 for prefix_number in possibilities:
@@ -404,14 +407,11 @@ class SGMLXML(object):
                     if href in self.article_files.files:
                         found.append(href)
         new_href = None if len(found) == 0 else found[0]
-        if new_href is None:
-            print('article_files:')
-            print('\n'.join(self.article_files.files))
-            print((elem_name, elem_id))
-
-            print('select_href_file_from_src_folder:')
-            print('\n'.join(possibilities))
-            print('====')
+        #if new_href is None:
+        #    print('====')
+        #    print('Not found: ', self.xml_name, elem_name, elem_id, possibilities)            
+        #    print('article_files:', self.article_files.files)
+        #    print('====')
         return (new_href, list(set(possible_href_names)), alternative_id)
 
 
@@ -1445,6 +1445,8 @@ def get_number_from_element_id(element_id):
     return n
 
 
+
+
 def package_files(pkg_path, xml_filename):
     fname = xml_filename
     if xml_filename.endswith('.xml'):
@@ -1452,16 +1454,12 @@ def package_files(pkg_path, xml_filename):
         if fname.endswith('.sgm'):
             fname = fname[:-4]
     r = [item for item in os.listdir(pkg_path) if (item.startswith(fname + '-') or item.startswith(fname + '.')) and not item.endswith('.xml')]
-    
     if '.sgm.xml' in xml_filename:
-        if xml_filename[3] == 'v' and xml_filename[0] == 'a':
-            fname = xml_filename[:-8]
-            r += [item for item in os.listdir(pkg_path) if item.startswith(fname)]
-            
-            fname = xml_filename[0:3]
-            r += [item for item in os.listdir(pkg_path) if item.startswith(fname) and item[3]!='v']
-            r = list(set(r))
+        fname = xml_filename[:-8]
+        for suffix in ['t', 'f', 'e', 'img', 'image']:
+            r += [item for item in os.listdir(pkg_path) if item.startswith(fname + suffix)]
+        r = list(set(r))
     r = [item for item in r if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
-
+    #print(fname, r)
     return sorted(r)
     
