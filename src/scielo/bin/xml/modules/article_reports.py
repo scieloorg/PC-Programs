@@ -577,8 +577,11 @@ def validations_table(results):
             result = list(result)
             if len(result) == 3:
                 result.append('')
-            label, status, msg, xml = result
-            rows.append({'label': sps_help(label), 'status': status, 'message': msg, 'xml': xml, _('why it is not a valid message?'): ' '})
+            if len(result) == 4:
+                label, status, msg, xml = result
+                rows.append({'label': sps_help(label), 'status': status, 'message': msg, 'xml': xml, _('why it is not a valid message?'): ' '})
+            else:
+                print('validations_table: ', result)
         r = html_reports.tag('div', html_reports.sheet(['label', 'status', 'message', 'xml', _('why it is not a valid message?')], rows, table_style='validation'))
     return r
 

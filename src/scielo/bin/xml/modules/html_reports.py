@@ -298,6 +298,8 @@ def sheet_column(data, _tag='td', style=None, width=None):
     _width = ''
     if width is not None:
         _width = ' width="' + width + '%"'
+    if data is None:
+        data = ''
     return '<' + _tag + _style + _width + '>' + data + '</' + _tag + '>'
 
 

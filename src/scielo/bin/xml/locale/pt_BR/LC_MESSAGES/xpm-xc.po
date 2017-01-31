@@ -1124,8 +1124,8 @@ msgstr " ignorado "
 #: modules/article_validations.py:1766 modules/article_validations.py:1775
 #: modules/article_validations.py:1781 modules/article_validations.py:1786
 #: modules/article_validations.py:1787
-msgid "This reference contains _"
-msgstr "Esta referência contém _"
+msgid "This reference contains {}, which means the authors of this reference are the same of the previous reference. You must copy the corresponding person-group of previous reference to this reference. "
+msgstr "Esta referência contém {} que significa que os autores desta referência são os mesmos que da referência anterior. Deve copiar o person-group correspondente da referência anterior para esta. "
 
 #: modules/article_validations.py:1783 modules/pkg_validations.py:1487
 #: modules/pkg_validations.py:1486 modules/pkg_validations.py:1480
