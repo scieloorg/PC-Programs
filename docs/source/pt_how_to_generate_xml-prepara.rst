@@ -102,7 +102,7 @@ Veja que dentro da pasta "markup_xml" foram inseridas duas pastas, no mesmo nív
 Pasta src
 .........
 
-Os arquivos que são referenciados no arquivo marcado, ou seja, aqueles que ficam identicados em href, devem ficar na pasta src e os seus nomes devem coincidir com o nome do .doc (ou .docx). Devem estar aí todos os arquivos que farão parte do pacote final, ou seja, todas as extensões desejadas. 
+Os arquivos que são referenciados no arquivo marcado, ou seja, aqueles que ficam identificados em href, devem ficar na pasta src e os seus nomes devem coincidir com o nome do .doc (ou .docx). Também em src devem estar todos os arquivos que farão parte do pacote final, ou seja, todas as extensões desejadas. 
 
 Exemplo: 
 
@@ -154,7 +154,7 @@ O Markup também renomeia as imagens para o padrão já estabelecido.
 .. image:: img/src_img_report_02.png
 
 
-No entanto, quando não existe os arquivos correspondentes na pasta src, o Markup exporta a imagem inserida no próprio documento .doc, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta src antes da geração do XML.
+No entanto, quando não existem os arquivos correspondentes na pasta src, o Markup exporta a imagem inserida no próprio documento .doc, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta src antes da geração do XML.
 
 O relatório indica de onde as imagens foram obtidas, se da pasta src ou extraídas do documento.
 
