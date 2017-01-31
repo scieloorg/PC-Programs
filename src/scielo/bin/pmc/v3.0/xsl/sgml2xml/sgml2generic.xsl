@@ -2947,7 +2947,11 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="degree"><comment content-type="degree"><xsl:value-of select="normalize-space(.)"/></comment></xsl:template>
 	<xsl:template match="thesis/date | thesgrp/date">
-		<xsl:apply-templates select="."></xsl:apply-templates>
+		<year><xsl:call-template name="display_date">
+			<xsl:with-param name="dateiso">
+				<xsl:value-of select="."/>
+			</xsl:with-param>
+		</xsl:call-template></year>
 	</xsl:template>
 	<xsl:template match="thesis/orgdiv | thesgrp/orgdiv"/>
 	<xsl:template match="thesis/orgname | thesgrp/orgname">
