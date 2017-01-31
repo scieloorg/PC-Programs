@@ -613,7 +613,6 @@ class PrettyXML(object):
             print('ERROR in minidom_pretty_print')
             print(e)
             print(self._xml)
-            raise
 
     @property
     def xml(self):

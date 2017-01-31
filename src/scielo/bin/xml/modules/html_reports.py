@@ -232,6 +232,7 @@ def report_title(titles):
 
 
 def html(title, body):
+    has_math = '<mml:math' in body or '<math' in body
     s = ''
     s += '<html>'
     s += '<head>'
@@ -244,9 +245,11 @@ def html(title, body):
         s += '<meta charset="utf-8"/><title>' + ' - '.join(title) + '</title>'
     else:
         s += '<meta charset="utf-8"/><title>' + title + '</title>'
-    s += '    <meta Content-math-Type="text/mathml"/>'
+    if has_math:
+        s += '    <meta Content-math-Type="text/mathml"/>'
     s += styles()
-    s += """<script type="text/x-mathjax-config">
+    if has_math:
+        s += """<script type="text/x-mathjax-config">
   MathJax.Hub.Config({
   config: ["MMLorHTML.js"],
   jax: ["input/TeX","input/MathML","output/HTML-CSS","output/NativeMML", "output/PreviewHTML"],
@@ -256,10 +259,10 @@ def html(title, body):
   }
 });
 </script>"""
-    if os.path.isfile(MathJax_PATH+'/MathJax.js'):
-        s += '<script type="text/javascript" src="{mathjax_path}/MathJax.js?config=MML_HTMLorMM-full"></script>'.format(mathjax_path=MathJax_PATH)
-    else:
-        s += '<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>'
+        if os.path.isfile(MathJax_PATH+'/MathJax.js'):
+            s += '<script type="text/javascript" src="{mathjax_path}/MathJax.js?config=MML_HTMLorMM-full"></script>'.format(mathjax_path=MathJax_PATH)
+        else:
+            s += '<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>'
     s += '</head>'
     s += '<body>'
     s += report_date()

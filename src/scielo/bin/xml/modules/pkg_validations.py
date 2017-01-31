@@ -625,15 +625,16 @@ class ArticlesMerger(object):
         # merge pkg and registered, considering some of them are rejected
         orders_to_check = []
         for name, article in self.pkg_articles.items():
-            action = self._actions.get(name)
-            if name in self._conflicts.keys():
-                action = 'reject'
-            if not action in ['reject', None]:
-                if name in self._merged_articles.keys():
-                    if not self._merged_articles[name].order == self.pkg_articles[name].order:
+            if not article.marked_to_delete:
+                action = self._actions.get(name)
+                if name in self._conflicts.keys():
+                    action = 'reject'
+                if not action in ['reject', None]:
+                    if name in self._merged_articles.keys():
+                        if not self._merged_articles[name].order == self.pkg_articles[name].order:
+                            self._merged_articles[name] = self.pkg_articles[name]
+                    else:
                         self._merged_articles[name] = self.pkg_articles[name]
-                else:
-                    self._merged_articles[name] = self.pkg_articles[name]
 
         #for name, article in self.merged_articles.items():
         #    if article.order in self.orders_conflicts(self.merged_articles).keys() or self._actions.get(name) in ['reject', None]:
@@ -670,6 +671,7 @@ class ArticlesMerger(object):
 
     @property
     def excluded_orders(self):
+        #excluded_orders
         items = {}
         orders = [article.order for article in self._merged_articles.values()]
         for name, article in self.registered_articles.items():
@@ -1454,7 +1456,7 @@ def compare_articles(article1, article2, label1='article 1', label2='article 2')
     validations.append((article1.textual_titles, article2.textual_titles))
     validations.append((article1.textual_contrib_surnames, article2.textual_contrib_surnames))
 
-    if article1.body_words is not None:
+    if article1.body_words is not None and article2.body_words is not None:
         validations.append((article1.body_words[0:200], article2.body_words[0:200]))
     exact_comparison_result = [(label, items) for label, items in zip(labels, validations) if not items[0] == items[1]]
     relaxed_comparison_result = [(label, items) for label, items in zip(labels, validations) if not utils.is_similar(items[0], items[1])]

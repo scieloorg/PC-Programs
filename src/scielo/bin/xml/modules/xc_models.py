@@ -805,14 +805,15 @@ class ArticlesManager(object):
         error = False
 
         for xml_name, article in articles.items():
-            self.articles_orders[xml_name] = article.order
-            article_converted, excluded_aop, messages, aop_status = self.convert_article(article, i_record)
-            self.articles_conversion_status[xml_name] = article_converted
-            self.articles_aop_exclusion_status[xml_name] = excluded_aop
-            self.articles_aop_status[xml_name] = aop_status
-            self.articles_conversion_messages[xml_name] = messages
-            if article_converted is False:
-                error = True
+            if not article.marked_to_delete:
+                self.articles_orders[xml_name] = article.order
+                article_converted, excluded_aop, messages, aop_status = self.convert_article(article, i_record)
+                self.articles_conversion_status[xml_name] = article_converted
+                self.articles_aop_exclusion_status[xml_name] = excluded_aop
+                self.articles_aop_status[xml_name] = aop_status
+                self.articles_conversion_messages[xml_name] = messages
+                if article_converted is False:
+                    error = True
 
         if not error:
             q_registered = self.finish_conversion(i_record)
