@@ -3704,7 +3704,7 @@ et al.</copyright-statement>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="ack//funding|fngrp//funding" mode="front-funding-group">
+	<xsl:template match="ack//funding|fngrp//funding|fn//funding" mode="front-funding-group">
 		<xsl:param name="statement"/>
 		<xsl:if test=".//contract">
 			<funding-group>
