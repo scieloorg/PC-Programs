@@ -3454,7 +3454,7 @@ et al.</copyright-statement>
 		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="ext-link-type"><xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1)='S'">scielo-pid</xsl:when>
+				<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
 				<xsl:when test="contains($id,'doi')">doi</xsl:when>
 				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
 				<xsl:otherwise>doi</xsl:otherwise>
@@ -3468,7 +3468,7 @@ et al.</copyright-statement>
 		<related-article related-article-type="{@reltp}" id="ra1" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="ext-link-type"><xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1)='S'">scielo-pid</xsl:when>
+				<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
 				<xsl:when test="contains($id,'doi')">doi</xsl:when>
 				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
 				<xsl:otherwise>doi</xsl:otherwise>
@@ -3484,7 +3484,7 @@ et al.</copyright-statement>
 		<related-article related-article-type="article-reference" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="ext-link-type"><xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1)='S'">scielo-pid</xsl:when>
+				<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
 				<xsl:when test="contains($id,'doi')">doi</xsl:when>
 				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
 				<xsl:otherwise>doi</xsl:otherwise>
@@ -3502,7 +3502,7 @@ et al.</copyright-statement>
 		<related-article related-article-type="commentary">
 			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
 			<xsl:attribute name="ext-link-type"><xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1)='S'">scielo-pid</xsl:when>
+				<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
 				<xsl:when test="contains($id,'doi')">doi</xsl:when>
 				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
 				<xsl:otherwise>doi</xsl:otherwise>
