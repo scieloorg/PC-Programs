@@ -1179,10 +1179,10 @@ class ArticleContentValidation(object):
     def article_permissions(self):
         text_languages = sorted(list(set(self.article.trans_languages + [self.article.language] + ['en'])))
         r = []
-        #if self.article.sps_version_number >= 1.4:
-        #    for cp_elem in ['statement', 'year', 'holder']:
-        #        if self.article.article_copyright.get(cp_elem) is None:
-        #            r.append(('copyright-' + cp_elem, validation_status.STATUS_WARNING, _('It is highly recommended identifying {elem}. ').format(elem='copyright-' + cp_elem)))
+        if self.article.sps_version_number >= 1.4:
+            for cp_elem in ['statement', 'year', 'holder']:
+                if self.article.article_copyright.get(cp_elem) is None:
+                    r.append(('copyright-' + cp_elem, validation_status.STATUS_WARNING, _('It is highly recommended identifying {elem}. ').format(elem='copyright-' + cp_elem)))
         for lang, license in self.article.article_licenses.items():
             if lang is None:
                 if self.article.sps_version_number >= 1.4:
