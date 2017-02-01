@@ -491,7 +491,7 @@ class ArticleContentValidation(object):
         items.append(self.disp_formulas)
         items.append(self.validate_xref_reftype)
         items.append(self.missing_xref_list)
-        items.append(self.innerbody_elements_permissions)
+        #items.append(self.innerbody_elements_permissions)
 
         items.append(self.refstats)
         items.append(self.refs_sources)
