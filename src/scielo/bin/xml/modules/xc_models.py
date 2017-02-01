@@ -464,6 +464,11 @@ class RegisteredTitle(object):
         self._issns = title_issns(record)
 
     @property
+    def acron(self):
+        if self.record is not None:
+            return self.record.get('68', '').lower()
+
+    @property
     def journal_id_nlm_ta(self):
         if self.record is not None:
             return self.record.get('421')
@@ -484,6 +489,21 @@ class RegisteredTitle(object):
         if self._issns is None:
             self._issns = title_issns(self.record)
         return self._issns.get('epub')
+
+    @property
+    def abbrev_title(self):
+        if self.record is not None:
+            return self.record.get('30', '').lower()
+
+    @property
+    def publisher_name(self):
+        if self.record is not None:
+            return self.record.get('480')
+
+    @property
+    def issn_id(self):
+        if self.record is not None:
+            return self.record.get('400')
 
 
 class IssueModels(object):
@@ -1298,7 +1318,7 @@ class DBManager(object):
             result = None
         return result
 
-    def get_issue_models(self, journal_title, issue_label, p_issn, e_issn):
+    def get_registered_data(self, journal_title, issue_label, p_issn, e_issn):
         issue_models = None
         msg = None
         acron_issue_label = 'unidentified issue'
@@ -1320,7 +1340,32 @@ class DBManager(object):
                         t = RegisteredTitle(j_record)
                         issue_models.complete_issue_info(t)
 
-        return (acron_issue_label, issue_models, msg)
+                        j = Journal()
+                        j.acron = t.acron
+                        j.p_issn = t.print_issn
+                        j.e_issn = t.e_issn
+                        j.abbrev_title = t.abbrev_title
+                        j.nlm_title = t.journal_id_nlm_ta
+                        j.publisher_name = t.publisher_name
+                        j.license = t.license
+                        j.collection_acron = None
+                        j.journal_title = journal_title
+                        j.issn_id = t.issn_id
+            
+                        j_data = Journal()
+                        j_data.acron = [t.acron]
+                        j_data.p_issn = [t.print_issn]
+                        j_data.e_issn = [t.e_issn]
+                        j_data.abbrev_title = [t.abbrev_title]
+                        j_data.nlm_title = [t.journal_id_nlm_ta]
+                        j_data.publisher_name = [t.publisher_name]
+                        j_data.license = [t.license]
+                        j_data.collection_acron = [None]
+                        j_data.journal_title = [journal_title]
+                        j_data.issn_id = [t.issn_id]
+
+        return (acron_issue_label, issue_models, msg, j, j_data)
+
 
     def get_issue_files(self, issue_models):
         if issue_models is not None:
@@ -1414,17 +1459,3 @@ def update_list(l, value):
             l.append(value)
     return list(set(l))
 
-
-class JournalsManager(object):
-
-    def __init__(self, journals_db=None):
-        self.journals_list = JournalsList()
-        self.journals_db = journals_db
-
-    def journal(self, p_issn, e_issn, journal_title):
-        j = None
-        j_data = None
-        if self.journals_db is None:
-            j = self.journals_list.get_journal(p_issn, e_issn, journal_title)
-            j_data = self.journals_list.get_journal_data(p_issn, e_issn, journal_title)
-        return (j, j_data)
