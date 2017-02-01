@@ -180,7 +180,7 @@ class HRef(object):
             self.id = parent.attrib.get('id', None)
         self.parent = parent
         self.is_internal_file = (not '/' in src)
-        if element.tag in ['ext-link', 'uri']:
+        if element.tag in ['ext-link', 'uri', 'related-article']:
             self.is_internal_file = False
         self.is_image = ext in IMG_EXTENSIONS
 
@@ -1369,9 +1369,10 @@ class ArticleXML(object):
         if self.tree is not None:
             for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
                 for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
-                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
-                    items.append(_href)
+                    if elem.tag != 'related-article':
+                        href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                        _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
+                        items.append(_href)
         return items
 
     @property
