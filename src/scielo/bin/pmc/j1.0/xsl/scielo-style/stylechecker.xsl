@@ -74,7 +74,10 @@
             </xsl:when>
         </xsl:choose>
     </xsl:variable>
-    
+    <xsl:template match="related-article">
+    </xsl:template>
+    <xsl:template match="related-article/@related-article-type">
+    </xsl:template>
     <xsl:template match="ext-link[@ext-link-type='clinical-trial']">
          <xsl:call-template name="web-ext-link-check"/>        
          <xsl:call-template name="href-content-check"/>
