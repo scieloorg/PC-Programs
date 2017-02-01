@@ -383,6 +383,19 @@ class ArticlesPackage(object):
             r += html_reports.tag('div', html_reports.format_list('', 'ol', self.invalid_xml_name_items, 'issue-problem'))
         return r
 
+    def data(self):
+        pkg_journal_title = None
+        pkg_p_issn = None
+        pkg_e_issn = None
+        pkg_issue_label = None
+        data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in self.pkg_articles.values()]))
+        data.sort(reverse=True)
+        if len(data) > 0:
+            data = list(data[0])
+            if any(data):        
+                pkg_journal_title, pkg_p_issn, pkg_e_issn, pkg_issue_label = data
+        return pkg_journal_title, pkg_p_issn, pkg_e_issn, pkg_issue_label
+
 
 class ArticlesData(object):
 
@@ -391,20 +404,25 @@ class ArticlesData(object):
         self.pkg_p_issn = None
         self.pkg_e_issn = None
         self.pkg_issue_label = None
+
+        self.journal = None
+        self.journal_data = None
         
         self._issue_label = None
         self.issue_models = None
         self.issue_error_msg = None
-        self.issue_files = None
-        self.journal = None
-        self.journal_data = None
+
         self.serial_path = None
         self.articles_db_manager = None
 
-    def setup(self, pkg, journals_manager, db_manager):
-        self._identify_journal_data(pkg.pkg_articles, journals_manager)
-        if db_manager is not None:
-            self._identify_issue_data(db_manager)
+    def setup(self, pkg, db_manager):
+        self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = pkg.data()
+        if db_manager is None:
+            journals_list = xc_models.JournalList()
+            self.journal = journals_list.get_journal(self.pkg_p_issn, self.pkg_e_issn, self.pkg_journal_title)
+            self.journal_data = journals_list.get_journal_data(self.pkg_p_issn, self.pkg_e_issn, self.pkg_journal_title)
+        else:
+            self._identify_registered_data(db_manager)
             self.serial_path = db_manager.serial_path
 
     @property
@@ -413,8 +431,6 @@ class ArticlesData(object):
         if self.journal is not None:
             if self.journal.acron is not None:
                 a = self.journal.acron
-        if a is None:
-            a = 'None'
         return a
 
     @property
@@ -425,26 +441,15 @@ class ArticlesData(object):
     def issue_label(self):
         r = self._issue_label if self._issue_label else self.pkg_issue_label
         if r is None:
-            r = 'None'
+            r = 'unknown_issue_label'
         return r
 
-    def _identify_journal_data(self, pkg_articles, journals_manager):
-        data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in pkg_articles.values()]))
-        data.sort(reverse=True)
-
-        if len(data) > 0:
-            data = list(data[0])
-            if any(data):
-                self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = data
-                self.journal, self.journal_data = journals_manager.journal(self.pkg_p_issn, self.pkg_e_issn, self.pkg_journal_title)
-
-    def _identify_issue_data(self, db_manager):
-        if db_manager is not None and self.journal is not None:
-            acron_issue_label, self.issue_models, self.issue_error_msg = db_manager.get_issue_models(self.pkg_journal_title, self.pkg_issue_label, self.pkg_p_issn, self.pkg_e_issn)
-            ign, self._issue_label = acron_issue_label.split(' ')
-            if self.issue_error_msg is None:
-                self.issue_files = db_manager.get_issue_files(self.issue_models)
-                self.articles_db_manager = xc_models.ArticlesManager(db_manager.db_isis, self.issue_files)
+    def _identify_registered_data(self, db_manager):
+        acron_issue_label, self.issue_models, self.issue_error_msg, self.journal, self.journal_data = db_manager.get_registered_data(self.pkg_journal_title, self.pkg_issue_label, self.pkg_p_issn, self.pkg_e_issn)
+        ign, self._issue_label = acron_issue_label.split(' ')
+        if self.issue_error_msg is None:
+            issue_files = db_manager.get_issue_files(self.issue_models)
+            self.articles_db_manager = xc_models.ArticlesManager(db_manager.db_isis, issue_files)
 
 
 class RegisteredArticles(dict):
