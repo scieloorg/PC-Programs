@@ -1267,6 +1267,9 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
                     print(_('To generate PMC package, add -pmc as parameter'))
                     print('='*10)
 
+        if not is_xml_generation and not is_db_generation:
+            make_pkg_zip(pkg_maker.scielo_pkg_path)
+
         utils.display_message(_('Result of the processing:'))
         utils.display_message(pkg_maker.results_path)
         xpm_process_logger.write(pkg_maker.report_path + '/log.txt')
