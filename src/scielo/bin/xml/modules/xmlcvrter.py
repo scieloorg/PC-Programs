@@ -297,7 +297,7 @@ def convert_package(src_path):
     articles_pkg = pkg_validations.ArticlesPackage(pkg_maker.scielo_pkg_path, pkg_maker.article_items, is_xml_generation)
 
     articles_data = pkg_validations.ArticlesData()
-    articles_data.setup(articles_pkg, xc_models.JournalsManager(), db_manager=converter_env.db_manager)
+    articles_data.setup(articles_pkg, db_manager=converter_env.db_manager)
 
     articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data, xc_process_logger)
     articles_set_validations.validate(doi_services, pkg_maker.scielo_dtd_files, pkg_maker.article_work_area_items)
