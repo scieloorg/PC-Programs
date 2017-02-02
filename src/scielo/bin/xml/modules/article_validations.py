@@ -491,7 +491,7 @@ class ArticleContentValidation(object):
         items.append(self.disp_formulas)
         items.append(self.validate_xref_reftype)
         items.append(self.missing_xref_list)
-        items.append(self.innerbody_elements_permissions)
+        #items.append(self.innerbody_elements_permissions)
 
         items.append(self.refstats)
         items.append(self.refs_sources)
@@ -1785,7 +1785,7 @@ class ReferenceContentValidation(object):
                         r.append(item)
             if '_'*6 in self.reference.mixed_citation:
                 if len(self.reference.authors_list) == 0:
-                    r.append(_('This reference contains ' + '_'*6 + ', which means the authors of this reference are the same as the previous reference. You must replicate the corresponding person-group of previous reference to this reference. '))
+                    r.append(('person-group', validation_status.STATUS_FATAL_ERROR, _('This reference contains {}, which means the authors of this reference are the same of the previous reference. You must copy the corresponding person-group of previous reference to this reference. '.format('_'*6))))
         return r
 
     @property
