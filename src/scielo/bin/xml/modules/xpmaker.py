@@ -269,7 +269,12 @@ class SGMLHTML(object):
 class SGMLXML(object):
 
     def __init__(self, article_files, sgmlxml_content, html_filename):
-        self.sgml_content = sgmlxml_content
+        self.sgml_content = sgmlxml_content.strip()
+        for item in ['doc', 'article', 'text']:
+            endtag = '</' + item + '>'
+            if endtag in self.sgml_content:
+                self.sgml_content = self.sgml_content[:self.sgml_content.rfind(endtag)+len(endtag)]
+                break
         self.article_files = article_files
         self.xml_name = self.article_files.xml_name
         self.src_path = self.article_files.path
