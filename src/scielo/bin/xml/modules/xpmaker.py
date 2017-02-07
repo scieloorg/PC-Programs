@@ -284,7 +284,7 @@ class SGMLXML(object):
         self.sorted_graphic_href_items = []
         self.src_folder_graphics = []
         self.xml_content = None
-        self.IMG_EXTENSIONS = ('.svg', '.tiff', '.tif', '.eps', '.jpg', '.png')
+        #article.IMG_EXTENSIONS = ('.svg', '.tiff', '.tif', '.eps', '.jpg', '.png')
 
     def generate_xml(self, version):
         #content = fix_uppercase_tag(content)
@@ -399,14 +399,14 @@ class SGMLXML(object):
         if number != '':
             for name in filenames:
                 for prefix_number in possibilities:
-                    for ext in self.IMG_EXTENSIONS:
+                    for ext in article.IMG_EXTENSIONS:
                         href = name + prefix_number + ext
                         possible_href_names.append(href)
                         if href in self.article_files.files:
                             found.append(href)
         else:
             for name in filenames:
-                for ext in self.IMG_EXTENSIONS:
+                for ext in article.IMG_EXTENSIONS:
                     href = name + elem_id + ext
                     possible_href_names.append(href)
                     if href in self.article_files.files:

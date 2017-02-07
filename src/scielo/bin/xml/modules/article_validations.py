@@ -1437,6 +1437,17 @@ class ArticleContentValidation(object):
                     message.append(('xref', validation_status.STATUS_WARNING, invalid_labels_and_values(items)))
         return message
 
+    def svg(self, path):
+        messages = []
+        for href in self.article.hrefs:
+            if href.is_internal_file and href.src.endswith('.svg'):
+                try:
+                    if '<image' in open(os.path.join(path, href.src)).read():
+                        messages.append(('svg', validation_status.STATUS_ERROR, _(u'Invalid SVG file: {} contains embedded images. ').format(href.src)))
+                except:
+                    pass
+        return messages
+                
     def href_list(self, path):
         href_items = {}
         min_inline, max_inline = utils.valid_formula_min_max_height(self.article.inline_graphics_heights(path))

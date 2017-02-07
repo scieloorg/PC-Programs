@@ -13,6 +13,7 @@ p {
 }
 div {
     border: none;
+    max-width: 1000px;
 }
 ul li{
   list-style: square;
@@ -115,12 +116,13 @@ h5 {
     word-wrap:break-word;
     width: 20%;
 }
-.validation {
+.validation_sheet {
    border: 1px dotted #8B85AB;
    font-family: "Verdana";
    font-size: 8pt;
    color: black; 
    width: 100%;
+   max-width: 1000px;
 } 
 .td_label {
    border: 1px dotted gray;
@@ -156,7 +158,7 @@ h5 {
    font-size: 9pt;
    color: black;
    vertical-align: top;
-   max-width:20%;  
+   width:20%;  
 } 
 .fatalerror .td_label {
    border: 1px solid gray;
@@ -186,7 +188,7 @@ h5 {
    word-wrap:break-word;
    width:30%;  
 } 
-.validation th {
+.validation_sheet th {
   border: 1px solid gray;
   background-color: #547980;
   color: white;
@@ -197,6 +199,7 @@ h5 {
   font-size: 10;
   color: black; 
   width: 100%;
+  max-width: 1000px;
 } 
 .sheet td {
   border: 1px solid gray;
@@ -364,7 +367,7 @@ h5 {
   width: auto;
   min-height: 40px;
   max-height: 300px;
-  max-width: 80%;
+  max-width: 300px;
 }
 
 .delete {
@@ -396,7 +399,8 @@ h5 {
   border: 1px solid gray;
   color: black;
   vertical-align: top;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1000px;
   word-wrap:break-word;
   margin: 5px;
   font-family: Verdana;
@@ -552,7 +556,8 @@ h5 {
   border: 1px solid #CCADBC;
   color: black;
   vertical-align: top;
-  max-width: 90%;
+  width: 100%;
+  max-width: 1000px;
   margin: 5px;
   font-family: Verdana;
   font-size: 9pt;

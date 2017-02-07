@@ -418,7 +418,7 @@ class ArticlesData(object):
     def setup(self, pkg, db_manager):
         self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = pkg.data()
         if db_manager is None:
-            journals_list = xc_models.JournalList()
+            journals_list = xc_models.JournalsList()
             self.journal = journals_list.get_journal(self.pkg_p_issn, self.pkg_e_issn, self.pkg_journal_title)
             self.journal_data = journals_list.get_journal_data(self.pkg_p_issn, self.pkg_e_issn, self.pkg_journal_title)
         else:
@@ -1117,7 +1117,7 @@ class ArticlesSetValidations(object):
             #dates = '|'.join([item if item is not None else 'none' for item in [article.epub_ppub_dateiso, article.collection_dateiso, article.epub_dateiso]])
             msg = '\n'.join(msg)
             results.append({'label': xml_name, 'status': status, 'pages': article.pages, 'message': msg, _('why it is not a valid message?'): ''})
-        return html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'pages', 'message', _('why it is not a valid message?')], results, table_style='validation', widths={'label': '10', 'status': '10', 'pages': '5', 'message': '75'}))
+        return html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'pages', 'message', _('why it is not a valid message?')], results, table_style='validation_sheet', widths={'label': '10', 'status': '10', 'pages': '5', 'message': '75'}))
 
     @property
     def journal_issue_header_report(self):
