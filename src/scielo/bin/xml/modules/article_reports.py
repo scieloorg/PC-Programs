@@ -270,7 +270,7 @@ class ArticleDisplayReport(object):
         formulas_data = []
         for formula_data in self.article.formulas_data:
             if formula_data['graphic'] is not None:
-                formula_data['graphic'] = html_reports.link('{IMG_PATH}/' + formula_data['graphic'], html_reports.image('{IMG_PATH}/' + formula_data['graphic']))
+                formula_data['graphic'] = html_reports.link('{IMG_PATH}/' + formula_data['graphic'], html_reports.thumb_image('{IMG_PATH}/' + formula_data['graphic']))
             if formula_data['code'] is not None:
                 formula_data['code'] = formula_data['code'].replace('mml:', '')
             formulas_data.append(formula_data)
@@ -411,10 +411,10 @@ class ArticleDisplayReport(object):
         r = ''
         r += html_reports.tag('h4', _('Files in the package'))
         th, data = self.package_files()
-        r += html_reports.sheet(th, data, table_style='validation')
+        r += html_reports.sheet(th, data, table_style='validation_sheet')
         r += html_reports.tag('h4', '@href')
         th, data = self.hrefs_sheet_data()
-        r += html_reports.sheet(th, data, table_style='validation')
+        r += html_reports.sheet(th, data, table_style='validation_sheet')
         return r
 
     def hrefs_sheet_data(self):
@@ -437,7 +437,8 @@ class ArticleDisplayReport(object):
     def package_files(self):
         r = []
         t_header = ['label', 'status', 'message', _('why it is not a valid message?')]
-        items = self.article_validation.package_files(self.xml_path)
+        items = self.article_validation.package_files(self.xml_path) + self.article_validation.svg(self.xml_path)
+
         if len(items) > 0:
             for filename, status, message in items:
                 row = {}
@@ -582,7 +583,7 @@ def validations_table(results):
                 rows.append({'label': sps_help(label), 'status': status, 'message': msg, 'xml': xml, _('why it is not a valid message?'): ' '})
             else:
                 print('validations_table: ', result)
-        r = html_reports.tag('div', html_reports.sheet(['label', 'status', 'message', 'xml', _('why it is not a valid message?')], rows, table_style='validation'))
+        r = html_reports.tag('div', html_reports.sheet(['label', 'status', 'message', 'xml', _('why it is not a valid message?')], rows, table_style='validation_sheet'))
     return r
 
 

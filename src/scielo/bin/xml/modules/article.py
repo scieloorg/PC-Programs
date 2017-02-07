@@ -13,7 +13,7 @@ import html_reports
 import xml_utils
 
 
-IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
+IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', '.svg']
 REQUIRES_PERMISSIONS = [
         'boxed-text', 
         'disp-quote', 
