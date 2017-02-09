@@ -1479,7 +1479,7 @@ def compare_articles(article1, article2, label1='article 1', label2='article 2')
         status = validation_status.STATUS_WARNING
     elif len(exact_comparison_result) == 1 or len(relaxed_comparison_result) == 1:
         valid_titles_and_authors = True
-        status = validation_status.STATUS_ERROR
+        status = validation_status.STATUS_WARNING
     message = display_articles_differences(status, exact_comparison_result, label1, label2)
     return (valid_titles_and_authors, status, message)
 
