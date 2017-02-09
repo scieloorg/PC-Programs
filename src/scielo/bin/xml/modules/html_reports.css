@@ -13,7 +13,7 @@ p {
 }
 div {
     border: none;
-    max-width: 1000px;
+    max-width: 1200px;
 }
 ul li{
   list-style: square;
@@ -122,7 +122,7 @@ h5 {
    font-size: 8pt;
    color: black; 
    width: 100%;
-   max-width: 1000px;
+   max-width: 1200px;
 } 
 .td_label {
    border: 1px dotted gray;
@@ -199,7 +199,7 @@ h5 {
   font-size: 10;
   color: black; 
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
 } 
 .sheet td {
   border: 1px solid gray;
@@ -400,7 +400,7 @@ h5 {
   color: black;
   vertical-align: top;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   word-wrap:break-word;
   margin: 5px;
   font-family: Verdana;
@@ -557,7 +557,7 @@ h5 {
   color: black;
   vertical-align: top;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 5px;
   font-family: Verdana;
   font-size: 9pt;
