@@ -1,4 +1,9 @@
-﻿4.0.092 - 16/12/2016 Release 09/01/2017
+﻿4.0.092 - 16/12/2016 Teste 13/02/2017
+=====================================
+...
+
+
+4.0.092 - 16/12/2016 Release 09/01/2017
 =======================================
 - Markup/XPM
   - (bug) Fix identification of article files because of unexpected name pattern 
