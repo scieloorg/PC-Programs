@@ -118,7 +118,7 @@ Para optimizar el proceso de marcaje de los elementos básicos do archivo, es ne
  * Separador de label y caption: dos-puntos e espacio o espacio + guion + espacio o ponto + espacio;
  * Para tablas codificadas, el encabezamiento debe estar en negrita;
  * La cita del tipo autor/fecha en el cuerpo del texto debe ser: sobrenombre del autor, año;
- * Para citas en el sistema numérico en el cuerpo del texto: número entre parénteses y ambos con formateo "sobrescrito";
+ * Para citas en el sistema numérico en el cuerpo del texto: número entre parénteses y ambos con formateo "sobrescrito". Ej: :sup:`(1)`, :sup:`(1-8)`, :sup:`(1,3-5)`;
  * Notas de pie de página en el cuerpo del texto pueden estar “sobrescrito", pero no estarán entre paréntesis;
  * Citaciones (quote), reculado en 4 cm de la margen izquierda;
 
