@@ -325,7 +325,7 @@ class ArticleRecords(object):
             rec_c['17'] = []
 
             grp_idx = 0
-            for grp in item.authors_by_group:
+            for grptype, grp in item.authors_by_group:
                 is_analytic = (len(item.authors_by_group) > 1) and (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
                 grp_idx += 1
 
@@ -1303,24 +1303,24 @@ class DBManager(object):
         
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
-"""
-updated = False
-        if os.path.isfile(db + '.mst'):
+    """
+    updated = False
+            if os.path.isfile(db + '.mst'):
+                result = self.db_isis.get_records(db, expr)
+                if len(result) == 0:
+                    d_copy = fs_utils.last_modified_datetime(db + '.mst')
+                    d_source = fs_utils.last_modified_datetime(source_db + '.mst')
+                    diff = d_source - d_copy
+                    updated = not (diff.days > 0 or (diff.days == 0 and diff.seconds > 0))
+            if not updated:
+                self.update_db_copy(source_db, db, fst_filename)
             result = self.db_isis.get_records(db, expr)
-            if len(result) == 0:
-                d_copy = fs_utils.last_modified_datetime(db + '.mst')
-                d_source = fs_utils.last_modified_datetime(source_db + '.mst')
-                diff = d_source - d_copy
-                updated = not (diff.days > 0 or (diff.days == 0 and diff.seconds > 0))
-        if not updated:
-            self.update_db_copy(source_db, db, fst_filename)
-        result = self.db_isis.get_records(db, expr)
-        if len(result) > 0:
-            result = result[0]
-        else:
-            result = None
-        return result
-"""
+            if len(result) > 0:
+                result = result[0]
+            else:
+                result = None
+            return result
+    """
 
     def old_update_and_search(self, db, expr, source_db, fst_filename):
         result = []
