@@ -1341,7 +1341,9 @@ class ArticleContentValidation(object):
 
     @property
     def missing_xref_list(self):
-        tag_and_xref_types = {'ref': 'bibr', 'fig-group': 'fig', 'table-wrap-group': 'table', 'fig': 'fig', 'table-wrap': 'table'}
+        tag_and_xref_types = {'fig-group': 'fig', 'table-wrap-group': 'table', 'fig': 'fig', 'table-wrap': 'table'}
+        if len(self.article.bibr_xref_ranges) > 0:
+            tag_and_xref_types['ref'] = 'bibr'
         message = []
         missing = {}
         tags_id_list = {k: [] for k in tag_and_xref_types.keys()}
@@ -1362,7 +1364,7 @@ class ArticleContentValidation(object):
 
         for xref_type, missing_xref_type_items in missing.items():
             if self.article.any_xref_ranges.get(xref_type) is None:
-                print(xref_type + ' has no xref ranges???')
+                print(xref_type + ' has no xref ranges')
             else:
                 missing_xref_type_items = confirm_missing_xref_items(missing_xref_type_items, self.article.any_xref_ranges.get(xref_type))
 
@@ -1579,21 +1581,16 @@ class ReferenceContentValidation(object):
     def evaluate(self, article_year):
         r = []
         r.append(self.xml)
-        for item in self.mixed_citation:
-            r.append(item)
+        r.extend(self.mixed_citation)
         r.append(self.publication_type)
         if self.publication_type_other is not None:
             r.append(self.publication_type_other)
-        for item in self.publication_type_dependence:
-            r.append(item)
-        for item in self.authors_list:
-            r.append(item)
-        for item in self.year(article_year):
-            r.append(item)
-        for item in self.source:
-            r.append(item)
-        for item in self.ext_link:
-            r.append(item)
+        r.extend(self.publication_type_dependence)
+        r.extend(self.person_group_type)
+        r.extend(self.authors_list)
+        r.extend(self.year(article_year))
+        r.extend(self.source)
+        r.extend(self.ext_link)
         return r
 
     @property
@@ -1698,6 +1695,10 @@ class ReferenceContentValidation(object):
                         looks_like = 'confproc'
             if looks_like is not None:
                 r.append(('@publication-type', validation_status.STATUS_ERROR, _('Be sure that {item} is correct. ').format(item='@publication-type=' + str(self.reference.publication_type)) + _('This reference looks like {publication_type}. ').format(publication_type=looks_like)))
+            
+            if ' In: ' in self.reference.mixed_citation and self.reference.article_title is None and self.reference.chapter_title is None:
+                r.append(('article-title', validation_status.STATUS_FATAL_ERROR, _('It seems {} is not identified. ').format('article-title')))
+                r.append(('chapter-title', validation_status.STATUS_FATAL_ERROR, _('It seems {} is not identified. ').format('chapter-title')))
 
             for item in items:
                 if item is not None:
@@ -1790,6 +1791,20 @@ class ReferenceContentValidation(object):
         if self.reference.mixed_citation is None:
             r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
         else:
+            mixed = self.reference.mixed_citation
+            texts = sorted([(len(text),text) for text in self.reference.element_citation_texts], reverse=True)
+
+            for l, text in texts:
+                mixed = mixed.replace(text, '\n')
+            unidentified = mixed.split('\n')
+
+            for item in unidentified:
+                s = item
+                for c in ['.', ',', ':', '(', ')', 'In', 'Ed', 'Org']:
+                    s = s.replace(c, '')
+                if len(s.strip())>1:
+                    r.append(('mixed-citation', validation_status.STATUS_WARNING, _('Unidentified: {}. ').format(item)))
+
             for label, data in [('source', self.reference.source), ('year', self.reference.year), ('ext-link', self.reference.ext_link)]:
                 for item in validate_element_is_found_in_mixed_citation(label, data, self.reference.mixed_citation):
                     if item is not None:
@@ -1797,6 +1812,18 @@ class ReferenceContentValidation(object):
             if '_'*6 in self.reference.mixed_citation:
                 if len(self.reference.authors_list) == 0:
                     r.append(('person-group', validation_status.STATUS_FATAL_ERROR, _('This reference contains {}, which means the authors of this reference are the same of the previous reference. You must copy the corresponding person-group of previous reference to this reference. '.format('_'*6))))
+        return r
+    
+    @property
+    def person_group_type(self):
+        r = []
+        groups_type = [item[0] for item in self.reference.authors_by_group]
+        if ' In: ' in self.reference.mixed_citation and len(groups_type) < 2:
+            r.append(('@person-group-type', validation_status.STATUS_FATAL_ERROR, _(u'It is expected more than one person-group. ')))
+        if len(groups_type) > 1:
+            no_repetition = list(set(groups_type))
+            if not len(groups_type) == len(no_repetition):
+                r.append(('@person-group-type', validation_status.STATUS_FATAL_ERROR, _(u'Use @person-group-type to identify the person role. You have identified {} groups. @person-group must have different value for each one. '.format(len(groups_type)))))
         return r
 
     @property
