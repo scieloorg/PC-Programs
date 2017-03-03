@@ -427,41 +427,42 @@ class ArticleXML(object):
     @property
     def bibr_xref_ranges(self):
         _bibr_xref_ranges = []
-        for xref_parent_node, bibr_xref_node_items in self.bibr_xref_parent_nodes:
-            xref_parent_xml = xml_utils.tostring(xref_parent_node)
-            parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
-            if len(bibr_xref_node_items) != len(parts) - 1:
-                parts = xref_parent_xml.replace('<xref ref-type="bibr', '~BREAK~<xref ref-type="bibr').split('~BREAK~')
+        if self.is_bibr_xref_number:
+            for xref_parent_node, bibr_xref_node_items in self.bibr_xref_parent_nodes:
+                xref_parent_xml = xml_utils.tostring(xref_parent_node)
+                parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+                if len(bibr_xref_node_items) != len(parts) - 1:
+                    parts = xref_parent_xml.replace('<xref ref-type="bibr', '~BREAK~<xref ref-type="bibr').split('~BREAK~')
 
-            if len(bibr_xref_node_items) == len(parts) - 1:
-                if len(bibr_xref_node_items) > 1:
-                    for k in range(1, len(bibr_xref_node_items)):
-                        text = ''
-                        delimiter = ''
-                        if '</xref>' in parts[k]:
-                            delimiter = '</xref>'
-                        elif '/>' in parts[k]:
-                            delimiter = '/>'
-                        if len(delimiter) > 0:
-                            if delimiter in parts[k]:
-                                text = parts[k][parts[k].find(delimiter)+len(delimiter):]
-                        if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
-                            start = None
-                            end = None
-                            n = bibr_xref_node_items[k-1].attrib.get('rid')
-                            if n is not None:
-                                n = n[1:]
-                                if n.isdigit():
-                                    start = int(n)
-                            n = bibr_xref_node_items[k].attrib.get('rid')
-                            if n is not None:
-                                n = n[1:]
-                                if n.isdigit():
-                                    end = int(n)
-                            if not None in [start, end]:
-                                _bibr_xref_ranges.append([start, end, bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
-                        #elif '-' in text:
-                        #    print(text)
+                if len(bibr_xref_node_items) == len(parts) - 1:
+                    if len(bibr_xref_node_items) > 1:
+                        for k in range(1, len(bibr_xref_node_items)):
+                            text = ''
+                            delimiter = ''
+                            if '</xref>' in parts[k]:
+                                delimiter = '</xref>'
+                            elif '/>' in parts[k]:
+                                delimiter = '/>'
+                            if len(delimiter) > 0:
+                                if delimiter in parts[k]:
+                                    text = parts[k][parts[k].find(delimiter)+len(delimiter):]
+                            if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
+                                start = None
+                                end = None
+                                n = bibr_xref_node_items[k-1].attrib.get('rid')
+                                if n is not None:
+                                    n = n[1:]
+                                    if n.isdigit():
+                                        start = int(n)
+                                n = bibr_xref_node_items[k].attrib.get('rid')
+                                if n is not None:
+                                    n = n[1:]
+                                    if n.isdigit():
+                                        end = int(n)
+                                if not None in [start, end]:
+                                    _bibr_xref_ranges.append([start, end, bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
+                            #elif '-' in text:
+                            #    print(text)
         return _bibr_xref_ranges
 
     @property
