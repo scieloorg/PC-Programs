@@ -1750,12 +1750,16 @@ class ReferenceXML(object):
         return xml_utils.node_text(self.root.find('.//mixed-citation'))
 
     @property
+    def element_citation_texts(self):
+        return [item for item in [xml_utils.node_text(item) for item in self.root.findall('.//element-citation//*')] if not '<' in item]
+
+    @property
     def authors_list(self):
         r = []
-        for grp in self.authors_by_group:
-            for contrib in grp:
-                r.append(contrib)
-
+        for items in self.authors_by_group:
+            if items is not None:
+                r.extend(items[1])
+        print(r)
         return r
 
     @property
@@ -1766,8 +1770,7 @@ class ReferenceXML(object):
                 role = person_group.attrib.get('person-group-type', 'author')
                 authors = [get_author(contrib, role) for contrib in person_group.findall('*')]
                 authors = [a for a in authors if a is not None]
-
-                groups.append(authors)
+                groups.append((role, authors))
         return groups
 
     @property

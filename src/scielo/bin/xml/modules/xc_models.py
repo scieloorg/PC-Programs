@@ -325,7 +325,7 @@ class ArticleRecords(object):
             rec_c['17'] = []
 
             grp_idx = 0
-            for grp in item.authors_by_group:
+            for grptype, grp in item.authors_by_group:
                 is_analytic = (len(item.authors_by_group) > 1) and (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
                 grp_idx += 1
 
