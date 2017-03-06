@@ -1286,9 +1286,6 @@ class DBManager(object):
             _expr.append(pissn)
         if eissn is not None and len(eissn) == 9:
             _expr.append(eissn)
-        if journal_title is not None:
-            _expr.append(journal_title.replace('(', '').replace(')', ''))
-            #utils.display_message(journal_title)
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
     def search_issue_expr(self, issue_id, pissn, eissn, acron=None):
@@ -1305,6 +1302,7 @@ class DBManager(object):
 
     def update_and_search(self, db, expr, source_db, fst_filename):
         result = []
+        updated = True
         if os.path.isfile(db + '.mst'):
             d_copy = fs_utils.last_modified_datetime(db + '.mst')
             d_source = fs_utils.last_modified_datetime(source_db + '.mst')
