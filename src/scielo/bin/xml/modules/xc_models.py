@@ -1302,12 +1302,13 @@ class DBManager(object):
 
     def update_and_search(self, db, expr, source_db, fst_filename):
         result = []
-        updated = True
+        updated = False
         if os.path.isfile(db + '.mst'):
             d_copy = fs_utils.last_modified_datetime(db + '.mst')
             d_source = fs_utils.last_modified_datetime(source_db + '.mst')
             diff = d_source - d_copy
             updated = not (diff.days > 0 or (diff.days == 0 and diff.seconds > 0))
+
         if updated:
             result = self.db_isis.get_records(db, expr)
         if len(result) == 0:
