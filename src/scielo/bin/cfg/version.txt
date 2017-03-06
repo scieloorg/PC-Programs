@@ -1,4 +1,29 @@
-﻿4.0.092 - 16/12/2016 Release 09/01/2017
+﻿4.0.092 - 16/12/2016 (06/03/2017)
+=====================================
+- Docs
+  - (bug) [2504] Fix the manual to make clear how to format several bibr xref
+- XC
+  - (improvement) [2500] Do not block the article updating if only the title has changed
+  - (bug) [2513] Fix journal identification and conflicts report
+  - (bug) [2509] Fix the checking if issue or title database are or not updated
+  - (bug) [2377] Fix the identification of ex aop
+  - (bug) [2494] Get journal data from a database if no data is found in the list
+- XPM
+  - (improvement) [2497] Inform if there are embedded jpg or similar images inside of the SVG
+  - (improvement) [2511] References validations
+  - (improvement) [2486] Remove the warnings about copyright of digital assets
+  - (bug) [2503] Fix the identification of bibr xref ranges
+  - (bug) [2472] Generate zip of the package
+  - (bug) [2477] Fix the generation of reports about absence of person-group as previous author
+- Markup/XPM
+  - (bug) [] Consider Markup etal and et-al generates SPS etal
+  - (bug) [2496] Remove text generated after </doc> which make not well formed sgm.xml
+  - (bug) [2474] Delete fn as deleting [doc]
+  - (bug) [2478] Fix the generation related-article/@xlink:href if it is a PID
+  - (bug) [2475] Fix generation of date in citation which comes from thesis/date
+  - (bug) [2473] Generate <funding-group> e <funding-statement> from [fn]
+  
+4.0.092 - 16/12/2016 Release 09/01/2017
 =======================================
 - Markup/XPM
   - (bug) Fix identification of article files because of unexpected name pattern 
@@ -9,10 +34,8 @@
   - (bug) Fix Pretty Print: do not interrupt the program if the data is not a well formated XML
   - (bug) Display link to XML file
   - (improvement) Report: only insert MathJax on demand
-
 - XC
   - (bug) Although the article was deleted, it was inserted again
-
 
 4.0.092 - 16/12/2016
 ====================

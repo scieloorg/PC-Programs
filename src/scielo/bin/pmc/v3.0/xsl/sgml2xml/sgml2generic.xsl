@@ -201,7 +201,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</caption>
 	</xsl:template>
 
-	<xsl:template match="et-al">
+	<xsl:template match="et-al | etal">
 		<etal/>
 	</xsl:template>
 	<xsl:template match="ign"/>
