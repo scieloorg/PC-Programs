@@ -1759,7 +1759,6 @@ class ReferenceXML(object):
         for items in self.authors_by_group:
             if items is not None:
                 r.extend(items[1])
-        print(r)
         return r
 
     @property

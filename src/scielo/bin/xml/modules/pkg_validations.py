@@ -632,14 +632,11 @@ class ArticlesMerger(object):
         for name, article in self.pkg_articles.items():
             if not article.marked_to_delete:
                 action = self._actions.get(name)
+
                 if name in self._conflicts.keys():
                     action = 'reject'
                 if not action in ['reject', None]:
-                    if name in self._merged_articles.keys():
-                        if not self._merged_articles[name].order == self.pkg_articles[name].order:
-                            self._merged_articles[name] = self.pkg_articles[name]
-                    else:
-                        self._merged_articles[name] = self.pkg_articles[name]
+                    self._merged_articles[name] = self.pkg_articles[name]
 
         #for name, article in self.merged_articles.items():
         #    if article.order in self.orders_conflicts(self.merged_articles).keys() or self._actions.get(name) in ['reject', None]:
