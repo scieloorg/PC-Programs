@@ -1080,6 +1080,11 @@ class ArticlesSetValidations(object):
         previous_xmlname = None
         int_previous_lpage = None
 
+        error_level = validation_status.STATUS_BLOCKING_ERROR
+        fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.articles]
+        if all(fpage_and_article_id_other_status):
+            error_level = validation_status.STATUS_ERROR
+
         for xml_name, article in self.articles:
             fpage = article.fpage
             lpage = article.lpage
@@ -1097,7 +1102,7 @@ class ArticlesSetValidations(object):
                     #if not article.is_rolling_pass and not article.is_ahead:
                     if int_previous_lpage is not None:
                         if int_previous_lpage > int_fpage:
-                            status = validation_status.STATUS_BLOCKING_ERROR if not article.is_epub_only else validation_status.STATUS_WARNING
+                            status = error_level if not article.is_epub_only else validation_status.STATUS_WARNING
                             msg.append(_('Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage == int_fpage:
                             status = validation_status.STATUS_WARNING
@@ -1106,7 +1111,7 @@ class ArticlesSetValidations(object):
                             status = validation_status.STATUS_WARNING
                             msg.append(_('There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                     if int_fpage > int_lpage:
-                        status = validation_status.STATUS_BLOCKING_ERROR
+                        status = error_level
                         msg.append(_('Invalid page range: {fpage} (fpage) > {lpage} (lpage). '.format(fpage=int_fpage, lpage=int_lpage)))
                     int_previous_lpage = int_lpage
                     previous_lpage = lpage
