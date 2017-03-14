@@ -87,12 +87,15 @@ def u_encode(u, encoding):
     r = u
     if isinstance(u, unicode):
         try:
-            r = u.encode(encoding, 'xmlcharrefreplace')
+            r = u.encode(encoding)
         except Exception as e:
             try:
-                r = u.encode(encoding, 'replace')
+                r = u.encode(encoding, 'xmlcharrefreplace')
             except Exception as e:
-                r = u.encode(encoding, 'ignore')
+                try:
+                    r = u.encode(encoding, 'replace')
+                except Exception as e:
+                    r = u.encode(encoding, 'ignore')
     return r
 
 

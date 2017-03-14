@@ -1334,7 +1334,7 @@ class DBManager(object):
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
                 j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                 if j_record is None:
-                    msg = html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to get journal data') + ' ' + journal_title, False)
+                    msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get journal data') + ' ' + journal_title, False)
                 else:
                     t = RegisteredTitle(j_record)
                     j = Journal()
