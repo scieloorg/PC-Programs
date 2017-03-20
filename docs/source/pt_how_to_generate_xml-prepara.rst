@@ -20,9 +20,7 @@ Veja abaixo os requisitos para a marcação do documento:
  * Os arquivos devem ser formatados de acordo com a Formatação SciELO.
  
 
-.. note:: A nomeação dos arquivos que serão trabalhados não deve conter espaços, acentos ou
-         caracteres especiais. Caso seja necessário separar uma informação de outra use *underline*. 
-         Exemplo: *ACB**_**2345.doc*
+.. note:: A nomeação dos arquivos que serão trabalhados não deve conter espaços, acentos ou caracteres especiais.
 
 
 Arquivos de entrada para o Markup
