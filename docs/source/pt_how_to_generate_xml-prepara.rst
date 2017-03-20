@@ -15,7 +15,7 @@ Introdução
 Antes de iniciar o processo de marcação, é necessário seguir alguns passos para preparação do arquivo que será marcado.
 Veja abaixo os requisitos para a marcação do documento:
  
- * Os arquivos devem estar em formato Word (.doc) ou (.docx).
+ * Os arquivos devem estar em formato Word (*.doc*) ou (*.docx*).
  * A estrutura de pastas deve seguir o padrão SciELO
  * Os arquivos devem ser formatados de acordo com a Formatação SciELO.
  
@@ -135,9 +135,9 @@ Equation
 Exemplo: *a01eq1.svg*, *a01eq1.tiff*, *a01eq1.jpg*, *a01eq1.png*, *a01eq1.gif*, ...
 
 
-No arquivo marcado, o Markup rotula automaticamente os objetos gráficos, identificando-os da seguinte forma **[graphic href="?a01"] {elemento gráfico fica aqui} [/graphic]**. Este valor não deve ser alterado, pois desta forma, o Markup é capaz de associar esta referência com os arquivos localizados na pasta src.
+No arquivo marcado, o Markup rotula automaticamente os objetos gráficos, identificando-os da seguinte forma **[graphic href="?a01"] {elemento gráfico fica aqui} [/graphic]**. Este valor não deve ser alterado, pois desta forma, o Markup é capaz de associar esta referência com os arquivos localizados na pasta *src*.
 
-.. note:: As imagens dos artigos devem estar disponíveis no arquivo .doc, preferencialmente em formato .jpeg e .png.
+.. note:: As imagens dos artigos devem estar disponíveis no arquivo *.doc*, preferencialmente em formato *.jpeg* e *.png*.
 
 
 .. image:: img/src_img_report_01.png
@@ -150,7 +150,7 @@ O Markup também renomeia as imagens para o padrão já estabelecido.
 .. image:: img/src_img_report_02.png
 
 
-No entanto, quando os arquivos correspondentes na pasta *src* não existem, o Markup exporta a imagem inserida no próprio arquivo *.doc*, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta src antes da geração do XML.
+No entanto, quando os arquivos correspondentes na pasta *src* não existem, o Markup exporta a imagem inserida no próprio arquivo *.doc*, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta src antes da geração do *XML*.
 
 O relatório indica de onde as imagens foram obtidas, se da pasta src ou extraídas do documento.
 
