@@ -208,4 +208,4 @@ Exemplo:
 
    <iframe width="854" height="480" src="https://www.youtube.com/embed/kaYRu-bkhBE?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
 
-
+.. {"reviewed\_on": "20170320", "by": "carolina.tanigushi@scielo.org"}
