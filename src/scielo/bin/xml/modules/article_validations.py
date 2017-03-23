@@ -1586,7 +1586,6 @@ class ReferenceContentValidation(object):
         if self.publication_type_other is not None:
             r.append(self.publication_type_other)
         r.extend(self.publication_type_dependence)
-        r.extend(self.person_group_type)
         r.extend(self.authors_list)
         r.extend(self.year(article_year))
         r.extend(self.source)
@@ -1696,10 +1695,6 @@ class ReferenceContentValidation(object):
             if looks_like is not None:
                 r.append(('@publication-type', validation_status.STATUS_ERROR, _('Be sure that {item} is correct. ').format(item='@publication-type=' + str(self.reference.publication_type)) + _('This reference looks like {publication_type}. ').format(publication_type=looks_like)))
             
-            if ' In: ' in self.reference.mixed_citation and self.reference.article_title is None and self.reference.chapter_title is None:
-                r.append(('article-title', validation_status.STATUS_FATAL_ERROR, _('It seems {} is not identified. ').format('article-title')))
-                r.append(('chapter-title', validation_status.STATUS_FATAL_ERROR, _('It seems {} is not identified. ').format('chapter-title')))
-
             for item in items:
                 if item is not None:
                     r.append(item)
