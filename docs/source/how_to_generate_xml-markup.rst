@@ -2323,7 +2323,7 @@ Finalize a marcação do arquivo e gere o XML.
 Artigos em Formato Abreviado
 ============================
 
-O formato abreviado de marcação é utilizados somente nos casos de inserção de números retrospectivos na coleção do periódico.
+O formato abreviado de marcação é utilizado somente nos casos de inserção de números retrospectivos na coleção do periódico.
 O arquivo no formato abreviado apresentará os dados básicos do documento (título do artigo, autores, afiliação, seção, resumo, palavras-chave e as referências completas).
 O corpo do texto de um arquivo no formato abreviado deve ser suprimido, substituindo o texto por dois parágrafos:
 
