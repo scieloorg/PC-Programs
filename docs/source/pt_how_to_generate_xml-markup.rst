@@ -66,78 +66,78 @@ Para composição do “ID” combine o prefixo do tipo do elemento e um número
 Dados Básicos
 =============
 
-Estando o arquivo formatado de acordo com o manual `Preparação de Arquivos para o Programa Markup <pt_how_to_generate_xml-prepara.html>`_ e aberto no programa `Markup <markup.html>`_, selecione a tag [doc]:
+Estando o arquivo formatado de acordo com o manual `Preparação de Arquivos para o Programa Markup <pt_how_to_generate_xml-prepara.html>`_ e aberto no programa `Markup <markup.html>`_, selecione a tag **[doc]**:
 
 .. image:: img/doc-mkp-formulario.jpg
    :height: 400px
    :align: center
 
 
-Ao clicar em [doc] o programa abrirá um formulário para ser completado com os dados básicos do artigo:
+Ao clicar em **[doc]** o programa abrirá um formulário para ser completado com os dados básicos do artigo:
 
 Ao selecionar o periódico no campo “collection/journal” o programa preencherá alguns dados automaticamente, tais como: ISSNs, título abreviado, acrônimo, entre outros. Os demais dados serão preenchidos manualmente, de acordo com as orientações abaixo:
 
 
-+-------------------+-----------------------------------------------------------------------------------------------+
-| Campo             | Descrição                                                                                     |
-+===================+===============================================================================================+
-| license           | se não for inserido automaticamente, preencher com a URL da licença creative commons          |
-|                   | adotada pelo periódico. Consultar licenças em:                                                |
-|                   | http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.3-branch/tagset.html#license |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| volid             | Inserir volume, se existir. Para Ahead of Print, não incluir volume                           |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| supplvol          | Caso seja um suplemento de volume incluir sua parte ou número correspondente.                 |
-|                   | **Exemplo: vol.12 supl.A**, então preencha com **A**, neste campo                             |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| issueno           | Entre com o número do fascículo. Caso seja um artigo publicado em ahead of                    |
-|                   | print, insira ahead neste campo                                                               |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| supplno           | Caso seja um suplemento de fascículo incluir sua parte ou número                              |
-|                   | correspondente. **Exemplo: n.37, supl.A**, então preencha com **A** neste campo               |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| isidpart          | Usar em casos de press release, incluindo a sigla pr                                          |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| dateiso           | Data de publicação formada por ano, mês e dia **(YYYYMMDD)**. Preencher sempre                |
-|                   | com o último mês da periodicidade. Por exemplo, se o periódico é bimestral                    |
-|                   | preencher **20140600**. Use **00** para mês e dia nos casos em não haja sua                   |
-|                   | identificação. **Exemplo: 20140000**.                                                         |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| month/season      | Entre o mês ou mês inicial barra final, em inglês (três letras) e ponto,                      |
-|                   | exceto para May, June e July. **Ex.: May/June, July/Aug.**                                    |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| fpage             | Primeira página do documento. Para artigo em Ahead of Print, incluir 00                       |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| @seq              | Para artigos que iniciam na mesma página de um artigo anterior, incluir a                     |
-|                   | sequência com letra                                                                           |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| lpage             | Inserir a última página do documento.                                                         |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| elocatid          | Incluir paginação eletrônica. Neste caso não preencher fpage e lpage                          |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| order (in TOC)    | Incluir a ordem do artigo no sumário do fascículo. Deve ter, no mínimo, dois                  |
-|                   | dígitos. Por exemplo, se o artigo for o primeiro do sumário, preencha este                    |
-|                   | campo com **01** e assim por diante.                                                          |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| pagcount*         | Inserir o total de paginação. Para Ahead of Print, incluir o valor 1                          |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| doctopic*         | Informar o tipo de documento a ser marcado. Por exemplo: artigo original, resenha,            | 
-|                   | carta, comentário, etc. No caso de Ahead Of Print, incluir sempre o tipo artigo original,     |
-|                   | exceto para errata                                                                            |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| language*         | Informe o idioma principal do texto a ser marcado                                             |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| version*          | Identifica a versão da DTD usada no processo de marcação (A versão atual é 4.0)               |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| artdate (rolling) | Obrigatório completar com a data **YYYYMMDD** quando for um artigo rolling pass.              |
-|                   | Rolling pass é um modelo publicação onde o periódico publica seus artigos num volume          |
-|                   | único a medida em que estes ficam prontos                                                     |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| ahpdate           | Indicar a data de publicação de um artigo publicado em ahead of print                         |
-+-------------------+-----------------------------------------------------------------------------------------------+
++-------------------+----------------------------------------------------------------------------------------------------+
+| Campo             | Descrição                                                                                          |
++===================+====================================================================================================+
+| license           | Se não for inserido automaticamente, preencher com a URL da licença Creative Commons               |
+|                   | adotada pelo periódico. Consultar licenças em:                                                     |
+|                   | http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/tagset/elemento-license.html |
++-------------------+----------------------------------------------------------------------------------------------------+
+| volid             | Inserir volume, se houver. Para *ahead of print*, não incluir volume                               |
++-------------------+----------------------------------------------------------------------------------------------------+
+| supplvol          | Caso seja um suplemento de volume incluir sua parte ou número correspondente.                      |
+|                   | Por exemplo, para o *vol.12 supl.A*, preencha esse campo com "A"                                   |
++-------------------+----------------------------------------------------------------------------------------------------+
+| issueno           | Insira o número do fascículo. Caso seja um artigo para publicação em *ahead of                     |
+|                   | print*, insira "ahead" neste campo                                                                 |
++-------------------+----------------------------------------------------------------------------------------------------+
+| supplno           | Caso seja um suplemento de fascículo, incluir sua parte ou número                                  |
+|                   | correspondente. Por exemplo, para o *n.37, supl.A*, preencha esse campo com "A"                    |
++-------------------+----------------------------------------------------------------------------------------------------+
+| isidpart          | Usar em casos de press release, incluindo a sigla "pr"                                             |
++-------------------+----------------------------------------------------------------------------------------------------+
+| dateiso           | Data de publicação formada por ano, mês e dia **(YYYYMMDD)**. Preencher sempre                     |
+|                   | com o último mês da periodicidade. Por exemplo, se o periódico é bimestral                         |
+|                   | preencher "20140600". Use "00" para mês e dia nos casos em que não são                             |
+|                   | identificados. Por exemplo: "20140000"                                                             |
++-------------------+----------------------------------------------------------------------------------------------------+
+| month/season      | Entre o mês ou mês inicial + *barra* + mês final, em inglês (três letras) e ponto,                 |
+|                   | exceto para *May*, *June* e *July*. Por exemplo: *May/June*, *July/Aug*.                           |
++-------------------+----------------------------------------------------------------------------------------------------+
+| fpage             | Número da primeira página do documento. Para artigo em *ahead of print*, incluir "00"              |
++-------------------+----------------------------------------------------------------------------------------------------+
+| @seq              | Para artigos que iniciam na mesma página de um artigo anterior, incluir a                          |
+|                   | sequência com letra. Por exemplo: "23b"                                                            |
++-------------------+----------------------------------------------------------------------------------------------------+
+| lpage             | Inserir o número da última página do documento                                                     |
++-------------------+----------------------------------------------------------------------------------------------------+
+| elocatid          | Incluir paginação eletrônica. Neste caso não preencher *fpage* e *lpage*                           |
++-------------------+----------------------------------------------------------------------------------------------------+
+| order (in TOC)    | Incluir a ordem do artigo no sumário do fascículo. Deve ter, no mínimo, dois                       |
+|                   | dígitos. Por exemplo, se o artigo for o primeiro do sumário, preencha este                         |
+|                   | campo com "01" e assim por diante                                                                  |
++-------------------+----------------------------------------------------------------------------------------------------+
+| doctopic*         | Informar o tipo de documento a ser marcado. Por exemplo: artigo original, resenha,                 | 
+|                   | carta, comentário etc. No caso de *ahead of print*, incluir sempre o tipo "artigo original",       |
+|                   | exceto para errata                                                                                 |
++-------------------+----------------------------------------------------------------------------------------------------+
+| language*         | Informe o idioma principal do texto a ser marcado                                                  |
++-------------------+----------------------------------------------------------------------------------------------------+
+| sps-version*      | Identifica a versão do *SciELO Publishing Schema*                                                  |
+|                   | (http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/)                           |
+|                   | usada no processo de marcação (a versão atual é 1.5)                                               |
++-------------------+----------------------------------------------------------------------------------------------------+
+| artdate (rolling) | Obrigatório completar com a data formada por ano, mês e dia **(YYYYMMDD)** quando for um artigo    |
+|                   | de um periódico que usa o modelo de publicação contínua, onde os artigos são publicados à medida   |
+|                   | em que ficam prontos                                                                               |
++-------------------+----------------------------------------------------------------------------------------------------+
+| ahpdate           | Indicar a data de publicação de um artigo publicado em *ahead of print*                            |
++-------------------+----------------------------------------------------------------------------------------------------+
 
 
-.. note:: Os campos que apresentam um asterisco ao lado, são campos obrigatórios.
+.. note:: Os campos que apresentam um asterisco ao lado são obrigatórios.
 
 
 .. _front:
