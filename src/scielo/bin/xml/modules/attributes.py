@@ -282,6 +282,13 @@ LICENSES = [
     'https://creativecommons.org/licenses/by/3.0/igo/',
     'https://creativecommons.org/licenses/by-nc/3.0/igo/',
     'https://creativecommons.org/licenses/by-nc-nd/3.0/igo/',
+    'http://creativecommons.org/licenses/by-nc-sa/4.0/', 
+    'http://creativecommons.org/licenses/by-nc-sa/3.0/', 
+    'http://creativecommons.org/licenses/by-nc-nd-sa/4.0/', 
+    'http://creativecommons.org/licenses/by-nc-nd-sa/3.0/', 
+    'http://creativecommons.org/licenses/by-nd/4.0/', 
+    'http://creativecommons.org/licenses/by-nd/3.0/', 
+
 ]
 
 SPS_HELP_ELEMENTS = [
