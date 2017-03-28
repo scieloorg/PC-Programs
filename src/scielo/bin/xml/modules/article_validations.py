@@ -1786,20 +1786,6 @@ class ReferenceContentValidation(object):
         if self.reference.mixed_citation is None:
             r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
         else:
-            mixed = self.reference.mixed_citation
-            texts = sorted([(len(text),text) for text in self.reference.element_citation_texts], reverse=True)
-
-            for l, text in texts:
-                mixed = mixed.replace(text, '\n')
-            unidentified = mixed.split('\n')
-
-            for item in unidentified:
-                s = item
-                for c in ['.', ',', ':', '(', ')', 'In', 'Ed', 'Org']:
-                    s = s.replace(c, '')
-                if len(s.strip())>1:
-                    r.append(('mixed-citation', validation_status.STATUS_WARNING, _('Unidentified: {}. ').format(item)))
-
             for label, data in [('source', self.reference.source), ('year', self.reference.year), ('ext-link', self.reference.ext_link)]:
                 for item in validate_element_is_found_in_mixed_citation(label, data, self.reference.mixed_citation):
                     if item is not None:
