@@ -291,6 +291,7 @@ class SGMLXML(object):
         xpm_process_logger.register('SGMLXML.generate_xml')
         self.fix_quotes()
         self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
+        self.insert_mml_namespace_reference()
         self.insert_mml_namespace()
         self.fix_mkp_href_values()
         self.replace_fontsymbols()
@@ -325,7 +326,7 @@ class SGMLXML(object):
                 items.append(item)
             self.sgml_content = ''.join(items)
 
-    def insert_mml_namespace(self):
+    def insert_mml_namespace_reference(self):
         if '>' in self.sgml_content:
             self.sgml_content = self.sgml_content[:self.sgml_content.rfind('>') + 1]
         if 'mml:' in self.sgml_content and not 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' in self.sgml_content:
@@ -729,11 +730,21 @@ class ArticlePkgMaker(object):
 
         return (self.doc, self.doc_files_info)
 
+    def insert_mml_namespace(self):
+        if '</math>' in self.content:
+            new = []
+            for part in self.content.replace('</math>', '</math>BREAK-MATH').split('BREAK-MATH'):
+                before = part[:part.find('<math')]
+                math = part[part.find('<math'):]
+                part = before + math.replace('<', '<mml:').replace('<mml:/', '</mml:')
+                new.append(part)
+            self.content = ''.join(new)
+
     def normalize_xml_content(self):
         xpm_process_logger.register('normalize_xml_content')
 
         self.content = xml_utils.complete_entity(self.content)
-
+        self.insert_mml_namespace()
         xpm_process_logger.register('convert_entities_to_chars')
         self.content, replaced_named_ent = xml_utils.convert_entities_to_chars(self.content)
         if len(replaced_named_ent) > 0:
