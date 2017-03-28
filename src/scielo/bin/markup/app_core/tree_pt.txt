@@ -215,3 +215,4 @@ licinfo;Identifica licença
 *page-fn;Identifica todas as notas que estão no rodapé
 prefix;Identifica o prefixo de um autor como Sr., Prof., etc
 suffix;Identifica o sufixo de um autor como Jr., Filho, Neto, Sobrinho, etc
+xhtml;Identifica uma tabela que está representada dentro de um arquivo XHTML
