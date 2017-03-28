@@ -499,23 +499,36 @@ class ArticleContentValidation(object):
         r = self.normalize_validations(items)
         return (r, performance)
 
+    def is_not_empty_element(self, node):
+        if node is not None:
+            return len(xml_utils.remove_tags(xml_utils.node_text(node))) > 0
+
+    def is_not_empty_attribute(self, node, attr_name):
+        if node is not None:
+            return node.attrib.get(attr_name) != ''
+
     @property
     def disp_formulas(self):
         results = []
-        children = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']
+        required_at_least_one_child = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math', 'alternatives']
         for disp_formula_node in self.article.disp_formula_elements:
             found = False
-            for name in children:
-                child_node = disp_formula_node.find(name)
-                if child_node is not None:
-                    if name == 'graphic':
-                        if child_node.attrib.get('{http://www.w3.org/1999/xlink}href') is not None:
-                            found = True
-                    elif name in ['{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']:
-                        if len(xml_utils.remove_tags(xml_utils.node_text(child_node))) > 0:
-                            found = True
+            for child in disp_formula_node.findall('*'):
+                if child.tag in required_at_least_one_child:
+                    if child.tag == 'graphic':
+                        found = self.is_not_empty_attribute(child, '{http://www.w3.org/1999/xlink}href')
+                    elif child.tag in ['{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']:
+                        found = self.is_not_empty_element(child)
+                    elif child.tag in ['alternatives']:
+                        if self.is_not_empty_attribute(child, '{http://www.w3.org/1999/xlink}href'):
+                            found = any([self.is_not_empty_element(child.find('math')),
+                                self.is_not_empty_element(child.find('{http://www.w3.org/1998/Math/MathML}math')),
+                                self.is_not_empty_element(child.find('tex-math')),
+                                ])                    
+                if found: 
+                    break
             if not found:
-                results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure. ').format(children=_(' or ').join(children), element='disp-formula'), xml_utils.node_xml(disp_formula_node)))
+                results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure. ').format(children=_(' or ').join(required_at_least_one_child), element='disp-formula'), xml_utils.node_xml(disp_formula_node)))
         return results
 
     @property
