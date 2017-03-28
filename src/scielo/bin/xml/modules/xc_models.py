@@ -732,6 +732,7 @@ class ArticlesManager(object):
         self.articles_aop_status = {}
         self.articles_aop_exclusion_status = {}
         self.articles_conversion_messages = {}
+        self.aop_pdf_replacements = {}
 
         if self.issue_files.is_aop:
             self.ex_aop_manager = BaseManager(db_isis, serial_files.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
@@ -755,19 +756,20 @@ class ArticlesManager(object):
         return (aop_status, valid_aop)
 
     def exclude_aop(self, valid_aop):
-        excluded_aop, messages = self.aop_db_manager.manage_ex_aop(valid_aop)
-        if valid_aop.is_ex_aop and excluded_aop is False:
+        is_excluded_aop, messages, aop_issue_folder_name = self.aop_db_manager.manage_ex_aop(valid_aop)
+        
+        if valid_aop.is_ex_aop and is_excluded_aop is False:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('{item} is already excluded. ').format(item='ex aop: ' + valid_aop.order)))
-            excluded_aop = True
-        elif excluded_aop is True:
+            is_excluded_aop = True
+        elif is_excluded_aop is True:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('Excluded {item}').format(item='ex aop: ' + valid_aop.order)))
         else:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item='ex aop: ' + valid_aop.order)))
             if messages is not None:
                 self.xc_messages.extend(messages)
-        return excluded_aop
+        return is_excluded_aop, aop_issue_folder_name
 
-    def convert_article(self, article, i_record):
+    def convert_article(self, article, i_record, xml_name):
         self.xc_messages = []
         excluded_aop = None
         aop_status = None
@@ -779,11 +781,18 @@ class ArticlesManager(object):
         if id_created is True:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('created/updated {order}.id').format(order=article.order)))
             if valid_aop is not None:
-                excluded_aop = self.exclude_aop(valid_aop)
+                excluded_aop, aop_issue_folder_name = self.exclude_aop(valid_aop)
+                if aop_issue_folder_name is not None:
+                    self.aop_pdf_replacements[xml_name] = (self.issue_files.journal_files.acron + '/' + aop_issue_folder_name, valid_aop.xml_name)
+
                 article_converted = excluded_aop
         else:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to create/update {order}.id').format(order=article.order)))
-        return (article_converted, excluded_aop, ''.join(self.xc_messages), aop_status)
+        
+        self.articles_conversion_status[xml_name] = article_converted
+        self.articles_aop_exclusion_status[xml_name] = excluded_aop
+        self.articles_aop_status[xml_name] = aop_status
+        self.articles_conversion_messages[xml_name] = ''.join(self.xc_messages)
 
     @property
     def db_conversion_status(self):
@@ -827,12 +836,8 @@ class ArticlesManager(object):
         for xml_name, article in articles.items():
             if not article.marked_to_delete:
                 self.articles_orders[xml_name] = article.order
-                article_converted, excluded_aop, messages, aop_status = self.convert_article(article, i_record)
-                self.articles_conversion_status[xml_name] = article_converted
-                self.articles_aop_exclusion_status[xml_name] = excluded_aop
-                self.articles_aop_status[xml_name] = aop_status
-                self.articles_conversion_messages[xml_name] = messages
-                if article_converted is False:
+                self.convert_article(article, i_record, xml_name)
+                if self.articles_conversion_status[xml_name] is False:
                     error = True
 
         if not error:
@@ -1194,11 +1199,14 @@ class AopManager(object):
         del self.xmlname_indexed_by_issueid_and_order[issue_folder + '|' + aop.order]
 
     def manage_ex_aop(self, aop):
+        aop_issue_folder_name = None
         if aop.pid is not None:
             aop_issueid = self.issueid_indexed_by_xmlname[aop.xml_name]
+            aop_issue_folder_name = aop_issueid
             if aop_issueid.startswith('ex-'):
                 done = True
-                msg = [html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('{item} is aop').format(item=aop.xml_name))]
+                aop_issue_folder_name = aop_issue_folder_name[3:]
+                msg = [html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('{item} is ex-aop').format(item=aop.xml_name))]
             else:
                 done, msg = self.journal_files.archive_ex_aop_files(aop, aop_issueid)
                 if done:
@@ -1207,7 +1215,13 @@ class AopManager(object):
                         self.updated_issue_bases.append(aop_issueid)
                     if not 'ex-' + aop_issueid in self.updated_issue_bases:
                         self.updated_issue_bases.append('ex-' + aop_issueid)
-        return (done, msg)
+        if aop_issue_folder_name is not None:
+            if not aop_issue_folder_name in self.updated_issue_bases:
+                self.updated_issue_bases.append(aop_issue_folder_name)
+        return (done, msg, aop_issue_folder_name)
+
+    #aop_pdf_replacements
+
 
     @property
     def scilista_items(self):
