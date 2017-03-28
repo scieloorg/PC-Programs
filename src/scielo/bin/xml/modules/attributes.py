@@ -1,11 +1,14 @@
 # coding=utf-8
-
+import os
 from datetime import datetime
 
 from __init__ import _
 import validation_status
 import article_utils
+from fs_utils import read_file
 
+
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 SPS_expiration_dates = [
     ('sps-1.5', ['20161001', '20171001']),
@@ -263,33 +266,13 @@ CONTRIB_ID_URLS = {
     'scopus': 'https://www.scopus.com/authid/detail.uri?authorId=',  
 }
 
-LICENSES = [
-    'http://creativecommons.org/licenses/by/4.0/',
-    'http://creativecommons.org/licenses/by/3.0/',
-    'http://creativecommons.org/licenses/by-nc/4.0/',
-    'http://creativecommons.org/licenses/by-nc/3.0/',
-    'http://creativecommons.org/licenses/by-nc-nd/3.0/',
-    'http://creativecommons.org/licenses/by-nc-nd/4.0/',
-    'http://creativecommons.org/licenses/by/3.0/igo/',
-    'http://creativecommons.org/licenses/by-nc/3.0/igo/',
-    'http://creativecommons.org/licenses/by-nc-nd/3.0/igo/',
-    'https://creativecommons.org/licenses/by/4.0/',
-    'https://creativecommons.org/licenses/by/3.0/',
-    'https://creativecommons.org/licenses/by-nc/4.0/',
-    'https://creativecommons.org/licenses/by-nc/3.0/',
-    'https://creativecommons.org/licenses/by-nc-nd/3.0/',
-    'https://creativecommons.org/licenses/by-nc-nd/4.0/',
-    'https://creativecommons.org/licenses/by/3.0/igo/',
-    'https://creativecommons.org/licenses/by-nc/3.0/igo/',
-    'https://creativecommons.org/licenses/by-nc-nd/3.0/igo/',
-    'http://creativecommons.org/licenses/by-nc-sa/4.0/', 
-    'http://creativecommons.org/licenses/by-nc-sa/3.0/', 
-    'http://creativecommons.org/licenses/by-nc-nd-sa/4.0/', 
-    'http://creativecommons.org/licenses/by-nc-nd-sa/3.0/', 
-    'http://creativecommons.org/licenses/by-nd/4.0/', 
-    'http://creativecommons.org/licenses/by-nd/3.0/', 
 
-]
+LICENSES = read_file(CURRENT_PATH + '/../tables/licenses.csv')
+if LICENSES is None:
+    LICENSES = []
+else:
+    LICENSES = LICENSES.split()
+    LICENSES.extend([item.replace('http:', 'https:') for item in LICENSES])
 
 SPS_HELP_ELEMENTS = [
     'abbrev-journal-title',
