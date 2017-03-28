@@ -1558,7 +1558,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</xsl:apply-templates>
 					<xsl:apply-templates select="." mode="element-counts">
 						<xsl:with-param name="element_name" select="'equation-count'"/>
-						<xsl:with-param name="count" select="count(.//equation)"/>
+						<xsl:with-param name="count" select="count(.//equation)-count(.//p/equation)"/>
 					</xsl:apply-templates>
 					<xsl:apply-templates select="." mode="element-counts">
 						<xsl:with-param name="element_name" select="'ref-count'"/>
