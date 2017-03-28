@@ -292,8 +292,8 @@ class SGMLXML(object):
         self.fix_quotes()
         self.sgml_content = xml_utils.remove_doctype(self.sgml_content)
         self.insert_mml_namespace_reference()
-        self.insert_mml_namespace()
         self.fix_mkp_href_values()
+        self.xhtml_tables()
         self.replace_fontsymbols()
 
         for style in ['italic', 'bold', 'sup', 'sub']:
@@ -322,7 +322,9 @@ class SGMLXML(object):
             for item in self.sgml_content.replace('<', '~BREAK~<').split('~BREAK~'):
                 if u'“' in item or u'”' in item and item.startswith('<'):
                     elem = item[:item.find('>')]
-                    item = item.replace(elem, elem.replace(u'“', '"').replace(u'”', '"'))
+                    new = elem.replace(u'“', '"').replace(u'”', '"')
+                    item = item.replace(elem, new)
+                    
                 items.append(item)
             self.sgml_content = ''.join(items)
 
@@ -346,6 +348,32 @@ class SGMLXML(object):
             for item in items:
                 self.sgml_content = self.sgml_content.replace(item, html_fontsymbol_items[i])
                 i += 1
+
+    def xhtml_tables(self):
+        if '<xhtml' in self.sgml_content:
+            new = []
+            for item in self.sgml_content.replace('<xhtml', 'BREAKXHTML<xhtml').split('BREAKXHTML'):
+                if item.startswith('<xhtml'):
+                    xhtml = item
+                    if '</xhtml>' in xhtml:
+                        xhtml = xhtml[:xhtml.find('</xhtml>')+len('</xhtml>')]
+                    else:
+                        xhtml = xhtml[:xhtml.find('>')+1]
+                    href = xhtml[xhtml.find('"')+1:xhtml.rfind('"')]
+                    if '"' in href:
+                        href = href[href.find('"')+1:href.rfind('"')]
+
+                    xhtml_content = ''
+                    if href != '':
+                        if os.path.isfile(self.src_path + '/' + href):
+                            xhtml_content = fs_utils.read_file(self.src_path + '/' + href)
+                            if '<table' in xhtml_content and '</table>' in xhtml_content:
+                                xhtml_content = xhtml_content[xhtml_content.find('<table'):xhtml_content.rfind('</table>')+len('</table>')]
+                    item = item.replace(xhtml, xhtml_content)
+                new.append(item)
+                
+            self.sgml_content = ''.join(new)
+
 
     def fix_mkp_href_values(self):
         self.sgml_content = self.sgml_content.replace('href=&quot;?', 'href="?')

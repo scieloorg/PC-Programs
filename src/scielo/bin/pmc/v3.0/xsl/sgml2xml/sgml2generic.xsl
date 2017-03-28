@@ -2184,6 +2184,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</p>
 	</xsl:template>
 	
+	<xsl:template match="tabwrap/table//*">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="@*| * | text()"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="tabwrap/table//@*">
+		<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	
 	<xsl:template match="tabwrap" mode="elem-table-wrap">
 		<table-wrap>
 			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>

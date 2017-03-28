@@ -734,6 +734,7 @@ tr;#FALSE#;#TRUE#
 tabwrap
 label;#FALSE#;#FALSE#
 caption;#FALSE#;#FALSE#
+xhtml;#FALSE#;#TRUE#
 graphic;#FALSE#;#FALSE#
 table;#FALSE#;#FALSE#
 fntable;#FALSE#;#TRUE#
