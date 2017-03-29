@@ -2184,6 +2184,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</p>
 	</xsl:template>
 	
+	
 	<xsl:template match="tabwrap/table//*">
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*| * | text()"/>
@@ -2788,18 +2789,21 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
 	<xsl:template match="figgrp | tabwrap" mode="graphic">
 		<xsl:variable name="standardname" select="concat($prefix, 'g', @id)"/>
 		<xsl:choose>
-			<xsl:when test="graphic and table">
+			<xsl:when test="graphic and (xhtmltable or table)">
 				<alternatives>
 					<xsl:apply-templates select="graphic" mode="elem-graphic"/>
+					<xsl:copy-of select="xhtmltable/table"/>
 					<xsl:apply-templates select="table" mode="pmc-table"/>
 				</alternatives>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="graphic" mode="elem-graphic"/>
 				<xsl:apply-templates select="table" mode="pmc-table"/>
+				<xsl:copy-of select="xhtmltable/table"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

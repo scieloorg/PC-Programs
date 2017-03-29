@@ -369,7 +369,7 @@ class SGMLXML(object):
                             xhtml_content = fs_utils.read_file(self.src_path + '/' + href)
                             if '<table' in xhtml_content and '</table>' in xhtml_content:
                                 xhtml_content = xhtml_content[xhtml_content.find('<table'):xhtml_content.rfind('</table>')+len('</table>')]
-                    item = item.replace(xhtml, xhtml_content)
+                    item = item.replace(xhtml, '<xhtmltable>' + xhtml_content + '</xhtmltable>')
                 new.append(item)
                 
             self.sgml_content = ''.join(new)
