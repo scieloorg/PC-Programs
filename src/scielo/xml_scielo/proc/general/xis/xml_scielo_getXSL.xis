@@ -59,7 +59,7 @@
 
 			,else
 				,if v3000='ISI' then
-					,'ISI xsl\ISI_validator.xsl ',mpu,v1010[1],mpl,v1011[1],if p(v1021[1]) then if p(v1025) then '-',v1025[1], else '_',s(date)*0.8,'.sgml iso-8859-1'/,
+					,'ISI xsl\ISI_validator.xsl ',mpu,v1010[1],mpl,v1011[1],if p(v1021[1]) then if p(v1025) then '-',v1025[1], else '_',s(date)*0.8,'.sgml iso-8859-1',if p(v1021[1]) then ' ',v1021[1] if p(v1025) then ' ',v1025[1] fi fi/,
 				,fi
 			,fi
 

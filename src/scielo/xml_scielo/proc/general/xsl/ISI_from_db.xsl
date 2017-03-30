@@ -48,7 +48,7 @@
 			</ArticleId>
 			<Journal>
 				<xsl:apply-templates select="publisher_name"/>
-				<xsl:apply-templates select="../xml_scielo_title/journal-title"/>
+				<xsl:apply-templates select="article_title"/>
 				<xsl:apply-templates select="issn"/>
 				<xsl:apply-templates select="volume_id"/>
 				<xsl:apply-templates select="issue_no"/>
