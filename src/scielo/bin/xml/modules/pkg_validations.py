@@ -200,8 +200,8 @@ class XMLStructureValidator(object):
         separator = '\n\n\n' + '.........\n\n\n'
 
         name_error = ''
-        if '_' in work_area.xml_name or '.' in work_area.xml_name:
-            name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=work_area.xml_name, forbidden_characters='_.') + separator
+        if '_' in work_area.new_name or '.' in work_area.new_name:
+            name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=work_area.new_name, forbidden_characters='_.') + separator
 
         self.logger.register('XMLStructureValidator.validate() - err_filename')
         files_errors = ''
@@ -360,16 +360,18 @@ class ArticlesPackage(object):
         self.pkg_path = pkg_path
         self.pkg_articles = pkg_articles
         self.is_xml_generation = is_xml_generation
-        self.xml_names = [name for name in os.listdir(self.pkg_path) if name.endswith('.xml')]
-
+        
     @property
     def xml_list(self):
         r = ''
-        r += '<p>' + _('XML path') + ': ' + self.pkg_path + '</p>'
-        r += '<p>' + _('Total of XML files') + ': ' + str(len(self.xml_names)) + '</p>'
-        r += html_reports.format_list('', 'ol', self.xml_names)
-        r = '<div class="xmllist">' + r + '</div>'
-        return r
+        r += u'<p>{}: {}</p>'.format(_('XML path'), self.pkg_path)
+        r += u'<p>{}: {}</p>'.format(_('Total of XML files'), len(self.pkg_articles))
+
+        files = ''
+        for name, article in self.pkg_articles.items():
+            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', article.package_files))
+        r += '<ol>{}</ol>'.format(files)
+        return u'<div class="xmllist">{}</div>'.format(r)
 
     @property
     def invalid_xml_name_items(self):
@@ -645,12 +647,20 @@ class ArticlesMerger(object):
     def registered_data_conflicts_report(self):
         merging_errors = []
         if len(self._conflicts) > 0:
+            merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
             for name, conflicts in self._conflicts.items():
-                articles = [self.pkg_articles[name]]
-                articles.extend(conflicts.values())
                 labels = ['package']
-                labels.extend(conflicts.keys())
-                merging_errors += display_conflicting_data(articles, labels)
+                values = [name]
+                for k, articles in conflicts.items():
+                    labels.append(k)
+                    if isinstance(articles, dict):
+                        data = []
+                        for article in articles.values():
+                            data.append(article_reports.display_article_data_to_compare(article))
+                        values.append(''.join(data))
+                    else:
+                        values.append(article_reports.display_article_data_to_compare(articles))
+                merging_errors.append(html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels))
         return ''.join(merging_errors)
 
     @property
@@ -1202,8 +1212,9 @@ class ArticlesSetValidations(object):
 
 class ReportsMaker(object):
 
-    def __init__(self, articles_set_validations, files_location, xpm_version=None, conversion=None):
+    def __init__(self, orphan_files, articles_set_validations, files_location, xpm_version=None, conversion=None):
         self.processing_result_location = None
+        self.orphan_files = orphan_files
         self.articles_set_validations = articles_set_validations
         self.conversion = conversion
         self.xpm_version = xpm_version
@@ -1224,14 +1235,18 @@ class ReportsMaker(object):
         self.validations = ValidationsResult()
 
     @property
+    def orphan_files_report(self):
+        return '<div class="xmllist"><p>{}</p>{}</div>'.format(_('Invalid files names'), html_reports.format_list('', 'ol', self.orphan_files))
+
+    @property
     def report_components(self):
         components = {}
         components['pkg-files'] = self.articles_set_validations.pkg.xml_list
         if self.processing_result_location is not None:
             components['pkg-files'] += processing_result_location(self.processing_result_location)
 
-        components['summary-report'] = ''
-        components['group-validations-report'] = ''
+        components['summary-report'] = self.orphan_files_report
+        components['group-validations-report'] = self.orphan_files_report
         components['individual-validations-report'] = self.articles_set_validations.detailed_report
         components['aff-report'] = self.articles_set_validations.articles_affiliations_report
         components['dates-report'] = self.articles_set_validations.articles_dates_report
@@ -1253,7 +1268,7 @@ class ReportsMaker(object):
 
         self.validations.message = html_reports.join_texts(components.values())
 
-        components['summary-report'] = error_msg_subtitle() + self.validations.statistics_display(False)
+        components['summary-report'] += error_msg_subtitle() + self.validations.statistics_display(False)
         if self.conversion is not None:
             components['summary-report'] += html_reports.tag('h2', _('Summary report')) + self.conversion.conclusion_message
 
@@ -1497,11 +1512,6 @@ def display_articles_differences(status, comparison_result, label1='article 1', 
             msg.append(html_reports.display_label_value(label1, differences[0]))
             msg.append(html_reports.display_label_value(label2, differences[1]))
     return ''.join(msg)
-
-
-def display_conflicting_data(articles, labels):
-    values = [article_reports.display_article_data_to_compare(article) for article in articles]
-    return html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. ')) + html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels)
 
 
 def display_order_conflicts(orders_conflicts):

@@ -660,21 +660,25 @@ class OriginalPackage(object):
 
     def __init__(self, xml_filenames):
         self.xml_filenames = xml_filenames
-        self.article_pkg_files = {}
+        self.article_pkg_files = None
         self.path = os.path.dirname(xml_filenames[0])
-
+        
     def setUp(self):
         self.organize_files()
         hdimages_to_jpeg(self.path, self.path, False)
 
     def organize_files(self):
-        files = os.listdir(self.path)
+        self.orphan_files = [f for f in os.listdir(self.path) if not f.endswith(".xml")]
+        self.article_pkg_files = {}
+        
         for filename in self.xml_filenames:
             xml_filename = os.path.basename(filename)
             fname = xml_filename[:-4]
             if '.sgm' in fname:
                 fname = fname[:-4]
             article_files = package_files(self.path, xml_filename)
+            for f in article_files:
+                self.orphan_files.remove(f)
             self.article_pkg_files[fname] = ArticlePkgFiles(self.path, xml_filename, fname, article_files)
             self.article_pkg_files[fname].convert_images()
 
@@ -754,7 +758,6 @@ class ArticlePkgMaker(object):
             self.doc.related_files = [os.path.basename(f) for f in self.replacements_related_files_items.values()]
         
         self.doc.package_files = package_files(self.scielo_pkg_path, self.doc.new_prefix)
-
         return (self.doc, self.doc_files_info)
 
     def insert_mml_namespace(self):
@@ -1171,10 +1174,12 @@ class PackageMaker(object):
         self.article_items = {}
         self.article_work_area_items = {}
         self.is_pmc_journal = False
+        self.orphan_files = None
 
     def make_sps_package(self):
         package = OriginalPackage(self.xml_files)
         package.setUp()
+        self.orphan_files = package.orphan_files
 
         xpm_process_logger.register('make packages')
         utils.display_message('\n' + _('Make package for {n} files. ').format(n=str(len(self.xml_files))))
@@ -1290,7 +1295,7 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
 
         files_final_location = serial_files.FilesFinalLocation(pkg_maker.scielo_pkg_path, articles_data.acron, articles_data.issue_label, web_app_path=None)
 
-        reports = pkg_validations.ReportsMaker(articles_set_validations, files_final_location, xpm_version(), None)
+        reports = pkg_validations.ReportsMaker(pkg_maker.orphan_files, articles_set_validations, files_final_location, xpm_version(), None)
 
         if not is_xml_generation:
             reports.processing_result_location = os.path.dirname(pkg_maker.report_path)
@@ -1502,7 +1507,9 @@ def package_files(pkg_path, xml_filename):
     r = [item for item in os.listdir(pkg_path) if (item.startswith(fname + '-') or item.startswith(fname + '.')) and not item.endswith('.xml')]
     if '.sgm.xml' in xml_filename:
         fname = xml_filename[:-8]
-        for suffix in ['t', 'f', 'e', 'img', 'image']:
+        suffixes = ['t', 'f', 'e', 'img', 'image']
+        suffixes.extend(['-'+s for s in suffixes])
+        for suffix in suffixes:
             r += [item for item in os.listdir(pkg_path) if item.startswith(fname + suffix)]
         r = list(set(r))
     r = [item for item in r if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
