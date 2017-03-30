@@ -11,6 +11,7 @@ from fs_utils import read_file
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 SPS_expiration_dates = [
+    ('sps-1.6', ['20171001', '20181001']),
     ('sps-1.5', ['20161001', '20171001']),
     ('sps-1.4', ['20160401', '20170401']),
     ('sps-1.3', ['20150901', '20160901']),
