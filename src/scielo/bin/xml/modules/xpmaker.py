@@ -360,9 +360,8 @@ class SGMLXML(object):
                     else:
                         xhtml = xhtml[:xhtml.find('>')+1]
                     href = xhtml[xhtml.find('"')+1:xhtml.rfind('"')]
-                    if '"' in href:
-                        href = href[href.find('"')+1:href.rfind('"')]
-
+                    href = href.replace('"', '')
+                    
                     xhtml_content = ''
                     if href != '':
                         if os.path.isfile(self.src_path + '/' + href):
