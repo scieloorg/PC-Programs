@@ -1,13 +1,17 @@
 # coding=utf-8
-
+import os
 from datetime import datetime
 
 from __init__ import _
 import validation_status
 import article_utils
+from fs_utils import read_file
 
+
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 SPS_expiration_dates = [
+    ('sps-1.6', ['20171001', '20181001']),
     ('sps-1.5', ['20161001', '20171001']),
     ('sps-1.4', ['20160401', '20170401']),
     ('sps-1.3', ['20150901', '20160901']),
@@ -263,26 +267,13 @@ CONTRIB_ID_URLS = {
     'scopus': 'https://www.scopus.com/authid/detail.uri?authorId=',  
 }
 
-LICENSES = [
-    'http://creativecommons.org/licenses/by/4.0/',
-    'http://creativecommons.org/licenses/by/3.0/',
-    'http://creativecommons.org/licenses/by-nc/4.0/',
-    'http://creativecommons.org/licenses/by-nc/3.0/',
-    'http://creativecommons.org/licenses/by-nc-nd/3.0/',
-    'http://creativecommons.org/licenses/by-nc-nd/4.0/',
-    'http://creativecommons.org/licenses/by/3.0/igo/',
-    'http://creativecommons.org/licenses/by-nc/3.0/igo/',
-    'http://creativecommons.org/licenses/by-nc-nd/3.0/igo/',
-    'https://creativecommons.org/licenses/by/4.0/',
-    'https://creativecommons.org/licenses/by/3.0/',
-    'https://creativecommons.org/licenses/by-nc/4.0/',
-    'https://creativecommons.org/licenses/by-nc/3.0/',
-    'https://creativecommons.org/licenses/by-nc-nd/3.0/',
-    'https://creativecommons.org/licenses/by-nc-nd/4.0/',
-    'https://creativecommons.org/licenses/by/3.0/igo/',
-    'https://creativecommons.org/licenses/by-nc/3.0/igo/',
-    'https://creativecommons.org/licenses/by-nc-nd/3.0/igo/',
-]
+
+LICENSES = read_file(CURRENT_PATH + '/../tables/licenses.csv')
+if LICENSES is None:
+    LICENSES = []
+else:
+    LICENSES = LICENSES.split()
+    LICENSES.extend([item.replace('http:', 'https:') for item in LICENSES])
 
 SPS_HELP_ELEMENTS = [
     'abbrev-journal-title',

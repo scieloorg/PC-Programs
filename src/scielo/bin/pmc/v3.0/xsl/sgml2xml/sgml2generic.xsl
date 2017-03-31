@@ -1558,7 +1558,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</xsl:apply-templates>
 					<xsl:apply-templates select="." mode="element-counts">
 						<xsl:with-param name="element_name" select="'equation-count'"/>
-						<xsl:with-param name="count" select="count(.//equation)"/>
+						<xsl:with-param name="count" select="count(.//equation)-count(.//p/equation)"/>
 					</xsl:apply-templates>
 					<xsl:apply-templates select="." mode="element-counts">
 						<xsl:with-param name="element_name" select="'ref-count'"/>
@@ -2184,6 +2184,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</p>
 	</xsl:template>
 	
+	
+	<xsl:template match="tabwrap/table//*">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="@*| * | text()"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="tabwrap/table//@*">
+		<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	
 	<xsl:template match="tabwrap" mode="elem-table-wrap">
 		<table-wrap>
 			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
@@ -2778,18 +2789,21 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
 	<xsl:template match="figgrp | tabwrap" mode="graphic">
 		<xsl:variable name="standardname" select="concat($prefix, 'g', @id)"/>
 		<xsl:choose>
-			<xsl:when test="graphic and table">
+			<xsl:when test="graphic and (xhtmltable or table)">
 				<alternatives>
 					<xsl:apply-templates select="graphic" mode="elem-graphic"/>
+					<xsl:copy-of select="xhtmltable/table"/>
 					<xsl:apply-templates select="table" mode="pmc-table"/>
 				</alternatives>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="graphic" mode="elem-graphic"/>
 				<xsl:apply-templates select="table" mode="pmc-table"/>
+				<xsl:copy-of select="xhtmltable/table"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

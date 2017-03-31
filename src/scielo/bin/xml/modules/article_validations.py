@@ -499,23 +499,36 @@ class ArticleContentValidation(object):
         r = self.normalize_validations(items)
         return (r, performance)
 
+    def is_not_empty_element(self, node):
+        if node is not None:
+            return len(xml_utils.remove_tags(xml_utils.node_text(node))) > 0
+
+    def is_not_empty_attribute(self, node, attr_name):
+        if node is not None:
+            return node.attrib.get(attr_name) != ''
+
     @property
     def disp_formulas(self):
         results = []
-        children = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']
+        required_at_least_one_child = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math', 'alternatives']
         for disp_formula_node in self.article.disp_formula_elements:
             found = False
-            for name in children:
-                child_node = disp_formula_node.find(name)
-                if child_node is not None:
-                    if name == 'graphic':
-                        if child_node.attrib.get('{http://www.w3.org/1999/xlink}href') is not None:
-                            found = True
-                    elif name in ['{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']:
-                        if len(xml_utils.remove_tags(xml_utils.node_text(child_node))) > 0:
-                            found = True
+            for child in disp_formula_node.findall('*'):
+                if child.tag in required_at_least_one_child:
+                    if child.tag == 'graphic':
+                        found = self.is_not_empty_attribute(child, '{http://www.w3.org/1999/xlink}href')
+                    elif child.tag in ['{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']:
+                        found = self.is_not_empty_element(child)
+                    elif child.tag in ['alternatives']:
+                        if self.is_not_empty_attribute(child, '{http://www.w3.org/1999/xlink}href'):
+                            found = any([self.is_not_empty_element(child.find('math')),
+                                self.is_not_empty_element(child.find('{http://www.w3.org/1998/Math/MathML}math')),
+                                self.is_not_empty_element(child.find('tex-math')),
+                                ])                    
+                if found: 
+                    break
             if not found:
-                results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure. ').format(children=_(' or ').join(children), element='disp-formula'), xml_utils.node_xml(disp_formula_node)))
+                results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure. ').format(children=_(' or ').join(required_at_least_one_child), element='disp-formula'), xml_utils.node_xml(disp_formula_node)))
         return results
 
     @property
@@ -1586,7 +1599,6 @@ class ReferenceContentValidation(object):
         if self.publication_type_other is not None:
             r.append(self.publication_type_other)
         r.extend(self.publication_type_dependence)
-        r.extend(self.person_group_type)
         r.extend(self.authors_list)
         r.extend(self.year(article_year))
         r.extend(self.source)
@@ -1696,10 +1708,6 @@ class ReferenceContentValidation(object):
             if looks_like is not None:
                 r.append(('@publication-type', validation_status.STATUS_ERROR, _('Be sure that {item} is correct. ').format(item='@publication-type=' + str(self.reference.publication_type)) + _('This reference looks like {publication_type}. ').format(publication_type=looks_like)))
             
-            if ' In: ' in self.reference.mixed_citation and self.reference.article_title is None and self.reference.chapter_title is None:
-                r.append(('article-title', validation_status.STATUS_FATAL_ERROR, _('It seems {} is not identified. ').format('article-title')))
-                r.append(('chapter-title', validation_status.STATUS_FATAL_ERROR, _('It seems {} is not identified. ').format('chapter-title')))
-
             for item in items:
                 if item is not None:
                     r.append(item)
@@ -1791,20 +1799,6 @@ class ReferenceContentValidation(object):
         if self.reference.mixed_citation is None:
             r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
         else:
-            mixed = self.reference.mixed_citation
-            texts = sorted([(len(text),text) for text in self.reference.element_citation_texts], reverse=True)
-
-            for l, text in texts:
-                mixed = mixed.replace(text, '\n')
-            unidentified = mixed.split('\n')
-
-            for item in unidentified:
-                s = item
-                for c in ['.', ',', ':', '(', ')', 'In', 'Ed', 'Org']:
-                    s = s.replace(c, '')
-                if len(s.strip())>1:
-                    r.append(('mixed-citation', validation_status.STATUS_WARNING, _('Unidentified: {}. ').format(item)))
-
             for label, data in [('source', self.reference.source), ('year', self.reference.year), ('ext-link', self.reference.ext_link)]:
                 for item in validate_element_is_found_in_mixed_citation(label, data, self.reference.mixed_citation):
                     if item is not None:

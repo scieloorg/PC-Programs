@@ -23,6 +23,7 @@ licinfo;#FALSE#;#TRUE#
 list;#FALSE#;#TRUE#
 product;#FALSE#;#TRUE#
 quote;#FALSE#;#TRUE#
+refs;#TRUE#;#TRUE#
 related;#FALSE#;#TRUE#
 supplmat;#FALSE#;#TRUE#
 media;#FALSE#;#TRUE#
@@ -733,6 +734,7 @@ tr;#FALSE#;#TRUE#
 tabwrap
 label;#FALSE#;#FALSE#
 caption;#FALSE#;#FALSE#
+xhtml;#FALSE#;#TRUE#
 graphic;#FALSE#;#FALSE#
 table;#FALSE#;#FALSE#
 fntable;#FALSE#;#TRUE#
@@ -899,7 +901,6 @@ hist;#TRUE#;#FALSE#
 kwdgrp;#FALSE#;#TRUE#
 normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
-refs;#TRUE#;#FALSE#
 related;#FALSE#;#TRUE#
 subdoc;#FALSE#;#TRUE#
 toctitle;#FALSE#;#FALSE#
@@ -939,7 +940,6 @@ hist;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
-refs;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
 toctitle;#FALSE#;#FALSE#
 xmlabstr;#FALSE#;#TRUE#
@@ -965,7 +965,6 @@ hist;#FALSE#;#FALSE#
 kwdgrp;#FALSE#;#TRUE#
 normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
-refs;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
 subdoc;#FALSE#;#TRUE#
 toctitle;#FALSE#;#FALSE#
@@ -1128,4 +1127,6 @@ suffix
 prefix
 
 *page-fn
+
+xhtml
 

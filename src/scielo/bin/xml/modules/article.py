@@ -1142,8 +1142,9 @@ class ArticleXML(object):
             if formula.attrib is not None:
                 eqid = formula.attrib.get('id')
 
-            maths = [formula.findall('.//math'), formula.findall('{http://www.w3.org/1998/Math/MathML}math'), formula.findall('tex-math')]
+            maths = [formula.findall('.//math'), formula.findall('.//{http://www.w3.org/1998/Math/MathML}math'), formula.findall('.//tex-math')]
             coded = []
+            print(maths)
             for math in maths:
                 if math is not None:
                     coded.extend([xml_utils.node_text(node) if node.tag == 'tex-math' else xml_utils.node_xml(node) for node in math])
@@ -1152,7 +1153,7 @@ class ArticleXML(object):
             graphic = formula.find('graphic')
             if graphic is not None:
                 href = graphic.attrib.get('href', graphic.attrib.get('{http://www.w3.org/1999/xlink}href'))
-            data.append({'xml': xml_utils.node_xml(formula), 'id': eqid, 'code': ''.join(coded), 'graphic': href})
+            data.append({'xml': xml_utils.node_xml(formula), 'id': eqid, 'code': '<hr/>'.join(coded), 'graphic': href})
         return data
 
     @property
