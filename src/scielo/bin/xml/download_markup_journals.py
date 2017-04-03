@@ -95,6 +95,7 @@ def journals_by_collection(filename):
         spamreader = csv.reader(csvfile, delimiter='\t')
         for item in spamreader:
             if len(item) >= 10:
+                item = [e.decode('utf-8') for e in item]
                 if item[1] != 'ISSN':
                     j = {}
                     j['collection'] = item[0]
