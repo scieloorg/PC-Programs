@@ -3878,4 +3878,14 @@ et al.</copyright-statement>
 			
 		</license>
 	</xsl:template>
+	<xsl:template match="label//bold | sectitle//bold">
+		<xsl:choose>
+			<xsl:when test="..//text()!=.//text()">
+				<bold><xsl:apply-templates select="*|text()"></xsl:apply-templates></bold>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 </xsl:stylesheet>
