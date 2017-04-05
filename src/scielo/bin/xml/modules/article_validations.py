@@ -11,8 +11,6 @@ import xml_utils
 import utils
 import article
 import html_reports
-import institutions_service
-import fs_utils
 from serial_files import filename_language_suffix
 import ws_requester
 
