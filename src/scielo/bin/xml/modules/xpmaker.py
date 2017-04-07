@@ -3,10 +3,8 @@ import os
 import sys
 import shutil
 import urllib
-from datetime import datetime
 from mimetypes import MimeTypes
 import zipfile
-import re
 
 try:
     from PIL import Image
@@ -27,7 +25,6 @@ import pkg_validations
 import symbols
 import article
 import serial_files
-import xc_models
 import attributes
 import validation_status
 
