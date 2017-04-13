@@ -835,7 +835,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates
 				select="front//report | back//bbibcom/report | back/ack//report | ack//funding" mode="front-funding-group"/>
 			<xsl:apply-templates
-				select="fngrp//report|fngrp//funding" mode="front-funding-group">
+				select="fngrp//report|fngrp//funding|fn//report|fn//funding" mode="front-funding-group">
 				<xsl:with-param name="statement">true</xsl:with-param>
 			</xsl:apply-templates>
 			
@@ -1656,7 +1656,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="other-fn-items"></xsl:apply-templates>
 		</xsl:variable>
 		
-		<xsl:if test="ack or $otherfntest!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp or fngrp[fn]">
+		<xsl:if test="ack or normalize-space($otherfntest)!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
 			<back>
 				<xsl:apply-templates select="ack"/>
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
