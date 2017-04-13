@@ -56,9 +56,11 @@ class DOI_Services(object):
                     if len(items) > 0:
                         prefix = items[0].get('prefix')
                         if prefix is not None:
-                            prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
+                            if '/prefix/' in prefix:
+                                prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
         if prefix is not None:
             self.doi_journal_prefixes[issn] = prefix
+        print(self.doi_journal_prefixes)
         return prefix
 
 
@@ -95,7 +97,10 @@ class ArticleDOIValidator(object):
                 if self.doi_data.doi.startswith(prefix):
                     valid_prefix = True
             if not valid_prefix:
-                self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=self.doi_data.doi, label=self.journal_doi_prefix_items) + _('{label} must starts with: {expected}. ').format(label='doi', expected=_(' or ').join(self.journal_doi_prefix_items))))
+                prefix = ''
+                if '/' in self.doi_data.doi:
+                    prefix = self.doi_data.doi[:self.doi_data.doi.find('/')]
+                self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=prefix, label=_('doi prefix')) + _('{label} must starts with: {expected}. ').format(label='doi', expected=_(' or ').join(self.journal_doi_prefix_items))))
 
     def validate_journal_title(self):
         if not self.doi_data.journal_titles is None:
