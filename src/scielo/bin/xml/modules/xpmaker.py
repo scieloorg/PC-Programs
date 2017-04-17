@@ -1233,9 +1233,28 @@ class PackageMaker(object):
                 xml_output(pmc_xml_filename, self.pmc_dtd_files.doctype_with_local_path, self.pmc_dtd_files.xsl_output, pmc_xml_filename)
 
                 self.add_files_to_pmc_package(pmc_xml_filename, doc.language)
+                self.normalize_pmc_file(pmc_xml_filename)
 
         if do_it:
             make_pkg_zip(self.pmc_pkg_path)
+
+    def normalize_pmc_file(self, pmc_xml_filename):
+        content = fs_utils.read_file(pmc_xml_filename)
+        if 'mml:math' in content:
+            result = []
+            n = 0
+            math_id = None
+            for item in content.replace('<mml:math', '~BREAK~<mml:math').split('~BREAK~'):
+                if item.startswith('<mml:math'):
+                    n += 1
+                    elem = item[:item.find('>')]
+                    if ' id="' not in elem:
+                        math_id = 'math{}'.format(n)
+                        item = item.replace('<mml:math', '<mml:math id="{}"'.format(math_id))
+                        print(math_id)
+                result.append(item)
+            if math_id is not None:
+                fs_utils.write_file(pmc_xml_filename, ''.join(result))
 
     def validate_pmc_image(self, img_filename):
         img = utils.tiff_image(img_filename)
