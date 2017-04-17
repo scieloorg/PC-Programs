@@ -1,4 +1,4 @@
-﻿4.0.093 - Release 1 - 17/07/2017
+﻿4.0.093 - Release 1 - 17/04/2017
 ================================
 - Docs
   - (bug) [2504] Fix the manual to make clear how to format several bibr xref

@@ -1,4 +1,4 @@
-4.0.093 - Release 1 - 17/07/2017
+4.0.093 - Release 1 - 17/04/2017
 ================================
 - XPM
   - (improvement) [2497] Inform if there are embedded jpg or similar images inside of the SVG

@@ -1,7 +1,7 @@
 Document Type: WSE
 item: Global
   Version=7.01
-  Title=item: Install Fileitem: Install Fileitem: Install File
+  Title=SciELO Installation
   Title Portuguese=SciELO Installation
   Title Spanish=SciELO Installation
   Flags=00010100
@@ -23,14 +23,14 @@ item: Global
   Patch Flags=0000000000000001
   Patch Threshold=85
   Patch Memory=4000
-  EXE Filename=scielo-pc-programs-4.0.092r4-teste.exe
+  EXE Filename=scielo-pc-programs_4.0.093_Rx_2017-x-x.exe
   Language INI Filename=c:\src\install\wise\languages.ini
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=4.0.092
+  Version File=4.0.093
   Version Description=SciELO PC Programs
-  Version Copyright=2016
+  Version Copyright=2017
   Version Company=SciELO
   Distribute Path=C:\2007\scielo
   Distribute Type=1
@@ -1765,28 +1765,28 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\nlm-stylechecker.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\nlm-stylechecker.xsl
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\nlm-stylechecker.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\nlm-stylechecker.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-named-tests.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-named-tests.xsl
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-named-tests.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-named-tests.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-match-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-match-templates.xsl
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-match-templates.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-match-templates.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-helper-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\stylecheck-helper-templates.xsl
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-helper-templates.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-helper-templates.xsl
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.10\style-reporter.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.10\style-reporter.xsl
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\style-reporter.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\style-reporter.xsl
   Flags=0000000010000010
 end
 item: Install File
@@ -6133,6 +6133,8 @@ end
 item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=uninstall
+  Icon Name Portuguese=uninstall
+  Icon Name Spanish=uninstall
   Command Line=%PROGDIR%\uninstall.py
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Flags=01000000
@@ -6140,6 +6142,8 @@ end
 item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=XML Converter
+  Icon Name Portuguese=XML Converter
+  Icon Name Spanish=XML Converter
   Command Line=%PROGDIR%\bin\xml\xml_converter.py
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Default Directory=%PROGDIR%\bin\xml
@@ -6148,6 +6152,8 @@ end
 item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=XML Package Maker
+  Icon Name Portuguese=XML Package Maker
+  Icon Name Spanish=XML Package Maker
   Command Line=%PROGDIR%\bin\xml\xml_package_maker.py
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Default Directory=%PROGDIR%\bin\xml\
@@ -6156,6 +6162,8 @@ end
 item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=Markup - update journals list
+  Icon Name Portuguese=Markup - update journals list
+  Icon Name Spanish=Markup - update journals list
   Command Line=%PROGDIR%\bin\xml\download_markup_journals.py
   Icon Pathname=%PROGDIR%\bin\SGMLPars\scielo.ico
   Default Directory=%PROGDIR%\bin\xml\
