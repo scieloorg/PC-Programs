@@ -281,5 +281,28 @@
         <xsl:apply-templates select="." mode="output"/>
     </xsl:template>
     
+    <xsl:template match="mml:math">
+        
+        <xsl:call-template name="ms-stream-id-test"/>
+        
+        <xsl:call-template name="mathml-desc-text-check"/>
+        
+        
+        <xsl:call-template name="mathml-top-level-el-check"/>
+        
+        <xsl:if test="@display">
+            <xsl:call-template name="mml-attr-value-check">
+                <xsl:with-param name="element-name" select="local-name(.)"/>
+                <xsl:with-param name="attr-name" select="'display'"/>
+                <xsl:with-param name="attr-value" select="concat('|',@display,'|')"/>
+                <xsl:with-param name="attr-enumerated-values" select="
+                    '|block|inline|'"/>
+            </xsl:call-template>
+        </xsl:if>
+        
+        <xsl:apply-templates select="." mode="output"/>
+        
+    </xsl:template>
+    
 </xsl:stylesheet>
 

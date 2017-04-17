@@ -1,25 +1,19 @@
 
 # code = utf-8
 
-import sys
 import os
-import webbrowser
 import shutil
-from datetime import datetime
 
 from __init__ import _
 from . import attributes
-from . import article
 from . import article_reports
 from . import article_validations
-from . import article_utils
 from . import fs_utils
 from . import html_reports
 from . import validation_status
 from . import xpchecker
 from . import xc_models
 from . import utils
-from . import serial_files
 
 
 class ValidationsResultItems(dict):
@@ -394,7 +388,7 @@ class ArticlesPackage(object):
         data.sort(reverse=True)
         if len(data) > 0:
             data = list(data[0])
-            if any(data):        
+            if any(data):
                 pkg_journal_title, pkg_p_issn, pkg_e_issn, pkg_issue_label = data
         return pkg_journal_title, pkg_p_issn, pkg_e_issn, pkg_issue_label
 
@@ -409,7 +403,6 @@ class ArticlesData(object):
 
         self.journal = None
         self.journal_data = None
-        
         self._issue_label = None
         self.issue_models = None
         self.issue_error_msg = None
@@ -1236,7 +1229,9 @@ class ReportsMaker(object):
 
     @property
     def orphan_files_report(self):
-        return '<div class="xmllist"><p>{}</p>{}</div>'.format(_('Invalid files names'), html_reports.format_list('', 'ol', self.orphan_files))
+        if len(self.orphan_files) > 0:
+            return '<div class="xmllist"><p>{}</p>{}</div>'.format(_('Invalid files names'), html_reports.format_list('', 'ol', self.orphan_files))
+        return ''
 
     @property
     def report_components(self):

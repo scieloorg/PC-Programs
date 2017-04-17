@@ -1144,11 +1144,9 @@ class ArticleXML(object):
 
             maths = [formula.findall('.//math'), formula.findall('.//{http://www.w3.org/1998/Math/MathML}math'), formula.findall('.//tex-math')]
             coded = []
-            print(maths)
             for math in maths:
                 if math is not None:
                     coded.extend([xml_utils.node_text(node) if node.tag == 'tex-math' else xml_utils.node_xml(node) for node in math])
-            
             href = formula.attrib.get('href', formula.attrib.get('{http://www.w3.org/1999/xlink}href'))
             graphic = formula.find('graphic')
             if graphic is not None:

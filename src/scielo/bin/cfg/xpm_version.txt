@@ -4,6 +4,7 @@
   - (improvement) [2497] Inform if there are embedded jpg or similar images inside of the SVG
   - (improvement) [2511] References validations
   - (improvement) [2486] Remove the warnings about copyright of digital assets
+  - (improvement) [2559] Remove mml:math/@id absence error message because it is not required by SciELO, and automatically insert mml:math/@id for PMC. 
   - (bug) [2503] Fix the identification of bibr xref ranges
   - (bug) [2472] Generate zip of the package
   - (bug) [2477] Fix the generation of reports about absence of person-group as previous author
