@@ -1,5 +1,5 @@
-4.0.092 - 16/12/2016 (06/03/2017)
-=====================================
+4.0.093 - Release 1 - 17/04/2017
+================================
 - XPM
   - (improvement) [2497] Inform if there are embedded jpg or similar images inside of the SVG
   - (improvement) [2511] References validations
@@ -7,6 +7,11 @@
   - (bug) [2503] Fix the identification of bibr xref ranges
   - (bug) [2472] Generate zip of the package
   - (bug) [2477] Fix the generation of reports about absence of person-group as previous author
+  - (bug) [2556] Remove incorrect message about doi prefix
+  - (bug) [2522] Allow more values for CC licenses
+  - (bug) [2530] Consider alternatives as one of the child of disp-formula
+  - (new) [2542] Inform the files which are not part of package because of unmatching names
+  - (new) [] SPS 1.6
 
 
 4.0.092 - 16/12/2016 Release 09/01/2017

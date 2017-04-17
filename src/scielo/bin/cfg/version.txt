@@ -1,13 +1,17 @@
-﻿4.0.092 - 16/12/2016 (06/03/2017)
-=====================================
+﻿4.0.093 - Release 1 - 17/04/2017
+================================
 - Docs
   - (bug) [2504] Fix the manual to make clear how to format several bibr xref
+  - (bug) [] Correção ortográfica
 - XC
   - (improvement) [2500] Do not block the article updating if only the title has changed
   - (bug) [2513] Fix journal identification and conflicts report
-  - (bug) [2509] Fix the checking if issue or title database are or not updated
+  - (bug) [2509] Fix the checking the issue or title database are or not updated
   - (bug) [2377] Fix the identification of ex aop
   - (bug) [2494] Get journal data from a database if no data is found in the list
+  - (bug) [2521] Consider BLOCKING error if journal is not identified
+  - (new) [2524] Replace PDF of ex aop
+  - (new) [2517] If there are order and fpage and lpage, relax the fpage validation, only warning pagination may be unordered
 - XPM
   - (improvement) [2497] Inform if there are embedded jpg or similar images inside of the SVG
   - (improvement) [2511] References validations
@@ -15,6 +19,11 @@
   - (bug) [2503] Fix the identification of bibr xref ranges
   - (bug) [2472] Generate zip of the package
   - (bug) [2477] Fix the generation of reports about absence of person-group as previous author
+  - (bug) [2556] Remove incorrect message about doi prefix
+  - (bug) [2522] Allow more values for CC licenses
+  - (bug) [2530] Consider alternatives as one of the child of disp-formula
+  - (new) [2542] Inform the files which are not part of package because of unmatching names
+  - (new) [] SPS 1.6
 - Markup/XPM
   - (bug) [] Consider Markup etal and et-al generates SPS etal
   - (bug) [2496] Remove text generated after </doc> which make not well formed sgm.xml
@@ -22,6 +31,21 @@
   - (bug) [2478] Fix the generation related-article/@xlink:href if it is a PID
   - (bug) [2475] Fix generation of date in citation which comes from thesis/date
   - (bug) [2473] Generate <funding-group> e <funding-statement> from [fn]
+  - (bug) [2554] Remove <back/> from sub-article
+  - (bug) [2551] Restore missing bold style
+  - (bug) [2527] Consider only disp-formula to complete equation-count
+  - (improvement) [2553] Improve the performance of XML generation for articles which have a lot of sup style
+  - (new) [2519] New element xhtml to indicate a HTML file which contains a XHTML table
+  - (new) [2520] Make refs (ref-list) a floating tag
+  - (new) [2538] Accept tags without mml namespace in markup document but generate XML with mml namespace 
+- Download
+  - (bug) [2549] Fix download of journals of Spain collection
+- XML Exportation
+  - (new) [2523] Allow to select a range of articles to generate XML for ISI
+- Title Manager
+  - (bug) [2516] Allow more values for CC licenses
+
+
   
 4.0.092 - 16/12/2016 Release 09/01/2017
 =======================================

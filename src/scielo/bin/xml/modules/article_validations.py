@@ -60,7 +60,6 @@ class DOI_Services(object):
                                 prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
         if prefix is not None:
             self.doi_journal_prefixes[issn] = prefix
-        print(self.doi_journal_prefixes)
         return prefix
 
 
