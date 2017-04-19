@@ -1,3 +1,8 @@
+4.0.093 - Release 2 - 19/04/2017
+================================
+- XPM
+  - (bug) PMC Validation: Fix indication to use Style Checker 5.13
+
 4.0.093 - Release 1 - 17/04/2017
 ================================
 - XPM
@@ -13,7 +18,7 @@
   - (bug) [2530] Consider alternatives as one of the child of disp-formula
   - (new) [2542] Inform the files which are not part of package because of unmatching names
   - (new) [] SPS 1.6
-
+  - (new) [] Style Checker 5.13
 
 4.0.092 - 16/12/2016 Release 09/01/2017
 =======================================
