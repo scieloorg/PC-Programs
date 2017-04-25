@@ -2191,10 +2191,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="tabwrap/table//@*">
-		<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
-	</xsl:template>
-	
 	<xsl:template match="tabwrap" mode="elem-table-wrap">
 		<table-wrap>
 			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
@@ -2850,9 +2846,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="th/bold">
 		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 	</xsl:template>
-	<xsl:template match="th/@*">
-		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
-	</xsl:template>
 	<xsl:template match="thead | thead/tr | thead//th">
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
@@ -2874,7 +2867,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="graphic"/>
 		</inline-formula>
 	</xsl:template>
-	<xsl:template match="p/graphic | caption/graphic | li/graphic | p/equation//graphic">
+	<xsl:template match="p/graphic | caption/graphic | li/graphic | p/equation//graphic | td/graphic">
 		<inline-graphic>
 			<xsl:apply-templates select="@*"/>
 		</inline-graphic>

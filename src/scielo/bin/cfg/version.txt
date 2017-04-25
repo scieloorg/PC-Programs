@@ -1,4 +1,9 @@
-﻿4.0.093 - Release 2 - 19/04/2017
+﻿4.0.093 - Release 3 - 25/04/2017
+================================
+- Markup/XPM
+  - (bug) table/td/graphic must generate table/td/inline-graphic
+
+4.0.093 - Release 2 - 19/04/2017
 ================================
 - XPM
   - (bug) PMC Validation: Fix indication to use Style Checker 5.13
