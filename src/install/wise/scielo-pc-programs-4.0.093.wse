@@ -2733,6 +2733,11 @@ item: Install File
   Destination=%PROGDIR%\bin\cfg\version.txt
   Flags=0000000010000010
 end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\cfg\xpm_version.txt
+  Destination=%PROGDIR%\bin\cfg\xpm_version.txt
+  Flags=0000000010000010
+end
 remarked item: Include Script
   Pathname=%_WISE_%\INCLUDE\mfc.wse
 end

@@ -1,4 +1,9 @@
-﻿4.0.093 - Release 3 - 25/04/2017
+﻿4.0.093 - Release 4 - 03/05/2017
+================================
+- Markup/XPM
+  - (bug) Fix inclusion of pdf files of translations in the package
+
+4.0.093 - Release 3 - 25/04/2017
 ================================
 - Markup/XPM
   - (bug) table/td/graphic must generate table/td/inline-graphic
