@@ -1094,15 +1094,16 @@ class ArticlePkgMaker(object):
         xpm_process_logger.register('pack_article_related_files: inicio')
         self.replacements_related_files_items = {}
         for f in self.article_files.files:
+            dest_name = None
             source_filename = self.article_files.path + '/' + f
-            dest_filename = self.scielo_pkg_path + '/' + f.replace(self.doc_files_info.xml_name + '.', self.doc_files_info.new_name + '.')
             if f.startswith(self.doc_files_info.xml_name + '.') and not f.endswith('.sgm.xml'):
-                self.replacements_related_files_items[f] = dest_filename
-                shutil.copyfile(source_filename, dest_filename)
+                dest_filename = f.replace(self.doc_files_info.xml_name + '.', self.doc_files_info.new_name + '.')
             elif f.startswith(self.doc_files_info.xml_name + '-'):
+                dest_filename = f.replace(self.doc_files_info.xml_name + '-', self.doc_files_info.new_name + '-')
+            if dest_filename is not None:
                 if not f in self.replacements_href_files_items.keys():
                     self.replacements_related_files_items[f] = dest_filename
-                    shutil.copyfile(source_filename, dest_filename)
+                    shutil.copyfile(source_filename, self.scielo_pkg_path + '/' + dest_filename)
         xpm_process_logger.register('pack_article_related_files: fim')
 
     def generate_packed_files_report(self):
