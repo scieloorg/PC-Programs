@@ -1,12 +1,15 @@
-﻿4.0.093 - Release 4 - 03/05/2017
-================================
+﻿4.0.093 - Corrections - 04/05/2017
+==================================
 - Markup/XPM
-  - (bug) Fix inclusion of pdf files of translations in the package
+  - (bug) [2570] Fix inclusion of pdf files of translations in the package
+  - (bug) [2574] Fix generation of xref/@rid of bibr in table
+- XC
+  - (bug) [2524] Fix aop pdf replacement in the web site
 
 4.0.093 - Release 3 - 25/04/2017
 ================================
 - Markup/XPM
-  - (bug) table/td/graphic must generate table/td/inline-graphic
+  - (bug) [2565] table/td/graphic must generate table/td/inline-graphic
 
 4.0.093 - Release 2 - 19/04/2017
 ================================
