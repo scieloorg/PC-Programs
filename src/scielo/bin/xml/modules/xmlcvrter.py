@@ -100,7 +100,7 @@ class ArticlesConversion(object):
             if len(_scilista_items) > 0:
                 self.files_final_location.serial_path = self.articles_set_validations.articles_data.serial_path
 
-                self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path, self.db.aop_pdf_replacements)
+                self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
                 self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
                 self.replace_ex_aop_pdf_files()
 
