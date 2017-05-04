@@ -1094,7 +1094,7 @@ class ArticlePkgMaker(object):
         xpm_process_logger.register('pack_article_related_files: inicio')
         self.replacements_related_files_items = {}
         for f in self.article_files.files:
-            dest_name = None
+            dest_filename = None
             source_filename = self.article_files.path + '/' + f
             if f.startswith(self.doc_files_info.xml_name + '.') and not f.endswith('.sgm.xml'):
                 dest_filename = f.replace(self.doc_files_info.xml_name + '.', self.doc_files_info.new_name + '.')

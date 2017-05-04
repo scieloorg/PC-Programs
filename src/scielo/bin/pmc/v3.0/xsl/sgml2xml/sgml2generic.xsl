@@ -2659,7 +2659,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="alt_display"><xsl:choose>
 						<xsl:when test="@label"><xsl:value-of select="@label"/></xsl:when>
 			<xsl:when test="contains(@rid, @ref-type)"><xsl:value-of select="substring-after(@rid, @ref-type)"/></xsl:when>
-						<xsl:otherwise><xsl:value-of select="@rid"/></xsl:otherwise>
+						<xsl:otherwise><xsl:apply-templates select="@rid"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
 		<xref>
