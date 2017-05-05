@@ -167,7 +167,7 @@ class ArticlesConversion(object):
         return self.articles_set_validations.articles_data.acron_issue_label
 
     def generate_report(self, base_report_path=None):
-        reports = pkg_validations.ReportsMaker(self.articles_set_validations, self.files_final_location, None, self)
+        reports = pkg_validations.ReportsMaker([], self.articles_set_validations, self.files_final_location, None, self)
         if converter_env.is_windows:
             reports.processing_result_location = self.files_final_location.result_path
         self.report_location = self.files_final_location.report_path + '/xc.html'
