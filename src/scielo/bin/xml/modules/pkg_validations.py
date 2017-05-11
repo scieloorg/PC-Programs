@@ -1305,7 +1305,7 @@ class ReportsMaker(object):
         if self.files_location.web_url is None:
             print('xml report is not necessary')
         else:
-            for item in self.articles_set_validations.pkg.pkg_articles.keys():
+            for item in self.articles_set_validations.pkg.xml_names:
                 shutil.copyfile(self.articles_set_validations.pkg.pkg_path + '/' + item, report_path + '/' + item)
 
 
