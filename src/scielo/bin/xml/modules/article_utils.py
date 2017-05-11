@@ -34,16 +34,16 @@ def is_fulldate(label, dateiso):
     d = int(dateiso[6:8]) if d.isdigit() else 0
     msg = []
     if not y > 0:
-        msg.append(_('{value} is an invalid value for {label}. '.format(value=y, label='year (' + label + ')')))
+        msg.append(_('{value} is an invalid value for {label}. ').format(value=y, label='year (' + label + ')'))
     if not 0 < m <= 12:
-        msg.append(_('{value} is an invalid value for {label}. '.format(value=m, label='month (' + label + ')')))
+        msg.append(_('{value} is an invalid value for {label}. ').format(value=m, label='month (' + label + ')'))
     if not d <= 31:
-        msg.append(_('{value} is an invalid value for {label}. '.format(value=d, label='day (' + label + ')')))
+        msg.append(_('{value} is an invalid value for {label}. ').format(value=d, label='day (' + label + ')'))
     if len(msg) == 0:
         try:
             r = datetime(y, m, d)
         except:
-            msg.append(_('{value} is an invalid value for {label}. '.format(value=d, label=label + ': day ')))
+            msg.append(_('{value} is an invalid value for {label}. ').format(value=d, label=label + ': day '))
     return msg
 
 
