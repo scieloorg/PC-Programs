@@ -354,7 +354,8 @@ class ArticlesPackage(object):
         self.pkg_path = pkg_path
         self.pkg_articles = pkg_articles
         self.is_xml_generation = is_xml_generation
-        
+        self.xml_names = [name for name in os.listdir(self.pkg_path) if name.endswith('.xml')]
+
     @property
     def xml_list(self):
         r = ''
@@ -1304,7 +1305,7 @@ class ReportsMaker(object):
         if self.files_location.web_url is None:
             print('xml report is not necessary')
         else:
-            for item in self.articles_set_validations.pkg.xml_names:
+            for item in self.articles_set_validations.pkg.pkg_articles.keys():
                 shutil.copyfile(self.articles_set_validations.pkg.pkg_path + '/' + item, report_path + '/' + item)
 
 

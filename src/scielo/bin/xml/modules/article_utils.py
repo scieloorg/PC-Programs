@@ -2,9 +2,8 @@
 # coding=utf-8
 
 from datetime import datetime
-import json
 
-from PIL import Image
+from __init__ import _
 
 import validation_status
 import utils
@@ -17,6 +16,35 @@ URL_CHECKED = []
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 _MONTHS = {v: k for k, v in MONTHS.items()}
 MONTHS_ABBREV = '|' + '|'.join([_MONTHS[k] for k in sorted(_MONTHS.keys()) if k != '00']) + '|'
+
+
+def days(begin_label, begin_dateiso, end_label, end_dateiso):
+    if begin_dateiso is not None and end_dateiso is not None:
+        errors = []
+        errors.extend(is_fulldate(begin_label, begin_dateiso))
+        errors.extend(is_fulldate(end_label, end_dateiso))
+        if len(errors) == 0:
+            return (dateiso2datetime(end_dateiso) - dateiso2datetime(begin_dateiso)).days
+
+
+def is_fulldate(label, dateiso):
+    y, m, d = dateiso[0:4], dateiso[4:6], dateiso[6:8]
+    y = int(dateiso[0:4]) if y.isdigit() else 0
+    m = int(dateiso[4:6]) if m.isdigit() else 0
+    d = int(dateiso[6:8]) if d.isdigit() else 0
+    msg = []
+    if not y > 0:
+        msg.append(_('{value} is an invalid value for {label}. '.format(value=y, label='year (' + label + ')')))
+    if not 0 < m <= 12:
+        msg.append(_('{value} is an invalid value for {label}. '.format(value=m, label='month (' + label + ')')))
+    if not d <= 31:
+        msg.append(_('{value} is an invalid value for {label}. '.format(value=d, label='day (' + label + ')')))
+    if len(msg) == 0:
+        try:
+            r = datetime(y, m, d)
+        except:
+            msg.append(_('{value} is an invalid value for {label}. '.format(value=d, label=label + ': day ')))
+    return msg
 
 
 def dateiso2datetime(dateiso):

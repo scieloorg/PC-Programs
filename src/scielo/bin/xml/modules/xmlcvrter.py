@@ -111,18 +111,36 @@ class ArticlesConversion(object):
     def replace_ex_aop_pdf_files(self):
         print(self.db.aop_pdf_replacements)
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
+            folder, aop_name = aop_location_data
+
+            aop_pdf_path = converter_env.local_web_app_path + '/bases/pdf/' + folder
+            if not os.path.isdir(aop_pdf_path):
+                os.makedirs(aop_pdf_path)
+            issue_pdf_path = converter_env.local_web_app_path + '/bases/pdf/' + self.articles_set_validations.articles_data.acron_issue_label.replace(' ', '/')
+
+            issue_pdf_files = [f for f in os.listdir(issue_pdf_path) if f.startswith(xml_name) or f[2:].startswith('_'+xml_name)]
+
+            for pdf in issue_pdf_files:
+                aop_pdf = pdf.replace(xml_name, aop_name)
+                print((issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
+                shutil.copyfile(issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf)
+
+    def xxreplace_ex_aop_pdf_files(self):
+        print(self.db.aop_pdf_replacements)
+        for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             print(aop_location_data)
             folder, aop_name = aop_location_data
-            
+
             aop_pdf_path = converter_env.local_web_app_path + '/bases/pdf/' + folder
             issue_pdf_path = converter_env.local_web_app_path + '/bases/pdf/' + self.articles_set_validations.articles_data.acron_issue_label.replace(' ', '/')
-            
+
             issue_pdf_files = [f for f in os.listdir(issue_pdf_path) if f.startswith(xml_name) or f[2:].startswith('_'+xml_name)]
             aop_pdf_files = [f for f in os.listdir(aop_pdf_path) if f.startswith(aop_name) or f[2:].startswith('_'+aop_name)]
-            
             for aop_pdf in aop_pdf_files:
                 article_pdf = aop_pdf.replace(aop_name, xml_name)
                 print((issue_pdf_path + '/' + article_pdf, aop_pdf_path + '/' + aop_pdf))
+                if not os.path.isdir(aop_pdf_path):
+                    os.makedirs(aop_pdf_path)
                 shutil.copyfile(issue_pdf_path + '/' + article_pdf, aop_pdf_path + '/' + aop_pdf)
 
     @property

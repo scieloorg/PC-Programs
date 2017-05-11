@@ -1149,18 +1149,24 @@ class ArticleContentValidation(object):
         r = []
         error_level = validation_status.STATUS_FATAL_ERROR if self.article.article_type in attributes.HISTORY_REQUIRED_FOR_DOCTOPIC else validation_status.STATUS_INFO
         if received is not None and accepted is not None:
-            dates = []
-            if not received < accepted:
-                dates.append(('received: {value}'.format(value=received), 'accepted: {value}'.format(value=accepted)))
-            if self.article.pub_date_year is not None:
-                if self.article.pub_date_year < received[0:4]:
-                    dates.append(('received: {value}'.format(value=received), 'pub-date: {value}'.format(value=self.article.pub_date_year)))
-                if self.article.pub_date_year < accepted[0:4]:
-                    dates.append(('accepted: {value}'.format(value=accepted), 'pub-date: {value}'.format(value=self.article.pub_date_year)))
+            errors = []
+            errors.extend(article_utils.is_fulldate('received', received))
+            errors.extend(article_utils.is_fulldate('accepted', accepted))
+            if len(errors) > 0:
+                r.append(('history', validation_status.STATUS_FATAL_ERROR, '\n'.join(errors)))
+            else:
+                dates = []
+                if not received < accepted:
+                    dates.append(('received: {value}'.format(value=received), 'accepted: {value}'.format(value=accepted)))
+                if self.article.pub_date_year is not None:
+                    if self.article.pub_date_year < received[0:4]:
+                        dates.append(('received: {value}'.format(value=received), 'pub-date: {value}'.format(value=self.article.pub_date_year)))
+                    if self.article.pub_date_year < accepted[0:4]:
+                        dates.append(('accepted: {value}'.format(value=accepted), 'pub-date: {value}'.format(value=self.article.pub_date_year)))
 
-            if len(dates) > 0:
-                for date in dates:
-                    r.append(('history', validation_status.STATUS_FATAL_ERROR, _('{date1} must be before {date2}. ').format(date1=date[0], date2=date[1])))
+                if len(dates) > 0:
+                    for date in dates:
+                        r.append(('history', validation_status.STATUS_FATAL_ERROR, _('{date1} must be before {date2}. ').format(date1=date[0], date2=date[1])))
 
         elif received is None and accepted is None:
             r = [('history', error_level, _('Not found: {label}. ').format(label='history'))]
