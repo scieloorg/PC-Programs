@@ -1,5 +1,7 @@
-﻿4.0.093 - Release 4 - 04/05/2017
+﻿4.0.093 - Release 4 - 11/05/2017
 ==================================
+- XPM
+  - (bug) [2579] Fix the validation of history date 
 - XML Markup 
   - (bug) [2570] Fix inclusion of pdf files of translations in the package
   - (bug) [2574] Fix generation of xref/@rid of bibr in table

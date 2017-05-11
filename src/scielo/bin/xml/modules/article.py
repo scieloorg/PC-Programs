@@ -1,16 +1,11 @@
 # coding=utf-8
-import os
-from datetime import datetime
 
-from __init__ import _
+from datetime import datetime
 
 import article_utils
 import xml_utils
 import attributes
-import utils
 import ws_requester
-import html_reports
-import xml_utils
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', '.svg']
@@ -1661,27 +1656,20 @@ class Article(ArticleXML):
 
     @property
     def history_days(self):
-        h = 0
         if self.received is not None and self.accepted is not None:
-            h = (article_utils.dateiso2datetime(self.accepted_dateiso) - article_utils.dateiso2datetime(self.received_dateiso)).days
-        return h
+            return article_utils.days('received date', self.received_dateiso, 'accepted date', self.accepted_dateiso)
 
     @property
     def publication_days(self):
         d1 = self.accepted_dateiso
         d2 = self.article_pub_dateiso if self.article_pub_dateiso else self.issue_pub_dateiso
-        if d1 is None or d2 is None:
-            h = None
-        else:
-            h = (article_utils.dateiso2datetime(d2) - article_utils.dateiso2datetime(d1)).days
-        return h
+        if not d1 is None and not d2 is None:
+            return article_utils.days('accepted date', d1, 'pub-date', d2)
 
     @property
     def registration_days(self):
-        h = None
         if self.accepted is not None:
-            h = (datetime.now() - article_utils.dateiso2datetime(self.accepted_dateiso)).days
-        return h
+            return article_utils.days('accepted date', self.accepted_dateiso, 'current date', datetime.now().isoformat())
 
 
 class ReferenceXML(object):
