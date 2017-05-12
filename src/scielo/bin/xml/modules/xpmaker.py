@@ -292,12 +292,8 @@ class SGMLXML(object):
         self.fix_mkp_href_values()
         self.xhtml_tables()
         self.replace_fontsymbols()
-
-        for style in ['italic', 'bold', 'sup', 'sub']:
-            s = '<' + style + '>'
-            e = '</' + style + '>'
-            self.sgml_content = self.sgml_content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
-
+        self.fix_styles_names()
+        self.remove_exceding_styles_tags()
         xml, e = xml_utils.load_xml(self.sgml_content)
         if xml is None:
             xml_fixer = xml_utils.XMLContent(self.sgml_content)
@@ -312,6 +308,25 @@ class SGMLXML(object):
             return self.sgml_content
         else:
             return java_xml_utils.xml_content_transform(self.sgml_content, xml_versions.xsl_sgml2xml(version))
+
+    def fix_styles_names(self):
+        for style in ['italic', 'bold', 'sup', 'sub']:
+            s = '<' + style + '>'
+            e = '</' + style + '>'
+            self.sgml_content = self.sgml_content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
+
+    def remove_exceding_styles_tags(self):
+        content = ''
+        while content != self.sgml_content:
+            content = self.sgml_content
+            for style in ['italic', 'bold', 'sup', 'sub']:
+                self._remove_exceding_style_tag(style)
+
+    def _remove_exceding_style_tag(self, style):
+        s = '<' + style + '>'
+        e = '</' + style + '>'
+        self.sgml_content = self.sgml_content.replace(e + s, '')
+        self.sgml_content = self.sgml_content.replace(e + ' ' + s, ' ')
 
     def fix_quotes(self):
         if u'“' in self.sgml_content or u'”' in self.sgml_content:
