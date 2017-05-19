@@ -27,6 +27,7 @@ It is the forum to discuss questions and make suggestions related to the **progr
     Send an e-mail to: **scielo-discuss+unsubscribe@googlegroups.com**
 
 
+
 Questions about SciELO XML / SciELO Publishing Schema
 =====================================================
 
