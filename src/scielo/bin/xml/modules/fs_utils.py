@@ -36,7 +36,11 @@ def delete_file_or_folder(path):
             delete_file_or_folder(path + '/' + item)
         shutil.rmtree(path)
     elif os.path.isfile(path):
-        os.unlink(path)
+        try:
+            os.unlink(path)
+        except:
+            print('Unable to delete: ')
+            print(path)
 
 
 def move_file(src, dest):

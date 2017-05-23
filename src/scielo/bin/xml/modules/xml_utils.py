@@ -73,7 +73,7 @@ class XMLContent(object):
 
     def normalize(self):
         self.content = complete_entity(self.content)
-        self.content, replaced_named_ent = convert_entities_to_chars(self.xml_content)
+        self.content, replaced_named_ent = convert_entities_to_chars(self.content)
 
     def fix(self):
         if '<' in self.content:
