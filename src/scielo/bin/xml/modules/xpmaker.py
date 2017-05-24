@@ -1165,7 +1165,6 @@ class ArticlePkgMaker(object):
         xpm_process_logger.register('pack_article_xml_file: fim')
 
 
-
 class PackageMaker(object):
 
     def __init__(self, xml_files, results_path, acron, version, is_db_generation=False):

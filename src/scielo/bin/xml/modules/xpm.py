@@ -18,6 +18,20 @@ CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 xpm_process_logger = fs_utils.ProcessLogger()
 
 
+def xpm_version():
+    version_files = [
+        CURRENT_PATH + '/../../xpm_version.txt',
+        CURRENT_PATH + '/../../cfg/xpm_version.txt',
+        CURRENT_PATH + '/../../cfg/version.txt',
+    ]
+    version = ''
+    for f in version_files:
+        if os.path.isfile(f):
+            version = open(f).readlines()[0].decode('utf-8')
+            break
+    return version
+
+
 def call_make_packages(args, version):
     script, path, acron, DISPLAY_REPORT, GENERATE_PMC = read_inputs(args)
 
@@ -99,8 +113,8 @@ def generate_xml(sgm_xml_filename, acron, version):
     workarea = sgmlxml.SGMLXMLWorkarea(sgm_xml_filename)
     sgml_xml = sgmlxml.SGMLXML2SPSXML(workarea)
     sgml_xml.convert(acron, xml_versions.xsl_sgml2xml(version))
-    sgml_xml.pack(workarea.dirname)
-    return workarea.generated_package_filename
+    sgml_xml.pack()
+    return workarea.new_package_files.filename
 
 
 def validate_xml_list(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
@@ -120,14 +134,16 @@ def validate_xml_list(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xp
 class SPSXMLWorkarea(object):
 
     def __init__(self, filename, output_path):
-        super(workarea.Workarea, self).__init__(filename, output_path)
+        workarea.Workarea.__init__(self, filename, output_path)
 
 
 class SPSXML(object):
 
     def __init__(self, workarea):
         self.workarea = workarea
-        self.content = SPSXMLContent(open(workarea.filename).read())
+        self.pkgfiles = self.workarea.package_files
+        self.workarea.new_package_files = PackageFiles(self.workarea.scielo_package_filename)
+        self.content = SPSXMLContent(open(self.pkgfiles.filename).read())
 
     def normalize(self):
         self.content.normalize()
@@ -142,20 +158,19 @@ class SPSXML(object):
     @property
     def doc(self):
         if self.xml is not None:
-            a = article.Article(self.xml, self.workarea.name)
-            a.new_prefix = self.new_name
+            a = article.Article(self.xml, self.pkgfiles.name)
+            a.new_prefix = self.pkgfiles.name
             return a
 
     def pack(self):
-        for f in self.workarea.article_files:
-            shutil.copyfile(self.workarea.dirname + '/' + f, self.workarea.valid_package_path + '/' + f)
+        fs_utils.write_file(self.workarea.new_package_files.filename, self.content)
+        self.workarea.copy()
 
 
 class SPSXMLContent(xml_utils.XMLContent):
 
     def __init__(self, content):
-        #super().__init__()               # Python 3
-        super(xml_utils.XMLContent, self).__init__(content) # Python 2
+        xml_utils.XMLContent.__init__(self, content)
 
     @property
     def xml(self):
@@ -164,7 +179,7 @@ class SPSXMLContent(xml_utils.XMLContent):
             return _xml
 
     def normalize(self):
-        super(xml_utils.XMLContent, self).normalize()
+        xml_utils.XMLContent.normalize(self)
         self.insert_mml_namespace()
         if self.xml is not None:
             if 'contrib-id-type="' in self.content:
@@ -255,8 +270,7 @@ class SPSXMLContent(xml_utils.XMLContent):
 class SPSRefXMLContent(xml_utils.XMLContent):
 
     def __init__(self, content):
-        #super().__init__()               # Python 3
-        super(xml_utils.XMLContent, self).__init__(content) # Python 2
+        xml_utils.XMLContent.__init__(self, content)
 
     def normalize(self):
         if self.content.startswith('<ref') and self.content.endswith('</ref>'):
@@ -340,18 +354,6 @@ class SPSRefXMLContent(xml_utils.XMLContent):
 
 
 
-def xpm_version():
-    f = None
-    if os.path.isfile(CURRENT_PATH + '/../../xpm_version.txt'):
-        f = CURRENT_PATH + '/../../xpm_version.txt'
-    elif os.path.isfile(CURRENT_PATH + '/../../cfg/xpm_version.txt'):
-        f = CURRENT_PATH + '/../../cfg/xpm_version.txt'
-    elif os.path.isfile(CURRENT_PATH + '/../../cfg/version.txt'):
-        f = CURRENT_PATH + '/../../cfg/version.txt'
-    version = ''
-    if f is not None:
-        version = open(f).readlines()[0].decode('utf-8')
-    return version
 
 
 
@@ -410,72 +412,6 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     if xml_filename.endswith('.bkp'):
         os.unlink(xml_filename)
     return r
-
-
-class OriginalPackage(object):
-
-    def __init__(self, xml_filenames):
-        self.xml_filenames = xml_filenames
-        self.article_pkg_files = None
-        self.path = os.path.dirname(xml_filenames[0])
-        
-    def setUp(self):
-        self.organize_files()
-        hdimages_to_jpeg(self.path, self.path, False)
-
-    def organize_files(self):
-        self.orphan_files = [f for f in os.listdir(self.path) if not f.endswith(".xml")]
-        self.article_pkg_files = {}
-        
-        for filename in self.xml_filenames:
-            xml_filename = os.path.basename(filename)
-            fname = xml_filename[:-4]
-            if '.sgm' in fname:
-                fname = fname[:-4]
-            article_files = package_files(self.path, xml_filename)
-            for f in article_files:
-                self.orphan_files.remove(f)
-            self.article_pkg_files[fname] = ArticlePkgFiles(self.path, xml_filename, fname, article_files)
-            self.article_pkg_files[fname].convert_images()
-
-
-class ArticlePkgFiles(object):
-
-    def __init__(self, path, filename, xml_name, files):
-        self.path = path
-        self.xml_name = xml_name
-        self.files = files
-        self.filename = filename
-
-    @property
-    def xml_filename(self):
-        return self.path + '/' + self.filename
-
-    @property
-    def splitext(self):
-        return [os.path.splitext(f) for f in self.files]
-
-    @property
-    def png_files(self):
-        return [name for name, ext in self.splitext if ext in ['.png']]
-
-    @property
-    def jpg_files(self):
-        return [name for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
-
-    @property
-    def tif_files(self):
-        return [name for name, ext in self.splitext if ext in ['.tif', '.tiff']]
-
-    def convert_images(self):
-        for item in self.tif_files:
-            if not item in self.jpg_files and not item in self.png_files:
-                source_fname = item + '.tif'
-                if not source_fname in self.files:
-                    source_fname = item + '.tiff'
-                hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
-                if os.path.isfile(self.path + '/' + item + '.jpg'):
-                    self.files.append(item + '.jpg')
 
 
 class ArticlePkgMaker(object):
@@ -831,27 +767,3 @@ def make_pkg_item_zip(xml_filename, dest_path):
         zipf.close()
     except:
         pass
-
-
-
-
-
-
-def package_files(pkg_path, xml_filename):
-    fname = xml_filename
-    if xml_filename.endswith('.xml'):
-        fname, ext = os.path.splitext(xml_filename)
-        if fname.endswith('.sgm'):
-            fname = fname[:-4]
-    r = [item for item in os.listdir(pkg_path) if (item.startswith(fname + '-') or item.startswith(fname + '.')) and not item.endswith('.xml')]
-    if '.sgm.xml' in xml_filename:
-        fname = xml_filename[:-8]
-        suffixes = ['t', 'f', 'e', 'img', 'image']
-        suffixes.extend(['-'+s for s in suffixes])
-        for suffix in suffixes:
-            r += [item for item in os.listdir(pkg_path) if item.startswith(fname + suffix)]
-        r = list(set(r))
-    r = [item for item in r if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
-    #print(fname, r)
-    return sorted(r)
-    

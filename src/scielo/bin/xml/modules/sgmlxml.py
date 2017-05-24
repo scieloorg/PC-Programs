@@ -8,6 +8,7 @@ from . import fs_utils
 from . import java_xml_utils
 from . import symbols
 from . import text_report
+from . import html_reports
 from . import workarea
 from . import xml_utils
 
@@ -15,18 +16,19 @@ from . import xml_utils
 class SGMLXMLWorkarea(workarea.Workarea):
 
     def __init__(self, filename):
-        super(workarea.Workarea, self).__init__(filename)
-        self.name, self.ext = os.path.splitext(self.name)
-        self.src_path = self.dirname.replace('work', 'src')
+        workarea.Workarea.__init__(self, filename)
+        self.package_files.convert_images()
+        self.package_files.name, _ = os.path.splitext(self.package_files.name)
+        self.src_path = self.package_files.path.replace('work', 'src')
 
     @property
     def html_filename(self):
-        if not os.path.isdir(self.dirname):
-            os.makedirs(self.dirname)
-        html_filename = self.dirname + '/' + self.name + '.temp.htm'
-        if not os.path.isfile(html_filename):
-            html_filename += 'l'
-        return html_filename
+        if not os.path.isdir(self.package_files.path):
+            os.makedirs(self.package_files.path)
+        _html_filename = self.package_files.path + '/' + self.package_files.name + '.temp.htm'
+        if not os.path.isfile(_html_filename):
+            _html_filename += 'l'
+        return _html_filename
 
 
 class PackageName(object):
@@ -36,33 +38,48 @@ class PackageName(object):
         self.xml_name = doc.xml_name
 
     def generate(self, acron):
-        vol, issueno, fpage, seq, elocation_id, order, doi, publisher_article_id = self.doc.volume, self.doc.number, self.doc.fpage, self.doc.fpage_seq, self.doc.elocation_id, self.doc.order, self.doc.doi, self.doc.publisher_article_id
-        issns = [issn for issn in [self.doc.e_issn, self.doc.print_issn] if issn is not None]
-        if len(issns) > 0:
-            if xml_name[0:9] in issns:
-                issn = xml_name[0:9]
-            else:
-                issn = issns[0]
+        parts = [self.issn, acron, self.doc.volume, self.issueno, self.suppl, self.last, self.doc.compl]
+        return '-'.join([part for part in parts if part is not None and not part == ''])
 
-        suppl = self.doc.volume_suppl if self.doc.volume_suppl else self.doc.number_suppl
-
-        last = self.format_last_part(fpage, seq, elocation_id, order, doi, issn, publisher_article_id)
-        if issueno:
-            if issueno == 'ahead' or int(issueno) == 0:
-                issueno = None
+    @property
+    def issueno(self):
+        _issueno = self.doc.number
+        if _issueno:
+            if _issueno == 'ahead' or int(_issueno) == 0:
+                _issueno = None
             else:
-                n = len(issueno)
-                if len(issueno) < 2:
+                n = len(_issueno)
+                if len(_issueno) < 2:
                     n = 2
-                issueno = issueno.zfill(n)
-        if suppl:
-            suppl = 's' + suppl if suppl != '0' else 'suppl'
-        parts = [issn, acron, vol, issueno, suppl, last, self.doc.compl]
-        r = '-'.join([part for part in parts if part is not None and not part == ''])
-        return r
+                _issueno = _issueno.zfill(n)
+        return _issueno
 
-    def format_last_part(self, fpage, seq, elocation_id, order, doi, issn, publisher_article_id):
-        #utils.debugging((fpage, seq, elocation_id, order, doi, issn))
+    @property
+    def suppl(self):
+        s = self.doc.volume_suppl if self.doc.volume_suppl else self.doc.number_suppl
+        if s is not None:
+            s = 's' + s if s != '0' else 'suppl'
+        return s
+
+    @property
+    def issn(self):
+        _issns = [_issn for _issn in [self.doc.e_issn, self.doc.print_issn] if _issn is not None]
+        if len(_issns) > 0:
+            if self.xml_name[0:9] in _issns:
+                _issn = self.xml_name[0:9]
+            else:
+                _issn = _issns[0]
+        return _issn
+
+    @property
+    def last(self):
+        fpage = self.doc.fpage
+        seq = self.doc.seq
+        elocation_id = self.doc.elocation_id
+        order = self.doc.order
+        doi = self.doc.doi
+        publisher_article_id = self.doc.publisher_article_id
+
         article_id = doi if doi is not None else publisher_article_id
         r = None
         if r is None:
@@ -78,8 +95,8 @@ class PackageName(object):
         if r is None:
             if article_id is not None:
                 article_id = article_id[article_id.find('/')+1:]
-                if issn in article_id:
-                    article_id = article_id[article_id.find(issn) + len(issn):]
+                if self.issn in article_id:
+                    article_id = article_id[article_id.find(self.issn) + len(self.issn):]
                 article_id = article_id.replace('.', '_').replace('-', '_')
                 r = article_id
         if r is None:
@@ -206,19 +223,14 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
     def __init__(self, content, sgmlhtml):
         self.sgmlhtml = sgmlhtml
-        super(xml_utils.XMLContent, self).__init__(content) # Python 2
+        xml_utils.XMLContent.__init__(self, content)
 
     def normalize(self):
-        for item in ['doc', 'article', 'text']:
-            endtag = '</' + item + '>'
-            if endtag in self.content:
-                self.content = self.content[:self.content.rfind(endtag)+len(endtag)]
-                break
         self.fix_quotes()
         self.content = xml_utils.remove_doctype(self.content)
         self.insert_mml_namespace_reference()
-        self.fix_mkp_href_values()
-        self.xhtml_tables()
+        self.replace_href_values()
+        self.insert_xhtml_tables()
         self.replace_fontsymbols()
         self.fix_styles_names()
         self.remove_exceding_styles_tags()
@@ -277,7 +289,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
                 self.content = self.content.replace(item, html_fontsymbol_items[i])
                 i += 1
 
-    def xhtml_tables(self):
+    def insert_xhtml_tables(self):
         if '<xhtml' in self.content:
             new = []
             for item in self.content.replace('<xhtml', 'BREAKXHTML<xhtml').split('BREAKXHTML'):
@@ -299,18 +311,15 @@ class SGMLXMLContent(xml_utils.XMLContent):
                 new.append(item)
             self.content = ''.join(new)
 
-    def fix_mkp_href_values(self):
+    def replace_href_values(self):
         self.content = self.content.replace('href=&quot;?', 'href="?')
         self.content = self.content.replace('"">', '">')
         self.content = self.content.replace('href=""?', 'href="?')
-        self.sorted_graphic_href_items = []
-        self.src_folder_graphics = []
-
         self.images_origin = []
 
-        if self.content.find('href="?' + self.xml_name) > 0:
+        if self.content.find('href="?' + self.sgmlhtml.xml_name) > 0:
             # for each graphic in sgml.xml, replace href="?xmlname" by href="image in src or image in work/html"
-            self.content = self.content.replace('<graphic href="?' + self.xml_name, '--FIXHREF--<graphic href="?' + self.xml_name)
+            self.content = self.content.replace('<graphic href="?' + self.sgmlhtml.xml_name, '--FIXHREF--<graphic href="?' + self.sgmlhtml.xml_name)
             parts = self.content.split('--FIXHREF--')
             previous_part = parts[0]
             new_parts = [parts[0]]
@@ -344,10 +353,10 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
                     if chosen_image_src is None and chosen_image_doc is not None:
                         chosen_image_origin = 'doc'
-                        new_href_value = self.xml_name + html_href.replace('image', '')
+                        new_href_value = self.sgmlhtml.xml_name + html_href.replace('image', '')
                         shutil.copyfile(chosen_image_doc, self.src_path + '/' + new_href_value)
-                        self.article_files.files.append(new_href_value)
-                    self.sorted_graphic_href_items.append((new_href_value, elem_name, elem_id, self.sgmlhtml.html_img_path + '/' + html_href))
+                        #self.package_files.files.append(new_href_value)
+
                     if new_href_value is not None:
                         part = part.replace(graphic, graphic.replace(href, new_href_value))
                         self.images_origin.append((chosen_image_id, new_href_value, chosen_image_origin, chosen_image_src, chosen_image_doc))
@@ -356,9 +365,9 @@ class SGMLXMLContent(xml_utils.XMLContent):
             self.content = ''.join(new_parts)
 
     def select_href_file_from_src_folder(self, elem_name, elem_id, alternative_id):
-        filenames = [self.xml_name]
-        if 'v' in self.xml_name and self.xml_name.startswith('a'):
-            filenames.append(self.xml_name[:self.xml_name.find('v')])
+        filenames = [self.sgmlhtml.xml_name]
+        if 'v' in self.sgmlhtml.xml_name and self.sgmlhtml.xml_name.startswith('a'):
+            filenames.append(self.sgmlhtml.xml_name[:self.sgmlhtml.xml_name.find('v')])
         found = []
         possible_href_names = []
         number, possibilities, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
@@ -368,20 +377,20 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     for ext in article.IMG_EXTENSIONS:
                         href = name + prefix_number + ext
                         possible_href_names.append(href)
-                        if href in self.article_files.files:
+                        if href in self.package_files.files:
                             found.append(href)
         else:
             for name in filenames:
                 for ext in article.IMG_EXTENSIONS:
                     href = name + elem_id + ext
                     possible_href_names.append(href)
-                    if href in self.article_files.files:
+                    if href in self.package_files.files:
                         found.append(href)
         new_href = None if len(found) == 0 else found[0]
         #if new_href is None:
         #    print('====')
         #    print('Not found: ', self.xml_name, elem_name, elem_id, possibilities)            
-        #    print('article_files:', self.article_files.files)
+        #    print('article_files:', self.package_files.files)
         #    print('====')
         return (new_href, list(set(possible_href_names)), alternative_id)
 
@@ -389,18 +398,17 @@ class SGMLXMLContent(xml_utils.XMLContent):
 class SGMLXML2SPSXML(object):
 
     def __init__(self, workarea):
+        self.workarea = workarea
+        self.pkgfiles = self.workarea.package_files
+        self.new_name = self.pkgfiles.name
         self.sgmxmlcontent = SGMLXMLContent(
-            fs_utils.read_file(workarea.filename),
-            SGMLHTML(workarea.name, workarea.html_filename))
+            fs_utils.read_file(self.pkgfiles.filename),
+            SGMLHTML(workarea.package_files.name, workarea.html_filename))
         self.xml_error = None
 
     @property
     def xml_name(self):
-        return self.workarea.name
-
-    @property
-    def new_name(self):
-        return self.workarea.new_name
+        return self.pkgfiles.name
 
     @property
     def xml(self):
@@ -411,20 +419,20 @@ class SGMLXML2SPSXML(object):
     @property
     def doc(self):
         if self.xml is not None:
-            a = article.Article(self.xml, self.workarea.name)
+            a = article.Article(self.xml, self.pkgfiles.name)
             a.new_prefix = self.new_name
             return a
 
     def convert(self, acron, xsl):
         self.sgmxmlcontent.normalize()
-        fs_utils.write_file(self.workarea.filename, self.sgmxmlcontent.content)
-
+        fs_utils.write_file(self.pkgfiles.filename, self.sgmxmlcontent.content)
         self.xml_content = self.sgmxmlcontent.content
         if self.xml_content is not None:
             self.xml_content = java_xml_utils.xml_content_transform(self.sgmxmlcontent.content, xsl)
             self._normalize_href_values()
-            self.workarea.new_name = PackageName(self.doc).generate(acron)
-        fs_utils.write_file(self.workarea.new_xml_filename, self.xml_content)
+            self.new_name = PackageName(self.doc).generate(acron)
+        self.workarea.new_package_files = workarea.PackageFiles(self.pkgfiles.path + '/' + self.new_name)
+        fs_utils.write_file(self.workarea.new_package_files.filename, self.xml_content)
 
     def _normalize_href_values(self):
         self.href_replacements = []
@@ -449,25 +457,22 @@ class SGMLXML2SPSXML(object):
         if href_name.startswith(href_type):
             href_type = ''
         new_href = self.new_name + '-' + href_type + href_name
-        return self.workarea.name_with_extension(href.src, new_href)
+        return self.pkgfiles.name_with_extension(href.src, new_href)
 
-    def pack(self, dtd_replacement=None):
-        package_maker = SPSPackageMaker(self.workarea, self.href_replacements, dtd_replacement)
+    def pack(self):
+        package_maker = SPSPackageMaker(self.workarea, self.href_replacements)
         msg = ''
         if self.doc is None:
             messages = []
             messages.append(self.xml_error)
-            messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.workarea.generated_package_filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily. '))
-            shutil.copyfile(workarea.new_xml_filename, workarea.generated_package_filename)
+            messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.workarea.temporary_package_filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily. '))
             msg = '\n'.join(messages)
         else:
             package_maker.pack()
             msg = package_maker.report()
         fs_utils.write_file(self.workarea.reports.err_filename, msg)
-
-    def x(self):
-        for item in self.sgmxmlcontent.images_origin:
-            chosen_image_id, chosen_name, chosen_image_origin, chosen_image_src, chosen_image_doc = item
+        imgreports = ImagesOriginReport(self.sgmxmlcontent.images_origin, self.href_replacements, elf.workarea.new_package_files.path)
+        html_reports.save(self.workarea.reports.images_report_filename, '', imgreports.report())
 
 
 class ImagesOriginReport(object):
@@ -518,72 +523,56 @@ class ImagesOriginReport(object):
 
 class SPSPackageMaker(object):
 
-    def __init__(self, workarea, href_replacements, dtd_replacement):
-        self.workarea = workarea
+    def __init__(self, workarea, href_replacements):
+        self.pkgfiles = workarea.package_files
+        self.newpkgfiles = workarea.new_package_files
         self.href_replacements = href_replacements
-        self.dtd_replacement = dtd_replacement
-        self.package = workarea.Package()
-        self.package.href_files = []
-        self.package.related_files = []
 
     def pack(self):
-        self.clean_folder()
+        self.newpkgfiles.clean()
         self.pack_article_href_files()
         self.pack_article_related_files()
-        self.pack_article_xml_file()
-
-    def clean_folder(self):
-        for item in os.listdir(self.workarea.generated_package_path):
-            if item.startswith(self.new_name + '-') or item.startswith(self.new_name + '.'):
-                try:
-                    os.unlink(self.workarea.generated_package_path + '/' + item)
-                except:
-                    pass
 
     def pack_article_href_files(self):
+        self.href_files_copy = []
         self.href_names = []
-        self.package.href_files = []
-        self.package.missing_href_files = []
+
+        self.pkgfiles.missing_href_files = []
+
         for f, new in self.href_replacements:
             name, _ = os.path.splitext(f)
-            if self.workarea.sorted_article_files.get(name) is None:
-                self.package.missing_href_files.append(f)
-            for ext in self.workarea.sorted_article_files.get(name, []):
-                new_name = name.replace(self.workarea.name, self.workarea.new_name)
-                shutil.copyfile(self.dirname + '/' + name + ext, self.workarea.generated_package_path + '/' + new_name + ext)
-                self.package.href_files.append((name + ext, new_name + ext))
+            if self.pkgfiles.files_by_name.get(name) is None:
+                self.pkgfiles.missing_href_files.append(f)
+            for ext in self.pkgfiles.files_by_name.get(name, []):
+                new_name = name.replace(self.pkgfiles.name, self.newpkgfiles.name)
+                shutil.copyfile(self.pkgfiles.path + '/' + name + ext, self.newpkgfiles.path + '/' + new_name + ext)
+                self.href_files_copy.append((name + ext, new_name + ext))
                 self.href_names.append(name)
+        print(self.pkgfiles.files)
+        print(self.newpkgfiles.files)
 
     def pack_article_related_files(self):
-        for name, ext_items in self.workarea.sorted_article_files.items():
+        self.related_files_copy = []
+        for name, ext_items in self.pkgfiles.files_by_name.items():
             if name not in self.href_names:
                 for ext in ext_items:
-                    new_name = name.replace(self.workarea.name, self.workarea.new_name)
-                    shutil.copyfile(self.dirname + '/' + name + ext, self.workarea.generated_package_path + '/' + new_name + ext)
-                self.package.related_files.append((name + ext, new_name + ext))
-
-    def pack_article_xml_file(self):
-        if self.dtd_replacement is not None:
-            content = fs_utils.read_file(self.workarea.new_xml_filename)
-            content = content.replace('"' + self.dtd_replacement[0] + '"', '"' + self.dtd_replacement[1] + '"')
-            fs_utils.write_file(self.workarea.generated_package_path + '/' + self.workarea.new_name + '.xml', content)
-        else:
-            shutil.copyfile(self.workarea.new_xml_filename, self.workarea.generated_package_path + '/' + self.workarea.new_name + '.xml')
-        self.packed_xml_file = self.workarea.new_name + '.xml'
+                    new_name = name.replace(self.pkgfiles.name, self.newpkgfiles.name)
+                    shutil.copyfile(self.pkgfiles.path + '/' + name + ext, self.newpkgfiles.path + '/' + new_name + ext)
+                self.related_files_copy.append((name + ext, new_name + ext))
+        print(self.pkgfiles.files)
+        print(self.newpkgfiles.files)
 
     def report(self):
         log = []
         log.append(_('Report of files') + '\n' + '-'*len(_('Report of files')) + '\n')
-        if self.workarea.dirname != self.workarea.generated_package_path:
-            log.append(_('Source path') + ':   ' + self.workarea.dirname)
-        log.append(_('Package path') + ':  ' + self.workarea.generated_package_path)
-        if self.workarea.dirname != self.workarea.generated_package_path:
-            log.append(_('Source XML name') + ': ' + self.workarea.name)
-        log.append(_('Package XML name') + ': ' + self.workarea.new_name)
-        log.append(text_report.display_sorted_list(_('Total of related files'), text_report.display_pairs_list(self.package.related_files)))
-        log.append(text_report.display_sorted_list(_('Total of files in package'), text_report.display_pairs_list(self.package.href_files)))
+        log.append(_('Source path') + ':   ' + self.pkgfiles.path)
+        log.append(_('Package path') + ':  ' + self.newpkgfiles.path)
+        log.append(_('Source XML name') + ': ' + self.pkgfiles.name)
+        log.append(_('Package XML name') + ': ' + self.newpkgfiles.name)
+        log.append(text_report.display_sorted_list(_('Total of related files'), text_report.display_pairs_list(self.related_files_copy)))
+        log.append(text_report.display_sorted_list(_('Total of files in package'), text_report.display_pairs_list(self.href_files_copy)))
         log.append(text_report.display_sorted_list(_('Total of @href in XML'), text_report.display_key_value_list(self.href_replacements)))
-        log.append(text_report.display_sorted_list(_('Total of files not found in package'), format(self.package.missing_href_files)))
+        log.append(text_report.display_sorted_list(_('Total of files not found in package'), format(self.pkgfiles.missing_href_files)))
         return '\n'.join(log)
 
 
