@@ -8,9 +8,15 @@ class Workarea(object):
 
     def __init__(self, filename, output_path=None):
         self.package_files = PackageFiles(filename)
+
+        #FIXME
+        self.sgmlxml_package_files = PackageFiles(filename)
+        self.temp_package_files = PackageFiles(filename)
+        self.scielo_package_files = PackageFiles(filename)
+        self.pmc_package_files = PackageFiles(filename)
+
         self.output_path = output_path or os.path.dirname(self.package_files.path)
         self.output_files = OutputFiles(self.package_files.name, self.reports_path, self.package_files.input_path)
-        self.new_package_files = None
 
     @property
     def reports_path(self):
@@ -32,9 +38,18 @@ class Workarea(object):
     def pmc_package_path(self):
         return self.output_path+'/pmc_package'
 
+    # FIXME
     def copy(self):
         for f in self.package_files.files:
             shutil.copyfile(self.package_files.path + '/' + f, self.new_package_files.path + '/' + f)
+
+
+class PackageWorkarea(object):
+
+    def __init__(self, sgmlxml_pkgfiles, xml_pkgfiles, pmc_pkgfiles):
+        self.sgmlxml_pkgfiles = sgmlxml_pkgfiles
+        self.xml_pkgfiles = xml_pkgfiles
+        self.pmc_pkgfiles = pmc_pkgfiles
 
 
 class PackageFiles(object):
