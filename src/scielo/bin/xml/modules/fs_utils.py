@@ -115,6 +115,19 @@ def unzip(compressed_filename, destination_path):
     return r
 
 
+def zip(zip_filename, files):
+    dest_path = os.path.dirname(zip_filename)
+    if not os.path.isdir(dest_path):
+        os.makedirs(dest_path)
+    try:
+        zipf = zipfile.ZipFile(zip_filename, 'w')
+        for item in files:
+            zipf.write(item, arcname=os.path.basename(item))
+        zipf.close()
+    except:
+        pass
+
+
 def fix_path(path):
     path = path.replace('\\', '/')
     if path.endswith('/'):

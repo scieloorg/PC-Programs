@@ -1,7 +1,9 @@
-# code=utf-8
+# coding=utf-8
 
 import os
 import sys
+import urllib
+from mimetypes import MimeTypes
 
 from __init__ import _
 from . import article
@@ -11,9 +13,22 @@ from . import img_utils
 from . import utils
 from . import xml_utils
 from . import fs_utils
+from . import attributes
+from . import workarea
+from . import article_validations
+from . import pkg_validations
+from . import serial_files
+
+import shutil
+
+
+import java_xml_utils
+import html_reports
+import xpchecker
 
 
 messages = []
+mime = MimeTypes()
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -57,12 +72,14 @@ def call_make_packages(args, version):
             utils.display_message('\n'.join(messages))
         else:
             stage = 'xpm'
+            workareas = []
             if sgm_xml is not None:
-                xml_filename = generate_xml(sgm_xml_filename, acron, version)
-                xml_list = [xml_filename]
+                workareas = [sgmlxml_workarea(sgm_xml_filename, acron, version)]
                 stage = 'xml'
-            if xml_list is not None:
-                validate_xml_list(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage)
+            else:
+                workareas = xml_list_workarea(xml_list, stage)
+            if len(workareas) > 0:
+                make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage)
 
 
 def read_inputs(args):
@@ -113,16 +130,20 @@ def evaluate_inputs(xml_path, acron):
     return sgm_xml, xml_list, errors
 
 
-#FIXME
-def generate_xml(sgm_xml_filename, acron, version):
-    workarea = sgmlxml.SGMLXMLWorkarea(sgm_xml_filename)
+def sgmlxml_workarea(sgm_xml_filename, acron, version):
+    wk = sgmlxml.SGMLXMLWorkarea(sgm_xml_filename)
     sgml_xml = sgmlxml.SGMLXML2SPSXML(workarea)
     sgml_xml.convert(acron, xml_versions.xsl_sgml2xml(version))
     sgml_xml.pack()
-    return workarea.temp_package_files.filename
+    return wk
 
 
-def validate_xml_list(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
+def xml_list_workarea(xml_list, stage):
+    output_path = os.path.dirname(xml_list[0]) + '_' + stage
+    return [workarea.Workarea(item, output_path) for item in xml_list]
+
+
+def make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
     scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
 
     """
@@ -132,25 +153,36 @@ def validate_xml_list(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xp
     """
     is_xml_generation = stage == 'xml'
     is_db_generation = stage == 'xc'
-    package_folder = PackageFolder(xml_list, stage)
-    scielo_pkg_path = package_folder.path
-    pmc_pkg_path = os.path.dirname(scielo_pkg_path) + '/pmc_package'
+    package_folder = workarea.PackageFolder(workareas[0].xml_pkgfiles.path)
+    scielo_pkg_path = workareas[0].scielo_package_path
+    pmc_pkg_path = workareas[0].pmc_package_path
+    report_path = workareas[0].reports_path
+    results_path = os.path.dirname(report_path)
+    article_items = {}
+    article_work_area_items = {}
+
     is_pmc_journal = False
 
-    #FIXME name
-    for name, workarea in package_folder.workarea_items.items():
-        spsxml = SPSXML(workarea)
+    for wk in workareas:
+        spsxml = SPSXML(wk)
         spsxml.normalize()
         spsxml.pack()
 
         if is_pmc_journal is False:
             if spsxml.doc.journal_id_nlm_ta is not None:
                 is_pmc_journal = True
+        wk.outputs.new_name = wk.xml_pkgfiles.name
+        wk.outputs.new_xml_filename = wk.scielo_pkgfiles.filename
+        wk.outputs.xml_name = wk.input_pkgfiles.name
+        wk.outputs.xml_path = wk.scielo_pkgfiles.path
+        wk.outputs.xml_filename = wk.xml_pkgfiles.filename
+        spsxml.doc.package_files = wk.scielo_pkgfiles.files
 
-        article_items[name] = (spsxml.doc, workarea.outputs)
-        article_work_area_items[name] = workarea.outputs
-        report_path = workarea.report_path
-        results_path = os.path.dirname(report_path)
+        if not os.path.isfile(wk.outputs.images_report_filename):
+            fs_utils.write_file(wk.outputs.images_report_filename, '')
+        article_items[wk.input_pkgfiles.name] = spsxml.doc
+        article_items[wk.input_pkgfiles.name].package_files = wk.scielo_pkgfiles.files
+        article_work_area_items[wk.input_pkgfiles.name] = wk.outputs
 
     pmc_package_maker = PMCPackageMaker(article_items, article_work_area_items, scielo_pkg_path, pmc_pkg_path, version)
 
@@ -180,54 +212,47 @@ def validate_xml_list(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xp
         if is_pmc_journal:
             if GENERATE_PMC:
                 pmc_package_maker.make_pmc_package()
-                make_pkg_zip(pmc_pkg_path)
+                workarea.PackageFolder(pmc_pkg_path).zip()
+
             else:
                 print('='*10)
                 print(_('To generate PMC package, add -pmc as parameter'))
                 print('='*10)
 
     if not is_xml_generation and not is_db_generation:
-        make_pkg_zip(scielo_pkg_path)
+        workarea.PackageFolder(scielo_pkg_path).zip()
 
     utils.display_message(_('Result of the processing:'))
     utils.display_message(results_path)
     xpm_process_logger.write(report_path + '/log.txt')
 
 
-class SPSXMLWorkarea(object):
-
-    def __init__(self, filename, output_path):
-        workarea.Workarea.__init__(self, filename, output_path)
-
-
 class SPSXML(object):
 
     def __init__(self, workarea):
         self.workarea = workarea
-        self.temp_package_files = self.workarea.temp_package_files
-        self.workarea.scielo_package_files = PackageFiles(self.workarea.scielo_package_filename)
-        self.content = SPSXMLContent(open(self.temp_package_files.filename).read())
+        self.spsxmlcontent = SPSXMLContent(fs_utils.read_file(self.workarea.xml_pkgfiles.filename))
 
     def normalize(self):
-        self.content.normalize()
-        return self.content.content
+        self.spsxmlcontent.normalize()
+        return self.spsxmlcontent.content
 
     @property
     def xml(self):
-        _xml, e = xml_utils.load_xml(self.content)
+        _xml, e = xml_utils.load_xml(self.spsxmlcontent.content)
         if _xml is not None:
             return _xml
 
     @property
     def doc(self):
         if self.xml is not None:
-            a = article.Article(self.xml, self.temp_package_files.name)
-            a.new_prefix = self.temp_package_files.name
+            a = article.Article(self.xml, self.workarea.xml_pkgfiles.name)
+            a.new_prefix = self.workarea.xml_pkgfiles.name
             return a
 
     def pack(self):
-        fs_utils.write_file(self.workarea.scielo_package_files.filename, self.content)
-        self.workarea.copy()
+        fs_utils.write_file(self.workarea.scielo_pkgfiles.filename, self.spsxmlcontent.content)
+        self.workarea.xml_pkgfiles.copy(self.workarea.scielo_pkgfiles.path)
 
 
 class SPSXMLContent(xml_utils.XMLContent):
@@ -337,10 +362,10 @@ class SPSRefXMLContent(xml_utils.XMLContent):
 
     def normalize(self):
         if self.content.startswith('<ref') and self.content.endswith('</ref>'):
-            self.content = self.fix_mixed_citation_label()
-            self.content = self.fix_book_data()
-            self.content = self.fix_mixed_citation_ext_link()
-            self.content = self.fix_source()
+            self.fix_mixed_citation_label()
+            self.fix_book_data()
+            self.fix_mixed_citation_ext_link()
+            self.fix_source()
 
     def fix_book_data(self):
         if 'publication-type="book"' in self.content and '</article-title>' in self.content:
@@ -411,36 +436,36 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                     if not source in mixed_citation and s in mixed_citation:
                         self.content = self.content.replace(source, s)
 
-
-class PackageFolder(object):
-
-    def __init__(self, xml_list, stage='xpm'):
-        self.path = os.path.dirname(xml_list[0])
-        self.xml_list = xml_list
-        self.output_path = os.path.dirname(self.path) + '_' + stage
-
-    @property
-    def workarea_items(self):
-        items = {}
-        for item in self.xml_list:
-            workarea = SPSXMLWorkarea(item, self.output_path)
-            items[workarea.scielo_package_files.name] = workarea
-        return items
-
-    @property
-    def valid_files(self):
-        items = []
-        for name, workarea in self.workarea_items.items():
-            items.extend(workarea.scielo_package_files.files)
-        return items
-
-    @property
-    def orphans(self):
-        items = []
-        for f in os.listdir(self.path):
-            if f not in self.valid_files:
-                items.append(f)
-        return items
+    def replace_mimetypes(self):
+        r = self.content
+        if 'mimetype="replace' in self.content:
+            self.content = self.content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
+            self.content = self.content.replace('mime-subtype="replace"', '_~BREAK~MIME_')
+            r = ''
+            for item in self.content.split('_~BREAK~MIME_'):
+                if item.startswith('MIME:'):
+                    f = item[5:]
+                    f = f[0:f.rfind('"')]
+                    result = ''
+                    if os.path.isfile(self.src_path + '/' + f):
+                        result = mime.guess_type(self.src_path + '/' + f)
+                    else:
+                        url = urllib.pathname2url(f)
+                        result = mime.guess_type(url)
+                    try:
+                        result = result[0]
+                        if '/' in result:
+                            m, ms = result.split('/')
+                            r += 'mimetype="' + m + '" mime-subtype="' + ms + '"'
+                        else:
+                            pass
+                    except:
+                        pass
+                else:
+                    r += item
+        else:
+            utils.debugging('.............')
+        self.content = r
 
 
 class PMCPackageMaker(object):
@@ -498,7 +523,10 @@ class PMCPackageMaker(object):
                 self.normalize_pmc_file(pmc_xml_filename)
 
         if do_it:
-            make_pkg_zip(self.pmc_pkg_path)
+            img_utils.svg2png(self.pmc_pkg_path)
+            img_utils.png2tiff(self.pmc_pkg_path)
+
+            workarea.PackageFolder(self.pmc_pkg_path).zip()
 
     def normalize_pmc_file(self, pmc_xml_filename):
         content = fs_utils.read_file(pmc_xml_filename)
@@ -550,14 +578,6 @@ class PMCPackageMaker(object):
             fs_utils.write_file(pmc_xml_filename, content)
 
 
-
-###################################################
-
-
-
-
-
-
 def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     if result_filename == xml_filename:
         shutil.copyfile(xml_filename, xml_filename + '.bkp')
@@ -574,131 +594,3 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     if xml_filename.endswith('.bkp'):
         fs_utils.delete_file_or_folder(xml_filename)
     return r
-
-
-class ArticlePkgMaker(object):
-
-    def __init__(self, article_files, doc_files_info, scielo_pkg_path, version, acron, is_db_generation=False):
-        self.article_files = article_files
-        self.scielo_pkg_path = scielo_pkg_path
-        self.version = version
-        self.acron = acron
-        self.is_db_generation = is_db_generation
-        self.doc_files_info = doc_files_info
-        self.content = fs_utils.read_file(doc_files_info.xml_filename)
-        self.text_messages = []
-        self.doc = None
-        self.replacements_href_values = []
-        self.replacements_related_files_items = {}
-        self.replacements_href_files_items = {}
-
-        self.missing_href_files = []
-        self.original_href_filenames = []
-        self.version_info = xml_versions.DTDFiles('scielo', version)
-        self.sgmlxml = None
-        self.xml = None
-        self.e = None
-        #self.sorted_graphic_href_items = []
-        #self.src_folder_graphics = []
-
-    def make_article_package(self):
-        self.normalize_xml_content()
-        self.normalize_filenames()
-        self.pack_article_files()
-
-        fs_utils.write_file(self.doc_files_info.err_filename, '\n'.join(self.text_messages))
-        html_reports.save(self.doc_files_info.images_report_filename, '', self.get_images_comparison_report())
-        if len(self.replacements_related_files_items) > 0:
-            self.doc.related_files = [os.path.basename(f) for f in self.replacements_related_files_items.values()]
-        
-        self.doc.package_files = package_files(self.scielo_pkg_path, self.doc.new_prefix)
-        return (self.doc, self.doc_files_info)
-
-
-
-    def replace_mimetypes(self):
-        r = self.content
-        if 'mimetype="replace' in self.content:
-            self.content = self.content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
-            self.content = self.content.replace('mime-subtype="replace"', '_~BREAK~MIME_')
-            r = ''
-            for item in self.content.split('_~BREAK~MIME_'):
-                if item.startswith('MIME:'):
-                    f = item[5:]
-                    f = f[0:f.rfind('"')]
-                    result = ''
-                    if os.path.isfile(self.src_path + '/' + f):
-                        result = mime.guess_type(self.src_path + '/' + f)
-                    else:
-                        url = urllib.pathname2url(f)
-                        result = mime.guess_type(url)
-                    try:
-                        result = result[0]
-                        if '/' in result:
-                            m, ms = result.split('/')
-                            r += 'mimetype="' + m + '" mime-subtype="' + ms + '"'
-                        else:
-                            pass
-                    except:
-                        pass
-                else:
-                    r += item
-        else:
-            utils.debugging('.............')
-        self.content = r
-
-
-
-
-
-
-
-def make_zip(files, zip_name):
-    try:
-        zipf = zipfile.ZipFile(zip_name, 'w')
-        for f in files:
-            zipf.write(f, arcname=os.path.basename(f))
-        zipf.close()
-    except:
-        pass
-
-
-def make_pkg_zip(src_pkg_path):
-    pkg_name = None
-    for item in os.listdir(src_pkg_path):
-        if item.endswith('.xml'):
-            if '-' in item:
-                pkg_name = item[0:item.rfind('-')]
-
-    if pkg_name is not None:
-        dest_path = src_pkg_path + '_zips'
-        if not os.path.isdir(dest_path):
-            os.makedirs(dest_path)
-        zip_name = dest_path + '/' + pkg_name + '.zip'
-        make_zip([src_pkg_path + '/' + f for f in os.listdir(src_pkg_path)], zip_name)
-
-
-def make_pkg_items_zip(src_pkg_path):
-    dest_path = src_pkg_path + '_zips'
-    if not os.path.isdir(dest_path):
-        os.makedirs(dest_path)
-    xml_files = [src_pkg_path + '/' + f for f in os.listdir(src_pkg_path) if f.endswith('.xml')]
-    for xml_filename in xml_files:
-        make_pkg_item_zip(xml_filename, dest_path)
-
-
-def make_pkg_item_zip(xml_filename, dest_path):
-    if not os.path.isdir(dest_path):
-        os.makedirs(dest_path)
-
-    src_path = os.path.dirname(xml_filename)
-    xml_name = os.path.basename(xml_filename)
-    name = xml_name[0:-4]
-    try:
-        zipf = zipfile.ZipFile(dest_path + '/' + name + '.zip', 'w')
-        for item in os.listdir(src_path):
-            if item.startswith(name + '.') or item.startswith(name + '-'):
-                zipf.write(src_path + '/' + item, arcname=item)
-        zipf.close()
-    except:
-        pass

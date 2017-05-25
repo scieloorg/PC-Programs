@@ -1,4 +1,5 @@
 # coding=utf-8
+
 import os
 import sys
 import shutil
@@ -19,7 +20,7 @@ import java_xml_utils
 import html_reports
 import article_validations
 import xml_utils
-import xml_versions
+import xml_versions 
 import xpchecker
 import pkg_validations
 import symbols

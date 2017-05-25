@@ -3,6 +3,8 @@ import os
 
 from PIL import Image
 
+from . import svg_conversion
+
 IMDEBUGGING = False
 
 
@@ -44,3 +46,11 @@ def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
                     hdimg_to_jpg(image_filename, jpg_filename)
 
 
+def svg2png(images_path):
+    svg_conversion.svg2png(images_path)
+
+
+def png2tiff(images_path):
+    svg_conversion.png2tiff(images_path)
+
+    
