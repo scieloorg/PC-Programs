@@ -100,20 +100,32 @@ class PackageFiles(object):
         return [os.path.splitext(f) for f in self.files]
 
     @property
-    def png_files(self):
+    def png_items(self):
+        return [name+ext for name, ext in self.splitext if ext in ['.png']]
+
+    @property
+    def jpg_items(self):
+        return [name+ext for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
+
+    @property
+    def tiff_items(self):
+        return [name+ext for name, ext in self.splitext if ext in ['.tif', '.tiff']]
+
+    @property
+    def png_names(self):
         return [name for name, ext in self.splitext if ext in ['.png']]
 
     @property
-    def jpg_files(self):
+    def jpg_names(self):
         return [name for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
 
     @property
-    def tif_files(self):
+    def tiff_names(self):
         return [name for name, ext in self.splitext if ext in ['.tif', '.tiff']]
 
     def convert_images(self):
-        for item in self.tif_files:
-            if not item in self.jpg_files and not item in self.png_files:
+        for item in self.tiff_names:
+            if not item in self.jpg_names and not item in self.png_names:
                 source_fname = item + '.tif'
                 if not source_fname in self.files:
                     source_fname = item + '.tiff'

@@ -1,6 +1,5 @@
-# code = utf-8
+# coding = utf-8
 
-import sys
 import os
 
 from PIL import Image
@@ -62,11 +61,35 @@ def png2tiff(image_path, force=False):
             except IOError:
                 print("cannot convert", src, dest)
 
-"""
-if len(sys.argv) == 2:
-    script, image_path = sys.argv
-    if os.path.isdir(image_path):
-        svg2png(image_path)
-else:
-    print('Usage: python {} <image path>'.format(sys.argv[0]))
-"""
+
+def convert_svg2png(img_filename, destination=None, force=False):
+    if os.path.isfile(img_filename) and img_filename.endswith('.svg'):
+        if destination is None:
+            destination = os.path.dirname(img_filename)
+        if not os.path.isdir(destination):
+            os.makedirs(destination)
+        fname = os.path.basename(img_filename)
+        dest_filename = destination + '/' + fname + '.png'
+        if force or not os.path.isfile(dest_filename):
+            try:
+                comm = command()
+                os.system(comm.format(img_filename, dest_filename))
+                print(img_filename + ' => ' + dest_filename)
+            except:
+                print('Unable to run inkscape')
+
+
+def convert_png2tiff(img_filename, destination=None, force=False):
+    if os.path.isfile(img_filename) and img_filename.endswith('.png'):
+        if destination is None:
+            destination = os.path.dirname(img_filename)
+        if not os.path.isdir(destination):
+            os.makedirs(destination)
+        fname = os.path.basename(img_filename)
+        dest_filename = destination + '/' + fname + '.tif'
+        if force or not (os.path.isfile(dest_filename) or os.path.isfile(dest_filename + 't')):
+            try:
+                Image.open(img_filename).save(dest_filename, "TIFF")
+                print(img_filename + ' => ' + dest_filename)
+            except IOError:
+                print("cannot convert", img_filename, dest_filename)
