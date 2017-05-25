@@ -1,7 +1,8 @@
-﻿4.0.093 - Release 4 - 12/05/2017
-==================================
+﻿4.0.093 - Release 4 - 25/05/2017
+================================
 - XPM
   - (bug) [2579] Fix the validation of history date 
+  - (improvement) [2569] Convert svg to tiff for the PMC package generation
 - XML Markup 
   - (bug) [2570] Fix inclusion of pdf files of translations in the package
   - (bug) [2574] Fix generation of xref/@rid of bibr in table
