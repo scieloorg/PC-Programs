@@ -1,7 +1,8 @@
-4.0.093 - Release 3 - 11/05/2017
+4.0.093 - Release 3 - 25/05/2017
 ==================================
 - XPM
   - (bug) [2579] Fix the validation of history date 
+  - (improvement) [2569] Convert svg to tiff for the PMC package generation
 
 4.0.093 - Release 2 - 19/04/2017
 ================================
