@@ -18,6 +18,15 @@ Questions about SciELO PC Programs (Markup, Title Manager, Converter, etc)
 
 It is the forum to discuss questions and make suggestions related to the **programs** or other subjects related to SciELO Methodology.
 
+**How to subscribe**
+
+    Send an e-mail to: **scielo-discuss+subscribe@googlegroups.com**
+
+**How to unsubscribe**
+
+    Send an e-mail to: **scielo-discuss+unsubscribe@googlegroups.com**
+
+
 
 Questions about SciELO XML / SciELO Publishing Schema
 =====================================================

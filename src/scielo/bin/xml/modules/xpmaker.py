@@ -27,6 +27,7 @@ import article
 import serial_files
 import attributes
 import validation_status
+import svg_conversion
 
 
 mime = MimeTypes()
@@ -1251,6 +1252,8 @@ class PackageMaker(object):
                 self.normalize_pmc_file(pmc_xml_filename)
 
         if do_it:
+            svg_conversion.svg2png(self.pmc_pkg_path)
+            svg_conversion.png2tiff(self.pmc_pkg_path)
             make_pkg_zip(self.pmc_pkg_path)
 
     def normalize_pmc_file(self, pmc_xml_filename):

@@ -1,5 +1,7 @@
+
 .. toctree::
    :maxdepth: 1
+   
 
 SciELO Markup Elements and Attributes
 =====================================
@@ -362,6 +364,8 @@ Element
 
 
 Attributes: `authidtp <markup_tags.html#attribute-authidtp>`_
+
+
 author
 ------
 
@@ -783,7 +787,7 @@ dperiod
 
 Element
 
-Identify the período of time tratado at the content of the document
+Identify the perÃ­odo of time tratado at the content of the document
 
 Attributes: `from <markup_tags.html#attribute-from>`_, `to <markup_tags.html#attribute-to>`_
 
@@ -2592,9 +2596,9 @@ Is attribute of:
 +-------+-----------------------------------------------------------+
 |bjp    |brazilian journal of physics                               |
 +-------+-----------------------------------------------------------+
-|conicyt|Comisión Nacional de Investigación Científica y Tecnológica|
+|conicyt|ComisiÃ³n Nacional de InvestigaciÃ³n CientÃ­fica y TecnolÃ³gica|
 +-------+-----------------------------------------------------------+
-|dados  |dados - revista de ciências sociais                        |
+|dados  |dados - revista de ciÃªncias sociais                        |
 +-------+-----------------------------------------------------------+
 |br1.1  |scielo/bireme                                              |
 +-------+-----------------------------------------------------------+
@@ -2604,15 +2608,15 @@ Is attribute of:
 +-------+-----------------------------------------------------------+
 |jbcos  |journal of the brazilian computer society                  |
 +-------+-----------------------------------------------------------+
-|mioc   |memórias do instituto oswaldo cruz                         |
+|mioc   |memÃ³rias do instituto oswaldo cruz                         |
 +-------+-----------------------------------------------------------+
-|rbcs   |revista brasileira de ciência do solo                      |
+|rbcs   |revista brasileira de ciÃªncia do solo                      |
 +-------+-----------------------------------------------------------+
-|rbgeo  |revista brasileira de geociências                          |
+|rbgeo  |revista brasileira de geociÃªncias                          |
 +-------+-----------------------------------------------------------+
-|rimtsp |revista do instituto de medicina tropical de são paulo     |
+|rimtsp |revista do instituto de medicina tropical de sÃ£o paulo     |
 +-------+-----------------------------------------------------------+
-|rsp    |revista de saúde pública                                   |
+|rsp    |revista de saÃºde pÃºblica                                   |
 +-------+-----------------------------------------------------------+
 
 
@@ -2851,7 +2855,7 @@ Is attribute of: `patentno`_, `patgrp`_
 +--+----------------------------+
 |PN|Islas Pitcairn              |
 +--+----------------------------+
-|SB|Islas Salomón Británico     |
+|SB|Islas SalomÃ³n BritÃ¡nico     |
 +--+----------------------------+
 |SJ|Islas Svalbard y Jan Mayen  |
 +--+----------------------------+
@@ -2875,7 +2879,7 @@ Is attribute of: `patentno`_, `patgrp`_
 +--+----------------------------+
 |KM|Kamoras Islands             |
 +--+----------------------------+
-|KH|Kampuchea Democrática       |
+|KH|Kampuchea DemocrÃ¡tica       |
 +--+----------------------------+
 |KY|Kayman Islands              |
 +--+----------------------------+
@@ -2959,7 +2963,7 @@ Is attribute of: `patentno`_, `patgrp`_
 +--+----------------------------+
 |NO|Norway                      |
 +--+----------------------------+
-|NH|Nuevas Hébridas             |
+|NH|Nuevas HÃ©bridas             |
 +--+----------------------------+
 |OM|Oman                        |
 +--+----------------------------+
@@ -2987,13 +2991,13 @@ Is attribute of: `patentno`_, `patgrp`_
 +--+----------------------------+
 |LA|Republic                    |
 +--+----------------------------+
-|RE|Réunion                     |
+|RE|RÃ©union                     |
 +--+----------------------------+
 |RO|Romania                     |
 +--+----------------------------+
 |RW|Rwanda                      |
 +--+----------------------------+
-|PM|S. Pedro y Miguelón         |
+|PM|S. Pedro y MiguelÃ³n         |
 +--+----------------------------+
 |LC|Saint Lucia                 |
 +--+----------------------------+
@@ -3001,7 +3005,7 @@ Is attribute of: `patentno`_, `patgrp`_
 +--+----------------------------+
 |WS|Samoa                       |
 +--+----------------------------+
-|KN|San Cristóbal-Nieves-Anguila|
+|KN|San CristÃ³bal-Nieves-Anguila|
 +--+----------------------------+
 |SM|San Marino                  |
 +--+----------------------------+
@@ -4220,7 +4224,7 @@ Is attribute of: `abnt6023`_, `apa`_, `iso690`_, `other`_, `vancouv`_
 +-------+-------------------------------------------------------------------------------------------+
 |iso690 |iso 690/87 - international standard organization                                           |
 +-------+-------------------------------------------------------------------------------------------+
-|nbr6023|nbr 6023/89 - associação nacional de normas técnicas                                       |
+|nbr6023|nbr 6023/89 - associaÃ§Ã£o nacional de normas tÃ©cnicas                                       |
 +-------+-------------------------------------------------------------------------------------------+
 |other  |other standard                                                                             |
 +-------+-------------------------------------------------------------------------------------------+
