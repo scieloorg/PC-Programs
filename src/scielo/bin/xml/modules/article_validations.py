@@ -424,6 +424,7 @@ def validate_contrib_names(author, aff_ids=[]):
 class ArticleContentValidation(object):
 
     def __init__(self, doi_services, journal, _article, is_db_generation, check_url):
+        #FIXME ArticleDOIValidator
         self.doi_validator = ArticleDOIValidator(doi_services, _article)
         self.journal = journal
         self.article = _article

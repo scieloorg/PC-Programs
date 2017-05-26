@@ -17,7 +17,7 @@ from . import fs_utils
 from . import attributes
 from . import workarea
 from . import article_validations
-from . import pkg_validations
+from . import package_validations
 from . import serial_files
 
 from . import validators
@@ -187,16 +187,18 @@ def make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm')
 
     doi_services = article_validations.DOI_Services()
 
-    articles_pkg = pkg_validations.ArticlesPackage(scielo_pkg_path, article_items, is_xml_generation)
+    pkgreports = package_validations.PackageReports(package_folder, article_items, article_work_area_items)
+    pkgissuedata = package_validations.PackageIssueData(article_items)
+    registered_issue_data = package_validations.RegisteredIssueData(db_manager=None)
+    registered_issue_data.get_data(pkgissuedata)
+    articles_set_validations = package_validations.ArticlesSetValidations(articles, workareas, registered_issue_data, scielo_pkg_path)
 
-    articles_data = pkg_validations.ArticlesData()
-    articles_data.setup(articles_pkg, db_manager=None)
-    articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data, xpm_process_logger)
+    # articles_set_validations = package_validations.ArticlesSetValidations(articles_pkg, articles_data, xpm_process_logger)
     articles_set_validations.validate(doi_services, scielo_dtd_files, article_work_area_items)
 
-    files_final_location = serial_files.FilesFinalLocation(scielo_pkg_path, articles_data.acron, articles_data.issue_label, web_app_path=None)
+    files_final_location = serial_files.FilesFinalLocation(scielo_pkg_path, pkgissuedata.acron, pkgissuedata.issue_label, web_app_path=None)
 
-    reports = pkg_validations.ReportsMaker(package_folder.orphans, articles_set_validations, files_final_location, xpm_version(), None)
+    reports = package_validations.ReportsMaker(package_folder.orphans, articles_set_validations, files_final_location, xpm_version(), None)
 
     if not is_xml_generation:
         reports.processing_result_location = results_path
