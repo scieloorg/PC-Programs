@@ -3,6 +3,7 @@
 import os
 import sys
 import urllib
+import shutil
 from mimetypes import MimeTypes
 
 from __init__ import _
@@ -19,12 +20,9 @@ from . import article_validations
 from . import pkg_validations
 from . import serial_files
 
-import shutil
+from . import validators
 
-
-import java_xml_utils
 import html_reports
-import xpchecker
 
 
 messages = []
@@ -471,113 +469,6 @@ class SPSRefXMLContent(xml_utils.XMLContent):
 
 class PMCPackageMaker(object):
 
-    def __init__(self, article_items, workarea_items, version):
-
-        self.article_items = article_items
-        self.workarea_items = workarea_items
-        self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
-        self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
-
-    def make_pmc_report(self):
-        for xml_name, doc in self.article_items.items():
-            msg = _('generating report... ')
-            if doc.tree is None:
-                msg = _('Unable to generate the XML file. ')
-            else:
-                if doc.journal_id_nlm_ta is None:
-                    msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file. ')
-            html_reports.save(self.workarea_items[xml_name].outputs.pmc_style_report_filename, 'PMC Style Checker', msg)
-
-    def make_pmc_package(self):
-        do_it = False
-
-        utils.display_message('\n')
-        utils.display_message(_('Generating PMC Package'))
-        n = '/' + str(len(self.article_items))
-        index = 0
-
-        for xml_name, doc in self.article_items.keys():
-            wk = self.workarea[xml_name]
-
-            pmc_style_report_filename = wk.outputs.pmc_style_report_filename
-            pmc_xml_filename = wk.pmc_pkgfiles.filename
-            scielo_xml_filename = wk.scielo_pkgfiles.filename
-
-            if doc.journal_id_nlm_ta is None:
-                html_reports.save(pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
-            else:
-                do_it = True
-
-                index += 1
-                item_label = str(index) + n + ': ' + xml_name
-                utils.display_message(item_label)
-
-                xml_output(scielo_xml_filename, self.scielo_dtd_files.doctype_with_local_path, self.scielo_dtd_files.xsl_output, pmc_xml_filename)
-
-                xpchecker.style_validation(pmc_xml_filename, self.pmc_dtd_files.doctype_with_local_path, pmc_style_report_filename, self.pmc_dtd_files.xsl_prep_report, self.pmc_dtd_files.xsl_report, self.pmc_dtd_files.database_name)
-                xml_output(pmc_xml_filename, self.pmc_dtd_files.doctype_with_local_path, self.pmc_dtd_files.xsl_output, pmc_xml_filename)
-
-                self.add_files_to_pmc_package(pmc_xml_filename, doc.language)
-                self.normalize_pmc_file(pmc_xml_filename)
-
-        if do_it:
-            img_utils.svg2png(self.pmc_pkg_path)
-            img_utils.png2tiff(self.pmc_pkg_path)
-
-            workarea.PackageFolder(self.pmc_pkg_path).zip()
-
-    def normalize_pmc_file(self, pmc_xml_filename):
-        content = fs_utils.read_file(pmc_xml_filename)
-        if 'mml:math' in content:
-            result = []
-            n = 0
-            math_id = None
-            for item in content.replace('<mml:math', '~BREAK~<mml:math').split('~BREAK~'):
-                if item.startswith('<mml:math'):
-                    n += 1
-                    elem = item[:item.find('>')]
-                    if ' id="' not in elem:
-                        math_id = 'math{}'.format(n)
-                        item = item.replace('<mml:math', '<mml:math id="{}"'.format(math_id))
-                        print(math_id)
-                result.append(item)
-            if math_id is not None:
-                fs_utils.write_file(pmc_xml_filename, ''.join(result))
-
-    def validate_pmc_image(self, img_filename):
-        img = img_utils.tiff_image(img_filename)
-        if img is not None:
-            if img.info is not None:
-                if img.info.get('dpi') < 300:
-                    print(_('PMC: {file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi')))
-
-    def add_files_to_pmc_package(self, pmc_xml_filename, language):
-        dest_path = os.path.dirname(pmc_xml_filename)
-        xml_name = os.path.basename(pmc_xml_filename)[:-4]
-        xml, e = xml_utils.load_xml(pmc_xml_filename)
-        doc = article.Article(xml, xml_name)
-        if language == 'en':
-            if os.path.isfile(self.scielo_pkg_path + '/' + xml_name + '.pdf'):
-                shutil.copyfile(self.scielo_pkg_path + '/' + xml_name + '.pdf', dest_path + '/' + xml_name + '.pdf')
-            for item in doc.href_files:
-                if os.path.isfile(self.scielo_pkg_path + '/' + item.src):
-                    shutil.copyfile(self.scielo_pkg_path + '/' + item.src, dest_path + '/' + item.src)
-                    self.validate_pmc_image(dest_path + '/' + item.src)
-        else:
-            if os.path.isfile(self.scielo_pkg_path + '/' + xml_name + '-en.pdf'):
-                shutil.copyfile(self.scielo_pkg_path + '/' + xml_name + '-en.pdf', dest_path + '/' + xml_name + '.pdf')
-            content = fs_utils.read_file(pmc_xml_filename)
-            for item in doc.href_files:
-                new = item.src.replace('-en.', '.')
-                content = content.replace(item.src +'.', new+'.')
-                if os.path.isfile(self.scielo_pkg_path + '/' + item.src):
-                    shutil.copyfile(self.scielo_pkg_path + '/' + item.src, dest_path + '/' + new)
-                    self.validate_pmc_image(dest_path + '/' + new)
-            fs_utils.write_file(pmc_xml_filename, content)
-
-
-class PMCPackageMaker(object):
-
     def __init__(self, version):
         self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
         self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
@@ -599,22 +490,19 @@ class PMCPackageMaker(object):
             item_label = str(index) + n + ': ' + xml_name
             utils.display_message(item_label)
 
-            doit = PMCPackageCreation(doc, wk).make_package()
+            doit = PMCPackageItemMaker(doc, wk, self.scielo_dtd_files, self.pmc_dtd_files).make_package()
 
         if doit and path is not None:
-            img_utils.svg2png(path)
-            img_utils.png2tiff(path)
             workarea.PackageFolder(path).zip()
 
 
-class PMCPackageCreation(object):
+class PMCPackageItemMaker(object):
 
-    def __init__(self, doc, wk):
-
+    def __init__(self, doc, wk, scielo_dtd_files, pmc_dtd_files):
         self.doc = doc
         self.wk = wk
-        self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
-        self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
+        self.pmc_dtd_files = pmc_dtd_files
+        self.scielo_dtd_files = scielo_dtd_files
         self.pmc_xml_filename = wk.pmc_pkgfiles.filename
         self.scielo_xml_filename = wk.scielo_pkgfiles.filename
         self.pmc_style_report_filename = self.wk.outputs.pmc_style_report_filename
@@ -629,13 +517,11 @@ class PMCPackageCreation(object):
                 self.scielo_dtd_files.xsl_output,
                 self.pmc_xml_filename)
 
-            xpchecker.style_validation(
+            xml_validator = validators.XMLValidator(self.pmc_dtd_files)
+            xml_validator.validate_style(
                 self.pmc_xml_filename,
-                self.pmc_dtd_files.doctype_with_local_path,
-                self.pmc_style_report_filename,
-                self.pmc_dtd_files.xsl_prep_report,
-                self.pmc_dtd_files.xsl_report,
-                self.pmc_dtd_files.database_name)
+                self.pmc_style_report_filename
+                )
 
             xml_output(self.pmc_xml_filename,
                 self.pmc_dtd_files.doctype_with_local_path,
@@ -643,6 +529,9 @@ class PMCPackageCreation(object):
                 self.pmc_xml_filename)
 
             self.add_files_to_pmc_package()
+            self.svg2tiff()
+            self.evaluate_tiff_images()
+            self.replace_href_values()
             self.normalize_pmc_file()
             return True
 
@@ -673,25 +562,52 @@ class PMCPackageCreation(object):
                 if error is not None:
                     errors.append(error)
         else:
-            files = [os.path.splitext(f) for f in self.wk.scielo_pkgfiles.files]
-            files = [(name, name[:-3], ext) for name, ext in files if name.endswith('-en')]
-            content = fs_utils.read_file(self.wk.pmc_pkgfiles.filename)
-            img_utils.svg2png(path)
-            img_utils.png2tiff(path)
+            self.remove_en_from_filenames(self)
 
-            for name, new_name, ext in files:
-                shutil.copyfile(
-                    self.wk.scielo_pkgfiles.path + '/' + name+ext,
-                    self.wk.pmc_pkgfiles.path+'/'+new_name+ext)
-                content = content.replace(name+ext, new_name+ext)
+    def svg2tiff(self):
+        for item in self.wk.pmc_pkgfiles.files:
+            if item.endswith('.svg'):
+                img_utils.convert_svg2png(self.wk.pmc_pkgfiles.path + '/' + item)
+        for item in self.wk.pmc_pkgfiles.files:
+            if item.endswith('.png'):
+                img_utils.convert_png2tiff(self.wk.pmc_pkgfiles.path + '/' + item)
 
-                error = img_utils.validate_tiff_image_file(self.wk.pmc_pkgfiles.path+'/'+new_name+ext)
-                if error is not None:
-                    errors.append(error)
-            fs_utils.write_file(self.pmc_xml_filename, content)
+    def evaluate_tiff_images(self):
+        errors = []
+        for f in self.wk.pmc_pkgfiles.tiff_items:
+            error = img_utils.validate_tiff_image_file(self.wk.pmc_pkgfiles.path+'/'+f)
+            if error is not None:
+                errors.append(error)
+        return errors
+
+    def remove_en_from_filenames(self):
+        content = fs_utils.read_file(self.wk.pmc_pkgfiles.filename)
+        files = [os.path.splitext(f) for f in self.wk.scielo_pkgfiles.files]
+        files = [(name, name[:-3], ext) for name, ext in files if name.endswith('-en')]
+        for name, new_name, ext in files:
+            shutil.copyfile(
+                self.wk.scielo_pkgfiles.path + '/' + name+ext,
+                self.wk.pmc_pkgfiles.path+'/'+new_name+ext)
+            content = content.replace(name+ext, new_name+ext)
+        fs_utils.write_file(self.pmc_xml_filename, content)
+
+    def replace_href_values(self):
+        content = fs_utils.read_file(self.wk.pmc_pkgfiles.filename)
+        href_items = {href.name_with_extension: href.ext for href in self.doc.href_files}
+        for tif in self.wk.pmc_pkgfiles.tiff_names:
+            ext = href_items.get(tif)
+            if not ext.startswith('.tif'):
+                new_name = tif + '.tif'
+                if not new_name in self.wk.pmc_pkgfiles.tiff_items:
+                    new_name = tif + '.tiff'
+                if new_name in self.wk.pmc_pkgfiles.tiff_items:
+                    content = content.replace('href="'+href.src+'"', 'href="'+new_name+'"')
+                    print(href.src, new_name)
+        fs_utils.write_file(self.pmc_xml_filename, content)
 
 
 def xml_output(xml_filename, doctype, xsl_filename, result_filename):
+    #FIXME
     if result_filename == xml_filename:
         shutil.copyfile(xml_filename, xml_filename + '.bkp')
         xml_filename = xml_filename + '.bkp'
