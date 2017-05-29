@@ -253,11 +253,20 @@ class MergedArticlesData(object):
             data[label] = values
         return data
 
+    def orders_conflicts(self):
+        orders = {}
+        for name, article in self._merged_articles.items():
+            if not article.order in orders.keys():
+                orders[article.order] = []
+            orders[article.order].append(name)
+        return {order: names for order, names in orders.items() if len(names) > 1}
+
 
 class MergedArticlesValidationsReports(object):
 
-    def __init__(self, merged_articles_data):
+    def __init__(self, merged_articles_data, merging_result):
         self.merged_articles_data = merged_articles_data
+        self.merging_result = merging_result
 
     @property
     def report_data_consistency(self):
@@ -353,18 +362,7 @@ class MergedArticlesValidationsReports(object):
             results.append({'label': xml_name, 'status': status, 'pages': article.pages, 'message': msg, _('why it is not a valid message?'): ''})
         return html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'pages', 'message', _('why it is not a valid message?')], results, table_style='validation_sheet', widths={'label': '10', 'status': '10', 'pages': '5', 'message': '75'}))
 
-
-class MergingResult(object):
-
-    def __init__(self):
-        self.exclusions = []
-        self.conflicts = {}
-        self.actions = {}
-        self.name_changes = {}
-        self.order_changes = {}
-
-        ###
-    def registered_data_conflicts_report(self):
+    def report_merging_conflicts(self):
         merging_errors = []
         if len(self.conflicts) > 0:
             merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
@@ -383,43 +381,63 @@ class MergingResult(object):
                 merging_errors.append(html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels))
         return ''.join(merging_errors)
 
+    def display_order_conflicts(self):
+        r = []
+        if len(self.merged_articles_data.orders_conflicts) > 0:
+            html_reports.tag('h2', _('Order conflicts'))
+            for order, names in self.merged_articles_data.orders_conflicts.items():
+                r.append(html_reports.tag('h3', order))
+                r.append(html_reports.format_html_data(names))
+        return ''.join(r)
+
     @property
     def validations(self):
         v = ValidationsResult()
-        v.message = ''.join([display_order_conflicts(self.orders_conflicts(self.merged_articles)) + self.registered_data_conflicts_report()])
+        v.message = ''.join([self.display_order_conflicts() + self.report_merging_conflicts()])
         return v
 
     @property
-    def names_change_report(self):
+    def report_names_changes(self):
         r = []
-        if len(self.name_changes) > 0:
+        if len(self.merging_result.name_changes) > 0:
             r.append(html_reports.tag('h3', _('Names changes')))
-            for old, new in self.name_changes.items():
+            for old, new in self.merging_result.name_changes.items():
                 r.append(html_reports.tag('p', '{old} => {new}'.format(old=old, new=new), 'info'))
         return ''.join(r)
 
     @property
-    def orders_change_report(self):
+    def report_order_status(self):
         r = []
-        if len(self.order_changes) > 0:
+        if len(self.merging_result.order_changes) > 0:
             r.append(html_reports.tag('h3', _('Orders changes')))
-            for name, changes in self.order_changes.items():
+            for name, changes in self.merging_result.order_changes.items():
                 for change in changes:
                     r.append(html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=change[0], new=change[1]), 'info'))
         if len(self.excluded_orders) > 0:
             r.append(html_reports.tag('h3', _('Orders exclusions')))
-            for name, order in self.excluded_orders.items():
+            for name, order in self.merging_result.excluded_orders.items():
                 r.append(html_reports.tag('p', '{order} ({name})'.format(name=name, order=order), 'info'))
         return ''.join(r)
 
     @property
     def changes_report(self):
         r = ''
-        r += self.orders_change_report
-        r += self.names_change_report
+        r += self.report_order_status
+        r += self.report_names_changes
         if len(r) > 0:
             r = html_reports.tag('h2', _('Changes Report')) + r
         return r
+
+
+class MergingResult(object):
+
+    def __init__(self):
+        self.exclusions = []
+        self.conflicts = {}
+        self.actions = {}
+        self.name_changes = {}
+        self.order_changes = {}
+        self.excluded_orders = None
 
 
 class ArticlesMerger(object):
@@ -429,14 +447,6 @@ class ArticlesMerger(object):
         self.registered_articles = RegisteredArticles(registered_articles)
         self.articles = articles
         self.merging_result = MergingResult()
-
-    @property
-    def total_to_convert(self):
-        return len(self.articles)
-
-    @property
-    def xc_articles(self):
-        return self.articles
 
     @property
     def merged_articles(self):
@@ -459,7 +469,7 @@ class ArticlesMerger(object):
                 self.merging_result.name_changes[old_name] = name
             if name in self.registered_articles.keys():
                 if article.order != self.registered_articles[name].order:
-                    self.order_changes[name] = (self.registered_articles[name].order, article.order)
+                    self.merging_result.order_changes[name] = (self.registered_articles[name].order, article.order)
 
     def analyze_pkg_article(self, name, pkg_article):
         registered_titaut, registered_name, registered_order = self.registered_articles.search_articles(name, pkg_article)
@@ -467,26 +477,26 @@ class ArticlesMerger(object):
         return (action, old_name, conflicts)
 
     def update_articles(self):
-        self.history_items = {}
+        self.merging_result.history_items = {}
         # starts history with registered articles data
-        self.history_items = {name: [('registered article', article)] for name, article in self.registered_articles.items()}
+        self.merging_result.history_items = {name: [('registered article', article)] for name, article in self.registered_articles.items()}
 
         # exclude registered items
         for name in self.merging_result.exclusions:
-            self.history_items[name].append(('excluded article', self._merged_articles[name]))
+            self.merging_result.history_items[name].append(('excluded article', self._merged_articles[name]))
             del self._merged_articles[name]
 
         # indicates package articles reception
         for name, article in self.articles.items():
-            if not name in self.history_items.keys():
-                self.history_items[name] = []
-            self.history_items[name].append(('package', article))
+            if not name in self.merging_result.history_items.keys():
+                self.merging_result.history_items[name] = []
+            self.merging_result.history_items[name].append(('package', article))
 
         # indicates names changes, and exclude old names
         for previous_name, name in self.merging_result.name_changes.items():
-            self.history_items[previous_name].append(('replaced by', self.articles[name]))
+            self.merging_result.history_items[previous_name].append(('replaced by', self.articles[name]))
 
-            self.history_items[name].append(('replaces', self._merged_articles[previous_name]))
+            self.merging_result.history_items[name].append(('replaces', self._merged_articles[previous_name]))
             del self._merged_articles[previous_name]
 
         # merge pkg and registered, considering some of them are rejected
@@ -494,19 +504,12 @@ class ArticlesMerger(object):
         for name, article in self.articles.items():
             if not article.marked_to_delete:
                 action = self.merging_result.actions.get(name)
-
                 if name in self.merging_result.conflicts.keys():
                     action = 'reject'
                 if not action in ['reject', None]:
                     self._merged_articles[name] = self.articles[name]
 
-    def orders_conflicts(self):
-        orders = {}
-        for name, article in self._merged_articles.items():
-            if not article.order in orders.keys():
-                orders[article.order] = []
-            orders[article.order].append(name)
-        return {order: names for order, names in orders.items() if len(names) > 1}
+        self.merging_result.excluded_orders = self.excluded_orders
 
     @property
     def excluded_orders(self):
@@ -673,4 +676,4 @@ MergingResult()
 ArticlesMerger(registered_articles, articles)
 
 ArticlesSetValidations()
-"""
+""
