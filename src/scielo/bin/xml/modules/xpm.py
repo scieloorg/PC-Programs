@@ -158,6 +158,7 @@ def make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm')
     results_path = os.path.dirname(report_path)
     article_items = {}
     article_work_area_items = {}
+    wks = {}
 
     is_pmc_journal = False
 
@@ -179,26 +180,33 @@ def make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm')
         if not os.path.isfile(wk.outputs.images_report_filename):
             fs_utils.write_file(wk.outputs.images_report_filename, '')
         article_items[wk.input_pkgfiles.name] = spsxml.doc
-        wks[wk.input_pkgfiles.name] = wk
         article_items[wk.input_pkgfiles.name].package_files = wk.scielo_pkgfiles.files
         article_work_area_items[wk.input_pkgfiles.name] = wk.outputs
+        wks[wk.input_pkgfiles.name] = wk
 
-    pmc_package_maker = PMCPackageMaker(article_items, article_work_area_items, version, GENERATE_PMC)
+    pmc_package_maker = PMCPackageMaker(version)
 
     doi_services = article_validations.DOI_Services()
 
-    pkgreports = package_validations.PackageReports(package_folder, article_items, article_work_area_items)
+    pkgreports = package_validations.PackageReports(package_folder, article_items, wks)
     pkgissuedata = package_validations.PackageIssueData(article_items)
     registered_issue_data = package_validations.RegisteredIssueData(db_manager=None)
     registered_issue_data.get_data(pkgissuedata)
-    articles_set_validations = package_validations.ArticlesSetValidations(articles, workareas, registered_issue_data, scielo_pkg_path)
 
-    # articles_set_validations = package_validations.ArticlesSetValidations(articles_pkg, articles_data, xpm_process_logger)
-    articles_set_validations.validate(doi_services, scielo_dtd_files, article_work_area_items)
+    validator = package_validations.ArticlesValidator(
+        doi_services,
+        scielo_dtd_files,
+        registered_issue_data,
+        pkgissuedata,
+        scielo_pkg_path,
+        is_xml_generation)
+
+    articles_data_reports = package_validations.ArticlesDataReports(article_items)
+    articles_validations_reports = validator.validate(article_items, article_work_area_items)
 
     files_final_location = serial_files.FilesFinalLocation(scielo_pkg_path, pkgissuedata.acron, pkgissuedata.issue_label, web_app_path=None)
 
-    reports = package_validations.ReportsMaker(package_folder.orphans, articles_set_validations, files_final_location, xpm_version(), None)
+    reports = package_validations.ReportsMaker(pkgreports, articles_data_reports, articles_validations_reports, files_final_location, xpm_version(), None)
 
     if not is_xml_generation:
         reports.processing_result_location = results_path
@@ -208,11 +216,11 @@ def make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm')
 
     if not is_db_generation:
         if is_xml_generation:
-            pmc_package_maker.make_pmc_report()
+            pmc_package_maker.make_report(article_items, article_work_area_items)
 
         if is_pmc_journal:
             if GENERATE_PMC:
-                pmc_package_maker.make_pmc_package()
+                pmc_package_maker.make_package(article_items, article_work_area_items)
                 workarea.PackageFolder(pmc_pkg_path).zip()
 
             else:
@@ -475,7 +483,7 @@ class PMCPackageMaker(object):
         self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
         self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
 
-    def make_pmc_package(self, article_items, workareas):
+    def make_package(self, article_items, workareas):
         doit = False
 
         utils.display_message('\n')
@@ -496,6 +504,16 @@ class PMCPackageMaker(object):
 
         if doit and path is not None:
             workarea.PackageFolder(path).zip()
+
+    def make_report(self, article_items, workareas):
+        for xml_name, doc in article_items.items():
+            msg = _('generating report... ')
+            if doc.tree is None:
+                msg = _('Unable to generate the XML file. ')
+            else:
+                if doc.journal_id_nlm_ta is None:
+                    msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file. ')
+            html_reports.save(workareas[xml_name].pmc_style_report_filename, 'PMC Style Checker', msg)
 
 
 class PMCPackageItemMaker(object):

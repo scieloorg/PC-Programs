@@ -152,6 +152,7 @@ class PackageFolder(object):
 
     def __init__(self, path):
         self.path = path
+        self.xml_names = [f[:f.rfind('.')] for f in os.listdir(self.path) if f.endswith('.xml') and not f.endswith('.sgm.xml')]
         self.xml_list = [self.path + '/' + f for f in os.listdir(self.path) if f.endswith('.xml') and not f.endswith('.sgm.xml')]
 
     @property

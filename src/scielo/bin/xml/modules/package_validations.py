@@ -1,17 +1,16 @@
-
-# code = utf-8
+# coding=utf-8
 
 import os
 import shutil
 
 from __init__ import _
 from . import attributes
-from . import article_reports
+from . import article_data_reports
 from . import article_validations
 from . import fs_utils
 from . import html_reports
 from . import validation_status
-from . import xpchecker
+from . import xml_validator
 from . import xc_models
 from . import utils
 
@@ -160,7 +159,10 @@ class XMLJournalDataValidator(object):
             items.append([_('publisher name'), article.publisher_name, self.journal_data.publisher_name, validation_status.STATUS_ERROR])
             items.append([_('license'), license_url, self.journal_data.license, validation_status.STATUS_ERROR])
             r = evaluate_journal_data(items)
-        return r
+
+        result = ValidationsResult()
+        result.message = r
+        return result
 
 
 class XMLIssueDataValidator(object):
@@ -178,46 +180,40 @@ class XMLIssueDataValidator(object):
                 r += self.issue_error_msg
             elif self.issue_models:
                 r = self.issue_models.validate_article_issue_data(article)
-        return r
+
+        result = ValidationsResult()
+        result.message = r
+        return result
 
 
 class XMLStructureValidator(object):
 
     def __init__(self, dtd_files):
-        self.xml_validator = xpchecker.XMLValidator(dtd_files)
-        self.logger = None
+        self.xml_validator = xml_validator.XMLValidator(dtd_files)
 
     def validate(self, outputs):
-
-        self.xml_validator.logger = self.logger
-        self.logger.register('XMLStructureValidator.validate() - inicio')
         separator = '\n\n\n' + '.........\n\n\n'
 
         name_error = ''
         if '_' in outputs.new_name or '.' in outputs.new_name:
             name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=outputs.new_name, forbidden_characters='_.') + separator
 
-        self.logger.register('XMLStructureValidator.validate() - err_filename')
         files_errors = ''
         if os.path.isfile(outputs.err_filename):
             files_errors = fs_utils.read_file(outputs.err_filename)
 
-        self.logger.register('XMLStructureValidator.validate() - delete old version of reports')
         for f in [outputs.dtd_report_filename, outputs.style_report_filename, outputs.data_report_filename, outputs.pmc_style_report_filename]:
             if os.path.isfile(f):
                 os.unlink(f)
         #xml_filename = outputs.new_xml_filename
-        self.logger.register('XMLStructureValidator.validate() - self.xml_validator.validate')
         xml, valid_dtd, valid_style = self.xml_validator.validate(outputs.new_xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
-        self.logger.register('XMLStructureValidator.validate() - xml_structure_report_content')
         xml_structure_report_content = ''
         if os.path.isfile(outputs.dtd_report_filename):
             xml_structure_report_content = rst_title(_('DTD errors')) + fs_utils.read_file(outputs.dtd_report_filename)
             #os.unlink(outputs.dtd_report_filename)
 
-        self.logger.register('XMLStructureValidator.validate() - report_content')
         report_content = ''
         if xml is None:
             xml_f += 1
@@ -233,23 +229,22 @@ class XMLStructureValidator(object):
             report_content = rst_title(_('Summary')) + report_content + separator
             report_content = report_content.replace('\n', '<br/>')
 
-        self.logger.register('XMLStructureValidator.validate() - err_filename')
         if xml_f > 0:
             fs_utils.append_file(outputs.err_filename, name_error + xml_structure_report_content)
 
-        self.logger.register('XMLStructureValidator.validate() - apaga ou escreve files')
         if outputs.ctrl_filename is None:
             if xml_f + xml_e + xml_w == 0:
                 os.unlink(outputs.style_report_filename)
         else:
             fs_utils.write_file(outputs.ctrl_filename, 'Finished')
 
-        self.logger.register('XMLStructureValidator.validate() - report_content')
         for rep_file in [outputs.err_filename, outputs.style_report_filename]:
             if os.path.isfile(rep_file):
                 report_content += extract_report_core(fs_utils.read_file(rep_file))
-        self.logger.register('XMLStructureValidator.validate() - fim')
-        return report_content
+
+        r = ValidationsResult()
+        r.message = report_content
+        return r
 
 
 class XMLContentValidator(object):
@@ -264,14 +259,13 @@ class XMLContentValidator(object):
     def validate(self, article, outputs):
         article_display_report = None
         article_validation_report = None
-        article_validation = None
 
         if article.tree is None:
             content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}. ').format(item=article.new_prefix)
         else:
-            article_validation = article_validations.ArticleContentValidation(self.doi_services, self.pkgissuedata.journal, article, (self.registered_issue_data.articles_db_manager is not None), False)
-            article_display_report = article_reports.ArticleDisplayReport(article_validation, self.package_path)
-            article_validation_report = article_reports.ArticleValidationReport(article_validation)
+            article_content_validation = article_validations.ArticleContentValidation(self.doi_services, self.pkgissuedata.journal, article, (self.registered_issue_data.articles_db_manager is not None), False)
+            article_display_report = article_data_reports.ArticleDisplayReport(article_content_validation, self.package_path)
+            article_validation_report = article_data_reports.ArticleValidationReport(article_content_validation)
 
             content = []
 
@@ -300,7 +294,9 @@ class XMLContentValidator(object):
                 content.append(r)
                 content.append(article_display_report.files_and_href())
             content = html_reports.join_texts(content)
-        return content, article_display_report
+        r = ValidationsResult()
+        r.message = content
+        return r, article_display_report
 
 
 class ArticleValidator(object):
@@ -315,8 +311,8 @@ class ArticleValidator(object):
         artval = ArticleValidations()
         artval.journal_validations = self.xml_journal_data_validator.validate(article)
         artval.issue_validations = self.xml_issue_data_validator.validate(article)
-        artval.xml_structure_validations.message = xml_structure_validator.validate(outputs)
-        artval.xml_content_validations.message, artval.article_display_report = self.xml_content_validator.validate(article, outputs, artval.issue_validations)
+        artval.xml_structure_validations = self.xml_structure_validator.validate(outputs)
+        artval.xml_content_validations, artval.article_display_report = self.xml_content_validator.validate(article, outputs)
         if self.xml_content_validator.is_xml_generation:
             stats = artval.xml_content_validations.statistics_display(False)
             title = [_('Data Quality Control'), article.new_prefix]
@@ -334,7 +330,7 @@ class ArticleValidations(object):
 
     @property
     def fatal_errors(self):
-        return sum([item.fatal_errors for item in self.xml_structure_validations.values() + self.xml_content_validations.values()])
+        return sum([item.fatal_errors for item in [self.xml_structure_validations, self.xml_content_validations]])
 
     def hide_and_show_block(self, report_id, new_name):
         blocks = []
@@ -366,7 +362,7 @@ class PackageReports(object):
 
         files = ''
         for name, article in self.articles.items():
-            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', workareas[name].input_pkgfiles.files))
+            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', self.workareas[name].input_pkgfiles.files))
         r += '<ol>{}</ol>'.format(files)
         return u'<div class="xmllist">{}</div>'.format(r)
 
@@ -381,6 +377,12 @@ class PackageReports(object):
             r += html_reports.tag('div', html_reports.p_message(_('{status}: invalid XML files. ').format(status=validation_status.STATUS_BLOCKING_ERROR)))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', self.invalid_xml_name_items, 'issue-problem'))
         return r
+
+    @property
+    def orphan_files_report(self):
+        if len(self.package_folder.orphans) > 0:
+            return '<div class="xmllist"><p>{}</p>{}</div>'.format(_('Invalid files names'), html_reports.format_list('', 'ol', self.package_folder.orphans))
+        return ''
 
 
 class PackageIssueData(object):
@@ -429,6 +431,7 @@ class RegisteredIssueData(object):
     def __init__(self, db_manager):
         self.db_manager = db_manager
         self.articles_db_manager = None
+        self.issue_error_msg = None
         self.issue_models = None
         self.issue_files = None
         self.serial_path = None
@@ -456,56 +459,15 @@ class RegisteredIssueData(object):
 
 class ArticlesDataReports(object):
 
-    def __init__(self, articles):
-        self.articles = articles
+    def __init__(self, pkg_articles):
+        self.pkg_articles = pkg_articles
         self.compile_references()
 
     @property
     def articles(self):
-        l = sorted([(article.order, xml_name) for xml_name, article in self.articles.items()])
-        l = [(xml_name, articles[xml_name]) for order, xml_name in l]
+        l = sorted([(article.order, xml_name) for xml_name, article in self.pkg_articles.items()])
+        l = [(xml_name, self.pkg_articles[xml_name]) for order, xml_name in l]
         return l
-
-    def compile_references(self):
-        self.sources_and_reftypes = {}
-        self.reftype_and_sources = {}
-        self.missing_source = []
-        self.missing_year = []
-        self.unusual_sources = []
-        self.unusual_years = []
-        self.years = {}
-        for xml_name, doc in self.merged_articles.items():
-            for ref in doc.references:
-                if ref.source is not None:
-                    if not ref.source in self.sources_and_reftypes.keys():
-                        self.sources_and_reftypes[ref.source] = {}
-                    if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
-                        self.sources_and_reftypes[ref.source][ref.publication_type] = []
-                    self.sources_and_reftypes[ref.source][ref.publication_type].append(xml_name + ': ' + str(ref.id))
-
-                if not ref.publication_type in self.reftype_and_sources.keys():
-                    self.reftype_and_sources[ref.publication_type] = {}
-                if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
-                    self.reftype_and_sources[ref.publication_type][ref.source] = []
-                self.reftype_and_sources[ref.publication_type][ref.source].append(xml_name + ': ' + str(ref.id))
-
-                # year
-                if ref.publication_type in attributes.BIBLIOMETRICS_USE:
-                    if not ref.year in self.years.keys():
-                        self.years[ref.year] = []
-                    self.years[ref.year].append(xml_name + ': ' + str(ref.id))
-                    if ref.year is None:
-                        self.missing_year.append([xml_name, ref.id])
-                    else:
-                        if not ref.year.isdigit():
-                            self.unusual_years.append([xml_name, ref.id, ref.year])
-
-                    if ref.source is None:
-                        self.missing_source.append([xml_name, ref.id])
-                    else:
-                        if ref.source.isdigit():
-                            self.unusual_sources.append([xml_name, ref.id, ref.source])
-        self.bad_sources_and_reftypes = {source: reftypes for source, reftypes in self.sources_and_reftypes.items() if len(reftypes) > 1}
 
     @property
     def compiled_affiliations(self):
@@ -519,7 +481,7 @@ class ArticlesDataReports(object):
         for k in keys:
             evaluation[k] = []
 
-        for xml_name, doc in self.articles.items():
+        for xml_name, doc in self.pkg_articles.items():
             aff_ids = [aff.id for aff in doc.affiliations]
             for contrib in doc.contrib_names:
                 if len(contrib.xref) == 0:
@@ -575,6 +537,47 @@ class ArticlesDataReports(object):
             items.append({'label': label, 'quantity': str(len(occs)), _('files'): sorted(list(set(occs)))})
         r += html_reports.sheet(['label', 'quantity', _('files')], items, 'dbstatus')
         return r
+
+    def compile_references(self):
+        self.sources_and_reftypes = {}
+        self.reftype_and_sources = {}
+        self.missing_source = []
+        self.missing_year = []
+        self.unusual_sources = []
+        self.unusual_years = []
+        self.years = {}
+        for xml_name, doc in self.pkg_articles.items():
+            for ref in doc.references:
+                if ref.source is not None:
+                    if not ref.source in self.sources_and_reftypes.keys():
+                        self.sources_and_reftypes[ref.source] = {}
+                    if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
+                        self.sources_and_reftypes[ref.source][ref.publication_type] = []
+                    self.sources_and_reftypes[ref.source][ref.publication_type].append(xml_name + ': ' + str(ref.id))
+
+                if not ref.publication_type in self.reftype_and_sources.keys():
+                    self.reftype_and_sources[ref.publication_type] = {}
+                if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
+                    self.reftype_and_sources[ref.publication_type][ref.source] = []
+                self.reftype_and_sources[ref.publication_type][ref.source].append(xml_name + ': ' + str(ref.id))
+
+                # year
+                if ref.publication_type in attributes.BIBLIOMETRICS_USE:
+                    if not ref.year in self.years.keys():
+                        self.years[ref.year] = []
+                    self.years[ref.year].append(xml_name + ': ' + str(ref.id))
+                    if ref.year is None:
+                        self.missing_year.append([xml_name, ref.id])
+                    else:
+                        if not ref.year.isdigit():
+                            self.unusual_years.append([xml_name, ref.id, ref.year])
+
+                    if ref.source is None:
+                        self.missing_source.append([xml_name, ref.id])
+                    else:
+                        if ref.source.isdigit():
+                            self.unusual_sources.append([xml_name, ref.id, ref.source])
+        self.bad_sources_and_reftypes = {source: reftypes for source, reftypes in self.sources_and_reftypes.items() if len(reftypes) > 1}
 
     @property
     def references_overview_report(self):
@@ -633,9 +636,9 @@ class MergedArticlesData(object):
         self.EXPECTED_UNIQUE_VALUE_LABELS = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
 
     @property
-    def sorted_articles(self):
+    def articles(self):
         l = sorted([(article.order, xml_name) for xml_name, article in self.merged_articles.items()])
-        l = [(xml_name, articles[xml_name]) for order, xml_name in l]
+        l = [(xml_name, self.merged_articles[xml_name]) for order, xml_name in l]
         return l
 
     @property
@@ -718,7 +721,7 @@ class MergedArticlesData(object):
         return {order: names for order, names in orders.items() if len(names) > 1}
 
 
-class MergedArticlesValidationsReports(object):
+class MergedArticlesReports(object):
 
     def __init__(self, merged_articles_data, merging_result):
         self.merged_articles_data = merged_articles_data
@@ -778,11 +781,11 @@ class MergedArticlesValidationsReports(object):
         int_previous_lpage = None
 
         error_level = validation_status.STATUS_BLOCKING_ERROR
-        fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.merged_articles_data.sorted_articles]
+        fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.merged_articles_data.articles]
         if all(fpage_and_article_id_other_status):
             error_level = validation_status.STATUS_ERROR
 
-        for xml_name, article in self.merged_articles_data.sorted_articles:
+        for xml_name, article in self.merged_articles_data.articles:
             fpage = article.fpage
             lpage = article.lpage
             msg = []
@@ -830,10 +833,10 @@ class MergedArticlesValidationsReports(object):
                     if isinstance(articles, dict):
                         data = []
                         for article in articles.values():
-                            data.append(article_reports.display_article_data_to_compare(article))
+                            data.append(article_data_reports.display_article_data_to_compare(article))
                         values.append(''.join(data))
                     else:
-                        values.append(article_reports.display_article_data_to_compare(articles))
+                        values.append(article_data_reports.display_article_data_to_compare(articles))
                 merging_errors.append(html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels))
         return ''.join(merging_errors)
 
@@ -869,7 +872,7 @@ class MergedArticlesValidationsReports(object):
             for name, changes in self.merging_result.order_changes.items():
                 for change in changes:
                     r.append(html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=change[0], new=change[1]), 'info'))
-        if len(self.excluded_orders) > 0:
+        if len(self.merging_result.excluded_orders) > 0:
             r.append(html_reports.tag('h3', _('Orders exclusions')))
             for name, order in self.merging_result.excluded_orders.items():
                 r.append(html_reports.tag('p', '{order} ({name})'.format(name=name, order=order), 'info'))
@@ -993,38 +996,41 @@ class ArticlesValidator(object):
         xml_content_validator = XMLContentValidator(doi_services, self.pkgissuedata, self.registered_issue_data, self.package_path, self.is_xml_generation)
         self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
 
-    def validate(self, articles):
+    def validate(self, articles, outputs):
+        articles_validations_reports = ArticlesValidationsReports(self.is_xml_generation, self.is_db_generation)
 
         articles_merger = ArticlesMerger(self.registered_issue_data.registered_articles, articles)
         articles_merger.merge()
-        merged_articles_data = MergedArticlesData(articles_merger.merged_articles)
-        self.merged_articles_data_reports = MergedArticlesValidationsReports(merged_articles_data, articles_merger.merging_result)
+        merged_articles_data = MergedArticlesData(articles_merger.merged_articles, self.is_db_generation)
+        articles_validations_reports.merged_articles_reports = MergedArticlesReports(merged_articles_data, articles_merger.merging_result)
 
-        utils.display_message(_('Validate package ({n} files)').format(n=len(self.articles)))
+        utils.display_message(_('Validate package ({n} files)').format(n=len(articles)))
         if len(self.registered_issue_data.registered_articles) > 0:
             utils.display_message(_('Previously registered: ({n} files)').format(n=len(self.registered_issue_data.registered_articles)))
 
-        self.logger.register('articles validations')
-        self.articles_validations = {}
-
-        for name, article in self.articles.items():
+        results = {}
+        for name, article in articles.items():
             utils.display_message(_('Validate {name}').format(name=name))
-            self.logger.register(' '.join(['validate', name]))
+            results[name] = self.article_validator.validate(article, outputs[name])
 
-            self.articles_validations[name] = self.article_validator.validate(article, self.outputs[name])
-
-            self.logger.register(' '.join([name, 'fim']))
-
-        self.logger.register('consistency validations')
-        self.consistency_validations = ValidationsResult()
-
-        issue_message = self.merged_articles_data_reports.report_data_consistency
+        articles_validations_reports.consistency_validations = ValidationsResult()
+        articles_validations_reports.consistency_validations.message = articles_validations_reports.merged_articles_reports.report_data_consistency
         if self.registered_issue_data.issue_error_msg is not None:
-            issue_message = self.registered_issue_data.issue_error_msg + issue_message
+            articles_validations_reports.consistency_validations.message = self.registered_issue_data.issue_error_msg + articles_validations_reports.consistency_validations.message
 
-        self.consistency_validations.message = issue_message
+        articles_validations_reports.articles_validations = results
 
-        self.logger.register('xc pre validations - fim')
+        return articles_validations_reports
+
+
+class ArticlesValidationsReports(object):
+
+    def __init__(self, is_xml_generation=False, is_db_generation=False):
+        self.consistency_validations = None
+        self.articles_validations = None
+        self.is_xml_generation = is_xml_generation
+        self.is_db_generation = is_db_generation
+        self.merged_articles_reports = None
 
     @property
     def pkg_journal_validations(self):
@@ -1056,17 +1062,17 @@ class ArticlesValidator(object):
         widths[_('article')] = '60'
         widths['aop pid/related'] = '10'
         widths[_('reports')] = '10'
-        pdf_items = []
         items = []
-        for new_name, article in self.articles:
-            hide_and_show_block_items = self.articles_validations[new_name].hide_and_show_block('view-reports-', new_name)
+        for new_name, validations in self.articles_validations.items():
+            article = validations.article_display_report.article
+            hide_and_show_block_items = validations.hide_and_show_block('view-reports-', new_name)
             values = []
             values.append(new_name)
             values.append(article.order)
-            if self.articles_validations[new_name].article_display_report is None:
+            if validations.article_display_report is None:
                 values.append('')
             else:
-                values.append(self.articles_validations[new_name].article_display_report.table_of_contents)
+                values.append(validations.article_display_report.table_of_contents)
             related = {}
             for k, v in {'article-id(previous-pid)': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
                 if v is not None:
@@ -1080,38 +1086,37 @@ class ArticlesValidator(object):
     @property
     def journal_issue_header_report(self):
         common_data = ''
-        for label, values in self.merged_articles.common_data.items():
+        for label, values in self.merged_articles_reports.merged_articles_data.common_data.items():
             if len(values.keys()) == 1:
                 common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
             else:
                 common_data += html_reports.format_list(label + ':', 'ol', values.keys())
         return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')
 
-
     @property
     def journal_and_issue_report(self):
         report = []
         report.append(self.journal_issue_header_report)
-        report.append(self.pkg_journal_validations.report(errors_only=not self.pkg.is_xml_generation))
-        report.append(self.pkg_issue_validations.report(errors_only=not self.pkg.is_xml_generation))
+        errors_only = not self.is_xml_generation
+        report.append(self.pkg_journal_validations.report(errors_only))
+        report.append(self.pkg_issue_validations.report(errors_only))
         if self.consistency_validations.total() > 0:
             report.append(self.consistency_validations.message)
 
-        if self.articles_merger.validations.total() > 0:
+        if self.merged_articles_reports.validations.total() > 0:
             report.append(html_reports.tag('h2', _('Data Conflicts Report')))
-            report.append(self.articles_merger.validations.message)
+            report.append(self.merged_articles_reports.validations.message)
         return ''.join(report)
 
     @property
     def blocking_errors(self):
-        return sum([self.consistency_validations.blocking_errors, self.pkg_issue_validations.blocking_errors, self.articles_merger.validations.blocking_errors])
+        return sum([self.consistency_validations.blocking_errors, self.pkg_issue_validations.blocking_errors, self.merged_articles_reports.validations.blocking_errors])
 
     @property
     def fatal_errors(self):
         return sum([v.fatal_errors for v in self.articles_validations.values()])
 
 
-#####
 class ArticlesPackage(object):
 
     def __init__(self, pkg_path, pkg_articles, is_xml_generation):
@@ -1241,496 +1246,13 @@ class RegisteredArticles(dict):
         return (actions, old_name, conflicts)
 
 
-
-
-class oldArticlesSetValidations(object):
-
-    def __init__(self, pkg, articles_data, logger):
-        self.logger = logger
-        self.pkg = pkg
-        self.articles_data = articles_data
-
-        self.registered_articles = {}
-        self.is_db_generation = registered_issue_data.articles_db_manager is not None
-        if registered_issue_data.articles_db_manager is not None:
-            self.registered_articles = registered_issue_data.articles_db_manager.registered_articles
-
-        self.articles_merger = ArticlesMerger(self.registered_articles, self.pkg.pkg_articles)
-        self.articles_merger.merge()
-        self.merged_articles = self.articles_merger.merged_articles
-
-        self.articles_validations = {}
-
-        self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_BLOCKING_ERROR, 'doi': validation_status.STATUS_BLOCKING_ERROR, 'elocation id': validation_status.STATUS_BLOCKING_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
-        if not self.is_db_generation:
-            self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
-        self.IGNORE_NONE = ['journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', ]
-        self.EXPECTED_COMMON_VALUES_LABELS = ['journal-title', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'issue label', 'issue pub date', 'license']
-        self.REQUIRED_DATA = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        self.EXPECTED_UNIQUE_VALUE_LABELS = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
-
-    @property
-    def merged_articles_common_data(self):
-        data = {}
-        for label in self.EXPECTED_COMMON_VALUES_LABELS:
-            values = {}
-            for xml_name, article in self.merged_articles.items():
-                value = article.summary[label]
-                if label in self.IGNORE_NONE and value is None:
-                    pass
-                else:
-                    if not value in values:
-                        values[value] = []
-                    values[value].append(xml_name)
-
-            data[label] = values
-        return data
-
-    @property
-    def merged_articles_unique_data(self):
-        data = {}
-        for label in self.EXPECTED_UNIQUE_VALUE_LABELS:
-            values = {}
-            for xml_name, article in self.merged_articles.items():
-                value = article.summary[label]
-                if value is not None:
-                    if not value in values:
-                        values[value] = []
-                    values[value].append(xml_name)
-
-            data[label] = values
-        return data
-
-    @property
-    def merged_articles_missing_required_values(self):
-        required_items = {}
-        for label in self.REQUIRED_DATA:
-            if label in self.merged_articles_common_data.keys():
-                if None in self.merged_articles_common_data[label].keys():
-                    required_items[label] = self.merged_articles_common_data[label][None]
-        return required_items
-
-    @property
-    def conflicting_values_in_merged_articles(self):
-        data = {}
-        for label, values in self.merged_articles_common_data.items():
-            if len(values) > 1:
-                data[label] = values
-        return data
-
-    @property
-    def duplicated_values_in_merged_articles(self):
-        duplicated_labels = {}
-        for label, values in self.merged_articles_unique_data.items():
-            if len(values) > 0 and len(values) != len(self.articles):
-
-                duplicated = {value: xml_files for value, xml_files in values.items() if len(xml_files) > 1}
-
-                if len(duplicated) > 0:
-                    duplicated_labels[label] = duplicated
-        return duplicated_labels
-
-    @property
-    def compiled_affiliations(self):
-        evaluation = {}
-        keys = [_('authors without aff'), 
-                _('authors with more than 1 affs'), 
-                _('authors with invalid xref[@ref-type=aff]'), 
-                _('incomplete affiliations')]
-        for k in keys:
-            evaluation[k] = []
-
-        for xml_name, doc in self.merged_articles.items():
-            aff_ids = [aff.id for aff in doc.affiliations]
-            for contrib in doc.contrib_names:
-                if len(contrib.xref) == 0:
-                    evaluation[_('authors without aff')].append(xml_name)
-                elif len(contrib.xref) > 1:
-                    valid_xref = [xref for xref in contrib.xref if xref in aff_ids]
-                    if len(valid_xref) != len(contrib.xref):
-                        evaluation[_('authors with invalid xref[@ref-type=aff]')].append(xml_name)
-                    elif len(valid_xref) > 1:
-                        evaluation[_('authors with more than 1 affs')].append(xml_name)
-                    elif len(valid_xref) == 0:
-                        evaluation[_('authors without aff')].append(xml_name)
-            for aff in doc.affiliations:
-                if None in [aff.id, aff.i_country, aff.norgname, aff.orgname, aff.city, aff.state, aff.country]:
-                    evaluation[_('incomplete affiliations')].append(xml_name)
-        return evaluation
-
-    def compile_references(self):
-        self.sources_and_reftypes = {}
-        self.reftype_and_sources = {}
-        self.missing_source = []
-        self.missing_year = []
-        self.unusual_sources = []
-        self.unusual_years = []
-        self.years = {}
-        for xml_name, doc in self.merged_articles.items():
-            for ref in doc.references:
-                if ref.source is not None:
-                    if not ref.source in self.sources_and_reftypes.keys():
-                        self.sources_and_reftypes[ref.source] = {}
-                    if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
-                        self.sources_and_reftypes[ref.source][ref.publication_type] = []
-                    self.sources_and_reftypes[ref.source][ref.publication_type].append(xml_name + ': ' + str(ref.id))
-
-                if not ref.publication_type in self.reftype_and_sources.keys():
-                    self.reftype_and_sources[ref.publication_type] = {}
-                if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
-                    self.reftype_and_sources[ref.publication_type][ref.source] = []
-                self.reftype_and_sources[ref.publication_type][ref.source].append(xml_name + ': ' + str(ref.id))
-
-                # year
-                if ref.publication_type in attributes.BIBLIOMETRICS_USE:
-                    if not ref.year in self.years.keys():
-                        self.years[ref.year] = []
-                    self.years[ref.year].append(xml_name + ': ' + str(ref.id))
-                    if ref.year is None:
-                        self.missing_year.append([xml_name, ref.id])
-                    else:
-                        if not ref.year.isdigit():
-                            self.unusual_years.append([xml_name, ref.id, ref.year])
-
-                    if ref.source is None:
-                        self.missing_source.append([xml_name, ref.id])
-                    else:
-                        if ref.source.isdigit():
-                            self.unusual_sources.append([xml_name, ref.id, ref.source])
-        self.bad_sources_and_reftypes = {source: reftypes for source, reftypes in self.sources_and_reftypes.items() if len(reftypes) > 1}
-
-    @property
-    def is_processed_in_batches(self):
-        return any([self.is_aop_issue, self.is_rolling_pass])
-
-    @property
-    def is_aop_issue(self):
-        return any([a.is_ahead for a in self.merged_articles.values()])
-
-    @property
-    def is_rolling_pass(self):
-        return all([a for a in self.merged_articles.values() if a.is_epub_only])
-
-    @property
-    def articles(self):
-        return articles_sorted_by_order(self.merged_articles)
-
-    @property
-    def pkg_articles(self):
-        return articles_sorted_by_order(self.pkg.pkg_articles)
-
-    @property
-    def pkg_journal_validations_report_title(self):
-        #FIXME
-        signal = ''
-        msg = ''
-        if not self.is_db_generation:
-            signal = '<sup>*</sup>'
-            msg = html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Journal data in the XML files must be consistent with {link}').format(link=html_reports.link('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv')), 'note')
-        return html_reports.tag('h2', _('Journal data: XML files and registered data') + signal) + msg
-
-    def validate(self, doi_services, dtd_files, articles_outputs):
-        utils.display_message(_('Validate package ({n} files)').format(n=len(self.pkg.pkg_articles)))
-        if len(self.registered_articles) > 0:
-            utils.display_message(_('Previously registered: ({n} files)').format(n=len(self.registered_articles)))
-
-        self.logger.register('compile_references')
-        self.compile_references()
-
-        self.logger.register('pkg_journal_validations')
-        self.pkg_journal_validations = ValidationsResultItems()
-        self.pkg_journal_validations.title = self.pkg_journal_validations_report_title
-
-        self.logger.register('pkg_issue_validations')
-        self.pkg_issue_validations = ValidationsResultItems()
-        self.pkg_issue_validations.title = html_reports.tag('h2', _('Checking issue data: XML files and registered data'))
-
-        self.logger.register('articles validations - prep')
-
-        xml_journal_data_validator = XMLJournalDataValidator(self.pkgissuedata.journal_data)
-        xml_issue_data_validator = XMLIssueDataValidator(self.is_db_generation, self.registered_issue_data.issue_error_msg, self.articles_data.issue_models)
-        xml_structure_validator = XMLStructureValidator(dtd_files)
-        xml_structure_validator.logger = self.logger
-        xml_content_validator = XMLContentValidator(doi_services, self.articles_data)
-
-        self.logger.register('articles validations')
-        self.articles_validations = {}
-
-        for name, article in self.pkg.pkg_articles.items():
-            utils.display_message(_('Validate {name}').format(name=name))
-            self.logger.register(' '.join(['validate', name]))
-
-            #utils.display_message(_(' - validate journal data'))
-            self.pkg_journal_validations[name] = ValidationsResult()
-            self.pkg_journal_validations[name].message = xml_journal_data_validator.validate(article)
-
-            #utils.display_message(_(' - validate issue data'))
-            self.pkg_issue_validations[name] = ValidationsResult()
-            self.pkg_issue_validations[name].message = xml_issue_data_validator.validate(article)
-
-            self.articles_validations[name] = ArticleValidations(article, articles_outputs[name], self.pkg_issue_validations[name])
-            self.articles_validations[name].logger = self.logger
-            self.articles_validations[name].validate(self.pkg, xml_structure_validator, xml_content_validator)
-
-            self.logger.register(' '.join([name, 'fim']))
-
-        self.logger.register('consistency validations')
-        self.consistency_validations = ValidationsResult()
-
-        issue_message = self.consistency_validations_report
-        if self.registered_issue_data.issue_error_msg is not None:
-            issue_message = self.registered_issue_data.issue_error_msg + issue_message
-
-        self.consistency_validations.message = issue_message
-
-        self.logger.register('xc pre validations - fim')
-
-    @property
-    def detailed_report(self):
-        labels = [_('filename'), 'order', _('article'), 'aop pid/related', _('reports')]
-        widths = {}
-        widths[_('filename')] = '10'
-        widths['order'] = '5'
-        widths[_('article')] = '60'
-        widths['aop pid/related'] = '10'
-        widths[_('reports')] = '10'
-        pdf_items = []
-        items = []
-        for new_name, article in self.pkg_articles:
-            hide_and_show_block_items = self.articles_validations[new_name].hide_and_show_block('view-reports-', new_name)
-            values = []
-            values.append(new_name)
-            values.append(article.order)
-            if self.articles_validations[new_name].article_display_report is None:
-                values.append('')
-            else:
-                values.append(self.articles_validations[new_name].article_display_report.table_of_contents)
-            related = {}
-            for k, v in {'article-id(previous-pid)': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
-                if v is not None:
-                    if len(v) > 0:
-                        related[k] = v
-            values.append(related)
-            items.append((values, hide_and_show_block_items))
-        report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')], widths=widths)
-        return report.content
-
-    @property
-    def articles_dates_report(self):
-        labels = ['name', '@article-type',
-        'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
-        items = []
-        for xml_name, doc in self.articles:
-            values = []
-            values.append(xml_name)
-            values.append(doc.article_type)
-            values.append(utils.display_datetime(doc.received_dateiso))
-            values.append(utils.display_datetime(doc.accepted_dateiso))
-            values.append(str(doc.history_days))
-            values.append(utils.display_datetime(doc.article_pub_dateiso))
-            values.append(utils.display_datetime(doc.issue_pub_dateiso))
-            values.append(str(doc.publication_days))
-            values.append(str(doc.registration_days))
-            items.append(label_values(labels, values))
-        article_dates = html_reports.sheet(labels, items, 'dbstatus')
-
-        labels = [_('year'), _('location')]
-        items = []
-        for year in sorted(self.years.keys()):
-            values = []
-            values.append(year)
-            values.append(self.years[year])
-            items.append(label_values(labels, values))
-        reference_dates = html_reports.sheet(labels, items, 'dbstatus')
-
-        return html_reports.tag('h4', _('Articles Dates Report')) + article_dates + reference_dates
-
-    @property
-    def articles_affiliations_report(self):
-        r = html_reports.tag('h4', _('Affiliations Report'))
-        items = []
-        for label, occs in self.compiled_affiliations.items():
-            items.append({'label': label, 'quantity': str(len(occs)), _('files'): sorted(list(set(occs)))})
-        r += html_reports.sheet(['label', 'quantity', _('files')], items, 'dbstatus')
-        return r
-
-    @property
-    def references_overview_report(self):
-        labels = ['label', 'status', 'message', _('why it is not a valid message?')]
-        items = []
-        values = []
-        values.append(_('references by type'))
-        values.append(validation_status.STATUS_INFO)
-        values.append({reftype: str(sum([len(occ) for occ in sources.values()])) for reftype, sources in self.reftype_and_sources.items()})
-        values.append('')
-        items.append(label_values(labels, values))
-
-        if len(self.bad_sources_and_reftypes) > 0:
-            values = []
-            values.append(_('same sources as different types references'))
-            values.append(validation_status.STATUS_ERROR)
-            values.append(self.bad_sources_and_reftypes)
-            values.append('')
-            items.append(label_values(labels, values))
-
-        if len(self.missing_source) > 0:
-            items.append({'label': _('references missing source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_source], _('why it is not a valid message?'): ''})
-        if len(self.missing_year) > 0:
-            items.append({'label': _('references missing year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_year], _('why it is not a valid message?'): ''})
-        if len(self.unusual_sources) > 0:
-            items.append({'label': _('references with unusual value for source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_sources], _('why it is not a valid message?'): ''})
-        if len(self.unusual_years) > 0:
-            items.append({'label': _('references with unusual value for year'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.unusual_years], _('why it is not a valid message?'): ''})
-
-        return html_reports.tag('h4', _('Package references overview')) + html_reports.sheet(labels, items, table_style='dbstatus')
-
-    @property
-    def sources_overview_report(self):
-        labels = ['source', _('location')]
-        h = ''
-        if len(self.reftype_and_sources) > 0:
-            for reftype, sources in self.reftype_and_sources.items():
-                items = []
-                h += html_reports.tag('h4', reftype)
-                for source in sorted(sources.keys()):
-                    items.append({'source': source, _('location'): sources[source]})
-                h += html_reports.sheet(labels, items, 'dbstatus')
-        return h
-
-    @property
-    def merged_articles_pages_report(self):
-        # FIXME
-        results = []
-        previous_lpage = None
-        previous_xmlname = None
-        int_previous_lpage = None
-
-        error_level = validation_status.STATUS_BLOCKING_ERROR
-        fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.articles]
-        if all(fpage_and_article_id_other_status):
-            error_level = validation_status.STATUS_ERROR
-
-        for xml_name, article in self.articles:
-            fpage = article.fpage
-            lpage = article.lpage
-            msg = []
-            status = ''
-            if article.pages == '':
-                msg.append(_('no pagination was found. '))
-                if not article.is_ahead:
-                    status = validation_status.STATUS_ERROR
-            if fpage is not None and lpage is not None:
-                if fpage.isdigit() and lpage.isdigit():
-                    int_fpage = int(fpage)
-                    int_lpage = int(lpage)
-
-                    #if not article.is_rolling_pass and not article.is_ahead:
-                    if int_previous_lpage is not None:
-                        if int_previous_lpage > int_fpage:
-                            status = error_level if not article.is_epub_only else validation_status.STATUS_WARNING
-                            msg.append(_('Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
-                        elif int_previous_lpage == int_fpage:
-                            status = validation_status.STATUS_WARNING
-                            msg.append(_('lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the same. ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
-                        elif int_previous_lpage + 1 < int_fpage:
-                            status = validation_status.STATUS_WARNING
-                            msg.append(_('There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
-                    if int_fpage > int_lpage:
-                        status = error_level
-                        msg.append(_('Invalid page range: {fpage} (fpage) > {lpage} (lpage). '.format(fpage=int_fpage, lpage=int_lpage)))
-                    int_previous_lpage = int_lpage
-                    previous_lpage = lpage
-                    previous_xmlname = xml_name
-            #dates = '|'.join([item if item is not None else 'none' for item in [article.epub_ppub_dateiso, article.collection_dateiso, article.epub_dateiso]])
-            msg = '\n'.join(msg)
-            results.append({'label': xml_name, 'status': status, 'pages': article.pages, 'message': msg, _('why it is not a valid message?'): ''})
-        return html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'pages', 'message', _('why it is not a valid message?')], results, table_style='validation_sheet', widths={'label': '10', 'status': '10', 'pages': '5', 'message': '75'}))
-
-    @property
-    def journal_issue_header_report(self):
-        merged_articles_common_data = ''
-        for label, values in self.merged_articles_common_data.items():
-            if len(values.keys()) == 1:
-                merged_articles_common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
-            else:
-                merged_articles_common_data += html_reports.format_list(label + ':', 'ol', values.keys())
-        return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', merged_articles_common_data, 'issue-data')
-
-    @property
-    def missing_items_in_merged_articles_report(self):
-        r = ''
-        for label, items in self.merged_articles_missing_required_values.items():
-            r += html_reports.tag('div', html_reports.p_message(_('{status}: missing {label} in: ').format(status=validation_status.STATUS_BLOCKING_ERROR, label=label)))
-            r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
-        return r
-
-    @property
-    def duplicated_values_in_merged_articles_report(self):
-        parts = []
-        for label, values in self.duplicated_values_in_merged_articles.items():
-            status = self.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
-            _m = _('Unique value for {label} is required for all the documents in the package').format(label=label)
-            parts.append(html_reports.p_message(status + ': ' + _m))
-            for value, xml_files in values.items():
-                parts.append(html_reports.format_list(_('found {label}="{value}" in:').format(label=label, value=value), 'ul', xml_files, 'issue-problem'))
-        return ''.join(parts)
-
-    @property
-    def conflicting_values_in_merged_articles_report(self):
-        parts = []
-        for label, values in self.conflicting_values_in_merged_articles.items():
-            compl = ''
-            _status = validation_status.STATUS_BLOCKING_ERROR
-            if label == 'issue pub date':
-                if self.is_rolling_pass:
-                    _status = validation_status.STATUS_WARNING
-            elif label == 'license':
-                _status = validation_status.STATUS_WARNING
-            _m = _('{status}: same value for {label} is required for all the documents in the package. ').format(status=_status, label=label)
-            parts.append(html_reports.p_message(_m))
-            parts.append(html_reports.tag('div', html_reports.format_html_data(values), 'issue-problem'))
-        return ''.join(parts)
-
-    @property
-    def consistency_validations_report(self):
-        text = []
-        text += self.pkg.invalid_xml_report
-        text += self.missing_items_in_merged_articles_report
-        text += self.conflicting_values_in_merged_articles_report
-        text += self.duplicated_values_in_merged_articles_report
-        text = html_reports.tag('div', ''.join(text), 'issue-messages')
-        text += self.merged_articles_pages_report
-        return html_reports.tag('h2', _('Checking issue data consistency')) + text
-
-    @property
-    def journal_and_issue_report(self):
-        report = []
-        report.append(self.journal_issue_header_report)
-        report.append(self.pkg_journal_validations.report(errors_only=not self.pkg.is_xml_generation))
-        report.append(self.pkg_issue_validations.report(errors_only=not self.pkg.is_xml_generation))
-        if self.consistency_validations.total() > 0:
-            report.append(self.consistency_validations.message)
-
-        if self.articles_merger.validations.total() > 0:
-            report.append(html_reports.tag('h2', _('Data Conflicts Report')))
-            report.append(self.articles_merger.validations.message)
-        return ''.join(report)
-
-    @property
-    def blocking_errors(self):
-        return sum([self.consistency_validations.blocking_errors, self.pkg_issue_validations.blocking_errors, self.articles_merger.validations.blocking_errors])
-
-    @property
-    def fatal_errors(self):
-        return sum([v.fatal_errors for v in self.articles_validations.values()])
-
-
 class ReportsMaker(object):
 
-    def __init__(self, orphan_files, articles_set_validations, files_location, xpm_version=None, conversion=None):
+    def __init__(self, package_reports, articles_data_reports, articles_validations_reports, files_location, xpm_version=None, conversion=None):
         self.processing_result_location = None
-        self.orphan_files = orphan_files
-        self.articles_set_validations = articles_set_validations
+        self.package_reports = package_reports
+        self.articles_data_reports = articles_data_reports
+        self.articles_validations_reports = articles_validations_reports
         self.conversion = conversion
         self.xpm_version = xpm_version
         self.files_location = files_location
@@ -1750,38 +1272,32 @@ class ReportsMaker(object):
         self.validations = ValidationsResult()
 
     @property
-    def orphan_files_report(self):
-        if len(self.orphan_files) > 0:
-            return '<div class="xmllist"><p>{}</p>{}</div>'.format(_('Invalid files names'), html_reports.format_list('', 'ol', self.orphan_files))
-        return ''
-
-    @property
     def report_components(self):
         components = {}
-        components['pkg-files'] = pkgreports.xml_list
+        components['pkg-files'] = self.package_reports.xml_list
         if self.processing_result_location is not None:
             components['pkg-files'] += processing_result_location(self.processing_result_location)
 
-        components['summary-report'] = self.orphan_files_report + pkgreports.invalid_xml_report
-        components['group-validations-report'] = self.orphan_files_report + pkgreports.invalid_xml_report
-        components['individual-validations-report'] = self.articles_set_validations.detailed_report
-        components['aff-report'] = self.articles_set_validations.articles_affiliations_report
-        components['dates-report'] = self.articles_set_validations.articles_dates_report
-        components['references'] = (self.articles_set_validations.references_overview_report +
-            self.articles_set_validations.sources_overview_report)
+        components['summary-report'] = self.package_reports.orphan_files_report + self.package_reports.invalid_xml_report
+        components['group-validations-report'] = self.package_reports.orphan_files_report + self.package_reports.invalid_xml_report
+        components['individual-validations-report'] = self.articles_validations_reports.detailed_report
+        components['aff-report'] = self.articles_data_reports.articles_affiliations_report
+        components['dates-report'] = self.articles_data_reports.articles_dates_report
+        components['references'] = (self.articles_data_reports.references_overview_report +
+            self.articles_data_reports.sources_overview_report)
 
-        if not self.articles_set_validations.pkg.is_xml_generation:
-            components['group-validations-report'] += self.articles_set_validations.journal_and_issue_report
+        if not self.articles_validations_reports.is_xml_generation:
+            components['group-validations-report'] += self.articles_validations_reports.journal_and_issue_report
 
         if self.conversion is None:
-            components['website'] = toc_extended_report(self.articles_set_validations.pkg.pkg_articles)
+            components['website'] = toc_extended_report(self.package_reports.articles)
         else:
             components['website'] = self.conversion.conclusion_message + toc_extended_report(self.conversion.registered_articles)
-            if self.articles_set_validations.registered_issue_data.issue_error_msg is not None:
-                components['group-validations-report'] += self.articles_set_validations.registered_issue_data.issue_error_msg
+            if self.articles_validations_reports.registered_issue_data.issue_error_msg is not None:
+                components['group-validations-report'] += self.articles_validations_reports.registered_issue_data.issue_error_msg
 
             #components['xc-validations'] = self.conversion.conclusion_message + self.conversion.articles_merger.changes_report + self.conversion.conversion_status_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
-            components['xc-validations'] = html_reports.tag('h3', _('Conversion Result')) + self.conversion.conclusion_message + self.conversion.articles_merger.changes_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
+            components['xc-validations'] = html_reports.tag('h3', _('Conversion Result')) + self.conversion.conclusion_message + self.conversion.articles_validations_reports.merged_articles_reports.changes_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
 
         self.validations.message = html_reports.join_texts(components.values())
 
@@ -1826,8 +1342,8 @@ class ReportsMaker(object):
         if self.files_location.web_url is None:
             print('xml report is not necessary')
         else:
-            for item in self.articles_set_validations.pkg.xml_names:
-                shutil.copyfile(self.articles_set_validations.pkg.pkg_path + '/' + item, report_path + '/' + item)
+            for item in self.package_reports.package_folder.xml_names:
+                shutil.copyfile(self.package_reports.package_folder.path + '/' + item, report_path + '/' + item)
 
 
 def extract_report_core(content):
@@ -2059,6 +1575,6 @@ def toc_extended_report(articles):
                 if last_update_display[:10] == utils.display_datetime(utils.now()[0]):
                     last_update_display = html_reports.tag('span', last_update_display, 'report-date')
                 values.append(last_update_display)
-                values.append(article_reports.display_article_data_in_toc(article))
+                values.append(article_data_reports.display_article_data_in_toc(article))
                 items.append(label_values(labels, values))
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)
