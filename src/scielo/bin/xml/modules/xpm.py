@@ -71,9 +71,9 @@ def call_make_packages(args, version):
         else:
             stage = 'xpm'
             if sgm_xml is not None:
-                xml_list = [sgmlxml_workarea(sgm_xml, acron, version)]
+                xml_list = [sgmlxml2xml(sgm_xml, acron, version)]
                 stage = 'xml'
-            make_packages(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage)
+            make_packages(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage, sgm_xml)
 
 
 def read_inputs(args):
@@ -124,30 +124,36 @@ def evaluate_inputs(xml_path, acron):
     return sgm_xml, xml_list, errors
 
 
-def sgmlxml_workarea(sgm_xml_filename, acron, version):
+def sgmlxml2xml(sgm_xml_filename, acron, version):
     wk = sgmlxml.SGMLXMLWorkarea(sgm_xml_filename)
     sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xml_versions.xsl_sgml2xml(version))
     package_maker = sgmlxml.SGMLXML2SPSXMLPackageMaker(wk)
     package_maker.pack(acron, sgmlxml2xml)
     return package_maker.xml_pkgfiles.filename
 
+"""
+FIXME
+dtd_location_replacement = (scielo_dtd_files.local, scielo_dtd_files.remote)
+if stage == 'xc':
+    dtd_location_replacement = (scielo_dtd_files.remote, scielo_dtd_files.local)
+"""
 
-def xml_list_workarea(xml_list, stage):
-    output_path = os.path.dirname(xml_list[0]) + '_' + stage
-    return [workarea.Workarea(item, output_path) for item in xml_list]
-
-
-def make_packages(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
+def make_packages(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm', sgm_xml=None):
     scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
 
-    """
-    dtd_location_replacement = (scielo_dtd_files.local, scielo_dtd_files.remote)
-    if stage == 'xc':
-        dtd_location_replacement = (scielo_dtd_files.remote, scielo_dtd_files.local)
-    """
-    is_xml_generation = stage == 'xml'
+    package_folder = workarea.PackageFolder(os.path.dirname(xml_list[0]))
+
+    sgmxml_name = None
+    if sgm_xml is None:
+        output_path = package_folder.path + '_' + stage
+    else:
+        sgmxml_name, ext = os.path.splitext(os.path.basename(sgm_xml))
+        sgmxml_name, ext = os.path.splitext(sgmxml_name)
+
+    is_xml_generation = not sgmxml_name
     is_db_generation = stage == 'xc'
-    package_folder = workarea.PackageFolder(workareas[0].xml_pkgfiles.path)
+
+
     scielo_pkg_path = workareas[0].scielo_package_path
     pmc_pkg_path = workareas[0].pmc_package_path
     report_path = workareas[0].reports_path

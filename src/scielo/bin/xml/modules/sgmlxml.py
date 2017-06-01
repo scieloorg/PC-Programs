@@ -398,7 +398,7 @@ class PackageNamer(object):
     def rename(self, acron):
         self._fix_href_values(acron)
 
-        self.dest_pkgfiles = workarea.PackageFiles(self.wk.path + '/' + self.wk.new_name + '.xml')
+        self.dest_pkgfiles = workarea.PackageFiles(self.wk.path + '/' + self.new_name + '.xml')
 
         self.dest_pkgfiles.clean()
         fs_utils.write_file(self.dest_pkgfiles.filename, self.xml_content)
@@ -410,7 +410,7 @@ class PackageNamer(object):
         _xml, xml_error = xml_utils.load_xml(self.xml_content)
         if _xml is not None:
             doc = article.Article(_xml, self.wk.name)
-            self.wk.new_name = PackageName(doc).generate(acron)
+            self.new_name = PackageName(doc).generate(acron)
 
             self.hrefreplacements = []
             for href in doc.hrefs:
@@ -433,7 +433,7 @@ class PackageNamer(object):
         href_name = href_name.replace('image', '').replace('img', '')
         if href_name.startswith(href_type):
             href_type = ''
-        new_href = self.wk.new_name + '-' + href_type + href_name
+        new_href = self.new_name + '-' + href_type + href_name
         new_href = self.src_pkgfiles.add_extension(new_href)
         return new_href
 
@@ -457,7 +457,7 @@ class PackageNamer(object):
         for name, ext_items in self.src_pkgfiles.files_by_name_except_xml.items():
             if name not in self.href_names:
                 for ext in ext_items:
-                    new_name = name.replace(self.src_pkgfiles.name, self.dest_pkgfiles.name)
+                    new_name = name.replace(self.src_pkgfiles.name, self.new_name)
                     shutil.copyfile(self.src_pkgfiles.path + '/' + name + ext, self.dest_pkgfiles.path + '/' + new_name + ext)
                 self.related_files_copy.append((name + ext, new_name + ext))
 
@@ -467,7 +467,7 @@ class PackageNamer(object):
         log.append(_('Source path') + ':   ' + self.src_pkgfiles.path)
         log.append(_('Package path') + ':  ' + self.dest_pkgfiles.path)
         log.append(_('Source XML name') + ': ' + self.src_pkgfiles.name)
-        log.append(_('Package XML name') + ': ' + self.dest_pkgfiles.name)
+        log.append(_('Package XML name') + ': ' + self.new_name)
         log.append(text_report.display_sorted_list(_('Total of related files'), text_report.display_pairs_list(self.related_files_copy)))
         log.append(text_report.display_sorted_list(_('Total of files in package'), text_report.display_pairs_list(self.href_files_copy)))
         log.append(text_report.display_sorted_list(_('Total of @href in XML'), text_report.display_pairs_list(self.hrefreplacements)))
@@ -477,15 +477,15 @@ class PackageNamer(object):
 
 class SGMLXML2SPSXMLPackageMaker(object):
 
-    def __init__(self, wk):
+    def __init__(self, wk, filename):
         self.wk = wk
-        self.sgml_pkgfiles = workarea.PackageFiles(wk.filename)
-        self.src_pkgfiles = workarea.PackageFiles(wk.src_path + '/' + wk.name + '.xml')
+        self.sgml_pkgfiles = workarea.PackageFiles(filename)
+        self.src_pkgfiles = workarea.PackageFiles(wk.src_path + '/' + self.sgml_pkgfiles.name + '.xml')
         self.src_pkgfiles.convert_images()
 
         self.sgmxmlcontent = SGMLXMLContent(
             fs_utils.read_file(self.sgml_pkgfiles.filename),
-            SGMLHTML(self.wk.name, wk.html_filename),
+            SGMLHTML(self.sgml_pkgfiles.name, wk.html_filename),
             self.src_pkgfiles)
         self.xml_error = None
 
@@ -502,8 +502,8 @@ class SGMLXML2SPSXMLPackageMaker(object):
     @property
     def doc(self):
         if self.xml is not None:
-            a = article.Article(self.xml, self.wk.name)
-            a.new_prefix = self.wk.new_name
+            a = article.Article(self.xml, self.sgml_pkgfiles.name)
+            a.new_prefix = self.new_name
             return a
 
     def normalize_sgmxml(self):
