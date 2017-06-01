@@ -204,7 +204,7 @@ class XMLStructureValidator(object):
 
         for f in [outputs.dtd_report_filename, outputs.style_report_filename, outputs.data_report_filename, outputs.pmc_style_report_filename]:
             if os.path.isfile(f):
-                os.unlink(f)
+                fs_utils.delete_file_or_folder(f)
         #xml_filename = outputs.new_xml_filename
         xml, valid_dtd, valid_style = self.xml_validator.validate(outputs.new_xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
@@ -212,7 +212,7 @@ class XMLStructureValidator(object):
         xml_structure_report_content = ''
         if os.path.isfile(outputs.dtd_report_filename):
             xml_structure_report_content = rst_title(_('DTD errors')) + fs_utils.read_file(outputs.dtd_report_filename)
-            #os.unlink(outputs.dtd_report_filename)
+            #fs_utils.delete_file_or_folder(outputs.dtd_report_filename)
 
         report_content = ''
         if xml is None:
@@ -234,7 +234,7 @@ class XMLStructureValidator(object):
 
         if outputs.ctrl_filename is None:
             if xml_f + xml_e + xml_w == 0:
-                os.unlink(outputs.style_report_filename)
+                fs_utils.delete_file_or_folder(outputs.style_report_filename)
         else:
             fs_utils.write_file(outputs.ctrl_filename, 'Finished')
 
@@ -362,7 +362,7 @@ class PackageReports(object):
 
         files = ''
         for name, article in self.articles.items():
-            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', self.workareas[name].input_pkgfiles.files))
+            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', self.workareas[name].input_pkgfiles.allfiles))
         r += '<ol>{}</ol>'.format(files)
         return u'<div class="xmllist">{}</div>'.format(r)
 
@@ -712,9 +712,10 @@ class MergedArticlesData(object):
             data[label] = values
         return data
 
+    @property
     def orders_conflicts(self):
         orders = {}
-        for name, article in self._merged_articles.items():
+        for name, article in self.merged_articles.items():
             if not article.order in orders.keys():
                 orders[article.order] = []
             orders[article.order].append(name)
@@ -823,9 +824,9 @@ class MergedArticlesReports(object):
 
     def report_merging_conflicts(self):
         merging_errors = []
-        if len(self.conflicts) > 0:
+        if len(self.merging_result.conflicts) > 0:
             merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
-            for name, conflicts in self.conflicts.items():
+            for name, conflicts in self.merging_result.conflicts.items():
                 labels = ['package']
                 values = [name]
                 for k, articles in conflicts.items():

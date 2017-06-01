@@ -194,6 +194,19 @@ class HRef(object):
                             location += '.jpg'
         return location
 
+    @property
+    def href_attach_type(self):
+        parent_tag, tag = self.parent.tag, self.element.tag
+        if 'suppl' in tag or 'media' == tag:
+            attach_type = 's'
+        elif 'inline' in tag:
+            attach_type = 'i'
+        elif parent_tag in ['equation', 'disp-formula']:
+            attach_type = 'e'
+        else:
+            attach_type = 'g'
+        return attach_type
+
 
 class PersonAuthor(object):
 

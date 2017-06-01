@@ -70,14 +70,10 @@ def call_make_packages(args, version):
             utils.display_message('\n'.join(messages))
         else:
             stage = 'xpm'
-            workareas = []
             if sgm_xml is not None:
-                workareas = [sgmlxml_workarea(sgm_xml_filename, acron, version)]
+                xml_list = [sgmlxml_workarea(sgm_xml, acron, version)]
                 stage = 'xml'
-            else:
-                workareas = xml_list_workarea(xml_list, stage)
-            if len(workareas) > 0:
-                make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage)
+            make_packages(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage)
 
 
 def read_inputs(args):
@@ -130,10 +126,10 @@ def evaluate_inputs(xml_path, acron):
 
 def sgmlxml_workarea(sgm_xml_filename, acron, version):
     wk = sgmlxml.SGMLXMLWorkarea(sgm_xml_filename)
-    sgml_xml = sgmlxml.SGMLXML2SPSXML(workarea)
-    sgml_xml.convert(acron, xml_versions.xsl_sgml2xml(version))
-    sgml_xml.pack()
-    return wk
+    sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xml_versions.xsl_sgml2xml(version))
+    package_maker = sgmlxml.SGMLXML2SPSXMLPackageMaker(wk)
+    package_maker.pack(acron, sgmlxml2xml)
+    return package_maker.xml_pkgfiles.filename
 
 
 def xml_list_workarea(xml_list, stage):
@@ -141,7 +137,7 @@ def xml_list_workarea(xml_list, stage):
     return [workarea.Workarea(item, output_path) for item in xml_list]
 
 
-def make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
+def make_packages(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
     scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
 
     """
@@ -172,17 +168,17 @@ def make_packages(workareas, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm')
                 is_pmc_journal = True
         wk.outputs.new_name = wk.xml_pkgfiles.name
         wk.outputs.new_xml_filename = wk.scielo_pkgfiles.filename
-        wk.outputs.xml_name = wk.input_pkgfiles.name
+        wk.outputs.xml_name = wk.name
         wk.outputs.xml_path = wk.scielo_pkgfiles.path
         wk.outputs.xml_filename = wk.xml_pkgfiles.filename
-        spsxml.doc.package_files = wk.scielo_pkgfiles.files
+        spsxml.doc.package_files = wk.scielo_pkgfiles.allfiles
 
         if not os.path.isfile(wk.outputs.images_report_filename):
             fs_utils.write_file(wk.outputs.images_report_filename, '')
-        article_items[wk.input_pkgfiles.name] = spsxml.doc
-        article_items[wk.input_pkgfiles.name].package_files = wk.scielo_pkgfiles.files
-        article_work_area_items[wk.input_pkgfiles.name] = wk.outputs
-        wks[wk.input_pkgfiles.name] = wk
+        article_items[wk.name] = spsxml.doc
+        article_items[wk.name].package_files = wk.scielo_pkgfiles.allfiles
+        article_work_area_items[wk.name] = wk.outputs
+        wks[wk.name] = wk
 
     pmc_package_maker = PMCPackageMaker(version)
 
@@ -260,8 +256,8 @@ class SPSXML(object):
             return a
 
     def pack(self):
-        fs_utils.write_file(self.workarea.scielo_pkgfiles.filename, self.spsxmlcontent.content)
         self.workarea.xml_pkgfiles.copy(self.workarea.scielo_pkgfiles.path)
+        fs_utils.write_file(self.workarea.scielo_pkgfiles.filename, self.spsxmlcontent.content)
 
 
 class SPSXMLContent(xml_utils.XMLContent):
@@ -585,10 +581,10 @@ class PMCPackageItemMaker(object):
             self.remove_en_from_filenames(self)
 
     def svg2tiff(self):
-        for item in self.wk.pmc_pkgfiles.files:
+        for item in self.wk.pmc_pkgfiles.files_except_xml:
             if item.endswith('.svg'):
                 img_utils.convert_svg2png(self.wk.pmc_pkgfiles.path + '/' + item)
-        for item in self.wk.pmc_pkgfiles.files:
+        for item in self.wk.pmc_pkgfiles.files_except_xml:
             if item.endswith('.png'):
                 img_utils.convert_png2tiff(self.wk.pmc_pkgfiles.path + '/' + item)
 
@@ -602,7 +598,7 @@ class PMCPackageItemMaker(object):
 
     def remove_en_from_filenames(self):
         content = fs_utils.read_file(self.wk.pmc_pkgfiles.filename)
-        files = [os.path.splitext(f) for f in self.wk.scielo_pkgfiles.files]
+        files = [os.path.splitext(f) for f in self.wk.scielo_pkgfiles.files_except_xml]
         files = [(name, name[:-3], ext) for name, ext in files if name.endswith('-en')]
         for name, new_name, ext in files:
             shutil.copyfile(
