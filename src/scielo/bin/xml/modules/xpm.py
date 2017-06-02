@@ -20,6 +20,7 @@ from . import package_validations
 from . import serial_files
 
 from . import validators
+from . import spsxml
 
 import html_reports
 
@@ -138,13 +139,17 @@ def sgmlxml2xml(sgm_xml_filename, acron, version):
 def normalize_xml_packages(xml_list, stage='xpm'):
     pkgfiles_items = [workarea.PackageFiles(item) for item in xml_list]
 
-    wk = workarea.Workarea(pkgfiles_items[0].path + '_' + stage)
+    path = pkgfiles_items[0].path + '_' + stage
+    if not os.path.dirname(path):
+        os.makedirs(path)
+
+    wk = workarea.Workarea(path)
 
     dest_path = wk.scielo_package_path
     dest_pkgfiles_items = [workarea.PackageFiles(dest_path + '/' + item.basename) for item in pkgfiles_items]
 
     for src, dest in zip(pkgfiles_items, dest_pkgfiles_items):
-        xmlcontent = spsxml.SPSXMLContent(fs_utils.read_file(dest.filename))
+        xmlcontent = spsxml.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
         fs_utils.write_file(dest.filename, xmlcontent.content)
         src.copy(dest_path)

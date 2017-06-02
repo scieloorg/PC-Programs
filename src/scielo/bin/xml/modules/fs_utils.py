@@ -9,13 +9,14 @@ import zipfile
 
 
 def read_file(filename, encode='utf-8'):
-    content = open(filename, 'r').read()
-    if not isinstance(content, unicode):
-        try:
-            content = content.decode(encode)
-        except:
-            content = content.decode('iso-8859-1')
-    return content
+    if os.path.isfile(filename):
+        content = open(filename, 'r').read()
+        if not isinstance(content, unicode):
+            try:
+                content = content.decode(encode)
+            except:
+                content = content.decode('iso-8859-1')
+        return content
 
 
 def write_file(filename, content, encode='utf-8'):

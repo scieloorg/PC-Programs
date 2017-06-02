@@ -276,7 +276,7 @@ class XMLContentValidator(object):
                 content.append(article_validation_report.validations(display_all_message_types=False))
                 content.append(article_display_report.display_formulas)
                 content.append(article_display_report.table_tables)
-                r = open(outputs.images_report_filename).read()
+                r = fs_utils.read_file(outputs.images_report_filename) or ''
                 r = r[r.find('<body'):]
                 r = r[r.find('>')+1:]
                 r = r[:r.find('</body>')]
@@ -288,7 +288,8 @@ class XMLContentValidator(object):
                 content.append(article_validation_report.validations(display_all_message_types=False))
                 content.append(article_display_report.display_formulas)
                 content.append(article_display_report.table_tables)
-                r = open(outputs.images_report_filename).read()
+                r = fs_utils.read_file(outputs.images_report_filename) or ''
+                
                 r = r[r.find('<body'):]
                 r = r[r.find('>')+1:]
                 r = r[:r.find('</body>')]
@@ -754,7 +755,7 @@ class MergedArticlesReports(object):
             compl = ''
             _status = validation_status.STATUS_BLOCKING_ERROR
             if label == 'issue pub date':
-                if self.is_rolling_pass:
+                if self.merged_articles_data.is_rolling_pass:
                     _status = validation_status.STATUS_WARNING
             elif label == 'license':
                 _status = validation_status.STATUS_WARNING
@@ -767,7 +768,7 @@ class MergedArticlesReports(object):
     def report_duplicated_values(self):
         parts = []
         for label, values in self.merged_articles_data.duplicated_values.items():
-            status = self.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
+            status = self.merged_articles_data.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
             _m = _('Unique value for {label} is required for all the documents in the package').format(label=label)
             parts.append(html_reports.p_message(status + ': ' + _m))
             for value, xml_files in values.items():
