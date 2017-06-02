@@ -6,22 +6,12 @@ import shutil
 from . import fs_utils
 from . import img_utils
 
+#         self.outputs = OutputFiles(self.name, self.reports_path, ctrl_path)
 
 class Workarea(object):
 
-    def __init__(self, filename, output_path=None):
-        self.filename = filename
-        self.path = os.path.dirname(filename)
-        self.basename = os.path.basename(filename)
-        self.name, self.ext = os.path.splitext(self.basename)
-        self.new_name = self.name
-        xml_generation_path = None
-        if filename.endswith('.sgm.xml'):
-            xml_generation_path = self.path
-            output_path = os.path.dirname(os.path.dirname(self.path))
-
+    def __init__(self, output_path, ctrl_path=None):
         self.output_path = output_path
-        self.outputs = OutputFiles(self.name, self.reports_path, xml_generation_path)
 
         for p in [self.output_path, self.reports_path, self.scielo_package_path, self.pmc_package_path]:
             if not os.path.isdir(p):
@@ -47,18 +37,30 @@ class PackageFiles(object):
         self.path = os.path.dirname(filename)
         self.basename = os.path.basename(filename)
         self.name, self.ext = os.path.splitext(self.basename)
+        if self.filename.endswith('.sgm.xml'):
+            self.name, ign = os.path.splitext(self.name)
+        self.previous_name = self.name
         self.SUFFIXES = ['t', 'f', 'e', 'img', 'image']
         self.SUFFIXES.extend(['-'+s for s in self.SUFFIXES])
         self.SUFFIXES.extend(['-', '.'])
+        self.ctrl_path = None
 
     def add_extension(self, new_href):
         if '.' not in new_href:
-            ext = self.files_by_name_except_xml.get(new_href)
-            if len(ext) > 1:
-                ext = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
-            if len(ext) > 0:
-                new_href += ext[0]
+            extensions = self.files_by_name_except_xml.get(new_href)
+            if len(extensions) > 1:
+                extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
+            if len(extensions) > 0:
+                new_href += extensions[0]
         return new_href
+
+    @property
+    def prefixes(self):
+        r = []
+        if self.basename.startswith('a') and self.basename[3:4] == 'v':
+            r.append(self.basename[:3])
+        r.append(self.name)
+        return r
 
     def all_files(self):
         r = []
@@ -85,7 +87,7 @@ class PackageFiles(object):
 
     @property
     def files_except_xml(self):
-        return [f for f in self.allfiles if f != self.basename]
+        return [f for f in self.allfiles if f != self.basename and not f.endswith('.ctrl.txt')]
 
     @property
     def files_by_name_except_xml(self):

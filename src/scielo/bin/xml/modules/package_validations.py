@@ -191,12 +191,13 @@ class XMLStructureValidator(object):
     def __init__(self, dtd_files):
         self.xml_validator = xml_validator.XMLValidator(dtd_files)
 
-    def validate(self, outputs):
+    def validate(self, xml_filename, outputs):
         separator = '\n\n\n' + '.........\n\n\n'
 
         name_error = ''
-        if '_' in outputs.new_name or '.' in outputs.new_name:
-            name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=outputs.new_name, forbidden_characters='_.') + separator
+        new_name, ign = os.path.splitext(os.path.basename(xml_filename))
+        if '_' in new_name or '.' in new_name:
+            name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=new_name, forbidden_characters='_.') + separator
 
         files_errors = ''
         if os.path.isfile(outputs.err_filename):
@@ -206,7 +207,7 @@ class XMLStructureValidator(object):
             if os.path.isfile(f):
                 fs_utils.delete_file_or_folder(f)
         #xml_filename = outputs.new_xml_filename
-        xml, valid_dtd, valid_style = self.xml_validator.validate(outputs.new_xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
+        xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
         xml_structure_report_content = ''
@@ -307,11 +308,11 @@ class ArticleValidator(object):
         self.xml_structure_validator = xml_structure_validator
         self.xml_content_validator = xml_content_validator
 
-    def validate(self, article, outputs):
+    def validate(self, article, outputs, xml_filename):
         artval = ArticleValidations()
         artval.journal_validations = self.xml_journal_data_validator.validate(article)
         artval.issue_validations = self.xml_issue_data_validator.validate(article)
-        artval.xml_structure_validations = self.xml_structure_validator.validate(outputs)
+        artval.xml_structure_validations = self.xml_structure_validator.validate(xml_filename, outputs)
         artval.xml_content_validations, artval.article_display_report = self.xml_content_validator.validate(article, outputs)
         if self.xml_content_validator.is_xml_generation:
             stats = artval.xml_content_validations.statistics_display(False)
@@ -349,10 +350,10 @@ class ArticleValidations(object):
 
 class PackageReports(object):
 
-    def __init__(self, package_folder, articles, workareas):
+    def __init__(self, package_folder, articles, pkgfiles):
         self.package_folder = package_folder
+        self.pkgfiles = pkgfiles
         self.articles = articles
-        self.workareas = workareas
 
     @property
     def xml_list(self):
@@ -362,7 +363,7 @@ class PackageReports(object):
 
         files = ''
         for name, article in self.articles.items():
-            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', self.workareas[name].input_pkgfiles.allfiles))
+            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', self.pkgfiles[name].allfiles))
         r += '<ol>{}</ol>'.format(files)
         return u'<div class="xmllist">{}</div>'.format(r)
 
@@ -997,7 +998,7 @@ class ArticlesValidator(object):
         xml_content_validator = XMLContentValidator(doi_services, self.pkgissuedata, self.registered_issue_data, self.package_path, self.is_xml_generation)
         self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
 
-    def validate(self, articles, outputs):
+    def validate(self, articles, outputs, pkgfiles):
         articles_validations_reports = ArticlesValidationsReports(self.is_xml_generation, self.is_db_generation)
 
         articles_merger = ArticlesMerger(self.registered_issue_data.registered_articles, articles)
@@ -1012,7 +1013,7 @@ class ArticlesValidator(object):
         results = {}
         for name, article in articles.items():
             utils.display_message(_('Validate {name}').format(name=name))
-            results[name] = self.article_validator.validate(article, outputs[name])
+            results[name] = self.article_validator.validate(article, outputs[name], pkgfiles[name].filename)
 
         articles_validations_reports.consistency_validations = ValidationsResult()
         articles_validations_reports.consistency_validations.message = articles_validations_reports.merged_articles_reports.report_data_consistency

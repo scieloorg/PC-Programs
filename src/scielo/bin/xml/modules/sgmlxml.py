@@ -13,25 +13,24 @@ from . import text_report
 from . import html_reports
 from . import workarea
 from . import xml_utils
+from . import spsxml
+from . import validation_status
 
 
 class SGMLXMLWorkarea(workarea.Workarea):
 
-    def __init__(self, filename):
-        workarea.Workarea.__init__(self, filename)
-        self.name, _ = os.path.splitext(self.name)
-
-        self.src_path = os.path.dirname(os.path.dirname(self.path)) + '/src'
-
-        self.outputs.wrk_path = self.outputs.wrk_path + '/' + self.name
-        if not os.path.isdir(self.outputs.wrk_path):
-            os.makedirs(self.outputs.wrk_path)
+    def __init__(self, name, ctrl_path):
+        self.input_path = ctrl_path
+        self.name = name
+        output_path = os.path.dirname(os.path.dirname(ctrl_path))
+        workarea.Workarea.__init__(self, output_path, ctrl_path)
+        self.src_path = self.output_path + '/src'
 
     @property
     def html_filename(self):
-        if not os.path.isdir(self.path):
-            os.makedirs(self.path)
-        _html_filename = self.path + '/' + self.name + '.temp.htm'
+        if not os.path.isdir(self.input_path):
+            os.makedirs(self.input_path)
+        _html_filename = self.input_path + '/' + self.name + '.temp.htm'
         if not os.path.isfile(_html_filename):
             _html_filename += 'l'
         return _html_filename
@@ -281,8 +280,8 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     href = href.replace('"', '')
                     xhtml_content = ''
                     if href != '':
-                        if os.path.isfile(self.src_path + '/' + href):
-                            xhtml_content = fs_utils.read_file(self.src_path + '/' + href)
+                        if os.path.isfile(self.src_pkgfiles.path + '/' + href):
+                            xhtml_content = fs_utils.read_file(self.src_pkgfiles.path + '/' + href)
                             if '<table' in xhtml_content and '</table>' in xhtml_content:
                                 xhtml_content = xhtml_content[xhtml_content.find('<table'):xhtml_content.rfind('</table>')+len('</table>')]
                     item = item.replace(xhtml, '<xhtmltable>' + xhtml_content + '</xhtmltable>')
@@ -294,7 +293,6 @@ class SGMLXMLContent(xml_utils.XMLContent):
         self.content = self.content.replace('"">', '">')
         self.content = self.content.replace('href=""?', 'href="?')
         self.images_origin = []
-
         if self.content.find('href="?' + self.sgmlhtml.xml_name) > 0:
             # for each graphic in sgml.xml, replace href="?xmlname" by href="image in src or image in work/html"
             self.content = self.content.replace('<graphic href="?' + self.sgmlhtml.xml_name, '--FIXHREF--<graphic href="?' + self.sgmlhtml.xml_name)
@@ -303,6 +301,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
             new_parts = [parts[0]]
             parts = parts[1:]
             alternative_id = 0
+
             for part, html_href in zip(parts, self.sgmlhtml.unknown_href_items):
                 graphic = part[0:part.find('>')]
                 if html_href == 'None':
@@ -321,8 +320,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
                     new_href_value = src_href
                     if src_href is not None:
-                        chosen_image_src = self.src_path + '/' + src_href
-                        self.src_folder_graphics.append(src_href)
+                        chosen_image_src = self.src_pkgfiles.path + '/' + src_href
                         chosen_image_origin = 'src'
 
                     if html_href is not None:
@@ -332,7 +330,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     if chosen_image_src is None and chosen_image_doc is not None:
                         chosen_image_origin = 'doc'
                         new_href_value = self.sgmlhtml.xml_name + html_href.replace('image', '')
-                        shutil.copyfile(chosen_image_doc, self.src_path + '/' + new_href_value)
+                        shutil.copyfile(chosen_image_doc, self.src_pkgfiles.path + '/' + new_href_value)
                         #self.input_pkgfiles.files.append(new_href_value)
 
                     if new_href_value is not None:
@@ -343,14 +341,11 @@ class SGMLXMLContent(xml_utils.XMLContent):
             self.content = ''.join(new_parts)
 
     def find_href_file_in_folder(self, elem_name, elem_id, alternative_id):
-        filenames = [self.sgmlhtml.xml_name]
-        if 'v' in self.sgmlhtml.xml_name and self.sgmlhtml.xml_name.startswith('a'):
-            filenames.append(self.sgmlhtml.xml_name[:self.sgmlhtml.xml_name.find('v')])
         found = []
         possible_href_names = []
         number, possibilities, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
         if number != '':
-            for name in filenames:
+            for name in self.src_pkgfiles.prefixes:
                 for prefix_number in possibilities:
                     for ext in article.IMG_EXTENSIONS:
                         href = name + prefix_number + ext
@@ -358,18 +353,13 @@ class SGMLXMLContent(xml_utils.XMLContent):
                         if href in self.src_pkgfiles.files_except_xml:
                             found.append(href)
         else:
-            for name in filenames:
+            for name in self.src_pkgfiles.prefixes:
                 for ext in article.IMG_EXTENSIONS:
                     href = name + elem_id + ext
                     possible_href_names.append(href)
                     if href in self.src_pkgfiles.files_except_xml:
                         found.append(href)
         new_href = None if len(found) == 0 else found[0]
-        #if new_href is None:
-        #    print('====')
-        #    print('Not found: ', self.xml_name, elem_name, elem_id, possibilities)            
-        #    print('article_files:', self.input_pkgfiles.files)
-        #    print('====')
         return (new_href, list(set(possible_href_names)), alternative_id)
 
 
@@ -389,16 +379,15 @@ class SGMLXML2SPSXMLConverter(object):
 
 class PackageNamer(object):
 
-    def __init__(self, wk, xml_content, src_pkgfiles):
-        self.wk = wk
+    def __init__(self, xml_content, src_pkgfiles):
         self.xml_content = xml_content
         self.src_pkgfiles = src_pkgfiles
         self.dest_pkgfiles = None
 
-    def rename(self, acron):
+    def rename(self, acron, dest_path):
         self._fix_href_values(acron)
 
-        self.dest_pkgfiles = workarea.PackageFiles(self.wk.path + '/' + self.new_name + '.xml')
+        self.dest_pkgfiles = workarea.PackageFiles(dest_path + '/' + self.new_name + '.xml')
 
         self.dest_pkgfiles.clean()
         fs_utils.write_file(self.dest_pkgfiles.filename, self.xml_content)
@@ -409,7 +398,7 @@ class PackageNamer(object):
     def _fix_href_values(self, acron):
         _xml, xml_error = xml_utils.load_xml(self.xml_content)
         if _xml is not None:
-            doc = article.Article(_xml, self.wk.name)
+            doc = article.Article(_xml, self.src_pkgfiles.name)
             self.new_name = PackageName(doc).generate(acron)
 
             self.hrefreplacements = []
@@ -423,7 +412,7 @@ class PackageNamer(object):
     def _xml_href_value(self, href):
         href_type = href.href_attach_type
         if href.id is None:
-            href_name = href.src.replace(self.wk.name, '')
+            href_name = href.src.replace(self.src_pkgfiles.name, '')
             if href_name[0:1] in '-_':
                 href_name = href_name[1:]
         else:
@@ -458,8 +447,9 @@ class PackageNamer(object):
             if name not in self.href_names:
                 for ext in ext_items:
                     new_name = name.replace(self.src_pkgfiles.name, self.new_name)
-                    shutil.copyfile(self.src_pkgfiles.path + '/' + name + ext, self.dest_pkgfiles.path + '/' + new_name + ext)
-                self.related_files_copy.append((name + ext, new_name + ext))
+                    if self.new_name in new_name:
+                        shutil.copyfile(self.src_pkgfiles.path + '/' + name + ext, self.dest_pkgfiles.path + '/' + new_name + ext)
+                        self.related_files_copy.append((name + ext, new_name + ext))
 
     def report(self):
         log = []
@@ -471,18 +461,20 @@ class PackageNamer(object):
         log.append(text_report.display_sorted_list(_('Total of related files'), text_report.display_pairs_list(self.related_files_copy)))
         log.append(text_report.display_sorted_list(_('Total of files in package'), text_report.display_pairs_list(self.href_files_copy)))
         log.append(text_report.display_sorted_list(_('Total of @href in XML'), text_report.display_pairs_list(self.hrefreplacements)))
-        log.append(text_report.display_sorted_list(_('Total of files not found in package'), format(self.missing_href_files)))
+        log.append(text_report.display_sorted_list(_('Total of files not found in package'), self.missing_href_files))
         return '\n'.join(log)
 
 
 class SGMLXML2SPSXMLPackageMaker(object):
 
-    def __init__(self, wk, filename):
+    def __init__(self, wk, sgml_pkgfiles):
         self.wk = wk
-        self.sgml_pkgfiles = workarea.PackageFiles(filename)
+        self.sgml_pkgfiles = sgml_pkgfiles
+        self.outputs = workarea.OutputFiles(self.sgml_pkgfiles.name, self.wk.reports_path, self.sgml_pkgfiles.path)
+        self.new_name = self.sgml_pkgfiles.name
         self.src_pkgfiles = workarea.PackageFiles(wk.src_path + '/' + self.sgml_pkgfiles.name + '.xml')
         self.src_pkgfiles.convert_images()
-
+        self.xml_pkgfiles = None
         self.sgmxmlcontent = SGMLXMLContent(
             fs_utils.read_file(self.sgml_pkgfiles.filename),
             SGMLHTML(self.sgml_pkgfiles.name, wk.html_filename),
@@ -491,7 +483,7 @@ class SGMLXML2SPSXMLPackageMaker(object):
 
     @property
     def xml_name(self):
-        return self.wk.name
+        return self.src_pkgfiles.name
 
     @property
     def xml(self):
@@ -509,25 +501,35 @@ class SGMLXML2SPSXMLPackageMaker(object):
     def normalize_sgmxml(self):
         self.sgmxmlcontent.normalize()
         fs_utils.write_file(self.src_pkgfiles.filename, self.sgmxmlcontent.content)
+        self.xml_content = self.sgmxmlcontent.content
+
+    def normalize_xml(self):
+        spsxmlcontent = spsxml.SPSXMLContent(self.xml_content)
+        spsxmlcontent.normalize()
+        self.xml_content = spsxmlcontent.content
 
     def pack(self, acron, converter):
         self.normalize_sgmxml()
-
-        self.xml_content = self.sgmxmlcontent.content
         self.xml_content = converter.sgml2xml(self.xml_content)
-        src2xmlhrefreplacements = []
+        self.xml_pkgfiles = workarea.PackageFiles(self.src_pkgfiles.path + '/' + self.src_pkgfiles.name + '.xml')
+        fs_utils.write_file(self.src_pkgfiles.filename, self.xml_content)
+        self.normalize_xml()
+
+
         msg = self.invalid_xml_message
         if msg == '':
-            pkgnamer = PackageNamer(self.wk, self.xml_content, self.src_pkgfiles)
-            pkgnamer.rename(acron)
-            src2xmlhrefreplacements = pkgnamer.hrefreplacements
+            pkgnamer = PackageNamer(self.xml_content, self.src_pkgfiles)
+            pkgnamer.rename(acron, self.wk.scielo_package_path)
+
             self.xml_pkgfiles = pkgnamer.dest_pkgfiles
+            self.xml_pkgfiles.previous_name = self.src_pkgfiles.name
+            self.xml_pkgfiles.ctrl_path = self.src_pkgfiles.path
+
             msg = pkgnamer.report()
+            imgreports = ImagesOriginReport(self.sgmxmlcontent.images_origin, pkgnamer.hrefreplacements, self.xml_pkgfiles.path)
+            html_reports.save(self.outputs.images_report_filename, '', imgreports.report())
 
-        fs_utils.write_file(self.wk.outputs.err_filename, msg)
-
-        imgreports = ImagesOriginReport(self.sgmxmlcontent.images_origin, src2xmlhrefreplacements, self.xml_pkgfiles.path)
-        html_reports.save(self.wk.outputs.images_report_filename, '', imgreports.report())
+        fs_utils.write_file(self.outputs.err_filename, msg)
 
     @property
     def invalid_xml_message(self):
@@ -544,7 +546,7 @@ class ImagesOriginReport(object):
 
     def __init__(self, images_origin, src2xmlhrefreplacements, package_path):
         self.package_path = package_path
-        self.src2xmlhrefreplacements = src2xmlhrefreplacements
+        self.src2xmlhrefreplacements = dict(src2xmlhrefreplacements)
         self.images_origin = images_origin
 
     def report(self):
@@ -554,7 +556,7 @@ class ImagesOriginReport(object):
         else:
             rows.append('<ol>')
             for item in self.images_origin:
-                self.item_report(item)
+                rows.append(self.item_report(item))
             rows.append('</ol>')
         return html_reports.tag('h2', _('Images Origin Report')) + ''.join(rows)
 
@@ -565,7 +567,7 @@ class ImagesOriginReport(object):
         rows = []
         rows.append('<li>')
         rows.append(html_reports.tag('h3', chosen_image_id))
-        rows.append(self.item_report_replacement(name, renamed))
+        rows.append(self.item_report_replacement(chosen_name, self.src2xmlhrefreplacements.get(chosen_name)))
         rows.append(html_reports.tag('h4', chosen_image_origin))
         rows.append('<div class="compare_images">')
         rows.append(self.display_image(self.package_path + '/' + self.src2xmlhrefreplacements.get(chosen_name), "compare_" + style, chosen_image_origin))
@@ -584,58 +586,6 @@ class ImagesOriginReport(object):
             rows.append(html_reports.tag('h5', title))
         img_filename = 'file://' + img_filename.replace('.tiff', '.jpg').replace('.tif', '.jpg')
         return '<div class="{}">'.format(style) + html_reports.link(img_filename, html_reports.image(img_filename)) + '</div>'
-
-
-class SPSPackageMaker(object):
-
-    def __init__(self, src_pkgfiles, pkgfiles, src2xmlhrefreplacements):
-        self.src_pkgfiles = src_pkgfiles
-        self.pkgfiles = pkgfiles
-        self.src2xmlhrefreplacements = src2xmlhrefreplacements
-
-    def pack(self):
-        self.pack_article_href_files()
-        self.pack_article_related_files()
-
-    def pack_article_href_files(self):
-        self.href_files_copy = []
-        self.href_names = []
-        self.missing_href_files = []
-
-        for f, new in self.src2xmlhrefreplacements:
-            name, _ = os.path.splitext(f)
-            new_name, _ = os.path.splitext(new)
-            if self.src_pkgfiles.files_by_name_except_xml.get(name) is None:
-                self.missing_href_files.append(f)
-            for ext in self.src_pkgfiles.files_by_name_except_xml.get(name, []):
-                shutil.copyfile(self.src_pkgfiles.path + '/' + name + ext, self.pkgfiles.path + '/' + new_name + ext)
-                self.href_files_copy.append((name + ext, new_name + ext))
-                self.href_names.append(name)
-
-    def pack_article_related_files(self):
-        self.related_files_copy = []
-        for name, ext_items in self.src_pkgfiles.files_by_name_except_xml.items():
-            if name not in self.href_names:
-                for ext in ext_items:
-                    new_name = name.replace(self.src_pkgfiles.name, self.pkgfiles.name)
-                    shutil.copyfile(self.src_pkgfiles.path + '/' + name + ext, self.pkgfiles.path + '/' + new_name + ext)
-                self.related_files_copy.append((name + ext, new_name + ext))
-        print('src pkgfiles=', self.src_pkgfiles.allfiles)
-        print('pkgfiles=', self.pkgfiles.allfiles)
-        print(self.related_files_copy)
-
-    def report(self):
-        log = []
-        log.append(_('Report of files') + '\n' + '-'*len(_('Report of files')) + '\n')
-        log.append(_('Source path') + ':   ' + self.src_pkgfiles.path)
-        log.append(_('Package path') + ':  ' + self.pkgfiles.path)
-        log.append(_('Source XML name') + ': ' + self.src_pkgfiles.name)
-        log.append(_('Package XML name') + ': ' + self.pkgfiles.name)
-        log.append(text_report.display_sorted_list(_('Total of related files'), text_report.display_pairs_list(self.related_files_copy)))
-        log.append(text_report.display_sorted_list(_('Total of files in package'), text_report.display_pairs_list(self.href_files_copy)))
-        log.append(text_report.display_sorted_list(_('Total of @href in XML'), text_report.display_pairs_list(self.src2xmlhrefreplacements)))
-        log.append(text_report.display_sorted_list(_('Total of files not found in package'), self.missing_href_files))
-        return '\n'.join(log)
 
 
 def get_href_content(graphic):

@@ -1995,3 +1995,25 @@ def doi_data(doi):
             if len(results) > 0:
                 results = {'journal-titles': results[0], 'article-titles': results[1], 'pid': results[2][0] if results[2] is not None else None}
     return results
+
+
+class ArticleXMLContent(object):
+
+    def __init__(self, xml_content, name, new_name):
+        self.xml_content = xml_content
+        self.name = name
+        self.new_name = new_name
+        self.xml_error = None
+
+    @property
+    def xml(self):
+        _xml, self.xml_error = xml_utils.load_xml(self.xml_content)
+        if _xml is not None:
+            return _xml
+
+    @property
+    def doc(self):
+        if self.xml is not None:
+            a = Article(self.xml, self.name)
+            a.new_prefix = self.new_name
+            return a
