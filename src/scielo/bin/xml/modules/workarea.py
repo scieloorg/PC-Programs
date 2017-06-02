@@ -6,22 +6,12 @@ import shutil
 from . import fs_utils
 from . import img_utils
 
+#         self.outputs = OutputFiles(self.name, self.reports_path, ctrl_path)
 
 class Workarea(object):
 
-    def __init__(self, filename, output_path=None):
-        self.filename = filename
-        self.path = os.path.dirname(filename)
-        self.basename = os.path.basename(filename)
-        self.name, self.ext = os.path.splitext(self.basename)
-        self.new_name = self.name
-        xml_generation_path = None
-        if filename.endswith('.sgm.xml'):
-            xml_generation_path = self.path
-            output_path = os.path.dirname(os.path.dirname(self.path))
-
+    def __init__(self, output_path, ctrl_path=None):
         self.output_path = output_path
-        self.outputs = OutputFiles(self.name, self.reports_path, xml_generation_path)
 
         for p in [self.output_path, self.reports_path, self.scielo_package_path, self.pmc_package_path]:
             if not os.path.isdir(p):

@@ -17,21 +17,18 @@ from . import xml_utils
 
 class SGMLXMLWorkarea(workarea.Workarea):
 
-    def __init__(self, filename):
-        workarea.Workarea.__init__(self, filename)
-        self.name, _ = os.path.splitext(self.name)
-
-        self.src_path = os.path.dirname(os.path.dirname(self.path)) + '/src'
-
-        self.outputs.wrk_path = self.outputs.wrk_path + '/' + self.name
-        if not os.path.isdir(self.outputs.wrk_path):
-            os.makedirs(self.outputs.wrk_path)
+    def __init__(self, name, ctrl_path):
+        self.input_path = ctrl_path
+        self.name = name
+        output_path = os.path.dirname(os.path.dirname(ctrl_path))
+        workarea.Workarea.__init__(self, output_path, ctrl_path)
+        self.src_path = self.output_path + '/src'
 
     @property
     def html_filename(self):
-        if not os.path.isdir(self.path):
-            os.makedirs(self.path)
-        _html_filename = self.path + '/' + self.name + '.temp.htm'
+        if not os.path.isdir(self.input_path):
+            os.makedirs(self.input_path)
+        _html_filename = self.input_path + '/' + self.name + '.temp.htm'
         if not os.path.isfile(_html_filename):
             _html_filename += 'l'
         return _html_filename
@@ -389,16 +386,15 @@ class SGMLXML2SPSXMLConverter(object):
 
 class PackageNamer(object):
 
-    def __init__(self, wk, xml_content, src_pkgfiles):
-        self.wk = wk
+    def __init__(self, xml_content, src_pkgfiles):
         self.xml_content = xml_content
         self.src_pkgfiles = src_pkgfiles
         self.dest_pkgfiles = None
 
-    def rename(self, acron):
+    def rename(self, acron, dest_path):
         self._fix_href_values(acron)
 
-        self.dest_pkgfiles = workarea.PackageFiles(self.wk.path + '/' + self.new_name + '.xml')
+        self.dest_pkgfiles = workarea.PackageFiles(dest_path + '/' + self.new_name + '.xml')
 
         self.dest_pkgfiles.clean()
         fs_utils.write_file(self.dest_pkgfiles.filename, self.xml_content)
@@ -409,7 +405,7 @@ class PackageNamer(object):
     def _fix_href_values(self, acron):
         _xml, xml_error = xml_utils.load_xml(self.xml_content)
         if _xml is not None:
-            doc = article.Article(_xml, self.wk.name)
+            doc = article.Article(_xml, self.src_pkgfiles.name)
             self.new_name = PackageName(doc).generate(acron)
 
             self.hrefreplacements = []
@@ -423,7 +419,7 @@ class PackageNamer(object):
     def _xml_href_value(self, href):
         href_type = href.href_attach_type
         if href.id is None:
-            href_name = href.src.replace(self.wk.name, '')
+            href_name = href.src.replace(self.src_pkgfiles.name, '')
             if href_name[0:1] in '-_':
                 href_name = href_name[1:]
         else:
@@ -480,6 +476,8 @@ class SGMLXML2SPSXMLPackageMaker(object):
     def __init__(self, wk, filename):
         self.wk = wk
         self.sgml_pkgfiles = workarea.PackageFiles(filename)
+        self.outputs = OutputFiles(self.sgml_pkgfiles.name, self.wk.reports_path, self.sgml_pkgfiles.path)
+        self.new_name = self.sgml_pkgfiles.name
         self.src_pkgfiles = workarea.PackageFiles(wk.src_path + '/' + self.sgml_pkgfiles.name + '.xml')
         self.src_pkgfiles.convert_images()
 
@@ -491,7 +489,7 @@ class SGMLXML2SPSXMLPackageMaker(object):
 
     @property
     def xml_name(self):
-        return self.wk.name
+        return self.src_pkgfiles.name
 
     @property
     def xml(self):
@@ -518,16 +516,16 @@ class SGMLXML2SPSXMLPackageMaker(object):
         src2xmlhrefreplacements = []
         msg = self.invalid_xml_message
         if msg == '':
-            pkgnamer = PackageNamer(self.wk, self.xml_content, self.src_pkgfiles)
-            pkgnamer.rename(acron)
+            pkgnamer = PackageNamer(self.xml_content, self.src_pkgfiles)
+            pkgnamer.rename(acron, self.wk.scielo_package_path)
             src2xmlhrefreplacements = pkgnamer.hrefreplacements
             self.xml_pkgfiles = pkgnamer.dest_pkgfiles
             msg = pkgnamer.report()
 
-        fs_utils.write_file(self.wk.outputs.err_filename, msg)
+        fs_utils.write_file(self.outputs.err_filename, msg)
 
         imgreports = ImagesOriginReport(self.sgmxmlcontent.images_origin, src2xmlhrefreplacements, self.xml_pkgfiles.path)
-        html_reports.save(self.wk.outputs.images_report_filename, '', imgreports.report())
+        html_reports.save(self.outputs.images_report_filename, '', imgreports.report())
 
     @property
     def invalid_xml_message(self):
