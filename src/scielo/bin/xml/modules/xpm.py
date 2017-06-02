@@ -142,7 +142,7 @@ def make_packages(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm', 
     scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
 
     package_folder = workarea.PackageFolder(os.path.dirname(xml_list[0]))
-
+    wk = workarea.Workarea(package_folder.path, output_path)
     sgmxml_name = None
     if sgm_xml is None:
         output_path = package_folder.path + '_' + stage
@@ -152,7 +152,6 @@ def make_packages(xml_list, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm', 
 
     is_xml_generation = not sgmxml_name
     is_db_generation = stage == 'xc'
-
 
     scielo_pkg_path = workareas[0].scielo_package_path
     pmc_pkg_path = workareas[0].pmc_package_path
