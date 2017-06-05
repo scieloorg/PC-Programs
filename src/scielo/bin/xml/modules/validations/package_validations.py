@@ -3,16 +3,18 @@
 import os
 import shutil
 
-from __init__ import _
-from . import attributes
+from ..__init__ import _
+from .. import fs_utils
+from .. import html_reports
+from .. import validation_status
+from .. import utils
+from .. import doi_validations
+from .. import xml_versions
+from .. import attributes
+from .. import xc_models
+from .. import article_validations
+from . import xml_validators
 from . import article_data_reports
-from . import article_validations
-from . import fs_utils
-from . import html_reports
-from . import validation_status
-from . import xml_validator
-from . import xc_models
-from . import utils
 
 
 class ValidationsResultItems(dict):
@@ -189,7 +191,7 @@ class XMLIssueDataValidator(object):
 class XMLStructureValidator(object):
 
     def __init__(self, dtd_files):
-        self.xml_validator = xml_validator.XMLValidator(dtd_files)
+        self.xml_validator = xml_validators.XMLValidator(dtd_files)
 
     def validate(self, xml_filename, outputs):
         separator = '\n\n\n' + '.........\n\n\n'
@@ -250,9 +252,10 @@ class XMLStructureValidator(object):
 
 class XMLContentValidator(object):
 
-    def __init__(self, doi_services, pkgissuedata, registered_issue_data, package_path, is_xml_generation):
+    def __init__(self, pkgissuedata, registered_issue_data, package_path, is_xml_generation):
         self.registered_issue_data = registered_issue_data
-        self.doi_services = doi_services
+        self.doi_services = doi_validations.DOI_Services()
+
         self.package_path = package_path
         self.pkgissuedata = pkgissuedata
         self.is_xml_generation = is_xml_generation
@@ -986,7 +989,7 @@ class ArticlesMerger(object):
 
 class ArticlesValidator(object):
 
-    def __init__(self, doi_services, dtd_files, registered_issue_data, pkgissuedata, package_path, is_xml_generation):
+    def __init__(self, version, registered_issue_data, pkgissuedata, package_path, is_xml_generation):
         self.registered_issue_data = registered_issue_data
         self.pkgissuedata = pkgissuedata
         self.package_path = package_path
@@ -995,8 +998,8 @@ class ArticlesValidator(object):
 
         xml_journal_data_validator = XMLJournalDataValidator(self.pkgissuedata.journal_data)
         xml_issue_data_validator = XMLIssueDataValidator(self.registered_issue_data)
-        xml_structure_validator = XMLStructureValidator(dtd_files)
-        xml_content_validator = XMLContentValidator(doi_services, self.pkgissuedata, self.registered_issue_data, self.package_path, self.is_xml_generation)
+        xml_structure_validator = XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
+        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.package_path, self.is_xml_generation)
         self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
 
     def validate(self, articles, outputs, pkgfiles):

@@ -4,9 +4,9 @@ import os
 import urllib
 from mimetypes import MimeTypes
 
-from . import utils
-from . import xml_utils
-from . import attributes
+from .. import utils
+from .. import xml_utils
+from .. import attributes
 
 
 messages = []

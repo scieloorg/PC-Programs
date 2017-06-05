@@ -1,14 +1,13 @@
 # coding=utf-8
-
 import os
 from datetime import datetime
 
-from __init__ import _
-import fs_utils
-import validation_status
-import java_xml_utils
-import xml_utils
-import html_reports
+from ..__init__ import _
+from .. import fs_utils
+from .. import java_xml_utils
+from .. import xml_utils
+from .. import html_reports
+from .. import validation_status
 
 
 IS_PACKTOOLS_INSTALLED = False
@@ -19,32 +18,11 @@ except:
     os.environ['XML_CATALOG_FILES'] = ''
 
 
-def style_checker_statistics(content):
-    total_f = 0
-    total_e = 0
-    total_w = 0
+log_items = []
 
-    if 'Total of errors = ' in content:
-        errors = content[content.find('Total of errors = '):]
-        errors = errors[len('Total of errors = '):]
-        e = ''
-        for c in errors:
-            if c.isdigit():
-                e += c
-            else:
-                total_e = int(e)
-                break
-    if 'Total of warnings = ' in content:
-        errors = content[content.find('Total of warnings = '):]
-        errors = errors[len('Total of warnings = '):]
-        e = ''
-        for c in errors:
-            if c.isdigit():
-                e += c
-            else:
-                total_w = int(e)
-                break
-    return (total_f, total_e, total_w)
+
+def register_log(text):
+    log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
 class PackToolsValidator(object):
@@ -95,6 +73,24 @@ class PackToolsValidator(object):
         pass
 
 
+def save_packtools_style_report(content, report_filename):
+    version = ''
+    try:
+        import pkg_resources
+        version = pkg_resources.get_distribution('packtools').version
+    except:
+        pass
+
+    q = len(content.split('SPS-ERROR')) - 1
+    msg = ''
+    title = 'Style Checker (packtools' + version + ')'
+    if q > 0:
+        msg = html_reports.tag('div', 'Total of errors = ' + str(q), 'error')
+
+    body = msg + ''.join([html_reports.display_xml(item) for item in content.split('\n')])
+    html_reports.save(report_filename, title, body)
+
+
 class JavaXMLValidator(object):
 
     def __init__(self, doctype, xsl_prep_report, xsl_report):
@@ -140,6 +136,41 @@ class JavaXMLValidator(object):
         self.xml.finish()
 
 
+def java_xml_utils_dtd_validation(xml_filename, report_filename, doctype):
+    register_log('java_xml_utils_dtd_validation: inicio')
+    r = java_xml_utils.xml_validate(xml_filename, report_filename, doctype)
+    register_log('java_xml_utils_dtd_validation: fim')
+    return r
+
+
+def style_checker_statistics(content):
+    total_f = 0
+    total_e = 0
+    total_w = 0
+
+    if 'Total of errors = ' in content:
+        errors = content[content.find('Total of errors = '):]
+        errors = errors[len('Total of errors = '):]
+        e = ''
+        for c in errors:
+            if c.isdigit():
+                e += c
+            else:
+                total_e = int(e)
+                break
+    if 'Total of warnings = ' in content:
+        errors = content[content.find('Total of warnings = '):]
+        errors = errors[len('Total of warnings = '):]
+        e = ''
+        for c in errors:
+            if c.isdigit():
+                e += c
+            else:
+                total_w = int(e)
+                break
+    return (total_f, total_e, total_w)
+
+
 class XMLValidator(object):
 
     def __init__(self, dtd_files):
@@ -149,17 +180,12 @@ class XMLValidator(object):
         else:
             self.validator = JavaXMLValidator(dtd_files.doctype_with_local_path, dtd_files.xsl_prep_report, dtd_files.xsl_report)
 
-    def validate_dtd(self, xml_filename, dtd_report_filename):
+    def validate(self, xml_filename, dtd_report_filename, style_report_filename):
+        self.validator.logger = self.logger
         self.validator.setup(xml_filename)
-        is_valid_dtd = False
-        xml, e = xml_utils.load_xml(xml_filename)
-        if e is None:
-            is_valid_dtd = self.validator.dtd_validation(dtd_report_filename)
-        return is_valid_dtd
-
-    def validate_style(self, xml_filename, style_report_filename):
-        self.validator.setup(xml_filename)
-        xml, e = xml_utils.load_xml(xml_filename)
+        xml, e = xml_utils.load_xml(self.validator.xml.content)
+        is_valid_dtd = self.validator.dtd_validation(dtd_report_filename)
+        content = ''
         if e is None:
             self.validator.style_validation(style_report_filename)
             content = fs_utils.read_file(style_report_filename)
@@ -167,12 +193,5 @@ class XMLValidator(object):
             content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=xml_filename) + '\n' + e
             fs_utils.write_file(style_report_filename, content)
         f, e, w = style_checker_statistics(content)
-        return f, e, w
-
-    def validate(self, xml_filename, dtd_report_filename, style_report_filename):
-        self.validator.setup(xml_filename)
-        xml, e = xml_utils.load_xml(xml_filename)
-        is_valid_dtd = self.validator.dtd_validation(xml_filename, dtd_report_filename)
-        f, e, w = self.validator.validate_style(xml_filename, style_report_filename)
         self.validator.finish()
         return (xml, is_valid_dtd, (f, e, w))

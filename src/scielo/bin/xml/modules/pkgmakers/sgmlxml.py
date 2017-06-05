@@ -4,17 +4,18 @@ import os
 import sys
 import shutil
 
-from __init__ import _
-from . import article
-from . import fs_utils
-from . import java_xml_utils
-from . import symbols
-from . import text_report
-from . import html_reports
-from . import workarea
-from . import xml_utils
+from ..__init__ import _
+from .. import fs_utils
+from .. import java_xml_utils
+from .. import xml_utils
+from .. import validation_status
+from .. import text_report
+from .. import html_reports
+from .. import xml_versions
+from .. import article
+from .. import symbols
+from ..data import workarea
 from . import spsxml
-from . import validation_status
 
 
 class SGMLXMLWorkarea(workarea.Workarea):
@@ -365,8 +366,8 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
 class SGMLXML2SPSXMLConverter(object):
 
-    def __init__(self, xsl):
-        self.xsl = xsl
+    def __init__(self, version):
+        self.xsl = xml_versions.xsl_sgml2xml(version)
 
     def sgml2xml(self, xml):
         r = xml
