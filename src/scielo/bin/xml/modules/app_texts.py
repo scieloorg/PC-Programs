@@ -29,5 +29,7 @@ def get_texts(locale_relative_path):
     locale_path = get_locale_path(locale_relative_path)
     current_locale = get_current_locale(locale_path)
     t = gettext.translation('xpm-xc', locale_path, [current_locale])
-    return t.ugettext
-
+    try:
+        return t.ugettext
+    except:
+        return t.gettext

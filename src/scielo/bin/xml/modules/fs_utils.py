@@ -2,10 +2,10 @@
 import os
 import shutil
 import tempfile
+import zipfile
 from datetime import datetime
 
-import files_extractor
-import zipfile
+from . import files_extractor
 
 
 def read_file(filename, encode='utf-8'):

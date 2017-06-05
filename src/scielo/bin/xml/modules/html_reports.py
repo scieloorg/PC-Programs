@@ -2,15 +2,14 @@
 
 import os
 import sys
-import shutil
 import webbrowser
 
 from datetime import datetime
 
-from __init__ import _
+from .__init__ import _
 from . import xml_utils
-from . import utils
 from . import validation_status
+
 
 ENABLE_COMMENTS = False
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')

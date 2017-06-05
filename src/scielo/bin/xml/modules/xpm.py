@@ -3,7 +3,7 @@
 import os
 import sys
 
-from __init__ import _
+from .__init__ import _
 
 from . import utils
 from . import fs_utils

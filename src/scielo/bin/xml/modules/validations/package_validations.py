@@ -8,13 +8,13 @@ from .. import fs_utils
 from .. import html_reports
 from .. import validation_status
 from .. import utils
-from .. import doi_validations
+from ..doi_validations import doi_validations
 from .. import xml_versions
 from .. import attributes
 from .. import xc_models
-from .. import article_validations
 from . import xml_validators
 from . import article_data_reports
+from . import article_content_validations
 
 
 class ValidationsResultItems(dict):
@@ -254,8 +254,6 @@ class XMLContentValidator(object):
 
     def __init__(self, pkgissuedata, registered_issue_data, package_path, is_xml_generation):
         self.registered_issue_data = registered_issue_data
-        self.doi_services = doi_validations.DOI_Services()
-
         self.package_path = package_path
         self.pkgissuedata = pkgissuedata
         self.is_xml_generation = is_xml_generation
@@ -267,7 +265,7 @@ class XMLContentValidator(object):
         if article.tree is None:
             content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}. ').format(item=article.new_prefix)
         else:
-            article_content_validation = article_validations.ArticleContentValidation(self.doi_services, self.pkgissuedata.journal, article, (self.registered_issue_data.articles_db_manager is not None), False)
+            article_content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, (self.registered_issue_data.articles_db_manager is not None), False)
             article_display_report = article_data_reports.ArticleDisplayReport(article_content_validation, self.package_path)
             article_validation_report = article_data_reports.ArticleValidationReport(article_content_validation)
 
