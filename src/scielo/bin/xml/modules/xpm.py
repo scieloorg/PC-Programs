@@ -181,7 +181,6 @@ def validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage='xp
         version,
         registered_issue_data,
         pkgissuedata,
-        scielo_pkg_path,
         is_xml_generation)
 
     articles_data_reports = package_validations.ArticlesDataReports(article_items)

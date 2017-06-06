@@ -252,22 +252,21 @@ class XMLStructureValidator(object):
 
 class XMLContentValidator(object):
 
-    def __init__(self, pkgissuedata, registered_issue_data, package_path, is_xml_generation):
+    def __init__(self, pkgissuedata, registered_issue_data, is_xml_generation):
         self.registered_issue_data = registered_issue_data
-        self.package_path = package_path
         self.pkgissuedata = pkgissuedata
         self.is_xml_generation = is_xml_generation
 
-    def validate(self, article, outputs):
+    def validate(self, article, outputs, pkgfiles):
         article_display_report = None
         article_validation_report = None
 
         if article.tree is None:
             content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}. ').format(item=article.new_prefix)
         else:
-            article_content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, (self.registered_issue_data.articles_db_manager is not None), False)
-            article_display_report = article_data_reports.ArticleDisplayReport(article_content_validation, self.package_path)
-            article_validation_report = article_data_reports.ArticleValidationReport(article_content_validation)
+            content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, pkgfiles, (self.registered_issue_data.articles_db_manager is not None), False)
+            article_display_report = article_data_reports.ArticleDisplayReport(content_validation)
+            article_validation_report = article_data_reports.ArticleValidationReport(content_validation)
 
             content = []
 
@@ -290,7 +289,7 @@ class XMLContentValidator(object):
                 content.append(article_display_report.display_formulas)
                 content.append(article_display_report.table_tables)
                 r = fs_utils.read_file(outputs.images_report_filename) or ''
-                
+
                 r = r[r.find('<body'):]
                 r = r[r.find('>')+1:]
                 r = r[:r.find('</body>')]
@@ -310,12 +309,12 @@ class ArticleValidator(object):
         self.xml_structure_validator = xml_structure_validator
         self.xml_content_validator = xml_content_validator
 
-    def validate(self, article, outputs, xml_filename):
+    def validate(self, article, outputs, pkgfiles):
         artval = ArticleValidations()
         artval.journal_validations = self.xml_journal_data_validator.validate(article)
         artval.issue_validations = self.xml_issue_data_validator.validate(article)
-        artval.xml_structure_validations = self.xml_structure_validator.validate(xml_filename, outputs)
-        artval.xml_content_validations, artval.article_display_report = self.xml_content_validator.validate(article, outputs)
+        artval.xml_structure_validations = self.xml_structure_validator.validate(pkgfiles.filename, outputs)
+        artval.xml_content_validations, artval.article_display_report = self.xml_content_validator.validate(article, outputs, pkgfiles)
         if self.xml_content_validator.is_xml_generation:
             stats = artval.xml_content_validations.statistics_display(False)
             title = [_('Data Quality Control'), article.new_prefix]
@@ -987,17 +986,16 @@ class ArticlesMerger(object):
 
 class ArticlesValidator(object):
 
-    def __init__(self, version, registered_issue_data, pkgissuedata, package_path, is_xml_generation):
+    def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation):
         self.registered_issue_data = registered_issue_data
         self.pkgissuedata = pkgissuedata
-        self.package_path = package_path
         self.is_xml_generation = is_xml_generation
         self.is_db_generation = self.registered_issue_data.db_manager is not None
 
         xml_journal_data_validator = XMLJournalDataValidator(self.pkgissuedata.journal_data)
         xml_issue_data_validator = XMLIssueDataValidator(self.registered_issue_data)
         xml_structure_validator = XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
-        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.package_path, self.is_xml_generation)
+        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.is_xml_generation)
         self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
 
     def validate(self, articles, outputs, pkgfiles):
@@ -1015,7 +1013,7 @@ class ArticlesValidator(object):
         results = {}
         for name, article in articles.items():
             utils.display_message(_('Validate {name}').format(name=name))
-            results[name] = self.article_validator.validate(article, outputs[name], pkgfiles[name].filename)
+            results[name] = self.article_validator.validate(article, outputs[name], pkgfiles[name])
 
         articles_validations_reports.consistency_validations = ValidationsResult()
         articles_validations_reports.consistency_validations.message = articles_validations_reports.merged_articles_reports.report_data_consistency

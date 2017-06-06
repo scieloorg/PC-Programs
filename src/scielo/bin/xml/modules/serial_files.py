@@ -1,10 +1,8 @@
 # coding=utf-8
 import os
 import shutil
-from datetime import datetime
 
 import fs_utils
-from article import Article
 
 
 def filename_language_suffix(filename):

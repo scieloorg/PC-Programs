@@ -252,10 +252,11 @@ def try_request(url, timeout=30, debug=False, force_error=False):
 
 class WebServicesRequester(object):
 
-    def __init__(self):
+    def __init__(self, active=True):
         self.requests = {}
         self.skip = []
         self.proxy_checker = ProxyChecker()
+        self.active = active
 
     def __new__(self):
         if not hasattr(self, 'instance'):
@@ -264,6 +265,8 @@ class WebServicesRequester(object):
 
     def request(self, url, timeout=30, debug=False, force_error=False):
         #print(url)
+        if self.active is False:
+            return None
         response = self.requests.get(url)
         if response is None and not url in self.requests.keys():
             server = get_servername(url)
@@ -277,6 +280,8 @@ class WebServicesRequester(object):
         return response
 
     def json_result_request(self, url, timeout=30, debug=False):
+        if self.active is False:
+            return None
         result = None
         if url is not None:
             r = self.request(url, timeout, debug)
@@ -285,6 +290,8 @@ class WebServicesRequester(object):
         return result
 
     def is_valid_url(self, url, timeout=30):
+        if self.active is False:
+            return None
         _result = self.request(url, timeout)
         return _result is not None
 

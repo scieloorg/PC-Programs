@@ -70,39 +70,6 @@ def update_pkg_files_report(d, k, status, message):
     return d
 
 
-def evaluate_tiff(img_filename, min_height=None, max_height=None):
-    status_message = []
-    tiff_im = utils.tiff_image(img_filename)
-    if tiff_im is not None:
-        errors = []
-        dpi = None if tiff_im.info is None else tiff_im.info.get('dpi', [_('unknown')])[0]
-
-        info = []
-        info.append(u'{dpi} dpi'.format(dpi=dpi))
-        info.append(_('height: {height} pixels. ').format(height=tiff_im.size[1]))
-        info.append(_('width: {width} pixels. ').format(width=tiff_im.size[0]))
-
-        status = None
-        if min_height is not None:
-            if tiff_im.size[1] < min_height:
-                status = validation_status.STATUS_WARNING
-        if max_height is not None:
-            if tiff_im.size[1] > max_height:
-                status = validation_status.STATUS_WARNING
-        if status is not None:
-            errors.append(_('Be sure that {img} has valid height. Recommended: min={min} and max={max}. The images must be proportional among themselves. ').format(img=os.path.basename(img_filename), min=min_height, max=max_height))
-        if dpi is not None:
-            if dpi < MIN_IMG_DPI:
-                errors.append(_('Expected values: {expected}. ').format(expected=_('equal or greater than {value} dpi').format(value=MIN_IMG_DPI)))
-                status = validation_status.STATUS_ERROR
-        if len(errors) > 0:
-            status_message.append((status, '; '.join(info) + ' | ' + '. '.join(errors)))
-        else:
-            status_message.append((validation_status.STATUS_INFO, '; '.join(info)))
-
-    return status_message
-
-
 def join_not_None_items(items, sep=', '):
     return sep.join([item for item in items if item is not None])
 
@@ -288,12 +255,13 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, journal, _article, is_db_generation, check_url):
+    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url):
         self.doi_validator = doi_validations.DOIValidator()
         self.journal = journal
         self.article = _article
         self.is_db_generation = is_db_generation
         self.check_url = check_url
+        self.pkgfiles = pkgfiles
 
     def normalize_validations(self, validations_result_list):
         r = []
@@ -308,6 +276,7 @@ class ArticleContentValidation(object):
 
     @property
     def validations(self):
+        #FIXME
         performance = []
         #utils.debugging(datetime.now().isoformat() + ' validations 1')
         items = []
@@ -573,6 +542,7 @@ class ArticleContentValidation(object):
 
     @property
     def journal_id_nlm_ta(self):
+        #FIXME
         if self.journal is not None:
             if self.journal.nlm_title is not None:
                 if len(self.journal.nlm_title) > 0:
@@ -650,6 +620,7 @@ class ArticleContentValidation(object):
 
     @property
     def doi(self):
+        #FIXME
         r = []
         if self.article.doi is not None:
             r = self.doi_validator.validate(self.article)
@@ -1221,7 +1192,8 @@ class ArticleContentValidation(object):
     def paragraphs(self):
         invalid_items = self.article.paragraphs_startswith(':')
         if len(invalid_items) > 0:
-            return [('paragraph', validation_status.STATUS_ERROR, 
+            return [('paragraph',
+                validation_status.STATUS_ERROR,
                 {_('{value} starts with invalid characters: {invalid_chars}. ').format(value=_('paragraphs'), invalid_chars=':'): invalid_items})]
 
     @property
@@ -1324,138 +1296,158 @@ class ArticleContentValidation(object):
                     message.append(('xref', validation_status.STATUS_WARNING, invalid_labels_and_values(items)))
         return message
 
-    def svg(self, path):
+    @property
+    def svg(self):
         messages = []
         for href in self.article.hrefs:
             if href.is_internal_file and href.src.endswith('.svg'):
                 try:
-                    if '<image' in open(os.path.join(path, href.src)).read():
+                    if '<image' in open(os.path.join(self.pkgfiles.path, href.src)).read():
                         messages.append(('svg', validation_status.STATUS_ERROR, _(u'Invalid SVG file: {} contains embedded images. ').format(href.src)))
                 except:
                     pass
         return messages
-                
-    def href_list(self, path):
-        href_items = {}
-        min_inline, max_inline = utils.valid_formula_min_max_height(self.article.inline_graphics_heights(path))
-        min_disp, max_disp = utils.valid_formula_min_max_height(self.article.disp_formulas_heights(path), 0.3)
+
+    @property
+    def graphics_min_and_max_height(self):
+        min_inline, max_inline = utils.valid_formula_min_max_height(self.article.inline_graphics_heights(self.pkgfiles.path))
+        min_disp, max_disp = utils.valid_formula_min_max_height(self.article.disp_formulas_heights(self.pkgfiles.path), 0.3)
         if min_disp < min_inline:
             min_disp = min_inline
         if max_disp < max_inline:
             max_disp = max_inline
+        return min_disp, max_disp, min_inline, max_inline
+
+    def graphic_min_and_max_height(self, hrefitem, min_disp, max_disp, min_inline, max_inline):
+        min_height = None
+        max_height = None
+        if hrefitem in self.article.inline_graphics:
+            min_height = min_inline
+            max_height = max_inline
+        elif hrefitem in self.article.disp_formulas:
+            min_height = min_disp
+            max_height = max_disp
+        return min_height, max_height
+
+    @property
+    def href_list(self):
+        href_items = {}
+        min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
         for hrefitem in self.article.hrefs:
-            status_message = []
-
-            if hrefitem.is_internal_file:
-                min_height = None
-                max_height = None
-                file_location = hrefitem.file_location(path)
-                if hrefitem in self.article.inline_graphics:
-                    min_height = min_inline
-                    max_height = max_inline
-                elif hrefitem in self.article.disp_formulas:
-                    min_height = min_disp
-                    max_height = max_disp
-                status_message = evaluate_tiff(path + '/' + hrefitem.src, min_height, max_height)
-
-                if os.path.isfile(file_location):
-                    if not '.' in hrefitem.src:
-                        status_message.append((validation_status.STATUS_WARNING, _('missing extension of ') + hrefitem.src + '.'))
-                else:
-                    if file_location.endswith(hrefitem.src):
-                        status_message.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=hrefitem.src, item=_('package'))))
-                    elif file_location.endswith('.jpg') and (hrefitem.src.endswith('.tif') or hrefitem.src.endswith('.tiff')):
-                        status_message.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=os.path.basename(file_location), item=_('package'))))
-                    elif file_location.endswith('.jpg') and not '.' in hrefitem.src:
-                        status_message.append((validation_status.STATUS_WARNING, _('Not found {label} in the {item}. ').format(label=_('extension'), item=hrefitem.src)))
-                        status_message.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=os.path.basename(file_location), item=_('package'))))
-                hreflocation = file_location
-                if hrefitem.is_image:
-                    display = html_reports.thumb_image(hreflocation.replace(path, '{IMG_PATH}'))
-                else:
-                    display = html_reports.link(hreflocation.replace(path, '{PDF_PATH}'), hrefitem.src)
-                if len(status_message) == 0:
-                    status_message.append((validation_status.STATUS_INFO, ''))
-                href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}
-            else:
-                hreflocation = hrefitem.src
-                if self.check_url or ('scielo' in hrefitem.src and not hrefitem.src.endswith('.pdf')):
-                    if not ws_requester.wsr.is_valid_url(hrefitem.src, 30):
-                        message = invalid_value_message(hrefitem.src, 'URL')
-                        if ('scielo' in hrefitem.src and not hrefitem.src.endswith('.pdf')):
-                            message += _('Be sure that there is no missing character such as _. ')
-                        status_message.append((validation_status.STATUS_WARNING, hrefitem.src + message))
-                        if hrefitem.is_image:
-                            display = html_reports.thumb_image(hreflocation)
-                        else:
-                            display = html_reports.link(hreflocation, hrefitem.src)
-                        if len(status_message) == 0:
-                            status_message.append((validation_status.STATUS_INFO, ''))
-                        href_items[hrefitem.src] = {'display': display, 'elem': hrefitem, 'results': status_message}
+            href_validations = HRefValidation(hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
+            href_items[hrefitem.src] = {
+                'display': href_validations.display,
+                'elem': hrefitem,
+                'results': href_validations.validate()}
         return href_items
 
-    def package_files(self, pkg_path):
+    @property
+    def package_files(self):
+        expected_files = {self.article.language: self.pkgfiles.name + '.pdf'}
+        expected_files.update(
+            {lang: self.pkgfiles.name + '-' + lang + '.pdf' for lang in self.article.trans_languages})
         _pkg_files = {}
-        #from XML, find files
-        pdf_langs = [item[-6:-4] for item in self.article.package_files if item.endswith('.pdf') and item[-7:-6] == '-']
-        if self.article.language is not None:
-            filename = self.article.new_prefix + '.pdf'
-            _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_INFO, 'PDF ({lang}). '.format(lang=self.article.language))
-            if not filename in self.article.package_files:
-                _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_ERROR, _('Not found {label} in the {item}. ').format(label=_('file'), item=_('package')))
-        for lang in self.article.trans_languages:
-            if not lang in pdf_langs:
-                filename = self.article.new_prefix + '-' + lang + '.pdf'
-                _pkg_files = update_pkg_files_report(_pkg_files, filename, validation_status.STATUS_ERROR, _('Not found {label} in the {item}. ').format(label=_('file'), item=_('package')))
+        for f in expected_files.values():
+            if f not in _pkg_files.keys():
+                _pkg_files[f] = []
+            _pkg_files[f].append((validation_status.STATUS_INFO, 'PDF ({lang}). '.format(lang=self.article.language)))
+            if f not in self.pkgfiles.files_except_xml:
+                _pkg_files[f].append((validation_status.STATUS_ERROR, _('Not found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
 
         #from files, find in XML
         href_items_in_xml = [item.name_without_extension for item in self.article.href_files]
         href_items_in_xml += [item.src for item in self.article.href_files]
-        for item in self.article.package_files:
-            fname, ext = os.path.splitext(item)
-
-            if item.startswith(self.article.new_prefix):
-                status = validation_status.STATUS_INFO
-                message = _('Found {label} in the {item}. ').format(label=_('file'), item=_('package'))
-            else:
-                status = validation_status.STATUS_FATAL_ERROR
-                message = _('{label} must start with {prefix}. ').format(label=_('file'), prefix=self.article.new_prefix)
-
-            _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
+        for f in self.pkgfiles.files_except_xml:
+            name, ext = os.path.splitext(f)
+            if f not in _pkg_files.keys():
+                _pkg_files[f] = []
+            _pkg_files[f].append((validation_status.STATUS_INFO, _('Found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
 
             status = validation_status.STATUS_INFO
             message = None
-            if item in href_items_in_xml:
+            if f in href_items_in_xml or name in href_items_in_xml:
                 message = _('Found {label} in the {item}. ').format(label=_('file'), item='XML')
-            elif item == self.article.new_prefix + '.pdf':
-                message = None
-            elif ext == '.pdf':
-                suffix = filename_language_suffix(fname)
-                if suffix is None:
-                    message = _('Not found {label} in the {item}. ').format(label=_('file'), item='XML')
-                    status = validation_status.STATUS_ERROR
-                else:
-                    if suffix in self.article.trans_languages:
-                        message = _('Found {label} in {item}. ').format(label='sub-article({lang})'.format(lang=suffix), item='XML')
-                    elif suffix == self.article.language:
-                        status = validation_status.STATUS_ERROR
-                        message = _('PDF ({lang}). ').format(lang=suffix) + _(' must not have -{lang} in PDF name. ').format(lang=suffix)
-                    else:
-                        status = validation_status.STATUS_WARNING
-                        message = _('Not found {label} in {item}. ').format(label='sub-article({lang})'.format(lang=suffix), item='XML')
-            elif fname in href_items_in_xml:
-                message = _('Found {label} in the {item}. ').format(label=_('file'), item='XML')
-            elif not ext == '.jpg':
-                status = validation_status.STATUS_ERROR
+            elif f in expected_files.values():
+                lang = [k for k, v in expected_files.items() if v == f]
+                if len(lang) > 0:
+                    lang = lang[0]
+                    message = _('Found {label} in {item}. ').format(label='@xml:lang={lang}'.format(lang=lang), item='XML')
+            else:
                 message = _('Not found {label} in the {item}. ').format(label=_('file'), item='XML')
+                status = validation_status.STATUS_ERROR
 
             if message is not None:
-                _pkg_files = update_pkg_files_report(_pkg_files, item, status, message)
+                _pkg_files[f].append((status, message))
         items = []
-        for filename in sorted(_pkg_files.keys()):
-            for status, message_list in _pkg_files[filename].items():
-                items.append((filename, status, message_list))
+        for name in sorted(_pkg_files.keys()):
+            for status, message_list in _pkg_files[name]:
+                items.append((name, status, message_list))
         return items
+
+
+class HRefValidation(object):
+
+    def __init__(self, hrefitem, check_url, pkgfiles, min_disp=None, max_disp=None, min_inline=None, max_inline=None):
+        self.pkgfiles = pkgfiles
+        self.hrefitem = hrefitem
+        self.check_url = check_url
+        self.name, self.ext = os.path.splitext(self.hrefitem.src)
+        self.min_max_height(min_disp, max_disp, min_inline, max_inline)
+
+    def min_max_height(self, min_disp, max_disp, min_inline, max_inline):
+        self.min_height = None
+        self.max_height = None
+        if self.hrefitem.is_inline:
+            self.min_height = min_inline
+            self.max_height = max_inline
+        elif self.hrefitem.is_disp_formula:
+            self.min_height = min_disp
+            self.max_height = max_disp
+
+    def validate(self):
+        status_message = []
+        if self.hrefitem.is_internal_file:
+            status_message.append(self.validate_href_file)
+            if self.hrefitem.is_image:
+                status_message.append(self.validate_tiff_image)
+            status_message = [item for item in status_message if item is not None]
+        else:
+            if self.check_url or 'scielo.php' in self.hrefitem.src:
+                if ws_requester.wsr.is_valid_url(self.hrefitem.src) is None:
+                    message = invalid_value_message(self.hrefitem.src, 'URL')
+                    if 'scielo.php' in self.hrefitem.src:
+                        message += _('Be sure that there is no missing character such as _. ')
+                    status_message.append((validation_status.STATUS_WARNING, self.hrefitem.src + message))        
+        if len(status_message) == 0:
+            status_message.append((validation_status.STATUS_INFO, ''))
+        return status_message
+
+    @property
+    def validate_href_file(self):
+        result = []
+        name, ext = os.path.splitext(self.hrefitem.src)
+        if self.hrefitem.src not in self.pkgfiles.files_except_xml:
+            if name not in self.pkgfiles.files_by_name_except_xml.keys():
+                result.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=self.hrefitem.src, item=_('package'))))
+        if '.' not in self.hrefitem.src:
+            result.append((validation_status.STATUS_WARNING, _('missing extension of ') + self.hrefitem.src + '.'))
+        return result
+
+    @property
+    def validate_tiff_image(self):
+        for name in [self.name+'.tif', self.name+'.tiff']:
+            if name in self.pkgfiles.tiff_items:
+                return img_utils.evaluate_tiff(self.pkgfiles.path + '/' + name, self.min_height, self.max_height)
+
+    @property
+    def display(self):
+        location = self.hrefitem.src
+        if self.hrefitem.is_internal_file:
+            location = self.hrefitem.file_location(self.pkgfiles.path)
+        if self.hrefitem.is_image:
+            return html_reports.thumb_image(location.replace(self.pkgfiles.path, '{IMG_PATH}'))
+        else:
+            return html_reports.link(location.replace(self.pkgfiles.path, '{PDF_PATH}'), self.hrefitem.src)
 
 
 class ReferenceContentValidation(object):

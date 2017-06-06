@@ -41,15 +41,14 @@ def display_authors(authors_list, sep):
 
 class ArticleDisplayReport(object):
 
-    def __init__(self, article_validation, xml_path):
+    def __init__(self, article_validation):
         self.article = article_validation.article
         self.article_validation = article_validation
-        self.xml_name = article_validation.article.prefix
-        self.xml_path = xml_path
+        self.article_identification = article_validation.article.prefix
 
     @property
     def article_front(self):
-        r = _('{xml_name} is an invalid XML file').format(xml_name=self.xml_name)
+        r = _('{xml_name} is an invalid XML file').format(xml_name=self.article_identification)
         if self.article.tree is not None:
             r = ''
             r += self.sps
@@ -328,12 +327,12 @@ class ArticleDisplayReport(object):
     def authors_sheet_data(self):
         r = []
         t_header = ['xref', 'publication-type', 'role', 'given-names', 'surname', 'suffix', 'prefix', 'collab']
-        if not self.xml_name is None:
+        if not self.article_identification is None:
             t_header = ['filename', 'scope'] + t_header
         for a in self.article.contrib_names:
             row = {}
             row['scope'] = 'article meta'
-            row['filename'] = self.xml_name
+            row['filename'] = self.article_identification
             row['xref'] = ' '.join(a.xref)
             row['role'] = a.role
             row['publication-type'] = self.article.article_type
@@ -346,7 +345,7 @@ class ArticleDisplayReport(object):
         for a in self.article.contrib_collabs:
             row = {}
             row['scope'] = 'article meta'
-            row['filename'] = self.xml_name
+            row['filename'] = self.article_identification
             row['publication-type'] = self.article.article_type
             row['collab'] = a.collab
             row['role'] = a.role
@@ -356,7 +355,7 @@ class ArticleDisplayReport(object):
             for item in ref.authors_list:
                 row = {}
                 row['scope'] = ref.id
-                row['filename'] = self.xml_name
+                row['filename'] = self.article_identification
                 row['publication-type'] = ref.publication_type
 
                 if isinstance(item, PersonAuthor):
@@ -380,14 +379,14 @@ class ArticleDisplayReport(object):
     def sources_sheet_data(self):
         r = []
         t_header = ['ID', 'type', 'year', 'source', 'publisher name', 'location', ]
-        if not self.xml_name is None:
+        if not self.article_identification is None:
             t_header = ['filename', 'scope'] + t_header
 
         for ref in self.article.references:
             row = {}
             row['scope'] = ref.id
             row['ID'] = ref.id
-            row['filename'] = self.xml_name
+            row['filename'] = self.article_identification
             row['type'] = ref.publication_type
             row['year'] = ref.year
             row['source'] = ref.source
@@ -420,7 +419,7 @@ class ArticleDisplayReport(object):
     def hrefs_sheet_data(self):
         t_header = ['label', 'status', 'message', _('why it is not a valid message?'), 'display', 'xml']
         r = []
-        href_items = self.article_validation.href_list(self.xml_path)
+        href_items = self.article_validation.href_list
         for src in sorted(href_items.keys()):
             hrefitem = href_items.get(src)
             for result in hrefitem['results']:
@@ -437,7 +436,7 @@ class ArticleDisplayReport(object):
     def package_files(self):
         r = []
         t_header = ['label', 'status', 'message', _('why it is not a valid message?')]
-        items = self.article_validation.package_files(self.xml_path) + self.article_validation.svg(self.xml_path)
+        items = self.article_validation.package_files + self.article_validation.svg
 
         if len(items) > 0:
             for filename, status, message in items:
