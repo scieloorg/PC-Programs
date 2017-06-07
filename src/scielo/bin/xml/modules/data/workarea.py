@@ -158,38 +158,43 @@ class PackageFiles(object):
 
 class PackageFolder(object):
 
-    def __init__(self, path):
+    def __init__(self, path, xml_list=None):
         self.path = path
         self.xml_names = [f[:f.rfind('.')] for f in os.listdir(self.path) if f.endswith('.xml') and not f.endswith('.sgm.xml')]
-        self.xml_list = [self.path + '/' + f for f in os.listdir(self.path) if f.endswith('.xml') and not f.endswith('.sgm.xml')]
+        self.xml_list = xml_list
+        if xml_list is None:
+            self.xml_list = [self.path + '/' + f for f in os.listdir(self.path) if f.endswith('.xml') and not f.endswith('.sgm.xml')]
+        self.INFORM_ORPHANS = xml_list is not None and len(xml_list) > 1
 
     @property
-    def packages(self):
-        items = []
+    def pkgfiles_items(self):
+        items = {}
         for item in self.xml_list:
-            items.append(PackageFiles(item))
+            pkgfiles = PackageFiles(item)
+            items[pkgfiles.name] = pkgfiles
         return items
 
     @property
-    def package_files(self):
+    def package_filenames(self):
         items = []
-        for pkg in self.packages:
+        for pkg in self.pkgfiles_items.values():
             items.extend(pkg.allfiles)
         return items
 
     @property
     def orphans(self):
         items = []
-        for f in os.listdir(self.path):
-            if f not in self.package_files:
-                items.append(f)
+        if self.INFORM_ORPHANS is True:
+            for f in os.listdir(self.path):
+                if f not in self.package_filenames:
+                    items.append(f)
         return items
 
     def zip(self, dest_path=None):
         if dest_path is None:
             dest_path = os.path.dirname(self.path)
         filename = dest_path + '/' + os.path.basename(self.path) + '.zip'
-        fs_utils.zip(filename, [self.path + '/' + f for f in self.package_files])
+        fs_utils.zip(filename, [self.path + '/' + f for f in self.package_filenames])
         return filename
 
 
