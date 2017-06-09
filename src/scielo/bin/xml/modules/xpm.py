@@ -7,14 +7,9 @@ from .__init__ import _
 
 from . import utils
 from . import fs_utils
-from . import html_reports
-from . import article
 from pkgmakers import sgmlxml
-from pkgmakers import spsxml
-from pkgmakers import pmcxml
 from data import workarea
-from validations import package_validations
-from pkgmakers import package
+from pkgmakers import package_maker
 
 messages = []
 
@@ -50,11 +45,11 @@ def call_make_packages(args, version):
                 pkgfiles = [sgmlxml2xml(sgm_xml, acron, version)]
                 stage = 'xml'
             else:
-                pkgfiles = normalize_xml_packages(xml_list, stage)
+                pkgfiles = package_maker.normalize_xml_packages(xml_list, stage)
             #validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage, sgm_xml)
             config = None
             db_manager = None
-            proc = package.Proc(config, version, DISPLAY_REPORT, GENERATE_PMC, db_manager, stage)
+            proc = package_maker.Proc(config, version, DISPLAY_REPORT, GENERATE_PMC, db_manager, stage)
             proc.make_package([f.filename for f in pkgfiles])
 
 
@@ -113,87 +108,4 @@ def sgmlxml2xml(sgm_xml_filename, acron, version):
     package_maker = sgmlxml.SGMLXML2SPSXMLPackageMaker(wk, pkgfiles)
     package_maker.pack(acron, sgmlxml2xml)
     return package_maker.xml_pkgfiles
-
-
-def normalize_xml_packages(xml_list, stage='xpm'):
-    pkgfiles_items = [workarea.PackageFiles(item) for item in xml_list]
-
-    path = pkgfiles_items[0].path + '_' + stage
-    if not os.path.dirname(path):
-        os.makedirs(path)
-
-    wk = workarea.Workarea(path)
-
-    dest_path = wk.scielo_package_path
-    dest_pkgfiles_items = [workarea.PackageFiles(dest_path + '/' + item.basename) for item in pkgfiles_items]
-
-    for src, dest in zip(pkgfiles_items, dest_pkgfiles_items):
-        xmlcontent = spsxml.SPSXMLContent(fs_utils.read_file(src.filename))
-        xmlcontent.normalize()
-        fs_utils.write_file(dest.filename, xmlcontent.content)
-        src.copy(dest_path)
-    return dest_pkgfiles_items
-
-
-def validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
-    wk = workarea.Workarea(os.path.dirname(pkgfiles[0].path))
-    package_folder = workarea.PackageFolder(pkgfiles[0].path)
-
-    pkgfiles = {item.name: item for item in pkgfiles}
-    is_xml_generation = stage == 'xml'
-    is_db_generation = stage == 'xc'
-
-    scielo_pkg_path = wk.scielo_package_path
-    pmc_pkg_path = wk.pmc_package_path
-    report_path = wk.reports_path
-    results_path = wk.output_path
-
-    article_items = {item.name: article.ArticleXMLContent(fs_utils.read_file(item.filename), item.previous_name, item.name).doc for item in pkgfiles.values()}
-    outputs_items = {item.name: workarea.OutputFiles(item.previous_name, wk.reports_path, item.ctrl_path) for item in pkgfiles.values()}
-    is_pmc_journal = any([doc.journal_id_nlm_ta is not None for name, doc in article_items.items()])
-
-    pkgreports = package_validations.PackageReports(package_folder, article_items)
-    pkgissuedata = package_validations.PackageIssueData(article_items)
-    registered_issue_data = package_validations.RegisteredIssueData(db_manager=None)
-    registered_issue_data.get_data(pkgissuedata)
-
-    validator = package_validations.ArticlesValidator(
-        version,
-        registered_issue_data,
-        pkgissuedata,
-        is_xml_generation)
-
-    articles_data_reports = package_validations.ArticlesDataReports(article_items)
-    articles_validations_reports = validator.validate(article_items, outputs_items, pkgfiles)
-
-    files_final_location = workarea.FilesFinalLocation(scielo_pkg_path, pkgissuedata.acron, pkgissuedata.issue_label, web_app_path=None)
-
-    reports = package_validations.ReportsMaker(pkgreports, articles_data_reports, articles_validations_reports, files_final_location, xpm_version(), conversion=None)
-
-    if not is_xml_generation:
-        reports.processing_result_location = results_path
-        reports.save_report(report_path, 'xpm.html', _('XML Package Maker Report'))
-        if DISPLAY_REPORT:
-            html_reports.display_report(report_path + '/xpm.html')
-
-    if not is_db_generation:
-        pmc_package_maker = pmcxml.PMCPackageMaker(version)
-        if is_xml_generation:
-            pmc_package_maker.make_report(article_items, outputs_items)
-        if is_pmc_journal:
-            if GENERATE_PMC:
-                pmc_package_maker.make_package(article_items, outputs_items)
-                workarea.PackageFolder(pmc_pkg_path).zip()
-            else:
-                print('='*10)
-                print(_('To generate PMC package, add -pmc as parameter'))
-                print('='*10)
-
-    if not is_xml_generation and not is_db_generation:
-        workarea.PackageFolder(scielo_pkg_path).zip()
-
-    utils.display_message(_('Result of the processing:'))
-    utils.display_message(results_path)
-    xpm_process_logger.write(report_path + '/log.txt')
-
 

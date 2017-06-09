@@ -13,13 +13,11 @@ from . import dbm_isis
 from . import xc_models
 from . import article_validations
 from . import article_reports
-from . import pkg_validations
-from . import serial_files
+from . import package_validations
 from . import xml_utils
 from . import xpm
 from . import xc
 from . import xc_config
-from pkgmakers import package
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -130,10 +128,14 @@ def execute_converter(package_paths, collection_name):
     transfer = FilesTransfer(config)
     organize_packages_locations(package_paths, config, mailer)
 
-    xc = XC(config)
+    xc = XC(config, version, DISPLAY_REPORT, GENERATE_PMC, stage)
 
     for package_path in package_paths:
-        xc.convert(package_path)
+
+        pkgfolder = workarea.PackageFolder(os.path.dirname(xml_list[0]))
+        pkgfiles = package.normalize_xml_packages(pkgfolder.xml_list, 'xc')
+
+        xc.convert([f.filename for f in pkgfiles])
 
         package_folder = os.path.basename(package_path)
         utils.display_message(package_path)
@@ -182,9 +184,16 @@ def execute_converter(package_paths, collection_name):
     utils.display_message(_('finished'))
 
 
-class XC(object):
+class XC(Proc):
 
-    def __init__(self, config):
+    def __init__(self, config, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
+        self.DISPLAY_REPORT = DISPLAY_REPORT
+        self.GENERATE_PMC = GENERATE_PMC
+        self.stage = stage
+        self.is_xml_generation = stage == 'xml'
+        self.is_db_generation = stage == 'xc'
+        self.web_app_path = None
+        self.version = version
         self.config = config
         db_isis = dbm_isis.IsisDAO(
                     dbm_isis.UCISIS(
@@ -197,7 +206,56 @@ class XC(object):
         if config.is_enabled_email_service:
             self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email)
 
-    def convert(self, src_path):
+    def package(self, input_xml_list):
+        workarea_path = os.path.dirname(input_xml_list[0])
+        if self.stage != 'xml':
+            workarea_path += '_' + self.stage
+        return Package(input_xml_list, workarea_path)
+
+    def make_package(self, input_xml_list):
+        pkg = self.package(input_xml_list)
+        conversion = None
+        pkg_validations = self.validate_package(pkg, self.db_manager)
+        self.report(pkg, pkg_validations, conversion)
+        self.make_pmc_package(pkg)
+        self.zip(pkg)
+        utils.display_message(_('Result of the processing:'))
+        utils.display_message(pkg.wk.output_path)
+        #xpm_process_logger.write(pkg.wk.reports_path + '/log.txt')
+
+        #FIXME PAREiAQUI
+        conversion = ArticlesConversion(articles_set_validations, articles_data.articles_db_manager, not converter_env.is_windows)
+        scilista_items = conversion.convert()
+
+        if tmp_result_path != conversion.results_path:
+            fs_utils.delete_file_or_folder(tmp_result_path)
+        os.unlink(log_package)
+        return (scilista_items, conversion.xc_status, conversion.statistics_display, conversion.report_location)
+
+    def convert(self, input_xml_list):
+        xc_process_logger = fs_utils.ProcessLogger()
+        scilista_items = []
+
+        # FIXME
+        src_path = os.path.dirname(input_xml_list[0])
+        pkg_name = os.path.basename(src_path)[:-4]
+        if not os.path.isdir('./../log'):
+            os.makedirs('./../log')
+        log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
+        fs_utils.append_file(log_package, 'preparing')
+        tmp_result_path = src_path + '_xc'
+
+        pkg = self.package(input_xml_list)
+        conversion = None
+        pkg_validations = self.pkg_validator.articles_validations_reports(pkg, self.db_manager)
+        self.report(pkg, pkg_validations, conversion)
+        self.make_pmc_package(pkg)
+        self.zip(pkg)
+        utils.display_message(_('Result of the processing:'))
+        utils.display_message(pkg.wk.output_path)
+        #xpm_process_logger.write(pkg.wk.reports_path + '/log.txt')
+
+    def old_convert(self, src_path):
         xc_process_logger = fs_utils.ProcessLogger()
 
         scilista_items = []
@@ -230,6 +288,37 @@ class XC(object):
             fs_utils.delete_file_or_folder(tmp_result_path)
         os.unlink(log_package)
         return (scilista_items, conversion.xc_status, conversion.statistics_display, conversion.report_location)
+
+    def report(self, pkg, pkg_validations, conversion=None):
+        files_final_location = workarea.FilesFinalLocation(pkg.wk.scielo_package_path, pkg.pkgissuedata.acron, pkg.pkgissuedata.issue_label, self.web_app_path)
+        pkgreports = package_validations.PackageReports(pkg.package_folder)
+        articles_data_reports = package_validations.ArticlesDataReports(pkg.articles)
+        reports = package_validations.ReportsMaker(pkgreports, articles_data_reports, pkg_validations, files_final_location, xpm_version(), conversion)
+
+        if not self.is_xml_generation:
+            reports.processing_result_location = pkg.wk.output_path
+            reports.save_report(pkg.wk.reports_path, 'xpm.html', _('XML Package Maker Report'))
+            if self.DISPLAY_REPORT:
+                html_reports.display_report(pkg.wk.reports_path + '/xpm.html')
+
+    def make_pmc_package(self, pkg):
+        if not self.is_db_generation:
+            # FIXME
+            pmc_package_maker = pmcxml.PMCPackageMaker(self.version)
+            if self.is_xml_generation:
+                pmc_package_maker.make_report(pkg.articles, pkg.outputs)
+            if pkg.is_pmc_journal:
+                if self.GENERATE_PMC:
+                    pmc_package_maker.make_package(pkg.articles, pkg.outputs)
+                    workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
+                else:
+                    print('='*10)
+                    print(_('To generate PMC package, add -pmc as parameter'))
+                    print('='*10)
+
+    def zip(self, pkg):
+        if not self.is_xml_generation and not self.is_db_generation:
+            workarea.PackageFolder(pkg.wk.scielo_package_path).zip()
 
 
 class Mailer(object):
@@ -372,39 +461,36 @@ class ConverterEnv(object):
 
 class ArticlesConversion(object):
 
-    def __init__(self, articles_set_validations, db, create_windows_base=False):
-        self.articles_set_validations = articles_set_validations
-        self.db = db
+    def __init__(self, registered_issue_data, pkg, create_windows_base, web_app_path):
         self.create_windows_base = create_windows_base
-        self.report_path = None
-        self.results_path = None
-        self.articles_merger = self.articles_set_validations.articles_merger
-        self.conversion_status = {'rejected': self.articles_set_validations.pkg.pkg_articles.keys()}
-        self.aop_status = {}
-        self.articles_conversion_validations = pkg_validations.ValidationsResultItems()
-        self.error_messages = []
-        self.files_final_location = serial_files.FilesFinalLocation(self.articles_set_validations.pkg.pkg_path, self.articles_set_validations.articles_data.acron, self.articles_set_validations.articles_data.issue_label, None, converter_env.local_web_app_path, converter_env.web_app_site)
-        self.statistics_display = ''
+        self.registered_issue_data = registered_issue_data
+        self.db = self.registered_issue_data.articles_db_manager
+        self.web_app_path = web_app_path
+        self.pkg = pkg
+        self.merging_result = self.articles_validations_reports.merged_articles_reports.merging_result
+        self.merged_articles = self.articles_validations_reports.merged_articles_reports.merged_articles_data.merged_articles
 
     def convert(self):
-        scilista_items = [self.articles_set_validations.articles_data.acron_issue_label]
-        if self.articles_set_validations.blocking_errors == 0 and self.total_to_convert > 0:
+        self.articles_conversion_validations = {}
+        scilista_items = [self.pkg.pkgissuedata.acron_issue_label]
+        if self.articles_validations_reports.blocking_errors == 0 and self.total_to_convert > 0:
             self.conversion_status = {}
-            self.error_messages = self.db.exclude_articles(self.articles_merger.order_changes, self.articles_merger.excluded_orders)
+            self.error_messages = self.db.exclude_articles(self.merging_result.order_changes, self.merging_result.excluded_orders)
 
-            _scilista_items = self.db.convert_articles(self.articles_set_validations.articles_data.acron_issue_label, self.articles_merger.xc_articles, self.articles_set_validations.articles_data.issue_models.record, self.create_windows_base)
+            _scilista_items = self.db.convert_articles(self.pkg.pkgissuedata.acron_issue_label, self.merging_result.articles_to_convert, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
             for name, message in self.db.articles_conversion_messages.items():
-                self.articles_conversion_validations[name] = pkg_validations.ValidationsResult()
+                self.articles_conversion_validations[name] = package_validations.ValidationsResult()
                 self.articles_conversion_validations[name].message = message
 
             if len(_scilista_items) > 0:
-                self.files_final_location.serial_path = self.articles_set_validations.articles_data.serial_path
+                # FIXME
+                self.files_final_location.serial_path = self.db_manager.serial_path
 
-                self.db.issue_files.copy_files_to_local_web_app(self.articles_set_validations.pkg.pkg_path, converter_env.local_web_app_path)
-                self.db.issue_files.save_source_files(self.articles_set_validations.pkg.pkg_path)
+                self.db.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.web_app_path)
+                self.db.issue_files.save_source_files(self.pkg.package_folder.path)
                 self.replace_ex_aop_pdf_files()
 
             self.aop_status.update(self.db.db_aop_status)
@@ -412,14 +498,15 @@ class ArticlesConversion(object):
         return scilista_items
 
     def replace_ex_aop_pdf_files(self):
+        # FIXME
         print(self.db.aop_pdf_replacements)
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
 
-            aop_pdf_path = converter_env.local_web_app_path + '/bases/pdf/' + folder
+            aop_pdf_path = self.web_app_path + '/bases/pdf/' + folder
             if not os.path.isdir(aop_pdf_path):
                 os.makedirs(aop_pdf_path)
-            issue_pdf_path = converter_env.local_web_app_path + '/bases/pdf/' + self.articles_set_validations.articles_data.acron_issue_label.replace(' ', '/')
+            issue_pdf_path = self.web_app_path + '/bases/pdf/' + self.pkg.pkgissuedata.acron_issue_label.replace(' ', '/')
 
             issue_pdf_files = [f for f in os.listdir(issue_pdf_path) if f.startswith(xml_name) or f[2:].startswith('_'+xml_name)]
 
@@ -428,43 +515,25 @@ class ArticlesConversion(object):
                 print((issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
                 shutil.copyfile(issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf)
 
-    def xxreplace_ex_aop_pdf_files(self):
-        print(self.db.aop_pdf_replacements)
-        for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
-            print(aop_location_data)
-            folder, aop_name = aop_location_data
-
-            aop_pdf_path = converter_env.local_web_app_path + '/bases/pdf/' + folder
-            issue_pdf_path = converter_env.local_web_app_path + '/bases/pdf/' + self.articles_set_validations.articles_data.acron_issue_label.replace(' ', '/')
-
-            issue_pdf_files = [f for f in os.listdir(issue_pdf_path) if f.startswith(xml_name) or f[2:].startswith('_'+xml_name)]
-            aop_pdf_files = [f for f in os.listdir(aop_pdf_path) if f.startswith(aop_name) or f[2:].startswith('_'+aop_name)]
-            for aop_pdf in aop_pdf_files:
-                article_pdf = aop_pdf.replace(aop_name, xml_name)
-                print((issue_pdf_path + '/' + article_pdf, aop_pdf_path + '/' + aop_pdf))
-                if not os.path.isdir(aop_pdf_path):
-                    os.makedirs(aop_pdf_path)
-                shutil.copyfile(issue_pdf_path + '/' + article_pdf, aop_pdf_path + '/' + aop_pdf)
-
     @property
     def conversion_report(self):
         #resulting_orders
         labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')]
         widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('executed actions'): '20',  _('achieved results'): '20'}
 
-        #print(self.articles_merger.history_items)
+        #print(self.merging_result.history_items)
         for status, status_items in self.aop_status.items():
             for status_data in status_items:
                 if status != 'aop':
                     name = status_data
-                    article = self.articles_merger.xc_articles[name]
-                    self.articles_merger.history_items[name].append((status, article))
+                    article = self.merging_result.articles_to_convert[name]
+                    self.merging_result.history_items[name].append((status, article))
         for status, names in self.conversion_status.items():
             for name in names:
-                self.articles_merger.history_items[name].append((status, self.articles_merger.xc_articles[name]))
+                self.merging_result.history_items[name].append((status, self.merging_result.articles_to_convert[name]))
 
-        history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.articles_merger.history_items.items()])
-        history = [(xml_name, self.articles_merger.history_items[xml_name]) for order, xml_name in history]
+        history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.merging_result.history_items.items()])
+        history = [(xml_name, self.merging_result.history_items[xml_name]) for order, xml_name in history]
 
         items = []
         for xml_name, hist in history:
@@ -475,7 +544,7 @@ class ArticlesConversion(object):
             values.append(article_reports.article_history([item for item in hist if not item[0] in ['registered article', 'package', 'rejected', 'converted', 'not converted']]))
             values.append(article_reports.article_history([item for item in hist if item[0] in ['rejected', 'converted', 'not converted']]))
 
-            items.append(pkg_validations.label_values(labels, values))
+            items.append(html_reports.label_values(labels, values))
         return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')], widths=widths)
 
     @property
@@ -485,7 +554,7 @@ class ArticlesConversion(object):
 
     @property
     def acron_issue_label(self):
-        return self.articles_set_validations.articles_data.acron_issue_label
+        return self.pkg.pkgissuedata.acron_issue_label
 
     def generate_report(self, base_report_path=None):
         reports = pkg_validations.ReportsMaker([], self.articles_set_validations, self.files_final_location, None, self)
@@ -499,7 +568,7 @@ class ArticlesConversion(object):
 
     @property
     def total_to_convert(self):
-        return self.articles_merger.total_to_convert
+        return self.merging_result.total_to_convert
 
     @property
     def total_converted(self):
@@ -511,7 +580,7 @@ class ArticlesConversion(object):
 
     @property
     def xc_status(self):
-        if self.articles_set_validations.blocking_errors > 0:
+        if self.articles_validations_reports.blocking_errors > 0:
             result = 'rejected'
         elif self.total_to_convert == 0:
             result = 'ignored'
@@ -568,7 +637,7 @@ class ArticlesConversion(object):
                         values.append(name)
                         values.append(article.order)
                         values.append(article.title)
-                        report_items.append(pkg_validations.label_values(labels, values))
+                        report_items.append(html_reports.label_values(labels, values))
             r = html_reports.tag('h3', _(status)) + html_reports.sheet(labels, report_items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
         return r
 
@@ -696,7 +765,6 @@ def report_status(title, status, style=None):
     if len(text) > 0:
         text = html_reports.tag('h3', title) + text
     return text
-
 
 
 def queue_packages(download_path, temp_path, queue_path, archive_path):

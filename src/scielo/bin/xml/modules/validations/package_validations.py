@@ -10,7 +10,6 @@ from .. import validation_status
 from .. import utils
 from .. import xml_versions
 from .. import attributes
-from .. import xc_models
 from . import xml_validators
 from . import article_data_reports
 from . import article_content_validations
@@ -348,6 +347,142 @@ class ArticleValidations(object):
         return html_reports.HideAndShowBlock(block_parent_id, _blocks)
 
 
+class ArticlesValidator(object):
+
+    def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation):
+        self.registered_issue_data = registered_issue_data
+        self.pkgissuedata = pkgissuedata
+        self.is_xml_generation = is_xml_generation
+        self.is_db_generation = self.registered_issue_data.db_manager is not None
+
+        xml_journal_data_validator = XMLJournalDataValidator(self.pkgissuedata.journal_data)
+        xml_issue_data_validator = XMLIssueDataValidator(self.registered_issue_data)
+        xml_structure_validator = XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
+        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.is_xml_generation)
+        self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
+
+    def validate(self, articles, outputs, pkgfiles):
+        articles_validations_reports = ArticlesValidationsReports(self.is_xml_generation, self.is_db_generation)
+
+        articles_merger = ArticlesMerger(self.registered_issue_data.registered_articles, articles)
+        articles_merger.merge()
+        merged_articles_data = MergedArticlesData(articles_merger.merged_articles, self.is_db_generation)
+        articles_validations_reports.merged_articles_reports = MergedArticlesReports(merged_articles_data, articles_merger.merging_result)
+
+        utils.display_message(_('Validate package ({n} files)').format(n=len(articles)))
+        if len(self.registered_issue_data.registered_articles) > 0:
+            utils.display_message(_('Previously registered: ({n} files)').format(n=len(self.registered_issue_data.registered_articles)))
+
+        results = {}
+        for name, article in articles.items():
+            utils.display_message(_('Validate {name}').format(name=name))
+            results[name] = self.article_validator.validate(article, outputs[name], pkgfiles[name])
+
+        articles_validations_reports.consistency_validations = ValidationsResult()
+        articles_validations_reports.consistency_validations.message = articles_validations_reports.merged_articles_reports.report_data_consistency
+        if self.registered_issue_data.issue_error_msg is not None:
+            articles_validations_reports.consistency_validations.message = self.registered_issue_data.issue_error_msg + articles_validations_reports.consistency_validations.message
+
+        articles_validations_reports.articles_validations = results
+
+        return articles_validations_reports
+
+
+class ArticlesValidationsReports(object):
+
+    def __init__(self, is_xml_generation=False, is_db_generation=False):
+        self.consistency_validations = None
+        self.articles_validations = None
+        self.is_xml_generation = is_xml_generation
+        self.is_db_generation = is_db_generation
+        self.merged_articles_reports = None
+
+    @property
+    def pkg_journal_validations(self):
+        items = ValidationsResultItems()
+        for name, validation in self.articles_validations.items():
+            items[name] = validation.journal_validations
+        signal = ''
+        msg = ''
+        if not self.is_db_generation:
+            signal = '<sup>*</sup>'
+            msg = html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Journal data in the XML files must be consistent with {link}').format(link=html_reports.link('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv')), 'note')
+        items.title = html_reports.tag('h2', _('Journal data: XML files and registered data') + signal) + msg
+        return items
+
+    @property
+    def pkg_issue_validations(self):
+        items = ValidationsResultItems()
+        for name, validation in self.articles_validations.items():
+            items[name] = validation.issue_validations
+        items.title = html_reports.tag('h2', _('Checking issue data: XML files and registered data'))
+        return items
+
+    @property
+    def detailed_report(self):
+        labels = [_('filename'), 'order', _('article'), 'aop pid/related', _('reports')]
+        widths = {}
+        widths[_('filename')] = '10'
+        widths['order'] = '5'
+        widths[_('article')] = '60'
+        widths['aop pid/related'] = '10'
+        widths[_('reports')] = '10'
+        items = []
+        for new_name, validations in self.articles_validations.items():
+            article = validations.article_display_report.article
+            hide_and_show_block_items = validations.hide_and_show_block('view-reports-', new_name)
+            values = []
+            values.append(new_name)
+            values.append(article.order)
+            if validations.article_display_report is None:
+                values.append('')
+            else:
+                values.append(validations.article_display_report.table_of_contents)
+            related = {}
+            for k, v in {'article-id(previous-pid)': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
+                if v is not None:
+                    if len(v) > 0:
+                        related[k] = v
+            values.append(related)
+            items.append((values, hide_and_show_block_items))
+        report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')], widths=widths)
+        return report.content
+
+    @property
+    def journal_issue_header_report(self):
+        common_data = ''
+        for label, values in self.merged_articles_reports.merged_articles_data.common_data.items():
+            if len(values.keys()) == 1:
+                common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
+            else:
+                common_data += html_reports.format_list(label + ':', 'ol', values.keys())
+        return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')
+
+    @property
+    def journal_and_issue_report(self):
+        report = []
+        report.append(self.journal_issue_header_report)
+        errors_only = not self.is_xml_generation
+        report.append(self.pkg_journal_validations.report(errors_only))
+        report.append(self.pkg_issue_validations.report(errors_only))
+        if self.consistency_validations.total() > 0:
+            report.append(self.consistency_validations.message)
+
+        if self.merged_articles_reports.validations.total() > 0:
+            report.append(html_reports.tag('h2', _('Data Conflicts Report')))
+            report.append(self.merged_articles_reports.validations.message)
+        return ''.join(report)
+
+    @property
+    def blocking_errors(self):
+        return sum([self.consistency_validations.blocking_errors, self.pkg_issue_validations.blocking_errors, self.merged_articles_reports.validations.blocking_errors])
+
+    @property
+    def fatal_errors(self):
+        return sum([v.fatal_errors for v in self.articles_validations.values()])
+
+
+
 class PackageReports(object):
 
     def __init__(self, package_folder):
@@ -370,80 +505,6 @@ class PackageReports(object):
         if len(self.package_folder.orphans) > 0:
             return '<div class="xmllist"><p>{}</p>{}</div>'.format(_('Invalid files names'), html_reports.format_list('', 'ol', self.package_folder.orphans))
         return ''
-
-
-class PackageIssueData(object):
-
-    def __init__(self, articles):
-        self.articles = articles
-        self.pkg_journal_title = None
-        self.pkg_p_issn = None
-        self.pkg_e_issn = None
-        self.pkg_issue_label = None
-        self.journal = None
-        self.journal_data = None
-        self._issue_label = None
-
-    def setup(self):
-        data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in self.articles.values()]))
-        data.sort(reverse=True)
-        if len(data) > 0:
-            data = list(data[0])
-            if any(data):
-                self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = data
-
-    @property
-    def acron(self):
-        a = 'unknown_acron'
-        if self.journal is not None:
-            if self.journal.acron is not None:
-                a = self.journal.acron
-        return a
-
-    @property
-    def acron_issue_label(self):
-        return self.acron + ' ' + self.issue_label
-
-    @property
-    def issue_label(self):
-        r = self._issue_label if self._issue_label else self.pkg_issue_label
-        if r is None:
-            r = 'unknown_issue_label'
-        return r
-
-
-class RegisteredIssueData(object):
-
-    def __init__(self, db_manager):
-        self.db_manager = db_manager
-        self.articles_db_manager = None
-        self.issue_error_msg = None
-        self.issue_models = None
-        self.issue_files = None
-        self.serial_path = None
-
-    def get_data(self, pkgissuedata):
-        if self.db_manager is None:
-            journals_list = xc_models.JournalsList()
-            pkgissuedata.journal = journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
-            pkgissuedata.journal_data = journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
-            print(pkgissuedata.journal_data)
-        else:
-            acron_issue_label, self.issue_models, self.issue_error_msg, pkgissuedata.journal, pkgissuedata.journal_data = self.db_manager.get_registered_data(pkgissuedata.pkg_journal_title, pkgissuedata.pkg_issue_label, pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn)
-            ign, pkgissuedata._issue_label = acron_issue_label.split(' ')
-            if self.issue_error_msg is None:
-                self.issue_files = self.db_manager.get_issue_files(self.issue_models)
-                self.articles_db_manager = xc_models.ArticlesManager(self.db_manager.db_isis, self.issue_files)
-                self.serial_path = self.db_manager.serial_path
-        return pkgissuedata
-
-    @property
-    def registered_articles(self):
-        articles = {}
-        if self.articles_db_manager is not None:
-            articles = registered_issue_data.articles_db_manager.registered_articles
-        return articles
-
 
 class ArticlesDataReports(object):
 
@@ -515,7 +576,7 @@ class ArticlesDataReports(object):
             values.append(utils.display_datetime(doc.issue_pub_dateiso))
             values.append(str(doc.publication_days))
             values.append(str(doc.registration_days))
-            items.append(label_values(labels, values))
+            items.append(html_reports.label_values(labels, values))
         article_dates = html_reports.sheet(labels, items, 'dbstatus')
 
         labels = [_('year'), _('location')]
@@ -524,7 +585,7 @@ class ArticlesDataReports(object):
             values = []
             values.append(year)
             values.append(self.years[year])
-            items.append(label_values(labels, values))
+            items.append(html_reports.label_values(labels, values))
         reference_dates = html_reports.sheet(labels, items, 'dbstatus')
 
         return html_reports.tag('h4', _('Articles Dates Report')) + article_dates + reference_dates
@@ -588,7 +649,7 @@ class ArticlesDataReports(object):
         values.append(validation_status.STATUS_INFO)
         values.append({reftype: str(sum([len(occ) for occ in sources.values()])) for reftype, sources in self.reftype_and_sources.items()})
         values.append('')
-        items.append(label_values(labels, values))
+        items.append(html_reports.label_values(labels, values))
 
         if len(self.bad_sources_and_reftypes) > 0:
             values = []
@@ -596,7 +657,7 @@ class ArticlesDataReports(object):
             values.append(validation_status.STATUS_ERROR)
             values.append(self.bad_sources_and_reftypes)
             values.append('')
-            items.append(label_values(labels, values))
+            items.append(html_reports.label_values(labels, values))
 
         if len(self.missing_source) > 0:
             items.append({'label': _('references missing source'), 'status': validation_status.STATUS_ERROR, 'message': [' - '.join(item) for item in self.missing_source], _('why it is not a valid message?'): ''})
@@ -621,105 +682,6 @@ class ArticlesDataReports(object):
                     items.append({'source': source, _('location'): sources[source]})
                 h += html_reports.sheet(labels, items, 'dbstatus')
         return h
-
-
-class MergedArticlesData(object):
-
-    def __init__(self, merged_articles, is_db_generation):
-        self.merged_articles = merged_articles
-        self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_BLOCKING_ERROR, 'doi': validation_status.STATUS_BLOCKING_ERROR, 'elocation id': validation_status.STATUS_BLOCKING_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
-        if not is_db_generation:
-            self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
-        self.IGNORE_NONE = ['journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', ]
-        self.EXPECTED_COMMON_VALUES_LABELS = ['journal-title', 'journal-id (nlm-ta)', 'e-ISSN', 'print ISSN', 'issue label', 'issue pub date', 'license']
-        self.REQUIRED_DATA = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        self.EXPECTED_UNIQUE_VALUE_LABELS = ['order', 'doi', 'elocation id', 'fpage-lpage-seq-elocation-id']
-
-    @property
-    def articles(self):
-        l = sorted([(article.order, xml_name) for xml_name, article in self.merged_articles.items()])
-        l = [(xml_name, self.merged_articles[xml_name]) for order, xml_name in l]
-        return l
-
-    @property
-    def is_processed_in_batches(self):
-        return any([self.is_aop_issue, self.is_rolling_pass])
-
-    @property
-    def is_aop_issue(self):
-        return any([a.is_ahead for a in self.merged_articles.values()])
-
-    @property
-    def is_rolling_pass(self):
-        return all([a for a in self.merged_articles.values() if a.is_epub_only])
-
-    @property
-    def common_data(self):
-        data = {}
-        for label in self.EXPECTED_COMMON_VALUES_LABELS:
-            values = {}
-            for xml_name, article in self.merged_articles.items():
-                value = article.summary[label]
-                if label in self.IGNORE_NONE and value is None:
-                    pass
-                else:
-                    if not value in values:
-                        values[value] = []
-                    values[value].append(xml_name)
-
-            data[label] = values
-        return data
-
-    @property
-    def missing_required_data(self):
-        required_items = {}
-        for label in self.REQUIRED_DATA:
-            if label in self.common_data.keys():
-                if None in self.common_data[label].keys():
-                    required_items[label] = self.common_data[label][None]
-        return required_items
-
-    @property
-    def conflicting_values(self):
-        data = {}
-        for label, values in self.common_data.items():
-            if len(values) > 1:
-                data[label] = values
-        return data
-
-    @property
-    def duplicated_values(self):
-        duplicated_labels = {}
-        for label, values in self.unique_values.items():
-            if len(values) > 0 and len(values) != len(self.articles):
-                duplicated = {value: xml_files for value, xml_files in values.items() if len(xml_files) > 1}
-                if len(duplicated) > 0:
-                    duplicated_labels[label] = duplicated
-        return duplicated_labels
-
-    @property
-    def unique_values(self):
-        data = {}
-        for label in self.EXPECTED_UNIQUE_VALUE_LABELS:
-            values = {}
-            for xml_name, article in self.merged_articles.items():
-                value = article.summary[label]
-                if value is not None:
-                    if value not in values:
-                        values[value] = []
-                    values[value].append(xml_name)
-
-            data[label] = values
-        return data
-
-    @property
-    def orders_conflicts(self):
-        orders = {}
-        for name, article in self.merged_articles.items():
-            if not article.order in orders.keys():
-                orders[article.order] = []
-            orders[article.order].append(name)
-        return {order: names for order, names in orders.items() if len(names) > 1}
 
 
 class MergedArticlesReports(object):
@@ -887,346 +849,6 @@ class MergedArticlesReports(object):
         if len(r) > 0:
             r = html_reports.tag('h2', _('Changes Report')) + r
         return r
-
-
-class MergingResult(object):
-
-    def __init__(self):
-        self.exclusions = []
-        self.conflicts = {}
-        self.actions = {}
-        self.name_changes = {}
-        self.order_changes = {}
-        self.excluded_orders = None
-
-
-class ArticlesMerger(object):
-
-    def __init__(self, registered_articles, articles):
-        self._merged_articles = registered_articles.copy()
-        self.registered_articles = RegisteredArticles(registered_articles)
-        self.articles = articles
-        self.merging_result = MergingResult()
-
-    @property
-    def merged_articles(self):
-        return self._merged_articles
-
-    def merge(self):
-        self.analyze_pkg()
-        self.update_articles()
-
-    def analyze_pkg(self):
-        for name, article in self.articles.items():
-            action, old_name, conflicts = self.analyze_pkg_article(name, article)
-            if conflicts is not None:
-                self.merging_result.conflicts[name] = conflicts
-            if action is not None:
-                self.merging_result.actions[name] = action
-            if action == 'update' and article.marked_to_delete:
-                self.merging_result.exclusions.append(name)
-            if old_name is not None:
-                self.merging_result.name_changes[old_name] = name
-            if name in self.registered_articles.keys():
-                if article.order != self.registered_articles[name].order:
-                    self.merging_result.order_changes[name] = (self.registered_articles[name].order, article.order)
-
-    def analyze_pkg_article(self, name, pkg_article):
-        registered_titaut, registered_name, registered_order = self.registered_articles.search_articles(name, pkg_article)
-        action, old_name, conflicts = self.registered_articles.analyze_registered_articles(name, registered_titaut, registered_name, registered_order)
-        return (action, old_name, conflicts)
-
-    def update_articles(self):
-        self.merging_result.history_items = {}
-        # starts history with registered articles data
-        self.merging_result.history_items = {name: [('registered article', article)] for name, article in self.registered_articles.items()}
-
-        # exclude registered items
-        for name in self.merging_result.exclusions:
-            self.merging_result.history_items[name].append(('excluded article', self._merged_articles[name]))
-            del self._merged_articles[name]
-
-        # indicates package articles reception
-        for name, article in self.articles.items():
-            if not name in self.merging_result.history_items.keys():
-                self.merging_result.history_items[name] = []
-            self.merging_result.history_items[name].append(('package', article))
-
-        # indicates names changes, and exclude old names
-        for previous_name, name in self.merging_result.name_changes.items():
-            self.merging_result.history_items[previous_name].append(('replaced by', self.articles[name]))
-
-            self.merging_result.history_items[name].append(('replaces', self._merged_articles[previous_name]))
-            del self._merged_articles[previous_name]
-
-        # merge pkg and registered, considering some of them are rejected
-        orders_to_check = []
-        for name, article in self.articles.items():
-            if not article.marked_to_delete:
-                action = self.merging_result.actions.get(name)
-                if name in self.merging_result.conflicts.keys():
-                    action = 'reject'
-                if not action in ['reject', None]:
-                    self._merged_articles[name] = self.articles[name]
-
-        self.merging_result.excluded_orders = self.excluded_orders
-
-    @property
-    def excluded_orders(self):
-        #excluded_orders
-        items = {}
-        orders = [article.order for article in self.merged_articles.values()]
-        for name, article in self.registered_articles.items():
-            if not article.order in orders:
-                items[name] = article.order
-        return {name: article.order for name, article in self.registered_articles.items() if not article.order in orders}
-
-
-class ArticlesValidator(object):
-
-    def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation):
-        self.registered_issue_data = registered_issue_data
-        self.pkgissuedata = pkgissuedata
-        self.is_xml_generation = is_xml_generation
-        self.is_db_generation = self.registered_issue_data.db_manager is not None
-
-        xml_journal_data_validator = XMLJournalDataValidator(self.pkgissuedata.journal_data)
-        xml_issue_data_validator = XMLIssueDataValidator(self.registered_issue_data)
-        xml_structure_validator = XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
-        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.is_xml_generation)
-        self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
-
-    def validate(self, articles, outputs, pkgfiles):
-        articles_validations_reports = ArticlesValidationsReports(self.is_xml_generation, self.is_db_generation)
-
-        articles_merger = ArticlesMerger(self.registered_issue_data.registered_articles, articles)
-        articles_merger.merge()
-        merged_articles_data = MergedArticlesData(articles_merger.merged_articles, self.is_db_generation)
-        articles_validations_reports.merged_articles_reports = MergedArticlesReports(merged_articles_data, articles_merger.merging_result)
-
-        utils.display_message(_('Validate package ({n} files)').format(n=len(articles)))
-        if len(self.registered_issue_data.registered_articles) > 0:
-            utils.display_message(_('Previously registered: ({n} files)').format(n=len(self.registered_issue_data.registered_articles)))
-
-        results = {}
-        for name, article in articles.items():
-            utils.display_message(_('Validate {name}').format(name=name))
-            results[name] = self.article_validator.validate(article, outputs[name], pkgfiles[name])
-
-        articles_validations_reports.consistency_validations = ValidationsResult()
-        articles_validations_reports.consistency_validations.message = articles_validations_reports.merged_articles_reports.report_data_consistency
-        if self.registered_issue_data.issue_error_msg is not None:
-            articles_validations_reports.consistency_validations.message = self.registered_issue_data.issue_error_msg + articles_validations_reports.consistency_validations.message
-
-        articles_validations_reports.articles_validations = results
-
-        return articles_validations_reports
-
-
-class ArticlesValidationsReports(object):
-
-    def __init__(self, is_xml_generation=False, is_db_generation=False):
-        self.consistency_validations = None
-        self.articles_validations = None
-        self.is_xml_generation = is_xml_generation
-        self.is_db_generation = is_db_generation
-        self.merged_articles_reports = None
-
-    @property
-    def pkg_journal_validations(self):
-        items = ValidationsResultItems()
-        for name, validation in self.articles_validations.items():
-            items[name] = validation.journal_validations
-        signal = ''
-        msg = ''
-        if not self.is_db_generation:
-            signal = '<sup>*</sup>'
-            msg = html_reports.tag('h5', '<a name="note"><sup>*</sup></a>' + _('Journal data in the XML files must be consistent with {link}').format(link=html_reports.link('http://static.scielo.org/sps/titles-tab-v2-utf-8.csv', 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv')), 'note')
-        items.title = html_reports.tag('h2', _('Journal data: XML files and registered data') + signal) + msg
-        return items
-
-    @property
-    def pkg_issue_validations(self):
-        items = ValidationsResultItems()
-        for name, validation in self.articles_validations.items():
-            items[name] = validation.issue_validations
-        items.title = html_reports.tag('h2', _('Checking issue data: XML files and registered data'))
-        return items
-
-    @property
-    def detailed_report(self):
-        labels = [_('filename'), 'order', _('article'), 'aop pid/related', _('reports')]
-        widths = {}
-        widths[_('filename')] = '10'
-        widths['order'] = '5'
-        widths[_('article')] = '60'
-        widths['aop pid/related'] = '10'
-        widths[_('reports')] = '10'
-        items = []
-        for new_name, validations in self.articles_validations.items():
-            article = validations.article_display_report.article
-            hide_and_show_block_items = validations.hide_and_show_block('view-reports-', new_name)
-            values = []
-            values.append(new_name)
-            values.append(article.order)
-            if validations.article_display_report is None:
-                values.append('')
-            else:
-                values.append(validations.article_display_report.table_of_contents)
-            related = {}
-            for k, v in {'article-id(previous-pid)': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
-                if v is not None:
-                    if len(v) > 0:
-                        related[k] = v
-            values.append(related)
-            items.append((values, hide_and_show_block_items))
-        report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')], widths=widths)
-        return report.content
-
-    @property
-    def journal_issue_header_report(self):
-        common_data = ''
-        for label, values in self.merged_articles_reports.merged_articles_data.common_data.items():
-            if len(values.keys()) == 1:
-                common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
-            else:
-                common_data += html_reports.format_list(label + ':', 'ol', values.keys())
-        return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')
-
-    @property
-    def journal_and_issue_report(self):
-        report = []
-        report.append(self.journal_issue_header_report)
-        errors_only = not self.is_xml_generation
-        report.append(self.pkg_journal_validations.report(errors_only))
-        report.append(self.pkg_issue_validations.report(errors_only))
-        if self.consistency_validations.total() > 0:
-            report.append(self.consistency_validations.message)
-
-        if self.merged_articles_reports.validations.total() > 0:
-            report.append(html_reports.tag('h2', _('Data Conflicts Report')))
-            report.append(self.merged_articles_reports.validations.message)
-        return ''.join(report)
-
-    @property
-    def blocking_errors(self):
-        return sum([self.consistency_validations.blocking_errors, self.pkg_issue_validations.blocking_errors, self.merged_articles_reports.validations.blocking_errors])
-
-    @property
-    def fatal_errors(self):
-        return sum([v.fatal_errors for v in self.articles_validations.values()])
-
-
-class RegisteredArticles(dict):
-
-    def __init__(self, registered_articles):
-        dict.__init__(self, registered_articles)
-
-    def registered_item(self, name, article):
-        found = None
-        registered = self.get(name)
-        if registered is not None:
-            similar, status, msg = compare_articles(registered, article, _('registered'), _('package'))
-            if registered.order == article.order and similar:
-                found = registered
-        return found
-
-    def registered_order(self, order):
-        return [reg_name for reg_name, reg in self.items() if reg.order == order]
-
-    def registered_titles_and_authors(self, article):
-        similar_items = []
-        for name, registered in self.items():
-            similar, status, message = compare_articles(registered, article, _('registered'), _('package'))
-            if similar:
-                similar_items.append(name)
-        return similar_items
-
-    def search_articles(self, name, article):
-        registered = self.registered_item(name, article)
-        registered_titaut = registered
-        registered_name = registered
-        registered_order = registered
-        if registered is None:
-            matched_titaut_article_names = self.registered_titles_and_authors(article)
-            matched_order_article_names = self.registered_order(article.order)
-            registered_titaut = self.registered_items_by_names(matched_titaut_article_names)
-            registered_order = self.registered_items_by_names(matched_order_article_names)
-            registered_name = self.get(name)
-        return (registered_titaut, registered_name, registered_order)
-
-    def registered_items_by_names(self, found_names):
-        if len(found_names) == 0:
-            return None
-        elif len(found_names) == 1:
-            return self.get(found_names[0])
-        else:
-            return {name: self.get(name) for name in found_names}
-
-    def analyze_registered_articles(self, name, registered_titaut, registered_name, registered_order):
-        actions = None
-        conflicts = None
-        old_name = None
-        #print('analyze_registered_articles')
-        #print([registered_titaut, registered_name, registered_order])
-        #print('-')
-        if registered_titaut is None and registered_order is None and registered_name is None:
-            actions = 'add'
-        elif all([registered_titaut, registered_order, registered_name]):
-            if id(registered_titaut) == id(registered_order) == id(registered_name):
-                actions = 'update'
-            elif id(registered_titaut) == id(registered_name):
-                # titaut + name != order
-                # rejeitar
-                conflicts = {_('registered article retrieved by the order'): registered_order, _('registered article retrieved by title/authors/name'): registered_titaut}
-            elif id(registered_titaut) == id(registered_order):
-                # titaut + order != name
-                # rejeitar
-                conflicts = {'registered article retrieved by title/authors/order': registered_order, _('registered article retrieved by name'): registered_name}
-            elif id(registered_name) == id(registered_order):
-                # order + name != titaut
-                # rejeitar
-                conflicts = {'registered article retrieved by name/order': registered_order, _('registered article retrieved by title/authors'): registered_titaut}
-            else:
-                # order != name != titaut
-                # rejeitar
-                conflicts = {_('name'): registered_name, _('registered article retrieved by the order'): registered_order, _('title/authors'): registered_titaut}
-        elif all([registered_titaut, registered_order]):
-            if id(registered_titaut) == id(registered_order):
-                if registered_order.is_ex_aop:
-                    actions = 'reject'
-                else:
-                    actions = 'name change'
-                    old_name = registered_titaut.xml_name
-            else:
-                conflicts = {_('registered article retrieved by the order'): registered_order, _('title/authors'): registered_titaut}
-        elif all([registered_titaut, registered_name]):
-            if id(registered_titaut) == id(registered_name):
-                if registered_name.is_ex_aop:
-                    actions = 'reject'
-                else:
-                    actions = 'order change'
-            else:
-                conflicts = {_('registered article retrieved by title/authors'): registered_titaut, _('registered article retrieved by name'): registered_name}
-        elif all([registered_order, registered_name]):
-            if id(registered_order) == id(registered_name):
-                # titulo autores etc muito diferentes
-                conflicts = {_('registered article retrieved by the order'): registered_order}
-            else:
-                conflicts = {_('registered article retrieved by the order'): registered_order, _('registered article retrieved by name'): registered_name}
-        elif registered_titaut is not None:
-            # order e name nao encontrados; order testar antes de atualizar;
-            if registered_titaut.is_ex_aop:
-                actions = 'reject'
-            else:
-                actions = 'order change, name change'
-                old_name = registered_titaut.xml_name
-        elif registered_name is not None:
-            conflicts = {_('registered article retrieved by name'): registered_name}
-        elif registered_order is not None:
-            conflicts = {_('registered article retrieved by the order'): registered_order}
-        return (actions, old_name, conflicts)
-
 
 class ReportsMaker(object):
 
@@ -1558,5 +1180,5 @@ def toc_extended_report(articles):
                     last_update_display = html_reports.tag('span', last_update_display, 'report-date')
                 values.append(last_update_display)
                 values.append(article_data_reports.display_article_data_in_toc(article))
-                items.append(label_values(labels, values))
+                items.append(html_reports.label_values(labels, values))
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)
