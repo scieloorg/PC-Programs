@@ -12,7 +12,7 @@ import fs_utils
 
 
 def change_circ(content):
-    return content.replace('^', '<PRESERVECIRC/>')
+    return content.replace('^', '[PRESERVECIRC]')
 
 
 def format_value(content):
