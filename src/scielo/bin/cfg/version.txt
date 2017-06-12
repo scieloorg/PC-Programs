@@ -1,4 +1,4 @@
-﻿4.0.093 - Release 4 - 25/05/2017
+﻿4.0.093 - Release 4 - 12/06/2017
 ================================
 - XPM
   - (bug) [2579] Fix the validation of history date 
@@ -9,6 +9,7 @@
   - (bug) [2581] Remove exceding styles (bold, italic, sup, sub)
 - XC
   - (bug) [2524] Fix aop pdf replacement in the web site
+  - (bug) [2603] Fix remove tags from abstract function
 
 4.0.093 - Release 3 - 25/04/2017
 ================================
