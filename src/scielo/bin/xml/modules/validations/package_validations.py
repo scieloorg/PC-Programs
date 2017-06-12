@@ -850,6 +850,7 @@ class MergedArticlesReports(object):
             r = html_reports.tag('h2', _('Changes Report')) + r
         return r
 
+
 class ReportsMaker(object):
 
     def __init__(self, package_reports, articles_data_reports, articles_validations_reports, files_location, xpm_version=None, conversion=None):
@@ -901,7 +902,7 @@ class ReportsMaker(object):
                 components['group-validations-report'] += self.articles_validations_reports.registered_issue_data.issue_error_msg
 
             #components['xc-validations'] = self.conversion.conclusion_message + self.conversion.articles_merger.changes_report + self.conversion.conversion_status_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
-            components['xc-validations'] = html_reports.tag('h3', _('Conversion Result')) + self.conversion.conclusion_message + self.conversion.articles_validations_reports.merged_articles_reports.changes_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
+            components['xc-validations'] = html_reports.tag('h3', _('Conversion Result')) + self.conversion.conclusion_message + self.articles_validations_reports.merged_articles_reports.changes_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
 
         self.validations.message = html_reports.join_texts(components.values())
 

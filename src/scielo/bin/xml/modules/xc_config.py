@@ -27,7 +27,8 @@ class XMLConverterConfiguration(object):
                     self._data[key] = None
                 else:
                     self._data[key] = value
-        self.is_windows = self._data.get('Serial Directory') is not None
+        self.interative_mode = self._data.get('Serial Directory') is not None
+        self.is_windows = self.interative_mode
 
     @property
     def cisis1030(self):
@@ -150,7 +151,7 @@ class XMLConverterConfiguration(object):
         else:
             if not os.path.isdir(self.serial_path):
                 problems.append('ERROR: Unable to find ' + self.serial_path)
-        if not self.is_windows:
+        if not self.interative_mode:
             if not self.is_enabled_package_receipt:
                 problems.append('WARNING: Package receipt is not enabled.')
             if not self.is_enabled_email_service:

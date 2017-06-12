@@ -11,13 +11,12 @@ from . import utils
 from . import html_reports
 from . import dbm_isis
 from . import xc_models
-from . import article_validations
 from . import article_reports
-from . import package_validations
+from validations import package_validations
 from . import xml_utils
-from . import xpm
 from . import xc
 from . import xc_config
+from pkgmakers import pkgmaker
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -101,6 +100,18 @@ def read_inputs(args):
     return (script, package_path, collection_acron)
 
 
+def validate_inputs(package_path, collection_acron):
+    # python xml_converter.py <xml_src>
+    # python xml_converter.py <collection_acron>
+    errors = []
+    if package_path is None:
+        if collection_acron is None:
+            errors.append(_('Missing collection acronym'))
+    else:
+        errors = xml_utils.is_valid_xml_path(package_path)
+    return errors
+
+
 def get_config(collection_name):
     collection_names = {}
     collection_acron = collection_names.get(collection_name)
@@ -137,7 +148,7 @@ def execute_converter(package_paths, collection_name):
 
         xc.convert([f.filename for f in pkgfiles])
 
-        package_folder = os.path.basename(package_path)
+        package_name = os.path.basename(package_path)
         utils.display_message(package_path)
         scilista_items = []
         xc_status = 'interrupted'
@@ -150,7 +161,7 @@ def execute_converter(package_paths, collection_name):
             if config.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
             if config.email_subject_invalid_packages is not None:
-                mailer.mail_step1_failure(package_folder, e)
+                mailer.mail_step1_failure(package_name, e)
             if len(package_paths) == 1:
                 raise
         print(scilista_items)
@@ -171,7 +182,7 @@ def execute_converter(package_paths, collection_name):
                     report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 
                     transfer.transfer_report_files(acron, issue_id)
-                    mailer.mail_results(package_folder, results, report_location)
+                    mailer.mail_results(package_name, results, report_location)
 
         except Exception as e:
             if config.email_subject_invalid_packages is not None:
@@ -181,20 +192,19 @@ def execute_converter(package_paths, collection_name):
                 print('exception as finishing')
                 raise
 
+    ###
+    if tmp_result_path != conversion.results_path:
+        fs_utils.delete_file_or_folder(tmp_result_path)
+    os.unlink(log_package)
+    ###
+
     utils.display_message(_('finished'))
 
 
-class XC(Proc):
+class XC(pkgmaker.XPM):
 
     def __init__(self, config, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
-        self.DISPLAY_REPORT = DISPLAY_REPORT
-        self.GENERATE_PMC = GENERATE_PMC
-        self.stage = stage
-        self.is_xml_generation = stage == 'xml'
-        self.is_db_generation = stage == 'xc'
-        self.web_app_path = None
-        self.version = version
-        self.config = config
+        pkgmakers.XPM.__init__(self, config, version, DISPLAY_REPORT, GENERATE_PMC, stage)
         db_isis = dbm_isis.IsisDAO(
                     dbm_isis.UCISIS(
                         dbm_isis.CISIS(config.cisis1030),
@@ -206,119 +216,20 @@ class XC(Proc):
         if config.is_enabled_email_service:
             self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email)
 
-    def package(self, input_xml_list):
-        workarea_path = os.path.dirname(input_xml_list[0])
-        if self.stage != 'xml':
-            workarea_path += '_' + self.stage
-        return Package(input_xml_list, workarea_path)
-
-    def make_package(self, input_xml_list):
-        pkg = self.package(input_xml_list)
-        conversion = None
-        pkg_validations = self.validate_package(pkg, self.db_manager)
-        self.report(pkg, pkg_validations, conversion)
-        self.make_pmc_package(pkg)
-        self.zip(pkg)
-        utils.display_message(_('Result of the processing:'))
-        utils.display_message(pkg.wk.output_path)
-        #xpm_process_logger.write(pkg.wk.reports_path + '/log.txt')
-
-        #FIXME PAREiAQUI
-        conversion = ArticlesConversion(articles_set_validations, articles_data.articles_db_manager, not converter_env.is_windows)
-        scilista_items = conversion.convert()
-
-        if tmp_result_path != conversion.results_path:
-            fs_utils.delete_file_or_folder(tmp_result_path)
-        os.unlink(log_package)
-        return (scilista_items, conversion.xc_status, conversion.statistics_display, conversion.report_location)
-
     def convert(self, input_xml_list):
-        xc_process_logger = fs_utils.ProcessLogger()
-        scilista_items = []
-
-        # FIXME
-        src_path = os.path.dirname(input_xml_list[0])
-        pkg_name = os.path.basename(src_path)[:-4]
-        if not os.path.isdir('./../log'):
-            os.makedirs('./../log')
-        log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
-        fs_utils.append_file(log_package, 'preparing')
-        tmp_result_path = src_path + '_xc'
-
         pkg = self.package(input_xml_list)
-        conversion = None
-        pkg_validations = self.pkg_validator.articles_validations_reports(pkg, self.db_manager)
-        self.report(pkg, pkg_validations, conversion)
-        self.make_pmc_package(pkg)
-        self.zip(pkg)
+        registered_issue_data = registered.RegisteredIssueData(self.db_manager)
+        registered_issue_data.get_data(pkg.pkgissuedata)
+        pkg_validations = self.validate_package(pkg, registered_issue_data)
+
+        conversion = ArticlesConversion(registered_issue_data, pkg, not self.config.interative_mode, not self.config.local_web_app_path, not self.config.web_app_site)
+
+        statistics_display = self.report(pkg, pkg_validations, conversion)
         utils.display_message(_('Result of the processing:'))
         utils.display_message(pkg.wk.output_path)
-        #xpm_process_logger.write(pkg.wk.reports_path + '/log.txt')
-
-    def old_convert(self, src_path):
-        xc_process_logger = fs_utils.ProcessLogger()
-
-        scilista_items = []
-        is_xml_generation = False
-
-        pkg_name = os.path.basename(src_path)[:-4]
-
-        if not os.path.isdir('./../log'):
-            os.makedirs('./../log')
-        log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
-
-        fs_utils.append_file(log_package, 'preparing')
-        tmp_result_path = src_path + '_xc'
-
-        fs_utils.append_file(log_package, 'normalized_package')
-
-        xml_list = [src_path+ '/' + f for f in os.listdir(src_path) if f.endswith('.xml')]
-        pkgfiles = xpm.normalize_xml_packages(xml_list, 'xc')
-        xpm.validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage, sgm_xml)
-
-        conversion = ArticlesConversion(articles_set_validations, articles_data.articles_db_manager, not converter_env.is_windows)
         scilista_items = conversion.convert()
 
-        #reports.validations.statistics_display()
-        #conversion.statistics_display
-        #report_location
-        #conversion.report_location
-
-        if tmp_result_path != conversion.results_path:
-            fs_utils.delete_file_or_folder(tmp_result_path)
-        os.unlink(log_package)
-        return (scilista_items, conversion.xc_status, conversion.statistics_display, conversion.report_location)
-
-    def report(self, pkg, pkg_validations, conversion=None):
-        files_final_location = workarea.FilesFinalLocation(pkg.wk.scielo_package_path, pkg.pkgissuedata.acron, pkg.pkgissuedata.issue_label, self.web_app_path)
-        pkgreports = package_validations.PackageReports(pkg.package_folder)
-        articles_data_reports = package_validations.ArticlesDataReports(pkg.articles)
-        reports = package_validations.ReportsMaker(pkgreports, articles_data_reports, pkg_validations, files_final_location, xpm_version(), conversion)
-
-        if not self.is_xml_generation:
-            reports.processing_result_location = pkg.wk.output_path
-            reports.save_report(pkg.wk.reports_path, 'xpm.html', _('XML Package Maker Report'))
-            if self.DISPLAY_REPORT:
-                html_reports.display_report(pkg.wk.reports_path + '/xpm.html')
-
-    def make_pmc_package(self, pkg):
-        if not self.is_db_generation:
-            # FIXME
-            pmc_package_maker = pmcxml.PMCPackageMaker(self.version)
-            if self.is_xml_generation:
-                pmc_package_maker.make_report(pkg.articles, pkg.outputs)
-            if pkg.is_pmc_journal:
-                if self.GENERATE_PMC:
-                    pmc_package_maker.make_package(pkg.articles, pkg.outputs)
-                    workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
-                else:
-                    print('='*10)
-                    print(_('To generate PMC package, add -pmc as parameter'))
-                    print('='*10)
-
-    def zip(self, pkg):
-        if not self.is_xml_generation and not self.is_db_generation:
-            workarea.PackageFolder(pkg.wk.scielo_package_path).zip()
+        return (scilista_items, conversion.xc_status, statistics_display, conversion.report_location)
 
 
 class Mailer(object):
@@ -377,95 +288,13 @@ class FilesTransfer(object):
                 xc.run_rsync(source_path, self.config.user, server, dest_path, log_filename)
 
 
-def old_execute_converter(package_paths, collection_name=None):
-    collection_names = {}
-    collection_acron = collection_names.get(collection_name)
-    if collection_acron is None:
-        collection_acron = collection_name
-
-    config = xc.get_configuration(collection_acron)
-    if config is not None:
-        prepare_env(config)
-        invalid_pkg_files = []
-
-        mailer = xc.get_mailer(config)
-
-        if package_paths is None:
-            package_paths, invalid_pkg_files = queue_packages(config.download_path, config.temp_path, config.queue_path, config.archive_path)
-        if package_paths is None:
-            package_paths = []
-        if not isinstance(package_paths, list):
-            package_paths = [package_paths]
-
-        for package_path in package_paths:
-            package_folder = os.path.basename(package_path)
-            utils.display_message(package_path)
-            scilista_items = []
-            xc_status = 'interrupted'
-            stats_msg = ''
-            report_location = None
-
-            try:
-                scilista_items, xc_status, stats_msg, report_location = convert_package(package_path)
-            except Exception as e:
-                if config.queue_path is not None:
-                    fs_utils.delete_file_or_folder(package_path)
-                if config.email_subject_invalid_packages is not None:
-                    send_message(mailer, config.email_to_adm, '[Step 1]' + config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
-                if len(package_paths) == 1:
-                    raise
-            print(scilista_items)
-            try:
-                acron, issue_id = scilista_items[0].split(' ')
-
-                if xc_status in ['accepted', 'approved']:
-                    if config.collection_scilista is not None:
-                        open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
-
-                    if config.is_enabled_transference:
-                        transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
-
-                if report_location is not None:
-                    if config.email_subject_package_evaluation is not None:
-                        results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
-                        link = config.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
-                        report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
-
-                        transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path)
-                        send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
-
-            except Exception as e:
-                if config.email_subject_invalid_packages is not None:
-                    send_message(mailer, config.email_to_adm, '[Step 2]' + config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
-
-                if len(package_paths) == 1:
-                    print('exception as finishing')
-                    raise
-
-        if len(invalid_pkg_files) > 0:
-            if config.email_subject_invalid_packages is not None:
-                send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
-
-    utils.display_message(_('finished'))
-
-
-class ConverterEnv(object):
-
-    def __init__(self):
-        self.version = None
-        self.local_web_app_path = None
-        self.serial_path = None
-        self.is_windows = None
-        self.db_manager = None
-
-
 class ArticlesConversion(object):
 
-    def __init__(self, registered_issue_data, pkg, create_windows_base, web_app_path):
+    def __init__(self, registered_issue_data, pkg, create_windows_base, web_app_path, web_app_site):
         self.create_windows_base = create_windows_base
         self.registered_issue_data = registered_issue_data
         self.db = self.registered_issue_data.articles_db_manager
-        self.web_app_path = web_app_path
+        self.local_web_app_path = web_app_path
         self.pkg = pkg
         self.merging_result = self.articles_validations_reports.merged_articles_reports.merging_result
         self.merged_articles = self.articles_validations_reports.merged_articles_reports.merged_articles_data.merged_articles
@@ -486,15 +315,11 @@ class ArticlesConversion(object):
                 self.articles_conversion_validations[name].message = message
 
             if len(_scilista_items) > 0:
-                # FIXME
-                self.files_final_location.serial_path = self.db_manager.serial_path
-
-                self.db.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.web_app_path)
+                self.db.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.local_web_app_path)
                 self.db.issue_files.save_source_files(self.pkg.package_folder.path)
                 self.replace_ex_aop_pdf_files()
 
             self.aop_status.update(self.db.db_aop_status)
-        self.generate_report()
         return scilista_items
 
     def replace_ex_aop_pdf_files(self):
@@ -503,10 +328,10 @@ class ArticlesConversion(object):
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
 
-            aop_pdf_path = self.web_app_path + '/bases/pdf/' + folder
+            aop_pdf_path = self.local_web_app_path + '/bases/pdf/' + folder
             if not os.path.isdir(aop_pdf_path):
                 os.makedirs(aop_pdf_path)
-            issue_pdf_path = self.web_app_path + '/bases/pdf/' + self.pkg.pkgissuedata.acron_issue_label.replace(' ', '/')
+            issue_pdf_path = self.local_web_app_path + '/bases/pdf/' + self.pkg.pkgissuedata.acron_issue_label.replace(' ', '/')
 
             issue_pdf_files = [f for f in os.listdir(issue_pdf_path) if f.startswith(xml_name) or f[2:].startswith('_'+xml_name)]
 
@@ -555,16 +380,6 @@ class ArticlesConversion(object):
     @property
     def acron_issue_label(self):
         return self.pkg.pkgissuedata.acron_issue_label
-
-    def generate_report(self, base_report_path=None):
-        reports = pkg_validations.ReportsMaker([], self.articles_set_validations, self.files_final_location, None, self)
-        if converter_env.is_windows:
-            reports.processing_result_location = self.files_final_location.result_path
-        self.report_location = self.files_final_location.report_path + '/xc.html'
-        reports.save_report(self.files_final_location.report_path, 'xc.html', _('XML Conversion (XML to Database)'))
-        self.statistics_display = reports.validations.statistics_display(html_format=False)
-        if converter_env.is_windows:
-            html_reports.display_report(self.report_location)
 
     @property
     def total_to_convert(self):
@@ -644,7 +459,7 @@ class ArticlesConversion(object):
     @property
     def conclusion_message(self):
         text = ''.join(self.error_messages)
-        app_site = converter_env.web_app_site if converter_env.web_app_site is not None else _('scielo web site')
+        app_site = self.web_app_site if self.web_app_site is not None else _('scielo web site')
         status = ''
         result = _('updated/published on {app_site}').format(app_site=app_site)
         reason = ''
@@ -677,72 +492,6 @@ class ArticlesConversion(object):
         text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
         text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.total_to_convert), False) + html_reports.p_message(text, False)
         return text
-
-
-def convert_package(src_path):
-    xc_process_logger = fs_utils.ProcessLogger()
-
-    scilista_items = []
-    is_xml_generation = False
-
-    pkg_name = os.path.basename(src_path)[:-4]
-
-    if not os.path.isdir('./../log'):
-        os.makedirs('./../log')
-    log_package = './../log/' + datetime.now().isoformat().replace(':', '_') + os.path.basename(pkg_name)
-
-    fs_utils.append_file(log_package, 'preparing')
-    tmp_result_path = src_path + '_xc'
-
-    fs_utils.append_file(log_package, 'normalized_package')
-    xml_files = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
-    pkg_maker = xpmaker.PackageMaker(xml_files, tmp_result_path, 'acron', converter_env.version, is_db_generation=True)
-    pkg_maker.make_sps_package()
-
-    #, converter_env.is_windows
-    doi_services = article_validations.DOI_Services()
-
-    articles_pkg = pkg_validations.ArticlesPackage(pkg_maker.scielo_pkg_path, pkg_maker.article_items, is_xml_generation)
-
-    articles_data = pkg_validations.ArticlesData()
-    articles_data.setup(articles_pkg, db_manager=converter_env.db_manager)
-
-    articles_set_validations = pkg_validations.ArticlesSetValidations(articles_pkg, articles_data, xc_process_logger)
-    articles_set_validations.validate(doi_services, pkg_maker.scielo_dtd_files, pkg_maker.article_work_area_items)
-
-    conversion = ArticlesConversion(articles_set_validations, articles_data.articles_db_manager, not converter_env.is_windows)
-    scilista_items = conversion.convert()
-
-    #reports.validations.statistics_display()
-    #conversion.statistics_display
-    #report_location
-    #conversion.report_location
-
-    if tmp_result_path != conversion.results_path:
-        fs_utils.delete_file_or_folder(tmp_result_path)
-    os.unlink(log_package)
-    return (scilista_items, conversion.xc_status, conversion.statistics_display, conversion.report_location)
-
-
-def format_reports_for_web(report_path, pkg_path, issue_path):
-    if not os.path.isdir(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path):
-        os.makedirs(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path)
-
-    #utils.debugging('format_reports_for_web')
-    #utils.debugging('content of ' + report_path)
-    #utils.debugging('\n'.join(os.listdir(report_path)))
-
-    for f in os.listdir(report_path):
-        if f.endswith('.zip') or f == 'xml_converter.txt':
-            os.unlink(report_path + '/' + f)
-        else:
-            #utils.debugging(report_path + '/' + f)
-            content = fs_utils.read_file(report_path + '/' + f)
-            content = content.replace('file:///' + pkg_path, '/img/revistas/' + issue_path)
-            content = content.replace('file:///' + report_path, '/reports/' + issue_path)
-            if isinstance(content, unicode):
-                content = content.encode('utf-8')
-            fs_utils.write_file(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, content)
 
 
 def report_status(title, status, style=None):
@@ -821,34 +570,6 @@ def xml_converter_read_configuration(filename):
     return r
 
 
-def read_inputs(args):
-    # python xml_converter.py <xml_src>
-    # python xml_converter.py <collection_acron>
-    package_path = None
-    script = None
-    collection_acron = None
-    if len(args) == 2:
-        script, param = args
-        if os.path.isfile(param) or os.path.isdir(param):
-            package_path = param
-        else:
-            collection_acron = param
-
-    return (script, package_path, collection_acron)
-
-
-def validate_inputs(package_path, collection_acron):
-    # python xml_converter.py <xml_src>
-    # python xml_converter.py <collection_acron>
-    errors = []
-    if package_path is None:
-        if collection_acron is None:
-            errors.append(_('Missing collection acronym'))
-    else:
-        errors = xml_utils.is_valid_xml_path(package_path)
-    return errors
-
-
 def xml_config_filename(collection_acron):
     filename = CURRENT_PATH + '/../../scielo_paths.ini'
 
@@ -873,32 +594,8 @@ def is_valid_pkg_file(filename):
     return os.path.isfile(filename) and (filename.endswith('.zip') or filename.endswith('.tgz'))
 
 
-
-
 def send_message(mailer, to, subject, text, attaches=None):
     if mailer is not None:
         #utils.debugging('sending message ' + subject)
         mailer.send_message(to, subject, text, attaches)
 
-
-
-
-def prepare_env(config):
-    global converter_env
-
-    if converter_env is None:
-        converter_env = ConverterEnv()
-
-    db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
-    converter_env.db_manager = xc_models.DBManager(db_isis, [config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst'], [config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst'], config.serial_path)
-    if config.local_web_app_path is None:
-        config.local_web_app_path = ALTERNATIVE_WEB_PATH
-
-    converter_env.local_web_app_path = config.local_web_app_path
-    converter_env.version = '1.0'
-    converter_env.is_windows = config.is_windows
-    converter_env.web_app_site = config.web_app_site
-    converter_env.skip_identical_xml = config.skip_identical_xml
-    converter_env.max_fatal_error = config.max_fatal_error
-    converter_env.max_error = config.max_error
-    converter_env.max_warning = config.max_warning

@@ -50,7 +50,7 @@ def normalize_xml_packages(xml_list, stage='xpm'):
     return dest_pkgfiles_items
 
 
-class PackageMaker(object):
+class XPM(object):
 
     def __init__(self, config, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
         self.config = config
@@ -94,22 +94,20 @@ class PackageMaker(object):
         return validator.validate(pkg.articles, pkg.outputs, pkg.package_folder.pkgfiles_items)
 
     def report(self, pkg, pkg_validations, conversion=None):
-        files_final_location = workarea.FilesFinalLocation(
-            pkg_path=pkg.wk.scielo_package_path,
-            acron=pkg.pkgissuedata.acron,
-            issue_label=pkg.pkgissuedata.issue_label,
-            serial_path=self.serial_path,
-            web_app_path=self.web_app_path,
-            web_url=self.web_url)
+        serial_path = None if conversion is None else conversion.registered_issue_data.articles_db_manager.serial_path
+
+        files_final_location = workarea.FilesFinalLocation(pkg.wk.scielo_package_path, pkg.pkgissuedata.acron, pkg.pkgissuedata.issue_label, self.config.web_app_path, self.config.web_app_site)
         pkgreports = package_validations.PackageReports(pkg.package_folder)
         articles_data_reports = package_validations.ArticlesDataReports(pkg.articles)
         reports = package_validations.ReportsMaker(pkgreports, articles_data_reports, pkg_validations, files_final_location, xpm_version(), conversion)
 
         if not self.is_xml_generation:
-            reports.processing_result_location = pkg.wk.output_path
-            reports.save_report(pkg.wk.reports_path, 'xpm.html', _('XML Package Maker Report'))
-            if self.DISPLAY_REPORT:
-                html_reports.display_report(pkg.wk.reports_path + '/xpm.html')
+            reports.processing_result_location = self.files_final_location.result_path
+            report_title = _('XML Package Maker Report') if sel.stage == 'xpm' else _('XML Conversion (XML to Database)')
+            reports.save_report(self.files_final_location.report_path, self.stage+ '.html', report_title)
+            if self.DISPLAY_REPORT or self.config.interative_mode:
+                html_reports.display_report(self.files_final_location.report_path + '/' + self.stage+ '.html')
+        return self.files_final_location.report_path + '/' + self.stage+ '.html'
 
     def make_pmc_package(self, pkg):
         if not self.is_db_generation:
