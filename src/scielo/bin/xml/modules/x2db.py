@@ -4,19 +4,15 @@ import os
 import shutil
 from datetime import datetime
 
+from . import email_service
+
 from __init__ import _
 from . import validation_status
 from . import fs_utils
 from . import utils
 from . import html_reports
-from . import dbm_isis
-from . import xc_models
-from . import article_reports
-from validations import package_validations
 from . import xml_utils
-from . import xc
 from . import xc_config
-from pkgmakers import pkgmaker
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -53,6 +49,81 @@ EMAIL_SUBJECT_STATUS_ICON['ignored'] = ['', _('IGNORED')]
 EMAIL_SUBJECT_STATUS_ICON['accepted'] = [u"\u2713" + ' ' + u"\u270D", _(' ACCEPTED but corrections required ')]
 EMAIL_SUBJECT_STATUS_ICON['approved'] = [u"\u2705", _(' APPROVED ')]
 EMAIL_SUBJECT_STATUS_ICON['not processed'] = ['', _(' NOT PROCESSED ')]
+
+
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+
+
+def xc_get_configuration(collection_acron):
+    config = None
+    f = xc_configuration_filename(collection_acron)
+    errors = is_xc_configuration_file(f)
+    if len(errors) > 0:
+        print('\n'.join(errors))
+    else:
+        config = xc_read_configuration_file(f)
+    return config
+
+
+def xc_read_configuration_file(filename):
+    r = None
+    if os.path.isfile(filename):
+        r = xc_config.XMLConverterConfiguration(filename)
+        if not r.valid:
+            r = None
+    return r
+
+
+def xc_configuration_filename(collection_acron):
+    if collection_acron is None:
+        f = CURRENT_PATH + '/../../scielo_paths.ini'
+        if os.path.isfile(f):
+            filename = f
+        else:
+            filename = CURRENT_PATH + '/../config/default.xc.ini'
+    else:
+        filename = CURRENT_PATH + '/../config/' + collection_acron + '.xc.ini'
+
+    return filename
+
+
+def is_xc_configuration_file(configuration_filename):
+    messages = []
+    if configuration_filename is None:
+        messages.append('\n===== ATTENTION =====\n')
+        messages.append('ERROR: No configuration file was informed')
+    elif not os.path.isfile(configuration_filename):
+        messages.append('\n===== ATTENTION =====\n')
+        messages.append('ERROR: unable to read the configuration file: ' + configuration_filename)
+    return messages
+
+
+def run_cmd(cmd, log_filename=None):
+    print(cmd)
+    if log_filename is not None:
+        fs_utils.append_file(log_filename, datetime.now().isoformat() + ' ' + cmd)
+    try:
+        os.system(cmd)
+        if log_filename is not None:
+            fs_utils.append_file(log_filename, 'done')
+    except:
+        if log_filename is not None:
+            fs_utils.append_file(log_filename, 'failure')
+
+
+def run_remote_mkdirs(user, server, path, log_filename=None):
+    cmd = 'ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"'
+    run_cmd(cmd, log_filename)
+
+
+def run_rsync(source, user, server, dest, log_filename=None):
+    cmd = 'nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n'
+    run_cmd(cmd, log_filename)
+
+
+def run_scp(source, user, server, dest, log_filename=None):
+    cmd = 'nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n'
+    run_cmd(cmd, log_filename)
 
 
 def call_converter(args, version='1.0'):
@@ -118,7 +189,7 @@ def get_config(collection_name):
     if collection_acron is None:
         collection_acron = collection_name
     #FIXME
-    return xc.get_configuration(collection_acron)
+    return xc.xc_get_configuration(collection_acron)
 
 
 def organize_packages_locations(pkg_path, config, mailer):
@@ -133,103 +204,62 @@ def organize_packages_locations(pkg_path, config, mailer):
 
 
 def execute_converter(package_paths, collection_name):
-
     config = get_config(collection_name)
     mailer = Mailer(config)
     transfer = FilesTransfer(config)
     organize_packages_locations(package_paths, config, mailer)
 
-    xc = XC(config, version, DISPLAY_REPORT, GENERATE_PMC, stage)
-
+    proc = PkgProcessor(config, version, DISPLAY_REPORT, GENERATE_PMC, stage)
+    scilista_items = []
     for package_path in package_paths:
-
-        pkgfolder = workarea.PackageFolder(os.path.dirname(xml_list[0]))
-        pkgfiles = package.normalize_xml_packages(pkgfolder.xml_list, 'xc')
-
-        xc.convert([f.filename for f in pkgfiles])
-
         package_name = os.path.basename(package_path)
         utils.display_message(package_path)
-        scilista_items = []
         xc_status = 'interrupted'
         stats_msg = ''
         report_location = None
 
+        pkgfolder = workarea.PackageFolder(package_path)
+        pkgfiles = package.normalize_xml_packages(pkgfolder.xml_list, 'xc')
+
         try:
-            scilista_items, xc_status, stats_msg, report_location = convert_package(package_path)
+            scilista_items, xc_status, stats_msg, report_location = proc.convert_package([f.filename for f in pkgfiles])
+            print(scilista_items)
         except Exception as e:
             if config.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
-            if config.email_subject_invalid_packages is not None:
-                mailer.mail_step1_failure(package_name, e)
+            mailer.mail_step1_failure(package_name, e)
             if len(package_paths) == 1:
                 raise
-        print(scilista_items)
-        try:
+        if len(scilista_items) > 0:
             acron, issue_id = scilista_items[0].split(' ')
-
-            if xc_status in ['accepted', 'approved']:
-                if config.collection_scilista is not None:
-                    open(config.collection_scilista, 'a+').write('\n'.join(scilista_items) + '\n')
-
-                if config.is_enabled_transference:
+            try:
+                if xc_status in ['accepted', 'approved']:
+                    if config.collection_scilista is not None:
+                        fs_utils.append_file(config.collection_scilista, '\n'.join(scilista_items) + '\n')
                     transfer.transfer_website_files(acron, issue_id)
-
-            if report_location is not None:
-                if config.email_subject_package_evaluation is not None:
+            except Exception as e:
+                mailer.mail_step2_failure(package_name, e)
+                if len(package_paths) == 1:
+                    print('exception as step 2')
+                    raise
+            try:
+                if report_location is not None and config.email_subject_package_evaluation is not None:
                     results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
                     link = config.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
-                    report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
-
+                    mail_content = '<html><body>' + html_reports.link(link, link) + '</body></html>'
                     transfer.transfer_report_files(acron, issue_id)
-                    mailer.mail_results(package_name, results, report_location)
-
-        except Exception as e:
-            if config.email_subject_invalid_packages is not None:
-                mailer.mail_step2_failure(package_folder, e)
-
-            if len(package_paths) == 1:
-                print('exception as finishing')
-                raise
-
-    ###
+                    mailer.mail_results(package_name, results, mail_content)
+            except Exception as e:
+                mailer.mail_step3_failure(package_name, e)
+                if len(package_paths) == 1:
+                    print('exception as step 3')
+                    raise
+    utils.display_message(_('finished'))
+    """
     if tmp_result_path != conversion.results_path:
         fs_utils.delete_file_or_folder(tmp_result_path)
     os.unlink(log_package)
-    ###
-
-    utils.display_message(_('finished'))
-
-
-class XC(pkgmaker.XPM):
-
-    def __init__(self, config, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
-        pkgmakers.XPM.__init__(self, config, version, DISPLAY_REPORT, GENERATE_PMC, stage)
-        db_isis = dbm_isis.IsisDAO(
-                    dbm_isis.UCISIS(
-                        dbm_isis.CISIS(config.cisis1030),
-                        dbm_isis.CISIS(config.cisis1660)))
-        self.db_manager = xc_models.DBManager(db_isis, [config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst'], [config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst'], config.serial_path)
-        if self.config.local_web_app_path is None:
-            self.config.local_web_app_path = ALTERNATIVE_WEB_PATH
-        self.mailer = None
-        if config.is_enabled_email_service:
-            self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email)
-
-    def convert(self, input_xml_list):
-        pkg = self.package(input_xml_list)
-        registered_issue_data = registered.RegisteredIssueData(self.db_manager)
-        registered_issue_data.get_data(pkg.pkgissuedata)
-        pkg_validations = self.validate_package(pkg, registered_issue_data)
-
-        conversion = ArticlesConversion(registered_issue_data, pkg, not self.config.interative_mode, not self.config.local_web_app_path, not self.config.web_app_site)
-
-        statistics_display = self.report(pkg, pkg_validations, conversion)
-        utils.display_message(_('Result of the processing:'))
-        utils.display_message(pkg.wk.output_path)
-        scilista_items = conversion.convert()
-
-        return (scilista_items, conversion.xc_status, statistics_display, conversion.report_location)
+    """
 
 
 class Mailer(object):
@@ -254,6 +284,9 @@ class Mailer(object):
     def mail_step2_failure(self, package_folder, e):
         self.send_message(self.config.email_to_adm, '[Step 2]' + self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
 
+    def mail_step3_failure(self, package_folder, e):
+        self.send_message(self.config.email_to_adm, '[Step 3]' + self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
+
 
 class FilesTransfer(object):
 
@@ -261,237 +294,28 @@ class FilesTransfer(object):
         self.config = config
 
     def transfer_website_files(self, acron, issue_id):
-        #, config.local_web_app_path, config.transference_user, config.transference_servers, config.remote_web_app_path
-        # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
-        issue_id_path = acron + '/' + issue_id
-
-        folders = ['/htdocs/img/revistas/', '/bases/pdf/', '/bases/xml/']
-
-        for folder in folders:
-            dest_path = self.config.remote_web_app_path + folder + issue_id_path
-            source_path = self.config.local_web_app_path + folder + issue_id_path
-            for server in self.config.transference_servers:
-                xc.run_remote_mkdirs(self.config.user, server, dest_path)
-                xc.run_rsync(source_path, self.config.user, server, dest_path)
+        if self.config.is_enabled_transference:
+            issue_id_path = acron + '/' + issue_id
+            folders = ['/htdocs/img/revistas/', '/bases/pdf/', '/bases/xml/']
+            for folder in folders:
+                dest_path = self.config.remote_web_app_path + folder + issue_id_path
+                source_path = self.config.local_web_app_path + folder + issue_id_path
+                for server in self.config.transference_servers:
+                    xc.run_remote_mkdirs(self.config.user, server, dest_path)
+                    xc.run_rsync(source_path, self.config.user, server, dest_path)
 
     def transfer_report_files(self, acron, issue_id):
         # 'rsync -CrvK img/* self.config.user@server:/var/www/...../revistas'
-        issue_id_path = acron + '/' + issue_id
-
-        folders = ['/htdocs/reports/']
-        for folder in folders:
-            dest_path = self.config.remote_web_app_path + folder + issue_id_path
-            source_path = self.config.local_web_app_path + folder + issue_id_path
-            log_filename = './transfer_report_' + issue_id_path.replace('/', '-') + '.log'
-            for server in self.config.transference_servers:
-                xc.run_remote_mkdirs(self.config.user, server, dest_path, log_filename)
-                xc.run_rsync(source_path, self.config.user, server, dest_path, log_filename)
-
-
-class ArticlesConversion(object):
-
-    def __init__(self, registered_issue_data, pkg, create_windows_base, web_app_path, web_app_site):
-        self.create_windows_base = create_windows_base
-        self.registered_issue_data = registered_issue_data
-        self.db = self.registered_issue_data.articles_db_manager
-        self.local_web_app_path = web_app_path
-        self.pkg = pkg
-        self.merging_result = self.articles_validations_reports.merged_articles_reports.merging_result
-        self.merged_articles = self.articles_validations_reports.merged_articles_reports.merged_articles_data.merged_articles
-
-    def convert(self):
-        self.articles_conversion_validations = {}
-        scilista_items = [self.pkg.pkgissuedata.acron_issue_label]
-        if self.articles_validations_reports.blocking_errors == 0 and self.total_to_convert > 0:
-            self.conversion_status = {}
-            self.error_messages = self.db.exclude_articles(self.merging_result.order_changes, self.merging_result.excluded_orders)
-
-            _scilista_items = self.db.convert_articles(self.pkg.pkgissuedata.acron_issue_label, self.merging_result.articles_to_convert, self.registered_issue_data.issue_models.record, self.create_windows_base)
-            scilista_items.extend(_scilista_items)
-            self.conversion_status.update(self.db.db_conversion_status)
-
-            for name, message in self.db.articles_conversion_messages.items():
-                self.articles_conversion_validations[name] = package_validations.ValidationsResult()
-                self.articles_conversion_validations[name].message = message
-
-            if len(_scilista_items) > 0:
-                self.db.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.local_web_app_path)
-                self.db.issue_files.save_source_files(self.pkg.package_folder.path)
-                self.replace_ex_aop_pdf_files()
-
-            self.aop_status.update(self.db.db_aop_status)
-        return scilista_items
-
-    def replace_ex_aop_pdf_files(self):
-        # FIXME
-        print(self.db.aop_pdf_replacements)
-        for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
-            folder, aop_name = aop_location_data
-
-            aop_pdf_path = self.local_web_app_path + '/bases/pdf/' + folder
-            if not os.path.isdir(aop_pdf_path):
-                os.makedirs(aop_pdf_path)
-            issue_pdf_path = self.local_web_app_path + '/bases/pdf/' + self.pkg.pkgissuedata.acron_issue_label.replace(' ', '/')
-
-            issue_pdf_files = [f for f in os.listdir(issue_pdf_path) if f.startswith(xml_name) or f[2:].startswith('_'+xml_name)]
-
-            for pdf in issue_pdf_files:
-                aop_pdf = pdf.replace(xml_name, aop_name)
-                print((issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
-                shutil.copyfile(issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf)
-
-    @property
-    def conversion_report(self):
-        #resulting_orders
-        labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')]
-        widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('executed actions'): '20',  _('achieved results'): '20'}
-
-        #print(self.merging_result.history_items)
-        for status, status_items in self.aop_status.items():
-            for status_data in status_items:
-                if status != 'aop':
-                    name = status_data
-                    article = self.merging_result.articles_to_convert[name]
-                    self.merging_result.history_items[name].append((status, article))
-        for status, names in self.conversion_status.items():
-            for name in names:
-                self.merging_result.history_items[name].append((status, self.merging_result.articles_to_convert[name]))
-
-        history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.merging_result.history_items.items()])
-        history = [(xml_name, self.merging_result.history_items[xml_name]) for order, xml_name in history]
-
-        items = []
-        for xml_name, hist in history:
-            values = []
-            values.append(article_reports.display_article_data_in_toc(hist[-1][1]))
-            values.append(article_reports.article_history([item for item in hist if item[0] == 'registered article']))
-            values.append(article_reports.article_history([item for item in hist if item[0] == 'package']))
-            values.append(article_reports.article_history([item for item in hist if not item[0] in ['registered article', 'package', 'rejected', 'converted', 'not converted']]))
-            values.append(article_reports.article_history([item for item in hist if item[0] in ['rejected', 'converted', 'not converted']]))
-
-            items.append(html_reports.label_values(labels, values))
-        return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')], widths=widths)
-
-    @property
-    def registered_articles(self):
-        if self.db is not None:
-            return self.db.registered_articles
-
-    @property
-    def acron_issue_label(self):
-        return self.pkg.pkgissuedata.acron_issue_label
-
-    @property
-    def total_to_convert(self):
-        return self.merging_result.total_to_convert
-
-    @property
-    def total_converted(self):
-        return len(self.conversion_status.get('converted', []))
-
-    @property
-    def total_not_converted(self):
-        return len(self.conversion_status.get('not converted', []))
-
-    @property
-    def xc_status(self):
-        if self.articles_validations_reports.blocking_errors > 0:
-            result = 'rejected'
-        elif self.total_to_convert == 0:
-            result = 'ignored'
-        elif self.articles_conversion_validations.blocking_errors > 0:
-            result = 'rejected'
-        elif self.articles_conversion_validations.fatal_errors > 0:
-            result = 'accepted'
-        else:
-            result = 'approved'
-        return result
-
-    @property
-    def conversion_status_report(self):
-        return report_status(_('Conversion results'), self.conversion_status, 'conversion')
-
-    @property
-    def aop_status_report(self):
-        if len(self.aop_status) == 0:
-            return _('this journal has no aop. ')
-        r = ''
-        for status in sorted(self.aop_status.keys()):
-            if status != 'aop':
-                r += self.aop_report(status, self.aop_status[status])
-        r += self.aop_report('aop', self.aop_status.get('aop'))
-        return r
-
-    def aop_report(self, status, status_items):
-        if status_items is None:
-            return ''
-        r = ''
-        if len(status_items) > 0:
-            labels = []
-            widths = {}
-            if status == 'aop':
-                labels = [_('issue')]
-                widths = {_('issue'): '5'}
-            labels.extend([_('filename'), 'order', _('article')])
-            widths.update({_('filename'): '5', 'order': '2', _('article'): '88'})
-
-            report_items = []
-            for item in status_items:
-                issueid = None
-                article = None
-                if status == 'aop':
-                    issueid, name, article = item
-                else:
-                    name = item
-                    article = self.articles_merger.merged_articles.get(name)
-                if article is not None:
-                    if not article.is_ex_aop:
-                        values = []
-                        if issueid is not None:
-                            values.append(issueid)
-                        values.append(name)
-                        values.append(article.order)
-                        values.append(article.title)
-                        report_items.append(html_reports.label_values(labels, values))
-            r = html_reports.tag('h3', _(status)) + html_reports.sheet(labels, report_items, table_style='reports-sheet', html_cell_content=[_('article')], widths=widths)
-        return r
-
-    @property
-    def conclusion_message(self):
-        text = ''.join(self.error_messages)
-        app_site = self.web_app_site if self.web_app_site is not None else _('scielo web site')
-        status = ''
-        result = _('updated/published on {app_site}').format(app_site=app_site)
-        reason = ''
-        update = True
-        if self.xc_status == 'rejected':
-            update = False
-            status = validation_status.STATUS_BLOCKING_ERROR
-            if self.total_to_convert > 0:
-                if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.total_to_convert))
-                else:
-                    reason = _('because there are blocking errors in the package. ')
-            else:
-                reason = _('because there are blocking errors in the package. ')
-        elif self.xc_status == 'ignored':
-            update = False
-            reason = _('because no document has changed. ')
-        elif self.xc_status == 'accepted':
-            status = validation_status.STATUS_WARNING
-            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services. ')
-        elif self.xc_status == 'approved':
-            status = validation_status.STATUS_OK
-            reason = ''
-        else:
-            status = validation_status.STATUS_FATAL_ERROR
-            reason = _('because there are blocking errors in the package. ')
-        action = _('will not be')
-        if update:
-            action = _('will be')
-        text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
-        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.total_to_convert), False) + html_reports.p_message(text, False)
-        return text
+        if self.config.is_enabled_transference:
+            issue_id_path = acron + '/' + issue_id
+            folders = ['/htdocs/reports/']
+            for folder in folders:
+                dest_path = self.config.remote_web_app_path + folder + issue_id_path
+                source_path = self.config.local_web_app_path + folder + issue_id_path
+                log_filename = './transfer_report_' + issue_id_path.replace('/', '-') + '.log'
+                for server in self.config.transference_servers:
+                    xc.run_remote_mkdirs(self.config.user, server, dest_path, log_filename)
+                    xc.run_rsync(source_path, self.config.user, server, dest_path, log_filename)
 
 
 def report_status(title, status, style=None):
@@ -598,4 +422,3 @@ def send_message(mailer, to, subject, text, attaches=None):
     if mailer is not None:
         #utils.debugging('sending message ' + subject)
         mailer.send_message(to, subject, text, attaches)
-

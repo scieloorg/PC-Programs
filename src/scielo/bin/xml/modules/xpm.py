@@ -9,7 +9,7 @@ from . import utils
 from . import fs_utils
 from pkgmakers import sgmlxml
 from data import workarea
-from pkgmakers import package_maker
+from . import pkg_processors
 
 messages = []
 
@@ -45,11 +45,11 @@ def call_make_packages(args, version):
                 pkgfiles = [sgmlxml2xml(sgm_xml, acron, version)]
                 stage = 'xml'
             else:
-                pkgfiles = package_maker.normalize_xml_packages(xml_list, stage)
+                pkgfiles = pkg_processors.normalize_xml_packages(xml_list, stage)
             #validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage, sgm_xml)
             config = None
             db_manager = None
-            proc = package_maker.Proc(config, version, DISPLAY_REPORT, GENERATE_PMC, db_manager, stage)
+            proc = pkg_processors.PkgProcessor(config, version, DISPLAY_REPORT, GENERATE_PMC, db_manager, stage)
             proc.make_package([f.filename for f in pkgfiles])
 
 
