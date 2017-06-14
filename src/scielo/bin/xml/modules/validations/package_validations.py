@@ -1,7 +1,6 @@
 # coding=utf-8
 
 import os
-import shutil
 
 from ..__init__ import _
 from .. import fs_utils

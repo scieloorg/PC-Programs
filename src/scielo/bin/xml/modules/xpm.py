@@ -3,17 +3,16 @@
 import os
 import sys
 
-from .__init__ import _
+from __init__ import _
 
 from . import utils
 from . import fs_utils
-from pkgmakers import sgmlxml
 from data import workarea
-from . import pkg_processors
+from pkg_processors import sgmlxml
+from pkg_processors import pkg_processors
+
 
 messages = []
-
-
 xpm_process_logger = fs_utils.ProcessLogger()
 
 

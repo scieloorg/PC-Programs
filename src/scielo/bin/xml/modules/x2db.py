@@ -4,44 +4,17 @@ import os
 import shutil
 from datetime import datetime
 
-from . import email_service
 
 from __init__ import _
-from . import validation_status
 from . import fs_utils
 from . import utils
 from . import html_reports
 from . import xml_utils
-from . import xc_config
+from pkg_processors import pkg_processors
+from data import package
+from server import mailer
+from server import filestransfer
 
-
-CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-
-CONFIG_PATH = CURRENT_PATH + '/../config/'
-converter_env = None
-
-ALTERNATIVE_WEB_PATH = os.path.dirname(os.path.dirname(CURRENT_PATH)) + '/web'
-
-
-categories_messages = {
-    'converted': _('converted'), 
-    'rejected': _('rejected'), 
-    'not converted': _('not converted'), 
-    'skipped': _('skipped conversion'), 
-    'excluded ex-aop': _('excluded ex-aop'), 
-    'excluded incorrect order': _('excluded incorrect order'), 
-    'not excluded incorrect order': _('not excluded incorrect order'), 
-    'not excluded ex-aop': _('not excluded ex-aop'), 
-    'new aop': _('aop version'), 
-    'regular doc': _('doc has no aop'), 
-    'ex aop': _('aop is published in an issue'), 
-    'matched aop': _('doc has aop version'), 
-    'partially matched aop': _('doc has aop version partially matched (title/author are similar)'), 
-    'aop missing PID': _('doc has aop version which has no PID'), 
-    'unmatched aop': _('doc has an invalid aop version (title/author are not the same)'), 
-}
-
-CONVERSIONS_STATUS = ['converted', 'not converted', 'rejected', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']
 
 EMAIL_SUBJECT_STATUS_ICON = {}
 EMAIL_SUBJECT_STATUS_ICON['rejected'] = [u"\u274C", _(' REJECTED ')]
@@ -98,34 +71,6 @@ def is_xc_configuration_file(configuration_filename):
     return messages
 
 
-def run_cmd(cmd, log_filename=None):
-    print(cmd)
-    if log_filename is not None:
-        fs_utils.append_file(log_filename, datetime.now().isoformat() + ' ' + cmd)
-    try:
-        os.system(cmd)
-        if log_filename is not None:
-            fs_utils.append_file(log_filename, 'done')
-    except:
-        if log_filename is not None:
-            fs_utils.append_file(log_filename, 'failure')
-
-
-def run_remote_mkdirs(user, server, path, log_filename=None):
-    cmd = 'ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"'
-    run_cmd(cmd, log_filename)
-
-
-def run_rsync(source, user, server, dest, log_filename=None):
-    cmd = 'nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n'
-    run_cmd(cmd, log_filename)
-
-
-def run_scp(source, user, server, dest, log_filename=None):
-    cmd = 'nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n'
-    run_cmd(cmd, log_filename)
-
-
 def call_converter(args, version='1.0'):
     script, package_path, collection_acron = read_inputs(args)
     if package_path is None and collection_acron is None:
@@ -139,7 +84,7 @@ def call_converter(args, version='1.0'):
         if len(errors) > 0:
             messages = []
             messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
-            messages.append(validation_status.STATUS_ERROR + ': ' + _('Incorrect parameters'))
+            messages.append('ERROR: ' + _('Incorrect parameters'))
             messages.append('\n' + _('Usage') + ':')
             messages.append('python xml_converter.py <xml_folder> | <collection_acron>')
             messages.append(_('where') + ':')
@@ -188,8 +133,7 @@ def get_config(collection_name):
     collection_acron = collection_names.get(collection_name)
     if collection_acron is None:
         collection_acron = collection_name
-    #FIXME
-    return xc.xc_get_configuration(collection_acron)
+    return xc_get_configuration(collection_acron)
 
 
 def organize_packages_locations(pkg_path, config, mailer):
@@ -205,11 +149,11 @@ def organize_packages_locations(pkg_path, config, mailer):
 
 def execute_converter(package_paths, collection_name):
     config = get_config(collection_name)
-    mailer = Mailer(config)
-    transfer = FilesTransfer(config)
-    organize_packages_locations(package_paths, config, mailer)
+    xc_mailer = mailer.Mailer(config)
+    transfer = filestransfer.FilesTransfer(config)
+    organize_packages_locations(package_paths, config, xc_mailer)
 
-    proc = PkgProcessor(config, version, DISPLAY_REPORT, GENERATE_PMC, stage)
+    proc = pkg_processors.PkgProcessor(config, version, DISPLAY_REPORT, GENERATE_PMC, stage)
     scilista_items = []
     for package_path in package_paths:
         package_name = os.path.basename(package_path)
@@ -227,7 +171,7 @@ def execute_converter(package_paths, collection_name):
         except Exception as e:
             if config.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
-            mailer.mail_step1_failure(package_name, e)
+            xc_mailer.mail_step1_failure(package_name, e)
             if len(package_paths) == 1:
                 raise
         if len(scilista_items) > 0:
@@ -238,7 +182,7 @@ def execute_converter(package_paths, collection_name):
                         fs_utils.append_file(config.collection_scilista, '\n'.join(scilista_items) + '\n')
                     transfer.transfer_website_files(acron, issue_id)
             except Exception as e:
-                mailer.mail_step2_failure(package_name, e)
+                xc_mailer.mail_step2_failure(package_name, e)
                 if len(package_paths) == 1:
                     print('exception as step 2')
                     raise
@@ -248,9 +192,9 @@ def execute_converter(package_paths, collection_name):
                     link = config.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
                     mail_content = '<html><body>' + html_reports.link(link, link) + '</body></html>'
                     transfer.transfer_report_files(acron, issue_id)
-                    mailer.mail_results(package_name, results, mail_content)
+                    xc_mailer.mail_results(package_name, results, mail_content)
             except Exception as e:
-                mailer.mail_step3_failure(package_name, e)
+                xc_mailer.mail_step3_failure(package_name, e)
                 if len(package_paths) == 1:
                     print('exception as step 3')
                     raise
@@ -260,85 +204,6 @@ def execute_converter(package_paths, collection_name):
         fs_utils.delete_file_or_folder(tmp_result_path)
     os.unlink(log_package)
     """
-
-
-class Mailer(object):
-
-    def __init__(self, config):
-        self.config = config
-        self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email)
-
-    def send_message(self, to, subject, text, attaches):
-        if self.mailer is not None:
-            self.mailer.send_message(to, subject, text, attaches)
-
-    def mail_invalid_packages(self, invalid_pkg_files):
-        self.send_message(self.config.email_to, self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
-
-    def mail_step1_failure(self, package_folder, e):
-        self.send_message(self.config.email_to_adm, '[Step 1]' + self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
-
-    def mail_results(self, package_folder, results, report_location):
-        self.send_message(self.config.email_to, self.config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
-
-    def mail_step2_failure(self, package_folder, e):
-        self.send_message(self.config.email_to_adm, '[Step 2]' + self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
-
-    def mail_step3_failure(self, package_folder, e):
-        self.send_message(self.config.email_to_adm, '[Step 3]' + self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
-
-
-class FilesTransfer(object):
-
-    def __init__(self, config):
-        self.config = config
-
-    def transfer_website_files(self, acron, issue_id):
-        if self.config.is_enabled_transference:
-            issue_id_path = acron + '/' + issue_id
-            folders = ['/htdocs/img/revistas/', '/bases/pdf/', '/bases/xml/']
-            for folder in folders:
-                dest_path = self.config.remote_web_app_path + folder + issue_id_path
-                source_path = self.config.local_web_app_path + folder + issue_id_path
-                for server in self.config.transference_servers:
-                    xc.run_remote_mkdirs(self.config.user, server, dest_path)
-                    xc.run_rsync(source_path, self.config.user, server, dest_path)
-
-    def transfer_report_files(self, acron, issue_id):
-        # 'rsync -CrvK img/* self.config.user@server:/var/www/...../revistas'
-        if self.config.is_enabled_transference:
-            issue_id_path = acron + '/' + issue_id
-            folders = ['/htdocs/reports/']
-            for folder in folders:
-                dest_path = self.config.remote_web_app_path + folder + issue_id_path
-                source_path = self.config.local_web_app_path + folder + issue_id_path
-                log_filename = './transfer_report_' + issue_id_path.replace('/', '-') + '.log'
-                for server in self.config.transference_servers:
-                    xc.run_remote_mkdirs(self.config.user, server, dest_path, log_filename)
-                    xc.run_rsync(source_path, self.config.user, server, dest_path, log_filename)
-
-
-def report_status(title, status, style=None):
-    text = ''
-    if status is not None:
-        for category in sorted(status.keys()):
-            _style = style
-            if status.get(category) is None:
-                ltype = 'ul'
-                list_items = ['None']
-                _style = None
-            elif len(status[category]) == 0:
-                ltype = 'ul'
-                list_items = ['None']
-                _style = None
-            else:
-                ltype = 'ol'
-                list_items = status[category]
-            text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items, _style)
-    if len(text) > 0:
-        text = html_reports.tag('h3', title) + text
-    return text
-
 
 def queue_packages(download_path, temp_path, queue_path, archive_path):
     invalid_pkg_files = []
@@ -385,40 +250,5 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
     return (pkg_paths, invalid_pkg_files)
 
 
-def xml_converter_read_configuration(filename):
-    r = None
-    if os.path.isfile(filename):
-        r = xc_config.XMLConverterConfiguration(filename)
-        if not r.valid:
-            r = None
-    return r
-
-
-def xml_config_filename(collection_acron):
-    filename = CURRENT_PATH + '/../../scielo_paths.ini'
-
-    if not os.path.isfile(filename):
-        if not collection_acron is None:
-            filename = CURRENT_PATH + '/../config/' + collection_acron + '.xc.ini'
-    return filename
-
-
-def is_valid_configuration_file(configuration_filename):
-    messages = []
-    if configuration_filename is None:
-        messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
-        messages.append(validation_status.STATUS_ERROR + ': ' + _('No configuration file was informed'))
-    elif not os.path.isfile(configuration_filename):
-        messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
-        messages.append(validation_status.STATUS_ERROR + ': ' + _('unable to read XML Converter configuration file: ') + configuration_filename)
-    return messages
-
-
 def is_valid_pkg_file(filename):
     return os.path.isfile(filename) and (filename.endswith('.zip') or filename.endswith('.tgz'))
-
-
-def send_message(mailer, to, subject, text, attaches=None):
-    if mailer is not None:
-        #utils.debugging('sending message ' + subject)
-        mailer.send_message(to, subject, text, attaches)
