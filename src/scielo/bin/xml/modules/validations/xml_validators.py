@@ -3,9 +3,9 @@ import os
 from datetime import datetime
 
 from ..__init__ import _
-from .. import fs_utils
-from .. import java_xml_utils
-from .. import xml_utils
+from ..utils import fs_utils
+from ..utils import java_xml_utils
+from ..utils import xml_utils
 from .. import html_reports
 from .. import validation_status
 
