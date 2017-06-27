@@ -1499,7 +1499,7 @@ def evaluate_articles_similarity_result(exact_comparison_result, relaxed_compari
 
     if len(exact_comparison_result) == 0:
         status = validation_status.STATUS_INFO
-    elif len(exact_comparison_result) == 1 and len(relaxed_comparison_result) == 0:
+    elif len(exact_comparison_result) == 1 and len(relaxed_comparison_result) in [0, 1]:
         status = validation_status.STATUS_WARNING
     return status
 
