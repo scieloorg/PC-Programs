@@ -143,6 +143,7 @@ class ArticlesConversion(object):
                     os.makedirs(aop_pdf_path)
                 shutil.copyfile(issue_pdf_path + '/' + article_pdf, aop_pdf_path + '/' + aop_pdf)
 
+
     @property
     def conversion_report(self):
         #resulting_orders
@@ -166,13 +167,19 @@ class ArticlesConversion(object):
         items = []
         for xml_name, hist in history:
             values = []
+            registered = [item for item in hist if item[0] == 'registered article']
+            package = [item for item in hist if item[0] == 'package']
+            diff = ''
+            if len(registered) == 1 and len(package) == 1:
+                diff = pkg_validations.display_articles_differences(registered[0][1], package[0][1], _('registered'), _('package')) + '<hr/>'
             values.append(article_reports.display_article_data_in_toc(hist[-1][1]))
-            values.append(article_reports.article_history([item for item in hist if item[0] == 'registered article']))
-            values.append(article_reports.article_history([item for item in hist if item[0] == 'package']))
+            values.append(article_reports.article_history(registered))
+            values.append(diff + article_reports.article_history(package))
             values.append(article_reports.article_history([item for item in hist if not item[0] in ['registered article', 'package', 'rejected', 'converted', 'not converted']]))
             values.append(article_reports.article_history([item for item in hist if item[0] in ['rejected', 'converted', 'not converted']]))
 
             items.append(pkg_validations.label_values(labels, values))
+
         return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')], widths=widths)
 
     @property
@@ -185,11 +192,12 @@ class ArticlesConversion(object):
         return self.articles_set_validations.articles_data.acron_issue_label
 
     def generate_report(self, base_report_path=None):
+        report_filename = 'xc-{}.html'.format(datetime.now().isoformat()[0:19].replace(':', '').replace('T', '_'))
         reports = pkg_validations.ReportsMaker([], self.articles_set_validations, self.files_final_location, None, self)
         if converter_env.is_windows:
             reports.processing_result_location = self.files_final_location.result_path
-        self.report_location = self.files_final_location.report_path + '/xc.html'
-        reports.save_report(self.files_final_location.report_path, 'xc.html', _('XML Conversion (XML to Database)'))
+        self.report_location = self.files_final_location.report_path + '/' + report_filename
+        reports.save_report(self.files_final_location.report_path, report_filename, _('XML Conversion (XML to Database)'))
         self.statistics_display = reports.validations.statistics_display(html_format=False)
         if converter_env.is_windows:
             html_reports.display_report(self.report_location)
