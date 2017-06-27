@@ -3,6 +3,7 @@
 from ..__init__ import _
 
 from .. import xc_models
+from ..validations import package_validations 
 
 
 class RegisteredIssueData(object):
@@ -45,8 +46,8 @@ class RegisteredArticles(dict):
         found = None
         registered = self.get(name)
         if registered is not None:
-            similar, status, msg = compare_articles(registered, article, _('registered'), _('package'))
-            if registered.order == article.order and similar:
+            comparison = package_validations.ArticlesComparison(registered, article)
+            if registered.order == article.order and comparison.are_similar:
                 found = registered
         return found
 
@@ -56,8 +57,8 @@ class RegisteredArticles(dict):
     def registered_titles_and_authors(self, article):
         similar_items = []
         for name, registered in self.items():
-            similar, status, message = compare_articles(registered, article, _('registered'), _('package'))
-            if similar:
+            comparison = package_validations.ArticlesComparison(registered, article)
+            if comparison.are_similar:
                 similar_items.append(name)
         return similar_items
 
