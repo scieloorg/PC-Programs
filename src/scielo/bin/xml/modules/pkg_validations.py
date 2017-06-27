@@ -477,7 +477,6 @@ class RegisteredArticles(dict):
         registered_order = registered
         if registered is None:
             matched_titaut_article_names = self.registered_titles_and_authors(article)
-            print(matched_titaut_article_names)
             matched_order_article_names = self.registered_order(article.order)
 
             registered_titaut = self.registered_items_by_names(matched_titaut_article_names)
@@ -497,8 +496,8 @@ class RegisteredArticles(dict):
         actions = None
         conflicts = None
         old_name = None
-        print('analyze_registered_articles')
-        print([registered_titaut, registered_name, registered_order])
+        #print('analyze_registered_articles')
+        #print([registered_titaut, registered_name, registered_order])
         #print('-')
         if registered_titaut is None and registered_order is None and registered_name is None:
             actions = 'add'
@@ -555,7 +554,7 @@ class RegisteredArticles(dict):
             conflicts = {_('registered article retrieved by name'): registered_name}
         elif registered_order is not None:
             conflicts = {_('registered article retrieved by the order'): registered_order}
-        print((actions, old_name, conflicts))
+        #print((actions, old_name, conflicts))
         return (actions, old_name, conflicts)
 
 
@@ -1493,10 +1492,10 @@ def articles_similarity(article1, article2):
 
 def evaluate_articles_similarity_result(exact_comparison_result, relaxed_comparison_result):
     status = validation_status.STATUS_BLOCKING_ERROR
-    print(len(exact_comparison_result))
-    print(len(relaxed_comparison_result))
-    print(exact_comparison_result)
-    print(relaxed_comparison_result)
+    #print(len(exact_comparison_result))
+    #print(len(relaxed_comparison_result))
+    #print(exact_comparison_result)
+    #print(relaxed_comparison_result)
 
     if len(exact_comparison_result) == 0:
         status = validation_status.STATUS_INFO
