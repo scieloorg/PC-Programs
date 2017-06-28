@@ -208,8 +208,12 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                     if os.path.isfile(self.src_path + '/' + f):
                         result = mime.guess_type(self.src_path + '/' + f)
                     else:
-                        url = urllib.pathname2url(f)
-                        result = mime.guess_type(url)
+                        try:
+                            url = urllib.pathname2url(f)
+                            result = mime.guess_type(url)
+                        except:
+                            url = urllib.request.pathname2url(f)
+                            result = mime.guess_type(url)
                     try:
                         result = result[0]
                         if '/' in result:

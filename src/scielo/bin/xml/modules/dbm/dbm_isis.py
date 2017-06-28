@@ -1,6 +1,5 @@
 # coding=utf-8
 
-
 import os
 import sys
 from tempfile import mkdtemp, NamedTemporaryFile
@@ -8,39 +7,32 @@ from tempfile import mkdtemp, NamedTemporaryFile
 from ..utils import xml_utils
 from ..utils import utils
 from ..utils import fs_utils
+from ..utils import encoding
 
 
-def u_encode(u, encoding):
-    r = u
-    if isinstance(u, unicode):
-        try:
-            r = u.encode(encoding)
-        except Exception as e:
-            try:
-                r = u.encode(encoding, 'xmlcharrefreplace')
-            except Exception as e:
-                try:
-                    r = u.encode(encoding, 'replace')
-                except Exception as e:
-                    r = u.encode(encoding, 'ignore')
+PRESERVECIRC = '[PRESERVECIRC]'
+
+
+def remove_break_lines_characters(content):
+    r = ' '.join(content.split())
+    r = r.replace(' </', '</')
     return r
 
 
 def change_circ(content):
-    return content.replace('^', '[PRESERVECIRC]')
+    return content.replace('^', PRESERVECIRC)
 
 
 def format_value(content):
     try:
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
+        content = encoding.notuni2uni(content)
     except Exception as e:
         utils.debbuging('format_value 1:')
         utils.debbuging(e)
         utils.debbuging(content)
 
     try:
-        content = xml_utils.remove_break_lines_characters(content)
+        content = remove_break_lines_characters(content)
     except Exception as e:
         utils.debbuging('format_value: remove_break_lines_characters:')
         utils.debbuging(e)
@@ -55,8 +47,7 @@ def format_value(content):
         utils.debbuging(content)
 
     try:
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
+        content = encoding.notuni2uni(content)
     except Exception as e:
         utils.debbuging('format_value: 2:')
         utils.debbuging(e)
@@ -215,10 +206,8 @@ class IDFile(object):
         if not os.path.isdir(path):
             os.makedirs(path)
         content = self._format_file(records)
-
-        if isinstance(content, unicode):
-            content = u_encode(content, 'iso-8859-1')
-            content = content.replace('<PRESERVECIRC/>', '&#94;')
+        content = encoding.uni2notuni(content, 'iso-8859-1')
+        content = content.replace(PRESERVECIRC, '&#94;')
         try:
             fs_utils.write_file(filename, content)
         except Exception as e:
@@ -464,7 +453,7 @@ class IsisDAO(object):
                 pass
         if os.path.isfile(id_filename):
             try:
-                os.unlink(id_filename)
+                fs_utils.delete_file_or_folder(id_filename)
             except:
                 pass
         return r
@@ -535,10 +524,8 @@ class IsisDB(object):
             except:
                 pass
         if os.path.isfile(id_filename):
-            try:
-                os.unlink(id_filename)
-            except:
-                pass
+            fs_utils.delete_file_or_folder(id_filename)
+
         return r
 
     def get_id_records(self, id_filename):

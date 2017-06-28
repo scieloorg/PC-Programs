@@ -4,6 +4,7 @@ import sqlite3
 
 from ..utils import utils
 from ..utils import fs_utils
+from ..utils import encoding
 
 
 class SQL(object):
@@ -70,11 +71,5 @@ class SQL(object):
         return expr
 
     def format_expr(self, labels, values, connector=' OR '):
-        expr = []
-        for i in range(0, len(labels)):
-            if values[i] is not None:
-                if not isinstance(values[i], unicode):
-                    values[i] = values[i].decode('utf-8')
-                expr.append(labels[i] + '="' + values[i] + '"')
+        expr = [label + '="' + encoding.uni2notuni(value) + '"' for label, value in zip(labels, values)]
         return connector.join(expr)
-

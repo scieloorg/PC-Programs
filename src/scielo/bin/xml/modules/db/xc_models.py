@@ -18,6 +18,7 @@ from ..data.article import Issue, PersonAuthor, Article, Journal
 from ..data import attributes
 from ..db import serial
 from ..validations import validation_status
+from ..utils import encoding
 
 
 ISSN_TYPE_CONVERSION = {
@@ -1409,7 +1410,7 @@ class JournalsList(object):
             spamreader = csv.reader(csvfile, delimiter='\t')
             for item in spamreader:
                 if len(item) >= 10:
-                    item = [elem.decode('utf-8').strip() for elem in item]
+                    item = [encoding.notuni2uni(elem).strip() for elem in item]
                     if item[1] != 'ISSN':
                         j = Journal()
                         j.collection_acron = item[0]

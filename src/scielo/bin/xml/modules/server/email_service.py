@@ -12,6 +12,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.header import Header
 
+from ..utils import fs_utils
+
 
 def strtolist(s):
     l = []
@@ -43,9 +45,7 @@ class EmailMessageTemplate(object):
     def msg_from_files(self, param_files):
         msg = ''
         for f in param_files:
-            content = open(f, 'r').read()
-            if not isinstance(content, unicode):
-                content = content.decode('utf-8')
+            content = fs_utils.read_file(f)
             msg += content + '\n' + '='*80 + '\n'
         return msg
 

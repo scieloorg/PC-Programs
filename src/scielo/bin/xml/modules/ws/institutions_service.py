@@ -3,6 +3,7 @@
 import os
 
 from ..__init__ import institutions_manager
+from ..utils import encoding
 
 
 curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -13,14 +14,6 @@ iso_country_list = None
 br_state_list = None
 orgname_list = None
 location_list = None
-
-
-def normalize_term(term):
-    if term is not None:
-        if not isinstance(term, unicode):
-            term = term.decode('utf-8')
-        term = ' '.join([item.strip() for item in term.split()])
-    return term
 
 
 def remove_sgml_tags(text):
@@ -39,20 +32,10 @@ def remove_sgml_tags(text):
 def unicode2cp1252(results):
     r = []
     for item in results:
-        text = ''
-        if not isinstance(item, unicode):
-            item = item.decode('utf-8')
-        if isinstance(item, unicode):
-            try:
-                text = item.encode('cp1252')
-            except Exception as e:
-                try:
-                    text = item.encode('cp1252', 'xmlcharrefreplace')
-                except Exception as e:
-                    print(e)
-                    print(item)
-        if len(text) > 0:
-            r.append(text)
+        item = encoding.convert2unicode(item)
+        item = encoding.convert2nunicode(item, 'cp1252', True)
+        if len(item) > 0:
+            r.append(item)
     return '\n'.join(r)
 
 

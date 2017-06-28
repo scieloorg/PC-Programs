@@ -5,28 +5,28 @@ import tempfile
 import zipfile
 from datetime import datetime
 
-from . import utils
+from . import encoding
 from . import files_extractor
 
 
 def read_file(filename, encode='utf-8'):
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
-        return utils.decode(content)
+        return encoding.convert2unicode(content)
 
 
 def read_file_lines(filename, encode='utf-8'):
     if os.path.isfile(filename):
         content = open(filename, 'r').readlines()
-        return [utils.decode(item).strip() for item in content]
+        return [encoding.convert2unicode(item).strip() for item in content]
 
 
 def write_file(filename, content, encode='utf-8'):
-    open(filename, 'w').write(utils.encode(content))
+    open(filename, 'w').write(encoding.convert2nunicode(content))
 
 
 def append_file(filename, content, encode='utf-8'):
-    open(filename, 'a+').write(utils.encode(content) + '\n')
+    open(filename, 'a+').write(encoding.convert2nunicode(content) + '\n')
 
 
 def delete_file_or_folder(path):
@@ -152,8 +152,6 @@ def update_file_content_if_there_is_new_items(new_content, filename):
 
     if new_content is None:
         new_content = ''
-    if not isinstance(new_content, unicode):
-        new_content = new_content.decode('utf-8')
     new_items = new_content.split('\n')
 
     allow_update = (len(new_items) != len(current_items)) or (len(new_items) == len(current_items) and new_content != current_content)

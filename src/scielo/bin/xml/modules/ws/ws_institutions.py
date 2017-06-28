@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import urllib
 import json
 
 
@@ -11,20 +10,11 @@ class Wayta(object):
         self._url = 'http://wayta.scielo.org/api/v1/institution'
         self.results = {}
 
-    def url(self, text):
-        if isinstance(text, unicode):
-            text = text.encode('utf-8')
-        values = {
-                    'q': text,
-                  }
-        data = urllib.urlencode(values)
-        return self._url + '?' + data
-
     def request(self, text, filter_country=None):
         result = self.results.get(text)
         try:
             if result is None:
-                result = self.ws_requester.request(self.url(text), timeout=30)
+                result = self.ws_requester.request(self.ws_requester.format_url(self._url, {'q':text}), timeout=30)
                 self.results[text] = format_wayta_results(result, filter_country)
         except Exception as e:
             print('wayta_request:')

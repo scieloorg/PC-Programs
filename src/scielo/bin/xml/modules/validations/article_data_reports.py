@@ -3,13 +3,13 @@ import os
 from datetime import datetime
 
 from ..__init__ import _
-from .. import utils
-from .. import xml_utils
-from .. import html_reports
-from .. import validation_status
-from .. import article_utils
-from .. import attributes
-from ..article import PersonAuthor, CorpAuthor, format_author
+from ..utils import utils
+from ..utils import xml_utils
+from ..reports import html_reports
+from ..validations import validation_status
+from ..utils import article_utils
+from ..data import attributes
+from ..data.article import PersonAuthor, CorpAuthor, format_author
 
 
 log_items = []

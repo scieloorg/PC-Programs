@@ -1,6 +1,6 @@
 
 
-from __init__ import _
+from ..__init__ import _
 
 
 STATUS_OK = '[OK]'

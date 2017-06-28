@@ -10,6 +10,9 @@ try:
 except:
     pass
 
+from ..utils import utils
+from ..utils import encoding
+
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 JOURNALS_CSV_URL = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
@@ -20,7 +23,7 @@ def local_gettext(text):
 
 
 try:
-    from __init__ import _
+    from ..__init__ import _
 except:
     _ = local_gettext
 
@@ -164,13 +167,12 @@ def registry_proxy_opener(proxy_handler_data):
 def try_request(url, timeout=30, debug=False, force_error=False):
     response = None
     socket.setdefaulttimeout(timeout)
-    if isinstance(url, unicode):
-        url = url.encode('utf-8')
-    req = urllib2.Request(url)
+    req = urllib2.Request(utils.uni2notuni(url))
     http_error_proxy_auth = None
     error_message = ''
     try:
         response = urllib2.urlopen(req, timeout=timeout).read()
+        response = utils.notuni2uni(response)
     except urllib2.HTTPError as e:
         if e.code == 407:
             http_error_proxy_auth = e.code
@@ -205,8 +207,18 @@ class WebServicesRequester(object):
             self.instance = super(WebServicesRequester, self).__new__(self)
         return self.instance
 
+    def format_url(self, url, parameters=None):
+        #if isinstance(text, unicode):
+        #    text = text.encode('utf-8')
+        #values = {
+        #            'q': text,
+        #          }
+        query = ''
+        if parameters is not None:
+            query = '?' + urllib2.urlencode(parameters)
+        return self._url + query
+
     def request(self, url, timeout=30, debug=False, force_error=False):
-        #print(url)
         if self.active is False:
             return None
         response = self.requests.get(url)
@@ -232,7 +244,7 @@ class WebServicesRequester(object):
         if url is not None:
             r = self.request(url, timeout, debug)
             if r is not None:
-                result = json.loads(r)
+                result = json.loads(encoding.uni2notuni(r))
         return result
 
     def is_valid_url(self, url, timeout=30):

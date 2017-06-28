@@ -9,6 +9,7 @@ import xml.dom.minidom
 
 from ..__init__ import _
 from . import fs_utils
+from . import encoding
 
 
 ENTITIES_TABLE = None
@@ -20,20 +21,6 @@ namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'
 
 for namespace_id, namespace_link in namespaces.items():
     etree.register_namespace(namespace_id, namespace_link)
-
-
-def get_unicode(s):
-    u = s
-    if not isinstance(u, unicode):
-        u = s.decode('utf-8')
-    return u
-
-
-def get_string(u):
-    s = u
-    if isinstance(u, unicode):
-        s = u.encode('utf-8')
-    return s
 
 
 def date_element(date_node):
@@ -55,14 +42,13 @@ def element_lang(node):
 def load_entities_table():
     table = {}
     curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-    if os.path.isfile(curr_path + '/../tables/entities.csv'):
-        for item in fs_utils.read_file_lines(curr_path + '/../tables/entities.csv'):
-            if not isinstance(item, unicode):
-                item.decode('utf-8')
+    entities_filename = curr_path + '/../../tables/entities.csv'
+    if os.path.isfile(entities_filename):
+        for item in fs_utils.read_file_lines(entities_filename):
             symbol, number_ent, named_ent, descr, representation = item.split('|')
             table[named_ent] = symbol
     else:
-        print('NOT FOUND ' + curr_path + '/../tables/entities.csv')
+        print('NOT FOUND ' + entities_filename)
     return table
 
 
@@ -208,12 +194,6 @@ def restore_xml_file(xml_filename, temp_filename):
     shutil.rmtree(os.path.dirname(temp_filename))
 
 
-def remove_break_lines_characters(content):
-    r = ' '.join(content.split())
-    r = r.replace(' </', '</')
-    return r
-
-
 def node_text(node):
     text = node_xml(node)
     if not text is None:
@@ -291,14 +271,6 @@ def named_ent_to_char(content):
             if ENTITIES_TABLE is not None:
                 for ent in entities:
                     new = ENTITIES_TABLE.get(ent, ent)
-                    if not isinstance(new, unicode):
-                        new = new.decode('utf-8')
-                    if not isinstance(ent, unicode):
-                        ent = ent.decode('utf-8')
-                    #print(type(new))
-                    #print(type(ent))
-                    #print(new)
-                    #print(ent)
                     if new != ent:
                         replaced_named_ent.append(ent + '=>' + new)
                         content = content.replace(ent, new)
@@ -400,7 +372,7 @@ def read_xml(content):
 def parse_xml(content):
     message = None
     try:
-        r = etree.parse(StringIO(utils.encode(content)))
+        r = etree.parse(StringIO(encoding.uni2notuni(content)))
     except Exception as e:
         #print('XML is not well formed')
         message = 'XML is not well formed\n'
@@ -428,7 +400,7 @@ def parse_xml(content):
             line = line[:line.find(',')].strip()
             if line.isdigit():
                 line = int(line)
-                lines = content.decode('utf-8').split('\n')
+                lines = encoding.notuni2uni(content).split('\n')
                 col = len(lines[line-1])
                 if column.isdigit():
                     col = int(column)
@@ -607,8 +579,8 @@ class PrettyXML(object):
 
     def minidom_pretty_print(self):
         try:
-            doc = xml.dom.minidom.parseString(get_string(self._xml))
-            self._xml = get_unicode(doc.toprettyxml().strip())
+            doc = xml.dom.minidom.parseString(encoding.uni2notuni(self._xml))
+            self._xml = encoding.notuni2uni(doc.toprettyxml().strip())
             ign = self.split_prefix()
         except Exception as e:
             print('ERROR in minidom_pretty_print')

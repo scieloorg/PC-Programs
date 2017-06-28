@@ -4,14 +4,14 @@ import os
 from datetime import datetime
 
 from ..__init__ import _
-from .. import ws_requester
-from .. import xml_utils
-from .. import utils
-from .. import html_reports
-from .. import validation_status
-from .. import attributes
-from .. import article_utils
-from .. import article
+from ..ws import ws_requester
+from ..utils import xml_utils
+from ..utils import utils
+from ..utils import article_utils
+from ..reports import html_reports
+from ..validations import validation_status
+from ..data import attributes
+from ..data import article
 from ..doi_validations import doi_validations
 
 
@@ -181,11 +181,9 @@ def display_attributes(attributes):
 def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
     r = True
     invalid = ''
-    b = value.decode('utf-8') if not isinstance(value, unicode) else value
-
+    b = encoding.notuni2uni(value)
     for term in invalid_terms:
-        a = term.decode('utf-8') if not isinstance(term, unicode) else term
-
+        a = encoding.notuni2uni(term)
         if term.upper() in value.upper() or term in value or a in b:
             r = False
             invalid = term

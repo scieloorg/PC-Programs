@@ -10,9 +10,9 @@ from . import fs_utils
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 JAVA_PATH = 'java'
-JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
-JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
-TMP_DIR = THIS_LOCATION + '/../../tmp'
+JAR_TRANSFORM = THIS_LOCATION + '/../../../jar/saxonb9-1-0-8j/saxon9.jar'
+JAR_VALIDATE = THIS_LOCATION + '/../../../jar/XMLCheck.jar'
+TMP_DIR = THIS_LOCATION + '/../../../tmp'
 
 
 if not os.path.isdir(TMP_DIR):

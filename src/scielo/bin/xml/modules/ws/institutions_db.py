@@ -2,17 +2,28 @@
 
 import os
 
-from ..utils import utils
+from ..utils import encoding
 from ..dbm import dbm_sql
+
+
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+path = CURRENT_PATH + '/../../tables'
+
+
+def normalize_term(term):
+    if term is not None:
+        term = encoding.notuni2uni(term)
+        term = ' '.join([item.strip() for item in term.split()])
+    return term
 
 
 class InstitutionsDBManager(object):
 
     def __init__(self):
-        self.db_filename = curr_path + '/../tables/xc.db'
+        self.db_filename = path + '/xc.db'
         self.sql = dbm_sql.SQL(self.db_filename)
-        self.csv_filename = curr_path + '/../tables/orgname_location_country.csv'
-        self.schema_filename = curr_path + '/xc.sql'
+        self.csv_filename = path + '/orgname_location_country.csv'
+        self.schema_filename = CURRENT_PATH + '/xc.sql'
         self.fields = ['name', 'city', 'state', 'country_code', 'country_name']
         self.table_name = 'institutions'
         if not os.path.isfile(self.db_filename):

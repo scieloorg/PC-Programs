@@ -6,8 +6,8 @@ from ..__init__ import _
 from ..utils import fs_utils
 from ..utils import java_xml_utils
 from ..utils import xml_utils
-from .. import html_reports
-from .. import validation_status
+from ..reports import html_reports
+from ..validations import validation_status
 
 
 IS_PACKTOOLS_INSTALLED = False

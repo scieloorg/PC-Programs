@@ -111,22 +111,6 @@ def format_issue_label(year, volume, number, volume_suppl, number_suppl, compl):
     return ''.join([i for i in [year, v, vs, n, ns, compl] if i is not None])
 
 
-def u_encode(u, encoding):
-    r = u
-    if isinstance(u, unicode):
-        try:
-            r = u.encode(encoding)
-        except Exception as e:
-            try:
-                r = u.encode(encoding, 'xmlcharrefreplace')
-            except Exception as e:
-                try:
-                    r = u.encode(encoding, 'replace')
-                except Exception as e:
-                    r = u.encode(encoding, 'ignore')
-    return r
-
-
 def format_dateiso_from_date(year, month, day):
     return year + month + day
 
@@ -219,8 +203,6 @@ def required_one(label, value):
 #FIXME apagar
 def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
     def normalize_value(value):
-        if not isinstance(value, unicode):
-            value = value.decode('utf-8')
         return ' '.join(value.split())
     if key is None:
         key = 'None'

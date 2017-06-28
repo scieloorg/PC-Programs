@@ -1033,17 +1033,13 @@ def extract_report_core(content):
         part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
         report = '<p>' + part1 + part2 + '</p>'
     elif '</body>' in content:
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
         content = content[content.find('<body'):]
         content = content[0:content.rfind('</body>')]
         report = content[content.find('>')+1:]
     elif '<body' in content:
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
         content = content[content.find('<body'):]
         report = content[content.find('>')+1:]
-    elif not '<' in content:
+    elif '<' not in content:
         report = content.replace('\n', '<br/>')
     return report
 
