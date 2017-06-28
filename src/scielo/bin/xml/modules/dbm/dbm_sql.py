@@ -1,7 +1,8 @@
 # coding=utf-8
 
 import sqlite3
-import utils
+
+from ..utils import utils
 
 
 class SQL(object):

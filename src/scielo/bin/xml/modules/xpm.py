@@ -7,7 +7,7 @@ from __init__ import _
 
 from . import utils
 from . import fs_utils
-from data import workarea
+from db import workarea
 from pkg_processors import sgmlxml
 from pkg_processors import pkg_processors
 

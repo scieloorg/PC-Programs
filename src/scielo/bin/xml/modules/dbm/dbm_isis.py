@@ -5,9 +5,9 @@ import os
 import sys
 from tempfile import mkdtemp, NamedTemporaryFile
 
-import xml_utils
-import utils
-import fs_utils
+from ..utils import xml_utils
+from ..utils import utils
+from ..utils import fs_utils
 
 
 def u_encode(u, encoding):

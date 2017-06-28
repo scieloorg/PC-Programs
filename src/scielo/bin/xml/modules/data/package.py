@@ -4,7 +4,7 @@ import os
 
 from .. import fs_utils
 from .. import article
-from ..db import workarea
+from . import workarea
 
 
 class Package(object):

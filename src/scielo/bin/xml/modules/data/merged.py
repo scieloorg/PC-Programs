@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from ..data import registered
+from ..db import registered
 from .. import validation_status
 
 
