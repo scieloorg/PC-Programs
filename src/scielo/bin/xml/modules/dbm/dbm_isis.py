@@ -161,10 +161,7 @@ class IDFile(object):
     def read(self, filename):
         rec_list = []
         record = {}
-        for line in open(filename, 'r').readlines():
-            line = line.strip()
-            if not isinstance(line, unicode):
-                line = line.decode('iso-8859-1')
+        for line in fs_utils.read_file_lines(filename, 'iso-8859-1'):
             if '!ID ' in line:
                 if len(record) > 0:
                     rec_list.append(self.simplify_record(record))
@@ -223,7 +220,7 @@ class IDFile(object):
             content = u_encode(content, 'iso-8859-1')
             content = content.replace('<PRESERVECIRC/>', '&#94;')
         try:
-            open(filename, 'w').write(content)
+            fs_utils.write_file(filename, content)
         except Exception as e:
             utils.debbuging('saving...')
             utils.debbuging(e)
@@ -241,7 +238,8 @@ class CISIS(object):
     def is_available(self):
         cmd = self.cisis_path + '/mx what > ./status'
         run_command(cmd)
-        return open('./status', 'r').read().startswith('CISIS')
+        content = fs_utils.read_file('./status')
+        return None if content is None else content.startswith('CISIS')
 
     def crunchmf(self, mst_filename, wmst_filename):
         cmd = self.cisis_path + '/crunchmf ' + mst_filename + ' ' + wmst_filename
@@ -296,7 +294,7 @@ class CISIS(object):
         r = mst_filename + expression
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 "pft=mfn/" now > ' + r
         run_command(cmd)
-        return [l.strip().decode('utf-8') for l in open(r, 'r').readlines()]
+        return fs_utils.read_file_lines(r)
 
     def new(self, mst_filename):
         cmd = self.cisis_path + '/mx null count=0 create="' + mst_filename + '" now -all'
@@ -324,7 +322,7 @@ class CISIS(object):
             run_command(cmd)
             ##print(cmd)
             if os.path.isfile(temp_file.name):
-                s = open(temp_file.name, 'r').read()
+                s = fs_utils.read_file(temp_file.name)
                 try:
                     os.unlink(temp_file.name)
                 except:

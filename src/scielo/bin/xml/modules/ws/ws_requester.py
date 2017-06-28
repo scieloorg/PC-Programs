@@ -39,50 +39,6 @@ def get_servername(url):
     return server
 
 
-class ProxyChecker(object):
-
-    def __init__(self, url=None):
-        if url is None:
-            url = JOURNALS_CSV_URL
-        self.url = JOURNALS_CSV_URL
-        # ProxyInfo = tem proxy
-        # False = nao tem proxy
-        # None = ?
-        self.has_proxy = None
-        self.proxy_info = None
-
-    def check_internet_access(self, url=None):
-        #print('check_internet_access')
-        if url is None:
-            url = self.url
-        response, http_error_proxy_auth, error_message = try_request(url)
-        r = None
-        if response is not None:
-            r = True
-        elif http_error_proxy_auth == 407:
-            r = False
-        elif response is None and error_message == 'URLError':
-            r = False
-        #print('internet access:', r, self.proxy_info)
-        return r
-
-    def check_status(self):
-        # returns False, None, ProxyInfo()
-        if self.has_proxy is None:
-            self.has_proxy = not self.check_internet_access()
-        if self.has_proxy is True and self.proxy_info is None:
-            self.proxy_info = self.update_proxy_info()
-
-    def update_proxy_info(self):
-        current_info = ProxyInfo()
-        new_info = ask_data(current_info.server, current_info.port)
-        if new_info is not None:
-            registry_proxy_opener(new_info.handler_data)
-            if self.check_internet_access():
-                new_info.save()
-                return new_info
-
-
 class ProxyInfo(object):
 
     def __init__(self, server=None, port=None, user=None, password=None):
@@ -90,30 +46,19 @@ class ProxyInfo(object):
         self.port = port
         self.user = user
         self.password = password
-        self.file = CURRENT_PATH + '/proxy.info'
-        self.load()
 
     @property
     def handler_data(self):
         r = {}
-        proxy_handler_data = ''
-        if self.user is not None and self.password is not None:
-            proxy_handler_data = self.user + ':' + self.password + '@'
         if self.server is not None and self.port is not None:
+            proxy_handler_data = ''
+            if self.user is not None and self.password is not None:
+                proxy_handler_data = self.user + ':' + self.password + '@'
             proxy_handler_data += fix_ip(self.server) + ':' + self.port
-        if len(proxy_handler_data) > 0:
-            r = {'http': 'http://'+proxy_handler_data, 'https': 'https://'+proxy_handler_data}
+            if len(proxy_handler_data) > 0:
+                r = {'http': 'http://'+proxy_handler_data,
+                     'https': 'https://'+proxy_handler_data}
         return r
-
-    def load(self):
-        if os.path.isfile(self.file):
-            content = open(self.file).read()
-            if ',' in content:
-                self.server, self.port = content.split(',')
-
-    def save(self):
-        if all([self.server, self.port]):
-            open(self.file, 'w').write(self.server + ',' + self.port)
 
 
 class ProxyGUI(object):
@@ -249,10 +194,10 @@ def try_request(url, timeout=30, debug=False, force_error=False):
 
 class WebServicesRequester(object):
 
-    def __init__(self, active=True):
+    def __init__(self, active=True, proxy_info=None):
         self.requests = {}
         self.skip = []
-        self.proxy_checker = ProxyChecker()
+        self.proxy_info = proxy_info
         self.active = active
 
     def __new__(self):
@@ -265,12 +210,16 @@ class WebServicesRequester(object):
         if self.active is False:
             return None
         response = self.requests.get(url)
-        if response is None and not url in self.requests.keys():
+        if response is None and url not in self.requests.keys():
             server = get_servername(url)
-            if not server in self.skip:
-                #print(' ==> request')
-                self.proxy_checker.check_status()
+            if server not in self.skip:
                 response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
+                if http_error_proxy_auth is not None:
+                    if self.proxy_info is not None:
+                        server, port = self.proxy_info.split(':')
+                        proxy_info = ask_data(server, port)
+                        registry_proxy_opener(proxy_info.handler_data)
+                        response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
                 if response is None and error_message != '':
                     self.skip.append(server)
                 self.requests[url] = response

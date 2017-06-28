@@ -1,8 +1,9 @@
 # coding=utf-8
 
 import os
+
 from . import utils
-from . import validation_status
+from ..validations import validation_status
 
 try:
     from PIL import Image

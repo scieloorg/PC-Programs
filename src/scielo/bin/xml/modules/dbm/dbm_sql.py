@@ -3,6 +3,7 @@
 import sqlite3
 
 from ..utils import utils
+from ..utils import fs_utils
 
 
 class SQL(object):
@@ -12,19 +13,13 @@ class SQL(object):
 
     def create_db(self, schema_filename):
         with sqlite3.connect(self.db_filename) as conn:
-            print 'Creating schema'
-            with open(schema_filename, 'rt') as f:
-                schema = f.read()
-            conn.executescript(schema)
+            conn.executescript(fs_utils.read(schema_filename))
 
     def insert_data(self, csv_filename, table_name, fields):
         conn = sqlite3.connect(self.db_filename)
         _fields = ', '.join(fields)
 
-        for row in open(csv_filename, 'r').readlines():
-            if not isinstance(row, unicode):
-                row = row.decode('utf-8')
-            row = row.strip()
+        for row in fs_utils.read_file_lines(csv_filename):
             items = row.split('\t')
 
             if len(items) == len(fields):

@@ -5,16 +5,16 @@ import sys
 import shutil
 
 from ..__init__ import _
-from .. import fs_utils
-from .. import java_xml_utils
-from .. import xml_utils
-from .. import validation_status
-from .. import text_report
-from .. import html_reports
-from .. import xml_versions
-from .. import article
-from .. import symbols
+from ..utils import fs_utils
+from ..utils import java_xml_utils
+from ..utils import xml_utils
+from ..reports import text_report
+from ..reports import html_reports
+from ..validations import validation_status
+from ..data import article
 from ..data import workarea
+from . import xml_versions
+from . import symbols
 from . import sps_pkgmaker
 
 

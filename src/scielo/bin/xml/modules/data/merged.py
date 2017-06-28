@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from ..db import registered
-from .. import validation_status
+from ..validations import validation_status
 
 
 class MergedArticlesData(object):

@@ -4,8 +4,8 @@ import os
 import shutil
 import tempfile
 
-import xml_utils
-import fs_utils
+from . import xml_utils
+from . import fs_utils
 
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
@@ -167,7 +167,7 @@ class XML(object):
             if 'ERROR' in result.upper():
                 n = 0
                 s = ''
-                for line in open(self.xml_filename, 'r').readlines():
+                for line in fs_utils.read_file_lines(self.xml_filename):
                     if n > 0:
                         s += str(n) + ':' + line
                     n += 1
@@ -254,7 +254,7 @@ def xml_validate(xml_filename, result_filename, doctype=None):
         if 'ERROR' in result.upper():
             n = 0
             s = ''
-            for line in open(xml_filename, 'r').readlines():
+            for line in fs_utils.read_file_lines(xml_filename):
                 if n > 0:
                     s += str(n) + ':' + line
                 n += 1

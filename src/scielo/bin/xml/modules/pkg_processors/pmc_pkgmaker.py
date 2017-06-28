@@ -2,15 +2,14 @@
 
 from ..__init__ import _
 
-from .. import utils
-from .. import fs_utils
-from .. import img_utils
-from .. import xml_utils
-from .. import html_reports
-
-from .. import xml_versions
+from ..utils import utils
+from ..utils import fs_utils
+from ..utils import img_utils
+from ..utils import xml_utils
+from ..reports import html_reports
 from ..data import workarea
 from ..validations import xml_validators
+from . import xml_versions
 
 
 class PMCPackageMaker(object):

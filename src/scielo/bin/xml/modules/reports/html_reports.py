@@ -6,14 +6,15 @@ import webbrowser
 
 from datetime import datetime
 
-from .__init__ import _
-from . import xml_utils
-from . import validation_status
+from ..__init__ import _
+from ..utils import fs_utils
+from ..utils import xml_utils
+from ..validations import validation_status
 
 
 ENABLE_COMMENTS = False
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-MathJax_PATH = CURRENT_PATH + '/../MathJax'
+MathJax_PATH = CURRENT_PATH + '/../../MathJax'
 
 
 class TabbedReport(object):
@@ -123,8 +124,8 @@ def join_texts(texts):
 
 def styles():
     css_file = CURRENT_PATH + '/html_reports.css'
-    css = '<style>' + open(css_file, 'r').read() + '</style>'
-    js = open(CURRENT_PATH + '/html_reports_collapsible.js', 'r').read()
+    css = '<style>' + fs_utils.read_file(css_file) + '</style>'
+    js = fs_utils.read_file(CURRENT_PATH + '/html_reports_collapsible.js')
     return css + js + save_report_js()
 
 
@@ -492,12 +493,10 @@ def format_html_data(value, width=70):
 
 def save(filename, title, body):
     r = html(title, body)
-    if isinstance(r, unicode):
-        r = r.encode('utf-8')
     d = os.path.dirname(filename)
     if not os.path.isdir(d):
         os.makedirs(d)
-    open(filename, 'w').write(r)
+    fs_utils.write_file(filename, r)
 
 
 def get_message_style(value, default=''):

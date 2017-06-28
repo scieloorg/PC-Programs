@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from .. import email_service
+from . import email_service
 
 
 class Mailer(object):

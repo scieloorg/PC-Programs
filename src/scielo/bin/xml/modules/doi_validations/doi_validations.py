@@ -3,11 +3,10 @@
 from ..__init__ import _
 from ..__init__ import app_ws_requester
 
-from .. import validation_status
-
 from utils import xml_utils
 from utils import utils
 from ..ws import ws_doi
+from ..validations import validation_status
 
 
 class DOIValidator(object):

@@ -2,7 +2,7 @@
 
 from ..__init__ import _
 
-from .. import xc_models
+from . import xc_models
 from ..validations import package_validations
 
 

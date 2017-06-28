@@ -1301,7 +1301,7 @@ class ArticleContentValidation(object):
         for href in self.article.hrefs:
             if href.is_internal_file and href.src.endswith('.svg'):
                 try:
-                    if '<image' in open(os.path.join(self.pkgfiles.path, href.src)).read():
+                    if '<image' in fs_utils.read_file(os.path.join(self.pkgfiles.path, href.src)):
                         messages.append(('svg', validation_status.STATUS_ERROR, _(u'Invalid SVG file: {} contains embedded images. ').format(href.src)))
                 except:
                     pass

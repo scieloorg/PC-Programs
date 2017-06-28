@@ -7,8 +7,8 @@ import HTMLParser
 from StringIO import StringIO
 import xml.dom.minidom
 
-from __init__ import _
-import fs_utils
+from ..__init__ import _
+from . import fs_utils
 
 
 ENTITIES_TABLE = None
@@ -56,7 +56,7 @@ def load_entities_table():
     table = {}
     curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
     if os.path.isfile(curr_path + '/../tables/entities.csv'):
-        for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
+        for item in fs_utils.read_file_lines(curr_path + '/../tables/entities.csv'):
             if not isinstance(item, unicode):
                 item.decode('utf-8')
             symbol, number_ent, named_ent, descr, representation = item.split('|')
@@ -309,8 +309,7 @@ def register_remaining_named_entities(content):
     if '&' in content:
         entities = []
         if os.path.isfile('./named_entities.txt'):
-            entities = open('./named_entities.txt', 'r').read()
-            entities = entities.decode('utf-8').split('\n')
+            entities = fs_utils.read_file_lines('./named_entities.txt')
         content = content[content.find('&'):]
         l = content.split('&')
         for item in l:
@@ -319,7 +318,7 @@ def register_remaining_named_entities(content):
                 entities.append('&' + ent + ';')
         entities = sorted(list(set(entities)))
         if len(entities) > 0:
-            open('./named_entities.txt', 'w').write('\n'.join(entities).encode('utf-8'))
+            fs_utils.write_file('./named_entities.txt', '\n'.join(entities))
 
 
 def htmlent2char(content):
@@ -392,20 +391,16 @@ def handle_mml_entities(content):
 
 
 def read_xml(content):
-    if not '<' in content:
+    if '<' not in content:
         # is a file
-        content = open(content, 'r').read()
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
+        content = fs_utils.read_file(content)
     return content
 
 
 def parse_xml(content):
     message = None
     try:
-        if isinstance(content, unicode):
-            content = content.encode('utf-8')
-        r = etree.parse(StringIO(content))
+        r = etree.parse(StringIO(utils.encode(content)))
     except Exception as e:
         #print('XML is not well formed')
         message = 'XML is not well formed\n'

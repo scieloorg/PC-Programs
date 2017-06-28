@@ -7,18 +7,17 @@ import csv
 from ..__init__ import _
 from ..__init__ import app_ws_requester
 
-from .. import validation_status
-from .. import utils
-from .. import xml_utils
-from .. import fs_utils
-from ..utils.utils import how_similar
-from ..article import Issue, PersonAuthor, Article, Journal
-from .. import attributes
-from .. import article_utils
-from .. import serial_files
-from .. import html_reports
-from .. import article_reports
+from ..utils import utils
+from ..utils import xml_utils
+from ..utils import fs_utils
+from ..utils import article_utils
 from ..ws import ws_journals
+from ..reports import html_reports
+from ..reports import article_reports
+from ..data.article import Issue, PersonAuthor, Article, Journal
+from ..data import attributes
+from ..db import serial
+from ..validations import validation_status
 
 
 ISSN_TYPE_CONVERSION = {
@@ -734,7 +733,7 @@ class ArticlesManager(object):
         self.aop_pdf_replacements = {}
 
         if self.issue_files.is_aop:
-            self.ex_aop_manager = BaseManager(db_isis, serial_files.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
+            self.ex_aop_manager = BaseManager(db_isis, serial.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
 
     @property
     def registered_articles(self):
@@ -870,7 +869,7 @@ class BaseManager(object):
 
     def restore_missing_id_file(self):
         for name, registered_article in self.registered_articles.items():
-            article_files = serial_files.ArticleFiles(self.issue_files, registered_article.order, registered_article.xml_name)
+            article_files = serial.ArticleFiles(self.issue_files, registered_article.order, registered_article.xml_name)
             if not os.path.isfile(article_files.id_filename):
                 self.db_isis.save_id(article_files.id_filename, registered_article.article_records)
 
@@ -993,7 +992,7 @@ class BaseManager(object):
         return saved and not previous
 
     def save_article(self, article, i_record):
-        article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
+        article_files = serial.ArticleFiles(self.issue_files, article.order, article.xml_name)
         article_records = self.article_records(i_record, article, article_files)
         return self.create_article_id_file(article_records, article_files)
 
@@ -1136,13 +1135,13 @@ class AopManager(object):
         if not aop is None:
             if article.article_type == 'correction':
                 if article.body_words is not None and aop.body_words is not None:
-                    r += how_similar(article.body_words[0:300], aop.body_words[0:300])
+                    r += utils.how_similar(article.body_words[0:300], aop.body_words[0:300])
                     r = r * 100
                 else:
                     r = 1
             else:
-                r += how_similar(article.title, aop.title)
-                r += how_similar(article.first_author_surname, aop.first_author_surname)
+                r += utils.how_similar(article.title, aop.title)
+                r += utils.how_similar(article.first_author_surname, aop.first_author_surname)
                 r = (r * 100) / 2
         return r
 
@@ -1382,8 +1381,8 @@ class DBManager(object):
 
     def get_issue_files(self, issue_models):
         if issue_models is not None:
-            journal_files = serial_files.JournalFiles(self.serial_path, issue_models.issue.acron)
-            return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label)
+            journal_files = serial.JournalFiles(self.serial_path, issue_models.issue.acron)
+            return serial.IssueFiles(journal_files, issue_models.issue.issue_label)
 
     def find_journal_record(self, journal_title, print_issn, e_issn):
         records = None

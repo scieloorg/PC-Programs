@@ -3,12 +3,12 @@
 
 from datetime import datetime
 
-from __init__ import _
+from ..__init__ import _
 
-import validation_status
-import utils
-import institutions_service
-import article as article_module
+from ..utils import utils
+from ..ws import institutions_service
+from ..validations import validation_status
+from ..data import article as article_module
 
 
 URL_CHECKED = []

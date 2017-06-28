@@ -3,7 +3,7 @@
 import os
 
 from ..utils import utils
-from .. import dbm_sql
+from ..dbm import dbm_sql
 
 
 class InstitutionsDBManager(object):

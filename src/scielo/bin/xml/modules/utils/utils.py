@@ -7,6 +7,20 @@ from PIL import Image
 IMDEBUGGING = False
 
 
+def decode(content, encode='utf-8'):
+    if not isinstance(content, unicode):
+        try:
+            content = content.decode(encode)
+        except:
+            content = content.decode('iso-8859-1')
+    return content
+
+
+def encode(content, encode='utf-8'):
+    if isinstance(content, unicode):
+        content = content.encode(encode)
+
+
 def now():
     now = datetime.now().isoformat().replace('-', '').replace(':', '').replace('T', ' ')[0:13]
     return now.split(' ')

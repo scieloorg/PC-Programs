@@ -5,16 +5,16 @@ import shutil
 
 from ..__init__ import _
 
-from .. import utils
-from .. import fs_utils
-from .. import html_reports
-from .. import validation_status
-from .. import article_reports
-from . import pmc_pkgmaker
+from ..utils import utils
+from ..utils import fs_utils
+from ..reports import html_reports
+from ..validations import validation_status
+from ..validations import article_reports
 from ..validations import package_validations
 from ..data import package
-from ..db import workarea
+from ..data import workarea
 from ..db import registered
+from . import pmc_pkgmaker
 
 
 categories_messages = {
@@ -35,6 +35,7 @@ categories_messages = {
     'unmatched aop': _('doc has an invalid aop version (title/author are not the same)'), 
 }
 
+
 def xpm_version():
     CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
@@ -46,7 +47,7 @@ def xpm_version():
     version = ''
     for f in version_files:
         if os.path.isfile(f):
-            version = open(f).readlines()[0].decode('utf-8')
+            version = fs_utils.read_file_lines(f)[0]
             break
     return version
 
