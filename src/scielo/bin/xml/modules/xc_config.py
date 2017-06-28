@@ -2,6 +2,8 @@
 import os
 import shutil
 
+from ..utils import fs_utils
+
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 CONFIG_PATH = CURRENT_PATH + '/../config/'
@@ -19,7 +21,7 @@ class XMLConverterConfiguration(object):
                 else:
                     s = s.decode('utf-8')
             if '=' in s:
-                if ',' in s and not '@' in s:
+                if ',' in s and '@' not in s:
                     s = s[0:s.rfind(',')]
                 key, value = s.split('=')
                 value = value.replace('\\', '/').strip()
@@ -287,10 +289,7 @@ class XMLConverterConfiguration(object):
         header = ''
         if filename is not None:
             filename = CONFIG_PATH + '/' + filename
-            if os.path.isfile(filename):
-                header = open(filename, 'r').read()
-                if not isinstance(header, unicode):
-                    header = header.decode('utf-8')
+            header = fs_utils.read_file(filename)
         return header
 
     @property
