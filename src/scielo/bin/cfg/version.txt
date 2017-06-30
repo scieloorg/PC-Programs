@@ -1,4 +1,4 @@
-﻿4.0.093 - Release 4 - 27/06/2017
+﻿4.0.093 - Release 4 - 30/06/2017
 ================================
 - XPM
   - (bug) [2579] Fix the validation of history date 
@@ -11,6 +11,7 @@
   - (bug) [2524] Fix aop pdf replacement in the web site
   - (bug) [2603] Fix remove tags from abstract function
   - (bug) [2611] Fix comparison between registered article and package article data
+  - (improvement) [] Allow TRANSFER_SERVER with PORT
 - Markup XML
   - (bug) [2606] Fix function which identifies xref
   - (bug) [2608] Fix identification of sub and sup.
