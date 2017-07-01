@@ -1,7 +1,8 @@
 # coding=utf-8
 
-import os
 import logging
+
+from ..utils import system
 
 
 class FilesTransfer(object):
@@ -40,7 +41,7 @@ class FilesTransfer(object):
         if self.log_filename is not None:
             logging.info(cmd)
         try:
-            os.system(cmd)
+            system.run_command(cmd)
             if self.log_filename is not None:
                 logging.info('done')
         except:

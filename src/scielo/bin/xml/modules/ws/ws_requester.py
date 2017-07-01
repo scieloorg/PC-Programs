@@ -6,9 +6,10 @@ import socket
 import urllib2
 
 try:
-    import Tkinter
-except:
-    pass
+    import tkinter as tk
+except ImportError:
+    import Tkinter as tk
+
 
 from ..utils import utils
 from ..utils import encoding
@@ -64,70 +65,76 @@ class ProxyInfo(object):
         return r
 
 
-class ProxyGUI(object):
+class ProxyGUI(tk.Frame):
 
-    def __init__(self, tkFrame, registered_ip, registered_port, debug=False):
+    def __init__(self, tk_root, registered_ip, registered_port):
         self.info = None
-        self.debug = False
-
         if registered_ip is None:
             registered_ip = ''
         if registered_port is None:
             registered_port = ''
 
-        self.tkFrame = tkFrame
+        tk.Frame.__init__(self, tk_root)
+        self.tk_root = tk_root
+        self.tk_root.resizable(False, False)
 
-        self.tkFrame.labelframe_window = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        self.tkFrame.labelframe_window.pack(fill="both", expand="yes")
+        message_frame = tk.Frame(self)
+        message_frame.pack(fill="both", expand="yes")
+        message = tk.Message(message_frame,
+            font='System 14 bold',
+            text=_("""This tool requires Internet access for some services, 
+                such as DOI, affiliations, and other data validations,
+                and also to get journals data from SciELO.\n
+                If you do not use a proxy to access the Internet,
+                and click on Cancel button."""),
+            wraplength=450
+            )
+        message.pack()
 
-        self.tkFrame.labelframe_message = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
-        self.tkFrame.labelframe_message.pack(fill="both", expand="yes")
-        self.tkFrame.label_message = Tkinter.Label(self.tkFrame.labelframe_message, text=_('This tool requires Internet access for some services, such as DOI, affiliations, and other data validations, and also to get journals data from SciELO.\n\nIf you do not use a proxy to access the Internet, and click on Cancel button.'), font="Verdana 12 bold", wraplength=450)
-        self.tkFrame.label_message.pack()
+        proxy_ip_frame = tk.Frame(self)
+        proxy_ip_frame.pack(fill="both", expand="yes")
+        label_proxy_ip = tk.Label(proxy_ip_frame, text='Proxy IP / server')
+        label_proxy_ip.pack(fill="both", expand="yes")
+        self.proxy_ip_entry = tk.Entry(proxy_ip_frame)
+        self.proxy_ip_entry.insert(0, registered_ip)
+        self.proxy_ip_entry.pack()
+        self.proxy_ip_entry.focus_set()
 
-        self.tkFrame.labelframe_proxy_ip = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
-        self.tkFrame.labelframe_proxy_ip.pack(fill="both", expand="yes")
-        self.tkFrame.label_proxy_ip = Tkinter.Label(self.tkFrame.labelframe_proxy_ip, text='Proxy IP / server', font="Verdana 12 bold")
-        self.tkFrame.label_proxy_ip.pack(fill="both", expand="yes")
-        self.tkFrame.entry_proxy_ip = Tkinter.Entry(self.tkFrame.labelframe_proxy_ip)
-        self.tkFrame.entry_proxy_ip.insert(0, registered_ip)
-        self.tkFrame.entry_proxy_ip.pack()
+        proxy_port_frame = tk.Frame(self)
+        proxy_port_frame.pack(fill="both", expand="yes")
+        proxy_port_label = tk.Label(proxy_port_frame, text='Proxy Port')
+        proxy_port_label.pack(fill="both", expand="yes")
+        self.proxy_port_entry = tk.Entry(proxy_port_frame)
+        self.proxy_port_entry.insert(0, registered_port)
+        self.proxy_port_entry.pack()
 
-        self.tkFrame.labelframe_proxy_port = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=5)
-        self.tkFrame.labelframe_proxy_port.pack(fill="both", expand="yes")
-        self.tkFrame.label_proxy_port = Tkinter.Label(self.tkFrame.labelframe_proxy_port, text='Proxy Port', font="Verdana 12 bold")
-        self.tkFrame.label_proxy_port.pack(fill="both", expand="yes")
-        self.tkFrame.entry_proxy_port = Tkinter.Entry(self.tkFrame.labelframe_proxy_port)
-        self.tkFrame.entry_proxy_port.insert(0, registered_port)
-        self.tkFrame.entry_proxy_port.pack()
+        proxy_user_frame = tk.Frame(self)
+        proxy_user_frame.pack(fill="both", expand="yes")
+        proxy_user_label = tk.Label(proxy_user_frame, text=_('user'))
+        proxy_user_label.pack(fill="both", expand="yes")
+        self.proxy_user_entry = tk.Entry(proxy_user_frame)
+        self.proxy_user_entry.pack()
 
-        self.tkFrame.labelframe_proxy_user = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
-        self.tkFrame.labelframe_proxy_user.pack(fill="both", expand="yes")
-        self.tkFrame.label_proxy_user = Tkinter.Label(self.tkFrame.labelframe_proxy_user, text=_('user'), font="Verdana 12 bold")
-        self.tkFrame.label_proxy_user.pack(fill="both", expand="yes")
-        self.tkFrame.entry_proxy_user = Tkinter.Entry(self.tkFrame.labelframe_proxy_user)
-        self.tkFrame.entry_proxy_user.pack()
+        proxy_pass_frame = tk.Frame(self)
+        proxy_pass_frame.pack(fill="both", expand="yes")
+        proxy_pass_label = tk.Label(proxy_pass_frame, text=_('password'))
+        proxy_pass_label.pack(fill="both", expand="yes")
+        self.proxy_pass_entry = tk.Entry(proxy_pass_frame, show='*')
+        self.proxy_pass_entry.pack()
 
-        self.tkFrame.labelframe_proxy_password = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10, width=70)
-        self.tkFrame.labelframe_proxy_password.pack(fill="both", expand="yes")
-        self.tkFrame.label_proxy_password = Tkinter.Label(self.tkFrame.labelframe_proxy_password, text=_('password'), font="Verdana 12 bold")
-        self.tkFrame.label_proxy_password.pack(fill="both", expand="yes")
-        self.tkFrame.entry_proxy_password = Tkinter.Entry(self.tkFrame.labelframe_proxy_password, show='*')
-        self.tkFrame.entry_proxy_password.pack()
+        buttons_frame = tk.Frame(self)
+        buttons_frame.pack(fill="both", expand="yes")
 
-        self.tkFrame.labelframe_buttons = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        self.tkFrame.labelframe_buttons.pack(fill="both", expand="yes")
+        cancel_button = tk.Button(buttons_frame, text=_('Cancel'), command=lambda: self.tk_root.quit())
+        cancel_button.pack(side='right')
 
-        self.tkFrame.button_cancel = Tkinter.Button(self.tkFrame.labelframe_buttons, text=_('Cancel'), command=lambda: self.tkFrame.quit())
-        self.tkFrame.button_cancel.pack(side='right')
-
-        self.tkFrame.button_execute = Tkinter.Button(self.tkFrame.labelframe_buttons, text=_('OK'), command=self.register)
-        self.tkFrame.button_execute.pack(side='right')
+        execute_button = tk.Button(buttons_frame, text=_('OK'), command=self.register)
+        execute_button.pack(side='right')
 
     def register(self):
-        r = [self.tkFrame.entry_proxy_ip.get(), self.tkFrame.entry_proxy_port.get(), self.tkFrame.entry_proxy_user.get(), self.tkFrame.entry_proxy_password.get()]
+        r = [self.proxy_ip_entry.get(), self.proxy_port_entry.get(), self.proxy_user_entry.get(), self.proxy_pass_entry.get()]
         self.info = [None if item == '' else item for item in r]
-        self.tkFrame.quit()
+        self.tk_root.quit()
 
 
 def ask_data(server='', port=''):
@@ -139,18 +146,16 @@ def ask_data(server='', port=''):
 
 
 def display_proxy_form(registered_ip, registered_port, debug=False):
-    tk_root = Tkinter.Tk()
+    tk_root = tk.Tk()
     tk_root.title(_('Proxy information'))
-    tkFrame = Tkinter.Frame(tk_root)
 
-    main = ProxyGUI(tkFrame, registered_ip, registered_port, debug)
-    main.tkFrame.pack(side="top", fill="both", expand=True)
+    app = ProxyGUI(tk_root, registered_ip, registered_port, debug)
+    app.pack(side="top", fill="both", expand=True)
 
-    tk_root.mainloop()
-    tk_root.focus_set()
+    app.mainloop()
+    app.focus_set()
 
-    r = main.info
-    main = None
+    r = app.info
     if debug:
         print('proxy informed:')
         print(r)

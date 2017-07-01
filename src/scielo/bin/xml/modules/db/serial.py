@@ -42,6 +42,7 @@ class ArticleFiles(object):
     def relative_xml_filename(self):
         return self.issue_files.relative_issue_path + '/' + self.filename
 
+
 class IssueFiles(object):
 
     def __init__(self, journal_files, issue_folder):
@@ -182,7 +183,7 @@ class IssueFiles(object):
                         pdf_filenames.append(new_pdf_filename)
                     for pdf_filename in pdf_filenames:
                         if os.path.isfile(path[ext] + '/' + pdf_filename):
-                            os.unlink(path[ext] + '/' + pdf_filename)
+                            fs_utils.delete_file_or_folder(path[ext] + '/' + pdf_filename)
                         shutil.copyfile(xml_path + '/' + f, path[ext] + '/' + pdf_filename)
                         msg.append('  ' + f + ' => ' + path[ext] + '/' + pdf_filename)
                 else:
@@ -196,7 +197,7 @@ class IssueFiles(object):
                 os.makedirs(self.base_reports_path)
             for report_file in os.listdir(report_path):
                 shutil.copy(report_path + '/' + report_file, self.base_reports_path)
-                os.unlink(report_path + '/' + report_file)
+                fs_utils.delete_file_or_folder(report_path + '/' + report_file)
         try:
             shutil.rmtree(report_path)
         except:
@@ -221,7 +222,7 @@ class IssueFiles(object):
             if self.backup_id_folder():
                 for item in delete_id_items:
                     if os.path.isfile(self.id_path + '/' + item + '.id'):
-                        os.unlink(self.id_path + '/' + item + '.id')
+                        fs_utils.delete_file_or_folder(self.id_path + '/' + item + '.id')
                     if os.path.isfile(self.id_path + '/' + item + '.id'):
                         errors.append(item + '.id')
         return errors
@@ -230,7 +231,7 @@ class IssueFiles(object):
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
         for fname in os.listdir(dest_path):
-            os.unlink(dest_path + '/' + fname)
+            fs_utils.delete_file_or_folder(dest_path + '/' + fname)
         for fname in os.listdir(src_path):
             shutil.copyfile(src_path + '/' + fname, dest_path + '/' + fname)
         return (len(os.listdir(src_path)) == len(os.listdir(dest_path)))
@@ -241,7 +242,7 @@ class IssueFiles(object):
     def restore_backup_id_folder(self, backup_name='.bkp'):
         r = self.backup_folder(self.id_path + backup_name, self.id_path)
         for fname in os.listdir(self.id_path + backup_name):
-            os.unlink(self.id_path + backup_name + '/' + fname)
+            fs_utils.delete_file_or_folder(self.id_path + backup_name + '/' + fname)
         return r
 
 

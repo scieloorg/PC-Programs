@@ -6,6 +6,7 @@ import tempfile
 
 from . import xml_utils
 from . import fs_utils
+from . import system
 
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
@@ -105,7 +106,7 @@ class XML(object):
             content = fs_utils.read_file(f2.name)
 
         for item in [f.name, f2.name]:
-            os.unlink(f.name)
+            fs_utils.delete_file_or_folder(f.name)
         if self.logger is not None:
             self.logger.register('XML.transform_content - fim')
         return content
@@ -118,8 +119,7 @@ class XML(object):
         if not os.path.isdir(result_path):
             os.makedirs(result_path)
         for f in [result_filename, temp_result_filename]:
-            if os.path.isfile(f):
-                os.unlink(f)
+            fs_utils.delete_file_or_folder(f)
         if self.logger is not None:
             self.logger.register('XML.prepare - fim')
         return temp_result_filename
@@ -134,8 +134,7 @@ class XML(object):
         if self.logger is not None:
             self.logger.register('XML.transform_file - command - inicio')
         cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + self.xml_filename + '" "' + xsl_filename + '" ' + format_parameters(parameters)
-        cmd = cmd.encode(encoding=sys.getfilesystemencoding())
-        os.system(cmd)
+        system.run_command(cmd)
         if self.logger is not None:
             self.logger.register('XML.transform_file - command - fim')
 
@@ -157,8 +156,7 @@ class XML(object):
         if self.logger is not None:
             self.logger.register('XML.transform_file - command - inicio')
         cmd = JAVA_PATH + ' -cp "' + JAR_VALIDATE + '" br.bireme.XMLCheck.XMLCheck "' + self.xml_filename + '" ' + validation_type + '>"' + temp_result_filename + '"'
-        cmd = cmd.encode(encoding=sys.getfilesystemencoding())
-        os.system(cmd)
+        system.run_command(cmd)
         if self.logger is not None:
             self.logger.register('XML.transform_file - command - fim')
 
@@ -171,9 +169,9 @@ class XML(object):
                     if n > 0:
                         s += str(n) + ':' + line
                     n += 1
-                result += '\n' + s.decode('utf-8')
+                result += '\n' + s
                 fs_utils.write_file(result_filename, result)
-                os.unlink(temp_result_filename)
+                fs_utils.delete_file_or_folder(temp_result_filename)
             else:
                 shutil.move(temp_result_filename, result_filename)
         else:
@@ -196,9 +194,8 @@ def xml_content_transform(content, xsl_filename):
     f2.close()
     if xml_transform(f.name, xsl_filename, f2.name):
         content = fs_utils.read_file(f2.name)
-        os.unlink(f2.name)
-    if os.path.exists(f.name):
-        os.unlink(f.name)
+        fs_utils.delete_file_or_folder(f2.name)
+    fs_utils.delete_file_or_folder(f.name)
     return content
 
 
@@ -211,12 +208,10 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     if not os.path.isdir(os.path.dirname(result_filename)):
         os.makedirs(os.path.dirname(result_filename))
     for f in [result_filename, temp_result_filename]:
-        if os.path.isfile(f):
-            os.unlink(f)
+        fs_utils.delete_file_or_folder(f)
     tmp_xml_filename = create_temp_xml_filename(xml_filename)
     cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + tmp_xml_filename + '" "' + xsl_filename + '" ' + format_parameters(parameters)
-    cmd = cmd.encode(encoding=sys.getfilesystemencoding())
-    os.system(cmd)
+    system.run_command(cmd)
     if not os.path.exists(temp_result_filename):
         fs_utils.write_file(temp_result_filename, 'ERROR: transformation error.\n' + cmd)
         error = True
@@ -239,14 +234,12 @@ def xml_validate(xml_filename, result_filename, doctype=None):
 
     bkp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
     temp_result_filename = TMP_DIR + '/' + os.path.basename(result_filename)
-    if os.path.isfile(result_filename):
-        os.unlink(result_filename)
+    fs_utils.delete_file_or_folder(result_filename)
     if not os.path.isdir(os.path.dirname(result_filename)):
         os.makedirs(os.path.dirname(result_filename))
 
     cmd = JAVA_PATH + ' -cp "' + JAR_VALIDATE + '" br.bireme.XMLCheck.XMLCheck "' + xml_filename + '" ' + validation_type + '>"' + temp_result_filename + '"'
-    cmd = cmd.encode(encoding=sys.getfilesystemencoding())
-    os.system(cmd)
+    system.run_command(cmd)
 
     if os.path.exists(temp_result_filename):
         result = fs_utils.read_file(temp_result_filename, sys.getfilesystemencoding())

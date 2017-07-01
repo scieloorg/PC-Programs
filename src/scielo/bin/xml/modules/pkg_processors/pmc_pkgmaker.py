@@ -167,8 +167,7 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
         shutil.copyfile(xml_filename, xml_filename + '.bkp')
         xml_filename = xml_filename + '.bkp'
 
-    if os.path.exists(result_filename):
-        fs_utils.delete_file_or_folder(result_filename)
+    fs_utils.delete_file_or_folder(result_filename)
 
     bkp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
     r = java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)

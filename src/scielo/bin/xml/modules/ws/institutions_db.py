@@ -3,6 +3,7 @@
 import os
 
 from ..utils import encoding
+from ..utils import fs_utils
 from ..dbm import dbm_sql
 
 
@@ -31,8 +32,7 @@ class InstitutionsDBManager(object):
         self.normalized_country_items = self.get_country_items()
 
     def create_db(self):
-        if os.path.isfile(self.db_filename):
-            os.unlink(self.db_filename)
+        fs_utils.delete_file_or_folder(self.db_filename)
         self.sql.create_db(self.schema_filename)
         self.sql.insert_data(self.csv_filename, self.table_name, self.fields)
 

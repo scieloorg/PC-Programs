@@ -1,22 +1,22 @@
 # coding = utf-8
 
 import os
-
 from PIL import Image
+
+from . import system
 
 
 #inkscape PATH/teste.svg --export-background=COLOR --export-area-drawing --export-area-snap --export-dpi=300 --export-png=PATH/leave2.png
-
 def command():
     INKSCAPE_PATH = 'inkscape'
     commands_parts = [
         INKSCAPE_PATH,
-        '{}',
+        '"{}"',
         '--export-background=COLOR',
         '--export-area-drawing',
         '--export-area-snap',
         '--export-dpi=300',
-        '--export-png={}'
+        '--export-png="{}"'
     ]
     return ' '.join(commands_parts)
 
@@ -36,7 +36,7 @@ def svg2png(image_path, force=False):
 
         if force is True or not os.path.isfile(dest):
             try:
-                os.system(comm.format(src, dest))
+                system.run_command(comm.format(src, dest))
                 print(src + ' => ' + dest)
             except:
                 print('Unable to run inkscape')
@@ -73,7 +73,7 @@ def convert_svg2png(img_filename, destination=None, force=False):
         if force or not os.path.isfile(dest_filename):
             try:
                 comm = command()
-                os.system(comm.format(img_filename, dest_filename))
+                system.run_command(comm.format(img_filename, dest_filename))
                 print(img_filename + ' => ' + dest_filename)
             except:
                 print('Unable to run inkscape')

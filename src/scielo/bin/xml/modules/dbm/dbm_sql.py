@@ -14,7 +14,7 @@ class SQL(object):
 
     def create_db(self, schema_filename):
         with sqlite3.connect(self.db_filename) as conn:
-            conn.executescript(fs_utils.read(schema_filename))
+            conn.executescript(fs_utils.read_file(schema_filename))
 
     def insert_data(self, csv_filename, table_name, fields):
         conn = sqlite3.connect(self.db_filename)

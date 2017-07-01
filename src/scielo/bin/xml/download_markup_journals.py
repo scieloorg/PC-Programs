@@ -4,7 +4,16 @@ import csv
 import codecs
 import shutil
 
-import Tkinter
+"""
+try:
+    import tkinter as tk
+    print(3)
+except ImportError:
+    import Tkinter as tk
+    print(2)
+"""
+
+import Tkinter as tk
 
 from modules import ws_requester
 
@@ -12,55 +21,50 @@ from modules import ws_requester
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 
-class MkpDownloadJournalListGUI(object):
+class MkpDownloadJournalListGUI(tk.Frame):
 
-    def __init__(self, tkFrame, collections, filename, temp_filename, updated):
-
-        self.tkFrame = tkFrame
+    def __init__(self, tk_root, collections, filename, temp_filename, updated):
+        tk.Frame.__init__(self, tk_root)
+        self.tk_root = tk_root
         self.collections = collections
         self.filename = filename
         self.temp_filename = temp_filename
 
-        self.tkFrame.folder_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        self.tkFrame.folder_labelframe.pack(fill="both", expand="yes")
+        collection_frame = tk.Frame(self)
+        collection_frame.pack(padx=10, pady=5)
 
-        self.tkFrame.options_frame = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        self.tkFrame.options_frame.pack(fill="both", expand="yes")
+        message_frame = tk.Frame(self)
+        message_frame.pack(padx=10, pady=5)
 
-        self.tkFrame.msg_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        self.tkFrame.msg_labelframe.pack(fill="both", expand="yes")
+        buttons_frame = tk.Frame(self)
+        buttons_frame.pack(padx=10, pady=5)
 
-        self.tkFrame.buttons_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        self.tkFrame.buttons_labelframe.pack(fill="both", expand="yes")
-
-        self.tkFrame.label_folder = Tkinter.Label(self.tkFrame.folder_labelframe, text=' '*10 + 'Select collection' + ' '*10, font="Verdana 12 bold")
-        self.tkFrame.label_folder.pack(side='left')
-
-        #options = collections.keys()
-        #self.choice = Tkinter.StringVar(self.tkFrame)
-        #self.choice.set(options[0])
-        #self.tkFrame.option_menu = apply(Tkinter.OptionMenu, (self.tkFrame.options_frame, self.choice) + tuple(options))
-        #self.tkFrame.option_menu.pack()
+        collection_label = tk.Label(collection_frame, text='Select a collection: ', font="Verdana 12 bold")
+        collection_label.pack(side='left')
 
         options = collections.keys()
         options.append('All')
 
-        self.choice = Tkinter.StringVar(self.tkFrame)
+        self.choice = tk.StringVar(self)
         self.choice.set(options[0])
-        self.tkFrame.option_menu = apply(Tkinter.OptionMenu, (self.tkFrame.options_frame, self.choice) + tuple(options))
-        self.tkFrame.option_menu.pack()
+        #options_menu = tk.OptionMenu(collection_frame, self.choice, *options, command=self.download)
+        #options_menu.pack()
 
-        self.tkFrame.label_msg = Tkinter.Label(self.tkFrame.msg_labelframe)
-        self.tkFrame.label_msg.pack()
+        menu_options = apply(tk.OptionMenu, (collection_frame, self.choice) + tuple(options))
+        menu_options.pack()
 
-        self.tkFrame.button_close = Tkinter.Button(self.tkFrame.buttons_labelframe, text='close', command=lambda: self.tkFrame.quit())
-        self.tkFrame.button_close.pack(side='right')
+        self.message = tk.Message(message_frame)
+        self.message.pack(padx=10, pady=5)
 
-        self.tkFrame.button_execute = Tkinter.Button(self.tkFrame.buttons_labelframe, text='download', command=self.download)
-        self.tkFrame.button_execute.pack(side='right')
+        close_button = tk.Button(buttons_frame, text='close', command=lambda: self.tk_root.destroy())
+        close_button.pack(side='right')
+
+        execute_button = tk.Button(buttons_frame, text='download', command=self.download)
+        execute_button.pack(side='right')
 
     def download(self):
         choice = self.choice.get()
+        self.message.config(text=choice, bg='white')
         if choice == 'All':
             choice = None
         journals = get_journals_list(self.collections, choice)
@@ -73,20 +77,20 @@ class MkpDownloadJournalListGUI(object):
         if os.path.isfile(self.temp_filename):
             shutil.copyfile(self.temp_filename, self.filename)
 
-        self.tkFrame.label_msg.config(text='updated: ' + self.filename, bg='dark green')
-        self.tkFrame.label_msg.update_idletasks()
+        self.message.config(text='done!', bg='white')
+        #self.message.update_idletasks()
 
 
 def open_main_window(collections, destination_filename, temp_filename, updated):
-    tk_root = Tkinter.Tk()
+    tk_root = tk.Tk()
+    tk_root.iconbitmap('../cfg/Scielo.ico')
+
     tk_root.title('Download journals data')
 
-    tkFrame = Tkinter.Frame(tk_root)
-    main = MkpDownloadJournalListGUI(tkFrame, collections, destination_filename, temp_filename, updated)
-    main.tkFrame.pack(side="top", fill="both", expand=True)
-
-    tk_root.mainloop()
-    tk_root.focus_set()
+    app = MkpDownloadJournalListGUI(tk_root, collections, destination_filename, temp_filename, updated)
+    app.pack(side="top", fill="both", expand=True)
+    app.focus_set()
+    app.mainloop()
 
 
 def journals_by_collection(filename):

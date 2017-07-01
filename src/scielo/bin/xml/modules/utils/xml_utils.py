@@ -3,9 +3,14 @@ import os
 import shutil
 import tempfile
 import xml.etree.ElementTree as etree
-import HTMLParser
-from StringIO import StringIO
 import xml.dom.minidom
+
+try:
+    from io import StringIO
+    import HTMLParser as html_parser
+except ImportError:
+    from StringIO import StringIO
+    import html.parser as html_parser
 
 from ..__init__ import _
 from . import fs_utils
@@ -190,8 +195,8 @@ def apply_dtd(xml_filename, doctype):
 
 def restore_xml_file(xml_filename, temp_filename):
     shutil.copyfile(temp_filename, xml_filename)
-    os.unlink(temp_filename)
-    shutil.rmtree(os.path.dirname(temp_filename))
+    fs_utils.delete_file_or_folder(temp_filename)
+    fs_utils.delete_file_or_folder(os.path.dirname(temp_filename))
 
 
 def node_text(node):
@@ -295,10 +300,9 @@ def register_remaining_named_entities(content):
 
 def htmlent2char(content):
     if '&' in content:
-        h = HTMLParser.HTMLParser()
+        h = html_parser.HTMLParser()
         try:
-            if not isinstance(content, unicode):
-                content = content.decode('utf-8')
+            content = encoding.notuni2uni(content)
             content = h.unescape(content)
         except Exception as e:
             content = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')

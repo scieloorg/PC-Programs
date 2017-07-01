@@ -204,8 +204,7 @@ class XMLStructureValidator(object):
             files_errors = fs_utils.read_file(outputs.err_filename)
 
         for f in [outputs.dtd_report_filename, outputs.style_report_filename, outputs.data_report_filename, outputs.pmc_style_report_filename]:
-            if os.path.isfile(f):
-                fs_utils.delete_file_or_folder(f)
+            fs_utils.delete_file_or_folder(f)
         #xml_filename = outputs.new_xml_filename
         xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style

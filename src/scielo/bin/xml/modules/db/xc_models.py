@@ -958,7 +958,7 @@ class BaseManager(object):
             self.db_isis.save_id_records(self.issue_files.id_filename, self.issue_files.base)
             for f in os.listdir(self.issue_files.id_path):
                 if f == '00000.id':
-                    os.unlink(self.issue_files.id_path + '/' + f)
+                    fs_utils.delete_file_or_folder(self.issue_files.id_path + '/' + f)
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                     self.db_isis.append_id_records(self.issue_files.id_path + '/' + f, self.issue_files.base)
         #self.reset_registered_records()
@@ -983,7 +983,7 @@ class BaseManager(object):
         if article_records is not None:
             if os.path.isfile(article_files.id_filename):
                 try:
-                    os.unlink(article_files.id_filename)
+                    fs_utils.delete_file_or_folder(article_files.id_filename)
                 except:
                     print(_('Unable to exclude {item}. ').format(item=article_files.id_filename))
             previous = os.path.isfile(article_files.id_filename)

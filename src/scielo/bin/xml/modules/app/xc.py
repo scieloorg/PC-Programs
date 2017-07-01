@@ -4,16 +4,16 @@ import os
 import shutil
 from datetime import datetime
 
-
-from __init__ import _
-from . import fs_utils
-from . import utils
-from . import html_reports
-from . import xml_utils
-from pkg_processors import pkg_processors
-from data import package
-from server import mailer
-from server import filestransfer
+from ..__init__ import _
+from ..utils import fs_utils
+from ..utils import utils
+from ..reports import html_reports
+from ..utils import xml_utils
+from ..pkg_processors import pkg_processors
+from ..data import package
+from ..server import mailer
+from ..server import filestransfer
+from . import interface
 
 
 EMAIL_SUBJECT_STATUS_ICON = {}
@@ -74,10 +74,7 @@ def is_xc_configuration_file(configuration_filename):
 def call_converter(args, version='1.0'):
     script, package_path, collection_acron = read_inputs(args)
     if package_path is None and collection_acron is None:
-        # FIXME
-        # GUI
-        import xml_gui
-        xml_gui.open_main_window(True, None)
+        interface.open_main_window(True, None)
 
     elif package_path is not None and collection_acron is not None:
         errors = validate_inputs(package_path, collection_acron)

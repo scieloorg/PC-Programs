@@ -3,13 +3,13 @@
 import os
 import sys
 
-from __init__ import _
-
-from . import utils
-from . import fs_utils
-from db import workarea
-from pkg_processors import sgmlxml
-from pkg_processors import pkg_processors
+from ..__init__ import _
+from . import interface
+from ..utils import utils
+from ..utils import fs_utils
+from ..db import workarea
+from ..pkg_processors import sgmlxml
+from ..pkg_processors import pkg_processors
 
 
 messages = []
@@ -20,10 +20,7 @@ def call_make_packages(args, version):
     script, path, acron, DISPLAY_REPORT, GENERATE_PMC = read_inputs(args)
 
     if path is None and acron is None:
-        # GUI
-        # FIXME
-        import xml_gui
-        xml_gui.open_main_window(False, None)
+        interface.open_main_window(False, None)
     else:
         sgm_xml, xml_list, errors = evaluate_inputs(path, acron)
         if len(errors) > 0:

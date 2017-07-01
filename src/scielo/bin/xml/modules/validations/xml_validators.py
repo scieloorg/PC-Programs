@@ -112,8 +112,7 @@ class JavaXMLValidator(object):
         xml_report = report_filename.replace('.html', '.xml')
 
         for item in [xml_report, report_filename]:
-            if os.path.exists(item):
-                os.unlink(item)
+            fs_utils.delete_file_or_folder(item)
 
         parameters = {}
         if self.xml.transform_file(self.xsl_prep_report, xml_report, parameters):
@@ -121,8 +120,7 @@ class JavaXMLValidator(object):
             xml_transformer_report.logger = self.logger
             xml_transformer_report.transform_file(self.xsl_report, report_filename, parameters)
             result = fs_utils.read_file(report_filename)
-            if os.path.isfile(xml_report):
-                os.unlink(xml_report)
+            fs_utils.delete_file_or_folder(xml_report)
 
         if not os.path.isfile(report_filename):
             result = 'ERROR: ' + _('Unable to create') + ' ' + report_filename
