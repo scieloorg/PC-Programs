@@ -3,8 +3,8 @@
 import os
 import shutil
 
-from ..utils import fs_utils
-from ..utils import img_utils
+from ..useful import fs_utils
+from ..useful import img_utils
 
 
 class Workarea(object):

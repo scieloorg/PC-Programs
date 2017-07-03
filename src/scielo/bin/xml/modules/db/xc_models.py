@@ -7,10 +7,10 @@ import csv
 from ..__init__ import _
 from ..__init__ import app_ws_requester
 
-from ..utils import utils
-from ..utils import xml_utils
-from ..utils import fs_utils
-from ..utils import article_utils
+from ..useful import utils
+from ..useful import xml_utils
+from ..useful import fs_utils
+from ..useful import article_utils
 from ..ws import ws_journals
 from ..reports import html_reports
 from ..reports import article_reports
@@ -18,7 +18,7 @@ from ..data.article import Issue, PersonAuthor, Article, Journal
 from ..data import attributes
 from ..db import serial
 from ..validations import validation_status
-from ..utils import encoding
+from ..useful import encoding
 
 
 ISSN_TYPE_CONVERSION = {

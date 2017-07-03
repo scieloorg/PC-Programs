@@ -12,7 +12,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.header import Header
 
-from ..utils import fs_utils
+from ..useful import fs_utils
 
 
 def strtolist(s):

@@ -32,10 +32,10 @@ def date_element(date_node):
     d = None
     if date_node is not None:
         d = {}
-        d['season'] = date_node.findtext('season')
-        d['month'] = date_node.findtext('month')
-        d['year'] = date_node.findtext('year')
-        d['day'] = date_node.findtext('day')
+        d['season'] = node_findtext(date_node, 'season')
+        d['month'] = node_findtext(date_node, 'month')
+        d['year'] = node_findtext(date_node, 'year')
+        d['day'] = node_findtext(date_node, 'day')
     return d
 
 
@@ -199,9 +199,27 @@ def restore_xml_file(xml_filename, temp_filename):
     fs_utils.delete_file_or_folder(os.path.dirname(temp_filename))
 
 
+def node_findtext(node, xpath=None):
+    # contrib.findtext('name/given-names')
+    if node is None:
+        return
+    selection = node
+    if xpath is not None:
+        if '//' in xpath:
+            selection = node.findall(xpath)
+        else:
+            selection = node.find(xpath)
+    if isinstance(selection, list):
+        return [node_text(item) for item in selection]
+    else:
+        return node_text(selection)
+
+
 def node_text(node):
+    if node is None:
+        return
     text = node_xml(node)
-    if not text is None:
+    if text is not None:
         text = text.strip()
         if text.startswith('<') and text.endswith('>'):
             text = text[text.find('>')+1:]
@@ -213,15 +231,15 @@ def node_text(node):
 
 def node_xml(node):
     text = None
-    if not node is None:
-        text = etree.tostring(node)
+    if node is not None:
+        text = tostring(node)
         if '&' in text:
             text, replaced_named_ent = convert_entities_to_chars(text)
     return text
 
 
 def tostring(node):
-    return etree.tostring(node)
+    return encoding.notuni2uni(etree.tostring(node))
 
 
 def complete_entity(xml_content):

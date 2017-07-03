@@ -5,9 +5,9 @@ import sys
 import shutil
 
 from ..__init__ import _
-from ..utils import fs_utils
-from ..utils import java_xml_utils
-from ..utils import xml_utils
+from ..useful import fs_utils
+from ..useful import java_xml_utils
+from ..useful import xml_utils
 from ..reports import text_report
 from ..reports import html_reports
 from ..validations import validation_status

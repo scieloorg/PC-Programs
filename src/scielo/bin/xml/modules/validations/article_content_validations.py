@@ -5,9 +5,9 @@ from datetime import datetime
 
 from ..__init__ import _
 from ..ws import ws_requester
-from ..utils import xml_utils
-from ..utils import utils
-from ..utils import article_utils
+from ..useful import xml_utils
+from ..useful import utils
+from ..useful import article_utils
 from ..reports import html_reports
 from ..validations import validation_status
 from ..data import attributes

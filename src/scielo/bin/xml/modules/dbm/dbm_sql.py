@@ -2,9 +2,9 @@
 
 import sqlite3
 
-from ..utils import utils
-from ..utils import fs_utils
-from ..utils import encoding
+from ..useful import utils
+from ..useful import fs_utils
+from ..useful import encoding
 
 
 class SQL(object):

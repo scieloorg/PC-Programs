@@ -5,7 +5,7 @@ from datetime import datetime
 
 from ..__init__ import _
 
-from ..utils import utils
+from . import img_utils
 from ..ws import institutions_service
 from ..validations import validation_status
 from ..data import article as article_module
@@ -319,7 +319,7 @@ def normalized_institution(aff):
 def image_heights(path, href_list):
     items = []
     for href in href_list:
-        img = utils.tiff_image(path + '/' + href.src)
+        img = img_utils.tiff_image(path + '/' + href.src)
         if img is not None:
             items.append(img.size[1])
     return sorted(items)

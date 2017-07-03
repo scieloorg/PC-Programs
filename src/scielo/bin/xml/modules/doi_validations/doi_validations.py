@@ -3,8 +3,8 @@
 from ..__init__ import _
 from ..__init__ import app_ws_requester
 
-from utils import xml_utils
-from utils import utils
+from ..useful import xml_utils
+from ..useful import utils
 from ..ws import ws_doi
 from ..validations import validation_status
 

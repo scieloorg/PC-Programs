@@ -2,7 +2,7 @@
 
 import os
 
-from ..utils import fs_utils
+from ..useful import fs_utils
 from ..data import article
 from . import workarea
 

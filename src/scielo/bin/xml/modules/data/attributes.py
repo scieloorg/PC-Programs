@@ -3,12 +3,12 @@ import os
 from datetime import datetime
 
 from __init__ import _
-from ..utils import article_utils
-from ..utils.fs_utils import read_file
+from ..useful import article_utils
+from ..useful.fs_utils import read_file
 from ..validations import validation_status
 
 
-CURRENT_PATH = o/..s.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 SPS_expiration_dates = [
     ('sps-1.6', ['20171001', '20181001']),

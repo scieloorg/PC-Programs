@@ -7,8 +7,8 @@ import webbrowser
 from datetime import datetime
 
 from ..__init__ import _
-from ..utils import fs_utils
-from ..utils import xml_utils
+from ..useful import fs_utils
+from ..useful import xml_utils
 from ..validations import validation_status
 
 

@@ -1,12 +1,12 @@
 # coding=utf-8
 
 import os
-import urllib
 from mimetypes import MimeTypes
 
-from ..utils import utils
-from ..utils import xml_utils
+from ..useful import utils
+from ..useful import xml_utils
 from ..data import attributes
+from ..ws import ws_requester
 
 
 messages = []
@@ -208,12 +208,8 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                     if os.path.isfile(self.src_path + '/' + f):
                         result = mime.guess_type(self.src_path + '/' + f)
                     else:
-                        try:
-                            url = urllib.pathname2url(f)
-                            result = mime.guess_type(url)
-                        except:
-                            url = urllib.request.pathname2url(f)
-                            result = mime.guess_type(url)
+                        url = ws_requester.pathname2url(f)
+                        result = mime.guess_type(url)
                     try:
                         result = result[0]
                         if '/' in result:

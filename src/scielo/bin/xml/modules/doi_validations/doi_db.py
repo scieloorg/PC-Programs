@@ -9,7 +9,7 @@ class DBManager:
             dbname = 'doi.db'
         self.dbname = dbname
         if not os.path.isfile(self.dbname):
-        	self.create_table()
+            self.create_table()
 
     def execute_commit_close(self, command):
         conn = sqlite3.connect(self.dbname)

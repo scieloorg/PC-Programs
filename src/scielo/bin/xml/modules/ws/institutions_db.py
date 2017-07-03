@@ -2,8 +2,8 @@
 
 import os
 
-from ..utils import encoding
-from ..utils import fs_utils
+from ..useful import encoding
+from ..useful import fs_utils
 from ..dbm import dbm_sql
 
 

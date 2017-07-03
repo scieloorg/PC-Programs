@@ -2,7 +2,7 @@
 import os
 import shutil
 
-from ..utils import fs_utils
+from ..useful import fs_utils
 
 
 def filename_language_suffix(filename):

@@ -5,10 +5,10 @@ import shutil
 from datetime import datetime
 
 from ..__init__ import _
-from ..utils import fs_utils
-from ..utils import utils
+from ..useful import fs_utils
+from ..useful import utils
+from ..useful import xml_utils
 from ..reports import html_reports
-from ..utils import xml_utils
 from ..pkg_processors import pkg_processors
 from ..data import package
 from ..server import mailer

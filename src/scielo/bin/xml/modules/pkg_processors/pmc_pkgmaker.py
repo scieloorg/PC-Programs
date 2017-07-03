@@ -2,10 +2,10 @@
 
 from ..__init__ import _
 
-from ..utils import utils
-from ..utils import fs_utils
-from ..utils import img_utils
-from ..utils import xml_utils
+from ..useful import utils
+from ..useful import fs_utils
+from ..useful import img_utils
+from ..useful import xml_utils
 from ..reports import html_reports
 from ..data import workarea
 from ..validations import xml_validators

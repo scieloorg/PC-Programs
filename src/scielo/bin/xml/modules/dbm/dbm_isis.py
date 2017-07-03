@@ -4,11 +4,11 @@ import os
 
 from tempfile import mkdtemp, NamedTemporaryFile
 
-from ..utils import xml_utils
-from ..utils import utils
-from ..utils import fs_utils
-from ..utils import encoding
-from ..utils import system
+from ..useful import xml_utils
+from ..useful import utils
+from ..useful import fs_utils
+from ..useful import encoding
+from ..useful import system
 
 
 PRESERVECIRC = '[PRESERVECIRC]'
@@ -168,7 +168,7 @@ class IDFile(object):
                     content = line[6:]
                 if tag is not None and content != '':
                     tag = str(int(tag[1:]))
-                    if not tag in record.keys():
+                    if tag not in record.keys():
                         record[tag] = []
                     content = content.replace('^', 'BREAKSUBF^')
                     subfields = content.split('BREAKSUBF')

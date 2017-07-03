@@ -4,16 +4,12 @@ import csv
 import codecs
 import shutil
 
-"""
+
 try:
     import tkinter as tk
-    print(3)
 except ImportError:
     import Tkinter as tk
-    print(2)
-"""
 
-import Tkinter as tk
 
 from modules import ws_requester
 
@@ -33,14 +29,17 @@ class MkpDownloadJournalListGUI(tk.Frame):
         collection_frame = tk.Frame(self)
         collection_frame.pack(padx=10, pady=5)
 
-        message_frame = tk.Frame(self)
-        message_frame.pack(padx=10, pady=5)
-
         buttons_frame = tk.Frame(self)
         buttons_frame.pack(padx=10, pady=5)
 
+        message_frame = tk.Frame(self)
+        message_frame.pack(padx=10, pady=5)
+
         collection_label = tk.Label(collection_frame, text='Select a collection: ', font="Verdana 12 bold")
         collection_label.pack(side='left')
+
+        execute_button = tk.Button(collection_frame, text='download', command=self.download)
+        execute_button.pack(side='right')
 
         options = collections.keys()
         options.append('All')
@@ -53,14 +52,12 @@ class MkpDownloadJournalListGUI(tk.Frame):
         menu_options = apply(tk.OptionMenu, (collection_frame, self.choice) + tuple(options))
         menu_options.pack()
 
-        self.message = tk.Message(message_frame)
-        self.message.pack(padx=10, pady=5)
-
         close_button = tk.Button(buttons_frame, text='close', command=lambda: self.tk_root.destroy())
         close_button.pack(side='right')
 
-        execute_button = tk.Button(buttons_frame, text='download', command=self.download)
-        execute_button.pack(side='right')
+        self.message = tk.Message(message_frame)
+        self.message.pack(padx=10, pady=5)
+
 
     def download(self):
         choice = self.choice.get()

@@ -3,16 +3,18 @@
 import os
 import json
 import socket
-import urllib2
 
 try:
     import tkinter as tk
+    import urllib.request as urllib_request
+    import urllib.parse.urlencode as urllib_parse_urlencode
 except ImportError:
     import Tkinter as tk
+    import urllib as urllib_request
+    import urllib2.urlencode as urllib_parse_urlencode
 
-
-from ..utils import utils
-from ..utils import encoding
+from ..useful import utils
+from ..useful import encoding
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -27,6 +29,10 @@ try:
     from ..__init__ import _
 except:
     _ = local_gettext
+
+
+def pathname2url(filename):
+    return urllib_request.pathname2url(filename)
 
 
 def fix_ip(ip):
@@ -164,33 +170,34 @@ def display_proxy_form(registered_ip, registered_port, debug=False):
 
 
 def registry_proxy_opener(proxy_handler_data):
-    proxy_handler = urllib2.ProxyHandler(proxy_handler_data)
-    opener = urllib2.build_opener(proxy_handler)
-    urllib2.install_opener(opener)
+    proxy_handler = urllib_request.ProxyHandler(proxy_handler_data)
+    opener = urllib_request.build_opener(proxy_handler)
+    urllib_request.install_opener(opener)
 
 
 def try_request(url, timeout=30, debug=False, force_error=False):
     response = None
     socket.setdefaulttimeout(timeout)
-    req = urllib2.Request(utils.uni2notuni(url))
+    req = urllib_request.Request(utils.uni2notuni(url))
     http_error_proxy_auth = None
     error_message = ''
     try:
-        response = urllib2.urlopen(req, timeout=timeout).read()
+        response = urllib_request.urlopen(req, timeout=timeout).read()
         response = utils.notuni2uni(response)
-    except urllib2.HTTPError as e:
+    except urllib_request.HTTPError as e:
         if e.code == 407:
             http_error_proxy_auth = e.code
         error_message = e.read()
-    except urllib2.URLError as e:
+    except urllib_request.URLError as e:
         if '10061' in str(e.reason):
             http_error_proxy_auth = e.reason
         error_message = 'URLError'
-    except urllib2.socket.timeout:
-        error_message = 'Time out!'
     except Exception as e:
-        error_message = 'Unknown!'
-        #raise
+        error_message = 'Unknown'
+        try:
+            error_message += ': ' + str(e)
+        except Exception as e:
+            pass
     if force_error is True:
         response = None
         http_error_proxy_auth = True
@@ -220,7 +227,7 @@ class WebServicesRequester(object):
         #          }
         query = ''
         if parameters is not None:
-            query = '?' + urllib2.urlencode(parameters)
+            query = '?' + urllib_parse_urlencode(parameters)
         return self._url + query
 
     def request(self, url, timeout=30, debug=False, force_error=False):

@@ -258,13 +258,24 @@ COUNTRY_CODES = [
 
 PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']
 
+REQUIRES_PERMISSIONS = [
+    'boxed-text',
+    'disp-quote',
+    'fig',
+    'graphic',
+    'media',
+    'supplementary-material',
+    'table-wrap',
+    'verse-group',
+]
+
 related_articles_type = ['corrected-article', 'article-commentary', 'press-release', 'retracted-article']
 
 CONTRIB_ID_URLS = {
     'lattes': 'http://lattes.cnpq.br/',
     'orcid': 'http://orcid.org/',
     'researchid': 'http://www.researcherid.com/rid/',
-    'scopus': 'https://www.scopus.com/authid/detail.uri?authorId=',  
+    'scopus': 'https://www.scopus.com/authid/detail.uri?authorId=',
 }
 
 

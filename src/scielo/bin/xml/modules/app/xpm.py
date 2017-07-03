@@ -5,8 +5,8 @@ import sys
 
 from ..__init__ import _
 from . import interface
-from ..utils import utils
-from ..utils import fs_utils
+from ..useful import utils
+from ..useful import fs_utils
 from ..db import workarea
 from ..pkg_processors import sgmlxml
 from ..pkg_processors import pkg_processors

@@ -3,7 +3,7 @@
 import os
 
 from ..__init__ import institutions_manager
-from ..utils import encoding
+from ..useful import encoding
 
 
 curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
