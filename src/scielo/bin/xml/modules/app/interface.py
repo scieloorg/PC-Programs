@@ -84,13 +84,8 @@ class XMLAppGUI(tk.Frame):
         if self.selected_folder is not None:
             self.default_xml_path = self.selected_folder
         self.selected_folder = askdirectory(parent=self.tk_root, initialdir=self.default_xml_path, title=_('Select a SPS XML package folder'))
-        self.input_folder.config(text=self.selected_folder)
-        self.read_inputs()
-        self.display_message(self.selected_folder, 'green')
-
-    def read_inputs(self):
-        if self.selected_folder is None:
-            self.selected_folder = ''
+        msg, color = self.validate_folder()
+        self.display_message(msg, color)
 
     def display_message(self, msg, color):
         if len(msg) > 0:
@@ -98,39 +93,35 @@ class XMLAppGUI(tk.Frame):
             self.message.update_idletasks()
 
     def is_valid_folder(self):
-        r = (self.selected_folder != '')
-        if r:
-            r = os.path.isdir(self.selected_folder)
-            if r:
-                r = (len([item for item in os.listdir(self.selected_folder) if item.endswith('.xml')]) > 0)
-            if not r:
-                self.selected_folder = ''
-        return r
+        if self.selected_folder is None:
+            return False
+        if os.path.isdir(self.selected_folder) is True:
+            items = [item for item in os.listdir(self.selected_folder) if item.endswith('.xml')]
+            return len(items) > 0
+        return False
+
+    def validate_folder(self):
+        msg = self.selected_folder
+        color = 'green'
+        if not self.is_valid_folder():
+            msg = _('Invalid folder. ') + _('No .xml files was found')
+            color = 'red'
+        return msg, color
 
     def run_xml_package_maker(self):
-        self.read_inputs()
-        color = 'green' if self.is_valid_folder() else 'red'
-        msg = ''
-        if self.selected_folder == '':
-            msg += _('Select a folder which contains the SPS XML Files. ') + '\n'
-        if len(msg) == 0:
-            msg = _('Executing XML Package Maker for ') + self.selected_folder + '\n'
+        msg, color = self.validate_folder()
         self.display_message(msg, color)
-        if color == 'green':
-            pmc = (self.pmc_var.get() == 1)
-            xml_package_maker(self.selected_folder, pmc)
+        if self.is_valid_folder():
+            pmc = self.pmc_var.get() == 1
+            print('xpm...')
+            #xml_package_maker(self.selected_folder, pmc)
 
     def run_xml_converter(self):
-        self.read_inputs()
-        color = 'green' if self.is_valid_folder() else 'red'
-        msg = ''
-        if self.selected_folder == '':
-            msg += _('Select a folder which contains the SPS XML Files. ') + '\n'
-        if len(msg) == 0:
-            msg = _('Executing XML Converter for ') + self.selected_folder + '\n'
+        msg, color = self.validate_folder()
         self.display_message(msg, color)
-        if color == 'green':
-            xml_converter(self.selected_folder)
+        if self.is_valid_folder():
+            print('xc...')
+            #xml_converter(self.selected_folder)
 
 
 def open_main_window(is_converter_enabled, configurations):

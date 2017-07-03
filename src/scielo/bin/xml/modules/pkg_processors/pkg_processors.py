@@ -299,6 +299,7 @@ class PkgProcessor(object):
         self.web_url = None
         self.serial_path = None
         self.version = version
+        self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
 
     def package(self, input_xml_list):
         workarea_path = os.path.dirname(input_xml_list[0])
@@ -335,7 +336,8 @@ class PkgProcessor(object):
             self.version,
             registered_issue_data,
             pkg.pkgissuedata,
-            self.is_xml_generation)
+            self.is_xml_generation,
+            self.app_institutions_manager)
         return validator.validate(pkg.articles, pkg.outputs, pkg.package_folder.pkgfiles_items)
 
     def report_result(self, pkg, pkg_validations, conversion=None):

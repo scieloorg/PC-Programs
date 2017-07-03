@@ -5,7 +5,6 @@ from datetime import datetime
 from ..useful import article_utils
 from ..useful import xml_utils
 from ..useful import img_utils
-from ..ws import ws_requester
 from . import attributes
 
 
@@ -31,7 +30,7 @@ def nodetext(node, sep='|'):
     if node is None:
         r = None
     elif isinstance(node, list):
-        r = sep.join([xml_utils.node_findtext(item) for item in node if item.text is not None])
+        r = sep.join([item for item in xml_utils.node_findtext(node) if item is not None])
     else:
         r = xml_utils.node_findtext(node)
     if r == '':
@@ -1452,22 +1451,6 @@ class Article(ArticleXML):
         return '; '.join(_pages)
 
     @property
-    def doi_data(self):
-        return doi_data(self.doi)
-
-    @property
-    def doi_journal_titles(self):
-        return self.doi_data.get('journal-titles')
-
-    @property
-    def doi_article_titles(self):
-        return self.doi_data.get('article-titles')
-
-    @property
-    def doi_pid(self):
-        return self.doi_data.get('pid')
-
-    @property
     def summary(self):
         data = {}
         data['journal-title'] = self.journal_title
@@ -1962,26 +1945,6 @@ class Journal(object):
         self.nlm_title = None
         self.publisher_name = None
         self.license = None
-
-
-#FIXME
-def doi_data(doi):
-    results = {}
-    url = ws_requester.wsr.article_doi_checker_url(doi)
-    article_json = ws_requester.wsr.json_result_request(url)
-    if article_json is not None:
-        data = article_json.get('message')
-        if data is not None:
-            results = []
-            for label in ['container-title', 'title', 'alternative-id']:
-                result = data.get(label)
-                if not result is None:
-                    if not isinstance(result, list):
-                        result = [result]
-                results.append(result)
-            if len(results) > 0:
-                results = {'journal-titles': results[0], 'article-titles': results[1], 'pid': results[2][0] if results[2] is not None else None}
-    return results
 
 
 class ArticleXMLContent(object):

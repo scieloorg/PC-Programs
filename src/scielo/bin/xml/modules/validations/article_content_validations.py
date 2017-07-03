@@ -16,7 +16,7 @@ from ..doi_validations import doi_validations
 
 
 MIN_IMG_DPI = 300
-MIN_IMG_WIDTH = 789
+MIN_IMG_WIDTH = 789x
 MAX_IMG_WIDTH = 2250
 MAX_IMG_HEIGHT = 2625
 
@@ -252,8 +252,9 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url):
-        self.doi_validator = doi_validations.DOIValidator()
+    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url, app_institutions_manager, doi_validator):
+        self.doi_validator = doi_validator
+        self.app_institutions_manager = app_institutions_manager
         self.journal = journal
         self.article = _article
         self.is_db_generation = is_db_generation
@@ -480,8 +481,7 @@ class ArticleContentValidation(object):
             if related_article.get('ext-link-type', '') == 'doi':
                 _doi = related_article.get('href', '')
                 if _doi != '':
-                    doi_data = doi_validations.DOI_Data(_doi)
-                    errors = doi_data.validate_doi_format()
+                    errors = self.doi_validator.validate_format(_doi)
                     if len(errors) > 0:
                         msg = invalid_value_message(related_article.get('href'), 'related-article/@xlink:href')
                         r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
@@ -792,7 +792,7 @@ class ArticleContentValidation(object):
                         else:
                             r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of {orgname}. ').format(value=item, orgname=_('an organization'))))
 
-            norm_aff, found_institutions = article_utils.normalized_institution(aff)
+            norm_aff, found_institutions = article_utils.normalized_institution(app_institutions_manager, aff)
 
             #if aff.norgname is None or aff.norgname == '':
             #    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element. ')))

@@ -16,7 +16,7 @@ class DOIValidator(object):
 
     def validate(self, article):
         self.messages = []
-        self._validate_format(article.doi)
+        self.validate_format(article.doi)
         self._validate_doi_prefix(article)
         doi_data = self.ws_doi.doi_data(article.doi)
         if doi_data is not None:
@@ -25,7 +25,7 @@ class DOIValidator(object):
             self._validate_issn(article, doi_data)
         return self.messages
 
-    def _validate_format(self, doi):
+    def validate_format(self, doi):
         errors = []
         if doi is not None:
             for item in doi:

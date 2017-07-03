@@ -13,6 +13,7 @@ from . import validation_status
 from . import xml_validators
 from . import article_data_reports
 from . import article_content_validations
+from ..doi_validations import doi_validations
 
 
 class ValidationsResultItems(dict):
@@ -249,19 +250,22 @@ class XMLStructureValidator(object):
 
 class XMLContentValidator(object):
 
-    def __init__(self, pkgissuedata, registered_issue_data, is_xml_generation):
+    def __init__(self, pkgissuedata, registered_issue_data, is_xml_generation, app_institutions_manager, doi_validator):
         self.registered_issue_data = registered_issue_data
         self.pkgissuedata = pkgissuedata
         self.is_xml_generation = is_xml_generation
+        self.doi_validator = doi_validator
+        self.app_institutions_manager = app_institutions_manager
 
     def validate(self, article, outputs, pkgfiles):
         article_display_report = None
         article_validation_report = None
 
+
         if article.tree is None:
             content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}. ').format(item=article.new_prefix)
         else:
-            content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, pkgfiles, (self.registered_issue_data.articles_db_manager is not None), False)
+            content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, pkgfiles, (self.registered_issue_data.articles_db_manager is not None), False, app_institutions_manager, doi_validator)
             article_display_report = article_data_reports.ArticleDisplayReport(content_validation)
             article_validation_report = article_data_reports.ArticleValidationReport(content_validation)
 
@@ -348,7 +352,7 @@ class ArticleValidations(object):
 
 class ArticlesValidator(object):
 
-    def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation):
+    def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation, app_institutions_manager):
         self.registered_issue_data = registered_issue_data
         self.pkgissuedata = pkgissuedata
         self.is_xml_generation = is_xml_generation
@@ -357,7 +361,7 @@ class ArticlesValidator(object):
         xml_journal_data_validator = XMLJournalDataValidator(self.pkgissuedata.journal_data)
         xml_issue_data_validator = XMLIssueDataValidator(self.registered_issue_data)
         xml_structure_validator = XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
-        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.is_xml_generation)
+        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.is_xml_generation, app_institutions_manager, doi_validations.DOIValidator())
         self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
 
     def validate(self, articles, outputs, pkgfiles):

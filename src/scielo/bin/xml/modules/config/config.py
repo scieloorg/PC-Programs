@@ -3,6 +3,7 @@ import os
 import shutil
 
 from ..useful import fs_utils
+from ..ws import ws_requester
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -410,3 +411,7 @@ class Configuration(object):
     @property
     def proxy_info(self):
         return self._data.get('PROXY_ADDRESS')
+
+    @property
+    def app_ws_requester(self):
+        return ws_requester.WebServicesRequester(self.is_web_access_enabled, self.proxy_info)

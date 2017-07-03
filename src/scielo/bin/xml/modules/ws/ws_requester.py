@@ -11,7 +11,7 @@ try:
 except ImportError:
     import Tkinter as tk
     import urllib as urllib_request
-    import urllib2.urlencode as urllib_parse_urlencode
+    from urllib import urlencode as urllib_parse_urlencode
 
 from ..useful import utils
 from ..useful import encoding

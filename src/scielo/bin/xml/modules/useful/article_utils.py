@@ -6,7 +6,6 @@ from datetime import datetime
 from ..__init__ import _
 
 from . import img_utils
-from ..ws import institutions_service
 from ..validations import validation_status
 from ..data import article as article_module
 
@@ -273,12 +272,12 @@ def normalize_affiliations(article):
             article.normalized_affiliations[aff.id] = norm_aff
 
 
-def normalized_institution(aff):
+def normalized_institution(app_institutions_manager, aff):
     norm_aff = None
     found_institutions = None
     orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
     if aff.norgname is not None or aff.orgname is not None:
-        found_institutions = institutions_service.validate_organization(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+        found_institutions = app_institutions_manager.validate_organization(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
 
     if found_institutions is not None:
         if len(found_institutions) == 1:

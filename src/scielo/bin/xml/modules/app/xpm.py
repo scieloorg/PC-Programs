@@ -7,9 +7,20 @@ from ..__init__ import _
 from . import interface
 from ..useful import utils
 from ..useful import fs_utils
-from ..db import workarea
+from ..data import workarea
 from ..pkg_processors import sgmlxml
 from ..pkg_processors import pkg_processors
+
+
+"""
+from config import config
+from ws import ws_requester
+from ws import institutions_manager
+configuration_filename = ' '
+configuration = config.Configuration(configuration_filename)
+app_ws_requester = ws_requester.WebServicesRequester(configuration.is_web_access_enabled, configuration.proxy_info)
+app_institutions_manager = institutions_manager.InstitutionsManager(app_ws_requester)
+"""
 
 
 messages = []
@@ -104,4 +115,3 @@ def sgmlxml2xml(sgm_xml_filename, acron, version):
     package_maker = sgmlxml.SGMLXML2SPSXMLPackageMaker(wk, pkgfiles)
     package_maker.pack(acron, sgmlxml2xml)
     return package_maker.xml_pkgfiles
-
