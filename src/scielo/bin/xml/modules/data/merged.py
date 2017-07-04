@@ -146,6 +146,7 @@ class ArticlesMerger(object):
         for name, article in self.articles.items():
             action, old_name, conflicts = self.analyze_pkg_article(name, article)
             if conflicts is not None:
+                conflicts['package'] = article
                 self.merging_result.conflicts[name] = conflicts
             if action is not None:
                 self.merging_result.actions[name] = action

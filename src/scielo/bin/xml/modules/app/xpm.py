@@ -19,7 +19,7 @@ def call_make_packages(args, version):
     if any([xml_path, acron]):
         stage, pkgfiles = get_pkgfiles(version, script, xml_path, acron)
 
-    reception = Reception(version, stage, DISPLAY_REPORT)
+    reception = XPM_Reception(version, stage, DISPLAY_REPORT)
     if pkgfiles is None:
         reception.display_form()
     else:
@@ -108,7 +108,7 @@ def sgmlxml2xml(sgm_xml_filename, acron, version):
     return package_maker.xml_pkgfiles
 
 
-class Reception(object):
+class XPM_Reception(object):
 
     def __init__(self, version, stage, DISPLAY_REPORT=True):
         configuration = config.Configuration()

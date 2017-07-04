@@ -792,8 +792,8 @@ class MergedArticlesReports(object):
         if len(self.merging_result.conflicts) > 0:
             merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
             for name, conflicts in self.merging_result.conflicts.items():
-                labels = ['package']
-                values = [name]
+                labels = []
+                #values = [article_data_reports.display_article_data_to_compare(self.)]
                 for k, articles in conflicts.items():
                     labels.append(k)
                     if isinstance(articles, dict):

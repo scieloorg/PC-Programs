@@ -24,37 +24,20 @@ EMAIL_SUBJECT_STATUS_ICON['approved'] = [u"\u2705", _(' APPROVED ')]
 EMAIL_SUBJECT_STATUS_ICON['not processed'] = ['', _(' NOT PROCESSED ')]
 
 
-class Reception(object):
+class XC_Reception(object):
 
-    def __init__(self, version, stage, DISPLAY_REPORT=True):
-        configuration = config.Configuration()
-        self.proc = pkg_processors.PkgProcessor(configuration, version, DISPLAY_REPORT, stage)
+    def __init__(self, configuration, version):
+        self.proc = pkg_processors.PkgProcessor(configuration, version, DISPLAY_REPORT=True, stage='xc')
 
     def display_form(self):
         interface.display_form(self.proc.stage == 'xc', None, self.call_convert_package)
 
-    def call_convert_package(self, xml_path, GENERATE_PMC=False):
-        xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
-        pkgfiles = pkg_processors.normalize_xml_packages(xml_list, self.proc.stage)
-        self.convert_package(pkgfiles, GENERATE_PMC)
+    def call_convert_package(self, xml_path):
+        self.convert_package(xml_path)
         return 'done', 'blue'
 
-    def convert_package(self, pkgfiles, GENERATE_PMC=False):
-        self.proc.convert_package([f.filename for f in pkgfiles], GENERATE_PMC)
-
-
-def call_make_packages(args, version):
-    script, xml_path, acron, DISPLAY_REPORT, GENERATE_PMC = read_inputs(args)
-    pkgfiles = None
-    stage = 'xpm'
-    if any([xml_path, acron]):
-        stage, pkgfiles = get_pkgfiles(version, script, xml_path, acron)
-
-    reception = Reception(version, stage, DISPLAY_REPORT)
-    if pkgfiles is None:
-        reception.display_form()
-    else:
-        reception.make_package(pkgfiles, GENERATE_PMC)
+    def convert_package(self, xml_path):
+        execute_converter(xml_path)
 
 
 def call_converter(args, version='1.0'):
@@ -73,32 +56,11 @@ def call_converter(args, version='1.0'):
             messages.append('\n'.join(errors))
             utils.display_message('\n'.join(messages))
 
-    reception = Reception(version, 'xc', DISPLAY_REPORT=False)
+    reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)), version, 'xc')
     if package_path is None:
         reception.display_form()
     else:
-        reception.make_package(pkgfiles, GENERATE_PMC)
-
-
-    elif package_path is not None and collection_acron is not None:
-        errors = validate_inputs(package_path, collection_acron)
-        if len(errors) > 0:
-            messages = []
-            messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
-            messages.append('ERROR: ' + _('Incorrect parameters'))
-            messages.append('\n' + _('Usage') + ':')
-            messages.append('python xml_converter.py <xml_folder> | <collection_acron>')
-            messages.append(_('where') + ':')
-            messages.append('  <xml_folder> = ' + _('path of folder which contains'))
-            messages.append('  <collection_acron> = ' + _('collection acron'))
-            messages.append('\n'.join(errors))
-            utils.display_message('\n'.join(messages))
-        else:
-            execute_converter(package_path, collection_acron)
-    elif collection_acron is not None:
-        execute_converter(package_path, collection_acron)
-    elif package_path is not None:
-        execute_converter(package_path)
+        reception.convert_package(package_path)
 
 
 def read_inputs(args):
@@ -115,14 +77,6 @@ def read_inputs(args):
             collection_acron = param
 
     return (script, package_path, collection_acron)
-
-
-def get_config(collection_name):
-    collection_names = {}
-    collection_acron = collection_names.get(collection_name)
-    if collection_acron is None:
-        collection_acron = collection_name
-    return xc_get_configuration(collection_acron)
 
 
 def organize_packages_locations(pkg_path, config, mailer):
