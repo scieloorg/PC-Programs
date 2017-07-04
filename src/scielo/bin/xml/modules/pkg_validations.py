@@ -643,7 +643,7 @@ class ArticlesMerger(object):
             merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
             for name, conflicts in self._conflicts.items():
                 labels = ['package']
-                values = [name]
+                values = [article_reports.display_article_data_to_compare(self.pkg_articles.get(name))]
                 for k, articles in conflicts.items():
                     labels.append(k)
                     if isinstance(articles, dict):
