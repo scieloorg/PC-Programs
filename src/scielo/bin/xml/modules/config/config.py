@@ -5,21 +5,35 @@ import shutil
 from ..useful import fs_utils
 from ..ws import ws_requester
 
+from ..__init__ import CONFIG_PATH
+from ..__init__ import BIN_PATH
 
-CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-CONFIG_PATH = CURRENT_PATH + '/../../config/'
+
+def get_configuration_filename(collection_acron=None):
+    if collection_acron is None:
+        f = BIN_PATH + '/scielo_paths.ini'
+        if os.path.isfile(f):
+            filename = f
+        else:
+            filename = CONFIG_PATH + '/default.xc.ini'
+    else:
+        filename = CONFIG_PATH + '/' + collection_acron + '.xc.ini'
+
+    return filename
 
 
 class Configuration(object):
 
-    def __init__(self, filename):
+    def __init__(self, filename=None):
         self.filename = filename
+        if filename is None:
+            self.filename = get_configuration_filename()
 
     def load(self):
         self._data = {}
         config_items = []
-        if os.path.isfile(CONFIG_PATH + '/xws.info'):
-            config_items = fs_utils.read_file_lines(CONFIG_PATH + '/xws.info')
+        if os.path.isfile(BIN_PATH + '/xws.info'):
+            config_items = fs_utils.read_file_lines(BIN_PATH + '/xws.info')
         coding = 'utf-8'
         if self.filename.endswith('scielo_paths.ini'):
             coding = 'iso-8859-1'
@@ -44,11 +58,11 @@ class Configuration(object):
 
     @property
     def cisis1030(self):
-        return self._data.get('PATH_CISIS_1030', CURRENT_PATH + '/../../cfg/')
+        return self._data.get('PATH_CISIS_1030', BIN_PATH + '/cfg/')
 
     @property
     def cisis1660(self):
-        return self._data.get('PATH_CISIS_1660', CURRENT_PATH + '/../../cfg/cisis1660/')
+        return self._data.get('PATH_CISIS_1660', BIN_PATH + '/cfg/cisis1660/')
 
     @property
     def local_web_app_path(self):

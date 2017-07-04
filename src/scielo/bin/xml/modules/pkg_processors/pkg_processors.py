@@ -287,10 +287,9 @@ class ArticlesConverter(object):
 
 class PkgProcessor(object):
 
-    def __init__(self, config, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
+    def __init__(self, config, version, DISPLAY_REPORT, stage='xpm'):
         self.config = config
         self.DISPLAY_REPORT = DISPLAY_REPORT
-        self.GENERATE_PMC = GENERATE_PMC
         self.stage = stage
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
@@ -307,13 +306,13 @@ class PkgProcessor(object):
             workarea_path += '_' + self.stage
         return package.Package(input_xml_list, workarea_path)
 
-    def make_package(self, input_xml_list):
+    def make_package(self, input_xml_list, GENERATE_PMC=False):
         pkg = self.package(input_xml_list)
         registered_issue_data = registered.RegisteredIssueData(self.db_manager)
         registered_issue_data.get_data(pkg.pkgissuedata)
         pkg_validations = self.validate_package(pkg, registered_issue_data)
         self.report_result(pkg, pkg_validations, conversion=None)
-        self.make_pmc_package(pkg, registered_issue_data)
+        self.make_pmc_package(pkg, registered_issue_data, GENERATE_PMC)
         self.zip(pkg)
 
     def convert_package(self, input_xml_list):
@@ -352,14 +351,14 @@ class PkgProcessor(object):
             reports.save_report(self.DISPLAY_REPORT or self.config.interative_mode)
         return reports
 
-    def make_pmc_package(self, pkg):
+    def make_pmc_package(self, pkg, GENERATE_PMC):
         if not self.is_db_generation:
             # FIXME
             pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(self.version)
             if self.is_xml_generation:
                 pmc_package_maker.make_report(pkg.articles, pkg.outputs)
             if pkg.is_pmc_journal:
-                if self.GENERATE_PMC:
+                if GENERATE_PMC:
                     pmc_package_maker.make_package(pkg.articles, pkg.outputs)
                     workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
                 else:

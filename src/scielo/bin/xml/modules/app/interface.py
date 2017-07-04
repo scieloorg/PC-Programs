@@ -18,7 +18,7 @@ XML_FOLDER_DEFAULT = CURRENT_PATH + '/../../'
 
 class XMLAppGUI(tk.Frame):
 
-    def __init__(self, tk_root, default_xml_path, is_converter_enabled):
+    def __init__(self, tk_root, default_xml_path, is_converter_enabled, function):
         tk.Frame.__init__(self, tk_root)
         self.tk_root = tk_root
         self.tk_root.iconbitmap('../../../cfg/Scielo.ico')
@@ -28,8 +28,9 @@ class XMLAppGUI(tk.Frame):
             self.default_xml_path = default_xml_path
 
         self.is_converter_enabled = is_converter_enabled
-        self.xml_package_maker = xml_package_maker
-        self.xml_converter = xml_converter
+        self.generate_pmc_package = False
+        self.xml_path = None
+        self.function = function
 
         self.tk_root.resizable(True, False)
         self.tk_root.protocol('WM_DELETE_WINDOW', self.click_close)
@@ -112,19 +113,21 @@ class XMLAppGUI(tk.Frame):
         msg, color = self.validate_folder()
         self.display_message(msg, color)
         if self.is_valid_folder():
-            pmc = self.pmc_var.get() == 1
-            print('xpm...')
-            #xml_package_maker(self.selected_folder, pmc)
+            self.generate_pmc_package = self.pmc_var.get() == 1
+            self.xml_path = self.selected_folder
+            msg, color = self.function(self.xml_path, self.generate_pmc_package)
+            self.display_message(msg, color)
 
     def run_xml_converter(self):
         msg, color = self.validate_folder()
         self.display_message(msg, color)
         if self.is_valid_folder():
-            print('xc...')
-            #xml_converter(self.selected_folder)
+            self.xml_path = self.selected_folder
+            msg, color = self.function(self.xml_path)
+            self.display_message(msg, color)
 
 
-def open_main_window(is_converter_enabled, configurations):
+def display_form(is_converter_enabled, configurations, function):
     if configurations is None:
         t = 'SPS XML Package Maker'
         if is_converter_enabled:
@@ -134,29 +137,8 @@ def open_main_window(is_converter_enabled, configurations):
     tk_root = tk.Tk()
     tk_root.title(configurations['title'])
 
-    app = XMLAppGUI(tk_root, configurations.get('default_xml_path'), is_converter_enabled)
+    app = XMLAppGUI(tk_root, configurations.get('default_xml_path'), is_converter_enabled, function)
     app.pack(side="top", fill="both", expand=True)
-
-    app.mainloop()
     app.focus_set()
-
-
-def xml_package_maker(path, pmc=False):
-    import xpmaker
-    xpmaker.make_packages(path, None, pmc=pmc)
-
-
-#def xml_converter(path, collection_name):
-#    import xmlcvrter
-#
-#    xmlcvrter.execute_converter(path, COLLECTIONS.get(collection_name))
-
-
-def xml_converter(path):
-    import xmlcvrter
-
-    xmlcvrter.execute_converter(path)
-
-
-#if __name__ == "__main__":
-#    open_main_window()
+    app.mainloop()
+    return app

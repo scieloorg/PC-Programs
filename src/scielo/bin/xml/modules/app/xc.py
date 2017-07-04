@@ -24,57 +24,61 @@ EMAIL_SUBJECT_STATUS_ICON['approved'] = [u"\u2705", _(' APPROVED ')]
 EMAIL_SUBJECT_STATUS_ICON['not processed'] = ['', _(' NOT PROCESSED ')]
 
 
-CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+class Reception(object):
+
+    def __init__(self, version, stage, DISPLAY_REPORT=True):
+        configuration = config.Configuration()
+        self.proc = pkg_processors.PkgProcessor(configuration, version, DISPLAY_REPORT, stage)
+
+    def display_form(self):
+        interface.display_form(self.proc.stage == 'xc', None, self.call_convert_package)
+
+    def call_convert_package(self, xml_path, GENERATE_PMC=False):
+        xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
+        pkgfiles = pkg_processors.normalize_xml_packages(xml_list, self.proc.stage)
+        self.convert_package(pkgfiles, GENERATE_PMC)
+        return 'done', 'blue'
+
+    def convert_package(self, pkgfiles, GENERATE_PMC=False):
+        self.proc.convert_package([f.filename for f in pkgfiles], GENERATE_PMC)
 
 
-def xc_get_configuration(collection_acron):
-    config = None
-    f = xc_configuration_filename(collection_acron)
-    errors = is_xc_configuration_file(f)
-    if len(errors) > 0:
-        print('\n'.join(errors))
+def call_make_packages(args, version):
+    script, xml_path, acron, DISPLAY_REPORT, GENERATE_PMC = read_inputs(args)
+    pkgfiles = None
+    stage = 'xpm'
+    if any([xml_path, acron]):
+        stage, pkgfiles = get_pkgfiles(version, script, xml_path, acron)
+
+    reception = Reception(version, stage, DISPLAY_REPORT)
+    if pkgfiles is None:
+        reception.display_form()
     else:
-        config = xc_read_configuration_file(f)
-    return config
-
-
-def xc_read_configuration_file(filename):
-    r = None
-    if os.path.isfile(filename):
-        r = xc_config.XMLConverterConfiguration(filename)
-        if not r.valid:
-            r = None
-    return r
-
-
-def xc_configuration_filename(collection_acron):
-    if collection_acron is None:
-        f = CURRENT_PATH + '/../../scielo_paths.ini'
-        if os.path.isfile(f):
-            filename = f
-        else:
-            filename = CURRENT_PATH + '/../config/default.xc.ini'
-    else:
-        filename = CURRENT_PATH + '/../config/' + collection_acron + '.xc.ini'
-
-    return filename
-
-
-def is_xc_configuration_file(configuration_filename):
-    messages = []
-    if configuration_filename is None:
-        messages.append('\n===== ATTENTION =====\n')
-        messages.append('ERROR: No configuration file was informed')
-    elif not os.path.isfile(configuration_filename):
-        messages.append('\n===== ATTENTION =====\n')
-        messages.append('ERROR: unable to read the configuration file: ' + configuration_filename)
-    return messages
+        reception.make_package(pkgfiles, GENERATE_PMC)
 
 
 def call_converter(args, version='1.0'):
     script, package_path, collection_acron = read_inputs(args)
-    if package_path is None and collection_acron is None:
-        interface.open_main_window(True, None)
+    if all([package_path, collection_acron]):
+        errors = xml_utils.is_valid_xml_path(package_path)
+        if len(errors) > 0:
+            messages = []
+            messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
+            messages.append('ERROR: ' + _('Incorrect parameters'))
+            messages.append('\n' + _('Usage') + ':')
+            messages.append('python xml_converter.py <xml_folder> | <collection_acron>')
+            messages.append(_('where') + ':')
+            messages.append('  <xml_folder> = ' + _('path of folder which contains'))
+            messages.append('  <collection_acron> = ' + _('collection acron'))
+            messages.append('\n'.join(errors))
+            utils.display_message('\n'.join(messages))
+
+    reception = Reception(version, 'xc', DISPLAY_REPORT=False)
+    if package_path is None:
+        reception.display_form()
+    else:
+        reception.make_package(pkgfiles, GENERATE_PMC)
+
 
     elif package_path is not None and collection_acron is not None:
         errors = validate_inputs(package_path, collection_acron)
@@ -113,18 +117,6 @@ def read_inputs(args):
     return (script, package_path, collection_acron)
 
 
-def validate_inputs(package_path, collection_acron):
-    # python xml_converter.py <xml_src>
-    # python xml_converter.py <collection_acron>
-    errors = []
-    if package_path is None:
-        if collection_acron is None:
-            errors.append(_('Missing collection acronym'))
-    else:
-        errors = xml_utils.is_valid_xml_path(package_path)
-    return errors
-
-
 def get_config(collection_name):
     collection_names = {}
     collection_acron = collection_names.get(collection_name)
@@ -150,7 +142,7 @@ def execute_converter(package_paths, collection_name):
     transfer = filestransfer.FilesTransfer(config)
     organize_packages_locations(package_paths, config, xc_mailer)
 
-    proc = pkg_processors.PkgProcessor(config, version, DISPLAY_REPORT, GENERATE_PMC, stage)
+    proc = pkg_processors.PkgProcessor(config, version, DISPLAY_REPORT, stage)
     scilista_items = []
     for package_path in package_paths:
         package_name = os.path.basename(package_path)
