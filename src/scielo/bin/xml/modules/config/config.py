@@ -10,12 +10,11 @@ from ..__init__ import BIN_PATH
 
 
 def get_configuration_filename(collection_acron=None):
+    filename = None
     if collection_acron is None:
         f = BIN_PATH + '/scielo_paths.ini'
         if os.path.isfile(f):
             filename = f
-        else:
-            filename = CONFIG_PATH + '/default.xc.ini'
     else:
         filename = CONFIG_PATH + '/' + collection_acron + '.xc.ini'
 
@@ -28,16 +27,19 @@ class Configuration(object):
         self.filename = filename
         if filename is None:
             self.filename = get_configuration_filename()
+        self.load()
 
     def load(self):
         self._data = {}
         config_items = []
         if os.path.isfile(BIN_PATH + '/xws.info'):
             config_items = fs_utils.read_file_lines(BIN_PATH + '/xws.info')
-        coding = 'utf-8'
-        if self.filename.endswith('scielo_paths.ini'):
-            coding = 'iso-8859-1'
-        config_items.extend(fs_utils.read_file_lines(self.filename, coding))
+
+        if self.filename is not None:
+            coding = 'utf-8'
+            if self.filename.endswith('scielo_paths.ini'):
+                coding = 'iso-8859-1'
+            config_items.extend(fs_utils.read_file_lines(self.filename, coding))
         for item in config_items:
             if '=' in item:
                 if ',' in item and '@' not in item:

@@ -12,21 +12,21 @@ from . import files_extractor
 def read_file(filename, encode='utf-8'):
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
-        return encoding.convert2unicode(content)
+        return encoding.notuni2uni(content)
 
 
 def read_file_lines(filename, encode='utf-8'):
     if os.path.isfile(filename):
         content = open(filename, 'r').readlines()
-        return [encoding.convert2unicode(item).strip() for item in content]
+        return [encoding.notuni2uni(item).strip() for item in content]
 
 
 def write_file(filename, content, encode='utf-8'):
-    open(filename, 'w').write(encoding.convert2nunicode(content))
+    open(filename, 'w').write(encoding.uni2notuni(content))
 
 
 def append_file(filename, content, encode='utf-8'):
-    open(filename, 'a+').write(encoding.convert2nunicode(content) + '\n')
+    open(filename, 'a+').write(encoding.uni2notuni(content) + '\n')
 
 
 def delete_file_or_folder(path):

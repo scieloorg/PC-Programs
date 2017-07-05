@@ -212,11 +212,14 @@ class WebServicesRequester(object):
         self.requests = {}
         self.skip = []
         self.proxy_info = proxy_info
+        if proxy_info is not None:
+            server, port = proxy_info.split(':')
+            self.proxy_info = ProxyInfo(server, port)
         self.active = active
 
-    def __new__(self):
+    def __new__(self, active, proxy_info):
         if not hasattr(self, 'instance'):
-            self.instance = super(WebServicesRequester, self).__new__(self)
+            self.instance = super(WebServicesRequester, self).__new__(self, active, proxy_info)
         return self.instance
 
     def format_url(self, url, parameters=None):

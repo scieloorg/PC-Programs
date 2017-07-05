@@ -8,8 +8,9 @@ from ..validations import package_validations
 
 class RegisteredIssueData(object):
 
-    def __init__(self, db_manager):
+    def __init__(self, db_manager, journals_list):
         self.db_manager = db_manager
+        self.journals_list = journals_list
         self.articles_db_manager = None
         self.issue_error_msg = None
         self.issue_models = None
@@ -18,7 +19,7 @@ class RegisteredIssueData(object):
 
     def get_data(self, pkgissuedata):
         if self.db_manager is None:
-            journals_list = xc_models.JournalsList()
+            journals_list = self.journals_list
             pkgissuedata.journal = journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
             pkgissuedata.journal_data = journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
         else:

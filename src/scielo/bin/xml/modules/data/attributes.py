@@ -2,7 +2,7 @@
 import os
 from datetime import datetime
 
-from __init__ import _
+from ..__init__ import _
 from ..useful import article_utils
 from ..useful.fs_utils import read_file
 from ..validations import validation_status

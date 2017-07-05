@@ -13,7 +13,7 @@ from . import validation_status
 from . import xml_validators
 from . import article_data_reports
 from . import article_content_validations
-from ..doi_validations import doi_validations
+from ..data import merged
 
 
 class ValidationsResultItems(dict):
@@ -352,7 +352,7 @@ class ArticleValidations(object):
 
 class ArticlesValidator(object):
 
-    def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation, app_institutions_manager):
+    def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation, app_institutions_manager, doi_validator):
         self.registered_issue_data = registered_issue_data
         self.pkgissuedata = pkgissuedata
         self.is_xml_generation = is_xml_generation
@@ -361,13 +361,12 @@ class ArticlesValidator(object):
         xml_journal_data_validator = XMLJournalDataValidator(self.pkgissuedata.journal_data)
         xml_issue_data_validator = XMLIssueDataValidator(self.registered_issue_data)
         xml_structure_validator = XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
-        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.is_xml_generation, app_institutions_manager, doi_validations.DOIValidator())
+        xml_content_validator = XMLContentValidator(self.pkgissuedata, self.registered_issue_data, self.is_xml_generation, app_institutions_manager, doi_validator)
         self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
 
     def validate(self, articles, outputs, pkgfiles):
-        articles_validations_reports = ArticlesValidationsReports(self.is_xml_generation, self.is_db_generation)
-
-        articles_merger = ArticlesMerger(self.registered_issue_data.registered_articles, articles)
+        #FIXME
+        articles_merger = merged.ArticlesMerger(self.registered_issue_data.registered_articles, articles)
         articles_merger.merge()
         merged_articles_data = MergedArticlesData(articles_merger.merged_articles, self.is_db_generation)
         articles_validations_reports.merged_articles_reports = MergedArticlesReports(merged_articles_data, articles_merger.merging_result)
@@ -380,6 +379,8 @@ class ArticlesValidator(object):
         for name, article in articles.items():
             utils.display_message(_('Validate {name}').format(name=name))
             results[name] = self.article_validator.validate(article, outputs[name], pkgfiles[name])
+        #FIXME
+        articles_validations_reports = ArticlesValidationsReports(articles_validations, self.is_xml_generation, self.is_db_generation)
 
         articles_validations_reports.consistency_validations = ValidationsResult()
         articles_validations_reports.consistency_validations.message = articles_validations_reports.merged_articles_reports.report_data_consistency
@@ -393,9 +394,9 @@ class ArticlesValidator(object):
 
 class ArticlesValidationsReports(object):
 
-    def __init__(self, is_xml_generation=False, is_db_generation=False):
+    def __init__(self, articles_validations, is_xml_generation=False, is_db_generation=False):
         self.consistency_validations = None
-        self.articles_validations = None
+        self.articles_validations = articles_validations
         self.is_xml_generation = is_xml_generation
         self.is_db_generation = is_db_generation
         self.merged_articles_reports = None
@@ -485,7 +486,6 @@ class ArticlesValidationsReports(object):
         return sum([v.fatal_errors for v in self.articles_validations.values()])
 
 
-
 class PackageReports(object):
 
     def __init__(self, package_folder):
@@ -508,6 +508,7 @@ class PackageReports(object):
         if len(self.package_folder.orphans) > 0:
             return '<div class="xmllist"><p>{}</p>{}</div>'.format(_('Invalid files names'), html_reports.format_list('', 'ol', self.package_folder.orphans))
         return ''
+
 
 class ArticlesDataReports(object):
 

@@ -5,20 +5,19 @@ import shutil
 import csv
 
 from ..__init__ import _
-from ..__init__ import app_ws_requester
 
 from ..useful import utils
 from ..useful import xml_utils
 from ..useful import fs_utils
 from ..useful import article_utils
+from ..useful import encoding
 from ..ws import ws_journals
 from ..reports import html_reports
-from ..reports import article_reports
 from ..data.article import Issue, PersonAuthor, Article, Journal
 from ..data import attributes
 from ..db import serial
 from ..validations import validation_status
-from ..useful import encoding
+from ..validations import article_data_reports
 
 
 ISSN_TYPE_CONVERSION = {
@@ -681,7 +680,7 @@ class IssueModels(object):
                 results.extend(attributes.validate_article_type_and_section(article.article_type, article_sectitle, len(article.abstracts) > 0))
             article.section_code = article_seccode
 
-        return html_reports.tag('div', article_reports.validations_table(results))
+        return html_reports.tag('div', article_data_reports.validations_table(results))
 
 
 class IssueArticlesRecords(object):
@@ -1402,7 +1401,7 @@ class DBManager(object):
 
 class JournalsList(object):
 
-    def __init__(self):
+    def __init__(self, app_ws_requester):
         ws = ws_journals.Journals(app_ws_requester)
         ws.update_journals_file()
         self._journals = {}

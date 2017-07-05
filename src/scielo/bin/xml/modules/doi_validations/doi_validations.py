@@ -1,7 +1,6 @@
 # coding=utf-8
 
 from ..__init__ import _
-from ..__init__ import app_ws_requester
 
 from ..useful import xml_utils
 from ..useful import utils
@@ -11,7 +10,7 @@ from ..validations import validation_status
 
 class DOIValidator(object):
 
-    def __init__(self):
+    def __init__(self, app_ws_requester):
         self.ws_doi = ws_doi.DOIWebServicesRequester(app_ws_requester)
 
     def validate(self, article):

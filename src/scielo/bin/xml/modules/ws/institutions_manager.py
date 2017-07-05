@@ -10,14 +10,6 @@ class InstitutionsManager(object):
         self.local_institutions_manager = institutions_db.InstitutionsDBManager()
         self.ws = ws_institutions.Wayta(app_ws_requester)
 
-    def __new__(self):
-        if not hasattr(self, 'instance'):
-            self.instance = super(InstitutionsManager, self).__new__(self)
-        return self.instance
-
-    def load(self):
-        pass
-
     def search_institutions(self, orgname, city, state, country_code, country_name, exact_country=None):
         results = self.local_institutions_manager.get_institutions(orgname, city, state, country_code, country_name)
         results += self.search_at_wayta(orgname, country_name, exact_country, [city, state])
