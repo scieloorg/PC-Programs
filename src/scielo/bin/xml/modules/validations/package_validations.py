@@ -350,7 +350,7 @@ class ArticleValidations(object):
         return html_reports.HideAndShowBlock(block_parent_id, _blocks)
 
 
-class ArticlesValidator(object):
+class PkgValidator(object):
 
     def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation, app_institutions_manager, doi_validator):
         self.registered_issue_data = registered_issue_data
@@ -365,31 +365,37 @@ class ArticlesValidator(object):
         self.article_validator = ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
 
     def validate(self, articles, outputs, pkgfiles):
-        #FIXME
-        articles_merger = merged.ArticlesMerger(self.registered_issue_data.registered_articles, articles)
-        articles_merger.merge()
-        merged_articles_data = MergedArticlesData(articles_merger.merged_articles, self.is_db_generation)
-        articles_validations_reports.merged_articles_reports = MergedArticlesReports(merged_articles_data, articles_merger.merging_result)
-
+        merged_articles_reports = None
+        pkg_validations = self.validate_package(articles, outputs, pkgfiles)
         utils.display_message(_('Validate package ({n} files)').format(n=len(articles)))
         if len(self.registered_issue_data.registered_articles) > 0:
             utils.display_message(_('Previously registered: ({n} files)').format(n=len(self.registered_issue_data.registered_articles)))
 
+        merged_articles_reports = self.validate_merge(articles, outputs, pkgfiles)
+
+        reports = ArticlesValidationsReports(pkg_validations, self.is_xml_generation, self.is_db_generation)
+        reports.consistency_validations = ValidationsResult()
+        reports.consistency_validations.message = ''
+        if self.registered_issue_data.issue_error_msg is not None:
+            reports.consistency_validations.message = self.registered_issue_data.issue_error_msg
+        reports.consistency_validations.message += merged_articles_reports.report_data_consistency
+        return reports
+
+    def validate_package(self, articles, outputs, pkgfiles):
         results = {}
         for name, article in articles.items():
             utils.display_message(_('Validate {name}').format(name=name))
             results[name] = self.article_validator.validate(article, outputs[name], pkgfiles[name])
-        #FIXME
-        articles_validations_reports = ArticlesValidationsReports(articles_validations, self.is_xml_generation, self.is_db_generation)
+        return results
 
-        articles_validations_reports.consistency_validations = ValidationsResult()
-        articles_validations_reports.consistency_validations.message = articles_validations_reports.merged_articles_reports.report_data_consistency
-        if self.registered_issue_data.issue_error_msg is not None:
-            articles_validations_reports.consistency_validations.message = self.registered_issue_data.issue_error_msg + articles_validations_reports.consistency_validations.message
-
-        articles_validations_reports.articles_validations = results
-
-        return articles_validations_reports
+    def validate_merge(self, articles, outputs, pkgfiles):
+        if len(self.registered_issue_data.registered_articles) > 0:
+            utils.display_message(_('Previously registered: ({n} files)').format(n=len(self.registered_issue_data.registered_articles)))
+        articles_merger = merged.ArticlesMerger(self.registered_issue_data.registered_articles, articles)
+        articles_merger.merge()
+        merged_articles_data = merged.MergedArticlesData(articles_merger.merged_articles, self.is_db_generation)
+        merged_articles_reports = merged.MergedArticlesReports(merged_articles_data, articles_merger.merging_result)
+        return merged_articles_reports
 
 
 class ArticlesValidationsReports(object):
@@ -964,59 +970,6 @@ class ReportsMaker(object):
         for o, r in zip(origin, replac):
             content = content.replace(o, r)
         return content + self.footnote
-
-
-class ArticlesComparison(object):
-
-    def __init__(self, article1, article2):
-        self.article1 = article1
-        self.article2 = article2
-
-    def _evaluate_articles_similarity(self):
-        relaxed_labels = [_('titles'), _('authors')]
-        relaxed_data = []
-        relaxed_data.append((self.article1.textual_titles, self.article2.textual_titles))
-        relaxed_data.append((article_reports.display_authors(self.article1.article_contrib_items, '; '), article_reports.display_authors(self.article2.article_contrib_items, '; ')))
-
-        if not any([self.article1.textual_titles, self.article2.textual_titles, self.article1.textual_contrib_surnames, self.article2.textual_contrib_surnames]):
-            if self.article1.body_words is not None and self.article2.body_words is not None:
-                relaxed_labels.append(_('body'))
-                relaxed_data.append((self.article1.body_words[0:200], self.article2.body_words[0:200]))
-
-        exact_labels = [_('order'), _('prefix'), _('doi')]
-        exact_data = []
-        exact_data.append((self.article1.order, self.article2.order))
-        exact_data.append((self.article1.prefix, self.article2.prefix))
-        exact_data.append((self.article1.doi, self.article2.doi))
-        exact_data.extend(relaxed_data)
-        exact_labels.extend(relaxed_labels)
-
-        self.exact_comparison_result = [(label, items) for label, items in zip(exact_labels, exact_data) if not items[0] == items[1]]
-        self.relaxed_comparison_result = [(label, items) for label, items in zip(relaxed_labels, relaxed_data) if not utils.is_similar(items[0], items[1])]
-
-    @property
-    def articles_similarity_result(self):
-        self._evaluate_articles_similarity()
-        status = validation_status.STATUS_BLOCKING_ERROR
-        if len(self.exact_comparison_result) == 0:
-            status = validation_status.STATUS_INFO
-        elif len(self.exact_comparison_result) == 1 and len(self.relaxed_comparison_result) in [0, 1]:
-            status = validation_status.STATUS_WARNING
-        return status
-
-    @property
-    def are_similar(self):
-        return self.articles_similarity_result in [validation_status.STATUS_INFO, validation_status.STATUS_WARNING]
-
-    def display_articles_differences(self):
-        status = self.articles_similarity_result
-        comparison_result = self.exact_comparison_result
-        msg = []
-        if len(comparison_result) > 0:
-            msg.append(html_reports.p_message(status))
-            for label, differences in comparison_result:
-                msg.append(html_reports.tag('p', differences[0] + '&#160;=>&#160;' + differences[1]))
-        return ''.join(msg)
 
 
 def extract_report_core(content):

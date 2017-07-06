@@ -338,7 +338,7 @@ class PkgProcessor(object):
         return (scilista_items, conversion.xc_status, statistics_display, reports.report_location)
 
     def validate_package(self, pkg, registered_issue_data):
-        validator = package_validations.ArticlesValidator(
+        validator = package_validations.PkgValidator(
             self.version,
             registered_issue_data,
             pkg.pkgissuedata,

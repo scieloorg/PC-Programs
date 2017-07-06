@@ -648,3 +648,56 @@ def article_history(articles):
                 text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
         r.append(html_reports.tag('div', ''.join(text), 'hist-' + status))
     return '<hr/>'.join(r)
+
+
+class ArticlesComparison(object):
+
+    def __init__(self, article1, article2):
+        self.article1 = article1
+        self.article2 = article2
+
+    def _evaluate_articles_similarity(self):
+        relaxed_labels = [_('titles'), _('authors')]
+        relaxed_data = []
+        relaxed_data.append((self.article1.textual_titles, self.article2.textual_titles))
+        relaxed_data.append((display_authors(self.article1.article_contrib_items, '; '), display_authors(self.article2.article_contrib_items, '; ')))
+
+        if not any([self.article1.textual_titles, self.article2.textual_titles, self.article1.textual_contrib_surnames, self.article2.textual_contrib_surnames]):
+            if self.article1.body_words is not None and self.article2.body_words is not None:
+                relaxed_labels.append(_('body'))
+                relaxed_data.append((self.article1.body_words[0:200], self.article2.body_words[0:200]))
+
+        exact_labels = [_('order'), _('prefix'), _('doi')]
+        exact_data = []
+        exact_data.append((self.article1.order, self.article2.order))
+        exact_data.append((self.article1.prefix, self.article2.prefix))
+        exact_data.append((self.article1.doi, self.article2.doi))
+        exact_data.extend(relaxed_data)
+        exact_labels.extend(relaxed_labels)
+
+        self.exact_comparison_result = [(label, items) for label, items in zip(exact_labels, exact_data) if not items[0] == items[1]]
+        self.relaxed_comparison_result = [(label, items) for label, items in zip(relaxed_labels, relaxed_data) if not utils.is_similar(items[0], items[1])]
+
+    @property
+    def articles_similarity_result(self):
+        self._evaluate_articles_similarity()
+        status = validation_status.STATUS_BLOCKING_ERROR
+        if len(self.exact_comparison_result) == 0:
+            status = validation_status.STATUS_INFO
+        elif len(self.exact_comparison_result) == 1 and len(self.relaxed_comparison_result) in [0, 1]:
+            status = validation_status.STATUS_WARNING
+        return status
+
+    @property
+    def are_similar(self):
+        return self.articles_similarity_result in [validation_status.STATUS_INFO, validation_status.STATUS_WARNING]
+
+    def display_articles_differences(self):
+        status = self.articles_similarity_result
+        comparison_result = self.exact_comparison_result
+        msg = []
+        if len(comparison_result) > 0:
+            msg.append(html_reports.p_message(status))
+            for label, differences in comparison_result:
+                msg.append(html_reports.tag('p', differences[0] + '&#160;=>&#160;' + differences[1]))
+        return ''.join(msg)

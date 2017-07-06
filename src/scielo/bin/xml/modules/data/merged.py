@@ -2,6 +2,7 @@
 
 from ..db import registered
 from ..validations import validation_status
+from ..useful import article_data_reports
 
 
 class MergedArticlesData(object):
@@ -127,6 +128,22 @@ class ArticlesMerger(object):
         self.merging_result = MergingResult()
 
     @property
+    def pkg_articles_by_order_and_name(self):
+        return {a.order + name: name for name, a in self.articles.items()}
+
+    @property
+    def registered_articles_by_order_and_name(self):
+        return {a.order + name: name for name, a in self.registered_articles.items()}
+
+    @property
+    def pkg_articles_by_order(self):
+        return {a.order: name for name, a in self.articles.items()}
+
+    @property
+    def registered_articles_by_order(self):
+        return {a.order: name for name, a in self.registered_articles.items()}
+
+    @property
     def merged_articles(self):
         return self._merged_articles
 
@@ -139,10 +156,59 @@ class ArticlesMerger(object):
         return self.articles
 
     def merge(self):
-        self.analyze_pkg()
-        self.update_articles()
+        results, exclusions = self.analyze_pkg_articles()
+        status_conflicts, pkg_conflicts, pkg_name_changes, pkg_order_changes = solve_conflicts(results)
+        merged_articles = {}
 
-    def analyze_pkg(self):
+
+    def analyze_pkg_articles(self):
+        results = {}
+        exclusions = []
+        for k, a_name in self.pkg_articles_by_order_and_name.items():
+            registered_name = self.registered_articles_by_order_and_name.get(k)
+            if registered_name is not None:
+                article_comparison = article_data_reports.ArticlesComparison(self.registered_articles.get(a_name), self.articles.get(a_name))
+                if article_comparison.articles_similarity_result == validation_status.STATUS_BLOCKING_ERROR:
+                    status = 'conflicts'
+                elif self.articles[a_name].marked_to_delete:
+                    status = 'delete'
+                    exclusions.append(a_name)
+                else:
+                    status = 'update'
+            else:
+                status = 'check'
+            if status not in results.keys():
+                results[status] = []
+            results[status].append(a_name)
+        return results, exclusions
+
+    def solve_conflicts(self, results):
+        pkg_conflicts = {}
+        pkg_name_changes = {}
+        pkg_order_changes = {}
+        status_conflicts = []
+        for status, names in results.items():
+            if status in ['conflicts', 'check']:
+                for name in names:
+                    article = self.articles.get(name)
+                    action, old_name, conflicts = self.analyze_pkg_article(name, article)
+                    if conflicts is not None:
+                        conflicts['package'] = article
+                        pkg_conflicts[name] = conflicts
+                        status_conflicts.append(name)
+                    if old_name is not None:
+                        pkg_name_changes[old_name] = name
+                    if name in self.registered_articles.keys():
+                        if article.order != self.registered_articles[name].order:
+                            pkg_order_changes[name] = (self.registered_articles[name].order, article.order)
+        return status_conflicts, pkg_conflicts, pkg_name_changes, pkg_order_changes
+
+
+    def old_merge(self):
+        self.old_analyze_pkg()
+        self.old_update_articles()
+
+    def old_analyze_pkg(self):
         for name, article in self.articles.items():
             action, old_name, conflicts = self.analyze_pkg_article(name, article)
             if conflicts is not None:
@@ -163,7 +229,7 @@ class ArticlesMerger(object):
         action, old_name, conflicts = self.registered_articles.analyze_registered_articles(name, registered_titaut, registered_name, registered_order)
         return (action, old_name, conflicts)
 
-    def update_articles(self):
+    def old_update_articles(self):
         self.merging_result.history_items = {}
         # starts history with registered articles data
         self.merging_result.history_items = {name: [('registered article', article)] for name, article in self.registered_articles.items()}
