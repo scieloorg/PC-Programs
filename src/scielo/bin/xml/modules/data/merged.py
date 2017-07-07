@@ -5,6 +5,12 @@ from ..validations import validation_status
 from ..useful import article_data_reports
 
 
+ACTION_DELETE = 'delete'
+ACTION_SOLVE_TITAUT_CONFLICTS = 'TITAUT_CONFLICTS'
+ACTION_UPDATE = 'update'
+ACTION_CHECK_ORDER_AND_NAME = 'CHECK_ORDER_AND_NAME'
+
+
 class MergedArticlesData(object):
 
     def __init__(self, merged_articles, is_db_generation):
@@ -122,7 +128,6 @@ class MergingResult(object):
 class ArticlesMerger(object):
 
     def __init__(self, registered_articles, articles):
-        self._merged_articles = registered_articles.copy()
         self.registered_articles = registered.RegisteredArticles(registered_articles)
         self.articles = articles
         self.merging_result = MergingResult()
@@ -137,7 +142,10 @@ class ArticlesMerger(object):
 
     @property
     def pkg_articles_by_order(self):
-        return {a.order: name for name, a in self.articles.items()}
+        r = {k: [] for k in self.articles.keys()}
+        for name, a in self.articles.items():
+            r[name].append(a)
+        return r
 
     @property
     def registered_articles_by_order(self):
@@ -156,53 +164,101 @@ class ArticlesMerger(object):
         return self.articles
 
     def merge(self):
-        results, exclusions = self.analyze_pkg_articles()
-        status_conflicts, pkg_conflicts, pkg_name_changes, pkg_order_changes = solve_conflicts(results)
-        merged_articles = {}
+        results = self.analyze_pkg_articles()
+        merged_articles = self.registered_articles.copy()
+        for name in results.get(ACTION_DELETE, []):
+            del merged_articles[name]
+        merged_articles.update({name: self.articles.get(name) for name in results.get(ACTION_UPDATE)})
 
+        solved, conflicts = self.evaluate_titaut_conflicts(results.get(ACTION_SOLVE_TITAUT_CONFLICTS))
+        for name in solved:
+            merged_articles[name] = self.articles[name]
+
+        solved2, conflicts2 = self.evaluate_check_order_and_name(results.get(ACTION_CHECK_ORDER_AND_NAME))
+        for name in solved2:
+            merged_articles[name] = self.articles[name]
 
     def analyze_pkg_articles(self):
         results = {}
-        exclusions = []
         for k, a_name in self.pkg_articles_by_order_and_name.items():
             registered_name = self.registered_articles_by_order_and_name.get(k)
             if registered_name is not None:
                 article_comparison = article_data_reports.ArticlesComparison(self.registered_articles.get(a_name), self.articles.get(a_name))
                 if article_comparison.articles_similarity_result == validation_status.STATUS_BLOCKING_ERROR:
-                    status = 'conflicts'
+                    status = ACTION_SOLVE_TITAUT_CONFLICTS
                 elif self.articles[a_name].marked_to_delete:
-                    status = 'delete'
-                    exclusions.append(a_name)
+                    status = ACTION_DELETE
                 else:
-                    status = 'update'
+                    status = ACTION_UPDATE
             else:
-                status = 'check'
+                status = ACTION_CHECK_ORDER_AND_NAME
             if status not in results.keys():
                 results[status] = []
             results[status].append(a_name)
-        return results, exclusions
+        return results
 
-    def solve_conflicts(self, results):
-        pkg_conflicts = {}
-        pkg_name_changes = {}
-        pkg_order_changes = {}
-        status_conflicts = []
-        for status, names in results.items():
-            if status in ['conflicts', 'check']:
-                for name in names:
-                    article = self.articles.get(name)
-                    action, old_name, conflicts = self.analyze_pkg_article(name, article)
-                    if conflicts is not None:
-                        conflicts['package'] = article
-                        pkg_conflicts[name] = conflicts
-                        status_conflicts.append(name)
-                    if old_name is not None:
-                        pkg_name_changes[old_name] = name
-                    if name in self.registered_articles.keys():
-                        if article.order != self.registered_articles[name].order:
-                            pkg_order_changes[name] = (self.registered_articles[name].order, article.order)
-        return status_conflicts, pkg_conflicts, pkg_name_changes, pkg_order_changes
+    def evaluate_titaut_conflicts(self, names):
+        solved = []
+        conflicts = {}
+        if names is not None:
+            for name in names:
+                similars = self.registered_articles.registered_titles_and_authors(self.articles.get(name))
+                if similars == 0:
+                    solved.append(name)
+                elif similars == 1 and similars[0] == name:
+                    solved.append(name)
+                else:
+                    conflicts[name] = similars
+        return solved, conflicts
 
+    def evaluate_check_order_and_name(self, names):
+        solved = []
+        conflicts = {}
+        if names is not None:
+            for name in names:
+                order = self.articles.get(name).order
+                found = [name for name, a in self.registered_articles.items() if a.order == order]
+                found_by_order = found[0] if len(found) == 1 else None
+                found_by_name = name if self.registered_articles.get(name) is not None else None
+                if found_by_name is None and found_by_order is None:
+                    solved.append(name)
+                elif all([found_by_name, found_by_order]):
+                    if found_by_name != found_by_order:
+                elif found_by_name is not None:
+
+                elif found_by_order is not None:
+                    
+                    self.identify_order_and_name_conflicts(name, found_by_order, found_by_name)
+        return solved, conflicts
+
+    def identify_order_and_name_conflicts(self, name, found_by_order, found_by_name):
+        similars = []
+        for order_name in found_by_order:
+            article_comparison = article_data_reports.ArticlesComparison(
+                    self.registered_articles.get(order_name),
+                    self.articles.get(name),
+                    ign_name=True)
+            if article_comparison.are_similar:
+                similars.append(order_name)
+        if len(similars) == 0:
+            conflicts.append()
+
+
+
+    def analyze_pkg_article(self, name, pkg_article):
+        registered_titaut, registered_name, registered_order = self.registered_articles.search_articles(name, pkg_article)
+        action, old_name, conflicts = self.registered_articles.analyze_registered_articles(name, registered_titaut, registered_name, registered_order)
+        return (action, old_name, conflicts)
+
+    @property
+    def excluded_orders(self):
+        #excluded_orders
+        items = {}
+        orders = [article.order for article in self.merged_articles.values()]
+        for name, article in self.registered_articles.items():
+            if not article.order in orders:
+                items[name] = article.order
+        return {name: article.order for name, article in self.registered_articles.items() if not article.order in orders}
 
     def old_merge(self):
         self.old_analyze_pkg()
@@ -223,11 +279,6 @@ class ArticlesMerger(object):
             if name in self.registered_articles.keys():
                 if article.order != self.registered_articles[name].order:
                     self.merging_result.order_changes[name] = (self.registered_articles[name].order, article.order)
-
-    def analyze_pkg_article(self, name, pkg_article):
-        registered_titaut, registered_name, registered_order = self.registered_articles.search_articles(name, pkg_article)
-        action, old_name, conflicts = self.registered_articles.analyze_registered_articles(name, registered_titaut, registered_name, registered_order)
-        return (action, old_name, conflicts)
 
     def old_update_articles(self):
         self.merging_result.history_items = {}
@@ -266,12 +317,3 @@ class ArticlesMerger(object):
         self.merging_result.total_to_convert = self.total_to_convert
         self.merging_result.articles_to_convert = self.articles_to_convert
 
-    @property
-    def excluded_orders(self):
-        #excluded_orders
-        items = {}
-        orders = [article.order for article in self.merged_articles.values()]
-        for name, article in self.registered_articles.items():
-            if not article.order in orders:
-                items[name] = article.order
-        return {name: article.order for name, article in self.registered_articles.items() if not article.order in orders}

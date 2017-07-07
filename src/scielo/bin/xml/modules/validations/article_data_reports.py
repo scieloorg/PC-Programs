@@ -652,9 +652,11 @@ def article_history(articles):
 
 class ArticlesComparison(object):
 
-    def __init__(self, article1, article2):
+    def __init__(self, article1, article2, ign_name=False, ign_order=False):
         self.article1 = article1
         self.article2 = article2
+        self.ign_name = ign_name
+        self.ign_order = ign_order
 
     def _evaluate_articles_similarity(self):
         relaxed_labels = [_('titles'), _('authors')]
@@ -667,14 +669,17 @@ class ArticlesComparison(object):
                 relaxed_labels.append(_('body'))
                 relaxed_data.append((self.article1.body_words[0:200], self.article2.body_words[0:200]))
 
-        exact_labels = [_('order'), _('prefix'), _('doi')]
+        exact_labels = [_('doi')]
         exact_data = []
-        exact_data.append((self.article1.order, self.article2.order))
-        exact_data.append((self.article1.prefix, self.article2.prefix))
+        if self.ign_order is False:
+            exact_labels.append(_('order'))
+            exact_data.append((self.article1.order, self.article2.order))
+        if self.ign_name is False:
+            exact_labels.append(_('name'))
+            exact_data.append((self.article1.prefix, self.article2.prefix))
         exact_data.append((self.article1.doi, self.article2.doi))
         exact_data.extend(relaxed_data)
         exact_labels.extend(relaxed_labels)
-
         self.exact_comparison_result = [(label, items) for label, items in zip(exact_labels, exact_data) if not items[0] == items[1]]
         self.relaxed_comparison_result = [(label, items) for label, items in zip(relaxed_labels, relaxed_data) if not utils.is_similar(items[0], items[1])]
 
