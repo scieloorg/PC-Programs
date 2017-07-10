@@ -10,7 +10,10 @@ from ..useful import fs_utils
 from ..reports import html_reports
 from ..validations import validation_status
 from ..validations import article_data_reports
-from ..validations import package_validations
+from ..validations import pkg_articles_validations
+from ..validations import validations as validations_module
+from ..data import merged
+from ..validations import merged_articles_validations
 from ..doi_validations import doi_validations
 from ..ws import institutions_manager
 from ..data import package
@@ -100,7 +103,7 @@ class ArticlesConversion(object):
             self.conversion_status.update(self.db.db_conversion_status)
 
             for name, message in self.db.articles_conversion_messages.items():
-                self.articles_conversion_validations[name] = package_validations.ValidationsResult()
+                self.articles_conversion_validations[name] = validations_module.ValidationsResult()
                 self.articles_conversion_validations[name].message = message
 
             if len(_scilista_items) > 0:
@@ -157,7 +160,7 @@ class ArticlesConversion(object):
             package = [item for item in hist if item[0] == 'package']
             diff = ''
             if len(registered) == 1 and len(package) == 1:
-                comparison = package_validations.ArticlesComparison(registered[0][1], package[0][1])
+                comparison = article_data_reports.ArticlesComparison(registered[0][1], package[0][1])
                 diff = comparison.display_articles_differences() + '<hr/>'
             values.append(article_data_reports.display_article_data_in_toc(hist[-1][1]))
             values.append(article_data_reports.article_history(registered))
@@ -317,7 +320,7 @@ class PkgProcessor(object):
         pkg = self.package(input_xml_list)
         registered_issue_data = registered.RegisteredIssueData(self.db_manager, self.journals_list)
         registered_issue_data.get_data(pkg.pkgissuedata)
-        pkg_validations = self.validate_package(pkg, registered_issue_data)
+        pkg_validations = self.validate_articles(pkg, registered_issue_data)
         self.report_result(pkg, pkg_validations, conversion=None)
         self.make_pmc_package(pkg, registered_issue_data, GENERATE_PMC)
         self.zip(pkg)
@@ -326,7 +329,7 @@ class PkgProcessor(object):
         pkg = self.package(input_xml_list)
         registered_issue_data = registered.RegisteredIssueData(self.db_manager, self.journals_list)
         registered_issue_data.get_data(pkg.pkgissuedata)
-        pkg_validations = self.validate_package(pkg, registered_issue_data)
+        pkg_validations = self.validate_articles(pkg, registered_issue_data)
         conversion = ArticlesConversion(registered_issue_data, pkg, pkg_validations, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
         scilista_items = conversion.convert()
 
@@ -337,24 +340,46 @@ class PkgProcessor(object):
 
         return (scilista_items, conversion.xc_status, statistics_display, reports.report_location)
 
-    def validate_package(self, pkg, registered_issue_data):
-        validator = package_validations.PkgValidator(
+    def validate_pkg_articles(self, pkg, registered_issue_data):
+        validator = pkg_articles_validations.PkgArticlesValidator(
             self.version,
             registered_issue_data,
             pkg.pkgissuedata,
             self.is_xml_generation,
             self.app_institutions_manager,
             self.doi_validator)
-        return validator.validate(pkg.articles, pkg.outputs, pkg.package_folder.pkgfiles_items)
+        validations = validator.validate(
+            pkg.articles,
+            pkg.outputs,
+            pkg.package_folder.pkgfiles_items)
+        return pkg_articles_validations.PkgArticlesValidationsReports(validations, registered_issue_data.articles_db_manager is not None)
+
+    def validate_merged_articles(self, pkg, registered_issue_data):
+        if len(registered_issue_data.registered_articles) > 0:
+            utils.display_message(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
+        articles_merge = merged.ArticlesMerge(
+            registered_issue_data.registered_articles,
+            pkg.articles)
+        return merged_articles_validations.MergedArticlesReports(articles_merge, registered_issue_data)
+
+    def validate_articles(self, pkg, registered_issue_data):
+        pkg_articles_validations_reports = self.validate_pkg_articles(pkg, registered_issue_data)
+        merged_articles_reports = self.validate_merged_articles(pkg, registered_issue_data)
+
+        return merged.IssueArticlesValidationsReports(
+            pkg_articles_validations_reports,
+            merged_articles_reports,
+            self.is_xml_generation,
+            registered_issue_data.articles_db_manager is not None)
 
     def report_result(self, pkg, pkg_validations, conversion=None):
         serial_path = None if conversion is None else conversion.registered_issue_data.articles_db_manager.serial_path
 
         files_final_location = workarea.FilesFinalLocation(pkg.wk.scielo_package_path, pkg.pkgissuedata.acron, pkg.pkgissuedata.issue_label, self.config.web_app_path, self.config.web_app_site)
-        pkgreports = package_validations.PackageReports(pkg.package_folder)
-        articles_data_reports = package_validations.ArticlesDataReports(pkg.articles)
+        pkgreports = pkg_articles_validations.PackageReports(pkg.package_folder)
+        pkg_articles_data_report = pkg_articles_validations.PkgArticlesDataReports(pkg.articles)
 
-        reports = package_validations.ReportsMaker(pkgreports, articles_data_reports, pkg_validations, files_final_location, xpm_version(), conversion)
+        reports = validations.ReportsMaker(pkgreports, pkg_articles_data_report, pkg_validations, files_final_location, xpm_version(), conversion)
         if not self.is_xml_generation:
             reports.save_report(self.DISPLAY_REPORT and self.config.interative_mode)
         return reports
