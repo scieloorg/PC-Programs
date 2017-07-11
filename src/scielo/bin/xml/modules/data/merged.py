@@ -166,12 +166,12 @@ class ArticlesMerge(object):
     @property
     def merged_articles(self):
         # registered
-        self.history = {name: [HISTORY_REGISTERED] for name in self.registered_articles.keys()}
+        self.history_items = {name: [HISTORY_REGISTERED] for name in self.registered_articles.keys()}
         # package
         for name, a in self.articles.items():
-            if name not in self.history.keys():
-                self.history[name] = []
-            self.history[name] = HISTORY_PACKAGE
+            if name not in self.history_items.keys():
+                self.history_items[name] = []
+            self.history_items[name] = HISTORY_PACKAGE
 
         # analyze package
         results = self.analyze_pkg_articles()
@@ -180,27 +180,27 @@ class ArticlesMerge(object):
         # delete
         for name in results.get(ACTION_DELETE, []):
             del merged[name]
-            self.history[name].append(HISTORY_DELETED)
+            self.history_items[name].append(HISTORY_DELETED)
 
         # update
         merged.update({name: self.articles.get(name) for name in results.get(ACTION_UPDATE)})
         for name in results.get(ACTION_UPDATE):
-            self.history[name].append(HISTORY_UPDATED)
+            self.history_items[name].append(HISTORY_UPDATED)
 
         # found titaut conflicts
         for name in results.get(ACTION_SOLVE_TITAUT_CONFLICTS):
-            self.history[name].append(HISTORY_TITAUT_CONFLICTS)
+            self.history_items[name].append(HISTORY_TITAUT_CONFLICTS)
 
         # solve titaut conflicts
         solved = self.evaluate_titaut_conflicts(
             results.get(ACTION_SOLVE_TITAUT_CONFLICTS))
         for name in solved:
             merged[name] = self.articles[name]
-            self.history[name].append(HISTORY_UPDATED)
+            self.history_items[name].append(HISTORY_UPDATED)
 
         # need to check name/order
         for name in results.get(ACTION_CHECK_ORDER_AND_NAME):
-            self.history[name].append(HISTORY_CHECK_ORDER_AND_NAME)
+            self.history_items[name].append(HISTORY_CHECK_ORDER_AND_NAME)
 
         # solve name/order
         solved = self.evaluate_check_order_and_name(
@@ -209,13 +209,13 @@ class ArticlesMerge(object):
             )
         for name in solved:
             merged[name] = self.articles[name]
-            self.history[name].append(HISTORY_UPDATED)
+            self.history_items[name].append(HISTORY_UPDATED)
 
         # delete name changed
         for name in self.name_changes.values():
             del merged[name]
 
-        self.excluded_orders = results.get(ACTION_DELETE, [])
+        self.excluded_orders = [self.articles[name].order for name in results.get(ACTION_DELETE, [])]
         self.excluded_orders.extend([previous for previous, current in self.order_changes.values()])
         return merged
 
@@ -265,7 +265,7 @@ class ArticlesMerge(object):
                 if order in self.pkg_order_conflicts.keys():
                     # order conflicts; duplicity of order in pkg
                     self.name_order_conflicts[name] = pkg_order_conflicts[order]
-                    self.history[name].append(HISTORY_PKG_ORDER_CONFLICTS)
+                    self.history_items[name].append(HISTORY_PKG_ORDER_CONFLICTS)
                 else:
                     # valid order
                     found = [name for name, a in self.registered_articles.items() if a.order == order]
@@ -277,35 +277,35 @@ class ArticlesMerge(object):
                         found_by_order = None
                     if found_by_name is None and found_by_order is None:
                         solved.append(name)
-                        self.history[name].append(HISTORY_CREATED)
+                        self.history_items[name].append(HISTORY_CREATED)
                     elif all([found_by_name, found_by_order]):
                         # found both in different records
                         self.name_order_conflicts[name] = [found_by_name, found_by_order]
-                        self.history[name].append(HISTORY_ORDER_AND_NAME_CONFLICTS)
+                        self.history_items[name].append(HISTORY_ORDER_AND_NAME_CONFLICTS)
                     elif found_by_name is not None:
                         # order not found
                         if self.are_similar(found_by_name, name, False, True):
                             # order changed
                             solved.append(name)
                             self.order_changes[name] = (self.registered_articles.get(name).order, order)
-                            self.history[name].append(HISTORY_ORDER_CHANGED)
+                            self.history_items[name].append(HISTORY_ORDER_CHANGED)
                         else:
                             # only name is identical
                             self.name_order_conflicts[name] = [found_by_name]
-                            self.history[name].append(HISTORY_UNMATCHED)
+                            self.history_items[name].append(HISTORY_UNMATCHED)
                     elif found_by_order is not None:
                         # name not found
                         if self.are_similar(found_by_order, name, True, False):
                             # name changed
                             solved.append(name)
                             self.name_changes[name] = found_by_order
-                            self.history[name].append(HISTORY_NAME_CHANGED)
-                            self.history[name].append(HISTORY_REPLACE + ' ' + found_by_order)
-                            self.history[found_by_order].append(HISTORY_REPLACED_BY + ' ' + name)
+                            self.history_items[name].append(HISTORY_NAME_CHANGED)
+                            self.history_items[name].append(HISTORY_REPLACE + ' ' + found_by_order)
+                            self.history_items[found_by_order].append(HISTORY_REPLACED_BY + ' ' + name)
                         else:
                             # only order is identical
                             self.name_order_conflicts[name] = [found_by_order]
-                            self.history[name].append(HISTORY_UNMATCHED)
+                            self.history_items[name].append(HISTORY_UNMATCHED)
         return solved
 
     def are_similar(self, registered_name, pkg_name, ign_name, ign_order):

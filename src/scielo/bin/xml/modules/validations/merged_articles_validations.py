@@ -1,53 +1,34 @@
 # coding=utf-8
 
 from ..__init__ import _
-from ..useful import utils
-from ..reports import html_reports
 from . import validation_status
 from . import article_data_reports
-from ..data import merged
 from . import validations as validations_module
+from ..reports import html_reports
+from ..data import merged
 
 
 class IssueArticlesValidationsReports(object):
 
-    def __init__(self, pkg_articles_validations_reports, merged_articles_reports, is_xml_generation=False, is_db_generation=False):
-        self.consistency_validations = None
-        self.pkg_articles_validations_reports = pkg_articles_validations_reports
+    def __init__(self, pkg_validations_reports, merged_articles_reports, is_xml_generation=False):
+        self.pkg_validations_reports = pkg_validations_reports
         self.merged_articles_reports = merged_articles_reports
         self.is_xml_generation = is_xml_generation
-        self.is_db_generation = is_db_generation
-
-    @property
-    def journal_issue_header_report(self):
-        common_data = ''
-        for label, values in self.merged_articles_reports.merged_articles_data.common_data.items():
-            if len(values.keys()) == 1:
-                common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
-            else:
-                common_data += html_reports.format_list(label + ':', 'ol', values.keys())
-        return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')
 
     @property
     def journal_and_issue_report(self):
         report = []
-        report.append(self.journal_issue_header_report)
+        report.append(self.merged_articles_reports.journal_issue_header_report)
         errors_only = not self.is_xml_generation
-        report.append(self.pkg_articles_validations_reports.pkg_journal_validations.report(errors_only))
-        report.append(self.pkg_articles_validations_reports.pkg_issue_validations.report(errors_only))
-
-        # FIXME
-        if self.merged_articles_reports.consistency_validations.total() > 0:
-            report.append(self.merged_articles_reports.consistency_validations.message)
-        if self.merged_articles_reports.validations.total() > 0:
-            report.append(html_reports.tag('h2', _('Data Conflicts Report')))
-            report.append(self.merged_articles_reports.validations.message)
+        report.append(self.pkg_validations_reports.pkg_journal_validations.report(errors_only))
+        report.append(self.pkg_validations_reports.pkg_issue_validations.report(errors_only))
+        report.append(self.merged_articles_reports.report)
         return ''.join(report)
 
     @property
     def blocking_errors(self):
-        # FIXME
-        return sum([self.merged_articles_reports.consistency_validations.blocking_errors, self.pkg_articles_validations_reports.pkg_issue_validations.blocking_errors, self.merged_articles_reports.validations.blocking_errors])
+        return sum([self.merged_articles_reports.validations.blocking_errors,
+            self.pkg_validations_reports.pkg_issue_validations.blocking_errors])
 
 
 class MergedArticlesReports(object):
@@ -58,23 +39,30 @@ class MergedArticlesReports(object):
         self.registered_issue_data = registered_issue_data
 
     @property
-    def report_data_consistency(self):
-        text = []
-        text += self.report_missing_required_data
-        text += self.report_conflicting_values
-        text += self.report_duplicated_values
-        text = html_reports.tag('div', ''.join(text), 'issue-messages')
-        text += self.report_page_values
-        return html_reports.tag('h2', _('Checking issue data consistency')) + text
+    def journal_issue_header_report(self):
+        common_data = ''
+        for label, values in self.merged_articles_data.common_data.items():
+            if len(values.keys()) == 1:
+                common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
+            else:
+                common_data += html_reports.format_list(label + ':', 'ol', values.keys())
+        return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')
 
     @property
-    def consistency_validations(self):
-        result = validations_module.ValidationsResult()
-        result.message = ''
+    def report_data_consistency(self):
+        text = ''
         if self.registered_issue_data.issue_error_msg is not None:
-            result.message = self.registered_issue_data.issue_error_msg
-        result.message += self.report_data_consistency
-        return result
+            text = self.registered_issue_data.issue_error_msg
+
+        reports = []
+        reports += self.report_missing_required_data
+        reports += self.report_conflicting_values
+        reports += self.report_duplicated_values
+
+        text += html_reports.tag('h2', _('Checking issue data consistency'))
+        text += html_reports.tag('div', ''.join(reports), 'issue-messages')
+        text += self.report_page_values
+        return text
 
     @property
     def report_missing_required_data(self):
@@ -181,7 +169,7 @@ class MergedArticlesReports(object):
                 merging_errors.append(html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels))
         return ''.join(merging_errors)
 
-    def display_order_conflicts(self):
+    def report_order_conflicts(self):
         r = []
         if len(self.articles_merge.pkg_order_conflicts) > 0:
             html_reports.tag('h2', _('Order conflicts'))
@@ -191,13 +179,7 @@ class MergedArticlesReports(object):
         return ''.join(r)
 
     @property
-    def validations(self):
-        v = validations_module.ValidationsResult()
-        v.message = ''.join([self.display_order_conflicts() + self.report_merging_conflicts()])
-        return v
-
-    @property
-    def names_changes_report(self):
+    def report_changed_names(self):
         r = []
         if len(self.articles_merge.name_changes) > 0:
             r.append(html_reports.tag('h3', _('Names changes')))
@@ -206,7 +188,7 @@ class MergedArticlesReports(object):
         return ''.join(r)
 
     @property
-    def orders_changes_report(self):
+    def report_changed_orders(self):
         r = []
         if len(self.articles_merge.order_changes) > 0:
             r.append(html_reports.tag('h3', _('Orders changes')))
@@ -219,10 +201,31 @@ class MergedArticlesReports(object):
         return ''.join(r)
 
     @property
-    def changes_report(self):
+    def report_changes(self):
         r = ''
-        r += self.orders_changes_report
-        r += self.names_changes_report
+        r += self.report_changed_orders
+        r += self.report_changed_names
         if len(r) > 0:
             r = html_reports.tag('h2', _('Changes Report')) + r
         return r
+
+    @property
+    def report_conflicts(self):
+        r = ''.join([self.report_order_conflicts() + self.report_merging_conflicts()])
+        if len(r) > 0:
+            return html_reports.tag('h2', _('Data Conflicts Report'))
+        return ''
+
+    @property
+    def validations(self):
+        v = validations_module.ValidationsResult()
+        v.message = self.report
+        return v
+
+    @property
+    def report(self):
+        r = []
+        r.append(self.report_data_consistency)
+        r.append(self.report_conflicts)
+        r.append(self.report_changes)
+        return ''.join(r)

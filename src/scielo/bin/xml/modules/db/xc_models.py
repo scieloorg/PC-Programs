@@ -743,8 +743,8 @@ class ArticlesManager(object):
         r.update(self.base_manager.registered_articles)
         return r
 
-    def exclude_articles(self, changed_orders, excluded_orders):
-        return self.base_manager.exclude_articles(changed_orders, excluded_orders)
+    def exclude_articles(self, excluded_orders):
+        return self.base_manager.exclude_articles(excluded_orders)
 
     def get_valid_aop(self, article):
         valid_aop, aop_status, messages = self.aop_db_manager.get_validated_aop(article)
@@ -996,16 +996,15 @@ class BaseManager(object):
         article_records = self.article_records(i_record, article, article_files)
         return self.create_article_id_file(article_records, article_files)
 
-    def exclude_articles(self, changed_orders, excluded_orders):
+    def exclude_articles(self, excluded_orders):
         messages = []
-        x = [item[0] for item in changed_orders.values()] + excluded_orders.values()
-        not_excluded_items = self.issue_files.delete_id_files(x)
-        if len(not_excluded_items) > 0:
-            if len(excluded_orders) > 0:
-                messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(excluded_orders)))
-            if len(changed_orders) > 0:
-                messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(changed_orders)))
-            messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item=', '.join(not_excluded_items))))
+        if len(excluded_orders) > 0:
+            not_excluded_items = self.issue_files.delete_id_files(excluded_orders)
+            if len(not_excluded_items) == 0:
+                messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('Excluded: ') + html_reports.format_html_data(excluded_orders)))
+            else:
+                messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Exclude: ') + html_reports.format_html_data(excluded_orders)))
+                messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item=', '.join(not_excluded_items))))
         return ''.join(messages)
 
     def finish_conversion(self, i_record):

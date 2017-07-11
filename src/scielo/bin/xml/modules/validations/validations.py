@@ -9,6 +9,7 @@ from ..useful import utils
 from ..reports import html_reports
 from . import validation_status
 from . import article_data_reports
+from . import pkg_articles_validations
 
 
 class ValidationsResultItems(dict):
@@ -136,10 +137,12 @@ class ValidationsFile(ValidationsResult):
 
 class ReportsMaker(object):
 
-    def __init__(self, pkg_reports, pkg_articles_data_report, articles_validations_reports, files_location, stage=None, xpm_version=None, conversion=None):
+    def __init__(self, pkg, articles_validations_reports, files_location, stage=None, xpm_version=None, conversion=None):
         self.files_final_location.result_path = None
-        self.pkg_reports = pkg_reports
-        self.pkg_articles_data_report = pkg_articles_data_report
+        self.pkg = pkg
+        self.pkgreports = pkg_articles_validations.PackageReports(pkg.package_folder)
+        self.pkg_articles_data_report = pkg_articles_validations.PkgArticlesDataReports(pkg.articles)
+
         self.articles_validations_reports = articles_validations_reports
         self.conversion = conversion
         self.xpm_version = xpm_version
@@ -168,30 +171,16 @@ class ReportsMaker(object):
     @property
     def report_components(self):
         components = {}
-        components['pkg-files'] = self.pkg_reports.xml_list
-        if self.files_final_location.result_path is not None:
-            components['pkg-files'] += self.processing_result_location
-
-        components['summary-report'] = self.pkg_reports.orphan_files_report + self.pkg_articles_data_report.invalid_xml_report
-        components['group-validations-report'] = self.pkg_reports.orphan_files_report + self.pkg_articles_data_report.invalid_xml_report
-        components['individual-validations-report'] = self.articles_validations_reports.detailed_report
-        components['aff-report'] = self.pkg_articles_data_report.articles_affiliations_report
-        components['dates-report'] = self.pkg_articles_data_report.articles_dates_report
-        components['references'] = (self.pkg_articles_data_report.references_overview_report +
-            self.pkg_articles_data_report.sources_overview_report)
-
-        if not self.articles_validations_reports.is_xml_generation:
-            components['group-validations-report'] += self.articles_validations_reports.journal_and_issue_report
-
-        if self.conversion is None:
-            components['website'] = toc_extended_report(self.pkg_articles_data_report.pkg_articles)
-        else:
-            components['website'] = self.conversion.conclusion_message + toc_extended_report(self.conversion.registered_articles)
-            if self.articles_validations_reports.registered_issue_data.issue_error_msg is not None:
-                components['group-validations-report'] += self.articles_validations_reports.registered_issue_data.issue_error_msg
-
-            #components['xc-validations'] = self.conversion.conclusion_message + self.conversion.articles_merger.changes_report + self.conversion.conversion_status_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
-            components['xc-validations'] = html_reports.tag('h3', _('Conversion Result')) + self.conversion.conclusion_message + self.articles_validations_reports.merged_articles_reports.changes_report + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
+        components['pkg-files'] = self.pkg_files
+        components['summary-report'] = self.summary_report
+        components['group-validations-report'] = self.group_validations_report
+        components['individual-validations-report'] = self.individual_validations_report
+        components['aff-report'] = self.aff_report
+        components['dates-report'] = self.dates_report
+        components['references'] = self.references
+        components['website'] = self.website_message
+        if self.conversion is not None:
+            components['xc-validations'] = self.xc_validations
 
         self.validations.message = html_reports.join_texts(components.values())
 
@@ -201,6 +190,53 @@ class ReportsMaker(object):
 
         components = {k: label_errors(v) for k, v in components.items() if v is not None}
         return components
+
+    @property
+    def pkg_files(self):
+        r = self.pkg_reports.xml_list
+        if self.files_final_location.result_path is not None:
+            r += self.processing_result_location
+        return r
+
+    @property
+    def summary_report(self):
+        return self.pkg_reports.orphan_files_report + self.pkg_articles_data_report.invalid_xml_report
+
+    @property
+    def group_validations_report(self):
+        r = self.pkg_reports.orphan_files_report + self.pkg_articles_data_report.invalid_xml_report
+        if not self.articles_validations_reports.is_xml_generation:
+            r += self.articles_validations_reports.journal_and_issue_report
+        if self.conversion is not None:
+            if self.articles_validations_reports.merged_articles_reports.registered_issue_data.issue_error_msg is not None:
+                r += self.articles_validations_reports.merged_articles_reports.registered_issue_data.issue_error_msg
+        return r
+
+    @property
+    def individual_validations_report(self):
+        return self.articles_validations_reports.pkg_validations_reports.detailed_report
+
+    @property
+    def aff_report(self):
+        return self.pkg_articles_data_report.articles_affiliations_report
+
+    @property
+    def dates_report(self):
+        return self.pkg_articles_data_report.articles_dates_report
+
+    @property
+    def references(self):
+        return self.pkg_articles_data_report.references_overview_report + self.pkg_articles_data_report.sources_overview_report
+
+    @property
+    def website_message(self):
+        if self.conversion is None:
+            return toc_extended_report(self.pkg.articles)
+        return self.conversion.conclusion_message + toc_extended_report(self.conversion.registered_articles)
+
+    @property
+    def xc_validations(self):
+        return html_reports.tag('h3', _('Conversion Result')) + self.conversion.conclusion_message + self.articles_validations_reports.merged_articles_reports.report_changes + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
 
     @property
     def footnote(self):
@@ -333,4 +369,3 @@ def toc_extended_report(articles):
                 values.append(article_data_reports.display_article_data_in_toc(article))
                 items.append(html_reports.label_values(labels, values))
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)
-
