@@ -7,11 +7,11 @@ def notuni2uni(content, encoding='utf-8'):
     if not isinstance(content, unicode):
         try:
             content = content.decode(encoding)
-        except:
-            try:
-                content = content.decode('iso-8859-1')
-            except Exception as e:
-                print(e)
+        except Exception as e:
+            #try:
+            #    content = content.decode('iso-8859-1')
+            #except Exception as e:
+            print('notuni2uni:', e)
     return content
 
 
@@ -37,15 +37,17 @@ def uni2notuni(content, encoding='utf-8', error_handler=None):
             try:
                 content = content.encode(encoding)
             except Exception as e:
-                if error_handler is not None:
+                try:
+                    content = content.encode(encoding, 'xmlcharrefreplace')
+                    print('xmlcharrefreplace')
+                except Exception as e:
                     try:
-                        content = content.encode(encoding, 'xmlcharrefreplace')
+                        content = content.encode(encoding, 'replace')
+                        print('replace')
                     except Exception as e:
                         try:
-                            content = content.encode(encoding, 'replace')
+                            content = content.encode(encoding, 'ignore')
+                            print('ignore')
                         except Exception as e:
-                            try:
-                                content = content.encode(encoding, 'ignore')
-                            except Exception as e:
-                                print(e)
+                            print('uni2notuni: ', e)
     return content

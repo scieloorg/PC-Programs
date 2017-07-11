@@ -20,8 +20,12 @@ class Package(object):
         return workarea.PackageFolder(self.wk.scielo_package_path, self.input_xml_list)
 
     @property
+    def articles_xml_content(self):
+        return {item.name: article.ArticleXMLContent(fs_utils.read_file(item.filename), item.previous_name, item.name) for item in self.package_folder.pkgfiles_items.values()}
+
+    @property
     def articles(self):
-        return {item.name: article.ArticleXMLContent(fs_utils.read_file(item.filename), item.previous_name, item.name).doc for item in self.package_folder.pkgfiles_items.values()}
+        return {name: item.doc for name, item in self.articles_xml_content.items()}
 
     @property
     def outputs(self):

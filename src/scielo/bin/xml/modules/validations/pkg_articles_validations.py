@@ -5,27 +5,7 @@ from ..useful import utils
 from ..reports import html_reports
 from ..data import attributes
 from . import validation_status
-from . import article_validations
-from ..pkg_processors import xml_versions
 from . import validations as validations_module
-
-
-class PkgArticlesValidator(object):
-
-    def __init__(self, version, registered_issue_data, pkgissuedata, is_xml_generation, app_institutions_manager, doi_validator):
-        xml_journal_data_validator = article_validations.XMLJournalDataValidator(pkgissuedata.journal_data)
-        xml_issue_data_validator = article_validations.XMLIssueDataValidator(registered_issue_data)
-        xml_structure_validator = article_validations.XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
-        xml_content_validator = article_validations.XMLContentValidator(pkgissuedata, registered_issue_data, is_xml_generation, app_institutions_manager, doi_validator)
-        self.article_validator = article_validations.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator)
-
-    def validate(self, articles, outputs, pkgfiles):
-        utils.display_message(_('Validate package ({n} files)').format(n=len(articles)))
-        results = {}
-        for name, article in articles.items():
-            utils.display_message(_('Validate {name}').format(name=name))
-            results[name] = self.article_validator.validate(article, outputs[name], pkgfiles[name])
-        return results
 
 
 class PkgArticlesValidationsReports(object):

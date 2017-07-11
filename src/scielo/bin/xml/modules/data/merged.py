@@ -2,7 +2,7 @@
 
 from ..db import registered
 from ..validations import validation_status
-from ..useful import article_data_reports
+from ..validations import article_data_reports
 
 
 ACTION_DELETE = 'delete'
@@ -66,7 +66,7 @@ class MergedArticlesData(object):
                 if label in self.IGNORE_NONE and value is None:
                     pass
                 else:
-                    if not value in values:
+                    if value not in values:
                         values[value] = []
                     values[value].append(xml_name)
 
@@ -157,7 +157,7 @@ class ArticlesMerge(object):
     @property
     def pkg_order_conflicts(self):
         # pkg order conflicts
-        pkg_orders = {a.order: [] for a in self.articles.values() if a.marked_to_delete is False}
+        pkg_orders = {a.order: [] for name, a in self.articles.items() if a.marked_to_delete is False}
         for name, a in self.articles.items():
             if not a.marked_to_delete:
                 pkg_orders[a.order].append(name)
@@ -171,7 +171,7 @@ class ArticlesMerge(object):
         for name, a in self.articles.items():
             if name not in self.history_items.keys():
                 self.history_items[name] = []
-            self.history_items[name] = HISTORY_PACKAGE
+            self.history_items[name].append(HISTORY_PACKAGE)
 
         # analyze package
         results = self.analyze_pkg_articles()
@@ -183,29 +183,29 @@ class ArticlesMerge(object):
             self.history_items[name].append(HISTORY_DELETED)
 
         # update
-        merged.update({name: self.articles.get(name) for name in results.get(ACTION_UPDATE)})
-        for name in results.get(ACTION_UPDATE):
+        merged.update({name: self.articles.get(name) for name in results.get(ACTION_UPDATE, [])})
+        for name in results.get(ACTION_UPDATE, []):
             self.history_items[name].append(HISTORY_UPDATED)
 
         # found titaut conflicts
-        for name in results.get(ACTION_SOLVE_TITAUT_CONFLICTS):
+        for name in results.get(ACTION_SOLVE_TITAUT_CONFLICTS, []):
             self.history_items[name].append(HISTORY_TITAUT_CONFLICTS)
 
         # solve titaut conflicts
         solved = self.evaluate_titaut_conflicts(
-            results.get(ACTION_SOLVE_TITAUT_CONFLICTS))
+            results.get(ACTION_SOLVE_TITAUT_CONFLICTS, []))
         for name in solved:
             merged[name] = self.articles[name]
             self.history_items[name].append(HISTORY_UPDATED)
 
         # need to check name/order
-        for name in results.get(ACTION_CHECK_ORDER_AND_NAME):
+        for name in results.get(ACTION_CHECK_ORDER_AND_NAME, []):
             self.history_items[name].append(HISTORY_CHECK_ORDER_AND_NAME)
 
         # solve name/order
         solved = self.evaluate_check_order_and_name(
-            results.get(ACTION_CHECK_ORDER_AND_NAME),
-            results.get(ACTION_DELETE)
+            results.get(ACTION_CHECK_ORDER_AND_NAME, []),
+            results.get(ACTION_DELETE, [])
             )
         for name in solved:
             merged[name] = self.articles[name]

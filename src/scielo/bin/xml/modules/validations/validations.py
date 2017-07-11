@@ -8,8 +8,6 @@ from ..useful import fs_utils
 from ..useful import utils
 from ..reports import html_reports
 from . import validation_status
-from . import article_data_reports
-from . import pkg_articles_validations
 
 
 class ValidationsResultItems(dict):
@@ -67,7 +65,7 @@ class ValidationsResult(object):
 
     def calculate_numbers(self):
         for status, style_checker_error_type in zip(validation_status.STATUS_LEVEL_ORDER, validation_status.STYLE_CHECKER_ERROR_TYPES):
-            self.numbers[status] = word_counter(self.message, status)
+            self.numbers[status] = self.message.count(status)
             if style_checker_error_type != '':
                 self.numbers[status] += number_after_words(self.message, style_checker_error_type)
 
@@ -287,41 +285,6 @@ class ReportsMaker(object):
         return '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' + html_reports.link('file:///' + result_path, result_path) + '</p>'
 
 
-def error_msg_subtitle():
-    msg = html_reports.tag('p', _('Blocking error - indicates errors of data consistency'))
-    msg += html_reports.tag('p', _('Fatal error - indicates errors which impact on the quality of the bibliometric indicators and other services'))
-    msg += html_reports.tag('p', _('Error - indicates the other kinds of errors'))
-    msg += html_reports.tag('p', _('Warning - indicates that something can be an error or something needs more attention'))
-    return html_reports.tag('div', msg, 'subtitle')
-
-
-def label_errors(content):
-    if content is None:
-        content = ''
-    else:
-        content = label_errors_type(content, validation_status.STATUS_BLOCKING_ERROR, 'B')
-        content = label_errors_type(content, validation_status.STATUS_FATAL_ERROR, 'F')
-        content = label_errors_type(content, validation_status.STATUS_ERROR, 'E')
-        content = label_errors_type(content, validation_status.STATUS_WARNING, 'W')
-    return content
-
-
-def label_errors_type(content, error_type, prefix):
-    new = []
-    i = 0
-    content = content.replace(error_type, '~BREAK~' + error_type)
-    for part in content.split('~BREAK~'):
-        if part.startswith(error_type):
-            i += 1
-            part = part.replace(error_type, error_type + ' [' + prefix + str(i) + ']')
-        new.append(part)
-    return ''.join(new)
-
-
-def word_counter(content, word):
-    return len(content.split(word)) - 1
-
-
 def number_after_words(content, text='Total of errors = '):
     n = 0
     if text in content:
@@ -340,32 +303,3 @@ def number_after_words(content, text='Total of errors = '):
         else:
             n = 0
     return n
-
-
-def articles_sorted_by_order(articles):
-    l = sorted([(article.order, xml_name) for xml_name, article in articles.items()])
-    l = [(xml_name, articles[xml_name]) for order, xml_name in l]
-    return l
-
-
-def toc_extended_report(articles):
-    if articles is None:
-        return ''
-    else:
-        labels = [_('filename'), 'order', _('last update'), _('article')]
-        widths = {_('filename'): '5', 'order': '2', _('last update'): '5', _('article'): '88'}
-        items = []
-        for new_name, article in articles_sorted_by_order(articles):
-            if not article.is_ex_aop:
-                values = []
-                values.append(new_name)
-                values.append(article.order)
-                last_update_display = article.last_update_display
-                if last_update_display is None:
-                    last_update_display = ''
-                if last_update_display[:10] == utils.display_datetime(utils.now()[0]):
-                    last_update_display = html_reports.tag('span', last_update_display, 'report-date')
-                values.append(last_update_display)
-                values.append(article_data_reports.display_article_data_in_toc(article))
-                items.append(html_reports.label_values(labels, values))
-        return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)

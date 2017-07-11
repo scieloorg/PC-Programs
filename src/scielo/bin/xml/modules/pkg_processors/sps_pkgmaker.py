@@ -17,12 +17,7 @@ class SPSXMLContent(xml_utils.XMLContent):
 
     def __init__(self, content):
         xml_utils.XMLContent.__init__(self, content)
-
-    @property
-    def xml(self):
-        _xml, e = xml_utils.load_xml(self.content)
-        if _xml is not None:
-            return _xml
+        self.xml, self.xml_error = xml_utils.load_xml(self.content)
 
     def normalize(self):
         xml_utils.XMLContent.normalize(self)

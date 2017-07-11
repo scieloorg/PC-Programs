@@ -230,8 +230,9 @@ class WebServicesRequester(object):
         #          }
         query = ''
         if parameters is not None:
+            parameters = {name: encoding.uni2notuni(value) for name, value in parameters.items()}
             query = '?' + urllib_parse_urlencode(parameters)
-        return self._url + query
+        return url + query
 
     def request(self, url, timeout=30, debug=False, force_error=False):
         if self.active is False:

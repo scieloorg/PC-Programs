@@ -9,6 +9,7 @@ from . import validation_status
 from . import xml_validators
 from . import article_data_reports
 from . import article_content_validations
+from . import validations as validations_module
 
 
 class XMLJournalDataValidator(object):
@@ -33,7 +34,7 @@ class XMLJournalDataValidator(object):
             items.append([_('license'), license_url, self.journal_data.license, validation_status.STATUS_ERROR])
             r = evaluate_journal_data(items)
 
-        result = ValidationsResult()
+        result = validations_module.ValidationsResult()
         result.message = r
         return result
 
@@ -54,7 +55,7 @@ class XMLIssueDataValidator(object):
             elif self.issue_models:
                 r = self.issue_models.validate_article_issue_data(article)
 
-        result = ValidationsResult()
+        result = validations_module.ValidationsResult()
         result.message = r
         return result
 
@@ -115,7 +116,7 @@ class XMLStructureValidator(object):
             if os.path.isfile(rep_file):
                 report_content += extract_report_core(fs_utils.read_file(rep_file))
 
-        r = ValidationsResult()
+        r = validations_module.ValidationsResult()
         r.message = report_content
         return r
 
@@ -136,7 +137,7 @@ class XMLContentValidator(object):
         if article.tree is None:
             content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}. ').format(item=article.new_prefix)
         else:
-            content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, pkgfiles, (self.registered_issue_data.articles_db_manager is not None), False, app_institutions_manager, doi_validator)
+            content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, pkgfiles, (self.registered_issue_data.articles_db_manager is not None), False, self.app_institutions_manager, self.doi_validator)
             article_display_report = article_data_reports.ArticleDisplayReport(content_validation)
             article_validation_report = article_data_reports.ArticleValidationReport(content_validation)
 
@@ -168,7 +169,7 @@ class XMLContentValidator(object):
                 content.append(r)
                 content.append(article_display_report.files_and_href())
             content = html_reports.join_texts(content)
-        r = ValidationsResult()
+        r = validations_module.ValidationsResult()
         r.message = content
         return r, article_display_report
 

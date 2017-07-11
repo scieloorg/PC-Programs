@@ -12,13 +12,15 @@ from . import files_extractor
 def read_file(filename, encode='utf-8'):
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
-        return encoding.notuni2uni(content)
+        r = encoding.notuni2uni(content)
+        return r
 
 
 def read_file_lines(filename, encode='utf-8'):
     if os.path.isfile(filename):
         content = open(filename, 'r').readlines()
-        return [encoding.notuni2uni(item).strip() for item in content]
+        r = [encoding.notuni2uni(item).strip() for item in content]
+        return r
 
 
 def write_file(filename, content, encode='utf-8'):
@@ -177,4 +179,3 @@ class ProcessLogger(object):
 
     def display(self):
         print('\n'.join(self.logged_items))
-

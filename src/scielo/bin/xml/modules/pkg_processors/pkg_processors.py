@@ -7,12 +7,15 @@ from ..__init__ import _
 
 from ..useful import utils
 from ..useful import fs_utils
+from ..pkg_processors import xml_versions
 from ..reports import html_reports
 from ..ws import institutions_manager
 from ..validations import validation_status
 from ..validations import article_data_reports
 from ..validations import pkg_articles_validations
+from ..validations import article_validations as article_validations_module
 from ..validations import validations as validations_module
+from ..validations import reports_maker
 from ..validations import merged_articles_validations
 from ..doi_validations import doi_validations
 from ..data import merged
@@ -308,6 +311,7 @@ class PkgProcessor(object):
         self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
         self.journals_list = xc_models.JournalsList(self.config.app_ws_requester)
+        self.xml_structure_validator = article_validations_module.XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
 
     def package(self, input_xml_list):
         workarea_path = os.path.dirname(input_xml_list[0])
@@ -334,8 +338,11 @@ class PkgProcessor(object):
         pkg = self.package(input_xml_list)
         registered_issue_data = registered.RegisteredIssueData(self.db_manager, self.journals_list)
         registered_issue_data.get_data(pkg.pkgissuedata)
+        pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
+        articles_merge = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
         merge_reports = merged_articles_validations.MergedArticlesReports(articles_merge, registered_issue_data)
+
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, merge_reports, self.is_xml_generation)
 
         conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
@@ -349,17 +356,17 @@ class PkgProcessor(object):
         return (scilista_items, conversion.xc_status, statistics_display, reports.report_location)
 
     def validate_pkg_articles(self, pkg, registered_issue_data):
-        validator = pkg_articles_validations.PkgArticlesValidator(
-            self.version,
-            registered_issue_data,
-            pkg.pkgissuedata,
-            self.is_xml_generation,
-            self.app_institutions_manager,
-            self.doi_validator)
-        return validator.validate(
-            pkg.articles,
-            pkg.outputs,
-            pkg.package_folder.pkgfiles_items)
+        xml_journal_data_validator = article_validations_module.XMLJournalDataValidator(pkg.pkgissuedata.journal_data)
+        xml_issue_data_validator = article_validations_module.XMLIssueDataValidator(registered_issue_data)
+        xml_content_validator = article_validations_module.XMLContentValidator(pkg.pkgissuedata, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator)
+        article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, self.xml_structure_validator, xml_content_validator)
+
+        utils.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
+        results = {}
+        for name, article in pkg.articles.items():
+            utils.display_message(_('Validate {name}').format(name=name))
+            results[name] = article_validator.validate(article, pkg.outputs[name], pkg.package_folder.pkgfiles_items[name])
+        return results
 
     def validate_merged_articles(self, pkg, registered_issue_data):
         if len(registered_issue_data.registered_articles) > 0:
@@ -371,9 +378,9 @@ class PkgProcessor(object):
     def report_result(self, pkg, validations_reports, conversion=None):
         serial_path = None if conversion is None else conversion.registered_issue_data.articles_db_manager.serial_path
 
-        files_final_location = workarea.FilesFinalLocation(pkg.wk.scielo_package_path, pkg.pkgissuedata.acron, pkg.pkgissuedata.issue_label, self.config.web_app_path, self.config.web_app_site)
+        files_final_location = workarea.FilesFinalLocation(pkg.wk.scielo_package_path, pkg.pkgissuedata.acron, pkg.pkgissuedata.issue_label, self.config.local_web_app_path, self.config.web_app_site)
 
-        reports = validations.ReportsMaker(pkg, validations_reports, files_final_location, xpm_version(), conversion)
+        reports = reports_maker.ReportsMaker(pkg, validations_reports, files_final_location, xpm_version(), conversion)
         if not self.is_xml_generation:
             reports.save_report(self.DISPLAY_REPORT and self.config.interative_mode)
         return reports

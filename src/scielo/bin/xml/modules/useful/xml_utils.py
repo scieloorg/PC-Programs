@@ -7,10 +7,10 @@ import xml.dom.minidom
 
 try:
     from io import StringIO
-    import HTMLParser as html_parser
+    import html.parser as html_parser
 except ImportError:
     from StringIO import StringIO
-    import html.parser as html_parser
+    import HTMLParser as html_parser
 
 from ..__init__ import _
 from . import fs_utils
@@ -68,16 +68,20 @@ class XMLContent(object):
         self.content = complete_entity(self.content)
         self.content, replaced_named_ent = convert_entities_to_chars(self.content)
 
+    def load_xml(self):
+        self.xml, self.xml_error = load_xml(self.content)
+
     def fix(self):
         if '<' in self.content:
             self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
 
-        _xml, e = load_xml(self.content)
-        if _xml is None:
+        self.load_xml()
+        if self.xml is None:
             self._fix_open_and_close_style_tags()
-            _xml, e = load_xml(self.content)
-        if _xml is None:
+            self.load_xml()
+
+        if self.xml is None:
             self._fix_open_close()
 
     def _fix_open_close(self):
@@ -199,20 +203,20 @@ def restore_xml_file(xml_filename, temp_filename):
     fs_utils.delete_file_or_folder(os.path.dirname(temp_filename))
 
 
-def node_findtext(node, xpath=None):
+def node_findtext(node, xpath=None, multiple=False):
     # contrib.findtext('name/given-names')
     if node is None:
         return
-    selection = node
+    nodes = node
     if xpath is not None:
-        if '//' in xpath:
-            selection = node.findall(xpath)
+        if multiple is True:
+            nodes = node.findall(xpath)
         else:
-            selection = node.find(xpath)
-    if isinstance(selection, list):
-        return [node_text(item) for item in selection]
+            nodes = node.find(xpath)
+    if isinstance(nodes, list):
+        return [node_text(item) for item in nodes]
     else:
-        return node_text(selection)
+        return node_text(nodes)
 
 
 def node_text(node):
@@ -422,7 +426,7 @@ def parse_xml(content):
             line = line[:line.find(',')].strip()
             if line.isdigit():
                 line = int(line)
-                lines = encoding.notuni2uni(content).split('\n')
+                lines = content.split('\n') if content is not None else ['']
                 col = len(lines[line-1])
                 if column.isdigit():
                     col = int(column)

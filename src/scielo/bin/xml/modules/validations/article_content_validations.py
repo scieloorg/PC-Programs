@@ -7,6 +7,7 @@ from ..__init__ import _
 from ..ws import ws_requester
 from ..useful import xml_utils
 from ..useful import utils
+from ..useful import encoding
 from ..useful import article_utils
 from ..reports import html_reports
 from ..validations import validation_status
@@ -489,7 +490,7 @@ class ArticleContentValidation(object):
     @property
     def refstats(self):
         r = []
-        non_scholar_types = [k for k in self.article.refstats.keys() if not k in attributes.BIBLIOMETRICS_USE]
+        non_scholar_types = [k for k in self.article.refstats.keys() if k not in attributes.BIBLIOMETRICS_USE]
         sch1 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level1])
         sch2 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level2])
         total = sum(self.article.refstats.values())
@@ -508,9 +509,9 @@ class ArticleContentValidation(object):
     def refs_sources(self):
         refs = {}
         for ref in self.article.references:
-            if not ref.publication_type in refs.keys():
+            if ref.publication_type not in refs.keys():
                 refs[ref.publication_type] = {}
-            if not ref.source in refs[ref.publication_type].keys():
+            if ref.source not in refs[ref.publication_type].keys():
                 refs[ref.publication_type][ref.source] = 0
             refs[ref.publication_type][ref.source] += 1
         return [(_('sources'), validation_status.STATUS_INFO, refs)]
@@ -791,7 +792,7 @@ class ArticleContentValidation(object):
                         else:
                             r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of {orgname}. ').format(value=item, orgname=_('an organization'))))
 
-            norm_aff, found_institutions = article_utils.normalized_institution(app_institutions_manager, aff)
+            norm_aff, found_institutions = normalized_institution(self.app_institutions_manager, aff)
 
             #if aff.norgname is None or aff.norgname == '':
             #    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element. ')))
@@ -1330,7 +1331,7 @@ class ArticleContentValidation(object):
         href_items = {}
         min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
         for hrefitem in self.article.hrefs:
-            href_validations = HRefValidation(hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
+            href_validations = HRefValidation(self.app_institutions_manager.ws.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
             href_items[hrefitem.src] = {
                 'display': href_validations.display,
                 'elem': hrefitem,
@@ -1383,12 +1384,13 @@ class ArticleContentValidation(object):
 
 class HRefValidation(object):
 
-    def __init__(self, hrefitem, check_url, pkgfiles, min_disp=None, max_disp=None, min_inline=None, max_inline=None):
+    def __init__(self, ws_requester, hrefitem, check_url, pkgfiles, min_disp=None, max_disp=None, min_inline=None, max_inline=None):
         self.pkgfiles = pkgfiles
         self.hrefitem = hrefitem
         self.check_url = check_url
         self.name, self.ext = os.path.splitext(self.hrefitem.src)
         self.min_max_height(min_disp, max_disp, min_inline, max_inline)
+        self.ws_requester = ws_requester
 
     def min_max_height(self, min_disp, max_disp, min_inline, max_inline):
         self.min_height = None
@@ -1409,7 +1411,7 @@ class HRefValidation(object):
             status_message = [item for item in status_message if item is not None]
         else:
             if self.check_url or 'scielo.php' in self.hrefitem.src:
-                if ws_requester.wsr.is_valid_url(self.hrefitem.src) is None:
+                if self.ws_requester.is_valid_url(self.hrefitem.src) is False:
                     message = invalid_value_message(self.hrefitem.src, 'URL')
                     if 'scielo.php' in self.hrefitem.src:
                         message += _('Be sure that there is no missing character such as _. ')

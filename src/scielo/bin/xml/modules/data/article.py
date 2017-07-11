@@ -859,7 +859,7 @@ class ArticleXML(object):
     @property
     def marked_to_delete(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('article-id[@specific-use="delete"]')
+            return self.article_meta.find('article-id[@specific-use="delete"]') is not None
 
     @property
     def previous_article_pid(self):
@@ -1953,13 +1953,7 @@ class ArticleXMLContent(object):
         self.xml_content = xml_content
         self.name = name
         self.new_name = new_name
-        self.xml_error = None
-
-    @property
-    def xml(self):
-        _xml, self.xml_error = xml_utils.load_xml(self.xml_content)
-        if _xml is not None:
-            return _xml
+        self.xml, self.xml_error = xml_utils.load_xml(self.xml_content)
 
     @property
     def doc(self):
