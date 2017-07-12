@@ -13,7 +13,6 @@ except ImportError:
     import urllib as urllib_request
     from urllib import urlencode as urllib_parse_urlencode
 
-from ..useful import utils
 from ..useful import encoding
 
 
@@ -178,12 +177,12 @@ def registry_proxy_opener(proxy_handler_data):
 def try_request(url, timeout=30, debug=False, force_error=False):
     response = None
     socket.setdefaulttimeout(timeout)
-    req = urllib_request.Request(utils.uni2notuni(url))
+    req = urllib_request.Request(encoding.encode(url))
     http_error_proxy_auth = None
     error_message = ''
     try:
         response = urllib_request.urlopen(req, timeout=timeout).read()
-        response = utils.notuni2uni(response)
+        response = encoding.decode(response)
     except urllib_request.HTTPError as e:
         if e.code == 407:
             http_error_proxy_auth = e.code
@@ -230,7 +229,7 @@ class WebServicesRequester(object):
         #          }
         query = ''
         if parameters is not None:
-            parameters = {name: encoding.uni2notuni(value) for name, value in parameters.items()}
+            parameters = {name: encoding.encode(value) for name, value in parameters.items()}
             query = '?' + urllib_parse_urlencode(parameters)
         return url + query
 
@@ -260,7 +259,7 @@ class WebServicesRequester(object):
         if url is not None:
             r = self.request(url, timeout, debug)
             if r is not None:
-                result = json.loads(encoding.uni2notuni(r))
+                result = json.loads(encoding.encode(r))
         return result
 
     def is_valid_url(self, url, timeout=30):

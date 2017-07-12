@@ -25,13 +25,14 @@ def change_circ(content):
 
 
 def format_value(content):
+    """
     try:
-        content = encoding.notuni2uni(content)
+        content = encoding.decode(content)
     except Exception as e:
         utils.debbuging('format_value 1:')
         utils.debbuging(e)
         utils.debbuging(content)
-
+    """
     try:
         content = remove_break_lines_characters(content)
     except Exception as e:
@@ -48,7 +49,7 @@ def format_value(content):
         utils.debbuging(content)
 
     try:
-        content = encoding.notuni2uni(content)
+        content = encoding.decode(content)
     except Exception as e:
         utils.debbuging('format_value: 2:')
         utils.debbuging(e)

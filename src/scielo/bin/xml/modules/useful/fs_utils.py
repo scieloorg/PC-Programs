@@ -5,30 +5,25 @@ import tempfile
 import zipfile
 from datetime import datetime
 
-from . import encoding
 from . import files_extractor
 
 
 def read_file(filename, encode='utf-8'):
     if os.path.isfile(filename):
-        content = open(filename, 'r').read()
-        r = encoding.notuni2uni(content)
-        return r
+        return open(filename, 'r', encoding=encode).read()
 
 
 def read_file_lines(filename, encode='utf-8'):
     if os.path.isfile(filename):
-        content = open(filename, 'r').readlines()
-        r = [encoding.notuni2uni(item).strip() for item in content]
-        return r
+        return open(filename, 'r', encoding=encode).readlines()
 
 
 def write_file(filename, content, encode='utf-8'):
-    open(filename, 'w').write(encoding.uni2notuni(content))
+    open(filename, 'w', encoding=encode).write(content)
 
 
 def append_file(filename, content, encode='utf-8'):
-    open(filename, 'a+').write(encoding.uni2notuni(content) + '\n')
+    open(filename, 'a+', encoding=encode).write(content + '\n')
 
 
 def delete_file_or_folder(path):

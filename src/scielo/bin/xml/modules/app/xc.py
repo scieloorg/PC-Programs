@@ -95,8 +95,15 @@ class XC_Reception(object):
         scilista_items = []
 
         try:
-            scilista_items, xc_status, stats_msg, report_location = self.proc.convert_package([f.filename for f in pkgfiles])
-            print(scilista_items)
+
+            if len(pkgfiles) > 0:
+                files = [f.filename for f in pkgfiles]
+                workarea_path = os.path.dirname(pkgfiles[0].path)
+                print('convert_package', workarea_path)
+                pkg = package.Package(files, workarea_path)
+
+                scilista_items, xc_status, stats_msg, report_location = self.proc.convert_package(pkg)
+                print(scilista_items)
         except Exception as e:
             if self.configuration.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)

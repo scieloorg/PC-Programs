@@ -7,6 +7,7 @@ from ..__init__ import _
 from . import interface
 from ..useful import utils
 from ..data import workarea
+from ..data import package
 from ..pkg_processors import sgmlxml
 from ..pkg_processors import pkg_processors
 from ..config import config
@@ -124,4 +125,9 @@ class XPM_Reception(object):
         return 'done', 'blue'
 
     def make_package(self, pkgfiles, GENERATE_PMC=False):
-        self.proc.make_package([f.filename for f in pkgfiles], GENERATE_PMC)
+        if len(pkgfiles) > 0:
+            files = [f.filename for f in pkgfiles]
+            workarea_path = os.path.dirname(pkgfiles[0].path)
+            print('make_package', workarea_path)
+            pkg = package.Package(files, workarea_path)
+            self.proc.make_package(pkg, GENERATE_PMC)

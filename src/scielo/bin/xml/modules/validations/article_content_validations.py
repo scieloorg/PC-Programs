@@ -4,7 +4,6 @@ import os
 from datetime import datetime
 
 from ..__init__ import _
-from ..ws import ws_requester
 from ..useful import xml_utils
 from ..useful import utils
 from ..useful import encoding
@@ -181,10 +180,8 @@ def display_attributes(attributes):
 def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
     r = True
     invalid = ''
-    b = encoding.notuni2uni(value)
     for term in invalid_terms:
-        a = encoding.notuni2uni(term)
-        if term.upper() in value.upper() or term in value or a in b:
+        if term.upper() in value.upper():
             r = False
             invalid = term
             break

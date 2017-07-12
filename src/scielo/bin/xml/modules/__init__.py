@@ -1,7 +1,7 @@
 # coding=utf-8
 import os
 
-from config import app_texts
+from .config import app_texts
 
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')

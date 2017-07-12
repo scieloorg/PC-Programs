@@ -13,7 +13,7 @@ path = CURRENT_PATH + '/../../tables'
 
 def normalize_term(term):
     if term is not None:
-        term = encoding.notuni2uni(term)
+        term = encoding.decode(term)
         term = ' '.join([item.strip() for item in term.split()])
     return term
 

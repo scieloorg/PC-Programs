@@ -19,7 +19,6 @@ from ..validations import reports_maker
 from ..validations import merged_articles_validations
 from ..doi_validations import doi_validations
 from ..data import merged
-from ..data import package
 from ..data import workarea
 from ..db import registered
 from ..db import xc_models
@@ -63,16 +62,20 @@ def xpm_version():
 
 
 def normalize_xml_packages(xml_list, stage='xpm'):
-    pkgfiles_items = [workarea.PackageFiles(item) for item in xml_list]
+    print('normalize_xml_packages', xml_list)
+    pkgfiles_items = [workarea.PkgArticleFiles(item) for item in xml_list]
 
     path = pkgfiles_items[0].path + '_' + stage
-    if not os.path.dirname(path):
+
+    if not os.path.isdir(path):
         os.makedirs(path)
 
+    print('normalize_xml_packages', path)
     wk = workarea.Workarea(path)
 
+    print('normalize_xml_packages', wk.scielo_package_path)
     dest_path = wk.scielo_package_path
-    dest_pkgfiles_items = [workarea.PackageFiles(dest_path + '/' + item.basename) for item in pkgfiles_items]
+    dest_pkgfiles_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in pkgfiles_items]
 
     for src, dest in zip(pkgfiles_items, dest_pkgfiles_items):
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
@@ -313,14 +316,7 @@ class PkgProcessor(object):
         self.journals_list = xc_models.JournalsList(self.config.app_ws_requester)
         self.xml_structure_validator = article_validations_module.XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
 
-    def package(self, input_xml_list):
-        workarea_path = os.path.dirname(input_xml_list[0])
-        if self.stage != 'xml':
-            workarea_path += '_' + self.stage
-        return package.Package(input_xml_list, workarea_path)
-
-    def make_package(self, input_xml_list, GENERATE_PMC=False):
-        pkg = self.package(input_xml_list)
+    def make_package(self, pkg, GENERATE_PMC=False):
         registered_issue_data = registered.RegisteredIssueData(self.db_manager, self.journals_list)
         registered_issue_data.get_data(pkg.pkgissuedata)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
@@ -331,11 +327,10 @@ class PkgProcessor(object):
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, merge_reports, self.is_xml_generation)
 
         self.report_result(pkg, validations_reports, conversion=None)
-        self.make_pmc_package(pkg, registered_issue_data, GENERATE_PMC)
+        self.make_pmc_package(pkg, GENERATE_PMC)
         self.zip(pkg)
 
-    def convert_package(self, input_xml_list):
-        pkg = self.package(input_xml_list)
+    def convert_package(self, pkg):
         registered_issue_data = registered.RegisteredIssueData(self.db_manager, self.journals_list)
         registered_issue_data.get_data(pkg.pkgissuedata)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
@@ -380,7 +375,8 @@ class PkgProcessor(object):
 
         files_final_location = workarea.FilesFinalLocation(pkg.wk.scielo_package_path, pkg.pkgissuedata.acron, pkg.pkgissuedata.issue_label, self.config.local_web_app_path, self.config.web_app_site)
 
-        reports = reports_maker.ReportsMaker(pkg, validations_reports, files_final_location, xpm_version(), conversion)
+        reports = reports_maker.ReportsMaker(pkg, validations_reports, files_final_location, self.stage, xpm_version(), conversion)
+
         if not self.is_xml_generation:
             reports.save_report(self.DISPLAY_REPORT and self.config.interative_mode)
         return reports
@@ -393,7 +389,7 @@ class PkgProcessor(object):
                 pmc_package_maker.make_report(pkg.articles, pkg.outputs)
             if pkg.is_pmc_journal:
                 if GENERATE_PMC:
-                    pmc_package_maker.make_package(pkg.articles, pkg.outputs)
+                    pmc_package_maker.make_package(pkg.wk, pkg.articles, pkg.outputs)
                     workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
                 else:
                     print('='*10)

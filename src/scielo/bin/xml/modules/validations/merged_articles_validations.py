@@ -76,7 +76,6 @@ class MergedArticlesReports(object):
     def report_conflicting_values(self):
         parts = []
         for label, values in self.merged_articles_data.conflicting_values.items():
-            compl = ''
             _status = validation_status.STATUS_BLOCKING_ERROR
             if label == 'issue pub date':
                 if self.merged_articles_data.is_rolling_pass:
@@ -150,7 +149,7 @@ class MergedArticlesReports(object):
 
     def report_merging_conflicts(self):
         merging_errors = []
-        if len(self.articles_merge.conflicts) > 0:
+        if len(self.articles_merge.titaut_conflicts) + len(self.articles_merge.name_order_conflicts) > 0:
             merge_conflicts = self.articles_merge.titaut_conflicts.copy()
             merge_conflicts.update(self.articles_merge.name_order_conflicts)
             merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]

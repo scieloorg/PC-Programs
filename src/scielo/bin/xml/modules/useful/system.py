@@ -16,7 +16,7 @@ def format_command(command, params=None):
 def run_command(command):
     cmd = None
     try:
-        cmd = encoding.uni2notuni(command, sys.getfilesystemencoding())
+        cmd = encoding.encode(command, sys.getfilesystemencoding())
         os.system(cmd)
     except Exception as e:
         print(cmd)

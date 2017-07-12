@@ -1408,7 +1408,7 @@ class JournalsList(object):
             spamreader = csv.reader(csvfile, delimiter='\t')
             for item in spamreader:
                 if len(item) >= 10:
-                    item = [encoding.notuni2uni(elem).strip() for elem in item]
+                    item = [encoding.decode(elem).strip() for elem in item]
                     if item[1] != 'ISSN':
                         j = Journal()
                         j.collection_acron = item[0]
@@ -1424,7 +1424,7 @@ class JournalsList(object):
                         if len(item) == 12:
                             j.license = item[11]
                         for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
-                            if not issn in self._journals.keys():
+                            if issn not in self._journals.keys():
                                 self._journals[issn] = []
                             self._journals[issn].append(j)
 

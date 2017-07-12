@@ -71,5 +71,5 @@ class SQL(object):
         return expr
 
     def format_expr(self, labels, values, connector=' OR '):
-        expr = [label + '="' + encoding.uni2notuni(value) + '"' for label, value in zip(labels, values) if value is not None]
+        expr = [label + '="' + encoding.encode(value) + '"' for label, value in zip(labels, values) if value is not None]
         return connector.join(expr)

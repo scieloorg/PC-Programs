@@ -388,7 +388,7 @@ class PackageNamer(object):
     def rename(self, acron, dest_path):
         self._fix_href_values(acron)
 
-        self.dest_pkgfiles = workarea.PackageFiles(dest_path + '/' + self.new_name + '.xml')
+        self.dest_pkgfiles = workarea.PkgArticleFiles(dest_path + '/' + self.new_name + '.xml')
 
         self.dest_pkgfiles.clean()
         fs_utils.write_file(self.dest_pkgfiles.filename, self.xml_content)
@@ -473,7 +473,7 @@ class SGMLXML2SPSXMLPackageMaker(object):
         self.sgml_pkgfiles = sgml_pkgfiles
         self.outputs = workarea.OutputFiles(self.sgml_pkgfiles.name, self.wk.reports_path, self.sgml_pkgfiles.path)
         self.new_name = self.sgml_pkgfiles.name
-        self.src_pkgfiles = workarea.PackageFiles(wk.src_path + '/' + self.sgml_pkgfiles.name + '.xml')
+        self.src_pkgfiles = workarea.PkgArticleFiles(wk.src_path + '/' + self.sgml_pkgfiles.name + '.xml')
         self.src_pkgfiles.convert_images()
         self.xml_pkgfiles = None
         self.sgmxmlcontent = SGMLXMLContent(
@@ -512,10 +512,9 @@ class SGMLXML2SPSXMLPackageMaker(object):
     def pack(self, acron, converter):
         self.normalize_sgmxml()
         self.xml_content = converter.sgml2xml(self.xml_content)
-        self.xml_pkgfiles = workarea.PackageFiles(self.src_pkgfiles.path + '/' + self.src_pkgfiles.name + '.xml')
+        self.xml_pkgfiles = workarea.PkgArticleFiles(self.src_pkgfiles.path + '/' + self.src_pkgfiles.name + '.xml')
         fs_utils.write_file(self.src_pkgfiles.filename, self.xml_content)
         self.normalize_xml()
-
 
         msg = self.invalid_xml_message
         if msg == '':

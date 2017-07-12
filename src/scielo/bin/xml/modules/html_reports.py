@@ -607,7 +607,8 @@ def label_values(labels, values):
 
 
 def display_report(report_filename):
-    print(_('Report:\n  {filename}').format(filename=report_filename))
+    print(report_filename)
+    print(_(u'Report:\n  {filename}').format(filename=report_filename))
 
     try:
         f = report_filename.encode(encoding=sys.getfilesystemencoding())
@@ -615,4 +616,4 @@ def display_report(report_filename):
     except Exception as e:
         print('unable to open')
         print(report_filename)
-        print(e)
+        #print(str(e).decode(encoding=sys.getfilesystemencoding()))

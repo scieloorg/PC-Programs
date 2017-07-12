@@ -243,7 +243,7 @@ def node_xml(node):
 
 
 def tostring(node):
-    return encoding.notuni2uni(etree.tostring(node))
+    return encoding.decode(etree.tostring(node))
 
 
 def complete_entity(xml_content):
@@ -324,7 +324,7 @@ def htmlent2char(content):
     if '&' in content:
         h = html_parser.HTMLParser()
         try:
-            content = encoding.notuni2uni(content)
+            content = encoding.decode(content)
             content = h.unescape(content)
         except Exception as e:
             content = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
@@ -398,7 +398,7 @@ def read_xml(content):
 def parse_xml(content):
     message = None
     try:
-        r = etree.parse(StringIO(encoding.uni2notuni(content)))
+        r = etree.parse(StringIO(encoding.encode(content)))
     except Exception as e:
         #print('XML is not well formed')
         message = 'XML is not well formed\n'
@@ -605,8 +605,8 @@ class PrettyXML(object):
 
     def minidom_pretty_print(self):
         try:
-            doc = xml.dom.minidom.parseString(encoding.uni2notuni(self._xml))
-            self._xml = encoding.notuni2uni(doc.toprettyxml().strip())
+            doc = xml.dom.minidom.parseString(encoding.encode(self._xml))
+            self._xml = encoding.decode(doc.toprettyxml().strip())
             ign = self.split_prefix()
         except Exception as e:
             print('ERROR in minidom_pretty_print')
