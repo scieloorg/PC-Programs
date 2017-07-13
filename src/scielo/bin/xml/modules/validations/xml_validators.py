@@ -62,7 +62,7 @@ class PackToolsValidator(object):
 
     @property
     def _style_validation(self):
-        return xml_utils.tostring(self.xml_validator.annotate_errors(), pretty_print=True, encoding='utf-8', xml_declaration=True)
+        return xml_utils.etree.tostring(self.xml_validator.annotate_errors(), pretty_print=True, encoding='utf-8', xml_declaration=True)
 
     def style_validation(self, report_filename):
         self._save_style_report(self._style_validation, report_filename)

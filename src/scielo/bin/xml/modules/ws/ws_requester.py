@@ -7,7 +7,7 @@ import socket
 try:
     import tkinter as tk
     import urllib.request as urllib_request
-    import urllib.parse.urlencode as urllib_parse_urlencode
+    from urllib.parse import urlencode as urllib_parse_urlencode
 except ImportError:
     import Tkinter as tk
     import urllib as urllib_request
@@ -215,11 +215,7 @@ class WebServicesRequester(object):
             server, port = proxy_info.split(':')
             self.proxy_info = ProxyInfo(server, port)
         self.active = active
-
-    def __new__(self, active, proxy_info):
-        if not hasattr(self, 'instance'):
-            self.instance = super(WebServicesRequester, self).__new__(self, active, proxy_info)
-        return self.instance
+        self.instance = None
 
     def format_url(self, url, parameters=None):
         #if isinstance(text, unicode):

@@ -6,7 +6,6 @@ from datetime import datetime
 from ..__init__ import _
 from ..useful import xml_utils
 from ..useful import utils
-from ..useful import encoding
 from ..useful import article_utils
 from ..reports import html_reports
 from ..validations import validation_status
@@ -1566,7 +1565,6 @@ class ReferenceContentValidation(object):
                         looks_like = 'confproc'
             if looks_like is not None:
                 r.append(('@publication-type', validation_status.STATUS_ERROR, _('Be sure that {item} is correct. ').format(item='@publication-type=' + str(self.reference.publication_type)) + _('This reference looks like {publication_type}. ').format(publication_type=looks_like)))
-            
             for item in items:
                 if item is not None:
                     r.append(item)
@@ -1699,7 +1697,7 @@ class ReferenceContentValidation(object):
         _y = self.reference.formatted_year
         if _y is not None:
             if _y.isdigit():
-                if int(_y) > article_year:
+                if _y > article_year:
                     r.append(('year', validation_status.STATUS_FATAL_ERROR, _('{value} must not be greater than {year}. ').format(value=_y, year=datetime.now().isoformat()[0:4])))
             elif 's.d' in _y:
                 r.append(('year', validation_status.STATUS_INFO, _y))

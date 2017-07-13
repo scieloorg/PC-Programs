@@ -8,12 +8,23 @@ from . import xml_utils
 from . import fs_utils
 from . import system
 
+from ..__init__ import JAR_PATH
+from ..__init__ import TMP_DIR
 
-THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
+
 JAVA_PATH = 'java'
-JAR_TRANSFORM = THIS_LOCATION + '/../../../jar/saxonb9-1-0-8j/saxon9.jar'
-JAR_VALIDATE = THIS_LOCATION + '/../../../jar/XMLCheck.jar'
-TMP_DIR = THIS_LOCATION + '/../../../tmp'
+JAR_TRANSFORM = JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
+JAR_VALIDATE = JAR_PATH + '/XMLCheck.jar'
+
+VALIDATE_COMMAND = 'java -cp "{JAR_VALIDATE}" br.bireme.XMLCheck.XMLCheck "{xml}" {validation_type}>"{result}"'
+
+
+def validate_command(xml_filename, validation_type, result_filename):
+    return VALIDATE_COMMAND.format(
+        JAR_VALIDATE=JAR_VALIDATE,
+        xml=xml_filename,
+        validation_type=validation_type,
+        result_filename=result_filename)
 
 
 if not os.path.isdir(TMP_DIR):
@@ -225,6 +236,47 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
 
 def xml_validate(xml_filename, result_filename, doctype=None):
     #register_log('xml_validate: inicio')
+    #41    0.025    0.001   20.136    0.491 java_xml_utils.py:152(xml_validate)
+    #41    0.009    0.000   19.997    0.488 java_xml_utils.py:150(xml_validate)
+    #41    0.009    0.000   21.515    0.525 java_xml_utils.py
+    #41    0.024    0.001   19.913    0.486 java_xml_utils.py:161(xml_validate)
+    validation_type = ''
+
+    if doctype is None:
+        doctype = ''
+    else:
+        validation_type = '--validate'
+
+    bkp = fs_utils.read_file(xml_filename)
+    xml_utils.new_apply_dtd(xml_filename, doctype)
+    temp_result_filename = TMP_DIR + '/' + os.path.basename(result_filename)
+    fs_utils.delete_file_or_folder(result_filename)
+    fs_utils.delete_file_or_folder(temp_result_filename)
+    if not os.path.isdir(os.path.dirname(result_filename)):
+        os.makedirs(os.path.dirname(result_filename))
+
+    cmd = validate_command(xml_filename, validation_type, temp_result_filename)
+    system.run_command(cmd)
+
+    if os.path.exists(temp_result_filename):
+        result = fs_utils.read_file(temp_result_filename, sys.getfilesystemencoding())
+
+        if 'ERROR' in result.upper():
+            lines = fs_utils.read_file_lines(xml_filename)
+            numbers = [str(i) + ':' for i in range(1, len(lines)+1)]
+            result = '\n'.join([n + line for n, line in zip(lines, numbers)])
+            fs_utils.write_file(temp_result_filename, result)
+    else:
+        result = 'ERROR: Not valid. Unknown error.\n' + cmd
+        fs_utils.write_file(temp_result_filename, result)
+
+    shutil.move(temp_result_filename, result_filename)
+    fs_utils.write_file(xml_filename, bkp)
+    return 'ERROR' not in result.upper()
+
+
+def new_xml_validate(xml_filename, result_filename, doctype=None):
+    #register_log('xml_validate: inicio')
     validation_type = ''
 
     if doctype is None:
@@ -234,9 +286,10 @@ def xml_validate(xml_filename, result_filename, doctype=None):
 
     bkp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
     temp_result_filename = TMP_DIR + '/' + os.path.basename(result_filename)
+    result_path = os.path.dirname(result_filename)
     fs_utils.delete_file_or_folder(result_filename)
-    if not os.path.isdir(os.path.dirname(result_filename)):
-        os.makedirs(os.path.dirname(result_filename))
+    if not os.path.isdir(result_path):
+        os.makedirs(result_path)
 
     cmd = JAVA_PATH + ' -cp "' + JAR_VALIDATE + '" br.bireme.XMLCheck.XMLCheck "' + xml_filename + '" ' + validation_type + '>"' + temp_result_filename + '"'
     system.run_command(cmd)

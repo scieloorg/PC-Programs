@@ -4,26 +4,39 @@ import shutil
 import tempfile
 import zipfile
 from datetime import datetime
+import csv
 
 from . import files_extractor
+from . import encoding
 
 
 def read_file(filename, encode='utf-8'):
     if os.path.isfile(filename):
-        return open(filename, 'r', encoding=encode).read()
+        r = open(filename, 'r').read()
+        return encoding.decode(r, encode)
 
 
 def read_file_lines(filename, encode='utf-8'):
     if os.path.isfile(filename):
-        return open(filename, 'r', encoding=encode).readlines()
+        r = open(filename, 'r').readlines()
+        return [encoding.decode(item, encode).strip() for item in r]
 
 
 def write_file(filename, content, encode='utf-8'):
-    open(filename, 'w', encoding=encode).write(content)
+    open(filename, 'w').write(encoding.encode(content, encode))
 
 
 def append_file(filename, content, encode='utf-8'):
-    open(filename, 'a+', encoding=encode).write(content + '\n')
+    open(filename, 'a+').write(encoding.encode(content, encode) + '\n')
+
+
+def read_csv_file(filename, encode='utf-8'):
+    lines = []
+    with open(filename, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter='\t')
+        for item in spamreader:
+            lines.append([encoding.decode(elem, encode).strip() for elem in item])
+    return lines
 
 
 def delete_file_or_folder(path):

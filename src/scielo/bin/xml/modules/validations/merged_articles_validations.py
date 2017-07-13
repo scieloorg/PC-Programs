@@ -43,7 +43,7 @@ class MergedArticlesReports(object):
         common_data = ''
         for label, values in self.merged_articles_data.common_data.items():
             if len(values.keys()) == 1:
-                common_data += html_reports.tag('p', html_reports.display_label_value(label, values.keys()[0]))
+                common_data += html_reports.tag('p', html_reports.display_label_value(label, list(values.keys())[0]))
             else:
                 common_data += html_reports.format_list(label + ':', 'ol', values.keys())
         return html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')

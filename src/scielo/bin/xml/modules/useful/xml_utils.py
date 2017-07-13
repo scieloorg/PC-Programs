@@ -13,6 +13,8 @@ except ImportError:
     import HTMLParser as html_parser
 
 from ..__init__ import _
+from ..__init__ import TABLES_PATH
+
 from . import fs_utils
 from . import encoding
 
@@ -46,8 +48,7 @@ def element_lang(node):
 
 def load_entities_table():
     table = {}
-    curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-    entities_filename = curr_path + '/../../tables/entities.csv'
+    entities_filename = TABLES_PATH + '/entities.csv'
     if os.path.isfile(entities_filename):
         for item in fs_utils.read_file_lines(entities_filename):
             symbol, number_ent, named_ent, descr, representation = item.split('|')
@@ -203,6 +204,12 @@ def restore_xml_file(xml_filename, temp_filename):
     fs_utils.delete_file_or_folder(os.path.dirname(temp_filename))
 
 
+def new_apply_dtd(xml_filename, doctype):
+    fs_utils.write_file(
+        xml_filename,
+        replace_doctype(fs_utils.read_file(xml_filename), doctype))
+
+
 def node_findtext(node, xpath=None, multiple=False):
     # contrib.findtext('name/given-names')
     if node is None:
@@ -222,28 +229,28 @@ def node_findtext(node, xpath=None, multiple=False):
 def node_text(node):
     if node is None:
         return
-    text = node_xml(node)
+    text = tostring(node)
     if text is not None:
-        text = text.strip()
-        if text.startswith('<') and text.endswith('>'):
-            text = text[text.find('>')+1:]
-            if '</' in text:
-                text = text[0:text.rfind('</')]
-                text = text.strip()
+        text = text[text.find('>')+1:]
+        if '</' in text:
+            text = text[0:text.rfind('</')]
+            text = text.strip()
     return text
 
 
 def node_xml(node):
-    text = None
-    if node is not None:
-        text = tostring(node)
-        if '&' in text:
-            text, replaced_named_ent = convert_entities_to_chars(text)
-    return text
+    if node is None:
+        return
+    text = tostring(node)
+    if '&' in text:
+        text, replaced_named_ent = convert_entities_to_chars(text)
+    return text.strip()
 
 
 def tostring(node):
-    return encoding.decode(etree.tostring(node))
+    if node is None:
+        return
+    return encoding.decode(etree.tostring(node, encoding='utf-8'))
 
 
 def complete_entity(xml_content):
@@ -477,7 +484,7 @@ def restore_styles(content):
 def remove_break_lines_off_element_content_item(item):
     if not item.startswith('<') and not item.endswith('>'):
         if item.strip() != '':
-            item = ' '.join([w for w in item.split()])
+            item = ' '.join([item.split()])
     return item
 
 
@@ -618,14 +625,12 @@ class PrettyXML(object):
         node, e = load_xml(self._xml)
         if node is not None:
             prefix = self.split_prefix()
-            self.normalize_spaces_in_xml()
+            self.mark_valid_spaces()
             self.preserve_styles()
             self.minidom_pretty_print()
-            self.remove_inconvenient_break_lines()
+            self.restore_valid_spaces()
             self.restore_styles()
             self.remove_exceding_style_tags()
-            while ' '*2 in self._xml:
-                self._xml = self._xml.replace(' '*2, ' ')
             return prefix + self._xml
         return self._xml
 
@@ -639,16 +644,23 @@ class PrettyXML(object):
             self._xml = self._xml.replace('[' + tag + ']', '<' + tag + '>')
             self._xml = self._xml.replace('[/' + tag + ']', '</' + tag + '>')
 
-    def remove_inconvenient_break_lines(self):
+    def restore_valid_spaces(self):
         self._xml = '\n'.join([item for item in self._xml.split('\n') if item.strip() != ''])
-        self._xml = self._xml.replace('>', '>NORMALIZESPACES')
-        self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        self._xml = ''.join([self.fix_line(item) for item in self._xml.split('NORMALIZESPACES')])
+        self._xml = self._xml.replace('PRESERVESPACES', ' ')
+        #self._xml = '\n'.join([item for item in self._xml.split('\n') if item.strip() != ''])
+        #self._xml = self._xml.replace('>', '>NORMALIZESPACES')
+        #self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
+        #self._xml = ''.join([self.fix_line(item) for item in self._xml.split('NORMALIZESPACES')])
 
-    def normalize_spaces_in_xml(self):
+    def fix_line(self, item):
+        if item.strip() != '':
+            item = item.strip()
+        return item.replace('PRESERVESPACES', ' ')
+
+    def mark_valid_spaces(self):
         self._xml = self._xml.replace('>', '>NORMALIZESPACES')
         self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        self._xml = ''.join([self.normalize_spaces_in_xml_item(item) for item in self._xml.split('NORMALIZESPACES')])
+        self._xml = ''.join([self.insert_preserve_spaces_mark(item) for item in self._xml.split('NORMALIZESPACES')])
 
     def remove_exceding_style_tags(self):
         doit = True
@@ -666,19 +678,21 @@ class PrettyXML(object):
                 self._xml = self._xml.replace('</' + style + '> <' + style + '>', ' ')
             doit = (curr_value != self._xml)
 
-    def normalize_spaces_in_xml_item(self, text):
+    def insert_preserve_spaces_mark(self, text):
         if text.startswith('<') and text.endswith('>'):
             text = '<' + ' '.join(text[1:-1].split()) + '>'
-        elif text.strip() == '':
-            pass
-        else:
-            text = text.replace(' ', 'PRESERVESPACES').replace('\n', 'PRESERVESPACES')
+        elif text.strip() != '':
+            if 'VILPOUX' in text:
+                print('insert_preserve_spaces_mark', text)
+            text = text.replace('\n', 'PRESERVESPACES').replace(' ', 'PRESERVESPACES')
+            if 'VILPOUX' in text:
+                print('insert_preserve_spaces_mark', text)
             text = ' '.join(text.split())
-            while 'PRESERVESPACESPRESERVESPACES' in text:
-                text = text.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
-        return text
+            if 'VILPOUX' in text:
+                print('insert_preserve_spaces_mark', text)
+            text = 'PRESERVESPACES'.join([item for item in text.split('PRESERVESPACES') if item != ''])
+            #text = text.replace(' ', 'PRESERVESPACES')
+            if 'VILPOUX' in text:
+                print('insert_preserve_spaces_mark', text)
 
-    def fix_line(self, item):
-        if item.strip() != '':
-            item = item.strip()
-        return item.replace('PRESERVESPACES', ' ')
+        return text

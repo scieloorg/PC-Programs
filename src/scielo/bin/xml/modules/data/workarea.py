@@ -7,6 +7,11 @@ from ..useful import fs_utils
 from ..useful import img_utils
 
 
+SUFFIXES = ['t', 'f', 'e', 'img', 'image']
+SUFFIXES.extend(['-'+s for s in SUFFIXES])
+SUFFIXES.extend(['-', '.'])
+
+
 class Workarea(object):
 
     def __init__(self, output_path, ctrl_path=None):
@@ -39,9 +44,6 @@ class PkgArticleFiles(object):
         if self.filename.endswith('.sgm.xml'):
             self.name, ign = os.path.splitext(self.name)
         self.previous_name = self.name
-        self.SUFFIXES = ['t', 'f', 'e', 'img', 'image']
-        self.SUFFIXES.extend(['-'+s for s in self.SUFFIXES])
-        self.SUFFIXES.extend(['-', '.'])
         self.ctrl_path = None
         self._allfiles = None
         self.listdir = sorted(os.listdir(self.path))
@@ -65,11 +67,12 @@ class PkgArticleFiles(object):
 
     def all_files(self):
         r = []
-        for suffix in self.SUFFIXES:
-            r += [item for item in os.listdir(self.path) if item.startswith(self.name + suffix)]
+        self.listdir = os.listdir(self.path)
+        for suffix in SUFFIXES:
+            r += [item for item in self.listdir if item.startswith(self.name + suffix)]
         if self.basename.startswith('a') and self.basename[3:4] == 'v':
             prefix = self.basename[:3]
-            r += [item for item in os.listdir(self.path) if item.startswith(prefix)]
+            r += [item for item in self.listdir if item.startswith(prefix)]
         r = list(set(r))
         r = [item for item in r if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
         return sorted(r)

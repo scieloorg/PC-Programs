@@ -10,6 +10,7 @@ from ..useful import fs_utils
 from ..pkg_processors import xml_versions
 from ..reports import html_reports
 from ..ws import institutions_manager
+from ..ws import ws_journals
 from ..validations import validation_status
 from ..validations import article_data_reports
 from ..validations import pkg_articles_validations
@@ -311,9 +312,11 @@ class PkgProcessor(object):
         self.web_url = None
         self.serial_path = None
         self.version = version
+        print(self.config.app_ws_requester)
+        self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
+        self.journals_list = xc_models.JournalsList(self.ws_journals.downloaded_journals_filename)
         self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
-        self.journals_list = xc_models.JournalsList(self.config.app_ws_requester)
         self.xml_structure_validator = article_validations_module.XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
 
     def make_package(self, pkg, GENERATE_PMC=False):

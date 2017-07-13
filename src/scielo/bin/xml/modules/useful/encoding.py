@@ -1,22 +1,22 @@
 # coding=utf-8
 
 
-def is_unicode(content):
+def is_encodable(content):
     try:
         r = isinstance(content, unicode)
     except:
-        r = True
+        r = False
     return r
 
 
 def decode(content, encoding='utf-8'):
     if content is None:
         return
-    if not is_unicode(content):
+    if not is_encodable(content) and hasattr(content, 'decode'):
         try:
             content = content.decode(encoding)
         except Exception as e:
-            print('decode:', e)
+            print('decode:', type(content), e)
     return content
 
 
@@ -32,7 +32,7 @@ def encode(content, encoding='utf-8', error_handler=None):
     """
     if content is None:
         return
-    if is_unicode(content):
+    if is_encodable(content):
         if error_handler in ['xmlcharrefreplace', 'replace', 'ignore']:
             try:
                 content = content.encode(encoding, error_handler)

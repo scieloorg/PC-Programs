@@ -2,7 +2,6 @@
 
 import os
 import shutil
-import csv
 
 from ..__init__ import _
 
@@ -11,7 +10,6 @@ from ..useful import xml_utils
 from ..useful import fs_utils
 from ..useful import article_utils
 from ..useful import encoding
-from ..ws import ws_journals
 from ..reports import html_reports
 from ..data.article import Issue, PersonAuthor, Article, Journal
 from ..data import attributes
@@ -1400,33 +1398,28 @@ class DBManager(object):
 
 class JournalsList(object):
 
-    def __init__(self, app_ws_requester):
-        ws = ws_journals.Journals(app_ws_requester)
-        ws.update_journals_file()
-        self._journals = {}
-        with open(ws.downloaded_journals_filename, 'rb') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter='\t')
-            for item in spamreader:
-                if len(item) >= 10:
-                    item = [encoding.decode(elem).strip() for elem in item]
-                    if item[1] != 'ISSN':
-                        j = Journal()
-                        j.collection_acron = item[0]
-                        j.collection_name = item[4]
-                        j.issn_id = item[1]
-                        j.p_issn = item[2]
-                        j.e_issn = item[3]
-                        j.acron = item[5]
-                        j.abbrev_title = item[6]
-                        j.journal_title = item[7]
-                        j.nlm_title = item[8]
-                        j.publisher_name = item[9]
-                        if len(item) == 12:
-                            j.license = item[11]
-                        for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
-                            if issn not in self._journals.keys():
-                                self._journals[issn] = []
-                            self._journals[issn].append(j)
+    def __init__(self, downloaded_journals_filename):
+        for item in fs_utils.read_csv_file(downloaded_journals_filename):
+            if len(item) >= 10:
+                item = [encoding.decode(elem).strip() for elem in item]
+                if item[1] != 'ISSN':
+                    j = Journal()
+                    j.collection_acron = item[0]
+                    j.collection_name = item[4]
+                    j.issn_id = item[1]
+                    j.p_issn = item[2]
+                    j.e_issn = item[3]
+                    j.acron = item[5]
+                    j.abbrev_title = item[6]
+                    j.journal_title = item[7]
+                    j.nlm_title = item[8]
+                    j.publisher_name = item[9]
+                    if len(item) == 12:
+                        j.license = item[11]
+                    for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
+                        if issn not in self._journals.keys():
+                            self._journals[issn] = []
+                        self._journals[issn].append(j)
 
     def get_journal_instances(self, p_issn, e_issn, journal_title):
         journal_instances = []

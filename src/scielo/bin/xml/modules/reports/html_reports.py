@@ -10,6 +10,7 @@ from ..__init__ import _
 from ..useful import fs_utils
 from ..useful import xml_utils
 from ..validations import validation_status
+from ..useful import encoding
 
 
 ENABLE_COMMENTS = False
@@ -101,24 +102,11 @@ def report_date():
     return tag('p', tag('span', procdate[0:10] + ' ' + procdate[11:19], 'report-date'))
 
 
-def get_unicode(text):
-    if text is None:
-        text = u''
-    if not isinstance(text, unicode):
-        try:
-            text = text.decode('utf-8')
-        except Exception as e:
-            try:
-                text = text.decode('utf-8', 'xmlcharrefreplace')
-            except Exception as e:
-                print(e)
-                print(text)
-                #text = u''
-    return text
-
-
 def join_texts(texts):
-    text = u''.join([get_unicode(t) for t in texts])
+    for text in texts:
+        if not encoding.is_encodable(text):
+            print('join_texts', text[0:100])
+    text = ''.join([encoding.encode(t) for t in texts])
     return text
 
 
@@ -354,7 +342,7 @@ def sheet_build(table_header, table_rows_data, table_style='sheet', style4row=No
     rows = ''
     for row_data in table_rows_data:
         if len(row_data) == 1 and len(table_header) > 1:
-            key = row_data.keys()[0]
+            key = list(row_data.keys())[0]
             if key == 'hidden':
                 columns = hidden_row(str(len(table_header)), table_header[-1], row_data.get(key))
             else:

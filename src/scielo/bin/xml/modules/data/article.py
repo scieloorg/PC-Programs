@@ -824,8 +824,10 @@ class ArticleXML(object):
 
     @property
     def title_abstract_kwd_languages(self):
-        r = list(set(self.keywords_by_lang.keys() + self.abstracts_by_lang.keys() + self.titles_by_lang.keys()))
-        return [item for item in r if item is not None]
+        items = []
+        for item in [self.keywords_by_lang, self.abstracts_by_lang, self.titles_by_lang]:
+            items.extend(list(item.keys()))
+        return [item for item in list(set(items)) if item is not None]
 
     @property
     def trans_languages(self):
@@ -1470,7 +1472,7 @@ class Article(ArticleXML):
         data['elocation id'] = self.elocation_id
         data['license'] = None
         if len(self.article_licenses) > 0:
-            data['license'] = self.article_licenses.values()[0]['href']
+            data['license'] = list(self.article_licenses.values())[0]['href']
         return data
 
     @property

@@ -24,7 +24,7 @@ class XMLJournalDataValidator(object):
             items = []
             license_url = None
             if len(article.article_licenses) > 0:
-                license_url = article.article_licenses.values()[0].get('href')
+                license_url = list(article.article_licenses.values())[0].get('href')
 
             items.append([_('NLM title'), article.journal_id_nlm_ta, self.journal_data.nlm_title, validation_status.STATUS_FATAL_ERROR])
             #items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal_data.acron, validation_status.STATUS_FATAL_ERROR])
@@ -73,9 +73,7 @@ class XMLStructureValidator(object):
         if '_' in new_name or '.' in new_name:
             name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=new_name, forbidden_characters='_.') + separator
 
-        files_errors = ''
-        if os.path.isfile(outputs.err_filename):
-            files_errors = fs_utils.read_file(outputs.err_filename)
+        files_errors = fs_utils.read_file(outputs.err_filename) or ''
 
         for f in [outputs.dtd_report_filename, outputs.style_report_filename, outputs.data_report_filename, outputs.pmc_style_report_filename]:
             fs_utils.delete_file_or_folder(f)
@@ -83,10 +81,9 @@ class XMLStructureValidator(object):
         xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
-        xml_structure_report_content = ''
-        if os.path.isfile(outputs.dtd_report_filename):
-            xml_structure_report_content = rst_title(_('DTD errors')) + fs_utils.read_file(outputs.dtd_report_filename)
-            #fs_utils.delete_file_or_folder(outputs.dtd_report_filename)
+        xml_structure_report_content = '' or fs_utils.read_file(outputs.dtd_report_filename)
+        if len(xml_structure_report_content) > 0:
+            xml_structure_report_content = rst_title(_('DTD errors')) + xml_structure_report_content
 
         report_content = ''
         if xml is None:
@@ -168,7 +165,7 @@ class XMLContentValidator(object):
                 r = r[:r.find('</body>')]
                 content.append(r)
                 content.append(article_display_report.files_and_href())
-            content = html_reports.join_texts(content)
+            content = ''.join(content)
         r = validations_module.ValidationsResult()
         r.message = content
         return r, article_display_report
