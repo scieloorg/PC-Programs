@@ -12,24 +12,25 @@ from ..data import package
 from ..pkg_processors import sgmlxml
 from ..pkg_processors import pkg_processors
 from ..config import config
+from ..pkg_processors import xml_versions
 
 
 def call_make_packages(args, version):
     script, xml_path, acron, DISPLAY_REPORT, GENERATE_PMC = read_inputs(args)
-    pkgfiles = None
+    normalized_pkgfiles = None
     stage = 'xpm'
     if any([xml_path, acron]):
-        stage, pkgfiles = get_pkgfiles(version, script, xml_path, acron)
+        stage, normalized_pkgfiles = get_normalized_pkgfiles(version, script, xml_path, acron)
 
     reception = XPM_Reception(version, stage, DISPLAY_REPORT)
-    if pkgfiles is None:
+    if normalized_pkgfiles is None:
         reception.display_form()
     else:
-        reception.make_package(pkgfiles, GENERATE_PMC)
+        reception.make_package(normalized_pkgfiles, GENERATE_PMC)
 
 
-def get_pkgfiles(version, script, xml_path, acron):
-    pkgfiles = None
+def get_normalized_pkgfiles(version, script, xml_path, acron):
+    normalized_pkgfiles = None
     stage = 'xpm'
     sgm_xml, xml_list, errors = evaluate_xml_path(xml_path)
     if len(errors) > 0:
@@ -44,13 +45,14 @@ def get_pkgfiles(version, script, xml_path, acron):
         messages.append('\n'.join(errors))
         utils.display_message('\n'.join(messages))
     else:
-        pkgfiles = []
+        normalized_pkgfiles = []
         if sgm_xml is not None:
-            pkgfiles = [sgmlxml2xml(sgm_xml, acron, version)]
+            normalized_pkgfiles = [sgmlxml2xml(sgm_xml, acron, version)]
             stage = 'xml'
         else:
-            pkgfiles = pkg_processors.normalize_xml_packages(xml_list, stage)
-    return stage, pkgfiles
+            dtd = (xml_versions.DTDFiles('scielo', version).local, xml_versions.DTDFiles('scielo', version).remote)
+            normalized_pkgfiles = pkg_processors.normalize_xml_packages(xml_list, dtd, stage)
+    return stage, normalized_pkgfiles
 
 
 def read_inputs(args):
@@ -121,14 +123,14 @@ class XPM_Reception(object):
 
     def call_make_package(self, xml_path, GENERATE_PMC=False):
         xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
-        pkgfiles = pkg_processors.normalize_xml_packages(xml_list, self.proc.stage)
-        self.make_package(pkgfiles, GENERATE_PMC)
+        normalized_pkgfiles = pkg_processors.normalize_xml_packages(xml_list, (self.proc.scielo_dtd_files.local, self.proc.scielo_dtd_files.remote), self.proc.stage)
+        self.make_package(normalized_pkgfiles, GENERATE_PMC)
         return 'done', 'blue'
 
-    def make_package(self, pkgfiles, GENERATE_PMC=False):
-        if len(pkgfiles) > 0:
-            files = [f.filename for f in pkgfiles]
-            workarea_path = os.path.dirname(pkgfiles[0].path)
+    def make_package(self, normalized_pkgfiles, GENERATE_PMC=False):
+        if len(normalized_pkgfiles) > 0:
+            files = [f.filename for f in normalized_pkgfiles]
+            workarea_path = os.path.dirname(normalized_pkgfiles[0].path)
             print('make_package', workarea_path)
             pkg = package.Package(files, workarea_path)
             self.proc.make_package(pkg, GENERATE_PMC)

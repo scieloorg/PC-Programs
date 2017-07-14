@@ -30,7 +30,7 @@ def nodetext(node, sep='|'):
     if node is None:
         r = None
     elif isinstance(node, list):
-        r = sep.join([item for item in xml_utils.node_findtext(node) if item is not None])
+        r = sep.join([xml_utils.node_findtext(item) for item in node if item is not None])
     else:
         r = xml_utils.node_findtext(node)
     if r == '':

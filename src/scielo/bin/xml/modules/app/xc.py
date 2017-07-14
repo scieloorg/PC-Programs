@@ -91,17 +91,13 @@ class XC_Reception(object):
         stats_msg = ''
         report_location = None
         pkgfolder = workarea.PackageFolder(package_path)
-        pkgfiles = package.normalize_xml_packages(pkgfolder.xml_list, 'xc')
+
+        pkg = self.proc.normalized_package(pkgfolder.xml_list)
         scilista_items = []
 
         try:
 
-            if len(pkgfiles) > 0:
-                files = [f.filename for f in pkgfiles]
-                workarea_path = os.path.dirname(pkgfiles[0].path)
-                print('convert_package', workarea_path)
-                pkg = package.Package(files, workarea_path)
-
+            if len(pkg.articles) > 0:
                 scilista_items, xc_status, stats_msg, report_location = self.proc.convert_package(pkg)
                 print(scilista_items)
         except Exception as e:

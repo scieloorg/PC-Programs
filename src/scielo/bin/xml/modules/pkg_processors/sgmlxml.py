@@ -13,7 +13,6 @@ from ..reports import html_reports
 from ..validations import validation_status
 from ..data import article
 from ..data import workarea
-from . import xml_versions
 from . import symbols
 from . import sps_pkgmaker
 
@@ -366,8 +365,8 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
 class SGMLXML2SPSXMLConverter(object):
 
-    def __init__(self, version):
-        self.xsl = xml_versions.xsl_sgml2xml(version)
+    def __init__(self, xsl):
+        self.xsl = xsl
 
     def sgml2xml(self, xml):
         r = xml

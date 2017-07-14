@@ -264,7 +264,8 @@ def xml_validate(xml_filename, result_filename, doctype=None):
         if 'ERROR' in result.upper():
             lines = fs_utils.read_file_lines(xml_filename)
             numbers = [str(i) + ':' for i in range(1, len(lines)+1)]
-            result = '\n'.join([n + line for n, line in zip(lines, numbers)])
+            result = '\n'.join([n + line for n, line in zip(numbers, lines)])
+            print(result)
             fs_utils.write_file(temp_result_filename, result)
     else:
         result = 'ERROR: Not valid. Unknown error.\n' + cmd

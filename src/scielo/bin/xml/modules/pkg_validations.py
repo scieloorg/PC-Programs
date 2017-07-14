@@ -1466,10 +1466,14 @@ def rst_title(title):
     return '\n\n' + title + '\n' + '-'*len(title) + '\n'
 
 
+def normalize_text(text):
+    return ' '.join(text.split())
+
+
 def articles_similarity(article1, article2):
     relaxed_labels = [_('titles'), _('authors')]
     relaxed_data = []
-    relaxed_data.append((article1.textual_titles, article2.textual_titles))
+    relaxed_data.append((normalize_text(article1.textual_titles), normalize_text(article2.textual_titles)))
     relaxed_data.append((article_reports.display_authors(article1.article_contrib_items, '; '), article_reports.display_authors(article2.article_contrib_items, '; ')))
 
     if not any([article1.textual_titles, article2.textual_titles, article1.textual_contrib_surnames, article2.textual_contrib_surnames]):

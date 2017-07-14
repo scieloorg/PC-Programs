@@ -4,6 +4,7 @@ import os
 import shutil
 
 from ..__init__ import _
+from ..__init__ import BIN_PATH
 
 from ..useful import utils
 from ..useful import fs_utils
@@ -40,19 +41,17 @@ categories_messages = {
     'regular doc': _('doc has no aop'),
     'ex aop': _('aop is published in an issue'),
     'matched aop': _('doc has aop version'),
-    'partially matched aop': _('doc has aop version partially matched (title/author are similar)'), 
+    'partially matched aop': _('doc has aop version partially matched (title/author are similar)'),
     'aop missing PID': _('doc has aop version which has no PID'),
-    'unmatched aop': _('doc has an invalid aop version (title/author are not the same)'), 
+    'unmatched aop': _('doc has an invalid aop version (title/author are not the same)'),
 }
 
 
 def xpm_version():
-    CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-
     version_files = [
-        CURRENT_PATH + '/../../xpm_version.txt',
-        CURRENT_PATH + '/../../cfg/xpm_version.txt',
-        CURRENT_PATH + '/../../cfg/version.txt',
+        BIN_PATH + '/xpm_version.txt',
+        BIN_PATH + '/cfg/xpm_version.txt',
+        BIN_PATH + '/cfg/version.txt',
     ]
     version = ''
     for f in version_files:
@@ -62,7 +61,7 @@ def xpm_version():
     return version
 
 
-def normalize_xml_packages(xml_list, stage='xpm'):
+def normalize_xml_packages(xml_list, dtd_replacement, stage):
     print('normalize_xml_packages', xml_list)
     pkgfiles_items = [workarea.PkgArticleFiles(item) for item in xml_list]
 
@@ -81,6 +80,7 @@ def normalize_xml_packages(xml_list, stage='xpm'):
     for src, dest in zip(pkgfiles_items, dest_pkgfiles_items):
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
+        xmlcontent.doctype(dtd_replacement[0], dtd_replacement[1])
         fs_utils.write_file(dest.filename, xmlcontent.content)
         src.copy(dest_path)
     return dest_pkgfiles_items
@@ -312,12 +312,23 @@ class PkgProcessor(object):
         self.web_url = None
         self.serial_path = None
         self.version = version
-        print(self.config.app_ws_requester)
+        self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
+        self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
+
         self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
         self.journals_list = xc_models.JournalsList(self.ws_journals.downloaded_journals_filename)
         self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
-        self.xml_structure_validator = article_validations_module.XMLStructureValidator(xml_versions.DTDFiles('scielo', version))
+        self.xml_structure_validator = article_validations_module.XMLStructureValidator(self.scielo_dtd_files)
+
+    def normalized_package(self, xml_list):
+        dtd_replacement = (self.scielo_dtd_files.local, self.scielo_dtd_files.remote)
+        if self.stage == 'db':
+            dtd_replacement = (self.scielo_dtd_files.remote, self.scielo_dtd_files.local)
+
+        pkgfiles = package.normalize_xml_packages(xml_list, dtd_replacement, self.stage)
+        workarea_path = os.path.dirname(pkgfiles[0].path)
+        pkg = package.Package([f.filename for f in pkgfiles], workarea_path)
 
     def make_package(self, pkg, GENERATE_PMC=False):
         registered_issue_data = registered.RegisteredIssueData(self.db_manager, self.journals_list)

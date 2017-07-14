@@ -244,6 +244,7 @@ def node_xml(node):
     text = tostring(node)
     if '&' in text:
         text, replaced_named_ent = convert_entities_to_chars(text)
+    return text
     return text.strip()
 
 
@@ -625,6 +626,7 @@ class PrettyXML(object):
         node, e = load_xml(self._xml)
         if node is not None:
             prefix = self.split_prefix()
+            self.remove_exceding_style_tags()
             self.mark_valid_spaces()
             self.preserve_styles()
             self.minidom_pretty_print()
@@ -646,16 +648,10 @@ class PrettyXML(object):
 
     def restore_valid_spaces(self):
         self._xml = '\n'.join([item for item in self._xml.split('\n') if item.strip() != ''])
+        self._xml = self._xml.replace('>', '>NORMALIZESPACES')
+        self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
+        self._xml = ''.join([item if item.strip() == '' else item.strip() for item in self._xml.split('NORMALIZESPACES')])
         self._xml = self._xml.replace('PRESERVESPACES', ' ')
-        #self._xml = '\n'.join([item for item in self._xml.split('\n') if item.strip() != ''])
-        #self._xml = self._xml.replace('>', '>NORMALIZESPACES')
-        #self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        #self._xml = ''.join([self.fix_line(item) for item in self._xml.split('NORMALIZESPACES')])
-
-    def fix_line(self, item):
-        if item.strip() != '':
-            item = item.strip()
-        return item.replace('PRESERVESPACES', ' ')
 
     def mark_valid_spaces(self):
         self._xml = self._xml.replace('>', '>NORMALIZESPACES')
@@ -669,30 +665,33 @@ class PrettyXML(object):
             curr_value = self._xml
 
             for style in ['sup', 'sub', 'bold', 'italic']:
+                tclose = '</' + style + '>'
+                topen = '<' + style + '>'
+                x = self._xml
                 self._xml = self._xml.replace('<' + style + '/>', '')
                 self._xml = self._xml.replace('<' + style + '> ', ' <' + style + '>')
                 self._xml = self._xml.replace(' </' + style + '>', '</' + style + '> ')
-                self._xml = self._xml.replace('</' + style + '><' + style + '>', '')
-                self._xml = self._xml.replace('<' + style + '></' + style + '>', '')
-                self._xml = self._xml.replace('<' + style + '> </' + style + '>', ' ')
                 self._xml = self._xml.replace('</' + style + '> <' + style + '>', ' ')
+                self._xml = self._xml.replace(tclose + topen, '')
+                self._xml = self._xml.replace(topen + tclose, '')
+                """
+                if self._xml != x:
+                    from datetime import datetime
+                    it = datetime.now().isoformat()
+                    print('changed', style)
+                    fs_utils.write_file(style + '{}_antes.txt'.format(it), x)
+                    fs_utils.write_file(style + '{}_depois.txt'.format(it), self._xml)
+                """
             doit = (curr_value != self._xml)
+        while ' '*2 in self._xml:
+            self._xml = self._xml.replace(' '*2, ' ')
 
     def insert_preserve_spaces_mark(self, text):
         if text.startswith('<') and text.endswith('>'):
             text = '<' + ' '.join(text[1:-1].split()) + '>'
         elif text.strip() != '':
-            if 'VILPOUX' in text:
-                print('insert_preserve_spaces_mark', text)
-            text = text.replace('\n', 'PRESERVESPACES').replace(' ', 'PRESERVESPACES')
-            if 'VILPOUX' in text:
-                print('insert_preserve_spaces_mark', text)
+            text = text.replace(' ', 'PRESERVESPACES').replace('\n', 'PRESERVESPACES')
             text = ' '.join(text.split())
-            if 'VILPOUX' in text:
-                print('insert_preserve_spaces_mark', text)
-            text = 'PRESERVESPACES'.join([item for item in text.split('PRESERVESPACES') if item != ''])
-            #text = text.replace(' ', 'PRESERVESPACES')
-            if 'VILPOUX' in text:
-                print('insert_preserve_spaces_mark', text)
-
+            while 'PRESERVESPACESPRESERVESPACES' in text:
+                text = text.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
         return text

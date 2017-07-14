@@ -650,6 +650,10 @@ def article_history(articles):
     return '<hr/>'.join(r)
 
 
+def normalize_text(text):
+    return ' '.join(text.split())
+
+
 class ArticlesComparison(object):
 
     def __init__(self, article1, article2, ign_name=False, ign_order=False):
@@ -661,7 +665,7 @@ class ArticlesComparison(object):
     def _evaluate_articles_similarity(self):
         relaxed_labels = [_('titles'), _('authors')]
         relaxed_data = []
-        relaxed_data.append((self.article1.textual_titles, self.article2.textual_titles))
+        relaxed_data.append((normalize_text(self.article1.textual_titles), normalize_text(self.article2.textual_titles)))
         relaxed_data.append((display_authors(self.article1.article_contrib_items, '; '), display_authors(self.article2.article_contrib_items, '; ')))
 
         if not any([self.article1.textual_titles, self.article2.textual_titles, self.article1.textual_contrib_surnames, self.article2.textual_contrib_surnames]):

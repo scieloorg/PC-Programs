@@ -37,7 +37,6 @@ class SPSXMLContent(xml_utils.XMLContent):
             self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
             self.content = self.content.replace(' rid=" ', ' rid="')
             self.content = self.content.replace(' id=" ', ' id="')
-            self.content = xml_utils.pretty_print(self.content)
             self.remove_xmllang_from_element('article-title')
             self.remove_xmllang_from_element('source')
             self.content = self.content.replace('> :', '>: ')
@@ -46,6 +45,10 @@ class SPSXMLContent(xml_utils.XMLContent):
                 self.remove_styles_from_tagged_content(tag)
             self.content = self.content.replace('<institution content-type="normalized"/>', '')
             self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
+            self.content = xml_utils.pretty_print(self.content)
+
+    def doctype(self, doctype_source, doctype_dest):
+        self.content = self.content.replace('"' + doctype_source + '"', '"' + doctype_dest + '"')
 
     def insert_mml_namespace(self):
         if '</math>' in self.content:
