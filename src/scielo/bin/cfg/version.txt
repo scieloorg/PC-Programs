@@ -6,6 +6,7 @@
   - (new) [2578] Configuration of Web access status and proxy
 - XML Markup 
   - (new) [2589] Generation of city, state, postal-code
+  - (new) [2590] Generation of version from version
 - XC
   - (new) [1253] Python3
 
