@@ -107,7 +107,7 @@ sec
 sec-type
 
 fn
-id;fntype;label
+id;fntype;label;symbol
 
 fntable
 id
@@ -192,3 +192,10 @@ language;href
 
 xhtml
 href
+
+institid
+itstype
+
+code
+itstype
+

@@ -7,6 +7,7 @@ ifloat
 *boxedtxt;#FALSE#;#TRUE#
 boxedtxt;#FALSE#;#TRUE#
 cltrial;#FALSE#;#FALSE#
+code;#FALSE#;#TRUE#
 corresp;#FALSE#;#FALSE#
 cpright;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
@@ -18,12 +19,13 @@ figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#FALSE#;#TRUE#
+institid;#FALSE#;#TRUE#
 licinfo;#FALSE#;#TRUE#
 *list;#FALSE#;#TRUE#
 list;#FALSE#;#TRUE#
 product;#FALSE#;#TRUE#
 quote;#FALSE#;#TRUE#
-refs;#TRUE#;#TRUE#
+refs;#FALSE#;#TRUE#
 related;#FALSE#;#TRUE#
 supplmat;#FALSE#;#TRUE#
 media;#FALSE#;#TRUE#
@@ -282,7 +284,7 @@ extent
 figgrp
 graphic;#FALSE#;#FALSE#
 alttext;#FALSE#;#FALSE#
-attrib;#TRUE#;#FALSE#
+attrib;#FALSE#;#FALSE#
 label;#FALSE#;#FALSE#
 caption;#FALSE#;#FALSE#
 
@@ -1129,4 +1131,8 @@ prefix
 *page-fn
 
 xhtml
+
+institid
+
+code
 
