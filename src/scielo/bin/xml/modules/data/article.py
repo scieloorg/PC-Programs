@@ -26,15 +26,10 @@ def element_which_requires_permissions(node, node_graphic=None):
     return missing_permissions
 
 
-def nodetext(node, sep='|'):
-    if node is None:
-        r = None
-    elif isinstance(node, list):
-        r = sep.join([xml_utils.node_findtext(item) for item in node if item is not None])
-    else:
-        r = xml_utils.node_findtext(node)
+def format_values(values, sep='|'):
+    r = sep.join([item for item in values if item is not None])
     if r == '':
-        r = None
+        return None
     return r
 
 
@@ -52,30 +47,108 @@ def format_author(author):
     return r
 
 
+class AffiliationXML(object):
+    def __init__(self, node):
+        self.node = node
+
+    @property
+    def xml(self):
+        return xml_utils.node_xml(self.node)
+
+    @property
+    def id(self):
+        return self.node.attrib.get('id')
+
+    @property
+    def institution_id(self):
+        items = self.node.findall('.//institution-id')
+        if items is not None:
+            r = []
+            for item in items:
+                idtype = None
+                if item.attrib is not None:
+                    idtype = item.attrib.get('institution-id-type')
+                r.append((idtype, item.text))
+            return r
+
+    @property
+    def city(self):
+        _city = self.node.findall('.//city')
+        if _city is None:
+            return self.node.findall('.//named-content[@content-type="city"]')
+        return _city
+
+    @property
+    def state(self):
+        _state = self.node.findall('.//state')
+        if _state is None:
+            return self.node.findall('.//named-content[@content-type="state"]')
+        return _state
+
+    @property
+    def country_nodes(self):
+        return self.node.findall('country')
+
+    @property
+    def country(self):
+        return [nodes_text(item) for item in self.country_nodes]
+
+    @property
+    def i_country(self):
+        return [item.attrib.get('country') for item in self.country_nodes if item.attrib.get('country') is not None]
+
+    @property
+    def orgname(self):
+        return self.node.findall('.//institution[@content-type="orgname"]')
+
+    @property
+    def norgname(self):
+        return self.node.findall('.//institution[@content-type="normalized"]')
+
+    @property
+    def orgdiv1(self):
+        return self.node.findall('..//institution[@content-type="orgdiv1"]')
+
+    @property
+    def orgdiv2(self):
+        return self.node.findall('..//institution[@content-type="orgdiv2"]')
+
+    @property
+    def orgdiv3(self):
+        return self.node.findall('..//institution[@content-type="orgdiv3"]')
+
+    @property
+    def label(self):
+        _label = self.node.find('label')
+        if _label is not None:
+            return ' '.join(_label.itertext())
+
+    @property
+    def email(self):
+        return self.node.findall('.//email')
+
+    @property
+    def original(self):
+        return self.node.findall('.//institution[@content-type="original"]')
+
+
 def get_affiliation(aff):
     a = Affiliation()
-
-    a.xml = xml_utils.node_xml(aff)
-    a.id = aff.get('id')
-    if aff.find('label') is not None:
-        a.label = ' '.join(aff.find('label').itertext())
-    country = aff.findall('country')
-    a.country = nodetext(country)
-    if not country is None:
-        if isinstance(country, list):
-            a.i_country = '|'.join([item.attrib.get('country') for item in country if item.attrib.get('country') is not None])
-            if a.i_country == '':
-                a.i_country = None
-
-    a.email = nodetext(aff.findall('email'), ', ')
-    a.original = nodetext(aff.findall('institution[@content-type="original"]'))
-    a.norgname = nodetext(aff.findall('institution[@content-type="normalized"]'))
-    a.orgname = nodetext(aff.findall('institution[@content-type="orgname"]'))
-    a.orgdiv1 = nodetext(aff.findall('institution[@content-type="orgdiv1"]'))
-    a.orgdiv2 = nodetext(aff.findall('institution[@content-type="orgdiv2"]'))
-    a.orgdiv3 = nodetext(aff.findall('institution[@content-type="orgdiv3"]'))
-    a.city = nodetext(aff.findall('addr-line/named-content[@content-type="city"]'))
-    a.state = nodetext(aff.findall('addr-line/named-content[@content-type="state"]'))
+    aff_xml = AffiliationXML(aff)
+    a.xml = aff_xml.xml
+    a.id = aff_xml.id
+    a.label = aff_xml.label
+    a.country = format_values(aff_xml.country)
+    a.i_country = format_values(aff_xml.i_country)
+    a.email = format_values(aff_xml.email, ', ')
+    a.original = format_values(aff_xml.original)
+    a.norgname = format_values(aff_xml.norgname)
+    a.orgname = format_values(aff_xml.orgname)
+    a.orgdiv1 = format_values(aff_xml.orgdiv1)
+    a.orgdiv2 = format_values(aff_xml.orgdiv2)
+    a.orgdiv3 = format_values(aff_xml.orgdiv3)
+    a.city = format_values(aff_xml.city)
+    a.state = format_values(aff_xml.state)
     return a
 
 
@@ -230,6 +303,7 @@ class Affiliation(object):
     def __init__(self):
         self.xml = ''
         self.id = ''
+        self.institution_id = ''
         self.city = ''
         self.state = ''
         self.country = ''
@@ -297,7 +371,7 @@ class ArticleXML(object):
         items = []
         nodes = self.tree.findall('.//pub-date[month]')
         for node in nodes:
-            items.append((node.tag, node.attrib.get('pub-type'), xml_utils.node_findtext(node, 'month')))
+            items.append((node.tag, node.attrib.get('pub-type'), node.findtext('month')))
         return items
 
     @property
@@ -305,14 +379,14 @@ class ArticleXML(object):
         items = []
         nodes = self.tree.findall('.//pub-date[season]')
         for node in nodes:
-            items.append((node.tag, node.attrib.get('pub-type'), xml_utils.node_findtext(node, 'season')))
+            items.append((node.tag, node.attrib.get('pub-type'), node.findtext('season')))
         return items
 
     def sections(self, node):
         _sections = []
         if node is not None:
             for node in node.findall('sec'):
-                _sections.append((node.attrib.get('sec-type', ''), xml_utils.node_findtext(node, 'title')))
+                _sections.append((node.attrib.get('sec-type', ''), node.findtext('title')))
         return _sections
 
     @property

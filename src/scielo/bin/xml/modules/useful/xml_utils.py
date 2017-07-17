@@ -239,19 +239,17 @@ def node_text(node):
 
 
 def node_xml(node):
-    if node is None:
-        return
-    text = tostring(node)
-    if '&' in text:
-        text, replaced_named_ent = convert_entities_to_chars(text)
-    return text
-    return text.strip()
+    if node is not None:
+        text = tostring(node)
+        if '&' in text:
+            text, replaced_named_ent = convert_entities_to_chars(text)
+        return text
+        return text.strip()
 
 
 def tostring(node):
-    if node is None:
-        return
-    return encoding.decode(etree.tostring(node, encoding='utf-8'))
+    if node is not None:
+        return encoding.decode(etree.tostring(node, encoding='utf-8'))
 
 
 def complete_entity(xml_content):

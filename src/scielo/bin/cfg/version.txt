@@ -9,6 +9,9 @@
   - (new) [2590] Generation of version from version
 - XC
   - (new) [1253] Python3
+  - (new) [2590] Generation of v95 for version
+  - (new) [2585] Generation of v70^j, v70^k for institution-id, institution-id-type
+
 
 4.0.093 - Release 4 - 30/06/2017
 ================================

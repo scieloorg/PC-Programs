@@ -1238,6 +1238,8 @@ def format_affiliations(affiliations):
         a = {}
         a['l'] = item.label
         a['i'] = item.id
+        if item.institution_id is not None:
+            a['k'], a['j'] = item.institution_id
         a['e'] = item.email
         a['3'] = item.orgdiv3
         a['2'] = item.orgdiv2
