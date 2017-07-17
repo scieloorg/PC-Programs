@@ -47,11 +47,10 @@ def get_normalized_pkgfiles(version, script, xml_path, acron):
     else:
         normalized_pkgfiles = []
         if sgm_xml is not None:
-            normalized_pkgfiles = [sgmlxml2xml(sgm_xml, acron, version)]
+            normalized_pkgfiles = [sgmlxml2xml(sgm_xml, acron, xml_versions.xsl_sgml2xml(version))]
             stage = 'xml'
         else:
-            dtd = (xml_versions.DTDFiles('scielo', version).local, xml_versions.DTDFiles('scielo', version).remote)
-            normalized_pkgfiles = pkg_processors.normalize_xml_packages(xml_list, dtd, stage)
+            normalized_pkgfiles = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
     return stage, normalized_pkgfiles
 
 
@@ -103,8 +102,8 @@ def evaluate_xml_path(xml_path):
     return sgm_xml, xml_list, errors
 
 
-def sgmlxml2xml(sgm_xml_filename, acron, version):
-    _sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(version)
+def sgmlxml2xml(sgm_xml_filename, acron, xsl):
+    _sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xsl)
     pkgfiles = workarea.PackageFiles(sgm_xml_filename)
     wk = sgmlxml.SGMLXMLWorkarea(pkgfiles.name, pkgfiles.path)
     package_maker = sgmlxml.SGMLXML2SPSXMLPackageMaker(wk, pkgfiles)

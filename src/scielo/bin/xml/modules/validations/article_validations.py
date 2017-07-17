@@ -67,7 +67,6 @@ class XMLStructureValidator(object):
 
     def validate(self, xml_filename, outputs):
         separator = '\n\n\n' + '.........\n\n\n'
-
         name_error = ''
         new_name, ign = os.path.splitext(os.path.basename(xml_filename))
         if '_' in new_name or '.' in new_name:
@@ -173,13 +172,19 @@ class XMLContentValidator(object):
 
 class ArticleValidator(object):
 
-    def __init__(self, xml_journal_data_validator, xml_issue_data_validator, xml_structure_validator, xml_content_validator):
+    def __init__(self, xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, scielo_dtd_files):
         self.xml_journal_data_validator = xml_journal_data_validator
         self.xml_issue_data_validator = xml_issue_data_validator
-        self.xml_structure_validator = xml_structure_validator
         self.xml_content_validator = xml_content_validator
+        self.xml_structure_validator = None
+        self.scielo_dtd_files = scielo_dtd_files
 
     def validate(self, article, outputs, pkgfiles):
+        scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(fs_utils.read_file(pkgfiles.filename))
+        if self.scielo_dtd_files != scielo_dtd_files:
+            self.scielo_dtd_files = scielo_dtd_files
+            self.xml_structure_validator = XMLStructureValidator(self.scielo_dtd_files)
+
         artval = ArticleValidations()
         artval.journal_validations = self.xml_journal_data_validator.validate(article)
         artval.issue_validations = self.xml_issue_data_validator.validate(article)

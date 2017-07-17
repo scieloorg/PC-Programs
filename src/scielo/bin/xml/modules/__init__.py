@@ -12,5 +12,7 @@ CONFIG_PATH = BIN_XML_PATH + '/config'
 TABLES_PATH = BIN_XML_PATH + '/tables'
 LOCALE_PATH = BIN_XML_PATH + '/locale'
 TMP_DIR = BIN_PATH + '/tmp'
+PMC_PATH = BIN_PATH + '/pmc'
+
 
 _ = app_texts.get_texts(LOCALE_PATH)

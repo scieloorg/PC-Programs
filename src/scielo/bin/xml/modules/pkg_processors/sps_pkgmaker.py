@@ -7,6 +7,7 @@ from ..useful import utils
 from ..useful import xml_utils
 from ..data import attributes
 from ..ws import ws_requester
+from ..pkg_processors import xml_versions
 
 
 messages = []
@@ -47,8 +48,12 @@ class SPSXMLContent(xml_utils.XMLContent):
             self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
             self.content = xml_utils.pretty_print(self.content)
 
-    def doctype(self, doctype_source, doctype_dest):
-        self.content = self.content.replace('"' + doctype_source + '"', '"' + doctype_dest + '"')
+    def doctype(self, dtd_location_type):
+        local, remote = xml_versions.dtd_location(self.content)
+        if dtd_location_type == 'remote':
+            self.content = self.content.replace('"' + local + '"', '"' + remote + '"')
+        else:
+            self.content = self.content.replace('"' + remote + '"', '"' + local + '"')
 
     def insert_mml_namespace(self):
         if '</math>' in self.content:
