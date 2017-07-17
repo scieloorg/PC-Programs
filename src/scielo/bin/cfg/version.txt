@@ -1,4 +1,15 @@
-﻿4.0.093 - Release 4 - 30/06/2017
+﻿4.0.094 - Release  - 
+================================
+- XPM
+  - (new) [1253] Python3
+  - (new) [2596] JATS 1.1 Validation
+  - (new) [2578] Configuration of Web access status and proxy
+- XML Markup 
+  - (new) [2589] Generation of city, state, postal-code
+- XC
+  - (new) [1253] Python3
+
+4.0.093 - Release 4 - 30/06/2017
 ================================
 - XPM
   - (bug) [2579] Fix the validation of history date 
