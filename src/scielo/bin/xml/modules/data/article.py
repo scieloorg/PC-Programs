@@ -1760,6 +1760,11 @@ class ReferenceXML(object):
             return xml_utils.node_findtext(self.element_citation, './/edition')
 
     @property
+    def version(self):
+        if self.element_citation is not None:
+            return xml_utils.node_findtext(self.element_citation, './/version')
+
+    @property
     def year(self):
         _year = None
         if self.element_citation is not None:

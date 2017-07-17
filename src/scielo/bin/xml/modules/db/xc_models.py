@@ -347,6 +347,7 @@ class ArticleRecords(object):
             rec_c['32']['_'] = item.issue
             rec_c['32']['s'] = item.supplement
             rec_c['63'] = item.edition
+            rec_c['95'] = item.version
             rec_c['64'] = item.year
             if item.formatted_year is not None:
                 y = item.formatted_year
