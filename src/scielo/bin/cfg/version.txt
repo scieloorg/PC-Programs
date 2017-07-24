@@ -1,4 +1,10 @@
-﻿4.0.093 - Release 4 - 27/06/2017
+﻿4.0.094
+=======
+
+- XML Markup
+  - (bug) [2622] Fix prefix generation
+
+4.0.093 - Release 4 - 27/06/2017
 ================================
 - XPM
   - (bug) [2579] Fix the validation of history date 

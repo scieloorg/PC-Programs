@@ -1934,13 +1934,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="$ok='true'">
 				<surname><xsl:value-of select="$surname"/></surname>
 				<given-names><xsl:value-of select="$f"/></given-names>
-				<xsl:apply-templates select="prefix"></xsl:apply-templates>
+				<xsl:if test="prefix"><prefix><xsl:value-of select="prefix"/></prefix></xsl:if>
 				<suffix><xsl:value-of select="$suffix"/></suffix>
 			</xsl:when>
 			<xsl:otherwise>
 				<surname><xsl:value-of select="$s"/></surname>
 				<given-names><xsl:value-of select="$f"/></given-names>			
-				<xsl:apply-templates select="prefix"></xsl:apply-templates>
+				<xsl:if test="prefix"><prefix><xsl:value-of select="prefix"/></prefix></xsl:if>
 				<xsl:if test="suffix"><suffix><xsl:value-of select="suffix"/></suffix></xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
