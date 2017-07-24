@@ -145,6 +145,7 @@ app
 label;#FALSE#;#FALSE#
 sectitle;#FALSE#;#FALSE#
 p;#FALSE#;#TRUE#
+sec;#FALSE#;#TRUE#
 
 authgrp
 author;#FALSE#;#TRUE#
