@@ -345,6 +345,7 @@ hist
 received;#FALSE#;#FALSE#
 revised;#FALSE#;#TRUE#
 accepted;#FALSE#;#FALSE#
+histdate;#FALSE#;#FALSE#
 
 icitat
 no;#FALSE#;#FALSE#
@@ -1130,4 +1131,6 @@ prefix
 *page-fn
 
 xhtml
+
+histdate
 
