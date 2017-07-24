@@ -216,3 +216,4 @@ licinfo;Identifica licencia
 prefix;Identifica el prefijo de un autor como Sr., Prof., etc
 suffix;Identifica el sufijo de un autor como Hijo, Nieto, etc
 xhtml;Identifica una tabla que está representada dentro de un archivo XHTML
+histdate;Identifica fechas de histórico

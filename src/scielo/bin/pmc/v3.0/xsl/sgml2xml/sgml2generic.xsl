@@ -1489,13 +1489,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="hist">
 		<history>
-			<xsl:apply-templates select="received | revised | accepted "/>
+			<xsl:apply-templates select="*"/>
 		</history>
 	</xsl:template>
-	<xsl:template match="received | revised | accepted">
+	<xsl:template match="hist/*">
 		<xsl:variable name="dtype">
 			<xsl:choose>
 				<xsl:when test="name()='revised'">rev-recd</xsl:when>
+				<xsl:when test="@datetype!=''">
+					<xsl:value-of select="@datetype"/>
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="name()"/>
 				</xsl:otherwise>
@@ -1509,6 +1512,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:call-template>
 		</date>
 	</xsl:template>
+	
 	<xsl:template match="abstract|xmlabstr">
 		<xsl:param name="trans" select="''"/>
 		
