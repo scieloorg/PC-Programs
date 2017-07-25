@@ -7,7 +7,8 @@
 - XML Markup
   - (bug) [2622] Fix prefix generation
   - (bug) [2600] Fix sub-article/fn-group generation
-
+- XPM
+  - (improvement) [2615] ORCID Validation
 
 4.0.093 - Release 4 - 27/06/2017
 ================================
