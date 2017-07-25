@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime
+import re
 
 from __init__ import _
 import validation_status
@@ -418,6 +419,14 @@ def validate_contrib_names(author, aff_ids=[]):
                 if not xref in aff_ids:
                     msg = invalid_value_message(xref, '{label} ({value})'.format(label='xref[@ref-type="aff"]/@rid', value=author.fullname), ', '.join(aff_ids))
                     results.append(('xref', validation_status.STATUS_FATAL_ERROR, msg))
+    if author.contrib_id.get('orcid'):
+        if not validate_orcid(author.contrib_id.get('orcid')):
+            results.append(
+                ('orcid',
+                 validation_status.STATUS_FATAL_ERROR,
+                 _('{value} is a invalid value for {label}. ').format(
+                    value=author.contrib_id.get('orcid'),
+                    label='')))
     return results
 
 
@@ -1871,3 +1880,11 @@ class ReferenceContentValidation(object):
     @property
     def fpage(self):
         return conditional_required('fpage', self.reference.fpage)
+
+
+def validate_orcid(orcid):
+    # [0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}
+    if len(orcid) != 19:
+        return False
+    pattern = re.compile("[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}")
+    return pattern.match(orcid) is not None
