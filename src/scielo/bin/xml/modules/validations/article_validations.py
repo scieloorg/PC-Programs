@@ -10,6 +10,7 @@ from . import xml_validators
 from . import article_data_reports
 from . import article_content_validations
 from . import validations as validations_module
+from ..pkg_processors import xml_versions
 
 
 class XMLJournalDataValidator(object):

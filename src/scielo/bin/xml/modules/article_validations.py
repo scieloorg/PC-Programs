@@ -1372,7 +1372,7 @@ class ArticleContentValidation(object):
     @property
     def missing_xref_list(self):
         tag_and_xref_types = {'fig-group': 'fig', 'table-wrap-group': 'table', 'fig': 'fig', 'table-wrap': 'table'}
-        if len(self.article.bibr_xref_ranges) > 0:
+        if len(self.article.references) > 0:
             tag_and_xref_types['ref'] = 'bibr'
         message = []
         missing = {}
