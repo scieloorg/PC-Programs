@@ -218,3 +218,4 @@ suffix;Identify the suffix of an author such as Sr., Jr., etc
 xhtml;Identify that the table is represented in a file XHTML
 institid;Identify an institution id
 code;Identifiy a text code
+histdate;Identify history dates
