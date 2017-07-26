@@ -387,8 +387,6 @@ class CorpAuthor(object):
         self.collab = ''
 
 
-
-
 class Title(object):
 
     def __init__(self):
@@ -1346,6 +1344,14 @@ class ArticleXML(object):
         refs = []
         if self.back is not None:
             for ref in self.back.findall('.//ref'):
+                refs.append(Reference(ref))
+        return refs
+
+    @property
+    def references_xml(self):
+        refs = []
+        if self.back is not None:
+            for ref in self.back.findall('.//ref'):
                 refs.append(ReferenceXML(ref))
         return refs
 
@@ -1810,6 +1816,305 @@ class Article(ArticleXML):
 
 
 class ReferenceXML(object):
+
+    def __init__(self, root):
+        self.root = root
+        self.xml_nodes_elem_cit = None
+        nodes = self.root.findall('.//element-citation')
+        if nodes is not None:
+            self.xml_nodes_elem_cit = [xml_utils.XMLNode(node) for node in self.root.findall('.//element-citation')]
+
+    """
+    @property
+    def xml(self):
+        return self.xml_node.xml
+
+    @property
+    def id(self):
+        return self.node.attrib.get('id')
+
+    @property
+    def institution_id(self):
+        r = []
+        for node in self.xml_node.nodes(['.//institution-id']):
+            r.append((node.attrib.get('institution-id-type'), node.text))
+        return r
+
+    @property
+    def city(self):
+        return self.xml_node.texts(['.//city', './/named-content[@content-type="city"]'])
+    """
+
+    def texts(self, xpaths):
+        if self.xml_nodes_elem_cit is not None:
+            r = []
+            for occ in self.xml_nodes_elem_cit:
+                r.extend(occ.texts(xpaths))
+            return r
+
+    @property
+    def source(self):
+        return self.texts(['.//source'])
+
+    @property
+    def id(self):
+        return self.root.find('.').attrib.get('id')
+
+    @property
+    def language(self):
+        lang = None
+        for elem in ['.//source', './/article-title', './/chapter-title']:
+            if self.root.find(elem) is not None:
+                lang = xml_utils.element_lang(self.root.find(elem))
+            if lang is not None:
+                break
+        return lang
+
+    @property
+    def article_title(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/article-title')
+
+    @property
+    def chapter_title(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/chapter-title')
+
+    @property
+    def trans_title(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/trans-title')
+
+    @property
+    def trans_title_language(self):
+        if self.xml_nodes_elem_cit is not None:
+            if self.element_citation.find('.//trans-title') is not None:
+                return xml_utils.element_lang(self.element_citation.find('.//trans-title'))
+
+    @property
+    def publication_type(self):
+        if self.xml_nodes_elem_cit is not None:
+            return self.element_citation.attrib.get('publication-type')
+
+    @property
+    def ref_status(self):
+        if self.xml_nodes_elem_cit is not None:
+            return self.element_citation.attrib.get('specific-use')
+
+    @property
+    def xml(self):
+        return xml_utils.node_xml(self.root)
+
+    @property
+    def mixed_citation(self):
+        return xml_utils.node_findtext(self.root, './/mixed-citation')
+
+    @property
+    def element_citation_texts(self):
+        return [item for item in [xml_utils.node_findtext(item) for item in self.root.findall('.//element-citation//*')] if not '<' in item]
+
+    @property
+    def authors_list(self):
+        r = []
+        for items in self.authors_by_group:
+            if items is not None:
+                r.extend(items[1])
+        return r
+
+    @property
+    def authors_by_group(self):
+        groups = []
+        if self.xml_nodes_elem_cit is not None:
+            for person_group in self.element_citation.findall('.//person-group'):
+                role = person_group.attrib.get('person-group-type', 'author')
+                authors = [get_author(contrib, role) for contrib in person_group.findall('*')]
+                authors = [a for a in authors if a is not None]
+                groups.append((role, authors))
+        return groups
+
+    @property
+    def volume(self):
+        if self.xml_nodes_elem_cit is not None:
+            return self.element_citation.findtext('.//volume')
+
+    @property
+    def issue(self):
+        if self.xml_nodes_elem_cit is not None:
+            return self.element_citation.findtext('.//issue')
+
+    @property
+    def supplement(self):
+        if self.xml_nodes_elem_cit is not None:
+            return self.element_citation.findtext('.//supplement')
+
+    @property
+    def edition(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/edition')
+
+    @property
+    def version(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/version')
+
+    @property
+    def year(self):
+        _year = None
+        if self.xml_nodes_elem_cit is not None:
+            _year = self.element_citation.findtext('.//year')
+        if _year is None:
+            if self.publication_type == 'confproc':
+                _year = self.conference_date
+        return _year
+
+    @property
+    def formatted_year(self):
+        return article_utils.four_digits_year(self.year)
+
+    @property
+    def publisher_name(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/publisher-name')
+
+    @property
+    def publisher_loc(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/publisher-loc')
+
+    @property
+    def fpage(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/fpage')
+
+    @property
+    def lpage(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/lpage')
+
+    @property
+    def fpage_number(self):
+        if self.fpage is not None:
+            if self.fpage.isdigit():
+                return int(self.fpage)
+
+    @property
+    def lpage_number(self):
+        if self.lpage is not None:
+            if self.lpage.isdigit():
+                return int(self.lpage)
+
+    @property
+    def page_range(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/page-range')
+
+    @property
+    def elocation_id(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/elocation-id')
+
+    @property
+    def size(self):
+        if self.xml_nodes_elem_cit is not None:
+            node = self.element_citation.find('size')
+            if node is not None:
+                return {'size': node.text, 'units': node.attrib.get('units')}
+
+    @property
+    def label(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/label')
+
+    @property
+    def etal(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/etal')
+
+    @property
+    def cited_date(self):
+        _d = None
+        if self.xml_nodes_elem_cit is not None:
+            _d = xml_utils.node_findtext(self.element_citation, './/date-in-citation[@content-type="access-date"]')
+            if _d is None:
+                _d = xml_utils.node_findtext(self.element_citation, './/date-in-citation[@content-type="update"]')
+        return _d
+
+    @property
+    def ext_link(self):
+        if self.xml_nodes_elem_cit is not None:
+            items = []
+            for item in self.element_citation.findall('.//ext-link'):
+                if item is not None:
+                    items.append(xml_utils.node_text(item).strip())
+            return items
+
+    @property
+    def _comments(self):
+        if self.xml_nodes_elem_cit is not None:
+            return self.element_citation.findall('.//comment')
+
+    @property
+    def degree(self):
+        if self.xml_nodes_elem_cit is not None:
+            if self.publication_type == 'thesis':
+                return xml_utils.node_findtext(self.element_citation, './/comment')
+
+    @property
+    def comments(self):
+        c = []
+        if self.xml_nodes_elem_cit is not None:
+            if self._comments is not None:
+                c = [xml_utils.node_findtext(c) for c in self._comments if c.text is not None]
+        return '; '.join(c)
+
+    @property
+    def notes(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/notes')
+
+    @property
+    def contract_number(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/comment[@content-type="award-id"]')
+
+    @property
+    def doi(self):
+        _doi = None
+        if self.xml_nodes_elem_cit is not None:
+            _doi = xml_utils.node_findtext(self.element_citation, './/pub-id[@pub-id-type="doi"]')
+            if not _doi:
+                for c in self.comments:
+                    if 'doi:' in c:
+                        _doi = c
+        return _doi
+
+    @property
+    def pmid(self):
+        if self.xml_nodes_elem_cit is not None:
+            return self.element_citation.findtext('.//pub-id[@pub-id-type="pmid"]')
+
+    @property
+    def pmcid(self):
+        if self.xml_nodes_elem_cit is not None:
+            return self.element_citation.findtext('.//pub-id[@pub-id-type="pmcid"]')
+
+    @property
+    def conference_name(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/conf-name')
+
+    @property
+    def conference_location(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/conf-loc')
+
+    @property
+    def conference_date(self):
+        if self.xml_nodes_elem_cit is not None:
+            return xml_utils.node_findtext(self.element_citation, './/conf-date')
+
+
+class Reference(object):
 
     def __init__(self, root):
         self.root = root

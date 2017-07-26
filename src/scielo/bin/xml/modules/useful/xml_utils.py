@@ -227,24 +227,21 @@ def node_findtext(node, xpath=None, multiple=False):
 
 
 def node_text(node):
-    if node is None:
-        return
     text = tostring(node)
     if text is not None:
+        text = text.strip()[1:-1]
         text = text[text.find('>')+1:]
         if '</' in text:
-            text = text[0:text.rfind('</')]
+            text = text[:text.rfind('</')]
             text = text.strip()
     return text
 
 
 def node_xml(node):
-    if node is not None:
-        text = tostring(node)
-        if '&' in text:
-            text, replaced_named_ent = convert_entities_to_chars(text)
-        return text
-        return text.strip()
+    text = tostring(node)
+    if '&' in text:
+        text, replaced_named_ent = convert_entities_to_chars(text)
+    return text
 
 
 def tostring(node):

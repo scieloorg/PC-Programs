@@ -47,6 +47,7 @@ class PkgArticleFiles(object):
         self.ctrl_path = None
         self._allfiles = None
         self.listdir = sorted(os.listdir(self.path))
+        self._prefixes = None
 
     def add_extension(self, new_href):
         if '.' not in new_href:
@@ -59,28 +60,26 @@ class PkgArticleFiles(object):
 
     @property
     def prefixes(self):
-        r = []
-        if self.basename.startswith('a') and self.basename[3:4] == 'v':
-            r.append(self.basename[:3])
-        r.append(self.name)
-        return r
+        if self._prefixes is None:
+            r = []
+            if self.basename.startswith('a') and self.basename[3:4] == 'v':
+                r.append(self.basename[:3])
+            r.extend([self.name + suffix for suffix in SUFFIXES])
+            self._prefixes = list(set(r))
+        return self._prefixes
 
     def all_files(self):
         r = []
-        self.listdir = os.listdir(self.path)
-        for suffix in SUFFIXES:
-            r += [item for item in self.listdir if item.startswith(self.name + suffix)]
-        if self.basename.startswith('a') and self.basename[3:4] == 'v':
-            prefix = self.basename[:3]
-            r += [item for item in self.listdir if item.startswith(prefix)]
-        r = list(set(r))
-        r = [item for item in r if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
-        return sorted(r)
+        for prefix in self.prefixes:
+            r.extend([item for item in self.listdir if item.startswith(prefix) and not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')])
+        return list(set(r))
 
     @property
     def is_changed(self):
-        if sorted(os.listdir(self.path)) != self.listdir:
-            self.listdir = os.listdir(self.path)
+        current = sorted(os.listdir(self.path))
+        if current != self.listdir:
+            print('is_changed', current, self.listdir)
+            self.listdir = current
             return True
         return False
 
