@@ -6,6 +6,7 @@
   - (new) [2578] Configuration of Web access status and proxy
   - (new) [2615] ORCID Validation
   - (bug) [2599, 2623] Fix missing xref (bibr) validation
+  - (bug) [2567] Fix aff validation
 
 4.0.093 - Release 3 - 25/05/2017
 ==================================

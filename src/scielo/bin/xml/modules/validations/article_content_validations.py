@@ -350,7 +350,7 @@ class AffValidator(object):
     def normalized(self):
         # FIXME
         r = []
-        norm_aff, found_institutions = normalized_institution(self.app_institutions_manager, self.aff)
+        norm_aff, found_institutions = self.normalize_institution()
         if norm_aff is None:
             msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([self.aff.orgname, self.aff.norgname])), ' or ')
 
@@ -412,6 +412,49 @@ class AffValidator(object):
         r.append(self.occurrences)
         r.append(self.xref)
         return [item for item in r if item is not None]
+
+    def normalize_institution(self):
+        aff = self.aff
+        norm_aff = None
+        found_institutions = None
+        orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
+        if aff.norgname is not None or aff.orgname is not None:
+            found_institutions = self.app_institutions_manager.validate_organization(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+
+        if found_institutions is not None:
+            if len(found_institutions) == 1:
+                valid = found_institutions
+            else:
+                valid = []
+                # identify i_country
+                if aff.i_country is None and aff.country is not None:
+                    country_info = {norm_country_name: norm_country_code for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_country_name is not None and norm_country_code is not None}
+                    aff.i_country = country_info.get(aff.country)
+
+                # match norgname and i_country in found_institutions
+                for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
+                    if norm_orgname.upper() in orgnames:
+                        if aff.i_country is None:
+                            valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+                        elif aff.i_country == norm_country_code:
+                            valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+
+                # mais de uma possibilidade, considerar somente norgname e i_country, desconsiderar city, state, etc
+                if len(valid) > 1:
+                    valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
+
+            if len(valid) == 1:
+                norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = valid[0]
+
+                if norm_orgname is not None and norm_country_code is not None:
+                    norm_aff = article.Affiliation()
+                    norm_aff._id = aff.id
+                    norm_aff._norgname = norm_orgname
+                    norm_aff._city = norm_city
+                    norm_aff._state = norm_state
+                    norm_aff._i_country = norm_country_code
+                    norm_aff._country = norm_country_name
+        return (norm_aff, found_institutions)
 
 
 class ArticleContentValidation(object):
@@ -1805,50 +1848,6 @@ class ReferenceContentValidation(object):
     @property
     def fpage(self):
         return conditional_required('fpage', self.reference.fpage)
-
-
-def normalized_institution(app_institutions_manager, aff):
-    # FIXME
-    norm_aff = None
-    found_institutions = None
-    orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
-    if aff.norgname is not None or aff.orgname is not None:
-        found_institutions = app_institutions_manager.validate_organization(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
-
-    if found_institutions is not None:
-        if len(found_institutions) == 1:
-            valid = found_institutions
-        else:
-            valid = []
-            # identify i_country
-            if aff.i_country is None and aff.country is not None:
-                country_info = {norm_country_name: norm_country_code for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_country_name is not None and norm_country_code is not None}
-                aff.i_country = country_info.get(aff.country)
-
-            # match norgname and i_country in found_institutions
-            for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
-                if norm_orgname.upper() in orgnames:
-                    if aff.i_country is None:
-                        valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
-                    elif aff.i_country == norm_country_code:
-                        valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
-
-            # mais de uma possibilidade, considerar somente norgname e i_country, desconsiderar city, state, etc
-            if len(valid) > 1:
-                valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
-
-        if len(valid) == 1:
-            norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = valid[0]
-
-            if norm_orgname is not None and norm_country_code is not None:
-                norm_aff = article.Affiliation()
-                norm_aff._id = aff.id
-                norm_aff._norgname = norm_orgname
-                norm_aff._city = norm_city
-                norm_aff._state = norm_state
-                norm_aff._i_country = norm_country_code
-                norm_aff._country = norm_country_name
-    return (norm_aff, found_institutions)
 
 
 def validate_orcid(orcid):
