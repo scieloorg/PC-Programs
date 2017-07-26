@@ -147,9 +147,7 @@ def required_one(label, value):
 
 
 def required(label, value, default_status, validate_content=True):
-    if value is None:
-        result = (label, default_status, _('{label} is required. ').format(label=label))
-    elif value == '':
+    if value is None or len(value) == 0:
         result = (label, default_status, _('{label} is required. ').format(label=label))
     else:
         if validate_content:
@@ -285,6 +283,135 @@ class ContribValidation(object):
         results.extend(self.xref_validation_result)
         results.extend(self.contrib_id_validation_result)
         return results
+
+
+def required_data(label, values, status=validation_status.STATUS_ERROR):
+    if values is None or len(values) == 0:
+        return [(label, default_status, _('{label} is required. ').format(label=label))]
+    return [(label, validation_status.STATUS_OK, value) for value in values]
+
+
+class AffValidator(object):
+
+    def __init__(self, aff_xml, xref_items, app_institutions_manager):
+        self.aff_xml = aff_xml
+        self.xref_items = xref_items
+        self.aff = article.Affiliation(aff_xml)
+        self.app_institutions_manager = app_institutions_manager
+        # FIXMe
+        self.norm_aff = None
+
+    @property
+    def xml(self):
+        return ('aff xml', validation_status.STATUS_INFO, self.aff_xml.xml)
+
+    @property
+    def id(self):
+        return required_data('aff/@id', self.aff_xml.id)
+
+    @property
+    def original(self):
+        return required_data('aff/institution/[@content-type="original"]', self.aff_xml.original, validation_status.STATUS_ERROR)
+
+    @property
+    def orgname(self):
+        return required_data('aff/institution/[@content-type="orgname"]', self.aff_xml.orgname)
+
+    @property
+    def orgdivs(self):
+        r = []
+        for orgdiv in [self.aff_xml.orgdiv1, self.aff_xml.orgdiv2]:
+            item = ', '.join(orgdiv)
+            if len(item) > 0:
+                status = ''
+                if 'univers' in item.lower():
+                    status = validation_status.STATUS_WARNING
+                elif 'depart' not  in item.lower() and 'divi' not in item.lower():
+                    status = validation_status.STATUS_WARNING
+                if len(status) > 0:
+                    orgname = self.aff_xml.orgname[0] if len(self.aff_xml.orgname) > 0 else _('an organization')
+                    r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of {orgname}. ').format(value=item, orgname=orgname)))
+        return r
+
+    @property
+    def orgdiv3(self):
+        if len(self.aff_xml.orgdiv3) > 0:
+            return ('aff/institution/[@content-type="orgdiv3"]', validation_status.STATUS_ERROR, _('Remove this institution(orgdiv3). Use only one orgdiv1 and one orgdiv2. Other levels are not allowed. '))
+
+    @property
+    def country(self):
+        r = []
+        for code, text in self.aff_xml.country:
+            r.extend(required_data('aff/country', text, validation_status.STATUS_ERROR))
+            r.extend(attributes.validate_iso_country_code(code))
+        return r
+
+    @property
+    def normalized(self):
+        # FIXME
+        r = []
+        norm_aff, found_institutions = normalized_institution(self.app_institutions_manager, self.aff)
+        if norm_aff is None:
+            msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([self.aff.orgname, self.aff.norgname])), ' or ')
+
+            if found_institutions is None or len(found_institutions) == 0:
+                r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
+            else:
+                msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
+                r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
+        else:
+            #FIXME self.article.normalized_affiliations[aff.id] = norm_aff
+            status = validation_status.STATUS_VALID
+            if self.aff.norgname is not None:
+                if self.aff.norgname != norm_aff.norgname:
+                    status = validation_status.STATUS_FATAL_ERROR
+            if status == validation_status.STATUS_VALID:
+                message = _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])
+            else:
+                message = _('Use {right} instead of {wrong}. ').format(right=norm_aff.norgname, wrong=self.aff.norgname)
+            r.append(('aff/institution/[@content-type="normalized"]', status, message))
+        self.norm_aff = norm_aff
+        return r
+
+    @property
+    def occurrences(self):
+        labels = []
+        labels.append('institution[@content-type="original"]')
+        labels.append('institution[@content-type="normalized"]')
+        labels.append('institution[@content-type="orgname"]')
+        labels.append('institution[@content-type="orgdiv1"]')
+        labels.append('institution[@content-type="orgdiv2"]')
+        labels.append('addr-line/named-content[@content-type="city"]')
+        labels.append('addr-line/named-content[@content-type="state"]')
+        labels.append('country')
+        items = [self.aff_xml.original, self.aff_xml.norgname, self.aff_xml.orgname, self.aff_xml.orgdiv1, self.aff_xml.orgdiv2, self.aff_xml.city, self.aff_xml.state, self.aff_xml.country]
+
+        r = []
+        for label, item in zip(labels, items):
+            if len(item) > 1:
+                r.append((label, validation_status.STATUS_FATAL_ERROR, _('only one occurrence of {label} is allowed. ').format(label=label)))
+        return r
+
+    @property
+    def xref(self):
+        r = []
+        if self.aff.id not in self.xref_items:
+            r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Not found: {label}. ').format(label='<xref ref-type="aff" rid="' + self.aff.id + '"/>')))
+        return r
+
+    @property
+    def validations(self):
+        r = []
+        r.append(self.xml)
+        r.extend(self.id)
+        r.extend(self.original)
+        r.extend(self.country)
+        r.extend(self.orgname)
+        r.append(self.orgdiv3)
+        r.append(self.normalized)
+        r.append(self.occurrences)
+        r.append(self.xref)
+        return [item for item in r if item is not None]
 
 
 class ArticleContentValidation(object):
@@ -769,90 +896,14 @@ class ArticleContentValidation(object):
     @property
     def affiliations(self):
         r = []
-
-        labels = []
-        labels.append('institution[@content-type="original"]')
-        labels.append('institution[@content-type="normalized"]')
-        labels.append('institution[@content-type="orgname"]')
-        labels.append('institution[@content-type="orgdiv1"]')
-        labels.append('institution[@content-type="orgdiv2"]')
-        #labels.append('institution[@content-type="orgdiv3"]')
-        labels.append('addr-line/named-content[@content-type="city"]')
-        labels.append('addr-line/named-content[@content-type="state"]')
-        labels.append('country')
-        labels.append('country/@country')
-
         xref_items = []
         for item in self.article.contrib_names:
             xref_items.extend(item.xref)
         self.article.normalized_affiliations = {}
-        for aff in self.article.affiliations:
-            text = aff.original if aff.original is not None else aff.xml
-            r.append(('aff xml', validation_status.STATUS_INFO, aff.xml))
-            r.append(required('aff/@id', aff.id, validation_status.STATUS_FATAL_ERROR))
-
-            r.append(required('aff/institution/[@content-type="original"]', aff.original, validation_status.STATUS_ERROR, False))
-            resp = required('aff/country', aff.country, validation_status.STATUS_FATAL_ERROR)
-            resp = (resp[0], resp[1], resp[2] + _('E.g.: Use {this} instead of {that}. ').format(this='<country country="BR">Brasil</country>', that='<country country="BR"/>'))
-            r.append(resp)
-
-            for i_country_validation in attributes.validate_iso_country_code(aff.i_country):
-                r.append(i_country_validation)
-
-            r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, validation_status.STATUS_FATAL_ERROR))
-
-            if aff.orgdiv3 is not None:
-                r.append(('aff/institution/[@content-type="orgdiv3"]', validation_status.STATUS_ERROR, _('Remove this institution(orgdiv3). Use only one orgdiv1 and one orgdiv2. Other levels are not allowed. ')))
-            for item in [aff.orgdiv1, aff.orgdiv2]:
-                if item is not None:
-                    status = ''
-                    if 'univers' in item.lower():
-                        status = validation_status.STATUS_WARNING
-                    elif not 'depart' in item.lower() and not 'divi' in item.lower():
-                        status = validation_status.STATUS_WARNING
-                    if len(status) > 0:
-                        if aff.orgname is not None:
-                            r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of {orgname}. ').format(value=item, orgname=aff.orgname)))
-                        else:
-                            r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of {orgname}. ').format(value=item, orgname=_('an organization'))))
-
-            norm_aff, found_institutions = normalized_institution(self.app_institutions_manager, aff)
-
-            #if aff.norgname is None or aff.norgname == '':
-            #    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element. ')))
-
-            if norm_aff is None:
-                msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([aff.orgname, aff.norgname])), ' or ')
-                if found_institutions is None:
-                    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
-                elif len(found_institutions) == 0:
-                    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
-                else:
-                    msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
-                    r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
-            else:
-                self.article.normalized_affiliations[aff.id] = norm_aff
-                status = validation_status.STATUS_VALID
-                if aff.norgname is not None:
-                    if aff.norgname != norm_aff.norgname:
-                        status = validation_status.STATUS_FATAL_ERROR
-                if status == validation_status.STATUS_VALID:
-                    message = _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])
-                else:
-                    message = _('Use {right} instead of {wrong}. ').format(right=norm_aff.norgname, wrong=aff.norgname)
-                r.append(('aff/institution/[@content-type="normalized"]', status, message))
-
-            values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.city, aff.state, aff.i_country, aff.country]
-            i = 0
-            for label in labels:
-                if values[i] is not None:
-                    if '|' in values[i]:
-                        r.append((label, validation_status.STATUS_FATAL_ERROR, _('only one occurrence of {label} is allowed. ').format(label=label)))
-                i += 1
-
-            if aff.id not in xref_items:
-                r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Not found: {label}. ').format(label='<xref ref-type="aff" rid="' + aff.id + '"/>')))
-
+        for aff_xml in self.article.affiliations:
+            aff_validator = AffValidator(aff_xml, xref_items, self.app_institutions_manager)
+            self.article.normalized_affiliations[aff_validator.aff.id] = aff_validator.norm_aff
+            r.extend(aff_validator.validations)
         return r
 
     @property
@@ -1370,6 +1421,7 @@ class ArticleContentValidation(object):
 
     @property
     def package_files(self):
+        #FIXME
         expected_files = {self.article.language: self.pkgfiles.name + '.pdf'}
         expected_files.update(
             {lang: self.pkgfiles.name + '-' + lang + '.pdf' for lang in self.article.trans_languages})
@@ -1756,6 +1808,7 @@ class ReferenceContentValidation(object):
 
 
 def normalized_institution(app_institutions_manager, aff):
+    # FIXME
     norm_aff = None
     found_institutions = None
     orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
@@ -1789,12 +1842,12 @@ def normalized_institution(app_institutions_manager, aff):
 
             if norm_orgname is not None and norm_country_code is not None:
                 norm_aff = article.Affiliation()
-                norm_aff.id = aff.id
-                norm_aff.norgname = norm_orgname
-                norm_aff.city = norm_city
-                norm_aff.state = norm_state
-                norm_aff.i_country = norm_country_code
-                norm_aff.country = norm_country_name
+                norm_aff._id = aff.id
+                norm_aff._norgname = norm_orgname
+                norm_aff._city = norm_city
+                norm_aff._state = norm_state
+                norm_aff._i_country = norm_country_code
+                norm_aff._country = norm_country_name
     return (norm_aff, found_institutions)
 
 

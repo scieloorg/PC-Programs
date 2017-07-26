@@ -55,12 +55,14 @@ def format_author(author):
 
 
 class AffiliationXML(object):
+
     def __init__(self, node):
         self.node = node
+        self.xml_node = xml_utils.XMLNode(node)
 
     @property
     def xml(self):
-        return xml_utils.node_xml(self.node)
+        return self.xml_node.xml
 
     @property
     def id(self):
@@ -68,95 +70,175 @@ class AffiliationXML(object):
 
     @property
     def institution_id(self):
-        items = self.node.findall('.//institution-id')
-        if items is not None:
-            r = []
-            for item in items:
-                idtype = None
-                if item.attrib is not None:
-                    idtype = item.attrib.get('institution-id-type')
-                r.append((idtype, item.text))
-            return r
+        r = []
+        for node in self.xml_node.nodes(['.//institution-id']):
+            r.append((node.attrib.get('institution-id-type'), node.text))
+        return r
 
     @property
     def city(self):
-        _city = self.node.findall('.//city')
-        if _city is None:
-            return self.node.findall('.//named-content[@content-type="city"]')
-        return _city
+        return self.xml_node.texts(['.//city', './/named-content[@content-type="city"]'])
 
     @property
     def state(self):
-        _state = self.node.findall('.//state')
-        if _state is None:
-            return self.node.findall('.//named-content[@content-type="state"]')
-        return _state
-
-    @property
-    def country_nodes(self):
-        return self.node.findall('country')
+        return self.xml_node.texts(['.//state', './/named-content[@content-type="state"]'])
 
     @property
     def country(self):
-        return [item.text for item in self.country_nodes]
-
-    @property
-    def i_country(self):
-        return [item.attrib.get('country') for item in self.country_nodes if item.attrib.get('country') is not None]
+        r = []
+        for node in self.xml_node.nodes(['.//country']):
+            r.append((node.attrib.get('country'), node.text))
+        return r
 
     @property
     def orgname(self):
-        return self.node.findall('.//institution[@content-type="orgname"]')
+        return self.xml_node.texts(['.//institution[@content-type="orgname"]'])
 
     @property
     def norgname(self):
-        return self.node.findall('.//institution[@content-type="normalized"]')
+        return self.xml_node.texts(['.//institution[@content-type="normalized"]'])
 
     @property
     def orgdiv1(self):
-        return self.node.findall('.//institution[@content-type="orgdiv1"]')
+        return self.xml_node.texts(['.//institution[@content-type="orgdiv1"]'])
 
     @property
     def orgdiv2(self):
-        return self.node.findall('.//institution[@content-type="orgdiv2"]')
+        return self.xml_node.texts(['.//institution[@content-type="orgdiv2"]'])
 
     @property
     def orgdiv3(self):
-        return self.node.findall('.//institution[@content-type="orgdiv3"]')
+        return self.xml_node.texts(['.//institution[@content-type="orgdiv3"]'])
 
     @property
     def label(self):
-        _label = self.node.find('label')
-        if _label is not None:
-            return ' '.join(_label.itertext())
+        return self.xml_node.texts(['.//label'])
 
     @property
     def email(self):
-        return self.node.findall('.//email')
+        return self.xml_node.texts(['.//email'])
 
     @property
     def original(self):
-        return self.node.findall('.//institution[@content-type="original"]')
+        return self.xml_node.texts(['.//institution[@content-type="original"]'])
 
 
-def get_affiliation(aff):
-    a = Affiliation()
-    aff_xml = AffiliationXML(aff)
-    a.xml = aff_xml.xml
-    a.id = aff_xml.id
-    a.label = aff_xml.label
-    a.country = format_values(aff_xml.country)
-    a.i_country = format_values(aff_xml.i_country)
-    a.email = format_values(aff_xml.email, ', ')
-    a.original = format_nodes_text(aff_xml.original)
-    a.norgname = format_nodes_text(aff_xml.norgname)
-    a.orgname = format_nodes_text(aff_xml.orgname)
-    a.orgdiv1 = format_nodes_text(aff_xml.orgdiv1)
-    a.orgdiv2 = format_nodes_text(aff_xml.orgdiv2)
-    a.orgdiv3 = format_nodes_text(aff_xml.orgdiv3)
-    a.city = format_values(aff_xml.city)
-    a.state = format_values(aff_xml.state)
-    return a
+class Affiliation(object):
+
+    def __init__(self, aff_xml=None):
+        self.aff_xml = aff_xml
+        self._xml = None
+        self._id = None
+        self._city = None
+        self._state = None
+        self._country = None
+        self._i_country = None
+        self._orgname = None
+        self._norgname = None
+        self._orgdiv1 = None
+        self._orgdiv2 = None
+        self._orgdiv3 = None
+        self._label = None
+        self._email = None
+        self._original = None
+
+    @property
+    def xml(self):
+        if self._xml is None and self.aff_xml is not None:
+            self._xml  = self.aff_xml.xml
+        return self._xml
+
+    @property
+    def id(self):
+        if self._id is None and self.aff_xml is not None:
+            self._id = self.aff_xml.id
+        return self._id
+
+    @property
+    def institution_id(self):
+        if self._institution_id is None and self.aff_xml is not None:
+            self._institution_id = self.aff_xml.institution_id
+        return self._institution_id
+
+    @property
+    def city(self):
+        if self._city is None and self.aff_xml is not None:
+            self._city = self.aff_xml.city[0] if len(self.aff_xml.city) > 0 else None
+        return self._city
+
+    @property
+    def state(self):
+        if self._state is None and self.aff_xml is not None:
+            self._state = self.aff_xml.state[0] if len(self.aff_xml.state) > 0 else None
+        return self._state
+
+    @property
+    def _country_data(self):
+        if self.aff_xml is not None:
+            if len(self.aff_xml.country) > 0:
+                return self.aff_xml.country[0]
+
+    @property
+    def country(self):
+        if self._country is None:
+            if self._country_data is not None:
+                self._country = self._country_data[1]
+        return self._country
+
+    @property
+    def i_country(self):
+        if self._country is None:
+            if self._country_data is not None:
+                self._country = self._country_data[0]
+        return self._country
+
+    @property
+    def orgname(self):
+        if self._orgname is None and self.aff_xml is not None:
+            self._orgname = self.aff_xml.orgname[0]
+        return self._orgname
+
+    @property
+    def norgname(self):
+        if self._norgname is None and self.aff_xml is not None:
+            self._norgname = self.aff_xml.norgname[0]
+        return self._norgname
+
+    @property
+    def orgdiv1(self):
+        if self._orgdiv1 is None and self.aff_xml is not None:
+            self._orgdiv1 = self.aff_xml.orgdiv1[0]
+        return self._orgdiv1
+
+    @property
+    def orgdiv2(self):
+        if self._orgdiv2 is None and self.aff_xml is not None:
+            self._orgdiv2 = self.aff_xml.orgdiv2[0]
+        return self._orgdiv2
+
+    @property
+    def orgdiv3(self):
+        if self._orgdiv3 is None and self.aff_xml is not None:
+            self._orgdiv3 = self.aff_xml.orgdiv3[0]
+        return self._orgdiv3
+
+    @property
+    def label(self):
+        if self._label is None and self.aff_xml is not None:
+            self._label = self.aff_xml.label[0]
+        return self._label
+
+    @property
+    def email(self):
+        if self._email is None and self.aff_xml is not None:
+            self._email = self.aff_xml.email[0]
+        return self._email
+
+    @property
+    def original(self):
+        if self._original is None and self.aff_xml is not None:
+            self._original = self.aff_xml.original[0]
+        return self._original
 
 
 def get_author(contrib, role=None):
@@ -305,24 +387,6 @@ class CorpAuthor(object):
         self.collab = ''
 
 
-class Affiliation(object):
-
-    def __init__(self):
-        self.xml = ''
-        self.id = ''
-        self.institution_id = ''
-        self.city = ''
-        self.state = ''
-        self.country = ''
-        self.i_country = ''
-        self.orgname = ''
-        self.norgname = ''
-        self.orgdiv1 = ''
-        self.orgdiv2 = ''
-        self.orgdiv3 = ''
-        self.label = ''
-        self.email = ''
-        self.original = ''
 
 
 class Title(object):
@@ -1055,7 +1119,7 @@ class ArticleXML(object):
         affs = []
         if self.article_meta is not None:
             for aff in self.article_meta.findall('.//aff'):
-                affs.append(get_affiliation(aff))
+                affs.append(AffiliationXML(aff))
         return affs
 
     @property
@@ -1065,7 +1129,7 @@ class ArticleXML(object):
             for sub_art in self.sub_articles:
                 if sub_art.attrib.get('article-type') != 'translation':
                     for aff in sub_art.findall('.//aff'):
-                        affs.append(get_affiliation(aff))
+                        affs.append(AffiliationXML(aff))
         return affs
 
     @property
@@ -1534,6 +1598,18 @@ class Article(ArticleXML):
         return '; '.join(_pages)
 
     @property
+    def fpage_number(self):
+        if self.fpage is not None:
+            if self.fpage.isdigit():
+                return int(self.fpage)
+
+    @property
+    def lpage_number(self):
+        if self.lpage is not None:
+            if self.lpage.isdigit():
+                return int(self.lpage)
+
+    @property
     def summary(self):
         data = {}
         data['journal-title'] = self.journal_title
@@ -1745,6 +1821,11 @@ class ReferenceXML(object):
             return xml_utils.node_findtext(self.element_citation, './/source')
 
     @property
+    def source(self):
+        if self.element_citation is not None:
+            return xml_utils.node_findtext(self.element_citation, './/source')
+
+    @property
     def id(self):
         return self.root.find('.').attrib.get('id')
 
@@ -1761,12 +1842,12 @@ class ReferenceXML(object):
     @property
     def article_title(self):
         if self.element_citation is not None:
-            return xml_utils.node_findtext(self.element_citation, './/article-tite')
+            return xml_utils.node_findtext(self.element_citation, './/article-title')
 
     @property
     def chapter_title(self):
         if self.element_citation is not None:
-            return xml_utils.node_findtext(self.element_citation, './/chapter-tite')
+            return xml_utils.node_findtext(self.element_citation, './/chapter-title')
 
     @property
     def trans_title(self):
