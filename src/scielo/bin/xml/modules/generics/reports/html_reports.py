@@ -587,10 +587,7 @@ def save_form(display, filename):
 
 
 def label_values(labels, values):
-    r = {}
-    for i in range(0, len(labels)):
-        r[labels[i]] = values[i]
-    return r
+    return {k: v for k, v in zip(labels, values)}
 
 
 def display_report(report_filename):

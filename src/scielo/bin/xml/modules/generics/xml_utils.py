@@ -709,11 +709,15 @@ class XMLNode(object):
                 n.extend(found)
         return n
 
-    def nodes_text(self, nodes):
-        return [node_text(node) for node in nodes]
+    def nodes_text(self, xpaths):
+        r = []
+        for node in self.nodes(xpaths):
+            r.append(node_text(node))
+        r = [item for item in r if item is not None]
+        return r if len(r) > 0 else [None]
 
-    def texts(self, xpaths):
-        r = self.nodes_text(self.nodes(xpaths))
-        if len(r) == 0:
-            return [None]
-        return r
+    def nodes_data(self, xpaths):
+        r = []
+        for node in self.nodes(xpaths):
+            r.append((node_text(node), node.attrib))
+        return r if len(r) > 0 else [None]

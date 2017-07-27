@@ -296,7 +296,7 @@ class AffValidator(object):
     def __init__(self, aff_xml, xref_items, app_institutions_manager):
         self.aff_xml = aff_xml
         self.xref_items = xref_items
-        self.aff = article.Affiliation(aff_xml)
+        self.aff = aff_xml.aff
         self.app_institutions_manager = app_institutions_manager
         # FIXMe
         self.norm_aff = None
@@ -448,12 +448,12 @@ class AffValidator(object):
 
                 if norm_orgname is not None and norm_country_code is not None:
                     norm_aff = article.Affiliation()
-                    norm_aff._id = aff.id
-                    norm_aff._norgname = norm_orgname
-                    norm_aff._city = norm_city
-                    norm_aff._state = norm_state
-                    norm_aff._i_country = norm_country_code
-                    norm_aff._country = norm_country_name
+                    norm_aff.id = aff.id
+                    norm_aff.norgname = norm_orgname
+                    norm_aff.city = norm_city
+                    norm_aff.state = norm_state
+                    norm_aff.i_country = norm_country_code
+                    norm_aff.country = norm_country_name
         return (norm_aff, found_institutions)
 
 

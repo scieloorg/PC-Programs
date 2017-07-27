@@ -146,8 +146,8 @@ class PkgArticlesDataReports(object):
                         evaluation[_('authors with more than 1 affs')].append(xml_name)
                     elif len(valid_xref) == 0:
                         evaluation[_('authors without aff')].append(xml_name)
-            for aff in doc.affiliations:
-                aff = article_module.Affiliation(aff)
+            for aff_xml in doc.affiliations:
+                aff = aff_xml.aff
                 if None in [aff.id, aff.i_country, aff.norgname, aff.orgname, aff.city, aff.state, aff.country]:
                     evaluation[_('incomplete affiliations')].append(xml_name)
         return evaluation

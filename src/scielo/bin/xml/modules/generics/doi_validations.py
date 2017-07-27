@@ -47,11 +47,11 @@ class DOIValidator(object):
                 doi_prefix = self.ws_doi.journal_prefix(issn, article.pub_date_year)
                 if doi_prefix is not None:
                     valid_prefixes.append(doi_prefix)
-        if prefix not in valid_prefixes:
+        if len(valid_prefixes) > 0 and prefix not in valid_prefixes:
             self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=prefix, label=_('doi prefix')) + _('{label} must starts with: {expected}. ').format(label='doi', expected=_(' or ').join(valid_prefixes))))
 
     def _validate_journal_title(self, article, doi_data):
-        if not doi_data.journal_titles is None:
+        if doi_data.journal_titles is not None:
             status = validation_status.STATUS_INFO
             if article.journal_title not in doi_data.journal_titles:
                 max_rate, items = utils.most_similar(utils.similarity(doi_data.journal_titles, article.journal_title))
@@ -60,7 +60,7 @@ class DOIValidator(object):
             self.messages.append(('doi', status, _('{item} is registered as belonging to {owner}. ').format(item=article.doi, owner='|'.join(doi_data.journal_titles))))
 
     def _validate_article_title(self, article, doi_data):
-        if not doi_data.article_titles is None:
+        if doi_data.article_titles is not None:
             status = validation_status.STATUS_INFO
             max_rate = 0
             for t in article.titles:
