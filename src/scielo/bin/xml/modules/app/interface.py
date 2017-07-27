@@ -10,10 +10,10 @@ except ImportError:
     from tkFileDialog import askdirectory
 
 from ..__init__ import _
+from ..__init__ import BIN_PATH
 
 
-CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-XML_FOLDER_DEFAULT = CURRENT_PATH + '/../../'
+XML_FOLDER_DEFAULT = BIN_PATH
 
 
 class XMLAppGUI(tk.Frame):
