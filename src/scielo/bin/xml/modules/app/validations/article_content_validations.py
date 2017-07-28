@@ -12,6 +12,9 @@ from ...generics.reports import validation_status
 from ..data import attributes
 from ..data import article
 from .. import article_utils
+from . import ref_validations
+from . import validations_messages
+from ...pkg_processors import xml_versions
 
 
 MIN_IMG_DPI = 300
@@ -22,50 +25,6 @@ MAX_IMG_HEIGHT = 2625
 
 def invalid_labels_and_values(labels_and_values):
     return _(u'The items are not correct. Check: {values}. ').format(values='; '.join([label + '="' + value + '"' for label, value in labels_and_values]))
-
-
-def invalid_value_message(invalid_value, label, expected_values=None):
-    msg = _('{value} is an invalid value for {label}. ').format(value=invalid_value, label=label)
-    if expected_values is not None:
-        msg += _('Expected values: {expected}. ').format(expected=expected_values)
-    return msg
-
-
-def validate_element_is_found_in_mixed_citation(element_name, element_content, mixed_citation):
-    r = []
-    if element_content is not None:
-        _mixed = xml_utils.remove_tags(mixed_citation).replace('  ', ' ')
-        if not isinstance(element_content, list):
-            element_content = [element_content]
-
-        for item in element_content:
-            _element_content = xml_utils.remove_tags(item).replace('  ', ' ')
-
-            if not _element_content in _mixed:
-                diff1, s1 = utils.diff(_element_content, _mixed)
-                r.append(
-                    (
-                        element_name,
-                        validation_status.STATUS_ERROR,
-                         {_('Be sure that the elements {elem1} and {elem2} are properly identified. ').format(elem1=element_name, elem2='mixed-citation'):
-
-                            {element_name: s1,
-                             _('Words found in {elem1}, but not found in {elem2}. ').format(elem1=element_name, elem2='mixed-citation'): diff1
-                            },
-                        }
-                    )
-                )
-    return r
-
-
-def update_pkg_files_report(d, k, status, message):
-    if not k in d.keys():
-        d[k] = {}
-    if not status in d[k].keys():
-        d[k][status] = []
-    if not message in d[k][status]:
-        d[k][status].append(message)
-    return d
 
 
 def join_not_None_items(items, sep=', '):
@@ -91,54 +50,21 @@ def confirm_missing_xref_items(missing_xref_items, any_xref_ranges_items):
 
 
 def check_lang(elem_name, lang):
-    label, status, msg = required(elem_name + '/@xml:lang', lang, validation_status.STATUS_FATAL_ERROR)
+    # FIXME
+    label, status, msg = validations_messages.is_required_data(elem_name + '/@xml:lang', lang, validation_status.STATUS_FATAL_ERROR)
     if status == validation_status.STATUS_OK:
         status, msg = attributes.check_lang(lang)
         status = validation_status.STATUS_OK if status else validation_status.STATUS_FATAL_ERROR
     return (label, status, msg)
 
 
-def format_value(value):
-    if value is None:
-        value = 'None'
-    return value
-
-
-def validate_value(value):
-    result = []
-    status = validation_status.STATUS_OK
-    if value is not None:
-        _value = value.strip()
-        if _value == value:
-            pass
-        elif _value.startswith('<') and _value.endswith('>'):
-            pass
-        else:
-            status = validation_status.STATUS_ERROR
-            if value.startswith(' '):
-                result.append(_('{value} starts with invalid characters: {invalid_chars}. ').format(value=value, invalid_chars=_('space')))
-            if value.endswith(' '):
-                result.append(_('{value} ends with invalid characters: {invalid_chars}. ').format(value=value, invalid_chars=_('space')))
-            if value.startswith('.'):
-                status = validation_status.STATUS_WARNING
-                result.append(_('{value} starts with invalid characters: {invalid_chars}. ').format(value=value, invalid_chars=_('dot')))
-            differ = value.replace(_value, '')
-            if len(differ) > 0:
-                result.append(_('{value} contains invalid {invalid_items_name}: {invalid_items}. ').format(value='<data>' + value + '</data> ', invalid_items_name=_('characters'), invalid_items=differ))
-    if status == validation_status.STATUS_OK:
-        message = format_value(value)
-    else:
-        message = ';\n'.join(result)
-    return (status, message)
-
-
 def display_value(label, value):
-    status, message = validate_value(value)
+    status, message = validations_messages.validate_value(value)
     return (label, status, message)
 
 
 def conditional_required(label, value):
-    status, message = validate_value(value)
+    status, message = validations_messages.validate_value(value)
     return (label, status, message) if value is not None else (label, validation_status.STATUS_WARNING, _('{label} is required, {condition}. ').format(label=label, condition=_('if applicable')))
 
 
@@ -146,31 +72,12 @@ def required_one(label, value):
     return (label, validation_status.STATUS_OK, display_attributes(value)) if value is not None else (label, validation_status.STATUS_ERROR, _('It is required at least one {label}. ').format(label=label))
 
 
-def required(label, value, default_status, validate_content=True):
-    if value is None or len(value) == 0:
-        result = (label, default_status, _('{label} is required. ').format(label=label))
-    else:
-        if validate_content:
-            status, message = validate_value(value)
-            result = (label, status, message)
-        else:
-            result = (label, validation_status.STATUS_OK, value)
-    return result
-
-
-def expected_values(label, value, expected, fatal=''):
-    status = validation_status.STATUS_ERROR
-    if fatal != '':
-        status = validation_status.STATUS_FATAL_ERROR
-    return (label, validation_status.STATUS_OK, value) if value in expected else (label, status, invalid_value_message(format_value(value), label, expected))
-
-
 def display_attributes(attributes):
     r = []
     for key, value in attributes.items():
         if value is list:
             value = '; '.join(value)
-        status, message = validate_value(value)
+        status, message = validations_messages.validate_value(value)
         r.append(key + ' (' + status + '): ' + message)
     return '; '.join(r)
 
@@ -210,7 +117,7 @@ class ContribValidation(object):
     def name_validation_result(self):
         r = []
         label = 'given-names'
-        result = required(label, self.contrib.fname, validation_status.STATUS_WARNING)
+        result = validations_messages.is_required_data(label, self.contrib.fname, validation_status.STATUS_WARNING)
         label, status, msg = result
         if status == validation_status.STATUS_OK:
             result = invalid_terms_in_value(label, self.contrib.fname, ['_'], validation_status.STATUS_ERROR)
@@ -224,7 +131,7 @@ class ContribValidation(object):
     def surname_validation_result(self):
         r = []
         label = 'surname'
-        label, status, msg = required(label, self.contrib.surname, validation_status.STATUS_ERROR)
+        label, status, msg = validations_messages.is_required_data(label, self.contrib.surname)
         if status == validation_status.STATUS_OK:
             msg = self.contrib.surname
             parts = self.contrib.surname.split(' ')
@@ -243,13 +150,12 @@ class ContribValidation(object):
         results = []
         if len(self.aff_ids) > 0:
             if len(self.contrib.xref) == 0:
-                msg = _('{item} has no {missing_item}. ').format(item=self.contrib.fullname, missing_item='xref[@ref-type="aff"]/@rid') + _('Expected values: {expected}. ').format(expected='|'.join(self.aff_ids))
+                msg = _('{item} has no {missing_item}. ').format(item=self.contrib.fullname, missing_item='xref[@ref-type="aff"]/@rid') + validations_messages.expected_values_message('|'.join(self.aff_ids))
                 results.append(('xref', validation_status.STATUS_WARNING, msg))
             else:
                 for xref in self.contrib.xref:
-                    if xref not in self.aff_ids:
-                        msg = invalid_value_message(xref, '{label} ({value})'.format(label='xref[@ref-type="aff"]/@rid', value=self.contrib.fullname), ', '.join(self.aff_ids))
-                        results.append(('xref', validation_status.STATUS_FATAL_ERROR, msg))
+                    label = '{label} ({value})'.format(label='xref[@ref-type="aff"]/@rid', value=self.contrib.fullname)
+                    results.append(validations_messages.is_expected_value(label, xref, self.aff_ids, validation_status.STATUS_FATAL_ERROR))
 
         return results
 
@@ -260,11 +166,11 @@ class ContribValidation(object):
             if contrib_id_type in attributes.CONTRIB_ID_URLS.keys():
                 if attributes.CONTRIB_ID_URLS.get(contrib_id_type) in contrib_id or contrib_id.startswith('http'):
                     label = 'contrib-id[@contrib-id-type="' + contrib_id_type + '"]'
-                    msg = invalid_value_message(contrib_id, label)
+                    msg = validations_messages.invalid_value_message(label, contrib_id)
                     r.append((label, validation_status.STATUS_ERROR, msg + _('Use only the ID')))
             else:
-                msg = invalid_value_message(contrib_id_type, 'contrib-id/@contrib-id-type', ', '.join(attributes.CONTRIB_ID_URLS.keys()))
-                r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR, msg))
+                msg = validations_messages.invalid_value_result('contrib-id/@contrib-id-type', contrib_id_type, ', '.join(attributes.CONTRIB_ID_URLS.keys()))
+                r.append(msg)
 
             if contrib_id_type == 'orcid':
                 if not validate_orcid(contrib_id):
@@ -389,7 +295,7 @@ class AffValidator(object):
         r = []
         for label, item in zip(labels, items):
             if len(item) > 1:
-                r.append((label, validation_status.STATUS_FATAL_ERROR, _('only one occurrence of {label} is allowed. ').format(label=label)))
+                r.append(validations_messages.is_required_only_one(label, validation_status.STATUS_FATAL_ERROR))
         return r
 
     @property
@@ -574,7 +480,7 @@ class ArticleContentValidation(object):
 
     @property
     def dtd_version(self):
-        return expected_values('@dtd-version', self.article.dtd_version, ['3.0', '1.0', 'j1.0'])
+        return validations_messages.is_expected_value('@dtd-version', self.article.dtd_version, xml_versions.valid_dtd_items)
 
     @property
     def article_type(self):
@@ -647,7 +553,9 @@ class ArticleContentValidation(object):
             else:
                 error = True
             if error:
-                r.append(('{parent} ({parent_id}'.format(parent=parent, parent_id=parent_id), validation_status.STATUS_FATAL_ERROR, invalid_value_message(value, 'month', ' | '.join([str(i) for i in range(1, 13)]))))
+                msg = validations_messages.invalid_value_message('month', value)
+                msg += validations_messages.expected_values_message(range(1, 13))
+                r.append(('{parent} ({parent_id}'.format(parent=parent, parent_id=parent_id), validation_status.STATUS_FATAL_ERROR, msg))
         for parent, parent_id, value in self.article.seasons:
             error = False
             if '-' in value:
@@ -665,7 +573,7 @@ class ArticleContentValidation(object):
                 error = True
             if error:
                 expected = _('initial month and final month must be separated by hyphen. E.g.: Jan-Feb. Expected values for the months: {months}. ').format(months=article_utils.MONTHS_ABBREV.replace('|', ' '))
-                msg = invalid_value_message(value, 'season', expected)
+                msg = validations_messages.invalid_value_message('season', value, expected)
                 r.append(('{parent} ({parent_id}'.format(parent=parent, parent_id=parent_id), validation_status.STATUS_FATAL_ERROR, msg))
         return r
 
@@ -682,15 +590,16 @@ class ArticleContentValidation(object):
         """
         r = []
         for related_article in self.article.related_articles:
-            if not related_article.get('related-article-type') in attributes.related_articles_type:
-                r.append(('related-article/@related-article-type', validation_status.STATUS_FATAL_ERROR,
-                    invalid_value_message(related_article.get('related-article-type', _('None')), 'related-article/@related-article-type')))
+            value = related_article.get('related-article-type')
+            expected_values = attributes.related_articles_type
+            msg = validations_messages.is_expected_value('related-article/@related-article-type', value, expected_values, validation_status.STATUS_FATAL_ERROR)
+            r.append(msg)
             if related_article.get('ext-link-type', '') == 'doi':
                 _doi = related_article.get('href', '')
                 if _doi != '':
                     errors = self.doi_validator.validate_format(_doi)
                     if len(errors) > 0:
-                        msg = invalid_value_message(related_article.get('href'), 'related-article/@xlink:href')
+                        msg = validations_messages.invalid_value_message('related-article/@xlink:href', related_article.get('href'))
                         r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
         return r
 
@@ -715,12 +624,12 @@ class ArticleContentValidation(object):
     @property
     def refs_sources(self):
         refs = {}
-        for ref in self.article.references:
-            if ref.publication_type not in refs.keys():
-                refs[ref.publication_type] = {}
-            if ref.source not in refs[ref.publication_type].keys():
-                refs[ref.publication_type][ref.source] = 0
-            refs[ref.publication_type][ref.source] += 1
+        for ref_xml in self.article.references_xml:
+            if ref_xml.reference.publication_type not in refs.keys():
+                refs[ref_xml.reference.publication_type] = {}
+            if ref_xml.reference.source not in refs[ref_xml.reference.publication_type].keys():
+                refs[ref_xml.reference.publication_type][ref_xml.reference.source] = 0
+            refs[ref_xml.reference.publication_type][ref_xml.reference.source] += 1
         return [(_('sources'), validation_status.STATUS_INFO, refs)]
 
     @property
@@ -750,10 +659,11 @@ class ArticleContentValidation(object):
         if self.journal is not None:
             if self.journal.nlm_title is not None:
                 if len(self.journal.nlm_title) > 0:
-                    if self.article.journal_id_nlm_ta is not None:
-                        if not self.article.journal_id_nlm_ta in self.journal.nlm_title:
-                            msg = invalid_value_message(self.article.journal_id_nlm_ta, 'journal-id (nlm-ta)', '|'.join(self.journal.nlm_title))
-                            return (('journal-id (nlm-ta)', validation_status.STATUS_FATAL_ERROR, msg))
+                    label = 'journal-id (nlm-ta)'
+                    value = self.article.journal_id_nlm_ta
+                    expected_values = self.journal.nlm_title
+                    status = validation_status.STATUS_FATAL_ERROR
+                    return validations_messages.is_expected_value(label, value, expected_values, status)
 
     @property
     def journal_issns(self):
@@ -823,13 +733,13 @@ class ArticleContentValidation(object):
         def valid(order, status):
             r = (validation_status.STATUS_OK, order)
             if order is None:
-                r = (status, _('{label} is required. ').format(label='order') + _('Expected values: {expected}. ').format(expected=_('number from 1 to 99999')))
+                r = (status, _('{label} is required. ').format(label='order') + validations_messages.expected_values_message(_('number from 1 to 99999')))
             else:
                 if order.isdigit():
                     if int(order) < 1 or int(order) > 99999:
-                        r = (status,  _('Invalid format of {label}. ').format(label='order') + _('Expected values: {expected}. ').format(expected=_('number from 1 to 99999')))
+                        r = (status,  _('Invalid format of {label}. ').format(label='order') + validations_messages.expected_values_message(_('number from 1 to 99999')))
                 else:
-                    r = (status,  _('Invalid format of {label}. ').format(label='order') + _('Expected values: {expected}. ').format(expected=_('number from 1 to 99999')))
+                    r = (status,  _('Invalid format of {label}. ').format(label='order') + validations_messages.expected_values_message(_('number from 1 to 99999')))
             return r
         if self.is_db_generation:
             status = validation_status.STATUS_BLOCKING_ERROR
@@ -933,7 +843,7 @@ class ArticleContentValidation(object):
             return (('fpage', validation_status.STATUS_ERROR, _('Use only fpage and lpage. ')))
         r = ('fpage', validation_status.STATUS_OK, self.article.fpage)
         if self.article.fpage is None:
-            r = required('elocation-id', self.article.elocation_id, validation_status.STATUS_ERROR)
+            r = validations_messages.is_required_data('elocation-id', self.article.elocation_id)
         return r
 
     @property
@@ -960,15 +870,15 @@ class ArticleContentValidation(object):
     def _total(self, total, count, label_total, label_count):
         r = []
         if total < 0:
-            msg = invalid_value_message(str(total), label_total, _('numbers greater or equal to 0'))
-            r.append((label_total, validation_status.STATUS_FATAL_ERROR, msg))
+            msg = validations_messages.is_expected_value(label_total, total, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
+            r.append(msg)
         elif count is not None:
             if count.isdigit():
                 if total != int(count):
                     r.append((u'{label_count} ({count}) x {label_total} ({total})'.format(label_count=label_count, count=count, label_total=label_total, total=total), validation_status.STATUS_ERROR, _('{label1} and {label2} must have the same value. ').format(label1=label_count, label2=label_total)))
             else:
-                msg = invalid_value_message(count, label_count, _('numbers greater or equal to 0'))
-                r.append((label_count, validation_status.STATUS_FATAL_ERROR, msg))
+                msg = validations_messages.is_expected_value(label_count, count, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
+            r.append(msg)
         return r
 
     @property
@@ -1010,7 +920,7 @@ class ArticleContentValidation(object):
                 values = [item.title for item in sorted_by_lang]
         if all(values) is True:
             if lang is None:
-                errors.append(invalid_value_message(_('None'), label_xml_lang, ' | '.join(values)))
+                errors.append(validations_messages.invalid_value_result(label_xml_lang, _('None'), _('None'), ' | '.join(values)))
             else:
                 valid.append((label_xml_lang, validation_status.STATUS_INFO, ' | '.join(values)))
         else:
@@ -1034,8 +944,8 @@ class ArticleContentValidation(object):
         label_elem = elem_name + ' (@xml:lang="' + lang + '")'
         if all(values) is True:
             if lang is None:
-                errors.append((label_lang, err_level,
-                    invalid_value_message(_('None'), label_lang, ' | '.join(values))))
+                errors.append(
+                    validations_messages.invalid_value_result(label_lang, _('None'), ' | '.join(values), err_level))
             else:
                 valid.append((label_elem, validation_status.STATUS_INFO, ' | '.join(values)))
                 if mininum > 0:
@@ -1166,7 +1076,7 @@ class ArticleContentValidation(object):
             result = attributes.validate_license_href(license.get('href'))
             if result is not None:
                 r.append(result)
-            r.append(expected_values('license/@license-type', license.get('type'), ['open-access'], 'FATAL '))
+            r.append(validations_messages.is_expected_value('license/@license-type', license.get('type'), ['open-access'], validation_status.STATUS_FATAL_ERROR))
             r.append(required('license/license-p', license.get('text'), validation_status.STATUS_FATAL_ERROR, False))
         return [item for item in r if r is not None]
 
@@ -1180,8 +1090,8 @@ class ArticleContentValidation(object):
             year = self.article.pub_date_year
         if year is None:
             year = datetime.now().isoformat()[0:4]
-        for ref in self.article.references:
-            r.append((ref, ReferenceContentValidation(ref).evaluate(year)))
+        for ref_xml in self.article.references_xml:
+            r.append((ref_xml.reference, ref_validations.ReferenceContentValidation(ref_xml).evaluate(year)))
         return r
 
     @property
@@ -1203,7 +1113,7 @@ class ArticleContentValidation(object):
         if c in expected:
             r.append(('article dates', validation_status.STATUS_OK, c))
         else:
-            r.append(('article dates', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + _('Expected values: {expected}. ').format(expected=' | '.join(expected))))
+            r.append(('article dates', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + validations_messages.expected_values_message(' | '.join(expected))))
         return r
 
     @property
@@ -1290,7 +1200,7 @@ class ArticleContentValidation(object):
             for label, sections in body.items():
                 for sectype, sectitle in sections:
                     if sectype == '':
-                        msg = _('Not found: {label} for {item}. ').format(item=sectitle, label='@sec-type') + _('Expected values: {expected}. ').format(expected=_(' and/or ').join(expected_values))
+                        msg = _('Not found: {label} for {item}. ').format(item=sectitle, label='@sec-type') + validations_messages.expected_values_message(_(' and/or ').join(expected_values))
                         r.append((label + '/sec/@sec-type',
                                   validation_status.STATUS_WARNING,
                                   msg))
@@ -1302,8 +1212,8 @@ class ArticleContentValidation(object):
                             invalid = sectype
                         if invalid is not None:
                             if len(invalid) > 0:
-                                msg = invalid_value_message(sectype, label + '/sec/@sec-type', _(' and/or ').join(expected_values))
-                                r.append((label + '/sec/@sec-type', validation_status.STATUS_FATAL_ERROR, msg))
+                                msg = validations_messages.invalid_value_result(label + '/sec/@sec-type', sectype, _(' and/or ').join(expected_values), validation_status.STATUS_FATAL_ERROR)
+                                r.append(msg)
         return r
 
     @property
@@ -1322,7 +1232,7 @@ class ArticleContentValidation(object):
             'fig': 'fig',
             'table-wrap': 'table'
             }
-        if len(self.article.references) > 0:
+        if len(self.article.references_xml) > 0:
             tag_and_xref_types['ref'] = 'bibr'
         message = []
         missing = {}
@@ -1337,9 +1247,8 @@ class ArticleContentValidation(object):
                     missing[xref_type].append(_id)
                 else:
                     for item in xref_nodes:
-                        if item['ref-type'] != xref_type:
-                            msg = invalid_value_message(str(item['ref-type']), 'xref[@rid="' + str(item['rid']) + '"]/@ref-type', [str(xref_type)])
-                            message.append(('xref/@ref-type', validation_status.STATUS_FATAL_ERROR, msg))
+                        msg = validations_messages.is_expected_value('xref[@rid="' + str(item['rid']) + '"]/@ref-type', str(item['ref-type']), [str(xref_type)],validation_status.STATUS_FATAL_ERROR)
+                        message.append(msg)
         for xref_type, missing_xref_type_items in missing.items():
             if self.article.any_xref_ranges.get(xref_type) is None:
                 print(xref_type + ' has no xref ranges')
@@ -1365,18 +1274,18 @@ class ArticleContentValidation(object):
     def missing_bibr_xref(self):
         missing = []
         invalid_reftype = []
-        for ref in self.article.references:
-            if ref.id is not None:
-                found = [item for item in self.article.xref_nodes if item['rid'] == ref.id]
+        for ref_xml in self.article.references_xml:
+            if ref_xml.reference.id is not None:
+                found = [item for item in self.article.xref_nodes if item['rid'] == ref_xml.reference.id]
                 for item in found:
                     if item['ref-type'] != 'bibr':
                         invalid_reftype.append(item)
                 if len(found) == 0:
-                    missing.append(ref.id)
+                    missing.append(ref_xml.reference.id)
         message = []
         if len(invalid_reftype) > 0:
-            msg = invalid_value_message(item['ref-type'], '@ref-type', ['bibr'])
-            message.append(('xref[@ref-type=bibr]', validation_status.STATUS_FATAL_ERROR, msg))
+            msg = validations_messages.is_expected_value('xref[@ref-type=bibr]', item['ref-type'], ['bibr'], validation_status.STATUS_FATAL_ERROR)
+            message.append(msg)
 
         if len(missing) > 0:
             missing = confirm_missing_xref_items(missing, self.article.bibr_xref_ranges)
@@ -1397,7 +1306,7 @@ class ArticleContentValidation(object):
             for bibr_xref in self.article.bibr_xref_nodes:
                 rid = bibr_xref.attrib.get('rid')
                 if rid is not None and bibr_xref.text is not None:
-                    if not rid[1:] in bibr_xref.text and not bibr_xref.text.replace('(', '').replace(')', '') in rid:
+                    if rid[1:] not in bibr_xref.text and bibr_xref.text.replace('(', '').replace(')', '') not in rid:
                         items = []
                         items.append(('@rid', rid))
                         items.append(('xref', bibr_xref.text))
@@ -1537,7 +1446,7 @@ class HRefValidation(object):
         else:
             if self.check_url or 'scielo.php' in self.hrefitem.src:
                 if self.ws_requester.is_valid_url(self.hrefitem.src) is False:
-                    message = invalid_value_message(self.hrefitem.src, 'URL')
+                    message = validations_messages.invalid_value_message('URL', self.hrefitem.src)
                     if 'scielo.php' in self.hrefitem.src:
                         message += _('Be sure that there is no missing character such as _. ')
                     status_message.append((validation_status.STATUS_WARNING, self.hrefitem.src + message))        
@@ -1571,283 +1480,6 @@ class HRefValidation(object):
             return html_reports.thumb_image(location.replace(self.pkgfiles.path, '{IMG_PATH}'))
         else:
             return html_reports.link(location.replace(self.pkgfiles.path, '{PDF_PATH}'), self.hrefitem.src)
-
-
-class ReferenceContentValidation(object):
-
-    def __init__(self, reference):
-        self.reference = reference
-
-    def evaluate(self, article_year):
-        r = []
-        r.append(self.xml)
-        r.extend(self.mixed_citation)
-        r.append(self.publication_type)
-        if self.publication_type_other is not None:
-            r.append(self.publication_type_other)
-        r.extend(self.publication_type_dependence)
-        r.extend(self.authors_list)
-        r.extend(self.year(article_year))
-        r.extend(self.source)
-        r.extend(self.ext_link)
-        return r
-
-    @property
-    def id(self):
-        return self.reference.id
-
-    @property
-    def source(self):
-        r = []
-
-        if self.reference.source is not None:
-            msg = invalid_value_message(self.reference.source, 'source')
-            _test_number = warn_unexpected_numbers('source', self.reference.source, 4)
-            if _test_number is not None:
-                r.append(_test_number)
-            if self.reference.source[0:1] != self.reference.source[0:1].upper():
-                if not self.reference.source[0:2] != 'e-':
-                    r.append(('source', validation_status.STATUS_ERROR, msg))
-
-            _source = self.reference.source.strip()
-            if self.reference.source != _source:
-                r.append(('source', validation_status.STATUS_ERROR, msg + _('"{value}" starts or ends with space characters. ').format(value=self.reference.source)))
-        return r
-
-    def validate_element(self, label, value, error_level=validation_status.STATUS_FATAL_ERROR):
-        if not self.reference.publication_type is None:
-            res = attributes.validate_element(self.reference.publication_type, label, value)
-            if res != '':
-                return (label, error_level, res)
-            else:
-                if not value is None and value != '':
-                    return (label, validation_status.STATUS_OK, value)
-
-    @property
-    def is_look_like_thesis(self):
-        looks_like = None
-        if self.reference.publication_type != 'thesis':
-            _mixed = self.reference.mixed_citation.lower() if self.reference.mixed_citation is not None else ''
-            _mixed = _mixed.replace('[', ' ').replace(']', ' ').replace(',', ' ').replace(';', ' ').replace('.', ' ')
-            _mixed = _mixed.split()
-            for item in _mixed:
-                for word in ['thesis', 'dissert', 'master', 'doctor', 'mestrado', 'doutorado', 'maestr', 'tese']:
-                    if item.startswith(word):
-                        looks_like = 'thesis'
-                        break
-        return looks_like
-
-    @property
-    def publication_type_dependence(self):
-        r = []
-        if not self.reference.publication_type is None:
-            authors = None
-            if len(self.reference.authors_list) > 0:
-                _authors = []
-                for item in self.reference.authors_list:
-                    if isinstance(item, article.PersonAuthor):
-                        a = ' '.join([name for name in [item.fname, item.surname] if name is not None])
-                        if len(a) > 0:
-                            _authors.append(a)
-                    elif isinstance(item, article.CorpAuthor):
-                        if item.collab is not None:
-                            _authors.append(item.collab)
-                if len(_authors) > 0:
-                    authors = ', '.join(_authors)
-            items = [
-                    self.validate_element('person-group', authors), 
-                    self.validate_element('article-title', self.reference.article_title), 
-                    self.validate_element('chapter-title', self.reference.chapter_title), 
-                    self.validate_element('publisher-name', self.reference.publisher_name), 
-                    self.validate_element('publisher-loc', self.reference.publisher_loc), 
-                    self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
-                    self.validate_element('conf-name', self.reference.conference_name), 
-                    self.validate_element('date-in-citation[@content-type="access-date"] ' + _(' or ') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
-                    self.validate_element('ext-link', self.reference.ext_link), 
-                    self.validate_element('volume', self.reference.volume), 
-                    self.validate_element('issue', self.reference.issue), 
-                    self.validate_element('fpage', self.reference.fpage), 
-                    self.validate_element('source', self.reference.source), 
-                    self.validate_element('year', self.reference.year), 
-                ]
-
-            looks_like = None
-            _mixed = self.reference.mixed_citation.lower() if self.reference.mixed_citation is not None else ''
-            _source = self.reference.source.lower() if self.reference.source is not None else ''
-            if self.reference.publication_type != 'journal':
-                if self.reference.source is not None:
-                    if 'journal' in _source or 'revista' in _source or 'J ' in self.reference.source or self.reference.source.endswith('J') or 'J. ' in self.reference.source or self.reference.source.endswith('J.'):
-                        looks_like = 'journal'
-            if self.reference.issue is None and self.reference.volume is None:
-                if self.reference.fpage is None:
-                    looks_like = self.is_look_like_thesis
-                if not 'legal' in self.reference.publication_type:
-                    if self.reference.source is not None:
-                        if 'Lei ' in self.reference.source or ('Di' in self.reference.source and 'Oficial' in self.reference.source):
-                            looks_like = 'legal-doc'
-                        if 'portaria ' in _source:
-                            looks_like = 'legal-doc'
-                        if 'decreto ' in _source:
-                            looks_like = 'legal-doc'
-                if 'conference' in _mixed or 'proceeding' in _mixed or 'meeting' in _mixed:
-                    if self.reference.publication_type != 'confproc':
-                        looks_like = 'confproc'
-            if looks_like is not None:
-                r.append(('@publication-type', validation_status.STATUS_ERROR, _('Be sure that {item} is correct. ').format(item='@publication-type=' + str(self.reference.publication_type)) + _('This reference looks like {publication_type}. ').format(publication_type=looks_like)))
-            for item in items:
-                if item is not None:
-                    r.append(item)
-        return r
-
-    @property
-    def ignore_publication_type_dependence(self):
-        r = []
-        authors = None
-        if len(self.reference.authors_list) > 0:
-            for item in self.reference.authors_list:
-                if isinstance(item, article.PersonAuthor):
-                    authors = item.surname + ' ...'
-                elif isinstance(item, article.CorpAuthor):
-                    authors = item.collab
-
-        items = [
-                self.validate_element('person-group', authors), 
-                self.validate_element('article-title', self.reference.article_title), 
-                self.validate_element('chapter-title', self.reference.chapter_title), 
-                self.validate_element('publisher-name', self.reference.publisher_name), 
-                self.validate_element('publisher-loc', self.reference.publisher_loc), 
-                self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
-                self.validate_element('conf-name', self.reference.conference_name), 
-                self.validate_element('date-in-citation[@content-type="access-date"] ' + _(' or ') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
-                self.validate_element('ext-link', self.reference.ext_link), 
-                self.validate_element('volume', self.reference.volume), 
-                self.validate_element('issue', self.reference.issue), 
-                self.validate_element('fpage', self.reference.fpage), 
-                self.validate_element('source', self.reference.source), 
-                self.validate_element('year', self.reference.year), 
-            ]
-
-        if self.reference.issue is None and self.reference.volume is None:
-            _mixed = self.reference.mixed_citation.lower()
-            if 'conference' in _mixed or 'proceeding' in _mixed:
-                if self.reference.publication_type != 'confproc':
-                    r.append(('@publication-type', validation_status.STATUS_WARNING, _('Be sure that {item} is correct. ').format(item='@publication-type=' + self.reference.publication_type) + _('This reference looks like {publication_type}. ').format(publication_type='confproc')))
-            if self.is_look_like_thesis == 'thesis':
-                r.append(('@publication-type', validation_status.STATUS_WARNING, _('Be sure that {item} is correct. ').format(item='@publication-type=' + self.reference.publication_type) + _('This reference looks like {publication_type}. ').format(publication_type='thesis')))
-
-        for item in items:
-            if item is not None:
-                r.append(item)
-
-        any_error_level = list(set([status for label, status, message in r if status in [validation_status.STATUS_FATAL_ERROR]]))
-        if len(any_error_level) == 0:
-            if self.reference.ref_status == 'display-only':
-                minimum_required_elements = attributes.REFERENCE_REQUIRED_SUBELEMENTS.get(self.reference.publication_type)
-                if minimum_required_elements is None:
-                    r.append(('@specific-use', validation_status.STATUS_ERROR, _('Remove @specific-use="display-only". It is required to identify incomplete references which @publication-type is equal to ') + ' | '.join(attributes.REFERENCE_REQUIRED_SUBELEMENTS.keys())))
-                else:
-                    r.append(('@specific-use', validation_status.STATUS_FATAL_ERROR, _('Remove @specific-use="display-only". It is required to identify incomplete references which @publication-type is equal to ') + ' | '.join(attributes.REFERENCE_REQUIRED_SUBELEMENTS.keys()) + '. ' + _('Expected at least the elements: ') + ' | '.join(minimum_required_elements)))
-
-        else:
-            if self.reference.ref_status == 'display-only':
-                items.append((_('Incomplete Reference'), validation_status.STATUS_WARNING, _('Check if the elements of this reference are properly identified. ')))
-                items = []
-                for label, status, message in r:
-                    if status != validation_status.STATUS_OK:
-                        items.append((label, validation_status.STATUS_WARNING + _(' ignored ') + status.lower(), message))
-                r = items
-        return r
-
-    @property
-    def ext_link(self):
-        r = []
-        #if len(self.reference.ext_link) > 0 and self.reference.mixed_citation is not None:
-        #    if not '<ext-link' in self.reference.mixed_citation:
-        #        r.append(('ext-link', validation_status.STATUS_WARNING, _('Identify the links in mixed-citation with the ext-link element.')))
-        return r
-
-    @property
-    def publication_type(self):
-        return expected_values('@publication-type', self.reference.publication_type, attributes.PUBLICATION_TYPE, 'FATAL ')
-
-    @property
-    def publication_type_other(self):
-        if self.reference.publication_type == 'other':
-            return ('@publication-type', validation_status.STATUS_WARNING, '@publication-type=' + self.reference.publication_type + '. ' + _('Expected values: {expected}. ').format(expected=_(' or ').join([v for v in attributes.PUBLICATION_TYPE if v != 'other'])))
-
-    @property
-    def xml(self):
-        return ('xml', validation_status.STATUS_INFO, self.reference.xml)
-
-    @property
-    def mixed_citation(self):
-        r = []
-        if self.reference.mixed_citation is None:
-            r.append(required('mixed-citation', self.reference.mixed_citation, validation_status.STATUS_FATAL_ERROR, False))
-        else:
-            for label, data in [('source', self.reference.source), ('year', self.reference.year), ('ext-link', self.reference.ext_link)]:
-                for item in validate_element_is_found_in_mixed_citation(label, data, self.reference.mixed_citation):
-                    if item is not None:
-                        r.append(item)
-            if '_'*6 in self.reference.mixed_citation:
-                if len(self.reference.authors_list) == 0:
-                    r.append(('person-group', validation_status.STATUS_FATAL_ERROR, _('This reference contains {}, which means the authors of this reference are the same of the previous reference. You must copy the corresponding person-group of previous reference to this reference. '.format('_'*6))))
-        return r
-    
-    @property
-    def person_group_type(self):
-        r = []
-        groups_type = [item[0] for item in self.reference.authors_by_group]
-        if ' In: ' in self.reference.mixed_citation and len(groups_type) < 2:
-            r.append(('@person-group-type', validation_status.STATUS_FATAL_ERROR, _(u'It is expected more than one person-group. ')))
-        if len(groups_type) > 1:
-            no_repetition = list(set(groups_type))
-            if not len(groups_type) == len(no_repetition):
-                r.append(('@person-group-type', validation_status.STATUS_FATAL_ERROR, _(u'Use @person-group-type to identify the person role. You have identified {} groups. @person-group must have different value for each one. '.format(len(groups_type)))))
-        return r
-
-    @property
-    def authors_list(self):
-        r = []
-        for person in self.reference.authors_list:
-            if isinstance(person, article.PersonAuthor):
-                r.extend(ContribValidation(person, []).validate())
-            elif isinstance(person, article.CorpAuthor):
-                r.append(('collab', validation_status.STATUS_OK, person.collab))
-            else:
-                r.append((invalid_value_message(_('None'), _('authors')), validation_status.STATUS_WARNING, str(type(person))))
-        return r
-
-    def year(self, article_year):
-        r = []
-        if article_year is None:
-            article_year = datetime.now().isoformat()[0:4]
-        _y = self.reference.formatted_year
-        if _y is not None:
-            if _y.isdigit():
-                if _y > article_year:
-                    r.append(('year', validation_status.STATUS_FATAL_ERROR, _('{value} must not be greater than {year}. ').format(value=_y, year=datetime.now().isoformat()[0:4])))
-            elif 's.d' in _y:
-                r.append(('year', validation_status.STATUS_INFO, _y))
-            elif 's/d' in _y:
-                r.append(('year', validation_status.STATUS_INFO, _y))
-            elif 's/d' in _y:
-                r.append(('year', validation_status.STATUS_INFO, _y))
-            else:
-                r.append(('year', validation_status.STATUS_FATAL_ERROR, _('{value} is not a number nor is in an expected format. ').format(value=_y)))
-        return r
-
-    @property
-    def publisher_name(self):
-        return display_value('publisher-name', self.reference.publisher_name)
-
-    @property
-    def publisher_loc(self):
-        return display_value('publisher-loc', self.reference.publisher_loc)
-
-    @property
-    def fpage(self):
-        return conditional_required('fpage', self.reference.fpage)
 
 
 def validate_orcid(orcid):

@@ -429,37 +429,6 @@ def normalize_role(_role):
     return r
 
 
-def is_required(publication_type, label):
-    return label in REFERENCE_REQUIRED_SUBELEMENTS.get(publication_type, [])
-
-
-def is_allowed_element(publication_type, label):
-    if is_required(publication_type, label):
-        r = True
-    else:
-        r = not label in REFERENCE_NOT_ALLOWED_SUBELEMENTS.get(publication_type, [])
-    return r
-
-
-def validate_element(publication_type, label, value):
-    problem = ''
-    compl = ''
-    items = []
-    if value is None or value == '':
-        if is_required(publication_type, label):
-            problem = _('{requirer} requires {required}. ').format(requirer='@publication-type="' + publication_type + '"', required=label)
-            compl = _('If the reference has no {label}, ignore this message. ').format(label=label)
-            items = ['@publication-type', _('the elements of this reference')]
-    else:
-        if not is_allowed_element(publication_type, label):
-            problem = _('{label} is not allowed for {item}. ').format(label=label, item='@publication-type=' + publication_type)
-            items = ['@publication-type', label, value]
-    if len(problem) > 0:
-        problem += _('Be sure that you have correctly identified: ') + ' and/or '.join(items) + '. '
-        problem += compl
-    return problem
-
-
 def doctopic_label(code):
     label = [k for k, v in DOCTOPIC.items() if v == code]
     if len(label) == 0:

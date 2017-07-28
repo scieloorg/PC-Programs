@@ -8,6 +8,11 @@ from ...generics import img_utils
 from . import attributes
 
 
+def first_item(l):
+    if l is not None and len(l) > 0:
+        return l[0]
+
+
 def element_which_requires_permissions(node, node_graphic=None):
     missing_children = []
     missing_permissions = []
@@ -31,6 +36,7 @@ class AffiliationXML(object):
     def __init__(self, node):
         self.node = node
         self.xml_node = xml_utils.XMLNode(node)
+        self._aff = None
 
     @property
     def xml(self):
@@ -97,22 +103,24 @@ class AffiliationXML(object):
 
     @property
     def aff(self):
-        a = Affiliation()
-        a.xml = self.xml
-        a.id = self.id
-        a.city = self.city[0]
-        a.state = self.state[0]
-        if len(self.country[0]) > 0:
-            a.i_country, a.country = self.country[0]
-        a.orgname = self.orgname[0]
-        a.norgname = self.norgname[0]
-        a.orgdiv1 = self.orgdiv1[0]
-        a.orgdiv2 = self.orgdiv2[0]
-        a.orgdiv3 = self.orgdiv3[0]
-        a.label = self.label[0]
-        a.email = self.email[0]
-        a.original = self.original[0]
-        return a
+        if self._aff is None:
+            self._aff = Affiliation()
+            self._aff.xml = self.xml
+            self._aff.id = self.id
+            self._aff.city = first_item(self.city)
+            self._aff.state = first_item(self.state)
+            self.country = first_item(self.country)
+            if self.country is not None:
+                self._aff.i_country, self._aff.country = first_item(self.country)
+            self._aff.orgname = first_item(self.orgname)
+            self._aff.norgname = first_item(self.norgname)
+            self._aff.orgdiv1 = first_item(self.orgdiv1)
+            self._aff.orgdiv2 = first_item(self.orgdiv2)
+            self._aff.orgdiv3 = first_item(self.orgdiv3)
+            self._aff.label = first_item(self.label)
+            self._aff.email = first_item(self.email)
+            self._aff.original = first_item(self.original)
+            return self._aff
 
 
 class Affiliation(object):
@@ -149,6 +157,7 @@ class TableParentXML(object):
     def __init__(self, node):
         self.node = node
         self.xml_node = xml_utils.XMLNode(node)
+        self._table_parent = None
 
     @property
     def name(self):
@@ -168,28 +177,29 @@ class TableParentXML(object):
 
     @property
     def table(self):
-        return self.xml_node.xml(['.//table'])
+        return xml_utils.node_xml(self.node.find('.//table'))
 
     @property
     def table_parent(self):
-        t = TableParent()
-        t.name = self.name
-        t.id = self.id
-        t.label = self.label[0]
-        t.caption = self.caption[0]
-        t.table = self.table[0]
-        return t
+        if self._table_parent is None:
+            self._table_parent = TableParent()
+            self._table_parent.name = self.name
+            self._table_parent.id = self.id
+            self._table_parent.label = first_item(self.label)
+            self._table_parent.caption = first_item(self.caption)
+            self._table_parent.table = first_item(self.table)
+        return self._table_parent
 
 
 class TableParent(object):
 
     def __init__(self):
-        self.table = table
-        self.name = name
-        self.id = id
-        self.label = label if label is not None else ''
-        self.caption = caption if caption is not None else ''
-        self.graphic = graphic
+        self.table = None
+        self.name = None
+        self.id = None
+        self.label = None
+        self.caption = None
+        self.graphic = None
 
 
 class HRef(object):
@@ -252,6 +262,7 @@ class ContribXML(object):
     def __init__(self, node):
         self.node = node
         self.xml_node = xml_utils.XMLNode(node)
+        self._contrib = None
 
     @property
     def fnames(self):
@@ -285,10 +296,10 @@ class ContribXML(object):
     def person_author(self):
         if self.node.findall('.//surname'):
             c = PersonAuthor()
-            c.fname = self.fnames[0]
-            c.surname = self.surnames[0]
-            c.suffix = self.suffixes[0]
-            c.prefix = self.prefixes[0]
+            c.fname = first_item(self.fnames)
+            c.surname = first_item(self.surnames)
+            c.suffix = first_item(self.suffixes)
+            c.prefix = first_item(self.prefixes)
             c.xref = []
             c.contrib_id = {}
             for contrib_id in self.contrib_id_items:
@@ -307,14 +318,15 @@ class ContribXML(object):
         if self.node.findall('.//collab'):
             c = CorpAuthor()
             c.role = self.node.attrib.get('contrib-type')
-            c.collab = self.collabs[0]
+            c.collab = first_item(self.collabs)
             return c
 
     def contrib(self, role=None):
-        c = self.person_author if self.person_author else self.corp_author
-        if c is not None:
-            c.role = role
-        return c
+        if self._contrib is None:
+            self._contrib = self.person_author if self.person_author else self.corp_author
+            if self._contrib is not None and role is not None:
+                self._contrib.role = role
+        return self._contrib
 
 
 class PersonAuthor(object):
@@ -339,6 +351,10 @@ class CorpAuthor(object):
         self.role = None
         self.collab = None
 
+    @property
+    def fullname(self):
+        return self.collab
+
 
 class TitleXML(object):
 
@@ -352,7 +368,7 @@ class TitleXML(object):
         for title in self.xml_node.nodes_text(['article-title', 'trans-title']):
             if title is not None:
                 items.append(article_utils.remove_xref(title))
-        return items[0] if len(items) > 0 else None
+        return first_item(items)
 
     @property
     def subtitle(self):
@@ -360,7 +376,7 @@ class TitleXML(object):
         for title in self.xml_node.nodes_text(['subtitle', 'trans-subtitle']):
             if title is not None:
                 items.append(article_utils.remove_xref(title))
-        return items[0] if len(items) > 0 else None
+        return first_item(items)
 
     @property
     def language(self):
@@ -1312,15 +1328,11 @@ class ArticleXML(object):
         return refs
 
     @property
-    def references(self):
-        return [ref_xml.ref for ref_xml in self.references_xml]
-
-    @property
     def refstats(self):
         _refstats = {}
-        for ref in self.references:
-            pubtype = ref.publication_type
-            if ref.publication_type not in _refstats.keys():
+        for ref_xml in self.references_xml:
+            pubtype = ref_xml.reference.publication_type
+            if ref_xml.reference.publication_type not in _refstats.keys():
                 if pubtype is None:
                     pubtype = 'None'
                 _refstats[pubtype] = 0
@@ -1330,9 +1342,9 @@ class ArticleXML(object):
     @property
     def display_only_stats(self):
         q = 0
-        for ref in self.references:
-            if ref.ref_status is not None:
-                if ref.ref_status == 'display-only':
+        for ref_xml in self.references_xml:
+            if ref_xml.reference.ref_status is not None:
+                if ref_xml.reference.ref_status == 'display-only':
                     q += 1
         return q
 
@@ -1441,13 +1453,13 @@ class ArticleXML(object):
     @property
     def permissions_required(self):
         missing_permissions = []
-        for tag in REQUIRES_PERMISSIONS:
+        for tag in attributes.REQUIRES_PERMISSIONS:
             xpath = './/' + tag
             if tag == 'graphic':
                 xpath = './/*[graphic]'
 
                 for node in self.tree.findall(xpath):
-                    if not node.tag in ['fig', 'table-wrap']:
+                    if node.tag not in ['fig', 'table-wrap']:
                         for node_graphic in node.findall('graphic'):
                             for elem in element_which_requires_permissions(node, node_graphic):
                                 missing_permissions.append(elem)
@@ -1785,12 +1797,11 @@ class Reference(object):
         self.trans_title = None
         self.trans_title_language = None
         self.publication_type = None
-        self.ref_status = None
         self.xml = None
         self.mixed_citation = None
         self.element_citation_texts = None
-        self.authors_list = None
-        self.authors_by_group = None
+        self.contrib_xml_items = None
+        self.person_group_xml_items = None
         self.volume = None
         self.issue = None
         self.supplement = None
@@ -1801,8 +1812,6 @@ class Reference(object):
         self.publisher_loc = None
         self.fpage = None
         self.lpage = None
-        self.fpage_number = None
-        self.lpage_number = None
         self.page_range = None
         self.elocation_id = None
         self.size = None
@@ -1810,7 +1819,6 @@ class Reference(object):
         self.etal = None
         self.cited_date = None
         self.ext_link = None
-        self._comments = None
         self.degree = None
         self.comments = None
         self.notes = None
@@ -1826,6 +1834,18 @@ class Reference(object):
     def formatted_year(self):
         return article_utils.four_digits_year(self.year)
 
+    @property
+    def fpage_number(self):
+        if self.fpage is not None:
+            if self.fpage.isdigit():
+                return int(self.fpage)
+
+    @property
+    def lpage_number(self):
+        if self.lpage is not None:
+            if self.lpage.isdigit():
+                return int(self.lpage)
+
 
 class ReferenceXML(object):
 
@@ -1836,6 +1856,7 @@ class ReferenceXML(object):
         self.elem_citation_xml_nodes = [xml_utils.XMLNode(elem) for elem in self.elem_citation_nodes]
         self._pub_id_items = None
         self._doi = None
+        self._ref = None
 
     def nodes(self, xpaths):
         items = []
@@ -1855,54 +1876,52 @@ class ReferenceXML(object):
             items.extend(xml_node.nodes_text(xpaths))
         return items
 
+    @property
     def reference(self):
-        ref = Reference()
-        ref.source = self._[0]
-        ref.id = self._[0]
-        ref.language = self._[0]
-        ref.article_title = self._[0]
-        ref.chapter_title = self._[0]
-        ref.trans_title = self._[0]
-        ref.trans_title_language = self._[0]
-        ref.publication_type = self._[0]
-        ref.ref_status = self._[0]
-        ref.xml = self._[0]
-        ref.mixed_citation = self._[0]
-        ref.element_citation_texts = self._[0]
-        ref.authors_list = self._[0]
-        ref.authors_by_group = self._[0]
-        ref.volume = self._[0]
-        ref.issue = self._[0]
-        ref.supplement = self._[0]
-        ref.edition = self._[0]
-        ref.version = self._[0]
-        ref.year = self._[0]
-        ref.formatted_year = self._[0]
-        ref.publisher_name = self._[0]
-        ref.publisher_loc = self._[0]
-        ref.fpage = self._[0]
-        ref.lpage = self._[0]
-        ref.fpage_number = self._[0]
-        ref.lpage_number = self._[0]
-        ref.page_range = self._[0]
-        ref.elocation_id = self._[0]
-        ref.size = self._[0]
-        ref.label = self._[0]
-        ref.etal = self._[0]
-        ref.cited_date = self._[0]
-        ref.ext_link = self._[0]
-        ref._comments = self._[0]
-        ref.degree = self._[0]
-        ref.comments = self._[0]
-        ref.notes = self._[0]
-        ref.contract_number = self._[0]
-        ref.doi = self._[0]
-        ref.pmid = self._[0]
-        ref.pmcid = self._[0]
-        ref.conference_name = self._[0]
-        ref.conference_location = self._[0]
-        ref.conference_date = self._[0]
-        return ref
+        if self._ref is None:
+            self._ref = Reference()
+            self._ref.xml = self.xml
+            self._ref.id = self.id
+            self._ref.language = self.language
+            self._ref.trans_title_language = self.trans_title_language
+            self._ref.contrib_xml_items = self.contrib_xml_items
+            self._ref.person_group_xml_items = self.person_group_xml_items
+            self._ref.page_range = self.page_range
+            self._ref.doi = self.doi
+            self._ref.pmid = self.pmid
+            self._ref.pmcid = self.pmcid
+
+            self._ref.source = first_item(self.source)
+            self._ref.article_title = first_item(self.article_title)
+            self._ref.chapter_title = first_item(self.chapter_title)
+            self._ref.trans_title = first_item(self.trans_title)
+            self._ref.publication_type = first_item(self.publication_type)
+            self._ref.ref_status = first_item(self.ref_status)
+            self._ref.mixed_citation = first_item(self.mixed_citation)
+            self._ref.volume = first_item(self.volume)
+            self._ref.issue = first_item(self.issue)
+            self._ref.supplement = first_item(self.supplement)
+            self._ref.edition = first_item(self.edition)
+            self._ref.version = first_item(self.version)
+            self._ref.year = first_item(self.year)
+            self._ref.publisher_name = first_item(self.publisher_name)
+            self._ref.publisher_loc = first_item(self.publisher_loc)
+            self._ref.fpage = first_item(self.fpage)
+            self._ref.lpage = first_item(self.lpage)
+            self._ref.elocation_id = first_item(self.elocation_id)
+            self._ref.size = first_item(self.size)
+            self._ref.label = first_item(self.label)
+            self._ref.etal = first_item(self.etal)
+            self._ref.cited_date = first_item(self.cited_date)
+            self._ref.ext_link = first_item(self.ext_link)
+            self._ref.degree = first_item(self.degree)
+            self._ref.comments = first_item(self.comments)
+            self._ref.notes = first_item(self.notes)
+            self._ref.contract_number = first_item(self.contract_number)
+            self._ref.conference_name = first_item(self.conference_name)
+            self._ref.conference_location = first_item(self.conference_location)
+            self._ref.conference_date = first_item(self.conference_date)
+        return self._ref
 
     @property
     def source(self):
@@ -1960,52 +1979,51 @@ class ReferenceXML(object):
         return self.root_xml_node.nodes_text(['.//mixed-citation'])
 
     @property
-    def element_citation_texts(self):
-        texts = self.root_xml_node.nodes_text(['.//element-citation'])
-        return [item for item in texts if '<' not in item]
+    def element_citation(self):
+        return self.root_xml_node.nodes_text(['.//element-citation'])
 
     @property
-    def authors_list(self):
+    def contrib_xml_items(self):
         r = []
-        for items in self.authors_by_group:
+        for items in self.person_group_xml_items:
             if items is not None:
                 r.extend(items[1])
         return r
 
     @property
-    def authors_by_group(self):
+    def person_group_xml_items(self):
         groups = []
         if self.elem_citation_nodes is not None:
             for person_group in self.nodes(['.//person-group']):
                 role = person_group.attrib.get('person-group-type', 'author')
-                authors = [ContribXML(contrib).contrib(role) for contrib in person_group.findall('*')]
+                authors = [ContribXML(contrib) for contrib in person_group.findall('*')]
                 authors = [a for a in authors if a is not None]
                 groups.append((role, authors))
         return groups
 
     @property
     def volume(self):
-        return self.nodes_texts(['.//volume'])
+        return self.nodes_text(['.//volume'])
 
     @property
     def issue(self):
-        return self.nodes_texts(['.//issue'])
+        return self.nodes_text(['.//issue'])
 
     @property
     def supplement(self):
-        return self.nodes_texts(['.//supplement'])
+        return self.nodes_text(['.//supplement'])
 
     @property
     def edition(self):
-        return self.nodes_texts(['.//edition'])
+        return self.nodes_text(['.//edition'])
 
     @property
     def version(self):
-        return self.nodes_texts(['.//version'])
+        return self.nodes_text(['.//version'])
 
     @property
     def year(self):
-        return self.nodes_texts(['.//year'])
+        return self.nodes_text(['.//year'])
 
     @property
     def publisher_name(self):
@@ -2024,18 +2042,6 @@ class ReferenceXML(object):
         return self.nodes_text(['.//lpage'])
 
     @property
-    def fpage_number(self):
-        if self.fpage is not None:
-            if self.fpage.isdigit():
-                return int(self.fpage)
-
-    @property
-    def lpage_number(self):
-        if self.lpage is not None:
-            if self.lpage.isdigit():
-                return int(self.lpage)
-
-    @property
     def page_range(self):
         return self.nodes_text(['.//page-range'])
 
@@ -2045,11 +2051,12 @@ class ReferenceXML(object):
 
     @property
     def size(self):
-        item = []
+        items = []
         for item in self.nodes_data(['.//size']):
             if item is not None:
                 text, attribs = item
-                item.append({'size': text, 'units': attribs.get('units')})
+                items.append({'size': text, 'units': attribs.get('units')})
+        return items if len(items) > 0 else [None]
 
     @property
     def label(self):
@@ -2091,7 +2098,9 @@ class ReferenceXML(object):
     @property
     def pub_id_items(self):
         if self._pub_id_items is None:
-            self._pub_id_items = {attribs.get('pub-id-type'): text for text, attribs in self.nodes_data(['.//pub-id'])}
+            data = self.nodes_data(['.//pub-id'])
+            if data != [None]:
+                self._pub_id_items = {attribs.get('pub-id-type'): text for text, attribs in data}
         return self._pub_id_items
 
     @property

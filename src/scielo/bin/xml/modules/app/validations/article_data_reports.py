@@ -365,7 +365,8 @@ class ArticleDisplayReport(object):
             row['role'] = a.role
             r.append(row)
 
-        for ref in self.article.references:
+        for ref_xml in self.article.references_xml:
+            ref = ref_xml.reference
             for item in ref.authors_list:
                 row = {}
                 row['scope'] = ref.id
@@ -396,7 +397,8 @@ class ArticleDisplayReport(object):
         if not self.article_identification is None:
             t_header = ['filename', 'scope'] + t_header
 
-        for ref in self.article.references:
+        for ref_xml in self.article.references_xml:
+            ref = ref_xml.reference
             row = {}
             row['scope'] = ref.id
             row['ID'] = ref.id

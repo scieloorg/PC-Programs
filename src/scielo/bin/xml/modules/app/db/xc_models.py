@@ -301,7 +301,8 @@ class ArticleRecords(object):
     def references(self):
 
         records_c = []
-        for item in self.article.references:
+        for ref_xml in self.article.references_xml:
+            item = ref_xml.reference
             rec_c = {}
             rec_c['865'] = self._metadata.get('65')
             rec_c['71'] = item.publication_type
@@ -401,7 +402,7 @@ class ArticleRecords(object):
     def records(self):
         r = []
         self.fix_issue_data()
-        rec = self.outline(str(4 + len(self.references)))
+        rec = self.outline(str(4 + len(self.references_xml)))
         rec.update(self.common_data)
         rec.update(self.record_info('1', 'o', '1', '1'))
         r.append(rec)
@@ -424,10 +425,11 @@ class ArticleRecords(object):
         rec.update(self.record_info('4', 'l', '1', '1'))
         r.append(rec)
 
-        c_total = str(len(self.references))
+        c_total = str(len(self.references_xml))
         c_index = 0
         k = 4
-        for item in self.references:
+        for ref_xml in self.references_xml:
+            item = ref_xml.reference
             c_index += 1
             k += 1
             rec = item

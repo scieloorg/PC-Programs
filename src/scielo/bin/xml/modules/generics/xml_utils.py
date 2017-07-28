@@ -13,7 +13,6 @@ except ImportError:
     import HTMLParser as html_parser
 
 from ..__init__ import _
-# FIXES 
 from ..__init__ import TABLES_PATH
 from . import fs_utils
 from . import encoding
@@ -702,22 +701,23 @@ class XMLNode(object):
         return node_xml(self.root)
 
     def nodes(self, xpaths):
-        n = []
+        r = []
         for xpath in xpaths:
             found = self.root.findall(xpath)
             if found is not None:
-                n.extend(found)
-        return n
+                r.extend(found)
+        return r
 
     def nodes_text(self, xpaths):
         r = []
         for node in self.nodes(xpaths):
-            r.append(node_text(node))
-        r = [item for item in r if item is not None]
-        return r if len(r) > 0 else [None]
+            if node is not None:
+                r.append(node_text(node))
+        return r
 
     def nodes_data(self, xpaths):
         r = []
         for node in self.nodes(xpaths):
-            r.append((node_text(node), node.attrib))
-        return r if len(r) > 0 else [None]
+            if node is not None:
+                r.append((node_text(node), node.attrib))
+        return r
