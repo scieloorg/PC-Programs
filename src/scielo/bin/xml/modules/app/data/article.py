@@ -109,9 +109,9 @@ class AffiliationXML(object):
             self._aff.id = self.id
             self._aff.city = first_item(self.city)
             self._aff.state = first_item(self.state)
-            self.country = first_item(self.country)
-            if self.country is not None:
-                self._aff.i_country, self._aff.country = first_item(self.country)
+            country = first_item(self.country)
+            if country is not None:
+                self._aff.i_country, self._aff.country = first_item(country)
             self._aff.orgname = first_item(self.orgname)
             self._aff.norgname = first_item(self.norgname)
             self._aff.orgdiv1 = first_item(self.orgdiv1)
@@ -290,11 +290,13 @@ class ContribXML(object):
 
     @property
     def collabs(self):
-        return self.xml_node.nodes_data(['.//collab'])
+        if self.node.tag == 'collab':
+            return [xml_utils.node_text(self.node)]
+        return self.xml_node.nodes_text(['.//collab'])
 
     @property
     def person_author(self):
-        if self.node.findall('.//surname'):
+        if len(self.surnames) > 0:
             c = PersonAuthor()
             c.fname = first_item(self.fnames)
             c.surname = first_item(self.surnames)
@@ -315,7 +317,7 @@ class ContribXML(object):
 
     @property
     def corp_author(self):
-        if self.node.findall('.//collab'):
+        if len(self.collabs) > 0:
             c = CorpAuthor()
             c.role = self.node.attrib.get('contrib-type')
             c.collab = first_item(self.collabs)
@@ -1996,8 +1998,7 @@ class ReferenceXML(object):
         if self.elem_citation_nodes is not None:
             for person_group in self.nodes(['.//person-group']):
                 role = person_group.attrib.get('person-group-type', 'author')
-                authors = [ContribXML(contrib) for contrib in person_group.findall('*')]
-                authors = [a for a in authors if a is not None]
+                authors = [ContribXML(contrib) for contrib in person_group.findall('*') if contrib is not None]
                 groups.append((role, authors))
         return groups
 
@@ -2099,7 +2100,7 @@ class ReferenceXML(object):
     def pub_id_items(self):
         if self._pub_id_items is None:
             data = self.nodes_data(['.//pub-id'])
-            if data != [None]:
+            if len(data) > 0:
                 self._pub_id_items = {attribs.get('pub-id-type'): text for text, attribs in data}
         return self._pub_id_items
 
@@ -2107,7 +2108,7 @@ class ReferenceXML(object):
     def doi(self):
         if self._doi is None and self.pub_id_items is not None:
             self._doi = self.pub_id_items.get('doi')
-            if len(self._doi) == 0:
+            if self._doi is None:
                 self._doi = [item for item in self.comments if 'doi' in item.lower()]
         return self._doi
 

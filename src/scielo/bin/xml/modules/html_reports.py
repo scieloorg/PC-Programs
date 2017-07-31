@@ -611,8 +611,9 @@ def display_report(report_filename):
     print(_(u'Report:\n  {filename}').format(filename=report_filename))
 
     try:
-        f = report_filename.encode(encoding=sys.getfilesystemencoding())
-        webbrowser.open('file://' + f, new=2)
+        #f = report_filename.encode(encoding=sys.getfilesystemencoding())
+        f = report_filename
+        webbrowser.open(urllib_parse_urlencode('file://' + f, new=2)
     except Exception as e:
         print('unable to open')
         print(report_filename)

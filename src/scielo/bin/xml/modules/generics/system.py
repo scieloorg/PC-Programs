@@ -14,10 +14,11 @@ def format_command(command, params=None):
 
 
 def run_command(command):
-    cmd = None
+    print(command)
     try:
         cmd = encoding.encode(command, sys.getfilesystemencoding())
         os.system(cmd)
     except Exception as e:
+        print('run_command():')
         print(cmd)
         print(e)

@@ -372,8 +372,7 @@ class SGMLXML2SPSXMLConverter(object):
         r = xml
         _xml, xml_error = xml_utils.load_xml(r)
         if _xml is not None:
-            if _xml is not None:
-                r = java_xml_utils.xml_content_transform(xml, self.xsl)
+            r = java_xml_utils.xml_content_transform(xml, self.xsl)
         return r
 
 

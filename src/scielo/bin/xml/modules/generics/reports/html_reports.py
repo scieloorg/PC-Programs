@@ -3,6 +3,10 @@
 import os
 import sys
 import webbrowser
+try:
+    from urllib.parse import urlencode as urllib_parse_urlencode
+except ImportError:
+    from urllib import urlencode as urllib_parse_urlencode
 
 from datetime import datetime
 
@@ -213,7 +217,6 @@ def tag(tag_name, content, style=None, attributes={}):
 
 
 def report_title(titles):
-    s = ''
     if not isinstance(titles, list):
         titles = [titles]
     return ''.join([tag('h1', item) for item in titles])
@@ -594,8 +597,11 @@ def display_report(report_filename):
     print(_('Report:\n  {filename}').format(filename=report_filename))
 
     try:
-        f = report_filename.encode(encoding=sys.getfilesystemencoding())
-        webbrowser.open('file://' + f, new=2)
+        print(sys.getfilesystemencoding())
+        #f = report_filename.encode(encoding=sys.getfilesystemencoding())
+        print(1)
+        webbrowser.open(urllib_parse_urlencode(encoding.encode('file://' + report_filename)), new=2)
+        print(2)
     except Exception as e:
         print('display_report: opening: ')
         print(report_filename)
