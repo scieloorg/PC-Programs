@@ -600,7 +600,7 @@ def display_report(report_filename):
         print(sys.getfilesystemencoding())
         #f = report_filename.encode(encoding=sys.getfilesystemencoding())
         print(1)
-        webbrowser.open(urllib_parse_urlencode(encoding.encode('file://' + report_filename)), new=2)
+        webbrowser.open(encoding.encode('file://' + report_filename, encoding=sys.getfilesystemencoding()), new=2)
         print(2)
     except Exception as e:
         print('display_report: opening: ')
