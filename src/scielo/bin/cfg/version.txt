@@ -15,6 +15,7 @@
   - (new) [2615] ORCID Validation
   - (bug) [2599, 2623] Fix missing xref (bibr) validation
   - (bug) [2567] Fix aff validation
+  - (bug) [2620] Present more than one source in reference  
 - XC
   - (new) [1253] Python3
   - (new) [2590] Generation of v95 for version

@@ -2,6 +2,6 @@
 
 import sys
 
-from modules import xpmaker
+from modules.app import xpm
 
-xpmaker.call_make_packages(sys.argv, '1.0')
+xpm.call_make_packages(sys.argv, '1.1')

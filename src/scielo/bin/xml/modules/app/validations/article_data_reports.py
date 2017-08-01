@@ -435,7 +435,7 @@ class ArticleDisplayReport(object):
     def hrefs_sheet_data(self):
         t_header = ['label', 'status', 'message', _('why it is not a valid message?'), 'display', 'xml']
         r = []
-        href_items = self.article_validation.href_list
+        href_items = self.article_validation.href_files
         for src in sorted(href_items.keys()):
             hrefitem = href_items.get(src)
             for result in hrefitem['results']:

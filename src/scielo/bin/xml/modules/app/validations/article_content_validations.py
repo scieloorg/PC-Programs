@@ -1219,6 +1219,18 @@ class ArticleContentValidation(object):
         return href_items
 
     @property
+    def href_files(self):
+        href_items = {}
+        min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
+        for hrefitem in self.article.href_files:
+            href_validations = HRefValidation(self.app_institutions_manager.ws.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
+            href_items[hrefitem.src] = {
+                'display': href_validations.display,
+                'elem': hrefitem,
+                'results': href_validations.validate()}
+        return href_items
+
+    @property
     def package_files(self):
         #FIXME
         expected_files = {self.article.language: self.pkgfiles.name + '.pdf'}

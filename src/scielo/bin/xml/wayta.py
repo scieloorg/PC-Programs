@@ -3,9 +3,9 @@ import os
 import sys
 import shutil
 
-from modules.config import config
-from modules.ws import institutions_service
-from modules.ws import institutions_manager
+from modules.app.config import config
+from modules.app.ws import institutions_service
+from modules.app.ws import institutions_manager
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
