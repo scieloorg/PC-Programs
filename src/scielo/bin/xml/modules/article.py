@@ -65,9 +65,6 @@ def format_author(author):
     return r
 
 
-
-
-
 def get_affiliation(aff):
     a = Affiliation()
 
@@ -177,6 +174,14 @@ class HRef(object):
         if element.tag in ['ext-link', 'uri', 'related-article']:
             self.is_internal_file = False
         self.is_image = self.ext in IMG_EXTENSIONS
+
+    @property
+    def is_inline(self):
+        return self.element.tag in ['inline-graphic', 'inline-formula']
+
+    @property
+    def is_disp_formula(self):
+        return self.parent.tag == 'disp-formula'
 
     def file_location(self, path):
         location = None
@@ -1380,11 +1385,11 @@ class ArticleXML(object):
 
     @property
     def inline_graphics(self):
-        return [item for item in self.hrefs if item.element.tag in ['inline-graphic', 'inline-formula']]
+        return [item for item in self.hrefs if item.is_inline]
 
     @property
     def disp_formulas(self):
-        return [item for item in self.hrefs if item.parent.tag == 'disp-formula']
+        return [item for item in self.hrefs if item.is_disp_formula]
 
     def inline_graphics_heights(self, path):
         return article_utils.image_heights(path, self.inline_graphics)
@@ -1435,7 +1440,6 @@ class Article(ArticleXML):
         self.related_files = []
         self.is_ex_aop = False
         self.section_code = None
-        self.package_files = None
 
     @property
     def clinical_trial_url(self):

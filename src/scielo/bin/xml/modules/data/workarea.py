@@ -3,10 +3,9 @@
 import os
 import shutil
 
-from . import fs_utils
-from . import img_utils
+from .. import fs_utils
+from .. import img_utils
 
-#         self.outputs = OutputFiles(self.name, self.reports_path, ctrl_path)
 
 class Workarea(object):
 
@@ -277,3 +276,75 @@ class OutputFiles(object):
         for f in [self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename]:
             fs_utils.delete_file_or_folder(f)
 
+
+class FilesFinalLocation(object):
+
+    def __init__(self, pkg_path, acron, issue_label, serial_path=None, web_app_path=None, web_url=None):
+        self.web_app_path = web_app_path
+        self.pkg_path = pkg_path
+        self.issue_path = acron + '/' + issue_label
+        self.serial_path = serial_path
+        self.web_url = web_url
+
+    @property
+    def result_path(self):
+        if self.serial_path is not None:
+            return self.serial_path + '/' + self.issue_path
+        else:
+            return os.path.dirname(self.pkg_path)
+
+    @property
+    def img_path(self):
+        if self.web_app_path is not None:
+            return self.web_app_path + '/htdocs/img/' + self.issue_path
+        else:
+            return self.pkg_path
+
+    @property
+    def pdf_path(self):
+        if self.web_app_path is not None:
+            return self.web_app_path + '/bases/pdf/' + self.issue_path
+        else:
+            return self.pkg_path
+
+    @property
+    def xml_path(self):
+        if self.web_app_path is not None:
+            return self.web_app_path + '/bases/xml/' + self.issue_path
+        elif self.serial_path is not None:
+            return self.serial_path + '/' + self.issue_path + '/base_xml/base_source'
+        else:
+            return self.pkg_path
+
+    @property
+    def report_path(self):
+        if self.web_app_path is not None:
+            return self.web_app_path + '/htdocs/reports/' + self.issue_path
+        else:
+            return self.result_path + '/errors'
+
+    @property
+    def base_report_path(self):
+        if self.serial_path is not None:
+            return self.serial_path + '/' + self.issue_path + '/base_xml/base_reports'
+
+    @property
+    def img_link(self):
+        if self.web_url is not None:
+            return self.web_url + '/img/revistas/' + self.issue_path
+        else:
+            return 'file://' + self.img_path
+
+    @property
+    def pdf_link(self):
+        if self.web_url is not None:
+            return self.web_url + '/pdf/' + self.issue_path + '/'
+        else:
+            return 'file://' + self.pdf_path + '/'
+
+    @property
+    def xml_link(self):
+        if self.web_url is not None:
+            return ''
+        else:
+            return 'file://' + self.xml_path + '/'
