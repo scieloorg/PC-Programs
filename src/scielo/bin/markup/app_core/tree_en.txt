@@ -216,3 +216,4 @@ licinfo;Identify license
 prefix;Identify the prefix of an author such as Mr., Prof., etc
 suffix;Identify the suffix of an author such as Sr., Jr., etc
 xhtml;Identify that the table is represented in a file XHTML
+histdate;Identify history dates
