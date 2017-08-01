@@ -1,3 +1,15 @@
+﻿4.0.094
+=======
+
+- Markup
+  - (new) [2602] sec as new element in app
+  - (new) [2593] Generate other history date types
+- XML Markup
+  - (bug) [2622] Fix prefix generation
+  - (bug) [2600] Fix sub-article/fn-group generation
+- XPM
+  - (improvement) [2615] ORCID Validation
+
 ﻿4.0.093 - Release 4 - 30/06/2017
 ================================
 - XPM
