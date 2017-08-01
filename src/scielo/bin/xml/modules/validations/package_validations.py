@@ -4,10 +4,10 @@ import os
 from datetime import datetime
 
 from ..__init__ import _
-from .. import fs_utils
+from ..utils import fs_utils
+from ..utils import utils
 from .. import html_reports
 from .. import validation_status
-from .. import utils
 from .. import xml_versions
 from .. import attributes
 from . import xml_validators
