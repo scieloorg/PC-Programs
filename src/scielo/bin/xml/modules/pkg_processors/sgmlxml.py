@@ -15,7 +15,7 @@ from .. import xml_versions
 from .. import article
 from .. import symbols
 from ..data import workarea
-from . import spsxml
+from . import sps_pkgmaker
 
 
 class SGMLXMLWorkarea(workarea.Workarea):
@@ -505,7 +505,7 @@ class SGMLXML2SPSXMLPackageMaker(object):
         self.xml_content = self.sgmxmlcontent.content
 
     def normalize_xml(self):
-        spsxmlcontent = spsxml.SPSXMLContent(self.xml_content)
+        spsxmlcontent = sps_pkgmaker.SPSXMLContent(self.xml_content)
         spsxmlcontent.normalize()
         self.xml_content = spsxmlcontent.content
 

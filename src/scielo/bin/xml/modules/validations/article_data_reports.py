@@ -638,11 +638,13 @@ def article_history(articles):
         text = []
         text.append(html_reports.tag('h4', _(status)))
         text.append(html_reports.display_label_value(_('name'), article.xml_name, 'p'))
+        text.append(html_reports.display_label_value('order', article.order, 'p'))
         if article.is_ex_aop:
             text.append(html_reports.display_label_value(_('status'), 'ex-aop', 'p'))
-        text.append(html_reports.display_label_value('order', article.order, 'p'))
-        if article.creation_date_display is not None:
-            text.append(html_reports.display_label_value(_('creation date'), article.creation_date_display, 'p'))
-            text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
+        if status in [_('registered article'), 'registered article']:
+            r.append(display_article_data_in_toc(article))
+            if article.creation_date_display is not None:
+                text.append('<hr/>' + html_reports.display_label_value(_('creation date'), article.creation_date_display, 'p'))
+                text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
         r.append(html_reports.tag('div', ''.join(text), 'hist-' + status))
-    return ''.join(r)
+    return '<hr/>'.join(r)
