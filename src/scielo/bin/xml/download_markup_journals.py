@@ -108,7 +108,7 @@ def journals_by_collection(filename):
                     j['journal-title'] = item[7]
                     j['nlm-title'] = item[8]
                     j['publisher-name'] = item[9]
-                    if len(item) == 12:
+                    if len(item) >= 12:
                         j['license'] = item[11]
                     _col = j.get('collection-name')
                     if _col == '':

@@ -1185,18 +1185,20 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="*" mode="other-fn-items">
-		<xsl:variable name="selectedfn"><xsl:apply-templates select="fngrp | fn" mode="other-footnotes"></xsl:apply-templates></xsl:variable>
+		<xsl:param name="body_xref"/>
+		<xsl:variable name="selectedfn"><xsl:apply-templates select="fngrp | fn" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates></xsl:variable>
 		<xsl:if test="$selectedfn!=''">
-			<xsl:apply-templates select="fngrp | fn" mode="other-footnotes"/>
+			<xsl:apply-templates select="fngrp | fn" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
 	<!-- OTHER FOOTNOTES -->
 	<xsl:template match="fngrp[not(@fntype)]" mode="other-footnotes">
-		<xsl:variable name="selectedfn"><xsl:apply-templates select="fn" mode="other-footnotes"></xsl:apply-templates></xsl:variable>
+		<xsl:param name="body_xref"/>
+		<xsl:variable name="selectedfn"><xsl:apply-templates select="fn" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates></xsl:variable>
 		<xsl:if test="$selectedfn!='' or not(fn)">
 			<fn-group>
 				<xsl:apply-templates select="sectitle"></xsl:apply-templates>
-				<xsl:apply-templates select="fn" mode="other-footnotes"></xsl:apply-templates>
+				<xsl:apply-templates select="fn" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates>
 				<xsl:if test="not(fn)">
 					<fn fn-type="other"><xsl:apply-templates select="text()"></xsl:apply-templates></fn>
 				</xsl:if>
@@ -1204,17 +1206,21 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>	
 	<xsl:template match="fngrp[@fntype]|fn" mode="other-footnotes">
+		<xsl:param name="body_xref"/>
 		<xsl:if test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)">
-			<xsl:choose>
-				<xsl:when test="parent::node()[name()!='fngrp']">
-					<fn-group>
+			<xsl:variable name="id" select="@id"/>
+			<xsl:if test="$body_xref[@rid=$id]">
+				<xsl:choose>
+					<xsl:when test="parent::node()[name()!='fngrp']">
+						<fn-group>
+							<xsl:apply-templates select="."/>
+						</fn-group>
+					</xsl:when>
+					<xsl:otherwise>
 						<xsl:apply-templates select="."/>
-					</fn-group>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="."/>
-				</xsl:otherwise>
-			</xsl:choose>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
@@ -1483,13 +1489,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="hist">
 		<history>
-			<xsl:apply-templates select="received | revised | accepted "/>
+			<xsl:apply-templates select="*"/>
 		</history>
 	</xsl:template>
-	<xsl:template match="received | revised | accepted">
+	<xsl:template match="hist/*">
 		<xsl:variable name="dtype">
 			<xsl:choose>
 				<xsl:when test="name()='revised'">rev-recd</xsl:when>
+				<xsl:when test="@datetype!=''">
+					<xsl:value-of select="@datetype"/>
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="name()"/>
 				</xsl:otherwise>
@@ -1503,6 +1512,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:call-template>
 		</date>
 	</xsl:template>
+	
 	<xsl:template match="abstract|xmlabstr">
 		<xsl:param name="trans" select="''"/>
 		
@@ -1653,14 +1663,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="doc|subdoc|docresp" mode="back">
 		<xsl:variable name="otherfntest">
-			<xsl:apply-templates select="." mode="other-fn-items"></xsl:apply-templates>
+			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="body//xref"></xsl:with-param></xsl:apply-templates>
 		</xsl:variable>
 		
 		<xsl:if test="ack or normalize-space($otherfntest)!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
 			<back>
 				<xsl:apply-templates select="ack"/>
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
-				<xsl:apply-templates select="." mode="other-fn-items"></xsl:apply-templates>
+				<xsl:apply-templates select="." mode="other-fn-items">
+					<xsl:with-param name="body_xref" select="body//xref"></xsl:with-param>
+				</xsl:apply-templates>
 				<xsl:apply-templates select="glossary | appgrp"/>				
 			</back>
 		</xsl:if>
@@ -1669,7 +1681,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="back">
 		<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 		<xsl:apply-templates select="*[@standard]"/>
-		<xsl:apply-templates select="." mode="other-fn-items"></xsl:apply-templates>
+		<xsl:apply-templates select="." mode="other-fn-items">
+			<xsl:with-param name="body_xref" select="body//xref"></xsl:with-param>
+			</xsl:apply-templates>
 		<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>						
 	</xsl:template>
 	
@@ -1934,13 +1948,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="$ok='true'">
 				<surname><xsl:value-of select="$surname"/></surname>
 				<given-names><xsl:value-of select="$f"/></given-names>
-				<xsl:apply-templates select="prefix"></xsl:apply-templates>
+				<xsl:if test="prefix"><prefix><xsl:value-of select="prefix"/></prefix></xsl:if>
 				<suffix><xsl:value-of select="$suffix"/></suffix>
 			</xsl:when>
 			<xsl:otherwise>
 				<surname><xsl:value-of select="$s"/></surname>
 				<given-names><xsl:value-of select="$f"/></given-names>			
-				<xsl:apply-templates select="prefix"></xsl:apply-templates>
+				<xsl:if test="prefix"><prefix><xsl:value-of select="prefix"/></prefix></xsl:if>
 				<xsl:if test="suffix"><suffix><xsl:value-of select="suffix"/></suffix></xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
