@@ -167,8 +167,7 @@ class HRef(object):
         self.src = src
         self.element = element
         self.xml = xml
-
-        ext = '.jpg' if not '.' in src else src[src.rfind('.'):]
+        self.name_without_extension, self.ext = os.path.splitext(src)
 
         self.id = element.attrib.get('id', None)
         if self.id is None and parent is not None:
@@ -177,7 +176,7 @@ class HRef(object):
         self.is_internal_file = (not '/' in src)
         if element.tag in ['ext-link', 'uri', 'related-article']:
             self.is_internal_file = False
-        self.is_image = ext in IMG_EXTENSIONS
+        self.is_image = self.ext in IMG_EXTENSIONS
 
     def file_location(self, path):
         location = None
@@ -194,10 +193,6 @@ class HRef(object):
                         if location[-5:-4] != '.' and location[-4:-3] != '.':
                             location += '.jpg'
         return location
-
-    @property
-    def name_without_extension(self):
-        return self.src[0:self.src.rfind('.')] if '.' in self.src else self.src
 
 
 class PersonAuthor(object):

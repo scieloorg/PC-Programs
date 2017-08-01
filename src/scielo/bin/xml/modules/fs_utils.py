@@ -36,7 +36,11 @@ def delete_file_or_folder(path):
             delete_file_or_folder(path + '/' + item)
         shutil.rmtree(path)
     elif os.path.isfile(path):
-        os.unlink(path)
+        try:
+            os.unlink(path)
+        except:
+            print('Unable to delete: ')
+            print(path)
 
 
 def move_file(src, dest):
@@ -109,6 +113,19 @@ def unzip(compressed_filename, destination_path):
             # extract in tempdir
             r = files_extractor.extract_file(compressed_filename, destination_path)
     return r
+
+
+def zip(zip_filename, files):
+    dest_path = os.path.dirname(zip_filename)
+    if not os.path.isdir(dest_path):
+        os.makedirs(dest_path)
+    try:
+        zipf = zipfile.ZipFile(zip_filename, 'w')
+        for item in files:
+            zipf.write(item, arcname=os.path.basename(item))
+        zipf.close()
+    except:
+        pass
 
 
 def fix_path(path):

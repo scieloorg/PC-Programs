@@ -69,7 +69,13 @@ def load_entities_table():
 class XMLContent(object):
 
     def __init__(self, content):
-        self.content = content
+        self.content = content.strip()
+        if not self.content.endswith('>'):
+            self.content = self.content[:self.content.rfind('>')+1]
+
+    def normalize(self):
+        self.content = complete_entity(self.content)
+        self.content, replaced_named_ent = convert_entities_to_chars(self.content)
 
     def fix(self):
         if '<' in self.content:

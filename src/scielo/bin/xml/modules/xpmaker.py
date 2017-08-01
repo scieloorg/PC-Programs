@@ -1,4 +1,5 @@
 # coding=utf-8
+
 import os
 import sys
 import shutil
@@ -19,7 +20,7 @@ import java_xml_utils
 import html_reports
 import article_validations
 import xml_utils
-import xml_versions
+import xml_versions 
 import xpchecker
 import pkg_validations
 import symbols
@@ -1164,7 +1165,6 @@ class ArticlePkgMaker(object):
         self.content = self.content.replace('"' + original + '"', '"' + final + '"')
         fs_utils.write_file(self.doc_files_info.new_xml_filename, self.content)
         xpm_process_logger.register('pack_article_xml_file: fim')
-
 
 
 class PackageMaker(object):
