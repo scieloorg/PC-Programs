@@ -5,16 +5,15 @@ import sys
 import shutil
 
 from ..__init__ import _
-from .. import fs_utils
-from .. import java_xml_utils
-from .. import xml_utils
-from .. import validation_status
-from .. import text_report
-from .. import html_reports
-from .. import xml_versions
-from .. import article
-from .. import symbols
+from ..useful import fs_utils
+from ..useful import java_xml_utils
+from ..useful import xml_utils
+from ..reports import text_report
+from ..reports import html_reports
+from ..validations import validation_status
+from ..data import article
 from ..data import workarea
+from . import symbols
 from . import sps_pkgmaker
 
 
@@ -366,8 +365,8 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
 class SGMLXML2SPSXMLConverter(object):
 
-    def __init__(self, version):
-        self.xsl = xml_versions.xsl_sgml2xml(version)
+    def __init__(self, xsl):
+        self.xsl = xsl
 
     def sgml2xml(self, xml):
         r = xml
@@ -388,7 +387,7 @@ class PackageNamer(object):
     def rename(self, acron, dest_path):
         self._fix_href_values(acron)
 
-        self.dest_pkgfiles = workarea.PackageFiles(dest_path + '/' + self.new_name + '.xml')
+        self.dest_pkgfiles = workarea.PkgArticleFiles(dest_path + '/' + self.new_name + '.xml')
 
         self.dest_pkgfiles.clean()
         fs_utils.write_file(self.dest_pkgfiles.filename, self.xml_content)
@@ -473,7 +472,7 @@ class SGMLXML2SPSXMLPackageMaker(object):
         self.sgml_pkgfiles = sgml_pkgfiles
         self.outputs = workarea.OutputFiles(self.sgml_pkgfiles.name, self.wk.reports_path, self.sgml_pkgfiles.path)
         self.new_name = self.sgml_pkgfiles.name
-        self.src_pkgfiles = workarea.PackageFiles(wk.src_path + '/' + self.sgml_pkgfiles.name + '.xml')
+        self.src_pkgfiles = workarea.PkgArticleFiles(wk.src_path + '/' + self.sgml_pkgfiles.name + '.xml')
         self.src_pkgfiles.convert_images()
         self.xml_pkgfiles = None
         self.sgmxmlcontent = SGMLXMLContent(
@@ -512,10 +511,9 @@ class SGMLXML2SPSXMLPackageMaker(object):
     def pack(self, acron, converter):
         self.normalize_sgmxml()
         self.xml_content = converter.sgml2xml(self.xml_content)
-        self.xml_pkgfiles = workarea.PackageFiles(self.src_pkgfiles.path + '/' + self.src_pkgfiles.name + '.xml')
+        self.xml_pkgfiles = workarea.PkgArticleFiles(self.src_pkgfiles.path + '/' + self.src_pkgfiles.name + '.xml')
         fs_utils.write_file(self.src_pkgfiles.filename, self.xml_content)
         self.normalize_xml()
-
 
         msg = self.invalid_xml_message
         if msg == '':

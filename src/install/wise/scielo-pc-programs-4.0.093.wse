@@ -1440,6 +1440,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\svg_conversion.py
+  Destination=%PROGDIR%\bin\xml\modules\svg_conversion.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\validation_status.py
   Destination=%PROGDIR%\bin\xml\modules\validation_status.py
   Flags=0000000010000010

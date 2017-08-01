@@ -1,8 +1,9 @@
 # coding=utf-8
 
 import os
+
 from . import utils
-from . import validation_status
+from ..validations import validation_status
 
 try:
     from PIL import Image
@@ -12,7 +13,11 @@ except Exception as e:
 
 from . import svg_conversion
 
+
 IMDEBUGGING = False
+
+
+IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', '.svg']
 
 
 def is_tiff(img_filename):
@@ -69,7 +74,7 @@ def validate_tiff_image_file(img_filename, dpi=300):
 
 def evaluate_tiff(img_filename, min_height=None, max_height=None):
     status_message = []
-    tiff_im = utils.tiff_image(img_filename)
+    tiff_im = tiff_image(img_filename)
     if tiff_im is not None:
         errors = []
         dpi = None if tiff_im.info is None else tiff_im.info.get('dpi', [_('unknown')])[0]

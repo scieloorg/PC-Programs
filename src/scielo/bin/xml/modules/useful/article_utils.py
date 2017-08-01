@@ -3,12 +3,10 @@
 
 from datetime import datetime
 
-from __init__ import _
+from ..__init__ import _
 
-import validation_status
-import utils
-import institutions_service
-import article as article_module
+from . import img_utils
+from ..validations import validation_status
 
 
 URL_CHECKED = []
@@ -111,22 +109,6 @@ def format_issue_label(year, volume, number, volume_suppl, number_suppl, compl):
     return ''.join([i for i in [year, v, vs, n, ns, compl] if i is not None])
 
 
-def u_encode(u, encoding):
-    r = u
-    if isinstance(u, unicode):
-        try:
-            r = u.encode(encoding)
-        except Exception as e:
-            try:
-                r = u.encode(encoding, 'xmlcharrefreplace')
-            except Exception as e:
-                try:
-                    r = u.encode(encoding, 'replace')
-                except Exception as e:
-                    r = u.encode(encoding, 'ignore')
-    return r
-
-
 def format_dateiso_from_date(year, month, day):
     return year + month + day
 
@@ -219,8 +201,6 @@ def required_one(label, value):
 #FIXME apagar
 def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
     def normalize_value(value):
-        if not isinstance(value, unicode):
-            value = value.decode('utf-8')
         return ' '.join(value.split())
     if key is None:
         key = 'None'
@@ -283,61 +263,10 @@ def four_digits_year(year):
     return year
 
 
-def normalize_affiliations(article):
-    article.normalized_affiliations = {}
-    for aff in article.affiliations:
-        norm_aff, ign = normalized_institution(aff)
-        if norm_aff is not None:
-            article.normalized_affiliations[aff.id] = norm_aff
-
-
-def normalized_institution(aff):
-    norm_aff = None
-    found_institutions = None
-    orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
-    if aff.norgname is not None or aff.orgname is not None:
-        found_institutions = institutions_service.validate_organization(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
-
-    if found_institutions is not None:
-        if len(found_institutions) == 1:
-            valid = found_institutions
-        else:
-            valid = []
-            # identify i_country
-            if aff.i_country is None and aff.country is not None:
-                country_info = {norm_country_name: norm_country_code for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_country_name is not None and norm_country_code is not None}
-                aff.i_country = country_info.get(aff.country)
-
-            # match norgname and i_country in found_institutions
-            for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
-                if norm_orgname.upper() in orgnames:
-                    if aff.i_country is None:
-                        valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
-                    elif aff.i_country == norm_country_code:
-                        valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
-
-            # mais de uma possibilidade, considerar somente norgname e i_country, desconsiderar city, state, etc
-            if len(valid) > 1:
-                valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
-
-        if len(valid) == 1:
-            norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = valid[0]
-
-            if norm_orgname is not None and norm_country_code is not None:
-                norm_aff = article_module.Affiliation()
-                norm_aff.id = aff.id
-                norm_aff.norgname = norm_orgname
-                norm_aff.city = norm_city
-                norm_aff.state = norm_state
-                norm_aff.i_country = norm_country_code
-                norm_aff.country = norm_country_name
-    return (norm_aff, found_institutions)
-
-
 def image_heights(path, href_list):
     items = []
     for href in href_list:
-        img = utils.tiff_image(path + '/' + href.src)
+        img = img_utils.tiff_image(path + '/' + href.src)
         if img is not None:
             items.append(img.size[1])
     return sorted(items)

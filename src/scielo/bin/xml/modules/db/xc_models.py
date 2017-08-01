@@ -2,23 +2,20 @@
 
 import os
 import shutil
-import csv
 
 from ..__init__ import _
-from ..__init__ import app_ws_requester
 
-from .. import validation_status
-from .. import utils
-from .. import xml_utils
-from .. import fs_utils
-from ..utils.utils import how_similar
-from ..article import Issue, PersonAuthor, Article, Journal
-from .. import attributes
-from .. import article_utils
-from .. import serial_files
-from .. import html_reports
-from .. import article_reports
-from ..ws import ws_journals
+from ..useful import utils
+from ..useful import xml_utils
+from ..useful import fs_utils
+from ..useful import article_utils
+from ..useful import encoding
+from ..reports import html_reports
+from ..data.article import Issue, PersonAuthor, Article, Journal
+from ..data import attributes
+from ..db import serial
+from ..validations import validation_status
+from ..validations import article_data_reports
 
 
 ISSN_TYPE_CONVERSION = {
@@ -681,7 +678,7 @@ class IssueModels(object):
                 results.extend(attributes.validate_article_type_and_section(article.article_type, article_sectitle, len(article.abstracts) > 0))
             article.section_code = article_seccode
 
-        return html_reports.tag('div', article_reports.validations_table(results))
+        return html_reports.tag('div', article_data_reports.validations_table(results))
 
 
 class IssueArticlesRecords(object):
@@ -734,7 +731,7 @@ class ArticlesManager(object):
         self.aop_pdf_replacements = {}
 
         if self.issue_files.is_aop:
-            self.ex_aop_manager = BaseManager(db_isis, serial_files.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
+            self.ex_aop_manager = BaseManager(db_isis, serial.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
 
     @property
     def registered_articles(self):
@@ -744,8 +741,8 @@ class ArticlesManager(object):
         r.update(self.base_manager.registered_articles)
         return r
 
-    def exclude_articles(self, changed_orders, excluded_orders):
-        return self.base_manager.exclude_articles(changed_orders, excluded_orders)
+    def exclude_articles(self, excluded_orders):
+        return self.base_manager.exclude_articles(excluded_orders)
 
     def get_valid_aop(self, article):
         valid_aop, aop_status, messages = self.aop_db_manager.get_validated_aop(article)
@@ -870,7 +867,7 @@ class BaseManager(object):
 
     def restore_missing_id_file(self):
         for name, registered_article in self.registered_articles.items():
-            article_files = serial_files.ArticleFiles(self.issue_files, registered_article.order, registered_article.xml_name)
+            article_files = serial.ArticleFiles(self.issue_files, registered_article.order, registered_article.xml_name)
             if not os.path.isfile(article_files.id_filename):
                 self.db_isis.save_id(article_files.id_filename, registered_article.article_records)
 
@@ -958,7 +955,7 @@ class BaseManager(object):
             self.db_isis.save_id_records(self.issue_files.id_filename, self.issue_files.base)
             for f in os.listdir(self.issue_files.id_path):
                 if f == '00000.id':
-                    os.unlink(self.issue_files.id_path + '/' + f)
+                    fs_utils.delete_file_or_folder(self.issue_files.id_path + '/' + f)
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                     self.db_isis.append_id_records(self.issue_files.id_path + '/' + f, self.issue_files.base)
         #self.reset_registered_records()
@@ -983,7 +980,7 @@ class BaseManager(object):
         if article_records is not None:
             if os.path.isfile(article_files.id_filename):
                 try:
-                    os.unlink(article_files.id_filename)
+                    fs_utils.delete_file_or_folder(article_files.id_filename)
                 except:
                     print(_('Unable to exclude {item}. ').format(item=article_files.id_filename))
             previous = os.path.isfile(article_files.id_filename)
@@ -993,20 +990,19 @@ class BaseManager(object):
         return saved and not previous
 
     def save_article(self, article, i_record):
-        article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
+        article_files = serial.ArticleFiles(self.issue_files, article.order, article.xml_name)
         article_records = self.article_records(i_record, article, article_files)
         return self.create_article_id_file(article_records, article_files)
 
-    def exclude_articles(self, changed_orders, excluded_orders):
+    def exclude_articles(self, excluded_orders):
         messages = []
-        x = [item[0] for item in changed_orders.values()] + excluded_orders.values()
-        not_excluded_items = self.issue_files.delete_id_files(x)
-        if len(not_excluded_items) > 0:
-            if len(excluded_orders) > 0:
-                messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(excluded_orders)))
-            if len(changed_orders) > 0:
-                messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + html_reports.format_html_data(changed_orders)))
-            messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item=', '.join(not_excluded_items))))
+        if len(excluded_orders) > 0:
+            not_excluded_items = self.issue_files.delete_id_files(excluded_orders)
+            if len(not_excluded_items) == 0:
+                messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('Excluded: ') + html_reports.format_html_data(excluded_orders)))
+            else:
+                messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Exclude: ') + html_reports.format_html_data(excluded_orders)))
+                messages.append(html_reports.p_message(validation_status.STATUS_ERROR + ': ' + _('Unable to exclude {item}. ').format(item=', '.join(not_excluded_items))))
         return ''.join(messages)
 
     def finish_conversion(self, i_record):
@@ -1136,13 +1132,13 @@ class AopManager(object):
         if not aop is None:
             if article.article_type == 'correction':
                 if article.body_words is not None and aop.body_words is not None:
-                    r += how_similar(article.body_words[0:300], aop.body_words[0:300])
+                    r += utils.how_similar(article.body_words[0:300], aop.body_words[0:300])
                     r = r * 100
                 else:
                     r = 1
             else:
-                r += how_similar(article.title, aop.title)
-                r += how_similar(article.first_author_surname, aop.first_author_surname)
+                r += utils.how_similar(article.title, aop.title)
+                r += utils.how_similar(article.first_author_surname, aop.first_author_surname)
                 r = (r * 100) / 2
         return r
 
@@ -1382,8 +1378,8 @@ class DBManager(object):
 
     def get_issue_files(self, issue_models):
         if issue_models is not None:
-            journal_files = serial_files.JournalFiles(self.serial_path, issue_models.issue.acron)
-            return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label)
+            journal_files = serial.JournalFiles(self.serial_path, issue_models.issue.acron)
+            return serial.IssueFiles(journal_files, issue_models.issue.issue_label)
 
     def find_journal_record(self, journal_title, print_issn, e_issn):
         records = None
@@ -1402,33 +1398,28 @@ class DBManager(object):
 
 class JournalsList(object):
 
-    def __init__(self):
-        ws = ws_journals.Journals(app_ws_requester)
-        ws.update_journals_file()
-        self._journals = {}
-        with open(ws.downloaded_journals_filename, 'rb') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter='\t')
-            for item in spamreader:
-                if len(item) >= 10:
-                    item = [elem.decode('utf-8').strip() for elem in item]
-                    if item[1] != 'ISSN':
-                        j = Journal()
-                        j.collection_acron = item[0]
-                        j.collection_name = item[4]
-                        j.issn_id = item[1]
-                        j.p_issn = item[2]
-                        j.e_issn = item[3]
-                        j.acron = item[5]
-                        j.abbrev_title = item[6]
-                        j.journal_title = item[7]
-                        j.nlm_title = item[8]
-                        j.publisher_name = item[9]
-                        if len(item) == 12:
-                            j.license = item[11]
-                        for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
-                            if not issn in self._journals.keys():
-                                self._journals[issn] = []
-                            self._journals[issn].append(j)
+    def __init__(self, downloaded_journals_filename):
+        for item in fs_utils.read_csv_file(downloaded_journals_filename):
+            if len(item) >= 10:
+                item = [encoding.decode(elem).strip() for elem in item]
+                if item[1] != 'ISSN':
+                    j = Journal()
+                    j.collection_acron = item[0]
+                    j.collection_name = item[4]
+                    j.issn_id = item[1]
+                    j.p_issn = item[2]
+                    j.e_issn = item[3]
+                    j.acron = item[5]
+                    j.abbrev_title = item[6]
+                    j.journal_title = item[7]
+                    j.nlm_title = item[8]
+                    j.publisher_name = item[9]
+                    if len(item) == 12:
+                        j.license = item[11]
+                    for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
+                        if issn not in self._journals.keys():
+                            self._journals[issn] = []
+                        self._journals[issn].append(j)
 
     def get_journal_instances(self, p_issn, e_issn, journal_title):
         journal_instances = []

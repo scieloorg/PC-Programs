@@ -2,17 +2,29 @@
 
 import os
 
-from ..utils import utils
-from .. import dbm_sql
+from ..useful import encoding
+from ..useful import fs_utils
+from ..dbm import dbm_sql
+
+
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+path = CURRENT_PATH + '/../../tables'
+
+
+def normalize_term(term):
+    if term is not None:
+        term = encoding.decode(term)
+        term = ' '.join([item.strip() for item in term.split()])
+    return term
 
 
 class InstitutionsDBManager(object):
 
     def __init__(self):
-        self.db_filename = curr_path + '/../tables/xc.db'
+        self.db_filename = path + '/xc.db'
         self.sql = dbm_sql.SQL(self.db_filename)
-        self.csv_filename = curr_path + '/../tables/orgname_location_country.csv'
-        self.schema_filename = curr_path + '/xc.sql'
+        self.csv_filename = path + '/orgname_location_country.csv'
+        self.schema_filename = CURRENT_PATH + '/xc.sql'
         self.fields = ['name', 'city', 'state', 'country_code', 'country_name']
         self.table_name = 'institutions'
         if not os.path.isfile(self.db_filename):
@@ -20,8 +32,7 @@ class InstitutionsDBManager(object):
         self.normalized_country_items = self.get_country_items()
 
     def create_db(self):
-        if os.path.isfile(self.db_filename):
-            os.unlink(self.db_filename)
+        fs_utils.delete_file_or_folder(self.db_filename)
         self.sql.create_db(self.schema_filename)
         self.sql.insert_data(self.csv_filename, self.table_name, self.fields)
 

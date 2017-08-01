@@ -1,7 +1,29 @@
 # coding=utf-8
 
-from ..data import registered
-from .. import validation_status
+from ..db import registered
+from ..validations import validation_status
+from ..validations import article_data_reports
+
+
+ACTION_DELETE = 'delete'
+ACTION_SOLVE_TITAUT_CONFLICTS = 'TITAUT_CONFLICTS'
+ACTION_UPDATE = 'update'
+ACTION_CHECK_ORDER_AND_NAME = 'CHECK_ORDER_AND_NAME'
+
+HISTORY_REGISTERED = 'registered article'
+HISTORY_PACKAGE = 'package'
+HISTORY_DELETED = 'excluded article'
+HISTORY_UPDATED = 'updated'
+HISTORY_TITAUT_CONFLICTS = 'detected different titles/authors'
+HISTORY_CHECK_ORDER_AND_NAME = 'need to check order and/or name'
+HISTORY_PKG_ORDER_CONFLICTS = 'detected order conflict in package'
+HISTORY_CREATED = 'created'
+HISTORY_ORDER_AND_NAME_CONFLICTS = 'order and name conflicts'
+HISTORY_ORDER_CHANGED = 'order changed'
+HISTORY_UNMATCHED = 'unmatched data'
+HISTORY_REPLACE = 'replace'
+HISTORY_NAME_CHANGED = 'name changed'
+HISTORY_REPLACED_BY = 'replaced by'
 
 
 class MergedArticlesData(object):
@@ -44,7 +66,7 @@ class MergedArticlesData(object):
                 if label in self.IGNORE_NONE and value is None:
                     pass
                 else:
-                    if not value in values:
+                    if value not in values:
                         values[value] = []
                     values[value].append(xml_name)
 
@@ -93,42 +115,36 @@ class MergedArticlesData(object):
             data[label] = values
         return data
 
-    @property
-    def orders_conflicts(self):
-        orders = {}
-        for name, article in self.merged_articles.items():
-            if not article.order in orders.keys():
-                orders[article.order] = []
-            orders[article.order].append(name)
-        return {order: names for order, names in orders.items() if len(names) > 1}
 
-
-class MergingResult(object):
-
-    def __init__(self):
-        self.exclusions = []
-        self.conflicts = {}
-        self.actions = {}
-        self.name_changes = {}
-        self.order_changes = {}
-        self.excluded_orders = None
-        self.total_to_convert = 0
-        self.articles_to_convert = None
-        self.history_items = None
-        self.articles_to_convert = None
-
-
-class ArticlesMerger(object):
+class ArticlesMerge(object):
 
     def __init__(self, registered_articles, articles):
-        self._merged_articles = registered_articles.copy()
         self.registered_articles = registered.RegisteredArticles(registered_articles)
         self.articles = articles
-        self.merging_result = MergingResult()
+        self.titaut_conflicts = None
+        self.name_order_conflicts = None
+        self.name_changes = None
+        self.order_changes = None
+        self.excluded_orders = None
 
     @property
-    def merged_articles(self):
-        return self._merged_articles
+    def pkg_articles_by_order_and_name(self):
+        return {a.order + name: name for name, a in self.articles.items()}
+
+    @property
+    def registered_articles_by_order_and_name(self):
+        return {a.order + name: name for name, a in self.registered_articles.items()}
+
+    @property
+    def pkg_articles_by_order(self):
+        r = {k: [] for k in self.articles.keys()}
+        for name, a in self.articles.items():
+            r[name].append(a)
+        return r
+
+    @property
+    def registered_articles_by_order(self):
+        return {a.order: name for name, a in self.registered_articles.items()}
 
     @property
     def total_to_convert(self):
@@ -138,73 +154,164 @@ class ArticlesMerger(object):
     def articles_to_convert(self):
         return self.articles
 
-    def merge(self):
-        self.analyze_pkg()
-        self.update_articles()
-
-    def analyze_pkg(self):
-        for name, article in self.articles.items():
-            action, old_name, conflicts = self.analyze_pkg_article(name, article)
-            if conflicts is not None:
-                self.merging_result.conflicts[name] = conflicts
-            if action is not None:
-                self.merging_result.actions[name] = action
-            if action == 'update' and article.marked_to_delete:
-                self.merging_result.exclusions.append(name)
-            if old_name is not None:
-                self.merging_result.name_changes[old_name] = name
-            if name in self.registered_articles.keys():
-                if article.order != self.registered_articles[name].order:
-                    self.merging_result.order_changes[name] = (self.registered_articles[name].order, article.order)
-
-    def analyze_pkg_article(self, name, pkg_article):
-        registered_titaut, registered_name, registered_order = self.registered_articles.search_articles(name, pkg_article)
-        action, old_name, conflicts = self.registered_articles.analyze_registered_articles(name, registered_titaut, registered_name, registered_order)
-        return (action, old_name, conflicts)
-
-    def update_articles(self):
-        self.merging_result.history_items = {}
-        # starts history with registered articles data
-        self.merging_result.history_items = {name: [('registered article', article)] for name, article in self.registered_articles.items()}
-
-        # exclude registered items
-        for name in self.merging_result.exclusions:
-            self.merging_result.history_items[name].append(('excluded article', self._merged_articles[name]))
-            del self._merged_articles[name]
-
-        # indicates package articles reception
-        for name, article in self.articles.items():
-            if not name in self.merging_result.history_items.keys():
-                self.merging_result.history_items[name] = []
-            self.merging_result.history_items[name].append(('package', article))
-
-        # indicates names changes, and exclude old names
-        for previous_name, name in self.merging_result.name_changes.items():
-            self.merging_result.history_items[previous_name].append(('replaced by', self.articles[name]))
-
-            self.merging_result.history_items[name].append(('replaces', self._merged_articles[previous_name]))
-            del self._merged_articles[previous_name]
-
-        # merge pkg and registered, considering some of them are rejected
-        orders_to_check = []
-        for name, article in self.articles.items():
-            if not article.marked_to_delete:
-                action = self.merging_result.actions.get(name)
-                if name in self.merging_result.conflicts.keys():
-                    action = 'reject'
-                if not action in ['reject', None]:
-                    self._merged_articles[name] = self.articles[name]
-
-        self.merging_result.excluded_orders = self.excluded_orders
-        self.merging_result.total_to_convert = self.total_to_convert
-        self.merging_result.articles_to_convert = self.articles_to_convert
+    @property
+    def pkg_order_conflicts(self):
+        # pkg order conflicts
+        pkg_orders = {a.order: [] for name, a in self.articles.items() if a.marked_to_delete is False}
+        for name, a in self.articles.items():
+            if not a.marked_to_delete:
+                pkg_orders[a.order].append(name)
+        return {order: names for order, names in pkg_orders.items() if len(names) > 1}
 
     @property
-    def excluded_orders(self):
-        #excluded_orders
-        items = {}
-        orders = [article.order for article in self.merged_articles.values()]
-        for name, article in self.registered_articles.items():
-            if not article.order in orders:
-                items[name] = article.order
-        return {name: article.order for name, article in self.registered_articles.items() if not article.order in orders}
+    def merged_articles(self):
+        # registered
+        self.history_items = {name: [HISTORY_REGISTERED] for name in self.registered_articles.keys()}
+        # package
+        for name, a in self.articles.items():
+            if name not in self.history_items.keys():
+                self.history_items[name] = []
+            self.history_items[name].append(HISTORY_PACKAGE)
+
+        # analyze package
+        results = self.analyze_pkg_articles()
+        merged = self.registered_articles.copy()
+
+        # delete
+        for name in results.get(ACTION_DELETE, []):
+            del merged[name]
+            self.history_items[name].append(HISTORY_DELETED)
+
+        # update
+        merged.update({name: self.articles.get(name) for name in results.get(ACTION_UPDATE, [])})
+        for name in results.get(ACTION_UPDATE, []):
+            self.history_items[name].append(HISTORY_UPDATED)
+
+        # found titaut conflicts
+        for name in results.get(ACTION_SOLVE_TITAUT_CONFLICTS, []):
+            self.history_items[name].append(HISTORY_TITAUT_CONFLICTS)
+
+        # solve titaut conflicts
+        solved = self.evaluate_titaut_conflicts(
+            results.get(ACTION_SOLVE_TITAUT_CONFLICTS, []))
+        for name in solved:
+            merged[name] = self.articles[name]
+            self.history_items[name].append(HISTORY_UPDATED)
+
+        # need to check name/order
+        for name in results.get(ACTION_CHECK_ORDER_AND_NAME, []):
+            self.history_items[name].append(HISTORY_CHECK_ORDER_AND_NAME)
+
+        # solve name/order
+        solved = self.evaluate_check_order_and_name(
+            results.get(ACTION_CHECK_ORDER_AND_NAME, []),
+            results.get(ACTION_DELETE, [])
+            )
+        for name in solved:
+            merged[name] = self.articles[name]
+            self.history_items[name].append(HISTORY_UPDATED)
+
+        # delete name changed
+        for name in self.name_changes.values():
+            del merged[name]
+
+        self.excluded_orders = [self.articles[name].order for name in results.get(ACTION_DELETE, [])]
+        self.excluded_orders.extend([previous for previous, current in self.order_changes.values()])
+        return merged
+
+    def analyze_pkg_articles(self):
+        results = {}
+        for k, a_name in self.pkg_articles_by_order_and_name.items():
+            registered_name = self.registered_articles_by_order_and_name.get(k)
+            if registered_name is not None:
+                article_comparison = article_data_reports.ArticlesComparison(
+                    self.registered_articles.get(a_name),
+                    self.articles.get(a_name))
+                if not article_comparison.are_similar:
+                    status = ACTION_SOLVE_TITAUT_CONFLICTS
+                elif self.articles[a_name].marked_to_delete:
+                    status = ACTION_DELETE
+                else:
+                    status = ACTION_UPDATE
+            else:
+                status = ACTION_CHECK_ORDER_AND_NAME
+            if status not in results.keys():
+                results[status] = []
+            results[status].append(a_name)
+        return results
+
+    def evaluate_titaut_conflicts(self, names):
+        solved = []
+        self.titaut_conflicts = {}
+        if names is not None:
+            for name in names:
+                similars = self.registered_articles.registered_titles_and_authors(self.articles.get(name))
+                if similars == 0:
+                    solved.append(name)
+                elif similars == 1 and similars[0] == name:
+                    solved.append(name)
+                else:
+                    self.titaut_conflicts[name] = similars
+        return solved
+
+    def evaluate_check_order_and_name(self, names, deleted):
+        solved = []
+        self.name_order_conflicts = {}
+        self.order_changes = {}
+        self.name_changes = {}
+        if names is not None:
+            for name in names:
+                order = self.articles.get(name).order
+                if order in self.pkg_order_conflicts.keys():
+                    # order conflicts; duplicity of order in pkg
+                    self.name_order_conflicts[name] = pkg_order_conflicts[order]
+                    self.history_items[name].append(HISTORY_PKG_ORDER_CONFLICTS)
+                else:
+                    # valid order
+                    found = [name for name, a in self.registered_articles.items() if a.order == order]
+                    found_by_order = found[0] if len(found) == 1 else None
+                    found_by_name = name if self.registered_articles.get(name) is not None else None
+                    if found_by_name in deleted:
+                        found_by_name = None
+                    if found_by_order in deleted:
+                        found_by_order = None
+                    if found_by_name is None and found_by_order is None:
+                        solved.append(name)
+                        self.history_items[name].append(HISTORY_CREATED)
+                    elif all([found_by_name, found_by_order]):
+                        # found both in different records
+                        self.name_order_conflicts[name] = [found_by_name, found_by_order]
+                        self.history_items[name].append(HISTORY_ORDER_AND_NAME_CONFLICTS)
+                    elif found_by_name is not None:
+                        # order not found
+                        if self.are_similar(found_by_name, name, False, True):
+                            # order changed
+                            solved.append(name)
+                            self.order_changes[name] = (self.registered_articles.get(name).order, order)
+                            self.history_items[name].append(HISTORY_ORDER_CHANGED)
+                        else:
+                            # only name is identical
+                            self.name_order_conflicts[name] = [found_by_name]
+                            self.history_items[name].append(HISTORY_UNMATCHED)
+                    elif found_by_order is not None:
+                        # name not found
+                        if self.are_similar(found_by_order, name, True, False):
+                            # name changed
+                            solved.append(name)
+                            self.name_changes[name] = found_by_order
+                            self.history_items[name].append(HISTORY_NAME_CHANGED)
+                            self.history_items[name].append(HISTORY_REPLACE + ' ' + found_by_order)
+                            self.history_items[found_by_order].append(HISTORY_REPLACED_BY + ' ' + name)
+                        else:
+                            # only order is identical
+                            self.name_order_conflicts[name] = [found_by_order]
+                            self.history_items[name].append(HISTORY_UNMATCHED)
+        return solved
+
+    def are_similar(self, registered_name, pkg_name, ign_name, ign_order):
+        article_comparison = article_data_reports.ArticlesComparison(
+                self.registered_articles.get(registered_name),
+                self.articles.get(pkg_name),
+                ign_name,
+                ign_order)
+        return article_comparison.are_similar

@@ -2,14 +2,15 @@
 
 from ..__init__ import _
 
-from .. import xc_models
-from ..validations import package_validations 
+from . import xc_models
+from ..validations import article_data_reports
 
 
 class RegisteredIssueData(object):
 
-    def __init__(self, db_manager):
+    def __init__(self, db_manager, journals_list):
         self.db_manager = db_manager
+        self.journals_list = journals_list
         self.articles_db_manager = None
         self.issue_error_msg = None
         self.issue_models = None
@@ -18,7 +19,7 @@ class RegisteredIssueData(object):
 
     def get_data(self, pkgissuedata):
         if self.db_manager is None:
-            journals_list = xc_models.JournalsList()
+            journals_list = self.journals_list
             pkgissuedata.journal = journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
             pkgissuedata.journal_data = journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
         else:
@@ -46,7 +47,7 @@ class RegisteredArticles(dict):
         found = None
         registered = self.get(name)
         if registered is not None:
-            comparison = package_validations.ArticlesComparison(registered, article)
+            comparison = article_data_reports.ArticlesComparison(registered, article)
             if registered.order == article.order and comparison.are_similar:
                 found = registered
         return found
@@ -57,7 +58,7 @@ class RegisteredArticles(dict):
     def registered_titles_and_authors(self, article):
         similar_items = []
         for name, registered in self.items():
-            comparison = package_validations.ArticlesComparison(registered, article)
+            comparison = article_data_reports.ArticlesComparison(registered, article)
             if comparison.are_similar:
                 similar_items.append(name)
         return similar_items

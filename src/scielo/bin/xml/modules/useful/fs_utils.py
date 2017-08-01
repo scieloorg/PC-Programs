@@ -4,31 +4,39 @@ import shutil
 import tempfile
 import zipfile
 from datetime import datetime
+import csv
 
 from . import files_extractor
+from . import encoding
 
 
 def read_file(filename, encode='utf-8'):
     if os.path.isfile(filename):
-        content = open(filename, 'r').read()
-        if not isinstance(content, unicode):
-            try:
-                content = content.decode(encode)
-            except:
-                content = content.decode('iso-8859-1')
-        return content
+        r = open(filename, 'r').read()
+        return encoding.decode(r, encode)
+
+
+def read_file_lines(filename, encode='utf-8'):
+    if os.path.isfile(filename):
+        r = open(filename, 'r').readlines()
+        return [encoding.decode(item, encode).strip() for item in r]
 
 
 def write_file(filename, content, encode='utf-8'):
-    if isinstance(content, unicode):
-        content = content.encode(encode)
-    open(filename, 'w').write(content)
+    open(filename, 'w').write(encoding.encode(content, encode))
 
 
 def append_file(filename, content, encode='utf-8'):
-    if isinstance(content, unicode):
-        content = content.encode(encode)
-    open(filename, 'a+').write(content + '\n')
+    open(filename, 'a+').write(encoding.encode(content, encode) + '\n')
+
+
+def read_csv_file(filename, encode='utf-8'):
+    lines = []
+    with open(filename, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter='\t')
+        for item in spamreader:
+            lines.append([encoding.decode(elem, encode).strip() for elem in item])
+    return lines
 
 
 def delete_file_or_folder(path):
@@ -154,8 +162,6 @@ def update_file_content_if_there_is_new_items(new_content, filename):
 
     if new_content is None:
         new_content = ''
-    if not isinstance(new_content, unicode):
-        new_content = new_content.decode('utf-8')
     new_items = new_content.split('\n')
 
     allow_update = (len(new_items) != len(current_items)) or (len(new_items) == len(current_items) and new_content != current_content)
@@ -181,4 +187,3 @@ class ProcessLogger(object):
 
     def display(self):
         print('\n'.join(self.logged_items))
-

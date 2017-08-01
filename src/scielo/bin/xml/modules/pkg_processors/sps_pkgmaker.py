@@ -1,12 +1,12 @@
 # coding=utf-8
 
 import os
-import urllib
 from mimetypes import MimeTypes
 
-from .. import utils
-from .. import xml_utils
-from .. import attributes
+from ..useful import utils
+from ..useful import xml_utils
+from ..data import attributes
+from ..ws import ws_requester
 
 
 messages = []
@@ -17,12 +17,7 @@ class SPSXMLContent(xml_utils.XMLContent):
 
     def __init__(self, content):
         xml_utils.XMLContent.__init__(self, content)
-
-    @property
-    def xml(self):
-        _xml, e = xml_utils.load_xml(self.content)
-        if _xml is not None:
-            return _xml
+        self.xml, self.xml_error = xml_utils.load_xml(self.content)
 
     def normalize(self):
         xml_utils.XMLContent.normalize(self)
@@ -42,7 +37,6 @@ class SPSXMLContent(xml_utils.XMLContent):
             self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
             self.content = self.content.replace(' rid=" ', ' rid="')
             self.content = self.content.replace(' id=" ', ' id="')
-            self.content = xml_utils.pretty_print(self.content)
             self.remove_xmllang_from_element('article-title')
             self.remove_xmllang_from_element('source')
             self.content = self.content.replace('> :', '>: ')
@@ -51,6 +45,10 @@ class SPSXMLContent(xml_utils.XMLContent):
                 self.remove_styles_from_tagged_content(tag)
             self.content = self.content.replace('<institution content-type="normalized"/>', '')
             self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
+            self.content = xml_utils.pretty_print(self.content)
+
+    def doctype(self, doctype_source, doctype_dest):
+        self.content = self.content.replace('"' + doctype_source + '"', '"' + doctype_dest + '"')
 
     def insert_mml_namespace(self):
         if '</math>' in self.content:
@@ -208,7 +206,7 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                     if os.path.isfile(self.src_path + '/' + f):
                         result = mime.guess_type(self.src_path + '/' + f)
                     else:
-                        url = urllib.pathname2url(f)
+                        url = ws_requester.pathname2url(f)
                         result = mime.guess_type(url)
                     try:
                         result = result[0]

@@ -4,15 +4,13 @@ import os
 from datetime import datetime
 
 from ..__init__ import _
-from .. import ws_requester
-from .. import xml_utils
-from .. import utils
-from .. import html_reports
-from .. import validation_status
-from .. import attributes
-from .. import article_utils
-from .. import article
-from ..doi_validations import doi_validations
+from ..useful import xml_utils
+from ..useful import utils
+from ..useful import article_utils
+from ..reports import html_reports
+from ..validations import validation_status
+from ..data import attributes
+from ..data import article
 
 
 MIN_IMG_DPI = 300
@@ -181,12 +179,8 @@ def display_attributes(attributes):
 def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
     r = True
     invalid = ''
-    b = value.decode('utf-8') if not isinstance(value, unicode) else value
-
     for term in invalid_terms:
-        a = term.decode('utf-8') if not isinstance(term, unicode) else term
-
-        if term.upper() in value.upper() or term in value or a in b:
+        if term.upper() in value.upper():
             r = False
             invalid = term
             break
@@ -254,8 +248,9 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url):
-        self.doi_validator = doi_validations.DOIValidator()
+    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url, app_institutions_manager, doi_validator):
+        self.doi_validator = doi_validator
+        self.app_institutions_manager = app_institutions_manager
         self.journal = journal
         self.article = _article
         self.is_db_generation = is_db_generation
@@ -482,8 +477,7 @@ class ArticleContentValidation(object):
             if related_article.get('ext-link-type', '') == 'doi':
                 _doi = related_article.get('href', '')
                 if _doi != '':
-                    doi_data = doi_validations.DOI_Data(_doi)
-                    errors = doi_data.validate_doi_format()
+                    errors = self.doi_validator.validate_format(_doi)
                     if len(errors) > 0:
                         msg = invalid_value_message(related_article.get('href'), 'related-article/@xlink:href')
                         r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
@@ -492,7 +486,7 @@ class ArticleContentValidation(object):
     @property
     def refstats(self):
         r = []
-        non_scholar_types = [k for k in self.article.refstats.keys() if not k in attributes.BIBLIOMETRICS_USE]
+        non_scholar_types = [k for k in self.article.refstats.keys() if k not in attributes.BIBLIOMETRICS_USE]
         sch1 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level1])
         sch2 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level2])
         total = sum(self.article.refstats.values())
@@ -511,9 +505,9 @@ class ArticleContentValidation(object):
     def refs_sources(self):
         refs = {}
         for ref in self.article.references:
-            if not ref.publication_type in refs.keys():
+            if ref.publication_type not in refs.keys():
                 refs[ref.publication_type] = {}
-            if not ref.source in refs[ref.publication_type].keys():
+            if ref.source not in refs[ref.publication_type].keys():
                 refs[ref.publication_type][ref.source] = 0
             refs[ref.publication_type][ref.source] += 1
         return [(_('sources'), validation_status.STATUS_INFO, refs)]
@@ -794,7 +788,7 @@ class ArticleContentValidation(object):
                         else:
                             r.append(('aff/institution[@content-type="orgdiv?"]', status, _('Be sure that {value} is a division of {orgname}. ').format(value=item, orgname=_('an organization'))))
 
-            norm_aff, found_institutions = article_utils.normalized_institution(aff)
+            norm_aff, found_institutions = normalized_institution(self.app_institutions_manager, aff)
 
             #if aff.norgname is None or aff.norgname == '':
             #    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_ERROR, _('Required') + '. ' + _('Use aff/institution/[@content-type="normalized"] only if the normalized name is known, otherwise use no element. ')))
@@ -1301,7 +1295,7 @@ class ArticleContentValidation(object):
         for href in self.article.hrefs:
             if href.is_internal_file and href.src.endswith('.svg'):
                 try:
-                    if '<image' in open(os.path.join(self.pkgfiles.path, href.src)).read():
+                    if '<image' in fs_utils.read_file(os.path.join(self.pkgfiles.path, href.src)):
                         messages.append(('svg', validation_status.STATUS_ERROR, _(u'Invalid SVG file: {} contains embedded images. ').format(href.src)))
                 except:
                     pass
@@ -1333,7 +1327,7 @@ class ArticleContentValidation(object):
         href_items = {}
         min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
         for hrefitem in self.article.hrefs:
-            href_validations = HRefValidation(hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
+            href_validations = HRefValidation(self.app_institutions_manager.ws.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
             href_items[hrefitem.src] = {
                 'display': href_validations.display,
                 'elem': hrefitem,
@@ -1386,12 +1380,13 @@ class ArticleContentValidation(object):
 
 class HRefValidation(object):
 
-    def __init__(self, hrefitem, check_url, pkgfiles, min_disp=None, max_disp=None, min_inline=None, max_inline=None):
+    def __init__(self, ws_requester, hrefitem, check_url, pkgfiles, min_disp=None, max_disp=None, min_inline=None, max_inline=None):
         self.pkgfiles = pkgfiles
         self.hrefitem = hrefitem
         self.check_url = check_url
         self.name, self.ext = os.path.splitext(self.hrefitem.src)
         self.min_max_height(min_disp, max_disp, min_inline, max_inline)
+        self.ws_requester = ws_requester
 
     def min_max_height(self, min_disp, max_disp, min_inline, max_inline):
         self.min_height = None
@@ -1412,7 +1407,7 @@ class HRefValidation(object):
             status_message = [item for item in status_message if item is not None]
         else:
             if self.check_url or 'scielo.php' in self.hrefitem.src:
-                if ws_requester.wsr.is_valid_url(self.hrefitem.src) is None:
+                if self.ws_requester.is_valid_url(self.hrefitem.src) is False:
                     message = invalid_value_message(self.hrefitem.src, 'URL')
                     if 'scielo.php' in self.hrefitem.src:
                         message += _('Be sure that there is no missing character such as _. ')
@@ -1570,7 +1565,6 @@ class ReferenceContentValidation(object):
                         looks_like = 'confproc'
             if looks_like is not None:
                 r.append(('@publication-type', validation_status.STATUS_ERROR, _('Be sure that {item} is correct. ').format(item='@publication-type=' + str(self.reference.publication_type)) + _('This reference looks like {publication_type}. ').format(publication_type=looks_like)))
-            
             for item in items:
                 if item is not None:
                     r.append(item)
@@ -1703,7 +1697,7 @@ class ReferenceContentValidation(object):
         _y = self.reference.formatted_year
         if _y is not None:
             if _y.isdigit():
-                if int(_y) > article_year:
+                if _y > article_year:
                     r.append(('year', validation_status.STATUS_FATAL_ERROR, _('{value} must not be greater than {year}. ').format(value=_y, year=datetime.now().isoformat()[0:4])))
             elif 's.d' in _y:
                 r.append(('year', validation_status.STATUS_INFO, _y))
@@ -1726,3 +1720,46 @@ class ReferenceContentValidation(object):
     @property
     def fpage(self):
         return conditional_required('fpage', self.reference.fpage)
+
+
+def normalized_institution(app_institutions_manager, aff):
+    norm_aff = None
+    found_institutions = None
+    orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
+    if aff.norgname is not None or aff.orgname is not None:
+        found_institutions = app_institutions_manager.validate_organization(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+
+    if found_institutions is not None:
+        if len(found_institutions) == 1:
+            valid = found_institutions
+        else:
+            valid = []
+            # identify i_country
+            if aff.i_country is None and aff.country is not None:
+                country_info = {norm_country_name: norm_country_code for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions if norm_country_name is not None and norm_country_code is not None}
+                aff.i_country = country_info.get(aff.country)
+
+            # match norgname and i_country in found_institutions
+            for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions:
+                if norm_orgname.upper() in orgnames:
+                    if aff.i_country is None:
+                        valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+                    elif aff.i_country == norm_country_code:
+                        valid.append((norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name))
+
+            # mais de uma possibilidade, considerar somente norgname e i_country, desconsiderar city, state, etc
+            if len(valid) > 1:
+                valid = list(set([(norm_orgname, None, None, norm_country_code, None) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in valid]))
+
+        if len(valid) == 1:
+            norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = valid[0]
+
+            if norm_orgname is not None and norm_country_code is not None:
+                norm_aff = article.Affiliation()
+                norm_aff.id = aff.id
+                norm_aff.norgname = norm_orgname
+                norm_aff.city = norm_city
+                norm_aff.state = norm_state
+                norm_aff.i_country = norm_country_code
+                norm_aff.country = norm_country_name
+    return (norm_aff, found_institutions)

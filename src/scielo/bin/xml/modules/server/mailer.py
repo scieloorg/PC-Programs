@@ -1,13 +1,15 @@
 # coding=utf-8
 
-from .. import email_service
+from . import email_service
 
 
 class Mailer(object):
 
     def __init__(self, config):
         self.config = config
-        self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email)
+        self.mailer = None
+        if config.email_sender_name:
+            self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email)
 
     def send_message(self, to, subject, text, attaches):
         if self.mailer is not None:

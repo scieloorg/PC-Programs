@@ -3,12 +3,20 @@ import os
 import shutil
 import tempfile
 import xml.etree.ElementTree as etree
-import HTMLParser
-from StringIO import StringIO
 import xml.dom.minidom
 
-from __init__ import _
-import fs_utils
+try:
+    from io import StringIO
+    import html.parser as html_parser
+except ImportError:
+    from StringIO import StringIO
+    import HTMLParser as html_parser
+
+from ..__init__ import _
+from ..__init__ import TABLES_PATH
+
+from . import fs_utils
+from . import encoding
 
 
 ENTITIES_TABLE = None
@@ -22,28 +30,14 @@ for namespace_id, namespace_link in namespaces.items():
     etree.register_namespace(namespace_id, namespace_link)
 
 
-def get_unicode(s):
-    u = s
-    if not isinstance(u, unicode):
-        u = s.decode('utf-8')
-    return u
-
-
-def get_string(u):
-    s = u
-    if isinstance(u, unicode):
-        s = u.encode('utf-8')
-    return s
-
-
 def date_element(date_node):
     d = None
     if date_node is not None:
         d = {}
-        d['season'] = date_node.findtext('season')
-        d['month'] = date_node.findtext('month')
-        d['year'] = date_node.findtext('year')
-        d['day'] = date_node.findtext('day')
+        d['season'] = node_findtext(date_node, 'season')
+        d['month'] = node_findtext(date_node, 'month')
+        d['year'] = node_findtext(date_node, 'year')
+        d['day'] = node_findtext(date_node, 'day')
     return d
 
 
@@ -54,15 +48,13 @@ def element_lang(node):
 
 def load_entities_table():
     table = {}
-    curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-    if os.path.isfile(curr_path + '/../tables/entities.csv'):
-        for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
-            if not isinstance(item, unicode):
-                item.decode('utf-8')
+    entities_filename = TABLES_PATH + '/entities.csv'
+    if os.path.isfile(entities_filename):
+        for item in fs_utils.read_file_lines(entities_filename):
             symbol, number_ent, named_ent, descr, representation = item.split('|')
             table[named_ent] = symbol
     else:
-        print('NOT FOUND ' + curr_path + '/../tables/entities.csv')
+        print('NOT FOUND ' + entities_filename)
     return table
 
 
@@ -77,16 +69,20 @@ class XMLContent(object):
         self.content = complete_entity(self.content)
         self.content, replaced_named_ent = convert_entities_to_chars(self.content)
 
+    def load_xml(self):
+        self.xml, self.xml_error = load_xml(self.content)
+
     def fix(self):
         if '<' in self.content:
             self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
 
-        _xml, e = load_xml(self.content)
-        if _xml is None:
+        self.load_xml()
+        if self.xml is None:
             self._fix_open_and_close_style_tags()
-            _xml, e = load_xml(self.content)
-        if _xml is None:
+            self.load_xml()
+
+        if self.xml is None:
             self._fix_open_close()
 
     def _fix_open_close(self):
@@ -204,39 +200,58 @@ def apply_dtd(xml_filename, doctype):
 
 def restore_xml_file(xml_filename, temp_filename):
     shutil.copyfile(temp_filename, xml_filename)
-    os.unlink(temp_filename)
-    shutil.rmtree(os.path.dirname(temp_filename))
+    fs_utils.delete_file_or_folder(temp_filename)
+    fs_utils.delete_file_or_folder(os.path.dirname(temp_filename))
 
 
-def remove_break_lines_characters(content):
-    r = ' '.join(content.split())
-    r = r.replace(' </', '</')
-    return r
+def new_apply_dtd(xml_filename, doctype):
+    fs_utils.write_file(
+        xml_filename,
+        replace_doctype(fs_utils.read_file(xml_filename), doctype))
+
+
+def node_findtext(node, xpath=None, multiple=False):
+    # contrib.findtext('name/given-names')
+    if node is None:
+        return
+    nodes = node
+    if xpath is not None:
+        if multiple is True:
+            nodes = node.findall(xpath)
+        else:
+            nodes = node.find(xpath)
+    if isinstance(nodes, list):
+        return [node_text(item) for item in nodes]
+    else:
+        return node_text(nodes)
 
 
 def node_text(node):
-    text = node_xml(node)
-    if not text is None:
-        text = text.strip()
-        if text.startswith('<') and text.endswith('>'):
-            text = text[text.find('>')+1:]
-            if '</' in text:
-                text = text[0:text.rfind('</')]
-                text = text.strip()
+    if node is None:
+        return
+    text = tostring(node)
+    if text is not None:
+        text = text[text.find('>')+1:]
+        if '</' in text:
+            text = text[0:text.rfind('</')]
+            text = text.strip()
     return text
 
 
 def node_xml(node):
-    text = None
-    if not node is None:
-        text = etree.tostring(node)
-        if '&' in text:
-            text, replaced_named_ent = convert_entities_to_chars(text)
+    if node is None:
+        return
+    text = tostring(node)
+    if '&' in text:
+        text, replaced_named_ent = convert_entities_to_chars(text)
     return text
+    return text.strip()
 
 
 def tostring(node):
-    return etree.tostring(node)
+    if node is None:
+        return
+    return encoding.decode(etree.tostring(node, encoding='utf-8'))
 
 
 def complete_entity(xml_content):
@@ -291,14 +306,6 @@ def named_ent_to_char(content):
             if ENTITIES_TABLE is not None:
                 for ent in entities:
                     new = ENTITIES_TABLE.get(ent, ent)
-                    if not isinstance(new, unicode):
-                        new = new.decode('utf-8')
-                    if not isinstance(ent, unicode):
-                        ent = ent.decode('utf-8')
-                    #print(type(new))
-                    #print(type(ent))
-                    #print(new)
-                    #print(ent)
                     if new != ent:
                         replaced_named_ent.append(ent + '=>' + new)
                         content = content.replace(ent, new)
@@ -309,8 +316,7 @@ def register_remaining_named_entities(content):
     if '&' in content:
         entities = []
         if os.path.isfile('./named_entities.txt'):
-            entities = open('./named_entities.txt', 'r').read()
-            entities = entities.decode('utf-8').split('\n')
+            entities = fs_utils.read_file_lines('./named_entities.txt')
         content = content[content.find('&'):]
         l = content.split('&')
         for item in l:
@@ -319,15 +325,14 @@ def register_remaining_named_entities(content):
                 entities.append('&' + ent + ';')
         entities = sorted(list(set(entities)))
         if len(entities) > 0:
-            open('./named_entities.txt', 'w').write('\n'.join(entities).encode('utf-8'))
+            fs_utils.write_file('./named_entities.txt', '\n'.join(entities))
 
 
 def htmlent2char(content):
     if '&' in content:
-        h = HTMLParser.HTMLParser()
+        h = html_parser.HTMLParser()
         try:
-            if not isinstance(content, unicode):
-                content = content.decode('utf-8')
+            content = encoding.decode(content)
             content = h.unescape(content)
         except Exception as e:
             content = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
@@ -392,20 +397,16 @@ def handle_mml_entities(content):
 
 
 def read_xml(content):
-    if not '<' in content:
+    if '<' not in content:
         # is a file
-        content = open(content, 'r').read()
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
+        content = fs_utils.read_file(content)
     return content
 
 
 def parse_xml(content):
     message = None
     try:
-        if isinstance(content, unicode):
-            content = content.encode('utf-8')
-        r = etree.parse(StringIO(content))
+        r = etree.parse(StringIO(encoding.encode(content)))
     except Exception as e:
         #print('XML is not well formed')
         message = 'XML is not well formed\n'
@@ -433,7 +434,7 @@ def parse_xml(content):
             line = line[:line.find(',')].strip()
             if line.isdigit():
                 line = int(line)
-                lines = content.decode('utf-8').split('\n')
+                lines = content.split('\n') if content is not None else ['']
                 col = len(lines[line-1])
                 if column.isdigit():
                     col = int(column)
@@ -484,7 +485,7 @@ def restore_styles(content):
 def remove_break_lines_off_element_content_item(item):
     if not item.startswith('<') and not item.endswith('>'):
         if item.strip() != '':
-            item = ' '.join([w for w in item.split()])
+            item = ' '.join([item.split()])
     return item
 
 
@@ -612,8 +613,8 @@ class PrettyXML(object):
 
     def minidom_pretty_print(self):
         try:
-            doc = xml.dom.minidom.parseString(get_string(self._xml))
-            self._xml = get_unicode(doc.toprettyxml().strip())
+            doc = xml.dom.minidom.parseString(encoding.encode(self._xml))
+            self._xml = encoding.decode(doc.toprettyxml().strip())
             ign = self.split_prefix()
         except Exception as e:
             print('ERROR in minidom_pretty_print')
@@ -625,14 +626,13 @@ class PrettyXML(object):
         node, e = load_xml(self._xml)
         if node is not None:
             prefix = self.split_prefix()
-            self.normalize_spaces_in_xml()
+            self.remove_exceding_style_tags()
+            self.mark_valid_spaces()
             self.preserve_styles()
             self.minidom_pretty_print()
-            self.remove_inconvenient_break_lines()
+            self.restore_valid_spaces()
             self.restore_styles()
             self.remove_exceding_style_tags()
-            while ' '*2 in self._xml:
-                self._xml = self._xml.replace(' '*2, ' ')
             return prefix + self._xml
         return self._xml
 
@@ -646,16 +646,17 @@ class PrettyXML(object):
             self._xml = self._xml.replace('[' + tag + ']', '<' + tag + '>')
             self._xml = self._xml.replace('[/' + tag + ']', '</' + tag + '>')
 
-    def remove_inconvenient_break_lines(self):
+    def restore_valid_spaces(self):
         self._xml = '\n'.join([item for item in self._xml.split('\n') if item.strip() != ''])
         self._xml = self._xml.replace('>', '>NORMALIZESPACES')
         self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        self._xml = ''.join([self.fix_line(item) for item in self._xml.split('NORMALIZESPACES')])
+        self._xml = ''.join([item if item.strip() == '' else item.strip() for item in self._xml.split('NORMALIZESPACES')])
+        self._xml = self._xml.replace('PRESERVESPACES', ' ')
 
-    def normalize_spaces_in_xml(self):
+    def mark_valid_spaces(self):
         self._xml = self._xml.replace('>', '>NORMALIZESPACES')
         self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        self._xml = ''.join([self.normalize_spaces_in_xml_item(item) for item in self._xml.split('NORMALIZESPACES')])
+        self._xml = ''.join([self.insert_preserve_spaces_mark(item) for item in self._xml.split('NORMALIZESPACES')])
 
     def remove_exceding_style_tags(self):
         doit = True
@@ -664,28 +665,33 @@ class PrettyXML(object):
             curr_value = self._xml
 
             for style in ['sup', 'sub', 'bold', 'italic']:
+                tclose = '</' + style + '>'
+                topen = '<' + style + '>'
+                x = self._xml
                 self._xml = self._xml.replace('<' + style + '/>', '')
                 self._xml = self._xml.replace('<' + style + '> ', ' <' + style + '>')
                 self._xml = self._xml.replace(' </' + style + '>', '</' + style + '> ')
-                self._xml = self._xml.replace('</' + style + '><' + style + '>', '')
-                self._xml = self._xml.replace('<' + style + '></' + style + '>', '')
-                self._xml = self._xml.replace('<' + style + '> </' + style + '>', ' ')
                 self._xml = self._xml.replace('</' + style + '> <' + style + '>', ' ')
+                self._xml = self._xml.replace(tclose + topen, '')
+                self._xml = self._xml.replace(topen + tclose, '')
+                """
+                if self._xml != x:
+                    from datetime import datetime
+                    it = datetime.now().isoformat()
+                    print('changed', style)
+                    fs_utils.write_file(style + '{}_antes.txt'.format(it), x)
+                    fs_utils.write_file(style + '{}_depois.txt'.format(it), self._xml)
+                """
             doit = (curr_value != self._xml)
+        while ' '*2 in self._xml:
+            self._xml = self._xml.replace(' '*2, ' ')
 
-    def normalize_spaces_in_xml_item(self, text):
+    def insert_preserve_spaces_mark(self, text):
         if text.startswith('<') and text.endswith('>'):
             text = '<' + ' '.join(text[1:-1].split()) + '>'
-        elif text.strip() == '':
-            pass
-        else:
+        elif text.strip() != '':
             text = text.replace(' ', 'PRESERVESPACES').replace('\n', 'PRESERVESPACES')
             text = ' '.join(text.split())
             while 'PRESERVESPACESPRESERVESPACES' in text:
                 text = text.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
         return text
-
-    def fix_line(self, item):
-        if item.strip() != '':
-            item = item.strip()
-        return item.replace('PRESERVESPACES', ' ')

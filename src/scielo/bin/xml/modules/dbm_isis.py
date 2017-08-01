@@ -206,7 +206,7 @@ class IDFile(object):
 
         if isinstance(content, unicode):
             content = u_encode(content, 'iso-8859-1')
-            content = content.replace('<PRESERVECIRC/>', '&#94;')
+            content = content.replace('[PRESERVECIRC]', '&#94;')
         try:
             open(filename, 'w').write(content)
         except Exception as e:
