@@ -14,7 +14,6 @@ def format_command(command, params=None):
 
 
 def run_command(command):
-    print(command)
     try:
         cmd = encoding.encode(command, sys.getfilesystemencoding())
         os.system(cmd)

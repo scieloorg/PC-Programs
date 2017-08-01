@@ -715,6 +715,13 @@ class XMLNode(object):
                 r.append(node_text(node))
         return r
 
+    def nodes_xml(self, xpaths):
+        r = []
+        for node in self.nodes(xpaths):
+            if node is not None:
+                r.append(node_xml(node))
+        return r
+
     def nodes_data(self, xpaths):
         r = []
         for node in self.nodes(xpaths):

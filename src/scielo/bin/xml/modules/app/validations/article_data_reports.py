@@ -250,18 +250,18 @@ class ArticleDisplayReport(object):
             for t in self.article.tables:
                 #print(t)
                 header = html_reports.tag('h3', t.id)
-                table_data = ''
-                table_data += html_reports.display_labeled_value('label', t.label, 'label')
-                table_data += html_reports.display_labeled_value('caption',  t.caption, 'label')
-                table_data += html_reports.tag('p', 'table-wrap/table (xml)', 'label')
-                table_data += html_reports.tag('div', html_reports.format_html_data(t.table), 'xml')
+                table_data = []
+                table_data.append(html_reports.display_labeled_value('label', t.label, 'label'))
+                table_data.append(html_reports.display_labeled_value('caption',  t.caption, 'label'))
+                table_data.append(html_reports.tag('p', 'table-wrap/table (xml)', 'label'))
                 if t.table:
-                    table_data += html_reports.tag('p', 'table-wrap/table', 'label')
-                    table_data += html_reports.tag('div', t.table, 'element-table')
+                    table_data.append(html_reports.tag('div', html_reports.format_html_data(t.table), 'xml'))
+                    table_data.append(html_reports.tag('p', 'table-wrap/table', 'label'))
+                    table_data.append(html_reports.tag('div', t.table, 'element-table'))
                 if t.graphic:
-                    #table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
-                    table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('{IMG_PATH}'), 'value')
-                r += header + html_reports.tag('div', table_data, 'block')
+                    #table_data.append(html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value'))
+                    table_data.append(html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('{IMG_PATH}'), 'value'))
+                r += header + html_reports.tag('div', ''.join(table_data), 'block')
         return r
 
     @property
@@ -341,7 +341,7 @@ class ArticleDisplayReport(object):
     def authors_sheet_data(self):
         r = []
         t_header = ['xref', 'publication-type', 'role', 'given-names', 'surname', 'suffix', 'prefix', 'collab']
-        if not self.article_identification is None:
+        if self.article_identification is not None:
             t_header = ['filename', 'scope'] + t_header
         for a in self.article.contrib_names:
             row = {}
@@ -394,7 +394,7 @@ class ArticleDisplayReport(object):
     def sources_sheet_data(self):
         r = []
         t_header = ['ID', 'type', 'year', 'source', 'publisher name', 'location', ]
-        if not self.article_identification is None:
+        if self.article_identification is not None:
             t_header = ['filename', 'scope'] + t_header
 
         for ref_xml in self.article.references_xml:

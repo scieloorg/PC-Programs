@@ -177,7 +177,7 @@ class TableParentXML(object):
 
     @property
     def table(self):
-        return xml_utils.node_xml(self.node.find('.//table'))
+        return self.xml_node.nodes_xml(['.//table'])
 
     @property
     def table_parent(self):
@@ -360,9 +360,11 @@ class CorpAuthor(object):
 
 class TitleXML(object):
 
-    def __init__(self, node):
+    def __init__(self, node, lang=None):
         self.node = node
+        self.lang = lang
         self.xml_node = xml_utils.XMLNode(self.node)
+        self._title = None
 
     @property
     def article_title(self):
@@ -382,15 +384,17 @@ class TitleXML(object):
 
     @property
     def language(self):
-        return xml_utils.element_lang(self.node)
+        lang = xml_utils.element_lang(self.node)
+        return lang if lang is not None else self.lang
 
     @property
     def title(self):
-        t = Title()
-        t.title = self.article_title
-        t.subtitle = self.subtitle
-        t.language = self.language
-        return t
+        if self._title is None:
+            self._title = Title()
+            self._title.title = self.article_title
+            self._title.subtitle = self.subtitle
+            self._title.language = self.language
+        return self._title
 
 
 class Title(object):
@@ -914,7 +918,7 @@ class ArticleXML(object):
     def title_group_title(self):
         k = []
         if self.article_meta is not None:
-            return [TitleXML(node).title for node in self.article_meta.findall('.//title-group')]
+            return [TitleXML(node, self.language).title for node in self.article_meta.findall('.//title-group')]
         return k
 
     @property
