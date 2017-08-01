@@ -2,7 +2,6 @@
 
 import os
 import shutil
-from datetime import datetime
 import csv
 
 from __init__ import _
@@ -13,10 +12,8 @@ import fs_utils
 from utils import how_similar
 from article import Issue, PersonAuthor, Article, Journal
 import attributes
-from dbm_isis import IDFile
 import article_utils
 import serial_files
-import institutions_service
 import html_reports
 import article_reports
 import ws_requester

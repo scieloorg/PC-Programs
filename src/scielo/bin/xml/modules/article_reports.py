@@ -44,7 +44,7 @@ class ArticleDisplayReport(object):
     def __init__(self, article_validation, xml_path, xml_name):
         self.article = article_validation.article
         self.article_validation = article_validation
-        self.xml_name = xml_name
+        self.xml_name = article_validation.article.prefix
         self.xml_path = xml_path
 
     @property

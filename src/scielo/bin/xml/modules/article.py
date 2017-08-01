@@ -1,5 +1,5 @@
 # coding=utf-8
-
+import os
 from datetime import datetime
 
 import article_utils
@@ -193,6 +193,19 @@ class HRef(object):
                         if location[-5:-4] != '.' and location[-4:-3] != '.':
                             location += '.jpg'
         return location
+
+    @property
+    def href_attach_type(self):
+        parent_tag, tag = self.parent.tag, self.element.tag
+        if 'suppl' in tag or 'media' == tag:
+            attach_type = 's'
+        elif 'inline' in tag:
+            attach_type = 'i'
+        elif parent_tag in ['equation', 'disp-formula']:
+            attach_type = 'e'
+        else:
+            attach_type = 'g'
+        return attach_type
 
 
 class PersonAuthor(object):
@@ -1982,3 +1995,25 @@ def doi_data(doi):
             if len(results) > 0:
                 results = {'journal-titles': results[0], 'article-titles': results[1], 'pid': results[2][0] if results[2] is not None else None}
     return results
+
+
+class ArticleXMLContent(object):
+
+    def __init__(self, xml_content, name, new_name):
+        self.xml_content = xml_content
+        self.name = name
+        self.new_name = new_name
+        self.xml_error = None
+
+    @property
+    def xml(self):
+        _xml, self.xml_error = xml_utils.load_xml(self.xml_content)
+        if _xml is not None:
+            return _xml
+
+    @property
+    def doc(self):
+        if self.xml is not None:
+            a = Article(self.xml, self.name)
+            a.new_prefix = self.new_name
+            return a
