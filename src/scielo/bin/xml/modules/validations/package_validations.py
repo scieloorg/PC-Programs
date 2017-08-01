@@ -8,7 +8,6 @@ from .. import fs_utils
 from .. import html_reports
 from .. import validation_status
 from .. import utils
-from ..doi_validations import doi_validations
 from .. import xml_versions
 from .. import attributes
 from .. import xc_models
@@ -351,34 +350,20 @@ class ArticleValidations(object):
 
 class PackageReports(object):
 
-    def __init__(self, package_folder, articles, pkgfiles):
+    def __init__(self, package_folder):
         self.package_folder = package_folder
-        self.pkgfiles = pkgfiles
-        self.articles = articles
 
     @property
     def xml_list(self):
         r = ''
         r += u'<p>{}: {}</p>'.format(_('XML path'), self.package_folder.path)
-        r += u'<p>{}: {}</p>'.format(_('Total of XML files'), len(self.articles))
+        r += u'<p>{}: {}</p>'.format(_('Total of XML files'), len(self.package_folder.pkgfiles_items))
 
         files = ''
-        for name, article in self.articles.items():
-            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', self.pkgfiles[name].allfiles))
+        for name, pkgfiles in self.package_folder.pkgfiles_items.items():
+            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', pkgfiles.allfiles))
         r += '<ol>{}</ol>'.format(files)
         return u'<div class="xmllist">{}</div>'.format(r)
-
-    @property
-    def invalid_xml_name_items(self):
-        return sorted([xml_name for xml_name, doc in self.articles.items() if doc.tree is None])
-
-    @property
-    def invalid_xml_report(self):
-        r = ''
-        if len(self.invalid_xml_name_items) > 0:
-            r += html_reports.tag('div', html_reports.p_message(_('{status}: invalid XML files. ').format(status=validation_status.STATUS_BLOCKING_ERROR)))
-            r += html_reports.tag('div', html_reports.format_list('', 'ol', self.invalid_xml_name_items, 'issue-problem'))
-        return r
 
     @property
     def orphan_files_report(self):
@@ -395,7 +380,6 @@ class PackageIssueData(object):
         self.pkg_p_issn = None
         self.pkg_e_issn = None
         self.pkg_issue_label = None
-
         self.journal = None
         self.journal_data = None
         self._issue_label = None
@@ -443,6 +427,7 @@ class RegisteredIssueData(object):
             journals_list = xc_models.JournalsList()
             pkgissuedata.journal = journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
             pkgissuedata.journal_data = journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
+            print(pkgissuedata.journal_data)
         else:
             acron_issue_label, self.issue_models, self.issue_error_msg, pkgissuedata.journal, pkgissuedata.journal_data = self.db_manager.get_registered_data(pkgissuedata.pkg_journal_title, pkgissuedata.pkg_issue_label, pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn)
             ign, pkgissuedata._issue_label = acron_issue_label.split(' ')
@@ -450,6 +435,7 @@ class RegisteredIssueData(object):
                 self.issue_files = self.db_manager.get_issue_files(self.issue_models)
                 self.articles_db_manager = xc_models.ArticlesManager(self.db_manager.db_isis, self.issue_files)
                 self.serial_path = self.db_manager.serial_path
+        return pkgissuedata
 
     @property
     def registered_articles(self):
@@ -470,6 +456,18 @@ class ArticlesDataReports(object):
         l = sorted([(article.order, xml_name) for xml_name, article in self.pkg_articles.items()])
         l = [(xml_name, self.pkg_articles[xml_name]) for order, xml_name in l]
         return l
+
+    @property
+    def invalid_xml_name_items(self):
+        return sorted([xml_name for xml_name, doc in self.pkg_articles.items() if doc.tree is None])
+
+    @property
+    def invalid_xml_report(self):
+        r = ''
+        if len(self.invalid_xml_name_items) > 0:
+            r += html_reports.tag('div', html_reports.p_message(_('{status}: invalid XML files. ').format(status=validation_status.STATUS_BLOCKING_ERROR)))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', self.invalid_xml_name_items, 'issue-problem'))
+        return r
 
     @property
     def compiled_affiliations(self):
@@ -1119,24 +1117,6 @@ class ArticlesValidationsReports(object):
         return sum([v.fatal_errors for v in self.articles_validations.values()])
 
 
-class ArticlesPackage(object):
-
-    def __init__(self, pkg_path, pkg_articles, is_xml_generation):
-        self.pkg_path = pkg_path
-        self.pkg_articles = pkg_articles
-        self.is_xml_generation = is_xml_generation
-        self.xml_names = [name for name in os.listdir(self.pkg_path) if name.endswith('.xml')]
-
-
-class ArticlesData(object):
-
-    def __init__(self):
-        self.pkg_journal_title = None
-        self.pkg_p_issn = None
-        self.pkg_e_issn = None
-        self.pkg_issue_label = None
-
-
 class RegisteredArticles(dict):
 
     def __init__(self, registered_articles):
@@ -1280,8 +1260,8 @@ class ReportsMaker(object):
         if self.processing_result_location is not None:
             components['pkg-files'] += processing_result_location(self.processing_result_location)
 
-        components['summary-report'] = self.package_reports.orphan_files_report + self.package_reports.invalid_xml_report
-        components['group-validations-report'] = self.package_reports.orphan_files_report + self.package_reports.invalid_xml_report
+        components['summary-report'] = self.package_reports.orphan_files_report + self.articles_data_reports.invalid_xml_report
+        components['group-validations-report'] = self.package_reports.orphan_files_report + self.articles_data_reports.invalid_xml_report
         components['individual-validations-report'] = self.articles_validations_reports.detailed_report
         components['aff-report'] = self.articles_data_reports.articles_affiliations_report
         components['dates-report'] = self.articles_data_reports.articles_dates_report
@@ -1292,7 +1272,7 @@ class ReportsMaker(object):
             components['group-validations-report'] += self.articles_validations_reports.journal_and_issue_report
 
         if self.conversion is None:
-            components['website'] = toc_extended_report(self.package_reports.articles)
+            components['website'] = toc_extended_report(self.articles_data_reports.pkg_articles)
         else:
             components['website'] = self.conversion.conclusion_message + toc_extended_report(self.conversion.registered_articles)
             if self.articles_validations_reports.registered_issue_data.issue_error_msg is not None:

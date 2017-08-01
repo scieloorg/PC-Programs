@@ -14,27 +14,12 @@ from pkgmakers import spsxml
 from pkgmakers import pmcxml
 from data import workarea
 from validations import package_validations
-
+from pkgmakers import package
 
 messages = []
 
 
-CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 xpm_process_logger = fs_utils.ProcessLogger()
-
-
-def xpm_version():
-    version_files = [
-        CURRENT_PATH + '/../../xpm_version.txt',
-        CURRENT_PATH + '/../../cfg/xpm_version.txt',
-        CURRENT_PATH + '/../../cfg/version.txt',
-    ]
-    version = ''
-    for f in version_files:
-        if os.path.isfile(f):
-            version = open(f).readlines()[0].decode('utf-8')
-            break
-    return version
 
 
 def call_make_packages(args, version):
@@ -66,7 +51,11 @@ def call_make_packages(args, version):
                 stage = 'xml'
             else:
                 pkgfiles = normalize_xml_packages(xml_list, stage)
-            validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage, sgm_xml)
+            #validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage, sgm_xml)
+            config = None
+            db_manager = None
+            proc = package.Proc(config, version, DISPLAY_REPORT, GENERATE_PMC, db_manager, stage)
+            proc.make_package([f.filename for f in pkgfiles])
 
 
 def read_inputs(args):
@@ -146,7 +135,7 @@ def normalize_xml_packages(xml_list, stage='xpm'):
     return dest_pkgfiles_items
 
 
-def validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm', sgm_xml=None):
+def validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage='xpm'):
     wk = workarea.Workarea(os.path.dirname(pkgfiles[0].path))
     package_folder = workarea.PackageFolder(pkgfiles[0].path)
 
@@ -161,18 +150,9 @@ def validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage='xp
 
     article_items = {item.name: article.ArticleXMLContent(fs_utils.read_file(item.filename), item.previous_name, item.name).doc for item in pkgfiles.values()}
     outputs_items = {item.name: workarea.OutputFiles(item.previous_name, wk.reports_path, item.ctrl_path) for item in pkgfiles.values()}
-    is_pmc_journal = False
+    is_pmc_journal = any([doc.journal_id_nlm_ta is not None for name, doc in article_items.items()])
 
-    for name, doc in article_items.items():
-        if is_pmc_journal is False:
-            if doc.journal_id_nlm_ta is not None:
-                is_pmc_journal = True
-        #FIXME
-        article_items[name].package_files = pkgfiles[name].allfiles
-
-    pmc_package_maker = pmcxml.PMCPackageMaker(version)
-
-    pkgreports = package_validations.PackageReports(package_folder, article_items, pkgfiles)
+    pkgreports = package_validations.PackageReports(package_folder, article_items)
     pkgissuedata = package_validations.PackageIssueData(article_items)
     registered_issue_data = package_validations.RegisteredIssueData(db_manager=None)
     registered_issue_data.get_data(pkgissuedata)
@@ -188,7 +168,7 @@ def validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage='xp
 
     files_final_location = workarea.FilesFinalLocation(scielo_pkg_path, pkgissuedata.acron, pkgissuedata.issue_label, web_app_path=None)
 
-    reports = package_validations.ReportsMaker(pkgreports, articles_data_reports, articles_validations_reports, files_final_location, xpm_version(), None)
+    reports = package_validations.ReportsMaker(pkgreports, articles_data_reports, articles_validations_reports, files_final_location, xpm_version(), conversion=None)
 
     if not is_xml_generation:
         reports.processing_result_location = results_path
@@ -197,14 +177,13 @@ def validate_packages(pkgfiles, version, DISPLAY_REPORT, GENERATE_PMC, stage='xp
             html_reports.display_report(report_path + '/xpm.html')
 
     if not is_db_generation:
+        pmc_package_maker = pmcxml.PMCPackageMaker(version)
         if is_xml_generation:
             pmc_package_maker.make_report(article_items, outputs_items)
-
         if is_pmc_journal:
             if GENERATE_PMC:
                 pmc_package_maker.make_package(article_items, outputs_items)
                 workarea.PackageFolder(pmc_pkg_path).zip()
-
             else:
                 print('='*10)
                 print(_('To generate PMC package, add -pmc as parameter'))

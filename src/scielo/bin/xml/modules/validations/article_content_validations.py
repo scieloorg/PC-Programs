@@ -12,7 +12,6 @@ from .. import validation_status
 from .. import attributes
 from .. import article_utils
 from .. import article
-from ..serial_files import filename_language_suffix
 from ..doi_validations import doi_validations
 
 
@@ -1407,7 +1406,7 @@ class HRefValidation(object):
     def validate(self):
         status_message = []
         if self.hrefitem.is_internal_file:
-            status_message.append(self.validate_href_file)
+            status_message.extend(self.validate_href_file)
             if self.hrefitem.is_image:
                 status_message.append(self.validate_tiff_image)
             status_message = [item for item in status_message if item is not None]
