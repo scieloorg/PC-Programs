@@ -275,7 +275,6 @@ class XMLContentValidator(object):
             if is_xml_generation:
                 content.append(article_display_report.issue_header)
                 content.append(article_display_report.article_front)
-                
                 content.append(article_validation_report.validations(display_all_message_types=False))
                 content.append(article_display_report.display_formulas)
                 content.append(article_display_report.table_tables)
@@ -284,10 +283,8 @@ class XMLContentValidator(object):
                 r = r[r.find('>')+1:]
                 r = r[:r.find('</body>')]
                 content.append(r)
-                
                 content.append(article_display_report.article_body)
                 content.append(article_display_report.article_back)
-
             else:
                 content.append(article_validation_report.validations(display_all_message_types=False))
                 content.append(article_display_report.display_formulas)
@@ -297,9 +294,7 @@ class XMLContentValidator(object):
                 r = r[r.find('>')+1:]
                 r = r[:r.find('</body>')]
                 content.append(r)
-                
                 content.append(article_display_report.files_and_href())
-                
             content = html_reports.join_texts(content)
         return content, article_display_report
 
@@ -457,8 +452,9 @@ class RegisteredArticles(dict):
         found = None
         registered = self.get(name)
         if registered is not None:
-            similar, status, msg = compare_articles(registered, article, _('registered'), _('package'))
-            if registered.order == article.order and similar:
+            exact_comparison_result, relax_result = articles_similarity(registered, article)
+            status = evaluate_articles_similarity_result(exact_comparison_result, relax_result)
+            if registered.order == article.order and status in [validation_status.STATUS_INFO, validation_status.STATUS_WARNING]:
                 found = registered
         return found
 
@@ -468,8 +464,9 @@ class RegisteredArticles(dict):
     def registered_titles_and_authors(self, article):
         similar_items = []
         for name, registered in self.items():
-            similar, status, message = compare_articles(registered, article, _('registered'), _('package'))
-            if similar:
+            exact_comparison_result, relax_result = articles_similarity(registered, article)
+            status = evaluate_articles_similarity_result(exact_comparison_result, relax_result)
+            if status in [validation_status.STATUS_INFO, validation_status.STATUS_WARNING]:
                 similar_items.append(name)
         return similar_items
 
@@ -481,6 +478,7 @@ class RegisteredArticles(dict):
         if registered is None:
             matched_titaut_article_names = self.registered_titles_and_authors(article)
             matched_order_article_names = self.registered_order(article.order)
+
             registered_titaut = self.registered_items_by_names(matched_titaut_article_names)
             registered_order = self.registered_items_by_names(matched_order_article_names)
             registered_name = self.get(name)
@@ -556,6 +554,7 @@ class RegisteredArticles(dict):
             conflicts = {_('registered article retrieved by name'): registered_name}
         elif registered_order is not None:
             conflicts = {_('registered article retrieved by the order'): registered_order}
+        #print((actions, old_name, conflicts))
         return (actions, old_name, conflicts)
 
 
@@ -644,7 +643,7 @@ class ArticlesMerger(object):
             merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
             for name, conflicts in self._conflicts.items():
                 labels = ['package']
-                values = [name]
+                values = [article_reports.display_article_data_to_compare(self.pkg_articles.get(name))]
                 for k, articles in conflicts.items():
                     labels.append(k)
                     if isinstance(articles, dict):
@@ -704,8 +703,7 @@ class ArticlesMerger(object):
         if len(self.order_changes) > 0:
             r.append(html_reports.tag('h3', _('Orders changes')))
             for name, changes in self.order_changes.items():
-                for change in changes:
-                    r.append(html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=change[0], new=change[1]), 'info'))
+                r.append(html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=changes[0], new=changes[1]), 'info'))
         if len(self.excluded_orders) > 0:
             r.append(html_reports.tag('h3', _('Orders exclusions')))
             for name, order in self.excluded_orders.items():
@@ -1468,45 +1466,56 @@ def rst_title(title):
     return '\n\n' + title + '\n' + '-'*len(title) + '\n'
 
 
-def compare_articles(article1, article2, label1='article 1', label2='article 2'):
-    labels = [_('titles'), _('authors'), _('body')]
-    validations = []
-    validations.append((article1.textual_titles, article2.textual_titles))
-    validations.append((article1.textual_contrib_surnames, article2.textual_contrib_surnames))
+def articles_similarity(article1, article2):
+    relaxed_labels = [_('titles'), _('authors')]
+    relaxed_data = []
+    relaxed_data.append((article1.textual_titles, article2.textual_titles))
+    relaxed_data.append((article_reports.display_authors(article1.article_contrib_items, '; '), article_reports.display_authors(article2.article_contrib_items, '; ')))
 
     if not any([article1.textual_titles, article2.textual_titles, article1.textual_contrib_surnames, article2.textual_contrib_surnames]):
         if article1.body_words is not None and article2.body_words is not None:
-            validations.append((article1.body_words[0:200], article2.body_words[0:200]))
+            relaxed_labels.append(_('body'))
+            relaxed_data.append((article1.body_words[0:200], article2.body_words[0:200]))
 
-    exact_comparison_result = [(label, items) for label, items in zip(labels, validations) if not items[0] == items[1]]
-    relaxed_comparison_result = [(label, items) for label, items in zip(labels, validations) if not utils.is_similar(items[0], items[1])]
+    exact_labels = [_('order'), _('prefix'), _('doi')]
+    exact_data = []
+    exact_data.append((article1.order, article2.order))
+    exact_data.append((article1.prefix, article2.prefix))
+    exact_data.append((article1.doi, article2.doi))
+    exact_data.extend(relaxed_data)
+    exact_labels.extend(relaxed_labels)
 
-    valid_titles_and_authors = False
+    exact_comparison_result = [(label, items) for label, items in zip(exact_labels, exact_data) if not items[0] == items[1]]
+    relaxed_comparison_result = [(label, items) for label, items in zip(relaxed_labels, relaxed_data) if not utils.is_similar(items[0], items[1])]
+    return (exact_comparison_result, relaxed_comparison_result)
+
+
+def evaluate_articles_similarity_result(exact_comparison_result, relaxed_comparison_result):
     status = validation_status.STATUS_BLOCKING_ERROR
-    message = ''
+    #print(len(exact_comparison_result))
+    #print(len(relaxed_comparison_result))
+    #print(exact_comparison_result)
+    #print(relaxed_comparison_result)
+
     if len(exact_comparison_result) == 0:
-        # no changes
-        valid_titles_and_authors = True
         status = validation_status.STATUS_INFO
-    elif len(relaxed_comparison_result) == 0:
-        # acceptable changes
-        valid_titles_and_authors = True
+    elif len(exact_comparison_result) == 1 and len(relaxed_comparison_result) in [0, 1]:
         status = validation_status.STATUS_WARNING
-    elif len(exact_comparison_result) == 1 or len(relaxed_comparison_result) == 1:
-        valid_titles_and_authors = True
-        status = validation_status.STATUS_WARNING
-    message = display_articles_differences(status, exact_comparison_result, label1, label2)
-    return (valid_titles_and_authors, status, message)
+    return status
 
 
-def display_articles_differences(status, comparison_result, label1='article 1', label2='article 2'):
+def display_articles_differences(article1, article2, label1='article 1', label2='article 2'):
+    exact_comparison_result, relaxed_comparison_result = articles_similarity(article1, article2)
+    status = evaluate_articles_similarity_result(exact_comparison_result, relaxed_comparison_result)
+    return format_diffences_message(status, exact_comparison_result, label1, label2)
+
+
+def format_diffences_message(status, comparison_result, label1='article 1', label2='article 2'):
     msg = []
     if len(comparison_result) > 0:
+        msg.append(html_reports.p_message(status))
         for label, differences in comparison_result:
-            msg.append(html_reports.p_message(status))
-            msg.append(html_reports.tag('h5', label))
-            msg.append(html_reports.display_label_value(label1, differences[0]))
-            msg.append(html_reports.display_label_value(label2, differences[1]))
+            msg.append(html_reports.tag('p', differences[0] + '&#160;=>&#160;' + differences[1]))
     return ''.join(msg)
 
 
@@ -1518,6 +1527,27 @@ def display_order_conflicts(orders_conflicts):
             r.append(html_reports.tag('h3', order))
             r.append(html_reports.format_html_data(names))
     return ''.join(r)
+
+
+def new_toc_extended_report(articles):
+    if articles is None:
+        return ''
+    else:
+        labels = [_('article'), _('last update')]
+        widths = {_('last update'): '5', _('article'): '88'}
+        items = []
+        for new_name, article in articles_sorted_by_order(articles):
+            if not article.is_ex_aop:
+                values = []
+                values.append(article_reports.display_article_data_in_toc(article))
+                last_update_display = article.last_update_display
+                if last_update_display is None:
+                    last_update_display = ''
+                if last_update_display[:10] == utils.display_datetime(utils.now()[0]):
+                    last_update_display = html_reports.tag('span', last_update_display, 'report-date')
+                values.append(last_update_display)
+                items.append(label_values(labels, values))
+        return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)
 
 
 def toc_extended_report(articles):
