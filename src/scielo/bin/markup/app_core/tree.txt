@@ -145,6 +145,7 @@ app
 label;#FALSE#;#FALSE#
 sectitle;#FALSE#;#FALSE#
 p;#FALSE#;#TRUE#
+sec;#FALSE#;#TRUE#
 
 authgrp
 author;#FALSE#;#TRUE#
@@ -344,6 +345,7 @@ hist
 received;#FALSE#;#FALSE#
 revised;#FALSE#;#TRUE#
 accepted;#FALSE#;#FALSE#
+histdate;#FALSE#;#FALSE#
 
 icitat
 no;#FALSE#;#FALSE#
@@ -1129,4 +1131,6 @@ prefix
 *page-fn
 
 xhtml
+
+histdate
 
