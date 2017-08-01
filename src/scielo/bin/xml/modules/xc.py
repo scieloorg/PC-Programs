@@ -74,16 +74,41 @@ def run_cmd(cmd, log_filename=None):
             fs_utils.append_file(log_filename, 'failure')
 
 
+def server_and_port(server):
+    port = None
+    if ':' in server:
+        server, port = server.split(':')
+    return server, port
+
+
+def format_rsync_port_param(port):
+    return '' if port is None else ' -e "ssh -p {}" '.format(port)
+
+
+def format_scp_port_param(port):
+    return '' if port is None else ' -P {} '.format(port)
+
+
+def format_ssh_port_param(port):
+    return '' if port is None else ' -p {} '.format(port)
+
+
 def run_remote_mkdirs(user, server, path, log_filename=None):
-    cmd = 'ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"'
+    server, port = server_and_port(server)
+    port_param = format_ssh_port_param(port)
+    cmd = 'ssh ' + user + '@' + server + port_param + ' "mkdir -p ' + path + '"'
     run_cmd(cmd, log_filename)
 
 
 def run_rsync(source, user, server, dest, log_filename=None):
-    cmd = 'nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n'
+    server, port = server_and_port(server)
+    port_param = format_rsync_port_param(port)
+    cmd = 'nohup rsync ' + port_param + '-CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n'
     run_cmd(cmd, log_filename)
 
 
 def run_scp(source, user, server, dest, log_filename=None):
-    cmd = 'nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n'
+    server, port = server_and_port(server)
+    port_param = format_scp_port_param(port)
+    cmd = 'nohup scp ' + port_param + '-r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n'
     run_cmd(cmd, log_filename)
