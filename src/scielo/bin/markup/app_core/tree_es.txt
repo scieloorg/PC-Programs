@@ -217,4 +217,5 @@ prefix;Identifica el prefijo de un autor como Sr., Prof., etc
 suffix;Identifica el sufijo de un autor como Hijo, Nieto, etc
 xhtml;Identifica una tabla que está representada dentro de un archivo XHTML
 institid;Identifica un ID de institución
-code;Identifiy un texto de código
+code;Identifica un texto de código
+histdate;Identifica fechas de histórico
