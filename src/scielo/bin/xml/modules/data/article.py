@@ -33,6 +33,13 @@ def format_values(values, sep='|'):
     return r
 
 
+def format_nodes_text(values, sep='|'):
+    r = sep.join([item.text for item in values if item is not None])
+    if r == '':
+        return None
+    return r
+
+
 def format_author(author):
     r = author.surname
     if author.suffix:
@@ -91,7 +98,7 @@ class AffiliationXML(object):
 
     @property
     def country(self):
-        return [nodes_text(item) for item in self.country_nodes]
+        return [item.text for item in self.country_nodes]
 
     @property
     def i_country(self):
@@ -107,15 +114,15 @@ class AffiliationXML(object):
 
     @property
     def orgdiv1(self):
-        return self.node.findall('..//institution[@content-type="orgdiv1"]')
+        return self.node.findall('.//institution[@content-type="orgdiv1"]')
 
     @property
     def orgdiv2(self):
-        return self.node.findall('..//institution[@content-type="orgdiv2"]')
+        return self.node.findall('.//institution[@content-type="orgdiv2"]')
 
     @property
     def orgdiv3(self):
-        return self.node.findall('..//institution[@content-type="orgdiv3"]')
+        return self.node.findall('.//institution[@content-type="orgdiv3"]')
 
     @property
     def label(self):
@@ -141,12 +148,12 @@ def get_affiliation(aff):
     a.country = format_values(aff_xml.country)
     a.i_country = format_values(aff_xml.i_country)
     a.email = format_values(aff_xml.email, ', ')
-    a.original = format_values(aff_xml.original)
-    a.norgname = format_values(aff_xml.norgname)
-    a.orgname = format_values(aff_xml.orgname)
-    a.orgdiv1 = format_values(aff_xml.orgdiv1)
-    a.orgdiv2 = format_values(aff_xml.orgdiv2)
-    a.orgdiv3 = format_values(aff_xml.orgdiv3)
+    a.original = format_nodes_text(aff_xml.original)
+    a.norgname = format_nodes_text(aff_xml.norgname)
+    a.orgname = format_nodes_text(aff_xml.orgname)
+    a.orgdiv1 = format_nodes_text(aff_xml.orgdiv1)
+    a.orgdiv2 = format_nodes_text(aff_xml.orgdiv2)
+    a.orgdiv3 = format_nodes_text(aff_xml.orgdiv3)
     a.city = format_values(aff_xml.city)
     a.state = format_values(aff_xml.state)
     return a

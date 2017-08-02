@@ -72,8 +72,8 @@ XPM_FILES['scielo1.1']['xsl_preview'] = XPM_FILES['scielo3.0']['xsl_preview']
 XPM_FILES['scielo1.1']['xsl_output'] = PMC_PATH + '/j1.1/xsl/sgml2xml/xml2pmc.xsl'
 
 XPM_FILES['pmc1.1'] = {}
-XPM_FILES['pmc.1']['dtd id'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN'
-XPM_FILES['pmc1.1']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['pmc.1']['dtd id'] + '" "{DTD_LOCAL_PATH}JATS-journalpublishing1.dtd">'
+XPM_FILES['pmc1.1']['dtd id'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN'
+XPM_FILES['pmc1.1']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['pmc1.1']['dtd id'] + '" "{DTD_LOCAL_PATH}JATS-journalpublishing1.dtd">'
 XPM_FILES['pmc1.1']['local'] = 'JATS-journalpublishing1.dtd'
 XPM_FILES['pmc1.1']['remote'] = 'http://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd'
 XPM_FILES['pmc1.1']['dtd_path'] = PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
@@ -96,17 +96,15 @@ def dtd_location(xml):
 
 
 def identify_dtd_files(xml):
-    scielo_dtd = None
-    pmc_dtd = None
+    scielo_version = DEFAULT_VERSION
+    pmc_version = DEFAULT_VERSION
     for name, data in XPM_FILES.items():
         if data.get('dtd id') in xml:
             if 'scielo' in name:
-                scielo_dtd = data
+                scielo_version = name[len('scielo'):]
             elif 'pmc' in name:
-                pmc_dtd = data
-    if scielo_dtd is None or pmc_dtd is None:
-        return XPM_FILES.get('scielo' + DEFAULT_VERSION), XPM_FILES.get('pmc' + DEFAULT_VERSION)
-    return scielo_dtd, pmc_dtd
+                pmc_version = name[len('pmc'):]
+    return DTDFiles('scielo', scielo_version), DTDFiles('pmc', pmc_version)
 
 
 class DTDFiles(object):

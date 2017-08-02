@@ -85,7 +85,7 @@ def confirm_missing_xref_items(missing_xref_items, any_xref_ranges_items):
             i += 1
         confirmed_missing = []
         for missing_xref in missing_xref_items:
-            if not missing_xref in not_missing:
+            if missing_xref not in not_missing:
                 confirmed_missing.append(missing_xref)
     return confirmed_missing
 
@@ -1222,19 +1222,23 @@ class ArticleContentValidation(object):
 
     @property
     def missing_xref_list(self):
-        tag_and_xref_types = {'fig-group': 'fig', 'table-wrap-group': 'table', 'fig': 'fig', 'table-wrap': 'table'}
-        if len(self.article.bibr_xref_ranges) > 0:
+        tag_and_xref_types = {
+            'fig-group': 'fig',
+            'table-wrap-group': 'table',
+            'fig': 'fig',
+            'table-wrap': 'table'
+            }
+        if len(self.article.references) > 0:
             tag_and_xref_types['ref'] = 'bibr'
         message = []
         missing = {}
-        tags_id_list = {k: [] for k in tag_and_xref_types.keys()}
         for node in self.article.elements_which_has_id_attribute:
-            if node.tag in tag_and_xref_types.keys():
-                xref_type = tag_and_xref_types[node.tag]
+            xref_type = tag_and_xref_types.get(node.tag)
+            if xref_type is not None:
                 _id = node.attrib.get('id')
                 xref_nodes = [item for item in self.article.xref_nodes if item['rid'] == _id]
                 if len(xref_nodes) == 0:
-                    if not xref_type in missing.keys():
+                    if xref_type not in missing.keys():
                         missing[xref_type] = []
                     missing[xref_type].append(_id)
                 else:
@@ -1242,7 +1246,6 @@ class ArticleContentValidation(object):
                         if item['ref-type'] != xref_type:
                             msg = invalid_value_message(str(item['ref-type']), 'xref[@rid="' + str(item['rid']) + '"]/@ref-type', [str(xref_type)])
                             message.append(('xref/@ref-type', validation_status.STATUS_FATAL_ERROR, msg))
-
         for xref_type, missing_xref_type_items in missing.items():
             if self.article.any_xref_ranges.get(xref_type) is None:
                 print(xref_type + ' has no xref ranges')
@@ -1713,8 +1716,7 @@ class ReferenceContentValidation(object):
         r = []
         for person in self.reference.authors_list:
             if isinstance(person, article.PersonAuthor):
-                for item in validate_contrib_names(person):
-                    r.append(item)
+                r.extend(ContribValidation(person, []).validate())
             elif isinstance(person, article.CorpAuthor):
                 r.append(('collab', validation_status.STATUS_OK, person.collab))
             else:
