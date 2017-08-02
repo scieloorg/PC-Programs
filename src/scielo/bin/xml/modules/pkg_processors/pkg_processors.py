@@ -61,7 +61,7 @@ def xpm_version():
     return version
 
 
-def normalize_xml_packages(xml_list, dtd_replacement, stage):
+def normalize_xml_packages(xml_list, dtd_location_type, stage):
     print('normalize_xml_packages', xml_list)
     pkgfiles_items = [workarea.PkgArticleFiles(item) for item in xml_list]
 
@@ -80,7 +80,7 @@ def normalize_xml_packages(xml_list, dtd_replacement, stage):
     for src, dest in zip(pkgfiles_items, dest_pkgfiles_items):
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
-        xmlcontent.doctype(dtd_replacement[0], dtd_replacement[1])
+        xmlcontent.doctype(dtd_location_type)
         fs_utils.write_file(dest.filename, xmlcontent.content)
         src.copy(dest_path)
     return dest_pkgfiles_items
@@ -311,22 +311,19 @@ class PkgProcessor(object):
         self.web_app_path = None
         self.web_url = None
         self.serial_path = None
-        self.version = version
         self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
         self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
-
         self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
         self.journals_list = xc_models.JournalsList(self.ws_journals.downloaded_journals_filename)
         self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
-        self.xml_structure_validator = article_validations_module.XMLStructureValidator(self.scielo_dtd_files)
+        self.current_dtd_files = self.scielo_dtd_files if self.is_xml_generation else None
 
     def normalized_package(self, xml_list):
-        dtd_replacement = (self.scielo_dtd_files.local, self.scielo_dtd_files.remote)
-        if self.stage == 'db':
-            dtd_replacement = (self.scielo_dtd_files.remote, self.scielo_dtd_files.local)
-
-        pkgfiles = package.normalize_xml_packages(xml_list, dtd_replacement, self.stage)
+        dtd_location_type = 'remote'
+        if self.is_db_generation:
+            dtd_location_type = 'local'
+        pkgfiles = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
         workarea_path = os.path.dirname(pkgfiles[0].path)
         pkg = package.Package([f.filename for f in pkgfiles], workarea_path)
 
@@ -337,9 +334,7 @@ class PkgProcessor(object):
         articles_merge = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
         merge_reports = merged_articles_validations.MergedArticlesReports(articles_merge, registered_issue_data)
-
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, merge_reports, self.is_xml_generation)
-
         self.report_result(pkg, validations_reports, conversion=None)
         self.make_pmc_package(pkg, GENERATE_PMC)
         self.zip(pkg)
@@ -351,12 +346,9 @@ class PkgProcessor(object):
         articles_merge = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
         merge_reports = merged_articles_validations.MergedArticlesReports(articles_merge, registered_issue_data)
-
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, merge_reports, self.is_xml_generation)
-
         conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
         scilista_items = conversion.convert()
-
         reports = self.report_result(pkg, validations_reports, conversion)
         utils.display_message(_('Result of the processing:'))
         utils.display_message(reports.files_final_location.result_path)
@@ -368,7 +360,7 @@ class PkgProcessor(object):
         xml_journal_data_validator = article_validations_module.XMLJournalDataValidator(pkg.pkgissuedata.journal_data)
         xml_issue_data_validator = article_validations_module.XMLIssueDataValidator(registered_issue_data)
         xml_content_validator = article_validations_module.XMLContentValidator(pkg.pkgissuedata, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator)
-        article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, self.xml_structure_validator, xml_content_validator)
+        article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, self.current_dtd_files)
 
         utils.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
         results = {}
@@ -398,7 +390,7 @@ class PkgProcessor(object):
     def make_pmc_package(self, pkg, GENERATE_PMC):
         if not self.is_db_generation:
             # FIXME
-            pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(self.version)
+            pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(self.scielo_dtd_files, self.pmc_dtd_files)
             if self.is_xml_generation:
                 pmc_package_maker.make_report(pkg.articles, pkg.outputs)
             if pkg.is_pmc_journal:

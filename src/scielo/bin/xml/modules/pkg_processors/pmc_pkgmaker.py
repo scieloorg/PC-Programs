@@ -12,14 +12,13 @@ from ..useful import java_xml_utils
 from ..reports import html_reports
 from ..data import workarea
 from ..validations import xml_validators
-from . import xml_versions
 
 
 class PMCPackageMaker(object):
 
-    def __init__(self, version):
-        self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
-        self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
+    def __init__(self, scielo_dtd_files, pmc_dtd_files):
+        self.pmc_dtd_files = pmc_dtd_files
+        self.scielo_dtd_files = scielo_dtd_files
 
     def make_package(self, wk, article_items, outputs):
         doit = False
