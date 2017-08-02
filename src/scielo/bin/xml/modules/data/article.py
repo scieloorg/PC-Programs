@@ -1880,6 +1880,18 @@ class ReferenceXML(object):
             return xml_utils.node_findtext(self.element_citation, './/lpage')
 
     @property
+    def fpage_number(self):
+        if self.fpage is not None:
+            if self.fpage.isdigit():
+                return int(self.fpage)
+
+    @property
+    def lpage_number(self):
+        if self.lpage is not None:
+            if self.lpage.isdigit():
+                return int(self.lpage)
+
+    @property
     def page_range(self):
         if self.element_citation is not None:
             return xml_utils.node_findtext(self.element_citation, './/page-range')

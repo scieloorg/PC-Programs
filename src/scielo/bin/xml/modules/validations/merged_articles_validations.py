@@ -102,9 +102,7 @@ class MergedArticlesReports(object):
     def report_page_values(self):
         # FIXME separar validacao e relatório
         results = []
-        previous_lpage = None
-        previous_xmlname = None
-        int_previous_lpage = None
+        previous = None
 
         error_level = validation_status.STATUS_BLOCKING_ERROR
         fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.merged_articles_data.articles]
@@ -112,36 +110,30 @@ class MergedArticlesReports(object):
             error_level = validation_status.STATUS_ERROR
 
         for xml_name, article in self.merged_articles_data.articles:
-            fpage = article.fpage
-            lpage = article.lpage
             msg = []
             status = ''
             if article.pages == '':
                 msg.append(_('no pagination was found. '))
                 if not article.is_ahead:
                     status = validation_status.STATUS_ERROR
-            if fpage is not None and lpage is not None:
-                if fpage.isdigit() and lpage.isdigit():
-                    int_fpage = int(fpage)
-                    int_lpage = int(lpage)
+            if all([article.fpage_number, article.lpage_number]):
+                if previous is not None:
+                    if previous.lpage_number > article.fpage_number:
+                        status = error_level if not article.is_epub_only else validation_status.STATUS_WARNING
+                        msg.append(_('Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.lpage, fpage=article.fpage))
+                    elif previous.lpage_number + 1 < article.fpage_number:
+                        status = validation_status.STATUS_WARNING
+                        msg.append(_('There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.lpage, fpage=article.fpage))
+                    if previous.fpage_number == article.fpage_number:
+                        if all([previous.fpage_seq, article.fpage_seq]) is False:
+                            msg.append(_('Same value for fpage={fpage} ({previous_article} and {xml_name}) requires @seq for both fpage. ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.fpage, fpage=article.fpage))
+                        elif previous.fpage_seq > article.fpage_seq:
+                            msg.append(_('fpage/@seq must be a and b: {a} ({previous_article}) and {b} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, a=previous.fpage_seq, b=article.fpage_seq))
+                if article.fpage_number > article.lpage_number:
+                    status = error_level
+                    msg.append(_('Invalid page range: {fpage} (fpage) > {lpage} (lpage). '.format(fpage=article.fpage_number, lpage=article.lpage_number)))
+                previous = article
 
-                    #if not article.is_rolling_pass and not article.is_ahead:
-                    if int_previous_lpage is not None:
-                        if int_previous_lpage > int_fpage:
-                            status = error_level if not article.is_epub_only else validation_status.STATUS_WARNING
-                            msg.append(_('Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
-                        elif int_previous_lpage == int_fpage:
-                            status = validation_status.STATUS_WARNING
-                            msg.append(_('lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the same. ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
-                        elif int_previous_lpage + 1 < int_fpage:
-                            status = validation_status.STATUS_WARNING
-                            msg.append(_('There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
-                    if int_fpage > int_lpage:
-                        status = error_level
-                        msg.append(_('Invalid page range: {fpage} (fpage) > {lpage} (lpage). '.format(fpage=int_fpage, lpage=int_lpage)))
-                    int_previous_lpage = int_lpage
-                    previous_lpage = lpage
-                    previous_xmlname = xml_name
             #dates = '|'.join([item if item is not None else 'none' for item in [article.epub_ppub_dateiso, article.collection_dateiso, article.epub_dateiso]])
             msg = '\n'.join(msg)
             results.append({'label': xml_name, 'status': status, 'pages': article.pages, 'message': msg, _('why it is not a valid message?'): ''})
