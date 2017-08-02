@@ -6,6 +6,7 @@ from ..reports import html_reports
 from ..data import attributes
 from . import validation_status
 from . import validations as validations_module
+from ..data import article as article_module
 
 
 class PkgArticlesValidationsReports(object):
@@ -146,6 +147,7 @@ class PkgArticlesDataReports(object):
                     elif len(valid_xref) == 0:
                         evaluation[_('authors without aff')].append(xml_name)
             for aff in doc.affiliations:
+                aff = article_module.Affiliation(aff)
                 if None in [aff.id, aff.i_country, aff.norgname, aff.orgname, aff.city, aff.state, aff.country]:
                     evaluation[_('incomplete affiliations')].append(xml_name)
         return evaluation

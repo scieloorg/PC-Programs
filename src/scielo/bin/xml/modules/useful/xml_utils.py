@@ -693,3 +693,30 @@ class PrettyXML(object):
             while 'PRESERVESPACESPRESERVESPACES' in text:
                 text = text.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
         return text
+
+
+class XMLNode(object):
+
+    def __init__(self, root):
+        self.root = root
+
+    @property
+    def xml(self):
+        return node_xml(self.root)
+
+    def nodes(self, xpaths):
+        n = []
+        for xpath in xpaths:
+            found = self.root.findall(xpath)
+            if found is not None:
+                n.extend(found)
+        return n
+
+    def nodes_text(self, nodes):
+        return [node_text(node) for node in nodes]
+
+    def texts(self, xpaths):
+        r = self.nodes_text(self.nodes(xpaths))
+        if len(r) == 0:
+            return [None]
+        return r
