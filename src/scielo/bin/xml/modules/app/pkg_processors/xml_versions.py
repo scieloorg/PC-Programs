@@ -5,6 +5,8 @@ from ...__init__ import PMC_PATH
 
 DEFAULT_VERSION = '1.1'
 
+valid_dtd_items = ['3.0', '1.0', 'j1.0', 'j1.1']
+
 XSL_SGML2XML = {}
 XSL_SGML2XML['3.0'] = PMC_PATH + '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
 XSL_SGML2XML['1.0'] = PMC_PATH + '/j1.0/xsl/sgml2xml/sgml2xml.xsl'

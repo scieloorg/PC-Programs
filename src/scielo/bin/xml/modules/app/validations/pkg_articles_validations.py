@@ -6,7 +6,6 @@ from ...generics.reports import html_reports
 from ...generics.reports import validation_status
 from . import validations as validations_module
 from ..data import attributes
-from ..data import article as article_module
 
 
 class PkgArticlesValidationsReports(object):
@@ -200,23 +199,24 @@ class PkgArticlesDataReports(object):
         self.unusual_years = []
         self.years = {}
         for xml_name, doc in self.pkg_articles.items():
-            for ref in doc.references:
+            for ref_xml in doc.references_xml:
+                ref = ref_xml.reference
                 if ref.source is not None:
-                    if not ref.source in self.sources_and_reftypes.keys():
+                    if ref.source not in self.sources_and_reftypes.keys():
                         self.sources_and_reftypes[ref.source] = {}
-                    if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
+                    if ref.publication_type not in self.sources_and_reftypes[ref.source].keys():
                         self.sources_and_reftypes[ref.source][ref.publication_type] = []
                     self.sources_and_reftypes[ref.source][ref.publication_type].append(xml_name + ': ' + str(ref.id))
 
-                if not ref.publication_type in self.reftype_and_sources.keys():
+                if ref.publication_type not in self.reftype_and_sources.keys():
                     self.reftype_and_sources[ref.publication_type] = {}
-                if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
+                if ref.source not in self.reftype_and_sources[ref.publication_type].keys():
                     self.reftype_and_sources[ref.publication_type][ref.source] = []
                 self.reftype_and_sources[ref.publication_type][ref.source].append(xml_name + ': ' + str(ref.id))
 
                 # year
                 if ref.publication_type in attributes.BIBLIOMETRICS_USE:
-                    if not ref.year in self.years.keys():
+                    if ref.year not in self.years.keys():
                         self.years[ref.year] = []
                     self.years[ref.year].append(xml_name + ': ' + str(ref.id))
                     if ref.year is None:
@@ -274,10 +274,3 @@ class PkgArticlesDataReports(object):
                     items.append({'source': source, _('location'): sources[source]})
                 h += html_reports.sheet(labels, items, 'dbstatus')
         return h
-
-
-def label_values(labels, values):
-    r = {}
-    for i in range(0, len(labels)):
-        r[labels[i]] = values[i]
-    return r

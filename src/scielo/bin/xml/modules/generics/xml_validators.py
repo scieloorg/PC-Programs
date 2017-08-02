@@ -69,9 +69,6 @@ class PackToolsValidator(object):
         f, e, w = style_checker_statistics(self._style_validation)
         return (f + e + w == 0)
 
-    def finish(self):
-        pass
-
 
 def save_packtools_style_report(content, report_filename):
     version = ''
@@ -101,44 +98,24 @@ class JavaXMLValidator(object):
 
     def setup(self, xml_filename):
         self.xml_filename = xml_filename
-        self.xml = java_xml_utils.XML(self.xml_filename, self.doctype)
-        self.xml.logger = self.logger
 
     def dtd_validation(self, report_filename):
-        return self.xml.xml_validate(report_filename)
+        return java_xml_utils.xml_validate(self.xml_filename, report_filename, self.doctype)
 
     def style_validation(self, report_filename):
         is_valid_style = False
         xml_report = report_filename.replace('.html', '.xml')
-
-        for item in [xml_report, report_filename]:
-            fs_utils.delete_file_or_folder(item)
-
+        result = 'ERROR: ' + _('Unable to create') + ' ' + report_filename
         parameters = {}
-        if self.xml.transform_file(self.xsl_prep_report, xml_report, parameters):
-            xml_transformer_report = java_xml_utils.XML(xml_report, None)
-            xml_transformer_report.logger = self.logger
-            xml_transformer_report.transform_file(self.xsl_report, report_filename, parameters)
+        transformed = java_xml_utils.xml_transform(self.xml_filename, self.xsl_prep_report, xml_report, parameters)
+        if transformed:
+            transformed = java_xml_utils.xml_transform(xml_report, self.xsl_report, report_filename, parameters)
             result = fs_utils.read_file(report_filename)
             fs_utils.delete_file_or_folder(xml_report)
-
         if not os.path.isfile(report_filename):
-            result = 'ERROR: ' + _('Unable to create') + ' ' + report_filename
             fs_utils.write_file(report_filename, result)
-
         is_valid_style = ('Total of errors = 0' in result) and (('Total of warnings = 0' in result) or (not 'Total of warnings =' in result))
-
         return is_valid_style
-
-    def finish(self):
-        self.xml.finish()
-
-
-def java_xml_utils_dtd_validation(xml_filename, report_filename, doctype):
-    register_log('java_xml_utils_dtd_validation: inicio')
-    r = java_xml_utils.xml_validate(xml_filename, report_filename, doctype)
-    register_log('java_xml_utils_dtd_validation: fim')
-    return r
 
 
 def style_checker_statistics(content):
@@ -181,7 +158,7 @@ class XMLValidator(object):
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
         self.validator.logger = self.logger
         self.validator.setup(xml_filename)
-        xml, e = xml_utils.load_xml(self.validator.xml.content)
+        xml, e = xml_utils.load_xml(xml_filename)
         is_valid_dtd = self.validator.dtd_validation(dtd_report_filename)
         content = ''
         if e is None:
@@ -191,5 +168,4 @@ class XMLValidator(object):
             content = validation_status.STATUS_FATAL_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=xml_filename) + '\n' + e
             fs_utils.write_file(style_report_filename, content)
         f, e, w = style_checker_statistics(content)
-        self.validator.finish()
         return (xml, is_valid_dtd, (f, e, w))
