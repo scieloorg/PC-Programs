@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime
+import re
 
 from ..__init__ import _
 from ..useful import xml_utils
@@ -190,19 +191,6 @@ def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
         return (label, validation_status.STATUS_OK, value)
 
 
-def validate_name(label, value, invalid_terms):
-    r = []
-    result = required(label, value, validation_status.STATUS_WARNING)
-    label, status, msg = result
-    if status == validation_status.STATUS_OK:
-        result = invalid_terms_in_value(label, value, invalid_terms, validation_status.STATUS_ERROR)
-    r.append(result)
-    _test_number = warn_unexpected_numbers(label, value)
-    if _test_number is not None:
-        r.append(_test_number)
-    return r
-
-
 def warn_unexpected_numbers(label, value, max_number=0):
     r = None
     if value is not None:
@@ -214,36 +202,89 @@ def warn_unexpected_numbers(label, value, max_number=0):
     return r
 
 
-def validate_surname(label, value):
-    r = []
-    label, status, msg = required(label, value, validation_status.STATUS_ERROR)
-    if status == validation_status.STATUS_OK:
-        msg = value
-        parts = value.split(' ')
-        if parts[-1] in attributes.identified_suffixes():
-            msg = _('{label} contains invalid {invalid_items_name}: {invalid_items}. ').format(label=u'<surname>{v}</surname>'.format(v=value), invalid_items_name=_('terms'), invalid_items=parts[-1])
-            msg += _(u'{value} should be identified as {label}, if {term} is the surname, ignore this message. ').format(value=parts[-1], label=u' <suffix>' + parts[-1] + '</suffix>', term=parts[-1])
-            status = validation_status.STATUS_ERROR
-            r.append((label, status, msg))
-    _test_number = warn_unexpected_numbers(label, value)
-    if _test_number is not None:
-        r.append(_test_number)
-    return r
+class ContribValidation(object):
 
+    def __init__(self, contrib, aff_ids):
+        self.aff_ids = aff_ids
+        self.contrib = contrib
 
-def validate_contrib_names(author, aff_ids=[]):
-    #FIXME
-    results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
-    if len(aff_ids) > 0:
-        if len(author.xref) == 0:
-            msg = _('{item} has no {missing_item}. ').format(item=author.fullname, missing_item='xref[@ref-type="aff"]/@rid') + _('Expected values: {expected}. ').format(expected='|'.join(aff_ids))
-            results.append(('xref', validation_status.STATUS_WARNING, msg))
-        else:
-            for xref in author.xref:
-                if not xref in aff_ids:
-                    msg = invalid_value_message(xref, '{label} ({value})'.format(label='xref[@ref-type="aff"]/@rid', value=author.fullname), ', '.join(aff_ids))
-                    results.append(('xref', validation_status.STATUS_FATAL_ERROR, msg))
-    return results
+    @property
+    def name_validation_result(self):
+        r = []
+        label = 'given-names'
+        result = required(label, self.contrib.fname, validation_status.STATUS_WARNING)
+        label, status, msg = result
+        if status == validation_status.STATUS_OK:
+            result = invalid_terms_in_value(label, self.contrib.fname, ['_'], validation_status.STATUS_ERROR)
+        r.append(result)
+        _test_number = warn_unexpected_numbers(label, self.contrib.fname)
+        if _test_number is not None:
+            r.append(_test_number)
+        return r
+
+    @property
+    def surname_validation_result(self):
+        r = []
+        label = 'surname'
+        label, status, msg = required(label, self.contrib.surname, validation_status.STATUS_ERROR)
+        if status == validation_status.STATUS_OK:
+            msg = self.contrib.surname
+            parts = self.contrib.surname.split(' ')
+            if parts[-1] in attributes.identified_suffixes():
+                msg = _('{label} contains invalid {invalid_items_name}: {invalid_items}. ').format(label=u'<surname>{v}</surname>'.format(v=self.contrib.surname), invalid_items_name=_('terms'), invalid_items=parts[-1])
+                msg += _(u'{value} should be identified as {label}, if {term} is the surname, ignore this message. ').format(value=parts[-1], label=u' <suffix>' + parts[-1] + '</suffix>', term=parts[-1])
+                status = validation_status.STATUS_ERROR
+                r.append((label, status, msg))
+        _test_number = warn_unexpected_numbers(label, self.contrib.surname)
+        if _test_number is not None:
+            r.append(_test_number)
+        return r
+
+    @property
+    def xref_validation_result(self):
+        results = []
+        if len(self.aff_ids) > 0:
+            if len(self.contrib.xref) == 0:
+                msg = _('{item} has no {missing_item}. ').format(item=self.contrib.fullname, missing_item='xref[@ref-type="aff"]/@rid') + _('Expected values: {expected}. ').format(expected='|'.join(self.aff_ids))
+                results.append(('xref', validation_status.STATUS_WARNING, msg))
+            else:
+                for xref in self.contrib.xref:
+                    if xref not in self.aff_ids:
+                        msg = invalid_value_message(xref, '{label} ({value})'.format(label='xref[@ref-type="aff"]/@rid', value=self.contrib.fullname), ', '.join(self.aff_ids))
+                        results.append(('xref', validation_status.STATUS_FATAL_ERROR, msg))
+
+        return results
+
+    @property
+    def contrib_id_validation_result(self):
+        r = []
+        for contrib_id_type, contrib_id in self.contrib.contrib_id.items():
+            if contrib_id_type in attributes.CONTRIB_ID_URLS.keys():
+                if attributes.CONTRIB_ID_URLS.get(contrib_id_type) in contrib_id or contrib_id.startswith('http'):
+                    label = 'contrib-id[@contrib-id-type="' + contrib_id_type + '"]'
+                    msg = invalid_value_message(contrib_id, label)
+                    r.append((label, validation_status.STATUS_ERROR, msg + _('Use only the ID')))
+            else:
+                msg = invalid_value_message(contrib_id_type, 'contrib-id/@contrib-id-type', ', '.join(attributes.CONTRIB_ID_URLS.keys()))
+                r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR, msg))
+
+            if contrib_id_type == 'orcid':
+                if not validate_orcid(contrib_id):
+                    r.append(
+                        ('orcid',
+                         validation_status.STATUS_FATAL_ERROR,
+                         _('{value} is a invalid value for {label}. ').format(
+                            value=contrib_id,
+                            label='')))
+        return r
+
+    def validate(self):
+        results = []
+        results.extend(self.surname_validation_result)
+        results.extend(self.name_validation_result)
+        results.extend(self.xref_validation_result)
+        results.extend(self.contrib_id_validation_result)
+        return results
 
 
 class ArticleContentValidation(object):
@@ -577,25 +618,9 @@ class ArticleContentValidation(object):
     @property
     def contrib_names(self):
         r = []
-        author_xref_items = []
         aff_ids = [aff.id for aff in self.article.affiliations if aff.id is not None]
         for item in self.article.contrib_names:
-            for xref in item.xref:
-                author_xref_items.append(xref)
-            for result in validate_contrib_names(item, aff_ids):
-                r.append(result)
-            for contrib_id_type, contrib_id in item.contrib_id.items():
-                if contrib_id_type in attributes.CONTRIB_ID_URLS.keys():
-                    if attributes.CONTRIB_ID_URLS.get(contrib_id_type) in contrib_id or contrib_id.startswith('http'):
-                        label = 'contrib-id[@contrib-id-type="' + contrib_id_type + '"]'
-                        msg = invalid_value_message(contrib_id, label)
-                        r.append((label, validation_status.STATUS_ERROR, msg + _('Use only the ID')))
-                else:
-                    msg = invalid_value_message(contrib_id_type, 'contrib-id/@contrib-id-type', ', '.join(attributes.CONTRIB_ID_URLS.keys()))
-                    r.append(('contrib-id/@contrib-id-type', validation_status.STATUS_ERROR, msg))
-        for affid in aff_ids:
-            if not affid in author_xref_items:
-                r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Not found: {label}. ').format(label='<xref ref-type="aff" rid="' + affid + '"/>')))
+            r.extend(ContribValidation(item, aff_ids).validate())
         return r
 
     @property
@@ -757,6 +782,9 @@ class ArticleContentValidation(object):
         labels.append('country')
         labels.append('country/@country')
 
+        xref_items = []
+        for item in self.article.contrib_names:
+            xref_items.extend(item.xref)
         self.article.normalized_affiliations = {}
         for aff in self.article.affiliations:
             text = aff.original if aff.original is not None else aff.xml
@@ -821,6 +849,9 @@ class ArticleContentValidation(object):
                     if '|' in values[i]:
                         r.append((label, validation_status.STATUS_FATAL_ERROR, _('only one occurrence of {label} is allowed. ').format(label=label)))
                 i += 1
+
+            if aff.id not in xref_items:
+                r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Not found: {label}. ').format(label='<xref ref-type="aff" rid="' + aff.id + '"/>')))
 
         return r
 
@@ -1763,3 +1794,11 @@ def normalized_institution(app_institutions_manager, aff):
                 norm_aff.i_country = norm_country_code
                 norm_aff.country = norm_country_name
     return (norm_aff, found_institutions)
+
+
+def validate_orcid(orcid):
+    # [0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}
+    if len(orcid) != 19:
+        return False
+    pattern = re.compile("[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[X0-9]{1}")
+    return pattern.match(orcid) is not None
