@@ -33,5 +33,27 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
         </version>
     </xsl:template>
     
-
+    <xsl:template match="code/@itstype">
+        <xsl:attribute name="code-type">
+            <xsl:value-of select="normalize-space(.)"/>
+        </xsl:attribute>
+    </xsl:template>
+    
+    <xsl:template match="onbehalf[institid]">
+        <institution-wrap>
+            <xsl:apply-templates select="*|text()"></xsl:apply-templates>
+        </institution-wrap>
+    </xsl:template>
+    
+    <xsl:template match="institid/@itstype">
+        <xsl:attribute name="institution-id-type">
+            <xsl:value-of select="normalize-space(.)"/>
+        </xsl:attribute>
+    </xsl:template>
+    
+    <xsl:template match="institid">
+        <xsl:element name="institution-id">
+            <xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
+        </xsl:element>
+    </xsl:template>
 </xsl:stylesheet>
