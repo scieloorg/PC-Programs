@@ -27,4 +27,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
         </postal-code>
     </xsl:template>
 
+    <xsl:template match="version">
+        <version>
+            <xsl:value-of select="normalize-space(.)"/>
+        </version>
+    </xsl:template>
+    
+
 </xsl:stylesheet>
