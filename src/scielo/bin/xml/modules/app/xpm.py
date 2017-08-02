@@ -5,18 +5,19 @@ import sys
 
 from ..__init__ import _
 from . import interface
-from ..useful import utils
-from ..useful import encoding
-from ..data import workarea
-from ..data import package
-from ..pkg_processors import sgmlxml
-from ..pkg_processors import pkg_processors
-from ..config import config
-from ..pkg_processors import xml_versions
+from ..generics import utils
+from ..generics import encoding
+from .data import workarea
+from .data import package
+from .pkg_processors import sgmlxml
+from .pkg_processors import pkg_processors
+from .config import config
+from .pkg_processors import xml_versions
 
 
 def call_make_packages(args, version):
     script, xml_path, acron, DISPLAY_REPORT, GENERATE_PMC = read_inputs(args)
+    print(script, xml_path, acron, DISPLAY_REPORT, GENERATE_PMC)
     normalized_pkgfiles = None
     stage = 'xpm'
     if any([xml_path, acron]):

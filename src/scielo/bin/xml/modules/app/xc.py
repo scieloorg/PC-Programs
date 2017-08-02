@@ -5,15 +5,14 @@ import shutil
 from datetime import datetime
 
 from ..__init__ import _
-from ..useful import fs_utils
-from ..useful import utils
-from ..useful import xml_utils
-from ..reports import html_reports
-from ..pkg_processors import pkg_processors
-from ..data import package
-from ..data import workarea
-from ..server import mailer
-from ..server import filestransfer
+from ..generics import fs_utils
+from ..generics import utils
+from ..generics import xml_utils
+from ..generics.reports import html_reports
+from .pkg_processors import pkg_processors
+from .data import workarea
+from ..generics.server import mailer
+from ..generics.server import filestransfer
 from . import interface
 
 
