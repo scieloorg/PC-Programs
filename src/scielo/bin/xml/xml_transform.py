@@ -4,7 +4,7 @@ import shutil
 import sys
 import os
 
-from modules import java_xml_utils
+from modules.generics import java_xml_utils
 
 
 #required_parameters = ['', 'xml filename', 'xsl filename', 'result filename', 'ctrl filename', 'err filename' ]

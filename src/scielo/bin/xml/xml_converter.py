@@ -2,6 +2,6 @@
 
 import sys
 
-from modules import xmlcvrter as xmlcvrter
+from modules.app import xc
 
-xmlcvrter.call_converter(sys.argv, '1.0')
+xc.call_converter(sys.argv, '1.0')
