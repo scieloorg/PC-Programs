@@ -2,40 +2,22 @@
 
 from ...__init__ import _
 
-from . import xc_models
 from ..validations import article_data_reports
 
 
-class RegisteredIssueData(object):
+class RegisteredIssue(object):
 
-    def __init__(self, db_manager, journals_list):
-        self.db_manager = db_manager
-        self.journals_list = journals_list
+    def __init__(self):
         self.articles_db_manager = None
         self.issue_error_msg = None
         self.issue_models = None
         self.issue_files = None
-        self.serial_path = None
-
-    def get_data(self, pkgissuedata):
-        if self.db_manager is None:
-            journals_list = self.journals_list
-            pkgissuedata.journal = journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
-            pkgissuedata.journal_data = journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
-        else:
-            acron_issue_label, self.issue_models, self.issue_error_msg, pkgissuedata.journal, pkgissuedata.journal_data = self.db_manager.get_registered_data(pkgissuedata.pkg_journal_title, pkgissuedata.pkg_issue_label, pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn)
-            ign, pkgissuedata._issue_label = acron_issue_label.split(' ')
-            if self.issue_error_msg is None:
-                self.issue_files = self.db_manager.get_issue_files(self.issue_models)
-                self.articles_db_manager = xc_models.ArticlesManager(self.db_manager.db_isis, self.issue_files)
-        return pkgissuedata
 
     @property
     def registered_articles(self):
-        articles = {}
         if self.articles_db_manager is not None:
-            articles = registered_issue_data.articles_db_manager.registered_articles
-        return articles
+            return self.articles_db_manager.registered_articles
+        return {}
 
 
 class RegisteredArticles(dict):

@@ -21,7 +21,7 @@ class XMLAppGUI(tk.Frame):
     def __init__(self, tk_root, default_xml_path, is_converter_enabled, function):
         tk.Frame.__init__(self, tk_root)
         self.tk_root = tk_root
-        self.tk_root.iconbitmap('../../../cfg/Scielo.ico')
+        self.tk_root.iconbitmap(BIN_PATH+'/cfg/Scielo.ico')
         if default_xml_path is None:
             self.default_xml_path = XML_FOLDER_DEFAULT
         else:
@@ -36,45 +36,63 @@ class XMLAppGUI(tk.Frame):
         self.tk_root.protocol('WM_DELETE_WINDOW', self.click_close)
         self.tk_root.bind('<Escape>', self.click_close)
 
-        folder_frame = tk.Frame(self)
-        folder_frame.pack(padx=20, pady=15)
+        """
+        self.tkFrame.folder_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.folder_labelframe.pack(fill="both", expand="yes")
+        self.tkFrame.label_folder = Tkinter.Label(self.tkFrame.folder_labelframe, text=_('SPS XML Package Folder:'), font="Verdana 12 bold")
+        self.tkFrame.label_folder.pack(side='left')
+        self.tkFrame.input_folder = Tkinter.Label(self.tkFrame.folder_labelframe, width=50, bd=1, bg='gray')
+        self.tkFrame.input_folder.pack(side='left')
+        self.tkFrame.button_choose = Tkinter.Button(self.tkFrame.folder_labelframe, text=_('choose folder'), command=self.open_file_explorer)
+        self.tkFrame.button_choose.pack()
+
+
+        """
+
+        teste_label_frame = tk.Frame(self, bd=0, padx=10, pady=10)
+        teste_label_frame.pack(fill="both", expand="yes")
+        teste_label = tk.Label(teste_label_frame, text=_('SPS XML Package Folder:'))
+        teste_label.pack(side='left')
+
+        folder_label_frame = tk.Frame(self)
+        folder_label_frame.pack(padx=10, pady=5)
 
         message_frame = tk.Frame(self)
-        message_frame.pack(padx=20, pady=15)
+        message_frame.pack(padx=10, pady=5)
 
         pmc_frame = tk.Frame(self)
-        pmc_frame.pack(padx=20, pady=15)
+        pmc_frame.pack(padx=10, pady=5)
 
         buttons_frame = tk.Frame(self)
-        buttons_frame.pack(padx=20, pady=15)
+        buttons_frame.pack(padx=10, pady=5)
 
-        folder_label = tk.Label(folder_frame, text=_('SPS XML Package Folder:'))
+        folder_label = tk.Label(folder_label_frame, text=_('SPS XML Package Folder:'))
         folder_label.pack(side='left')
 
         self.selected_folder = tk.StringVar(value='')
-        self.input_folder = tk.Label(folder_frame, textvariable=self.selected_folder, anchor='e')
+        self.input_folder = tk.Label(folder_label_frame, textvariable=self.selected_folder, anchor='e', width=50, bd=1, bg='gray')
         self.input_folder.pack(side='left')
 
-        choose_button = tk.Button(folder_frame, text=_('choose folder'), command=self.open_file_explorer)
-        choose_button.pack()
+        choose_button = tk.Button(folder_label_frame, text=_('choose folder'), command=self.open_file_explorer)
+        choose_button.pack(side='left')
 
         if not self.is_converter_enabled:
             self.pmc_var = tk.IntVar()
             self.pmc_checkbutton = tk.Checkbutton(pmc_frame, text=_('generate PMC Package'), variable=self.pmc_var)
             self.pmc_checkbutton.pack()
 
-        self.message = tk.Message(message_frame, font='System 14 bold')
-        self.message.pack()
+        self.message = tk.Label(message_frame, font='System 14 bold', width=50, bd=1, bg='gray')
+        self.message.pack(side='left')
 
         close_button = tk.Button(buttons_frame, text=_('close'), command=self.click_close)
         close_button.pack(side='right')
 
         if self.is_converter_enabled:
-            xc_button = tk.Button(buttons_frame, default='active', text='XML Converter', command=self.run_xml_converter)
-            xc_button.pack(side='right')
+            self.xc_button = tk.Button(buttons_frame, default='active', text='XML Converter', command=self.run_xml_converter)
+            self.xc_button.pack(side='right')
         else:
-            xpm_button = tk.Button(buttons_frame, default='active', text='XML Package Maker', command=self.run_xml_package_maker)
-            xpm_button.pack(side='right')
+            self.xpm_button = tk.Button(buttons_frame, default='active', text='XML Package Maker', command=self.run_xml_package_maker)
+            self.xpm_button.pack(side='right')
 
         self.selected_folder = None
 
@@ -94,36 +112,30 @@ class XMLAppGUI(tk.Frame):
             self.message.update_idletasks()
 
     def is_valid_folder(self):
-        if self.selected_folder is None:
-            return False
-        if os.path.isdir(self.selected_folder) is True:
-            items = [item for item in os.listdir(self.selected_folder) if item.endswith('.xml')]
-            return len(items) > 0
+        if self.selected_folder is not None:
+            if os.path.isdir(self.selected_folder) is True:
+                items = [item for item in os.listdir(self.selected_folder) if item.endswith('.xml')]
+                return len(items) > 0
         return False
 
     def validate_folder(self):
         msg = self.selected_folder
-        color = 'green'
+        color = 'white'
         if not self.is_valid_folder():
             msg = _('Invalid folder. ') + _('No .xml files was found')
-            color = 'red'
+            color = 'yellow'
         return msg, color
 
     def run_xml_package_maker(self):
-        msg, color = self.validate_folder()
-        self.display_message(msg, color)
         if self.is_valid_folder():
+
             self.generate_pmc_package = self.pmc_var.get() == 1
-            self.xml_path = self.selected_folder
-            msg, color = self.function(self.xml_path, self.generate_pmc_package)
+            msg, color = self.function(self.selected_folder, self.generate_pmc_package)
             self.display_message(msg, color)
 
     def run_xml_converter(self):
-        msg, color = self.validate_folder()
-        self.display_message(msg, color)
         if self.is_valid_folder():
-            self.xml_path = self.selected_folder
-            msg, color = self.function(self.xml_path)
+            msg, color = self.function(self.selected_folder)
             self.display_message(msg, color)
 
 

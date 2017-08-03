@@ -116,7 +116,7 @@ class MergedArticlesData(object):
         return data
 
 
-class ArticlesMerge(object):
+class ArticlesMergence(object):
 
     def __init__(self, registered_articles, articles):
         self.registered_articles = registered.RegisteredArticles(registered_articles)

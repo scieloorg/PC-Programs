@@ -5,7 +5,9 @@ import shutil
 
 from ...__init__ import _
 from ...__init__ import BIN_PATH
+from ...__init__ import FST_PATH
 
+from ...generics.dbm import dbm_isis
 from ...generics import utils
 from ...generics import fs_utils
 from ...generics import doi_validations
@@ -20,6 +22,7 @@ from ..validations import article_validations as article_validations_module
 from ..validations import validations as validations_module
 from ..validations import reports_maker
 from ..validations import merged_articles_validations
+from ..data import package
 from ..data import merged
 from ..data import workarea
 from ..db import registered
@@ -62,28 +65,25 @@ def xpm_version():
 
 
 def normalize_xml_packages(xml_list, dtd_location_type, stage):
-    print('normalize_xml_packages', xml_list)
-    pkgfiles_items = [workarea.PkgArticleFiles(item) for item in xml_list]
+    article_files_items = [workarea.PkgArticleFiles(item) for item in xml_list]
 
-    path = pkgfiles_items[0].path + '_' + stage
+    path = article_files_items[0].path + '_' + stage
 
     if not os.path.isdir(path):
         os.makedirs(path)
 
-    print('normalize_xml_packages', path)
     wk = workarea.Workarea(path)
 
-    print('normalize_xml_packages', wk.scielo_package_path)
     dest_path = wk.scielo_package_path
-    dest_pkgfiles_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in pkgfiles_items]
-
-    for src, dest in zip(pkgfiles_items, dest_pkgfiles_items):
+    dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
+    for src, dest in zip(article_files_items, dest_article_files_items):
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
         xmlcontent.doctype(dtd_location_type)
         fs_utils.write_file(dest.filename, xmlcontent.content)
         src.copy(dest_path)
-    return dest_pkgfiles_items
+
+    return dest_article_files_items
 
 
 class ArticlesConversion(object):
@@ -93,18 +93,23 @@ class ArticlesConversion(object):
         self.registered_issue_data = registered_issue_data
         self.db = self.registered_issue_data.articles_db_manager
         self.local_web_app_path = web_app_path
+        self.web_app_site = web_app_site
         self.pkg = pkg
         self.validations_reports = validations_reports
-        self.articles_merge = validations_reports.merged_articles_reports.articles_merge
+        self.articles_mergence = validations_reports.merged_articles_reports.articles_mergence
+        self.error_messages = []
+        self.conversion_status = {}
 
     def convert(self):
-        self.articles_conversion_validations = {}
+        self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.pkgissuedata.acron_issue_label]
+        print('\n')
+        print(self.validations_reports.blocking_errors)
+        print('======')
         if self.validations_reports.blocking_errors == 0 and self.total_to_convert > 0:
-            self.conversion_status = {}
-            self.error_messages = self.db.exclude_articles(self.articles_merge.excluded_orders)
+            self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
 
-            _scilista_items = self.db.convert_articles(self.pkg.pkgissuedata.acron_issue_label, self.articles_merge.articles_to_convert, self.registered_issue_data.issue_models.record, self.create_windows_base)
+            _scilista_items = self.db.convert_articles(self.pkg.pkgissuedata.acron_issue_label, self.articles_mergence.articles_to_convert, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
@@ -117,8 +122,13 @@ class ArticlesConversion(object):
                 self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
                 self.replace_ex_aop_pdf_files()
 
-            self.aop_status.update(self.db.db_aop_status)
         return scilista_items
+
+    @property
+    def aop_status(self):
+        if self.db is not None:
+            return self.db.db_aop_status
+        return {}
 
     def replace_ex_aop_pdf_files(self):
         # FIXME
@@ -144,19 +154,19 @@ class ArticlesConversion(object):
         labels = [_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('achieved results')]
         widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('executed actions'): '20',  _('achieved results'): '20'}
 
-        #print(self.articles_merge.history_items)
+        #print(self.articles_mergence.history_items)
         for status, status_items in self.aop_status.items():
             for status_data in status_items:
                 if status != 'aop':
                     name = status_data
-                    article = self.articles_merge.articles_to_convert[name]
-                    self.articles_merge.history_items[name].append((status, article))
+                    article = self.articles_mergence.articles_to_convert[name]
+                    self.articles_mergence.history_items[name].append((status, article))
         for status, names in self.conversion_status.items():
             for name in names:
-                self.articles_merge.history_items[name].append((status, self.articles_merge.articles_to_convert[name]))
+                self.articles_mergence.history_items[name].append((status, self.articles_mergence.articles_to_convert[name]))
 
-        history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.articles_merge.history_items.items()])
-        history = [(xml_name, self.articles_merge.history_items[xml_name]) for order, xml_name in history]
+        history = sorted([(hist[0][1].order, xml_name) for xml_name, hist in self.articles_mergence.history_items.items()])
+        history = [(xml_name, self.articles_mergence.history_items[xml_name]) for order, xml_name in history]
 
         items = []
         for xml_name, hist in history:
@@ -188,7 +198,7 @@ class ArticlesConversion(object):
 
     @property
     def total_to_convert(self):
-        return self.articles_merge.total_to_convert
+        return self.articles_mergence.total_to_convert
 
     @property
     def total_converted(self):
@@ -200,7 +210,7 @@ class ArticlesConversion(object):
 
     @property
     def xc_status(self):
-        if self.articles_validations_reports.blocking_errors > 0:
+        if self.validations_reports.blocking_errors > 0:
             result = 'rejected'
         elif self.total_to_convert == 0:
             result = 'ignored'
@@ -248,7 +258,7 @@ class ArticlesConversion(object):
                     issueid, name, article = item
                 else:
                     name = item
-                    article = self.articles_merger.merged_articles.get(name)
+                    article = self.articles_mergence.merged_articles.get(name)
                 if article is not None:
                     if not article.is_ex_aop:
                         values = []
@@ -307,17 +317,33 @@ class PkgProcessor(object):
         self.stage = stage
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
-        self.db_manager = None
-        self.web_app_path = None
-        self.web_url = None
-        self.serial_path = None
+        self._db_manager = None
         self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
         self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
         self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
+        self.ws_journals.update_journals_file()
         self.journals_list = xc_models.JournalsList(self.ws_journals.downloaded_journals_filename)
         self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
         self.current_dtd_files = self.scielo_dtd_files if self.is_xml_generation else None
+        self.registered_issues_manager = xc_models.RegisteredIssuesManager(self.db_manager, self.journals_list)
+
+    @property
+    def db_manager(self):
+        if self._db_manager is None:
+            cisis1030 = dbm_isis.CISIS(self.config.cisis1030)
+            cisis1660 = dbm_isis.CISIS(self.config.cisis1660)
+            ucisis = dbm_isis.UCISIS(cisis1030, cisis1660)
+            db_isis = dbm_isis.IsisDAO(ucisis)
+            titles = [self.config.title_db, self.config.title_db_copy, FST_PATH + '/title.fst']
+            issues = [self.config.issue_db, self.config.issue_db_copy, FST_PATH + '/issue.fst']
+            print(titles)
+            self._db_manager = xc_models.DBManager(
+                db_isis,
+                titles,
+                issues,
+                self.config.serial_path)
+        return self._db_manager
 
     def normalized_package(self, xml_list):
         dtd_location_type = 'remote'
@@ -325,28 +351,28 @@ class PkgProcessor(object):
             dtd_location_type = 'local'
         pkgfiles = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
         workarea_path = os.path.dirname(pkgfiles[0].path)
-        pkg = package.Package([f.filename for f in pkgfiles], workarea_path)
+        return package.Package(xml_list, workarea_path)
 
     def make_package(self, pkg, GENERATE_PMC=False):
-        registered_issue_data = registered.RegisteredIssueData(self.db_manager, self.journals_list)
-        registered_issue_data.get_data(pkg.pkgissuedata)
+        registered_issue_data = registered.RegisteredIssue()
+        self.registered_issues_manager.get_registered_issue_data(pkg.pkgissuedata, registered_issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
-        articles_merge = self.validate_merged_articles(pkg, registered_issue_data)
+        articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
-        merge_reports = merged_articles_validations.MergedArticlesReports(articles_merge, registered_issue_data)
-        validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, merge_reports, self.is_xml_generation)
+        mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
+        validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, mergence_reports, self.is_xml_generation)
         self.report_result(pkg, validations_reports, conversion=None)
         self.make_pmc_package(pkg, GENERATE_PMC)
         self.zip(pkg)
 
     def convert_package(self, pkg):
-        registered_issue_data = registered.RegisteredIssueData(self.db_manager, self.journals_list)
-        registered_issue_data.get_data(pkg.pkgissuedata)
+        registered_issue_data = registered.RegisteredIssue()
+        self.registered_issues_manager.get_registered_issue_data(pkg.pkgissuedata, registered_issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
-        articles_merge = self.validate_merged_articles(pkg, registered_issue_data)
+        articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
-        merge_reports = merged_articles_validations.MergedArticlesReports(articles_merge, registered_issue_data)
-        validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, merge_reports, self.is_xml_generation)
+        mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
+        validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, mergence_reports, self.is_xml_generation)
         conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
         scilista_items = conversion.convert()
         reports = self.report_result(pkg, validations_reports, conversion)
@@ -372,13 +398,11 @@ class PkgProcessor(object):
     def validate_merged_articles(self, pkg, registered_issue_data):
         if len(registered_issue_data.registered_articles) > 0:
             utils.display_message(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
-        return merged.ArticlesMerge(
+        return merged.ArticlesMergence(
             registered_issue_data.registered_articles,
             pkg.articles)
 
     def report_result(self, pkg, validations_reports, conversion=None):
-        serial_path = None if conversion is None else conversion.registered_issue_data.articles_db_manager.serial_path
-
         files_final_location = workarea.FilesFinalLocation(pkg.wk.scielo_package_path, pkg.pkgissuedata.acron, pkg.pkgissuedata.issue_label, self.config.local_web_app_path, self.config.web_app_site)
 
         reports = reports_maker.ReportsMaker(pkg, validations_reports, files_final_location, self.stage, xpm_version(), conversion)

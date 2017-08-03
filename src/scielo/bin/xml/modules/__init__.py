@@ -15,5 +15,6 @@ LOCALE_PATH = BIN_XML_PATH + '/locale'
 TMP_DIR = BIN_PATH + '/tmp'
 PMC_PATH = BIN_PATH + '/pmc'
 HTML_REPORTS_PATH = BIN_XML_PATH + '/modules/generics/reports/'
+FST_PATH = BIN_PATH + '/xml/modules'
 
 _ = app_texts.get_texts(LOCALE_PATH)

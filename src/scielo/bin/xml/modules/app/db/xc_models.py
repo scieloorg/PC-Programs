@@ -705,7 +705,7 @@ class IssueArticlesRecords(object):
                 articles_records[xml_name] = []
                 articles_records[xml_name].append(record)
             elif record.get('706') == 'h':
-                if not 'o' in record_types:
+                if 'o' not in record_types:
                     xml_name = record.get('2')
                     if xml_name.endswith('.xml'):
                         xml_name = xml_name[0:-4]
@@ -726,7 +726,7 @@ class ArticlesManager(object):
         self.issue_files = issue_files
         self.base_manager = BaseManager(db_isis, issue_files)
         self.ex_aop_manager = None
-        self.aop_db_manager = AopManager(db_isis, self.issue_files.journal_files)
+        self.aop_db_manager = AopManager(db_isis, issue_files.journal_files)
         self.articles_conversion_status = {}
         self.articles_aop_status = {}
         self.articles_aop_exclusion_status = {}
@@ -735,6 +735,10 @@ class ArticlesManager(object):
 
         if self.issue_files.is_aop:
             self.ex_aop_manager = BaseManager(db_isis, serial.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
+
+    @property
+    def serial_path(self):
+        return self.issue_files.journal_files.serial_path
 
     @property
     def registered_articles(self):
@@ -1311,7 +1315,7 @@ class DBManager(object):
         if acron is not None:
             _expr.append(acron)
         _expr = [item for item in _expr if item != '' and not None]
-        
+
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
     def update_and_search(self, db, expr, source_db, fst_filename):
@@ -1337,18 +1341,18 @@ class DBManager(object):
         j = None
         j_data = None
         if issue_label is None:
-            msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify the article\'s issue'), False)
+            msg = _('Unable to identify the article\'s issue')
         else:
             i_record = self.find_i_record(issue_label, p_issn, e_issn)
             if i_record is None:
                 acron_issue_label = 'not_registered issue'
-                msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.', False)
+                msg = _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.'
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
                 j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                 if j_record is None:
-                    msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get journal data') + ' ' + journal_title, False)
+                    msg = _('Unable to get journal data') + ' ' + journal_title
                 else:
                     t = RegisteredTitle(j_record)
                     j = Journal()
@@ -1362,7 +1366,6 @@ class DBManager(object):
                     j.collection_acron = None
                     j.journal_title = journal_title
                     j.issn_id = t.issn_id
-        
                     j_data = Journal()
                     j_data.acron = [t.acron]
                     j_data.p_issn = [t.print_issn]
@@ -1378,8 +1381,9 @@ class DBManager(object):
                     j_data.issn_id = [t.issn_id]
                     if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
                         issue_models.complete_issue_info(t)
+        if msg is not None:
+            msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + msg, False)
         return (acron_issue_label, issue_models, msg, j, j_data)
-
 
     def get_issue_files(self, issue_models):
         if issue_models is not None:
@@ -1469,3 +1473,23 @@ def update_list(l, value):
         if len(value) > 0:
             l.append(value)
     l = list(set(l))
+
+
+class RegisteredIssuesManager(object):
+
+    def __init__(self, db_manager, journals_list):
+        self.db_manager = db_manager
+        self.journals_list = journals_list
+
+    def get_registered_issue_data(self, pkgissuedata, registered_issue):
+        if self.db_manager is None:
+            journals_list = self.journals_list
+            pkgissuedata.journal = self.journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
+            pkgissuedata.journal_data = self.journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
+        else:
+            registered_issue.acron_issue_label, registered_issue.issue_models, registered_issue.issue_error_msg, pkgissuedata.journal, pkgissuedata.journal_data = self.db_manager.get_registered_data(pkgissuedata.pkg_journal_title, pkgissuedata.pkg_issue_label, pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn)
+            ign, pkgissuedata._issue_label = registered_issue.acron_issue_label.split(' ')
+            if registered_issue.issue_error_msg is None:
+                registered_issue.issue_files = self.db_manager.get_issue_files(registered_issue.issue_models)
+                registered_issue.articles_db_manager = ArticlesManager(self.db_manager.db_isis, registered_issue.issue_files)
+        return pkgissuedata

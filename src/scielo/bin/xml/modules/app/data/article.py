@@ -273,6 +273,14 @@ class ContribXML(object):
         return self.xml_node.nodes_text(['.//surname'])
 
     @property
+    def etals(self):
+        return self.xml_node.nodes_text(['.//etal'])
+
+    @property
+    def anonymous(self):
+        return self.xml_node.nodes_text(['.//anonymous'])
+
+    @property
     def suffixes(self):
         return self.xml_node.nodes_text(['.//suffix'])
 
@@ -293,6 +301,11 @@ class ContribXML(object):
         if self.node.tag == 'collab':
             return [xml_utils.node_text(self.node)]
         return self.xml_node.nodes_text(['.//collab'])
+
+    @property
+    def anonymous_author(self):
+        if len(self.anonymous) > 0:
+            return AnonymousAuthor('anonymous')
 
     @property
     def person_author(self):
@@ -325,10 +338,20 @@ class ContribXML(object):
 
     def contrib(self, role=None):
         if self._contrib is None:
-            self._contrib = self.person_author if self.person_author else self.corp_author
+            self._contrib = self.person_author
+            if self._contrib is None:
+                self._contrib = self.corp_author
+            if self._contrib is None:
+                self._contrib = self.anonymous_author
             if self._contrib is not None and role is not None:
                 self._contrib.role = role
         return self._contrib
+
+
+class AnonymousAuthor(object):
+
+    def __init__(self, fullname):
+        self.fullname = fullname
 
 
 class PersonAuthor(object):
@@ -2002,7 +2025,11 @@ class ReferenceXML(object):
         if self.elem_citation_nodes is not None:
             for person_group in self.nodes(['.//person-group']):
                 role = person_group.attrib.get('person-group-type', 'author')
-                authors = [ContribXML(contrib) for contrib in person_group.findall('*') if contrib is not None]
+                authors = []
+                for contrib in person_group.findall('*'):
+                    contrib_xml = ContribXML(contrib)
+                    if contrib_xml.contrib() is not None:
+                        authors.append(contrib_xml)
                 groups.append((role, authors))
         return groups
 
