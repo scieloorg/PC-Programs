@@ -645,24 +645,16 @@ def display_article_data_to_compare(_article):
     status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article. ') if _article.is_ex_aop else ''
     r += html_reports.p_message(status)
     r += display_article_metadata(_article, '<br/>')
+    if _article.creation_date_display is not None:
+        r.append('<hr/>' + html_reports.display_label_value(_('creation date'), _article.creation_date_display, 'p'))
+        r.append(html_reports.display_label_value(_('last update date'), _article.last_update_display, 'p'))
     return html_reports.tag('div', r, style)
 
 
-def article_history(articles):
+def article_history(history):
     r = []
-    for status, article in articles:
-        text = []
-        text.append(html_reports.tag('h4', _(status)))
-        text.append(html_reports.display_label_value(_('name'), article.xml_name, 'p'))
-        text.append(html_reports.display_label_value('order', article.order, 'p'))
-        if article.is_ex_aop:
-            text.append(html_reports.display_label_value(_('status'), 'ex-aop', 'p'))
-        if status in [_('registered article'), 'registered article']:
-            r.append(display_article_data_in_toc(article))
-            if article.creation_date_display is not None:
-                text.append('<hr/>' + html_reports.display_label_value(_('creation date'), article.creation_date_display, 'p'))
-                text.append(html_reports.display_label_value(_('last update date'), article.last_update_display, 'p'))
-        r.append(html_reports.tag('div', ''.join(text), 'hist-' + status))
+    for status in history:
+        r.append(html_reports.tag('div', html_reports.tag('h4', _(status)), 'hist-' + status))
     return '<hr/>'.join(r)
 
 

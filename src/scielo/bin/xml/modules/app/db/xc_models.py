@@ -11,7 +11,8 @@ from ...generics import fs_utils
 from ...generics import encoding
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
-from ..data.article import Issue, PersonAuthor, Article, Journal
+from ..data.article import Issue, Article, Journal
+from ..data.article import PersonAuthor, CorpAuthor, AnonymousAuthor
 from ..data import attributes
 from ..db import serial
 from ..validations import article_data_reports
@@ -283,6 +284,8 @@ class ArticleRecords(object):
         self._metadata['14']['e'] = self.article.elocation_id
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
+        print('xc', self.article.affiliations)
+        print('xc', self.article.normalized_affiliations)
         self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
@@ -299,7 +302,7 @@ class ArticleRecords(object):
 
     @property
     def references(self):
-
+        print('references', self.article)
         records_c = []
         for ref_xml in self.article.references_xml:
             item = ref_xml.reference
@@ -322,12 +325,13 @@ class ArticleRecords(object):
             rec_c['17'] = []
 
             grp_idx = 0
-            for grptype, grp in item.authors_by_group:
-                is_analytic = (len(item.authors_by_group) > 1) and (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
+            for grptype, grp in item.person_group_xml_items:
+                is_analytic = (len(item.person_group_xml_items) > 1) and (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
                 grp_idx += 1
 
                 for author in grp:
                     field = author_tag(isinstance(author, PersonAuthor), is_analytic)
+                    a = None
                     if isinstance(author, PersonAuthor):
                         a = {}
                         a['n'] = author.fname
@@ -339,10 +343,14 @@ class ArticleRecords(object):
                                 a['s'] += ' ' + author.suffix
                         #a['z'] = author.suffix
                         a['r'] = attributes.normalize_role(author.role)
-                    else:
+                    elif isinstance(author, CorpAuthor):
                         # collab
                         a = author.collab
-                    rec_c[field].append(a)
+                    elif isinstance(author, AnonymousAuthor):
+                        # collab
+                        a = author.fullname
+                    if a is not None:
+                        rec_c[field].append(a)
             rec_c['31'] = item.volume
             rec_c['32'] = {}
             rec_c['32']['_'] = item.issue
@@ -402,7 +410,7 @@ class ArticleRecords(object):
     def records(self):
         r = []
         self.fix_issue_data()
-        rec = self.outline(str(4 + len(self.references_xml)))
+        rec = self.outline(str(4 + len(self.references)))
         rec.update(self.common_data)
         rec.update(self.record_info('1', 'o', '1', '1'))
         r.append(rec)
@@ -425,11 +433,10 @@ class ArticleRecords(object):
         rec.update(self.record_info('4', 'l', '1', '1'))
         r.append(rec)
 
-        c_total = str(len(self.references_xml))
+        c_total = str(len(self.references))
         c_index = 0
         k = 4
-        for ref_xml in self.references_xml:
-            item = ref_xml.reference
+        for item in self.references:
             c_index += 1
             k += 1
             rec = item
@@ -1245,7 +1252,8 @@ def format_affiliations(affiliations):
         a['l'] = item.label
         a['i'] = item.id
         if item.institution_id is not None:
-            a['k'], a['j'] = item.institution_id
+            for instid in item.institution_id:
+                a['k'], a['j'] = instid
         a['e'] = item.email
         a['3'] = item.orgdiv3
         a['2'] = item.orgdiv2
@@ -1261,14 +1269,15 @@ def format_affiliations(affiliations):
 def format_normalized_affiliations(affiliations):
     affs = []
     for aff in affiliations.values():
-        if aff.id is not None and aff.i_country is not None and aff.norgname is not None:
-            a = {}
-            a['i'] = aff.id
-            a['p'] = aff.i_country
-            a['_'] = aff.norgname
-            a['c'] = aff.city
-            a['s'] = aff.state
-            affs.append(a)
+        if aff is not None:
+            if aff.id is not None and aff.i_country is not None and aff.norgname is not None:
+                a = {}
+                a['i'] = aff.id
+                a['p'] = aff.i_country
+                a['_'] = aff.norgname
+                a['c'] = aff.city
+                a['s'] = aff.state
+                affs.append(a)
     return affs
 
 

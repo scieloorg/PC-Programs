@@ -52,6 +52,7 @@ class Configuration(object):
                     self._data[key] = value
         self.interative_mode = self._data.get('Serial Directory') is not None
         self.is_windows = self.interative_mode
+        print('InTERATIVE', self.interative_mode)
         print(self._data)
 
     @property

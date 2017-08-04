@@ -143,7 +143,7 @@ class ReportsMaker(object):
         if not os.path.isdir(self.report_path):
             os.makedirs(self.report_path)
         html_reports.save(self.report_location, self.report_title, self.content)
-        if self.stage == 'xpm' and display is True:
+        if display is True:
             print(self.report_location)
             html_reports.display_report(self.report_location)
         msg = _('Saved report: {f}').format(f=self.report_location)

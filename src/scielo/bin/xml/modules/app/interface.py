@@ -49,11 +49,6 @@ class XMLAppGUI(tk.Frame):
 
         """
 
-        teste_label_frame = tk.Frame(self, bd=0, padx=10, pady=10)
-        teste_label_frame.pack(fill="both", expand="yes")
-        teste_label = tk.Label(teste_label_frame, text=_('SPS XML Package Folder:'))
-        teste_label.pack(side='left')
-
         folder_label_frame = tk.Frame(self)
         folder_label_frame.pack(padx=10, pady=5)
 

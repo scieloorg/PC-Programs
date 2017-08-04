@@ -120,7 +120,7 @@ class AffiliationXML(object):
             self._aff.label = first_item(self.label)
             self._aff.email = first_item(self.email)
             self._aff.original = first_item(self.original)
-            return self._aff
+        return self._aff
 
 
 class Affiliation(object):
@@ -1123,6 +1123,7 @@ class ArticleXML(object):
 
     @property
     def article_affiliations(self):
+        print(self.article_meta.findall('.//aff'))
         affs = []
         if self.article_meta is not None:
             for aff in self.article_meta.findall('.//aff'):
@@ -1570,11 +1571,12 @@ class Article(ArticleXML):
         self.last_update_display = None
         self.registered_aop_pid = None
         self._previous_pid = None
-        self.normalized_affiliations = None
         self.article_records = None
         self.related_files = []
         self.is_ex_aop = False
         self.section_code = None
+        self.normalized_affiliations = {}
+        self.institutions_query_results = {}
 
     @property
     def clinical_trial_url(self):
