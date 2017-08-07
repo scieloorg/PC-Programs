@@ -85,7 +85,7 @@ class PackageReports(object):
 
         files = ''
         for name, pkgfiles in self.package_folder.pkgfiles_items.items():
-            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', pkgfiles.allfiles))
+            files += '<li>{}</li>'.format(html_reports.format_list(name, 'ol', pkgfiles.all))
         r += '<ol>{}</ol>'.format(files)
         return u'<div class="xmllist">{}</div>'.format(r)
 

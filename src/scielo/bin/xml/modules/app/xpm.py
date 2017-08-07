@@ -21,13 +21,13 @@ def call_make_packages(args, version):
     normalized_pkgfiles = None
     stage = 'xpm'
     if any([xml_path, acron]):
-        stage, normalized_pkgfiles = get_normalized_pkgfiles(version, script, xml_path, acron)
+        stage, normalized_pkgfiles, outputs = get_normalized_pkgfiles(version, script, xml_path, acron)
 
     reception = XPM_Reception(version, stage, DISPLAY_REPORT)
     if normalized_pkgfiles is None:
         reception.display_form()
     else:
-        reception.make_package(normalized_pkgfiles, GENERATE_PMC)
+        reception.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
 
 
 def get_normalized_pkgfiles(version, script, xml_path, acron):
@@ -48,11 +48,13 @@ def get_normalized_pkgfiles(version, script, xml_path, acron):
     else:
         normalized_pkgfiles = []
         if sgm_xml is not None:
-            normalized_pkgfiles = [sgmlxml2xml(sgm_xml, acron, xml_versions.xsl_sgml2xml(version))]
+            xml_generation = sgmlxml2xml(sgm_xml, acron, xml_versions.xsl_sgml2xml(version))
+            outputs = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
+            normalized_pkgfiles = [xml_generation.xml_pkgfiles]
             stage = 'xml'
         else:
-            normalized_pkgfiles = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
-    return stage, normalized_pkgfiles
+            normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
+    return stage, normalized_pkgfiles, outputs
 
 
 def read_inputs(args):
@@ -77,6 +79,7 @@ def read_inputs(args):
         script, path, acron = items
     elif len(items) == 2:
         script, path = items
+    path = path.replace('\\', '/')
     return (script, path, acron, DISPLAY_REPORT, GENERATE_PMC)
 
 
@@ -105,11 +108,10 @@ def evaluate_xml_path(xml_path):
 
 def sgmlxml2xml(sgm_xml_filename, acron, xsl):
     _sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xsl)
-    pkgfiles = workarea.PackageFiles(sgm_xml_filename)
-    wk = sgmlxml.SGMLXMLWorkarea(pkgfiles.name, pkgfiles.path)
-    package_maker = sgmlxml.SGMLXML2SPSXMLPackageMaker(wk, pkgfiles)
-    package_maker.pack(acron, _sgmlxml2xml)
-    return package_maker.xml_pkgfiles
+    sgmxml_pkgfiles = workarea.PkgArticleFiles(sgm_xml_filename)
+    pkg_generation = sgmlxml.SGMLXML2SPSXML(sgmxml_pkgfiles)
+    pkg_generation.pack(acron, _sgmlxml2xml)
+    return pkg_generation
 
 
 class XPM_Reception(object):
@@ -123,14 +125,12 @@ class XPM_Reception(object):
 
     def call_make_package(self, xml_path, GENERATE_PMC=False):
         xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
-        normalized_pkgfiles = pkg_processors.normalize_xml_packages(xml_list, (self.proc.scielo_dtd_files.local, self.proc.scielo_dtd_files.remote), self.proc.stage)
-        self.make_package(normalized_pkgfiles, GENERATE_PMC)
+        normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, (self.proc.scielo_dtd_files.local, self.proc.scielo_dtd_files.remote), self.proc.stage)
+        self.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
         return 'done', 'blue'
 
-    def make_package(self, normalized_pkgfiles, GENERATE_PMC=False):
+    def make_package(self, normalized_pkgfiles, outputs, GENERATE_PMC=False):
         if len(normalized_pkgfiles) > 0:
-            files = [f.filename for f in normalized_pkgfiles]
             workarea_path = os.path.dirname(normalized_pkgfiles[0].path)
-            print('make_package', workarea_path)
-            pkg = package.Package(files, workarea_path)
+            pkg = package.Package(normalized_pkgfiles, outputs, workarea_path)
             self.proc.make_package(pkg, GENERATE_PMC)

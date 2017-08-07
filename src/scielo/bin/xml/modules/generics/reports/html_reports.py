@@ -253,7 +253,7 @@ def html(title, body):
         if os.path.isfile(MathJax_PATH+'/MathJax.js'):
             s += '<script type="text/javascript" src="{mathjax_path}/MathJax.js?config=MML_HTMLorMM-full"></script>'.format(mathjax_path=MathJax_PATH)
         else:
-            s += '<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>'
+            s += '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"></script>'
     s += '</head>'
     s += '<body>'
     s += report_date()

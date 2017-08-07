@@ -14,7 +14,7 @@ SUFFIXES.extend(['-', '.'])
 
 class Workarea(object):
 
-    def __init__(self, output_path, ctrl_path=None):
+    def __init__(self, output_path):
         self.output_path = output_path
 
         for p in [self.output_path, self.reports_path, self.scielo_package_path, self.pmc_package_path]:
@@ -44,8 +44,7 @@ class PkgArticleFiles(object):
         if self.filename.endswith('.sgm.xml'):
             self.name, ign = os.path.splitext(self.name)
         self.previous_name = self.name
-        self.ctrl_path = None
-        self._allfiles = None
+        self._all = None
         self.listdir = sorted(os.listdir(self.path))
         self._prefixes = None
 
@@ -68,7 +67,7 @@ class PkgArticleFiles(object):
             self._prefixes = list(set(r))
         return self._prefixes
 
-    def all_files(self):
+    def find_all_files(self):
         r = []
         for prefix in self.prefixes:
             r.extend([item for item in self.listdir if item.startswith(prefix) and not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')])
@@ -84,14 +83,14 @@ class PkgArticleFiles(object):
         return False
 
     @property
-    def allfiles(self):
-        if self._allfiles is None or self.is_changed is True:
-            self._allfiles = self.all_files()
-        return self._allfiles
+    def all(self):
+        if self._all is None or self.is_changed is True:
+            self._all = self.find_all_files()
+        return self._all
 
     @property
     def files_except_xml(self):
-        return [f for f in self.allfiles if f != self.basename and not f.endswith('.ctrl.txt')]
+        return [f for f in self.all if f != self.basename and not f.endswith('.ctrl.txt')]
 
     @property
     def files_by_name_except_xml(self):
@@ -142,7 +141,7 @@ class PkgArticleFiles(object):
                 if not source_fname in self.files_except_xml:
                     source_fname = item + '.tiff'
                 img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
-                if item + '.jpg' not in self.allfiles:
+                if item + '.jpg' not in self.all:
                     print('!'*30)
                     print('workarea.files problem')
 
@@ -150,7 +149,7 @@ class PkgArticleFiles(object):
         if dest_path is None:
             dest_path = os.path.dirname(self.path)
         filename = dest_path + '/' + self.name + '.zip'
-        fs_utils.zip(filename, [self.path + '/' + f for f in self.allfiles])
+        fs_utils.zip(filename, [self.path + '/' + f for f in self.all])
         return filename
 
     def copy(self, dest_path):
@@ -163,27 +162,27 @@ class PkgArticleFiles(object):
 
 class PackageFolder(object):
 
-    def __init__(self, path, xml_list=None):
+    def __init__(self, path, pkgfiles_items=None):
         self.path = path
-        self.xml_names = [f[:f.rfind('.')] for f in os.listdir(self.path) if f.endswith('.xml') and not f.endswith('.sgm.xml')]
-        self.xml_list = xml_list
-        if xml_list is None:
-            self.xml_list = [self.path + '/' + f for f in os.listdir(self.path) if f.endswith('.xml') and not f.endswith('.sgm.xml')]
-        self.INFORM_ORPHANS = xml_list is not None and len(xml_list) > 1
+        if pkgfiles_items is None:
+            self.pkgfiles_items = {}
+            for item in os.listdir(path):
+                if item.endswith('.xml'):
+                    article_files = PkgArticleFiles(path+'/'+item)
+                    self.pkgfiles_items[article_files.name] = article_files
+        else:
+            self.pkgfiles_items = {item.name: item for item in pkgfiles_items}
+        self.INFORM_ORPHANS = len(self.pkgfiles_items) > 1
 
     @property
-    def pkgfiles_items(self):
-        items = {}
-        for item in self.xml_list:
-            pkgfiles = PkgArticleFiles(item)
-            items[pkgfiles.name] = pkgfiles
-        return items
+    def xml_list(self):
+        return [item.filename for item in self.pkgfiles_items.values()]
 
     @property
     def package_filenames(self):
         items = []
         for pkg in self.pkgfiles_items.values():
-            items.extend(pkg.allfiles)
+            items.extend(pkg.all)
         return items
 
     @property

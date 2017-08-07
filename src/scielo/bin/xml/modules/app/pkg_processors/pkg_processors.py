@@ -74,7 +74,7 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
         os.makedirs(path)
 
     wk = workarea.Workarea(path)
-
+    outputs = {}
     dest_path = wk.scielo_package_path
     dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
     for src, dest in zip(article_files_items, dest_article_files_items):
@@ -84,7 +84,9 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
         fs_utils.write_file(dest.filename, xmlcontent.content)
         src.copy(dest_path)
 
-    return dest_article_files_items
+        outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path)
+
+    return dest_article_files_items, outputs
 
 
 class ArticlesConversion(object):
@@ -348,9 +350,9 @@ class PkgProcessor(object):
         dtd_location_type = 'remote'
         if self.is_db_generation:
             dtd_location_type = 'local'
-        pkgfiles = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
+        pkgfiles, outputs = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
         workarea_path = os.path.dirname(pkgfiles[0].path)
-        return package.Package(xml_list, workarea_path)
+        return package.Package(pkgfiles, outputs, workarea_path)
 
     def commum(self, pkg):
         registered_issue_data = registered.RegisteredIssue()

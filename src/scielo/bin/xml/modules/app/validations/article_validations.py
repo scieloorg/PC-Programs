@@ -102,7 +102,7 @@ class XMLStructureValidator(object):
 
         if xml_f > 0:
             fs_utils.append_file(outputs.err_filename, name_error + xml_structure_report_content)
-
+        print('outputs.ctrl_filename', outputs.ctrl_filename)
         if outputs.ctrl_filename is None:
             if xml_f + xml_e + xml_w == 0:
                 fs_utils.delete_file_or_folder(outputs.style_report_filename)

@@ -1,7 +1,5 @@
 # coding=utf-8
 
-import os
-
 from ...generics import fs_utils
 from . import article
 from . import workarea
@@ -9,28 +7,27 @@ from . import workarea
 
 class Package(object):
 
-    def __init__(self, input_xml_list, workarea_path):
-        self.input_xml_list = input_xml_list
-        self.input_path = os.path.dirname(input_xml_list[0])
+    def __init__(self, pkgfiles_items, outputs, workarea_path):
+        self.pkgfiles_items = pkgfiles_items
+        self.package_folder = workarea.PackageFolder(pkgfiles_items[0].path, pkgfiles_items)
+        self.outputs = outputs
         self.wk = workarea.Workarea(workarea_path)
+        self._articles = None
+        self._articles_xml_content = None
         self.issue_data = PackageIssueData()
         self.issue_data.setup(self.articles)
 
     @property
-    def package_folder(self):
-        return workarea.PackageFolder(self.wk.scielo_package_path, self.input_xml_list)
-
-    @property
     def articles_xml_content(self):
-        return {item.name: article.ArticleXMLContent(fs_utils.read_file(item.filename), item.previous_name, item.name) for item in self.package_folder.pkgfiles_items.values()}
+        if self._articles_xml_content is None:
+            self._articles_xml_content = {item.name: article.ArticleXMLContent(fs_utils.read_file(item.filename), item.previous_name, item.name) for item in self.pkgfiles_items}
+        return self._articles_xml_content
 
     @property
     def articles(self):
-        return {name: item.doc for name, item in self.articles_xml_content.items()}
-
-    @property
-    def outputs(self):
-        return {item.name: workarea.OutputFiles(item.previous_name, self.wk.reports_path, item.ctrl_path) for item in self.package_folder.pkgfiles_items.values()}
+        if self._articles is None:
+            self._articles = {name: item.doc for name, item in self.articles_xml_content.items()}
+        return self._articles
 
     @property
     def is_pmc_journal(self):
