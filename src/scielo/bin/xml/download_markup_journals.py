@@ -11,7 +11,7 @@ except ImportError:
     import Tkinter as tk
 
 
-from modules.generics import ws_requester
+from modules.generics.ws import ws_requester
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
