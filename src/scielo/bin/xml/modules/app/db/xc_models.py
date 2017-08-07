@@ -11,7 +11,8 @@ from ...generics import fs_utils
 from ...generics import encoding
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
-from ..data.article import Issue, PersonAuthor, Article, Journal
+from ..data.article import Issue, Article, Journal
+from ..data.article import PersonAuthor, CorpAuthor, AnonymousAuthor
 from ..data import attributes
 from ..db import serial
 from ..validations import article_data_reports
@@ -283,6 +284,8 @@ class ArticleRecords(object):
         self._metadata['14']['e'] = self.article.elocation_id
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
+        print('xc', self.article.affiliations)
+        print('xc', self.article.normalized_affiliations)
         self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
@@ -299,7 +302,7 @@ class ArticleRecords(object):
 
     @property
     def references(self):
-
+        print('references', self.article)
         records_c = []
         for ref_xml in self.article.references_xml:
             item = ref_xml.reference
@@ -322,12 +325,13 @@ class ArticleRecords(object):
             rec_c['17'] = []
 
             grp_idx = 0
-            for grptype, grp in item.authors_by_group:
-                is_analytic = (len(item.authors_by_group) > 1) and (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
+            for grptype, grp in item.person_group_xml_items:
+                is_analytic = (len(item.person_group_xml_items) > 1) and (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
                 grp_idx += 1
 
                 for author in grp:
                     field = author_tag(isinstance(author, PersonAuthor), is_analytic)
+                    a = None
                     if isinstance(author, PersonAuthor):
                         a = {}
                         a['n'] = author.fname
@@ -339,10 +343,14 @@ class ArticleRecords(object):
                                 a['s'] += ' ' + author.suffix
                         #a['z'] = author.suffix
                         a['r'] = attributes.normalize_role(author.role)
-                    else:
+                    elif isinstance(author, CorpAuthor):
                         # collab
                         a = author.collab
-                    rec_c[field].append(a)
+                    elif isinstance(author, AnonymousAuthor):
+                        # collab
+                        a = author.fullname
+                    if a is not None:
+                        rec_c[field].append(a)
             rec_c['31'] = item.volume
             rec_c['32'] = {}
             rec_c['32']['_'] = item.issue
@@ -402,7 +410,7 @@ class ArticleRecords(object):
     def records(self):
         r = []
         self.fix_issue_data()
-        rec = self.outline(str(4 + len(self.references_xml)))
+        rec = self.outline(str(4 + len(self.references)))
         rec.update(self.common_data)
         rec.update(self.record_info('1', 'o', '1', '1'))
         r.append(rec)
@@ -425,11 +433,10 @@ class ArticleRecords(object):
         rec.update(self.record_info('4', 'l', '1', '1'))
         r.append(rec)
 
-        c_total = str(len(self.references_xml))
+        c_total = str(len(self.references))
         c_index = 0
         k = 4
-        for ref_xml in self.references_xml:
-            item = ref_xml.reference
+        for item in self.references:
             c_index += 1
             k += 1
             rec = item
@@ -705,7 +712,7 @@ class IssueArticlesRecords(object):
                 articles_records[xml_name] = []
                 articles_records[xml_name].append(record)
             elif record.get('706') == 'h':
-                if not 'o' in record_types:
+                if 'o' not in record_types:
                     xml_name = record.get('2')
                     if xml_name.endswith('.xml'):
                         xml_name = xml_name[0:-4]
@@ -726,7 +733,7 @@ class ArticlesManager(object):
         self.issue_files = issue_files
         self.base_manager = BaseManager(db_isis, issue_files)
         self.ex_aop_manager = None
-        self.aop_db_manager = AopManager(db_isis, self.issue_files.journal_files)
+        self.aop_db_manager = AopManager(db_isis, issue_files.journal_files)
         self.articles_conversion_status = {}
         self.articles_aop_status = {}
         self.articles_aop_exclusion_status = {}
@@ -735,6 +742,10 @@ class ArticlesManager(object):
 
         if self.issue_files.is_aop:
             self.ex_aop_manager = BaseManager(db_isis, serial.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
+
+    @property
+    def serial_path(self):
+        return self.issue_files.journal_files.serial_path
 
     @property
     def registered_articles(self):
@@ -1241,7 +1252,8 @@ def format_affiliations(affiliations):
         a['l'] = item.label
         a['i'] = item.id
         if item.institution_id is not None:
-            a['k'], a['j'] = item.institution_id
+            for instid in item.institution_id:
+                a['k'], a['j'] = instid
         a['e'] = item.email
         a['3'] = item.orgdiv3
         a['2'] = item.orgdiv2
@@ -1257,14 +1269,15 @@ def format_affiliations(affiliations):
 def format_normalized_affiliations(affiliations):
     affs = []
     for aff in affiliations.values():
-        if aff.id is not None and aff.i_country is not None and aff.norgname is not None:
-            a = {}
-            a['i'] = aff.id
-            a['p'] = aff.i_country
-            a['_'] = aff.norgname
-            a['c'] = aff.city
-            a['s'] = aff.state
-            affs.append(a)
+        if aff is not None:
+            if aff.id is not None and aff.i_country is not None and aff.norgname is not None:
+                a = {}
+                a['i'] = aff.id
+                a['p'] = aff.i_country
+                a['_'] = aff.norgname
+                a['c'] = aff.city
+                a['s'] = aff.state
+                affs.append(a)
     return affs
 
 
@@ -1311,7 +1324,7 @@ class DBManager(object):
         if acron is not None:
             _expr.append(acron)
         _expr = [item for item in _expr if item != '' and not None]
-        
+
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
     def update_and_search(self, db, expr, source_db, fst_filename):
@@ -1337,18 +1350,18 @@ class DBManager(object):
         j = None
         j_data = None
         if issue_label is None:
-            msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify the article\'s issue'), False)
+            msg = _('Unable to identify the article\'s issue')
         else:
             i_record = self.find_i_record(issue_label, p_issn, e_issn)
             if i_record is None:
                 acron_issue_label = 'not_registered issue'
-                msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.', False)
+                msg = _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.'
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
                 j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                 if j_record is None:
-                    msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get journal data') + ' ' + journal_title, False)
+                    msg = _('Unable to get journal data') + ' ' + journal_title
                 else:
                     t = RegisteredTitle(j_record)
                     j = Journal()
@@ -1362,7 +1375,6 @@ class DBManager(object):
                     j.collection_acron = None
                     j.journal_title = journal_title
                     j.issn_id = t.issn_id
-        
                     j_data = Journal()
                     j_data.acron = [t.acron]
                     j_data.p_issn = [t.print_issn]
@@ -1378,8 +1390,9 @@ class DBManager(object):
                     j_data.issn_id = [t.issn_id]
                     if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
                         issue_models.complete_issue_info(t)
+        if msg is not None:
+            msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + msg, False)
         return (acron_issue_label, issue_models, msg, j, j_data)
-
 
     def get_issue_files(self, issue_models):
         if issue_models is not None:
@@ -1469,3 +1482,23 @@ def update_list(l, value):
         if len(value) > 0:
             l.append(value)
     l = list(set(l))
+
+
+class RegisteredIssuesManager(object):
+
+    def __init__(self, db_manager, journals_list):
+        self.db_manager = db_manager
+        self.journals_list = journals_list
+
+    def get_registered_issue_data(self, pkgissuedata, registered_issue):
+        if self.db_manager is None:
+            journals_list = self.journals_list
+            pkgissuedata.journal = self.journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
+            pkgissuedata.journal_data = self.journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
+        else:
+            registered_issue.acron_issue_label, registered_issue.issue_models, registered_issue.issue_error_msg, pkgissuedata.journal, pkgissuedata.journal_data = self.db_manager.get_registered_data(pkgissuedata.pkg_journal_title, pkgissuedata.pkg_issue_label, pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn)
+            ign, pkgissuedata._issue_label = registered_issue.acron_issue_label.split(' ')
+            if registered_issue.issue_error_msg is None:
+                registered_issue.issue_files = self.db_manager.get_issue_files(registered_issue.issue_models)
+                registered_issue.articles_db_manager = ArticlesManager(self.db_manager.db_isis, registered_issue.issue_files)
+        return pkgissuedata

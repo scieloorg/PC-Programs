@@ -251,6 +251,7 @@ class JournalFiles(object):
     def __init__(self, serial_path, acron):
         if serial_path.endswith('/'):
             serial_path = serial_path[0:-1]
+        self.serial_path = serial_path
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
         if not os.path.isdir(self.journal_path):

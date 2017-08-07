@@ -52,11 +52,8 @@ class Configuration(object):
                     self._data[key] = value
         self.interative_mode = self._data.get('Serial Directory') is not None
         self.is_windows = self.interative_mode
-
-    def __new__(self):
-        if not hasattr(self, 'instance'):
-            self.instance = super(Configuration, self).__new__(self)
-        return self.instance
+        print('InTERATIVE', self.interative_mode)
+        print(self._data)
 
     @property
     def cisis1030(self):
@@ -430,4 +427,5 @@ class Configuration(object):
 
     @property
     def app_ws_requester(self):
+        print('ENABLED_WEB_ACCESS', self.is_web_access_enabled)
         return ws_requester.WebServicesRequester(self.is_web_access_enabled, self.proxy_info)

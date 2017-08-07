@@ -27,15 +27,16 @@ class IssueArticlesValidationsReports(object):
 
     @property
     def blocking_errors(self):
+        print(self.merged_articles_reports.validations.blocking_errors)
         return sum([self.merged_articles_reports.validations.blocking_errors,
             self.pkg_validations_reports.pkg_issue_validations.blocking_errors])
 
 
 class MergedArticlesReports(object):
 
-    def __init__(self, articles_merge, registered_issue_data):
-        self.merged_articles_data = merged.MergedArticlesData(articles_merge.merged_articles, registered_issue_data.articles_db_manager is not None)
-        self.articles_merge = articles_merge
+    def __init__(self, articles_mergence, registered_issue_data):
+        self.merged_articles_data = merged.MergedArticlesData(articles_mergence.merged_articles, registered_issue_data.articles_db_manager is not None)
+        self.articles_mergence = articles_mergence
         self.registered_issue_data = registered_issue_data
 
     @property
@@ -62,6 +63,7 @@ class MergedArticlesReports(object):
         text += html_reports.tag('h2', _('Checking issue data consistency'))
         text += html_reports.tag('div', ''.join(reports), 'issue-messages')
         text += self.report_page_values
+        print(text)
         return text
 
     @property
@@ -141,9 +143,9 @@ class MergedArticlesReports(object):
 
     def report_merging_conflicts(self):
         merging_errors = []
-        if len(self.articles_merge.titaut_conflicts) + len(self.articles_merge.name_order_conflicts) > 0:
-            merge_conflicts = self.articles_merge.titaut_conflicts.copy()
-            merge_conflicts.update(self.articles_merge.name_order_conflicts)
+        if len(self.articles_mergence.titaut_conflicts) + len(self.articles_mergence.name_order_conflicts) > 0:
+            merge_conflicts = self.articles_mergence.titaut_conflicts.copy()
+            merge_conflicts.update(self.articles_mergence.name_order_conflicts)
             merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
             for name, conflicts in merge_conflicts.items():
                 labels = []
@@ -162,9 +164,9 @@ class MergedArticlesReports(object):
 
     def report_order_conflicts(self):
         r = []
-        if len(self.articles_merge.pkg_order_conflicts) > 0:
+        if len(self.articles_mergence.pkg_order_conflicts) > 0:
             html_reports.tag('h2', _('Order conflicts'))
-            for order, names in self.articles_merge.pkg_order_conflicts.items():
+            for order, names in self.articles_mergence.pkg_order_conflicts.items():
                 r.append(html_reports.tag('h3', order))
                 r.append(html_reports.format_html_data(names))
         return ''.join(r)
@@ -172,22 +174,22 @@ class MergedArticlesReports(object):
     @property
     def report_changed_names(self):
         r = []
-        if len(self.articles_merge.name_changes) > 0:
+        if len(self.articles_mergence.name_changes) > 0:
             r.append(html_reports.tag('h3', _('Names changes')))
-            for old, new in self.articles_merge.name_changes.items():
+            for old, new in self.articles_mergence.name_changes.items():
                 r.append(html_reports.tag('p', '{old} => {new}'.format(old=old, new=new), 'info'))
         return ''.join(r)
 
     @property
     def report_changed_orders(self):
         r = []
-        if len(self.articles_merge.order_changes) > 0:
+        if len(self.articles_mergence.order_changes) > 0:
             r.append(html_reports.tag('h3', _('Orders changes')))
-            for name, changes in self.articles_merge.order_changes.items():
+            for name, changes in self.articles_mergence.order_changes.items():
                 r.append(html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=changes[0], new=changes[1]), 'info'))
-        if len(self.articles_merge.excluded_orders) > 0:
+        if len(self.articles_mergence.excluded_orders) > 0:
             r.append(html_reports.tag('h3', _('Orders exclusions')))
-            for name, order in self.articles_merge.excluded_orders.items():
+            for name, order in self.articles_mergence.excluded_orders.items():
                 r.append(html_reports.tag('p', '{order} ({name})'.format(name=name, order=order), 'info'))
         return ''.join(r)
 
@@ -208,15 +210,15 @@ class MergedArticlesReports(object):
         return ''
 
     @property
-    def validations(self):
-        v = validations_module.ValidationsResult()
-        v.message = self.report
-        return v
-
-    @property
     def report(self):
         r = []
         r.append(self.report_data_consistency)
         r.append(self.report_conflicts)
         r.append(self.report_changes)
         return ''.join(r)
+
+    @property
+    def validations(self):
+        v = validations_module.ValidationsResult()
+        v.message = self.report
+        return v

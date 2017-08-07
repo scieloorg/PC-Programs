@@ -4,11 +4,11 @@ import os
 
 from tempfile import mkdtemp, NamedTemporaryFile
 
-from .. import xml_utils
-from .. import utils
-from .. import fs_utils
-from .. import encoding
-from .. import system
+from ...generics import utils
+from ...generics import xml_utils
+from ...generics import fs_utils
+from ...generics import encoding
+from ...generics import system
 
 
 PRESERVECIRC = '[PRESERVECIRC]'
@@ -29,31 +29,31 @@ def format_value(content):
     try:
         content = encoding.decode(content)
     except Exception as e:
-        utils.debbuging('format_value 1:')
-        utils.debbuging(e)
-        utils.debbuging(content)
+        utils.debugging('format_value 1:')
+        utils.debugging(e)
+        utils.debugging(content)
     """
     try:
         content = remove_break_lines_characters(content)
     except Exception as e:
-        utils.debbuging('format_value: remove_break_lines_characters:')
-        utils.debbuging(e)
-        utils.debbuging(content)
+        utils.debugging('format_value: remove_break_lines_characters:')
+        utils.debugging(e)
+        utils.debugging(content)
 
     try:
         if '&' in content:
             content, replace = xml_utils.convert_entities_to_chars(content)
     except Exception as e:
-        utils.debbuging('format_value:  convert_entities_to_chars:')
-        utils.debbuging(e)
-        utils.debbuging(content)
+        utils.debugging('format_value:  convert_entities_to_chars:')
+        utils.debugging(e)
+        utils.debugging(content)
 
     try:
         content = encoding.decode(content)
     except Exception as e:
-        utils.debbuging('format_value: 2:')
-        utils.debbuging(e)
-        utils.debbuging(content)
+        utils.debugging('format_value: 2:')
+        utils.debugging(e)
+        utils.debugging(content)
 
     return content.strip()
 
@@ -78,7 +78,7 @@ class IDFile(object):
     def _format_record(self, record):
         result = ''
         if record is not None:
-            #utils.debbuging(record)
+            #utils.debugging(record)
             r = []
             for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
@@ -101,8 +101,8 @@ class IDFile(object):
 
     def tag_occ(self, tag, data):
         if isinstance(data, tuple):
-            utils.debbuging(tag)
-            utils.debbuging(data)
+            utils.debugging(tag)
+            utils.debugging(data)
             s = ''
         elif isinstance(data, dict):
             s = self.tag_content(tag, self.format_subfields(data))
@@ -125,10 +125,10 @@ class IDFile(object):
                     elif k in '_':
                         first = v
         except Exception as e:
-            utils.debbuging('format_subfields')
-            utils.debbuging(e)
-            utils.debbuging(subf_and_value_list)
-            utils.debbuging(first + value)
+            utils.debugging('format_subfields')
+            utils.debugging(e)
+            utils.debugging(subf_and_value_list)
+            utils.debugging(first + value)
         return first + value
 
     def tag_content(self, tag, value):
@@ -143,12 +143,12 @@ class IDFile(object):
                     #value = change_circ(value)
                     r = '!v' + tag + '!' + value + '\n'
                 except Exception as e:
-                    utils.debbuging('tag_content: ')
-                    utils.debbuging(e)
-                    utils.debbuging(s)
-                    utils.debbuging(value)
-                    utils.debbuging(type(s))
-                    utils.debbuging(type(value))
+                    utils.debugging('tag_content: ')
+                    utils.debugging(e)
+                    utils.debugging(s)
+                    utils.debugging(value)
+                    utils.debugging(type(s))
+                    utils.debugging(type(value))
         return r
 
     def read(self, filename):
@@ -208,13 +208,13 @@ class IDFile(object):
         if not os.path.isdir(path):
             os.makedirs(path)
         content = self._format_file(records)
-        content = encoding.uni2notuni(content, 'iso-8859-1')
+        content = encoding.decode(content, 'iso-8859-1')
         content = content.replace(PRESERVECIRC, '&#94;')
         try:
             fs_utils.write_file(filename, content)
         except Exception as e:
-            utils.debbuging('saving...')
-            utils.debbuging(e)
+            utils.debugging('saving...')
+            utils.debugging(e)
             print(e)
 
 

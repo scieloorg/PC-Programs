@@ -287,7 +287,7 @@ class OutputFiles(object):
             fs_utils.delete_file_or_folder(f)
 
 
-class FilesFinalLocation(object):
+class AssetsDestinations(object):
 
     def __init__(self, pkg_path, acron, issue_label, serial_path=None, web_app_path=None, web_url=None):
         self.web_app_path = web_app_path

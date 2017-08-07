@@ -1,4 +1,6 @@
 # coding=utf-8
+import sys
+
 from datetime import datetime
 
 
@@ -44,7 +46,7 @@ def similarity(items, text, min_ratio=0):
     for item in items:
         rate = how_similar(item, text)
         if rate > min_ratio:
-            if not rate in r.keys():
+            if rate not in r.keys():
                 r[rate] = []
             r[rate].append(item)
     return r
@@ -72,7 +74,6 @@ def display_message(text):
     try:
         print(text)
     except Exception as e:
-        import sys
         try:
             print(text.encode(encoding=sys.getfilesystemencoding()))
         except:
@@ -98,7 +99,7 @@ def diff(sentence1, sentence2):
     s1 = sentence1
     sentence1 = sentence1.split()
 
-    d1 = [item for item in sentence1 if not item in sentence2.split()]
+    d1 = [item for item in sentence1 if item not in sentence2.split()]
 
     if len(d1) > 0:
         equal = []

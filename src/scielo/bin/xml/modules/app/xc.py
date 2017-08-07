@@ -11,9 +11,10 @@ from ..generics import xml_utils
 from ..generics.reports import html_reports
 from .pkg_processors import pkg_processors
 from .data import workarea
-from ..generics.server import mailer
-from ..generics.server import filestransfer
+from .server import mailer
+from .server import filestransfer
 from . import interface
+from .config import config
 
 
 EMAIL_SUBJECT_STATUS_ICON = {}
@@ -40,7 +41,7 @@ def call_converter(args, version='1.0'):
             messages.append('\n'.join(errors))
             utils.display_message('\n'.join(messages))
 
-    reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)), version, 'xc')
+    reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)), version)
     if package_path is None:
         reception.display_form()
     else:
@@ -100,9 +101,11 @@ class XC_Reception(object):
                 scilista_items, xc_status, stats_msg, report_location = self.proc.convert_package(pkg)
                 print(scilista_items)
         except Exception as e:
+
             if self.configuration.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
             self.mailer.mail_step1_failure(package_name, e)
+            raise
         if len(scilista_items) > 0:
             acron, issue_id = scilista_items[0].split(' ')
             try:
@@ -112,6 +115,7 @@ class XC_Reception(object):
                     self.transfer.transfer_website_files(acron, issue_id)
             except Exception as e:
                 self.mailer.mail_step2_failure(package_name, e)
+                raise
             try:
                 if report_location is not None and self.configuration.email_subject_package_evaluation is not None:
                     results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg

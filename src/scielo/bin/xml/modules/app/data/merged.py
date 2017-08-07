@@ -116,7 +116,7 @@ class MergedArticlesData(object):
         return data
 
 
-class ArticlesMerge(object):
+class ArticlesMergence(object):
 
     def __init__(self, registered_articles, articles):
         self.registered_articles = registered.RegisteredArticles(registered_articles)
@@ -126,6 +126,7 @@ class ArticlesMerge(object):
         self.name_changes = None
         self.order_changes = None
         self.excluded_orders = None
+        self._merged_articles = None
 
     @property
     def pkg_articles_by_order_and_name(self):
@@ -165,8 +166,14 @@ class ArticlesMerge(object):
 
     @property
     def merged_articles(self):
+        if self._merged_articles is None:
+            self._merged_articles = self.merge_articles()
+        return self._merged_articles
+
+    def merge_articles(self):
         # registered
         self.history_items = {name: [HISTORY_REGISTERED] for name in self.registered_articles.keys()}
+
         # package
         for name, a in self.articles.items():
             if name not in self.history_items.keys():

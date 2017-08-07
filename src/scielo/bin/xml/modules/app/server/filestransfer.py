@@ -2,9 +2,10 @@
 
 import logging
 
-from .. import system
+from ...generics import system
 
 
+#FIXME Makeme generics
 class FilesTransfer(object):
 
     def __init__(self, config, log_filename=None):
