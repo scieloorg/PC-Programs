@@ -5,6 +5,7 @@ from datetime import datetime
 
 from ...__init__ import _
 from ...generics import xml_utils
+from ...generics import img_utils
 from ...generics import utils
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
@@ -13,12 +14,6 @@ from .. import article_utils
 from . import ref_validations
 from . import data_validations
 from ..pkg_processors import xml_versions
-
-
-MIN_IMG_DPI = 300
-MIN_IMG_WIDTH = 789
-MAX_IMG_WIDTH = 2250
-MAX_IMG_HEIGHT = 2625
 
 
 def join_not_None_items(items, sep=', '):
@@ -51,7 +46,6 @@ class AffValidator(object):
         self.xref_items = xref_items
         self.institutions_query_results = institutions_query_results
         self.norm_aff = None
-        print()
 
     @property
     def xml(self):
@@ -1169,6 +1163,7 @@ class ArticleContentValidation(object):
         min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
         for hrefitem in self.article.hrefs:
             href_validations = HRefValidation(self.app_institutions_manager.ws.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
+        
             href_items[hrefitem.src] = {
                 'display': href_validations.display,
                 'elem': hrefitem,
@@ -1190,44 +1185,43 @@ class ArticleContentValidation(object):
     @property
     def package_files(self):
         #FIXME
-        expected_files = {self.article.language: self.pkgfiles.name + '.pdf'}
-        expected_files.update(
-            {lang: self.pkgfiles.name + '-' + lang + '.pdf' for lang in self.article.trans_languages})
         _pkg_files = {}
-        for f in expected_files.values():
+        for lang, f in self.article.expected_pdf_files.items():
             if f not in _pkg_files.keys():
                 _pkg_files[f] = []
-            _pkg_files[f].append((validation_status.STATUS_INFO, 'PDF ({lang}). '.format(lang=self.article.language)))
+            _pkg_files[f].append((validation_status.STATUS_INFO, 'PDF ({lang}). '.format(lang=lang)))
             if f not in self.pkgfiles.files_except_xml:
                 _pkg_files[f].append((validation_status.STATUS_ERROR, _('Not found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
 
         #from files, find in XML
         href_items_in_xml = [item.name_without_extension for item in self.article.href_files]
         href_items_in_xml += [item.src for item in self.article.href_files]
+        href_items_in_xml = list(set(href_items_in_xml))
         for f in self.pkgfiles.files_except_xml:
-            name, ext = os.path.splitext(f)
-            if f not in _pkg_files.keys():
-                _pkg_files[f] = []
-            _pkg_files[f].append((validation_status.STATUS_INFO, _('Found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
+            if f not in self.article.expected_pdf_files.values():
+                name, ext = os.path.splitext(f)
+                if f not in _pkg_files.keys():
+                    _pkg_files[f] = []
+                _pkg_files[f].append((validation_status.STATUS_INFO, _('Found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
 
-            status = validation_status.STATUS_INFO
-            message = None
-            if f in href_items_in_xml or name in href_items_in_xml:
-                message = _('Found {label} in the {item}. ').format(label=_('file'), item='XML')
-            elif f in expected_files.values():
-                lang = [k for k, v in expected_files.items() if v == f]
-                if len(lang) > 0:
-                    lang = lang[0]
-                    message = _('Found {label} in {item}. ').format(label='@xml:lang={lang}'.format(lang=lang), item='XML')
-            else:
-                message = _('Not found {label} in the {item}. ').format(label=_('file'), item='XML')
-                status = validation_status.STATUS_ERROR
+                status = validation_status.STATUS_INFO
+                message = None
+                if f in href_items_in_xml or name in href_items_in_xml:
+                    message = _('Found {label} in the {item}. ').format(label=_('file'), item='XML')
+                else:
+                    message = _('Not found {label} in the {item}. ').format(label=_('file'), item='XML')
+                    status = validation_status.STATUS_ERROR
 
-            if message is not None:
-                _pkg_files[f].append((status, message))
+                if message is not None:
+                    _pkg_files[f].append((status, message))
         items = []
         for name in sorted(_pkg_files.keys()):
+            messages = {}
             for status, message_list in _pkg_files[name]:
+                if status not in messages.keys():
+                    messages[status] = []
+                messages[status].append(message_list)
+            for status, message_list in messages.items():
                 items.append((name, status, message_list))
         return items
 
@@ -1257,7 +1251,7 @@ class HRefValidation(object):
         if self.hrefitem.is_internal_file:
             status_message.extend(self.validate_href_file)
             if self.hrefitem.is_image:
-                status_message.append(self.validate_tiff_image)
+                status_message.extend(self.validate_tiff_image)
             status_message = [item for item in status_message if item is not None]
         else:
             if self.check_url or 'scielo.php' in self.hrefitem.src:

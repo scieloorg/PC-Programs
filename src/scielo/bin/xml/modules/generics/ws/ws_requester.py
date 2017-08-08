@@ -160,8 +160,7 @@ def display_proxy_form(registered_ip, registered_port, debug=False):
 
     r = app.info
     if debug:
-        print('proxy informed:')
-        print(r)
+        print('proxy informed:', r)
     tk_root.destroy()
     return r
 

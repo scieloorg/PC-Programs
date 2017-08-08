@@ -14,6 +14,8 @@ class IssueArticlesValidationsReports(object):
         self.pkg_validations_reports = pkg_validations_reports
         self.merged_articles_reports = merged_articles_reports
         self.is_xml_generation = is_xml_generation
+        self.blocking_errors = sum([self.merged_articles_reports.validations.blocking_errors,
+            self.pkg_validations_reports.pkg_issue_validations.blocking_errors])
 
     @property
     def journal_and_issue_report(self):
@@ -24,12 +26,6 @@ class IssueArticlesValidationsReports(object):
         report.append(self.pkg_validations_reports.pkg_issue_validations.report(errors_only))
         report.append(self.merged_articles_reports.report)
         return ''.join(report)
-
-    @property
-    def blocking_errors(self):
-        print(self.merged_articles_reports.validations.blocking_errors)
-        return sum([self.merged_articles_reports.validations.blocking_errors,
-            self.pkg_validations_reports.pkg_issue_validations.blocking_errors])
 
 
 class MergedArticlesReports(object):
@@ -63,7 +59,6 @@ class MergedArticlesReports(object):
         text += html_reports.tag('h2', _('Checking issue data consistency'))
         text += html_reports.tag('div', ''.join(reports), 'issue-messages')
         text += self.report_page_values
-        print(text)
         return text
 
     @property

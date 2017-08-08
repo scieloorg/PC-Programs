@@ -77,7 +77,6 @@ class PkgArticleFiles(object):
     def is_changed(self):
         current = sorted(os.listdir(self.path))
         if current != self.listdir:
-            print('is_changed', current, self.listdir)
             self.listdir = current
             return True
         return False
@@ -108,7 +107,7 @@ class PkgArticleFiles(object):
 
     @property
     def splitext(self):
-        return [os.path.splitext(f) for f in self.files_by_name_except_xml]
+        return [os.path.splitext(f) for f in self.files_except_xml]
 
     @property
     def png_items(self):
@@ -136,9 +135,9 @@ class PkgArticleFiles(object):
 
     def convert_images(self):
         for item in self.tiff_names:
-            if not item in self.jpg_names and not item in self.png_names:
+            if item not in self.jpg_names and item not in self.png_names:
                 source_fname = item + '.tif'
-                if not source_fname in self.files_except_xml:
+                if source_fname not in self.files_except_xml:
                     source_fname = item + '.tiff'
                 img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
                 if item + '.jpg' not in self.all:
@@ -305,7 +304,7 @@ class AssetsDestinations(object):
     @property
     def img_path(self):
         if self.web_app_path is not None:
-            return self.web_app_path + '/htdocs/img/' + self.issue_path
+            return self.web_app_path + '/htdocs/img/revistas/' + self.issue_path
         else:
             return self.pkg_path
 

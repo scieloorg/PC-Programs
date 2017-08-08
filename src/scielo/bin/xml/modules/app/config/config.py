@@ -425,5 +425,4 @@ class Configuration(object):
 
     @property
     def app_ws_requester(self):
-        print('ENABLED_WEB_ACCESS', self.is_web_access_enabled)
         return ws_requester.WebServicesRequester(self.is_web_access_enabled, self.proxy_info)

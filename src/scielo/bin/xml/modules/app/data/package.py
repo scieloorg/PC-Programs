@@ -47,11 +47,9 @@ class PackageIssueData(object):
 
     def setup(self, articles):
         data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in articles.values()]))
-        print('PackageIssueData', data)
         data.sort(reverse=True)
         if len(data) > 0:
             data = list(data[0])
-            print('PackageIssueData (2)', data)
             if any(data):
                 self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = data
 

@@ -482,7 +482,7 @@ def format_html_data(value, width=70):
     return r
 
 
-def save(filename, title, body):
+def save(filename, title, body, teste=None):
     r = html(title, body)
     d = os.path.dirname(filename)
     if not os.path.isdir(d):
@@ -597,11 +597,8 @@ def display_report(report_filename):
     print(_('Report:\n  {filename}').format(filename=report_filename))
 
     try:
-        print(sys.getfilesystemencoding())
         #f = report_filename.encode(encoding=sys.getfilesystemencoding())
-        print(1)
         webbrowser.open(encoding.encode('file://' + report_filename, encoding=sys.getfilesystemencoding()), new=2)
-        print(2)
     except Exception as e:
         print('display_report: opening: ')
         print(report_filename)

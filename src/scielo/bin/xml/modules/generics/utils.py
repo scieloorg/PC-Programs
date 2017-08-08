@@ -1,5 +1,6 @@
 # coding=utf-8
 import sys
+import difflib
 
 from datetime import datetime
 
@@ -33,7 +34,6 @@ def is_similar(text, items, min_rate=0.8):
 
 
 def how_similar(this, that):
-    import difflib
     if this is None:
         this = 'None'
     if that is None:

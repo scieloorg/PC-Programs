@@ -767,7 +767,7 @@ class ArticlesManager(object):
 
     def exclude_aop(self, valid_aop):
         is_excluded_aop, messages, aop_issue_folder_name = self.aop_db_manager.manage_ex_aop(valid_aop)
-        
+
         if valid_aop.is_ex_aop and is_excluded_aop is False:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_INFO + ': ' + _('{item} is already excluded. ').format(item='ex aop: ' + valid_aop.order)))
             is_excluded_aop = True
@@ -798,7 +798,6 @@ class ArticlesManager(object):
                 article_converted = excluded_aop
         else:
             self.xc_messages.append(html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to create/update {order}.id').format(order=article.order)))
-        
         self.articles_conversion_status[xml_name] = article_converted
         self.articles_aop_exclusion_status[xml_name] = excluded_aop
         self.articles_aop_status[xml_name] = aop_status
@@ -852,7 +851,7 @@ class ArticlesManager(object):
 
         if not error:
             q_registered = self.finish_conversion(i_record)
-            print(q_registered)
+            print('registered', q_registered)
             converted = q_registered >= len(articles) and q_registered > 0
             if converted:
                 if create_windows_base:

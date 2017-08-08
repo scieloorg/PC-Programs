@@ -78,13 +78,18 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
     dest_path = wk.scielo_package_path
     dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
     for src, dest in zip(article_files_items, dest_article_files_items):
+        print(src.name)
+        print(src.path)
+        print(src.all)
+        src.convert_images()
+        print(src.all)
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
         xmlcontent.doctype(dtd_location_type)
         fs_utils.write_file(dest.filename, xmlcontent.content)
         src.copy(dest_path)
 
-        outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path)
+        outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
 
     return dest_article_files_items, outputs
 
@@ -106,9 +111,6 @@ class ArticlesConversion(object):
     def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
-        print('\n')
-        print(self.validations_reports.blocking_errors)
-        print('======')
         if self.validations_reports.blocking_errors == 0 and self.total_to_convert > 0:
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
 
@@ -168,10 +170,11 @@ class ArticlesConversion(object):
                 self.articles_mergence.history_items[name].append(status)
 
         items = []
+        db_articles = self.registered_articles
         for xml_name in sorted(self.articles_mergence.history_items.keys()):
             pkg = self.articles_mergence.articles.get(xml_name)
             registered = self.articles_mergence.registered_articles.get(xml_name)
-            merged = self.articles_mergence.merged_articles.get(xml_name)
+            merged = db_articles.get(xml_name)
 
             diff = ''
             if registered is not None and pkg is not None:
@@ -179,10 +182,10 @@ class ArticlesConversion(object):
                 diff = comparison.display_articles_differences() + '<hr/>'
 
             values = []
-            values.append(article_data_reports.display_article_data_in_toc(registered) if registered is not None else '')
-            values.append(article_data_reports.display_article_data_in_toc(pkg) if pkg is not None else '')
+            values.append(article_data_reports.display_article_data_to_compare(registered) if registered is not None else '')
+            values.append(article_data_reports.display_article_data_to_compare(pkg) if pkg is not None else '')
             values.append(article_data_reports.article_history(self.articles_mergence.history_items[xml_name]))
-            values.append(diff + article_data_reports.display_article_data_in_toc(merged) if merged is not None else '')
+            values.append(diff + article_data_reports.display_article_data_to_compare(merged) if merged is not None else '')
 
             items.append(html_reports.label_values(labels, values))
         return html_reports.tag('h3', _('Conversion steps')) + html_reports.sheet(labels, items, html_cell_content=[_('article'), _('registered') + '/' + _('before conversion'), _('package'), _('executed actions')], widths=widths)
@@ -338,7 +341,6 @@ class PkgProcessor(object):
             db_isis = dbm_isis.IsisDAO(ucisis)
             titles = [self.config.title_db, self.config.title_db_copy, FST_PATH + '/title.fst']
             issues = [self.config.issue_db, self.config.issue_db_copy, FST_PATH + '/issue.fst']
-            print(titles)
             self._db_manager = xc_models.DBManager(
                 db_isis,
                 titles,
@@ -382,9 +384,13 @@ class PkgProcessor(object):
     def convert_package(self, pkg):
         registered_issue_data, validations_reports = self.commum(pkg)
         conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
+        print('convert_package', 3)
         scilista_items = conversion.convert()
+        print('convert_package', 4)
         reports = self.report_result(pkg, validations_reports, conversion)
+        print('convert_package', 5)
         statistics_display = reports.validations.statistics_display(html_format=False)
+        print('convert_package', 6)
 
         return (scilista_items, conversion.xc_status, statistics_display, reports.report_location)
 
@@ -409,12 +415,17 @@ class PkgProcessor(object):
             pkg.articles)
 
     def report_result(self, pkg, validations_reports, conversion=None):
+        print('report_result', 1)
         files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
 
+        print('report_result', 2)
         reports = reports_maker.ReportsMaker(pkg, validations_reports, files_location, self.stage, xpm_version(), conversion)
+        print('report_result', 3)
 
         if not self.is_xml_generation:
             reports.save_report(self.DISPLAY_REPORT or self.config.interative_mode)
+        print('report_result', 4)
+
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):

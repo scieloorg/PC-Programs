@@ -1,5 +1,4 @@
 # coding=utf-8
-import os
 from datetime import datetime
 
 from ...__init__ import _
@@ -14,16 +13,19 @@ from . import validations as validations_module
 class ReportsMaker(object):
 
     def __init__(self, pkg, articles_validations_reports, files_location, stage, xpm_version=None, conversion=None):
-        self.files_location = files_location
-        self.pkg = pkg
-        self.pkg_reports = pkg_articles_validations.PackageReports(pkg.package_folder)
-        self.pkg_articles_data_report = pkg_articles_validations.PkgArticlesDataReports(pkg.articles)
-
         self.articles_validations_reports = articles_validations_reports
         self.conversion = conversion
         self.xpm_version = xpm_version
         self.stage = stage
         self.report_title = None
+        self.report_version = ''
+        if self.stage == 'xc':
+            self.report_version = '_' + datetime.now().isoformat()[0:19].replace(':', '').replace('T', '_')
+        self.files_location = files_location
+        self.pkg = pkg
+        self.pkg_reports = pkg_articles_validations.PackageReports(pkg.package_folder)
+        self.pkg_articles_data_report = pkg_articles_validations.PkgArticlesDataReports(pkg.articles)
+
         if self.stage == 'xpm':
             self.report_title = _('XML Package Maker Report')
         elif self.stage == 'xc':
@@ -121,33 +123,20 @@ class ReportsMaker(object):
         return content
 
     @property
-    def report_version(self):
-        version = ''
-        if self.stage == 'xc':
-            version = '_' + datetime.now().isoformat()[0:19].replace(':', '').replace('T', '_')
-        return version
-
-    @property
-    def report_filename(self):
-        return self.stage + self.report_version + '.html'
-
-    @property
-    def report_path(self):
-        return self.files_location.report_path
-
-    @property
     def report_location(self):
-        return self.report_path + '/' + self.report_filename
+        return self.files_location.report_path + '/' + self.stage + self.report_version + '.html'
 
     def save_report(self, display=True):
-        if not os.path.isdir(self.report_path):
-            os.makedirs(self.report_path)
-        html_reports.save(self.report_location, self.report_title, self.content)
+        print('save_report', 1)
+        html_reports.save(self.report_location, self.report_title, self.content, self.stage)
+        print('save_report', 2)
         if display is True:
-            print(self.report_location)
             html_reports.display_report(self.report_location)
+        print('save_report', 3)
         msg = _('Saved report: {f}').format(f=self.report_location)
+        print('save_report', 4)
         utils.display_message(msg)
+        print('save_report', 5)
 
     @property
     def content(self):

@@ -325,7 +325,8 @@ class ContribXML(object):
             for xref in self.xref_items:
                 if xref is not None:
                     text, attribs = xref
-                    c.xref.append(attribs.get('rid'))
+                    if attribs.get('ref-type') == 'aff':
+                        c.xref.append(attribs.get('rid'))
             return c
 
     @property
@@ -1123,7 +1124,6 @@ class ArticleXML(object):
 
     @property
     def article_affiliations(self):
-        print(self.article_meta.findall('.//aff'))
         affs = []
         if self.article_meta is not None:
             for aff in self.article_meta.findall('.//aff'):
@@ -1815,6 +1815,13 @@ class Article(ArticleXML):
     def registration_days(self):
         if self.accepted is not None:
             return article_utils.days('accepted date', self.accepted_dateiso, 'current date', datetime.now().isoformat())
+
+    @property
+    def expected_pdf_files(self):
+        expected_files = {self.language: self.new_prefix + '.pdf'}
+        expected_files.update(
+            {lang: self.new_prefix + '-' + lang + '.pdf' for lang in self.trans_languages})
+        return expected_files
 
 
 class Reference(object):

@@ -13,10 +13,14 @@ except Exception as e:
 
 from . import svg_conversion
 
+from ..__init__ import _
+
 
 IMDEBUGGING = False
-
-
+MIN_IMG_DPI = 300
+MIN_IMG_WIDTH = 789
+MAX_IMG_WIDTH = 2250
+MAX_IMG_HEIGHT = 2625
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', '.svg']
 
 
