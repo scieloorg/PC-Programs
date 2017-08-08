@@ -51,7 +51,7 @@ class XMLValidator(object):
             JAR_VALIDATE,
             self.xml_filename,
             self.validation_type,
-            self.result_filename)
+            self.temp_result_filename)
 
     def _is_valid(self):
         result = ''
@@ -63,7 +63,6 @@ class XMLValidator(object):
                 lines = fs_utils.read_file_lines(self.xml_filename)
                 numbers = [str(i) + ':' for i in range(1, len(lines)+1)]
                 result = '\n'.join([n + line for n, line in zip(numbers, lines)])
-                print(result)
                 fs_utils.write_file(self.temp_result_filename, result)
         else:
             result = 'ERROR: Not valid. Unknown error.\n' + cmd
