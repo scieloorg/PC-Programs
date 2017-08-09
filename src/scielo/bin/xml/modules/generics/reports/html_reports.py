@@ -253,7 +253,7 @@ def html(title, body):
         if os.path.isfile(MathJax_PATH+'/MathJax.js'):
             s += '<script type="text/javascript" src="{mathjax_path}/MathJax.js?config=MML_HTMLorMM-full"></script>'.format(mathjax_path=MathJax_PATH)
         else:
-            s += '<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>'
+            s += '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"></script>'
     s += '</head>'
     s += '<body>'
     s += report_date()
@@ -482,7 +482,7 @@ def format_html_data(value, width=70):
     return r
 
 
-def save(filename, title, body):
+def save(filename, title, body, teste=None):
     r = html(title, body)
     d = os.path.dirname(filename)
     if not os.path.isdir(d):
@@ -597,11 +597,8 @@ def display_report(report_filename):
     print(_('Report:\n  {filename}').format(filename=report_filename))
 
     try:
-        print(sys.getfilesystemencoding())
         #f = report_filename.encode(encoding=sys.getfilesystemencoding())
-        print(1)
         webbrowser.open(encoding.encode('file://' + report_filename, encoding=sys.getfilesystemencoding()), new=2)
-        print(2)
     except Exception as e:
         print('display_report: opening: ')
         print(report_filename)

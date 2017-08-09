@@ -18,8 +18,8 @@ def read_file(filename, encode='utf-8'):
 
 def read_file_lines(filename, encode='utf-8'):
     if os.path.isfile(filename):
-        r = open(filename, 'r').readlines()
-        return [encoding.decode(item, encode).strip() for item in r]
+        content = read_file(filename, encode)
+        return content.replace('\r', '').split('\n')
 
 
 def write_file(filename, content, encode='utf-8'):

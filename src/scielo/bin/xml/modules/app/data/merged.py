@@ -275,7 +275,7 @@ class ArticlesMergence(object):
                     self.history_items[name].append(HISTORY_PKG_ORDER_CONFLICTS)
                 else:
                     # valid order
-                    found = [name for name, a in self.registered_articles.items() if a.order == order]
+                    found = [registered_name for registered_name, a in self.registered_articles.items() if a.order == order]
                     found_by_order = found[0] if len(found) == 1 else None
                     found_by_name = name if self.registered_articles.get(name) is not None else None
                     if found_by_name in deleted:

@@ -5,6 +5,7 @@ from datetime import datetime
 
 from ...__init__ import _
 from ...generics import xml_utils
+from ...generics import img_utils
 from ...generics import utils
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
@@ -13,12 +14,6 @@ from .. import article_utils
 from . import ref_validations
 from . import data_validations
 from ..pkg_processors import xml_versions
-
-
-MIN_IMG_DPI = 300
-MIN_IMG_WIDTH = 789
-MAX_IMG_WIDTH = 2250
-MAX_IMG_HEIGHT = 2625
 
 
 def join_not_None_items(items, sep=', '):
@@ -51,7 +46,7 @@ class AffValidator(object):
         self.xref_items = xref_items
         self.institutions_query_results = institutions_query_results
         self.norm_aff = None
-        print()
+        self._validations = None
 
     @property
     def xml(self):
@@ -153,17 +148,19 @@ class AffValidator(object):
 
     @property
     def validations(self):
-        r = []
-        r.append(self.xml)
-        r.extend(self.id)
-        r.extend(self.original)
-        r.extend(self.country)
-        r.extend(self.orgname)
-        r.append(self.orgdiv3)
-        r.append(self.normalized)
-        r.append(self.occurrences)
-        r.append(self.xref)
-        return [item for item in r if item is not None]
+        if self._validations is None:
+            r = []
+            r.append(self.xml)
+            r.extend(self.id)
+            r.extend(self.original)
+            r.extend(self.country)
+            r.extend(self.orgname)
+            r.append(self.orgdiv3)
+            r.append(self.normalized)
+            r.append(self.occurrences)
+            r.append(self.xref)
+            self._validations = [item for item in r if item is not None]
+        return self._validations
 
 
 class ArticleContentValidation(object):
@@ -176,6 +173,7 @@ class ArticleContentValidation(object):
         self.is_db_generation = is_db_generation
         self.check_url = check_url
         self.pkgfiles = pkgfiles
+        self._validations = None
 
     def normalize_validations(self, validations_result_list):
         r = []
@@ -190,64 +188,65 @@ class ArticleContentValidation(object):
 
     @property
     def validations(self):
-        #FIXME
-        performance = []
-        #utils.debugging(datetime.now().isoformat() + ' validations 1')
-        items = []
-        items.append(self.sps)
-        items.append(self.expiration_sps)
-        items.append(self.language)
-        items.append(self.languages)
-        items.append(self.article_type)
+        if self._validations is None:
+            performance = []
+            #utils.debugging(datetime.now().isoformat() + ' validations 1')
+            items = []
+            items.append(self.sps)
+            items.append(self.expiration_sps)
+            items.append(self.language)
+            items.append(self.languages)
+            items.append(self.article_type)
 
-        if self.article.article_meta is None:
-            items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='journal-meta')))
-        else:
-            items.append(self.journal_title)
-            items.append(self.publisher_name)
-            items.append(self.journal_id_publisher_id)
-            items.append(self.journal_id_nlm_ta)
-            items.append(self.journal_issns)
+            if self.article.article_meta is None:
+                items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='journal-meta')))
+            else:
+                items.append(self.journal_title)
+                items.append(self.publisher_name)
+                items.append(self.journal_id_publisher_id)
+                items.append(self.journal_id_nlm_ta)
+                items.append(self.journal_issns)
 
-        if self.article.article_meta is None:
-            items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='article-meta')))
-        else:
-            items.append(self.months_seasons)
-            items.append(self.issue_label)
-            items.append(self.article_date_types)
-            items.append(self.toc_section)
-            items.append(self.order)
-            items.append(self.doi)
-            items.append(self.article_id)
-            items.append(self.pagination)
-            items.append(self.total_of_pages)
-            items.append(self.total_of_equations)
-            items.append(self.total_of_tables)
-            items.append(self.total_of_figures)
-            items.append(self.total_of_references)
-            items.append(self.ref_display_only_stats)
-            items.append(self.contrib)
-            items.append(self.contrib_names)
-            items.append(self.contrib_collabs)
-            items.append(self.affiliations)
-            items.append(self.funding)
-            items.append(self.article_permissions)
-            items.append(self.history)
-            items.append(self.titles_abstracts_keywords)
-            items.append(self.related_articles)
+            if self.article.article_meta is None:
+                items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='article-meta')))
+            else:
+                items.append(self.months_seasons)
+                items.append(self.issue_label)
+                items.append(self.article_date_types)
+                items.append(self.toc_section)
+                items.append(self.order)
+                items.append(self.doi)
+                items.append(self.article_id)
+                items.append(self.pagination)
+                items.append(self.total_of_pages)
+                items.append(self.total_of_equations)
+                items.append(self.total_of_tables)
+                items.append(self.total_of_figures)
+                items.append(self.total_of_references)
+                items.append(self.ref_display_only_stats)
+                items.append(self.contrib)
+                items.append(self.contrib_names)
+                items.append(self.contrib_collabs)
+                items.append(self.affiliations)
+                items.append(self.funding)
+                items.append(self.article_permissions)
+                items.append(self.history)
+                items.append(self.titles_abstracts_keywords)
+                items.append(self.related_articles)
 
-        items.append(self.sections)
-        items.append(self.paragraphs)
-        items.append(self.disp_formulas)
-        items.append(self.validate_xref_reftype)
-        items.append(self.missing_xref_list)
-        #items.append(self.innerbody_elements_permissions)
+            items.append(self.sections)
+            items.append(self.paragraphs)
+            items.append(self.disp_formulas)
+            items.append(self.validate_xref_reftype)
+            items.append(self.missing_xref_list)
+            #items.append(self.innerbody_elements_permissions)
 
-        items.append(self.refstats)
-        items.append(self.refs_sources)
+            items.append(self.refstats)
+            items.append(self.refs_sources)
 
-        r = self.normalize_validations(items)
-        return (r, performance)
+            r = self.normalize_validations(items)
+            self._validations = (r, performance)
+        return self._validations
 
     def is_not_empty_element(self, node):
         if node is not None:
@@ -401,7 +400,7 @@ class ArticleContentValidation(object):
                 _doi = related_article.get('href', '')
                 if _doi != '':
                     errors = self.doi_validator.validate_format(_doi)
-                    if len(errors) > 0:
+                    if errors is not None and len(errors) > 0:
                         msg = data_validations.inis_valid_value('related-article/@xlink:href', related_article.get('href'))
                         r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
         return r
@@ -1169,6 +1168,7 @@ class ArticleContentValidation(object):
         min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
         for hrefitem in self.article.hrefs:
             href_validations = HRefValidation(self.app_institutions_manager.ws.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
+        
             href_items[hrefitem.src] = {
                 'display': href_validations.display,
                 'elem': hrefitem,
@@ -1189,45 +1189,43 @@ class ArticleContentValidation(object):
 
     @property
     def package_files(self):
-        #FIXME
-        expected_files = {self.article.language: self.pkgfiles.name + '.pdf'}
-        expected_files.update(
-            {lang: self.pkgfiles.name + '-' + lang + '.pdf' for lang in self.article.trans_languages})
         _pkg_files = {}
-        for f in expected_files.values():
+        for lang, f in self.article.expected_pdf_files.items():
             if f not in _pkg_files.keys():
                 _pkg_files[f] = []
-            _pkg_files[f].append((validation_status.STATUS_INFO, 'PDF ({lang}). '.format(lang=self.article.language)))
+            _pkg_files[f].append((validation_status.STATUS_INFO, 'PDF ({lang}). '.format(lang=lang)))
             if f not in self.pkgfiles.files_except_xml:
                 _pkg_files[f].append((validation_status.STATUS_ERROR, _('Not found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
 
         #from files, find in XML
         href_items_in_xml = [item.name_without_extension for item in self.article.href_files]
         href_items_in_xml += [item.src for item in self.article.href_files]
+        href_items_in_xml = list(set(href_items_in_xml))
         for f in self.pkgfiles.files_except_xml:
-            name, ext = os.path.splitext(f)
-            if f not in _pkg_files.keys():
-                _pkg_files[f] = []
-            _pkg_files[f].append((validation_status.STATUS_INFO, _('Found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
+            if f not in self.article.expected_pdf_files.values():
+                name, ext = os.path.splitext(f)
+                if f not in _pkg_files.keys():
+                    _pkg_files[f] = []
+                _pkg_files[f].append((validation_status.STATUS_INFO, _('Found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
 
-            status = validation_status.STATUS_INFO
-            message = None
-            if f in href_items_in_xml or name in href_items_in_xml:
-                message = _('Found {label} in the {item}. ').format(label=_('file'), item='XML')
-            elif f in expected_files.values():
-                lang = [k for k, v in expected_files.items() if v == f]
-                if len(lang) > 0:
-                    lang = lang[0]
-                    message = _('Found {label} in {item}. ').format(label='@xml:lang={lang}'.format(lang=lang), item='XML')
-            else:
-                message = _('Not found {label} in the {item}. ').format(label=_('file'), item='XML')
-                status = validation_status.STATUS_ERROR
+                status = validation_status.STATUS_INFO
+                message = None
+                if f in href_items_in_xml or name in href_items_in_xml:
+                    message = _('Found {label} in the {item}. ').format(label=_('file'), item='XML')
+                else:
+                    message = _('Not found {label} in the {item}. ').format(label=_('file'), item='XML')
+                    status = validation_status.STATUS_ERROR
 
-            if message is not None:
-                _pkg_files[f].append((status, message))
+                if message is not None:
+                    _pkg_files[f].append((status, message))
         items = []
         for name in sorted(_pkg_files.keys()):
+            messages = {}
             for status, message_list in _pkg_files[name]:
+                if status not in messages.keys():
+                    messages[status] = []
+                messages[status].append(message_list)
+            for status, message_list in messages.items():
                 items.append((name, status, message_list))
         return items
 
@@ -1257,7 +1255,7 @@ class HRefValidation(object):
         if self.hrefitem.is_internal_file:
             status_message.extend(self.validate_href_file)
             if self.hrefitem.is_image:
-                status_message.append(self.validate_tiff_image)
+                status_message.extend(self.validate_tiff_image)
             status_message = [item for item in status_message if item is not None]
         else:
             if self.check_url or 'scielo.php' in self.hrefitem.src:
@@ -1286,6 +1284,7 @@ class HRefValidation(object):
         for name in [self.name+'.tif', self.name+'.tiff']:
             if name in self.pkgfiles.tiff_items:
                 return img_utils.evaluate_tiff(self.pkgfiles.path + '/' + name, self.min_height, self.max_height)
+        return []
 
     @property
     def display(self):

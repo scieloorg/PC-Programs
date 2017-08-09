@@ -238,7 +238,7 @@ def node_text(node):
 
 def node_xml(node):
     text = tostring(node)
-    if '&' in text:
+    if node is not None and '&' in text:
         text, replaced_named_ent = convert_entities_to_chars(text)
     return text
 

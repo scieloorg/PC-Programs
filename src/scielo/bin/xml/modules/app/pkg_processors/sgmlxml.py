@@ -19,11 +19,11 @@ from . import sps_pkgmaker
 
 class SGMLXMLWorkarea(workarea.Workarea):
 
-    def __init__(self, name, ctrl_path):
-        self.input_path = ctrl_path
+    def __init__(self, name, sgmxml_path):
+        self.input_path = sgmxml_path
         self.name = name
-        output_path = os.path.dirname(os.path.dirname(ctrl_path))
-        workarea.Workarea.__init__(self, output_path, ctrl_path)
+        output_path = os.path.dirname(os.path.dirname(sgmxml_path))
+        workarea.Workarea.__init__(self, output_path)
         self.src_path = self.output_path + '/src'
 
     @property
@@ -464,70 +464,68 @@ class PackageNamer(object):
         return '\n'.join(log)
 
 
-class SGMLXML2SPSXMLPackageMaker(object):
+class SGMLXML2SPSXML(object):
 
-    def __init__(self, wk, sgml_pkgfiles):
-        self.wk = wk
-        self.sgml_pkgfiles = sgml_pkgfiles
-        self.outputs = workarea.OutputFiles(self.sgml_pkgfiles.name, self.wk.reports_path, self.sgml_pkgfiles.path)
-        self.new_name = self.sgml_pkgfiles.name
-        self.src_pkgfiles = workarea.PkgArticleFiles(wk.src_path + '/' + self.sgml_pkgfiles.name + '.xml')
-        self.src_pkgfiles.convert_images()
+    def __init__(self, sgmxml_files):
         self.xml_pkgfiles = None
-        self.sgmxmlcontent = SGMLXMLContent(
-            fs_utils.read_file(self.sgml_pkgfiles.filename),
-            SGMLHTML(self.sgml_pkgfiles.name, wk.html_filename),
-            self.src_pkgfiles)
         self.xml_error = None
-
-    @property
-    def xml_name(self):
-        return self.src_pkgfiles.name
+        self.sgmxml_files = sgmxml_files
+        self.wk = SGMLXMLWorkarea(sgmxml_files.name, sgmxml_files.path)
+        self.sgmhtml = SGMLHTML(sgmxml_files.name, self.wk.html_filename)
+        self.sgmxml_outputs = workarea.OutputFiles(sgmxml_files.name, self.wk.reports_path, sgmxml_files.path)
+        self.src_pkgfiles = workarea.PkgArticleFiles(self.wk.src_path + '/' + sgmxml_files.name + '.xml')
+        shutil.copyfile(self.sgmxml_files.filename, self.src_pkgfiles.filename)
+        self.xml_pkgfiles = self.src_pkgfiles
 
     @property
     def xml(self):
         _xml, self.xml_error = xml_utils.load_xml(self.xml_content)
-        if _xml is not None:
-            return _xml
+        return _xml
 
     @property
     def doc(self):
         if self.xml is not None:
-            a = article.Article(self.xml, self.sgml_pkgfiles.name)
-            a.new_prefix = self.new_name
+            a = article.Article(self.xml, self.sgmxml_files.name)
+            a.new_prefix = self.sgmxml_files.name
             return a
 
     def normalize_sgmxml(self):
-        self.sgmxmlcontent.normalize()
-        fs_utils.write_file(self.src_pkgfiles.filename, self.sgmxmlcontent.content)
-        self.xml_content = self.sgmxmlcontent.content
+        self.src_pkgfiles.convert_images()
+        sgmxml_content = SGMLXMLContent(
+            fs_utils.read_file(self.src_pkgfiles.filename),
+            self.sgmhtml,
+            self.src_pkgfiles)
+        sgmxml_content.normalize()
+        fs_utils.write_file(self.src_pkgfiles.filename, sgmxml_content.content)
+        self.images_origin = sgmxml_content.images_origin
+        self.xml_content = sgmxml_content.content
+
+    def sgmxml2xml(self, converter):
+        self.xml_content = converter.sgml2xml(self.xml_content)
+        fs_utils.write_file(self.src_pkgfiles.filename, self.xml_content)
 
     def normalize_xml(self):
         spsxmlcontent = sps_pkgmaker.SPSXMLContent(self.xml_content)
         spsxmlcontent.normalize()
         self.xml_content = spsxmlcontent.content
 
-    def pack(self, acron, converter):
-        self.normalize_sgmxml()
-        self.xml_content = converter.sgml2xml(self.xml_content)
-        self.xml_pkgfiles = workarea.PkgArticleFiles(self.src_pkgfiles.path + '/' + self.src_pkgfiles.name + '.xml')
-        fs_utils.write_file(self.src_pkgfiles.filename, self.xml_content)
-        self.normalize_xml()
-
+    def report(self, acron):
         msg = self.invalid_xml_message
         if msg == '':
             pkgnamer = PackageNamer(self.xml_content, self.src_pkgfiles)
             pkgnamer.rename(acron, self.wk.scielo_package_path)
-
             self.xml_pkgfiles = pkgnamer.dest_pkgfiles
             self.xml_pkgfiles.previous_name = self.src_pkgfiles.name
-            self.xml_pkgfiles.ctrl_path = self.src_pkgfiles.path
-
             msg = pkgnamer.report()
-            imgreports = ImagesOriginReport(self.sgmxmlcontent.images_origin, pkgnamer.hrefreplacements, self.xml_pkgfiles.path)
-            html_reports.save(self.outputs.images_report_filename, '', imgreports.report())
+            img_reports = ImagesOriginReport(self.images_origin, pkgnamer.hrefreplacements, self.xml_pkgfiles.path)
+            html_reports.save(self.sgmxml_outputs.images_report_filename, '', img_reports.report())
+        fs_utils.write_file(self.sgmxml_outputs.err_filename, msg)
 
-        fs_utils.write_file(self.outputs.err_filename, msg)
+    def pack(self, acron, converter):
+        self.normalize_sgmxml()
+        self.sgmxml2xml(converter)
+        self.normalize_xml()
+        self.report(acron)
 
     @property
     def invalid_xml_message(self):
