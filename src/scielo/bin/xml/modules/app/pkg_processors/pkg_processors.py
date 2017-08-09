@@ -78,11 +78,7 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
     dest_path = wk.scielo_package_path
     dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
     for src, dest in zip(article_files_items, dest_article_files_items):
-        print(src.name)
-        print(src.path)
-        print(src.all)
         src.convert_images()
-        print(src.all)
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
         xmlcontent.doctype(dtd_location_type)
@@ -137,7 +133,7 @@ class ArticlesConversion(object):
 
     def replace_ex_aop_pdf_files(self):
         # FIXME
-        print(self.db.aop_pdf_replacements)
+        print('replace_ex_aop_pdf_files', self.db.aop_pdf_replacements)
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
 
@@ -170,7 +166,7 @@ class ArticlesConversion(object):
                 self.articles_mergence.history_items[name].append(status)
 
         items = []
-        db_articles = self.registered_articles
+        db_articles = self.registered_articles or {}
         for xml_name in sorted(self.articles_mergence.history_items.keys()):
             pkg = self.articles_mergence.articles.get(xml_name)
             registered = self.articles_mergence.registered_articles.get(xml_name)
@@ -334,18 +330,19 @@ class PkgProcessor(object):
 
     @property
     def db_manager(self):
-        if self._db_manager is None:
+        if self._db_manager is None and self.is_db_generation:
             cisis1030 = dbm_isis.CISIS(self.config.cisis1030)
-            cisis1660 = dbm_isis.CISIS(self.config.cisis1660)
-            ucisis = dbm_isis.UCISIS(cisis1030, cisis1660)
-            db_isis = dbm_isis.IsisDAO(ucisis)
-            titles = [self.config.title_db, self.config.title_db_copy, FST_PATH + '/title.fst']
-            issues = [self.config.issue_db, self.config.issue_db_copy, FST_PATH + '/issue.fst']
-            self._db_manager = xc_models.DBManager(
-                db_isis,
-                titles,
-                issues,
-                self.config.serial_path)
+            if cisis1030.cisis_path is not None:
+                cisis1660 = dbm_isis.CISIS(self.config.cisis1660)
+                ucisis = dbm_isis.UCISIS(cisis1030, cisis1660)
+                db_isis = dbm_isis.IsisDAO(ucisis)
+                titles = [self.config.title_db, self.config.title_db_copy, FST_PATH + '/title.fst']
+                issues = [self.config.issue_db, self.config.issue_db_copy, FST_PATH + '/issue.fst']
+                self._db_manager = xc_models.DBManager(
+                    db_isis,
+                    titles,
+                    issues,
+                    self.config.serial_path)
         return self._db_manager
 
     def normalized_package(self, xml_list):

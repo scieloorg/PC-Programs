@@ -37,6 +37,7 @@ class AffiliationXML(object):
         self.node = node
         self.xml_node = xml_utils.XMLNode(node)
         self._aff = None
+        self._institution_id = None
 
     @property
     def xml(self):
@@ -48,11 +49,13 @@ class AffiliationXML(object):
 
     @property
     def institution_id(self):
-        r = []
-        for node in self.xml_node.nodes_data(['.//institution-id']):
-            if node is not None:
-                r.append((node[0], node[1].get('institution-id-type')))
-        return r
+        if self._institution_id is None:
+            r = []
+            for node in self.xml_node.nodes_data(['.//institution-id']):
+                if node is not None:
+                    r.append((node[0], node[1].get('institution-id-type')))
+            self._institution_id = r
+        return self._institution_id
 
     @property
     def city(self):
@@ -263,38 +266,14 @@ class ContribXML(object):
         self.node = node
         self.xml_node = xml_utils.XMLNode(node)
         self._contrib = None
-
-    @property
-    def fnames(self):
-        return self.xml_node.nodes_text(['.//given-names'])
-
-    @property
-    def surnames(self):
-        return self.xml_node.nodes_text(['.//surname'])
-
-    @property
-    def etals(self):
-        return self.xml_node.nodes_text(['.//etal'])
-
-    @property
-    def anonymous(self):
-        return self.xml_node.nodes_text(['.//anonymous'])
-
-    @property
-    def suffixes(self):
-        return self.xml_node.nodes_text(['.//suffix'])
-
-    @property
-    def prefixes(self):
-        return self.xml_node.nodes_text(['.//prefix'])
-
-    @property
-    def contrib_id_items(self):
-        return self.xml_node.nodes_data(['.//contrib-id'])
-
-    @property
-    def xref_items(self):
-        return self.xml_node.nodes_data(['.//xref'])
+        self.fnames = self.xml_node.nodes_text(['.//given-names'])
+        self.surnames = self.xml_node.nodes_text(['.//surname'])
+        self.etals = self.xml_node.nodes_text(['.//etal'])
+        self.anonymous = self.xml_node.nodes_text(['.//anonymous'])
+        self.suffixes = self.xml_node.nodes_text(['.//suffix'])
+        self.prefixes = self.xml_node.nodes_text(['.//prefix'])
+        self.contrib_id_items = self.xml_node.nodes_data(['.//contrib-id'])
+        self.xref_items = self.xml_node.nodes_data(['.//xref'])
 
     @property
     def collabs(self):
@@ -447,6 +426,8 @@ class ArticleXML(object):
         self.translations = []
         self.sub_articles = []
         self.responses = []
+        self._fpage = None
+        self._epub_ppub_date = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
@@ -1100,8 +1081,10 @@ class ArticleXML(object):
 
     @property
     def fpage(self):
-        if self.article_meta is not None:
-            return article_utils.normalize_number(self.article_meta.findtext('fpage'))
+        if self._fpage is None:
+            if self.article_meta is not None:
+                self._fpage = article_utils.normalize_number(self.article_meta.findtext('fpage'))
+        return self._fpage
 
     @property
     def fpage_seq(self):
@@ -1403,8 +1386,10 @@ class ArticleXML(object):
 
     @property
     def epub_ppub_date(self):
-        if self.article_meta is not None:
-            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="epub-ppub"]'))
+        if self._epub_ppub_date is None:
+            if self.article_meta is not None:
+                self._epub_ppub_date = xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="epub-ppub"]'))
+        return self._epub_ppub_date
 
     @property
     def epub_date(self):
@@ -1577,6 +1562,7 @@ class Article(ArticleXML):
         self.section_code = None
         self.normalized_affiliations = {}
         self.institutions_query_results = {}
+        self._issue_pub_date = None
 
     @property
     def clinical_trial_url(self):
@@ -1750,12 +1736,12 @@ class Article(ArticleXML):
 
     @property
     def issue_pub_date(self):
-        d = self.epub_ppub_date
-        if d is None:
-            d = self.collection_date
-        if d is None:
-            d = self.epub_date
-        return d
+        if self._issue_pub_date is None:
+            for d in [self.epub_ppub_date, self.collection_date, self.epub_date]:
+                if d is not None:
+                    self._issue_pub_date = d
+                    break
+        return self._issue_pub_date
 
     @property
     def article_pub_date(self):
@@ -1895,6 +1881,33 @@ class ReferenceXML(object):
         self._pub_id_items = None
         self._doi = None
         self._ref = None
+        self._person_group_xml_items = None
+        self._contrib_xml_items = None
+        self.source = self.nodes_text(['.//source'])
+        self.volume = self.nodes_text(['.//volume'])
+        self.issue = self.nodes_text(['.//issue'])
+        self.supplement = self.nodes_text(['.//supplement'])
+        self.edition = self.nodes_text(['.//edition'])
+        self.version = self.nodes_text(['.//version'])
+        self.year = self.nodes_text(['.//year'])
+        self.fpage = self.nodes_text(['.//fpage'])
+        self.lpage = self.nodes_text(['.//lpage'])
+        self.label = self.nodes_text(['.//label'])
+        self.etal = self.nodes_text(['.//etal'])
+        self.article_title = self.nodes_text(['.//article-title'])
+        self.chapter_title = self.nodes_text(['.//chapter-title'])
+        self.trans_title = self.nodes_text(['.//trans-title'])
+        self.publisher_name = self.nodes_text(['.//publisher-name'])
+        self.publisher_loc = self.nodes_text(['.//publisher-loc'])
+        self.page_range = self.nodes_text(['.//page-range'])
+        self.elocation_id = self.nodes_text(['.//elocation-id'])
+        self.ext_link = self.nodes_text(['.//ext-link'])
+        self.comments = self.nodes_text(['.//comment'])
+        self.notes = self.nodes_text(['.//notes'])
+        self.contract_number = self.nodes_text(['.//comment[@content-type="award-id"]'])
+        self.conference_name = self.nodes_text(['.//conf-name'])
+        self.conference_location = self.nodes_text(['.//conf-loc'])
+        self.conference_date = self.nodes_text(['.//conf-date'])
 
     def nodes(self, xpaths):
         items = []
@@ -1962,10 +1975,6 @@ class ReferenceXML(object):
         return self._ref
 
     @property
-    def source(self):
-        return self.nodes_text(['.//source'])
-
-    @property
     def id(self):
         return self.root.find('.').attrib.get('id')
 
@@ -1978,18 +1987,6 @@ class ReferenceXML(object):
             if lang is not None:
                 break
         return lang
-
-    @property
-    def article_title(self):
-        return self.nodes_text(['.//article-title'])
-
-    @property
-    def chapter_title(self):
-        return self.nodes_text(['.//chapter-title'])
-
-    @property
-    def trans_title(self):
-        return self.nodes_text(['.//trans-title'])
 
     @property
     def trans_title_language(self):
@@ -2022,73 +2019,29 @@ class ReferenceXML(object):
 
     @property
     def contrib_xml_items(self):
-        r = []
-        for items in self.person_group_xml_items:
-            if items is not None:
-                r.extend(items[1])
-        return r
+        if self._contrib_xml_items is None:
+            r = []
+            for items in self.person_group_xml_items:
+                if items is not None:
+                    r.extend(items[1])
+            self._contrib_xml_items = r
+        return self._contrib_xml_items
 
     @property
     def person_group_xml_items(self):
-        groups = []
-        if self.elem_citation_nodes is not None:
-            for person_group in self.nodes(['.//person-group']):
-                role = person_group.attrib.get('person-group-type', 'author')
-                authors = []
-                for contrib in person_group.findall('*'):
-                    contrib_xml = ContribXML(contrib)
-                    if contrib_xml.contrib() is not None:
-                        authors.append(contrib_xml)
-                groups.append((role, authors))
-        return groups
-
-    @property
-    def volume(self):
-        return self.nodes_text(['.//volume'])
-
-    @property
-    def issue(self):
-        return self.nodes_text(['.//issue'])
-
-    @property
-    def supplement(self):
-        return self.nodes_text(['.//supplement'])
-
-    @property
-    def edition(self):
-        return self.nodes_text(['.//edition'])
-
-    @property
-    def version(self):
-        return self.nodes_text(['.//version'])
-
-    @property
-    def year(self):
-        return self.nodes_text(['.//year'])
-
-    @property
-    def publisher_name(self):
-        return self.nodes_text(['.//publisher-name'])
-
-    @property
-    def publisher_loc(self):
-        return self.nodes_text(['.//publisher-loc'])
-
-    @property
-    def fpage(self):
-        return self.nodes_text(['.//fpage'])
-
-    @property
-    def lpage(self):
-        return self.nodes_text(['.//lpage'])
-
-    @property
-    def page_range(self):
-        return self.nodes_text(['.//page-range'])
-
-    @property
-    def elocation_id(self):
-        return self.nodes_text(['.//elocation-id'])
+        if self._person_group_xml_items is None:
+            groups = []
+            if self.elem_citation_nodes is not None:
+                for person_group in self.nodes(['.//person-group']):
+                    role = person_group.attrib.get('person-group-type', 'author')
+                    authors = []
+                    for contrib in person_group.findall('*'):
+                        contrib_xml = ContribXML(contrib)
+                        if contrib_xml.contrib() is not None:
+                            authors.append(contrib_xml)
+                    groups.append((role, authors))
+            self._person_group_xml_items = groups
+        return self._person_group_xml_items
 
     @property
     def size(self):
@@ -2100,14 +2053,6 @@ class ReferenceXML(object):
         return items if len(items) > 0 else [None]
 
     @property
-    def label(self):
-        return self.nodes_text(['.//label'])
-
-    @property
-    def etal(self):
-        return self.nodes_text(['.//etal'])
-
-    @property
     def cited_date(self):
         return self.nodes_text(
             [
@@ -2116,25 +2061,9 @@ class ReferenceXML(object):
             ])
 
     @property
-    def ext_link(self):
-        return self.nodes_text(['.//ext-link'])
-
-    @property
     def degree(self):
         if self.publication_type == 'thesis':
             return self.comments
-
-    @property
-    def comments(self):
-        return self.nodes_text(['.//comment'])
-
-    @property
-    def notes(self):
-        return self.nodes_text(['.//notes'])
-
-    @property
-    def contract_number(self):
-        return self.nodes_text(['.//comment[@content-type="award-id"]'])
 
     @property
     def pub_id_items(self):
@@ -2161,18 +2090,6 @@ class ReferenceXML(object):
     def pmcid(self):
         if self.pub_id_items is not None:
             return self.pub_id_items.get('pmcid')
-
-    @property
-    def conference_name(self):
-        return self.nodes_text(['.//conf-name'])
-
-    @property
-    def conference_location(self):
-        return self.nodes_text(['.//conf-loc'])
-
-    @property
-    def conference_date(self):
-        return self.nodes_text(['.//conf-date'])
 
 
 class Issue(object):

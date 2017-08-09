@@ -74,14 +74,13 @@ class XMLStructureValidator(object):
             name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=new_name, forbidden_characters='_.') + separator
 
         files_errors = fs_utils.read_file(outputs.err_filename) or ''
-
         for f in [outputs.dtd_report_filename, outputs.style_report_filename, outputs.data_report_filename, outputs.pmc_style_report_filename]:
             fs_utils.delete_file_or_folder(f)
-        #xml_filename = outputs.new_xml_filename
         xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
-        xml_structure_report_content = '' or fs_utils.read_file(outputs.dtd_report_filename)
+        dtd_report_content = fs_utils.read_file(outputs.dtd_report_filename)
+        xml_structure_report_content = '' or dtd_report_content
         if len(xml_structure_report_content) > 0:
             xml_structure_report_content = rst_title(_('DTD errors')) + xml_structure_report_content
 
@@ -98,7 +97,6 @@ class XMLStructureValidator(object):
 
         if len(report_content) > 0:
             report_content = rst_title(_('Summary')) + report_content + separator
-            report_content = report_content.replace('\n', '<br/>')
 
         if xml_f > 0:
             fs_utils.append_file(outputs.err_filename, name_error + xml_structure_report_content)
@@ -107,7 +105,6 @@ class XMLStructureValidator(object):
                 fs_utils.delete_file_or_folder(outputs.style_report_filename)
         else:
             fs_utils.write_file(outputs.ctrl_filename, 'Finished')
-
         for rep_file in [outputs.err_filename, outputs.style_report_filename]:
             if os.path.isfile(rep_file):
                 report_content += extract_report_core(fs_utils.read_file(rep_file))
@@ -225,31 +222,31 @@ class ArticleValidations(object):
 
 
 def extract_report_core(content):
-    report = ''
-    if 'Parse/validation finished' in content and '<!DOCTYPE' in content:
-        part1 = content[0:content.find('<!DOCTYPE')]
-        part2 = content[content.find('<!DOCTYPE'):]
-
-        l = part1[part1.rfind('Line number:')+len('Line number:'):]
-        l = l[0:l.find('Column')]
-        l = ''.join([item.strip() for item in l.split()])
-        if l.isdigit():
-            l = str(int(l) + 1) + ':'
-            if l in part2:
-                part2 = part2[0:part2.find(l)] + '\n...'
-
-        part1 = part1.replace('\n', '<br/>')
-        part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
-        report = '<p>' + part1 + part2 + '</p>'
-    elif '</body>' in content:
-        content = content[content.find('<body'):]
-        content = content[0:content.rfind('</body>')]
-        report = content[content.find('>')+1:]
-    elif '<body' in content:
-        content = content[content.find('<body'):]
-        report = content[content.find('>')+1:]
-    elif '<' not in content:
-        report = content.replace('\n', '<br/>')
+    if content.strip().lower().endswith('</html>') or content.strip().lower().startswith('<html'):
+        if '<body' in content:
+            content = content[content.find('<body'):]
+            content = content[content.find('>')+1:]
+        if '</body>' in content:
+            content = content[:content.rfind('</body>')]
+        report = content
+    elif 'Parse/validation finished' in content:
+        part1 = ''
+        part2 = content
+        if '1:' in content:
+            part1 = content[0:content.find('1:')]
+            part2 = content[content.find('1:'):]
+        if 'Line number:' in part1:
+            l = part1[part1.rfind('Line number:')+len('Line number:'):]
+            l = l[0:l.find('Column')]
+            l = ''.join([c for c in list(l) if c.isdigit()])
+            if l.isdigit():
+                l = str(int(l) + 1) + ':'
+                if l in part2:
+                    part2 = part2[0:part2.find(l)] + '\n...'
+        report = part1 + part2
+        report = report.replace('<', '&lt;').replace('>', '&gt;').replace('\t', '&nbsp;'*4).replace('\n', '<br/>')
+    else:
+        report = ''
     return report
 
 
@@ -261,7 +258,7 @@ def evaluate_journal_data(items):
         if len(expected_values) == 0:
             expected_values.extend([None, ''])
         status = validation_status.STATUS_OK
-        if not value in expected_values:
+        if value not in expected_values:
             status = default_status
             for expected_value in expected_values:
                 if expected_value is not None and value is not None:

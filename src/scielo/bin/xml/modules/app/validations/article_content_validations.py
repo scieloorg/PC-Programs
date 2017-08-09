@@ -46,6 +46,7 @@ class AffValidator(object):
         self.xref_items = xref_items
         self.institutions_query_results = institutions_query_results
         self.norm_aff = None
+        self._validations = None
 
     @property
     def xml(self):
@@ -147,17 +148,19 @@ class AffValidator(object):
 
     @property
     def validations(self):
-        r = []
-        r.append(self.xml)
-        r.extend(self.id)
-        r.extend(self.original)
-        r.extend(self.country)
-        r.extend(self.orgname)
-        r.append(self.orgdiv3)
-        r.append(self.normalized)
-        r.append(self.occurrences)
-        r.append(self.xref)
-        return [item for item in r if item is not None]
+        if self._validations is None:
+            r = []
+            r.append(self.xml)
+            r.extend(self.id)
+            r.extend(self.original)
+            r.extend(self.country)
+            r.extend(self.orgname)
+            r.append(self.orgdiv3)
+            r.append(self.normalized)
+            r.append(self.occurrences)
+            r.append(self.xref)
+            self._validations = [item for item in r if item is not None]
+        return self._validations
 
 
 class ArticleContentValidation(object):
@@ -170,6 +173,7 @@ class ArticleContentValidation(object):
         self.is_db_generation = is_db_generation
         self.check_url = check_url
         self.pkgfiles = pkgfiles
+        self._validations = None
 
     def normalize_validations(self, validations_result_list):
         r = []
@@ -184,64 +188,65 @@ class ArticleContentValidation(object):
 
     @property
     def validations(self):
-        #FIXME
-        performance = []
-        #utils.debugging(datetime.now().isoformat() + ' validations 1')
-        items = []
-        items.append(self.sps)
-        items.append(self.expiration_sps)
-        items.append(self.language)
-        items.append(self.languages)
-        items.append(self.article_type)
+        if self._validations is None:
+            performance = []
+            #utils.debugging(datetime.now().isoformat() + ' validations 1')
+            items = []
+            items.append(self.sps)
+            items.append(self.expiration_sps)
+            items.append(self.language)
+            items.append(self.languages)
+            items.append(self.article_type)
 
-        if self.article.article_meta is None:
-            items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='journal-meta')))
-        else:
-            items.append(self.journal_title)
-            items.append(self.publisher_name)
-            items.append(self.journal_id_publisher_id)
-            items.append(self.journal_id_nlm_ta)
-            items.append(self.journal_issns)
+            if self.article.article_meta is None:
+                items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='journal-meta')))
+            else:
+                items.append(self.journal_title)
+                items.append(self.publisher_name)
+                items.append(self.journal_id_publisher_id)
+                items.append(self.journal_id_nlm_ta)
+                items.append(self.journal_issns)
 
-        if self.article.article_meta is None:
-            items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='article-meta')))
-        else:
-            items.append(self.months_seasons)
-            items.append(self.issue_label)
-            items.append(self.article_date_types)
-            items.append(self.toc_section)
-            items.append(self.order)
-            items.append(self.doi)
-            items.append(self.article_id)
-            items.append(self.pagination)
-            items.append(self.total_of_pages)
-            items.append(self.total_of_equations)
-            items.append(self.total_of_tables)
-            items.append(self.total_of_figures)
-            items.append(self.total_of_references)
-            items.append(self.ref_display_only_stats)
-            items.append(self.contrib)
-            items.append(self.contrib_names)
-            items.append(self.contrib_collabs)
-            items.append(self.affiliations)
-            items.append(self.funding)
-            items.append(self.article_permissions)
-            items.append(self.history)
-            items.append(self.titles_abstracts_keywords)
-            items.append(self.related_articles)
+            if self.article.article_meta is None:
+                items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='article-meta')))
+            else:
+                items.append(self.months_seasons)
+                items.append(self.issue_label)
+                items.append(self.article_date_types)
+                items.append(self.toc_section)
+                items.append(self.order)
+                items.append(self.doi)
+                items.append(self.article_id)
+                items.append(self.pagination)
+                items.append(self.total_of_pages)
+                items.append(self.total_of_equations)
+                items.append(self.total_of_tables)
+                items.append(self.total_of_figures)
+                items.append(self.total_of_references)
+                items.append(self.ref_display_only_stats)
+                items.append(self.contrib)
+                items.append(self.contrib_names)
+                items.append(self.contrib_collabs)
+                items.append(self.affiliations)
+                items.append(self.funding)
+                items.append(self.article_permissions)
+                items.append(self.history)
+                items.append(self.titles_abstracts_keywords)
+                items.append(self.related_articles)
 
-        items.append(self.sections)
-        items.append(self.paragraphs)
-        items.append(self.disp_formulas)
-        items.append(self.validate_xref_reftype)
-        items.append(self.missing_xref_list)
-        #items.append(self.innerbody_elements_permissions)
+            items.append(self.sections)
+            items.append(self.paragraphs)
+            items.append(self.disp_formulas)
+            items.append(self.validate_xref_reftype)
+            items.append(self.missing_xref_list)
+            #items.append(self.innerbody_elements_permissions)
 
-        items.append(self.refstats)
-        items.append(self.refs_sources)
+            items.append(self.refstats)
+            items.append(self.refs_sources)
 
-        r = self.normalize_validations(items)
-        return (r, performance)
+            r = self.normalize_validations(items)
+            self._validations = (r, performance)
+        return self._validations
 
     def is_not_empty_element(self, node):
         if node is not None:
@@ -395,7 +400,7 @@ class ArticleContentValidation(object):
                 _doi = related_article.get('href', '')
                 if _doi != '':
                     errors = self.doi_validator.validate_format(_doi)
-                    if len(errors) > 0:
+                    if errors is not None and len(errors) > 0:
                         msg = data_validations.inis_valid_value('related-article/@xlink:href', related_article.get('href'))
                         r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
         return r
@@ -1184,7 +1189,6 @@ class ArticleContentValidation(object):
 
     @property
     def package_files(self):
-        #FIXME
         _pkg_files = {}
         for lang, f in self.article.expected_pdf_files.items():
             if f not in _pkg_files.keys():
@@ -1280,6 +1284,7 @@ class HRefValidation(object):
         for name in [self.name+'.tif', self.name+'.tiff']:
             if name in self.pkgfiles.tiff_items:
                 return img_utils.evaluate_tiff(self.pkgfiles.path + '/' + name, self.min_height, self.max_height)
+        return []
 
     @property
     def display(self):

@@ -55,17 +55,16 @@ class XMLValidator(object):
 
     def _is_valid(self):
         result = ''
-        cmd = self._command
         if os.path.exists(self.temp_result_filename):
             result = fs_utils.read_file(self.temp_result_filename, sys.getfilesystemencoding())
 
             if 'ERROR' in result.upper():
                 lines = fs_utils.read_file_lines(self.xml_filename)
                 numbers = [str(i) + ':' for i in range(1, len(lines)+1)]
-                result = '\n'.join([n + line for n, line in zip(numbers, lines)])
-                fs_utils.write_file(self.temp_result_filename, result)
+                lines = '\n'.join([n + line for n, line in zip(numbers, lines)])
+                fs_utils.write_file(self.temp_result_filename, result + lines)
         else:
-            result = 'ERROR: Not valid. Unknown error.\n' + cmd
+            result = 'ERROR: Not valid. Unknown error.\n' + self._command
             fs_utils.write_file(self.temp_result_filename, result)
         return 'ERROR' not in result.upper()
 
