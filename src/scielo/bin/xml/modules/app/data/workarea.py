@@ -51,10 +51,11 @@ class PkgArticleFiles(object):
     def add_extension(self, new_href):
         if '.' not in new_href:
             extensions = self.files_by_name_except_xml.get(new_href)
-            if len(extensions) > 1:
-                extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
-            if len(extensions) > 0:
-                new_href += extensions[0]
+            if extensions is not None:
+                if len(extensions) > 1:
+                    extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
+                if len(extensions) > 0:
+                    new_href += extensions[0]
         return new_href
 
     @property
