@@ -8,6 +8,7 @@ from ...__init__ import _
 from ...generics import fs_utils
 from ...generics import java_xml_utils
 from ...generics import xml_utils
+from ...generics import img_utils
 from ...generics.reports import text_report
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
@@ -347,14 +348,14 @@ class SGMLXMLContent(xml_utils.XMLContent):
         if number != '':
             for name in self.src_pkgfiles.prefixes:
                 for prefix_number in possibilities:
-                    for ext in article.IMG_EXTENSIONS:
+                    for ext in img_utils.IMG_EXTENSIONS:
                         href = name + prefix_number + ext
                         possible_href_names.append(href)
                         if href in self.src_pkgfiles.files_except_xml:
                             found.append(href)
         else:
             for name in self.src_pkgfiles.prefixes:
-                for ext in article.IMG_EXTENSIONS:
+                for ext in img_utils.IMG_EXTENSIONS:
                     href = name + elem_id + ext
                     possible_href_names.append(href)
                     if href in self.src_pkgfiles.files_except_xml:
@@ -567,8 +568,10 @@ class ImagesOriginReport(object):
         rows.append(html_reports.tag('h4', chosen_image_origin))
         rows.append('<div class="compare_images">')
         rows.append(self.display_image(self.package_path + '/' + self.src2xmlhrefreplacements.get(chosen_name), "compare_" + style, chosen_image_origin))
-        rows.append(self.display_image(chosen_image_src, "compare_" + style, 'src'))
-        rows.append(self.display_image(chosen_image_doc, "compare_" + style, 'doc'))
+        if chosen_image_src is not None:
+            rows.append(self.display_image(chosen_image_src, "compare_" + style, 'src'))
+        if chosen_image_doc is not None:
+            rows.append(self.display_image(chosen_image_doc, "compare_" + style, 'doc'))
         rows.append('</div>')
         rows.append('</li>')
         return '\n'.join(rows)
