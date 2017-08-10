@@ -2210,8 +2210,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</p>
 	</xsl:template>
 	
-	
-	<xsl:template match="tabwrap/table//*">
+	<xsl:template match="tr | td | th | thead | tbody">
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*| * | text()"/>
 		</xsl:element>
@@ -2869,14 +2868,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</table>
 	</xsl:template>
-	<xsl:template match="th/bold">
-		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
-	</xsl:template>
-	<xsl:template match="thead | thead/tr | thead//th">
-		<xsl:element name="{name()}">
-			<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
-		</xsl:element>
-	</xsl:template>
+	
 	<xsl:template match="@filename">
 	</xsl:template>
 	<xsl:template match="equation">
