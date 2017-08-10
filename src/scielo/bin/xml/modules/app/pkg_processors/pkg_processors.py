@@ -167,7 +167,7 @@ class ArticlesConversion(object):
 
         items = []
         db_articles = self.registered_articles or {}
-        for xml_name in sortefd(self.articles_mergence.history_items.keys()):
+        for xml_name in sorted(self.articles_mergence.history_items.keys()):
             pkg = self.articles_mergence.articles.get(xml_name)
             registered = self.articles_mergence.registered_articles.get(xml_name)
             merged = db_articles.get(xml_name)
