@@ -31,8 +31,8 @@ def remove_sgml_tags(text):
 def unicode2cp1252(results):
     r = []
     for item in results:
-        item = encoding.convert2unicode(item)
-        item = encoding.convert2nunicode(item, 'cp1252', True)
+        item = encoding.decode(item)
+        item = encoding.encode(item, 'cp1252', True)
         if len(item) > 0:
             r.append(item)
     return '\n'.join(r)

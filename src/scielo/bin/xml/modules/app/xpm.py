@@ -22,7 +22,7 @@ def call_make_packages(args, version):
     stage = 'xpm'
     if any([xml_path, acron]):
         stage, normalized_pkgfiles, outputs = get_normalized_pkgfiles(version, script, xml_path, acron)
-
+        GENERATE_PMC = (stage == 'xml')
     reception = XPM_Reception(version, stage, DISPLAY_REPORT)
     if normalized_pkgfiles is None:
         reception.display_form()
@@ -48,7 +48,7 @@ def get_normalized_pkgfiles(version, script, xml_path, acron):
     else:
         normalized_pkgfiles = []
         if sgm_xml is not None:
-            xml_generation = sgmlxml2xml(sgm_xml, acron, xml_versions.xsl_sgml2xml(version))
+            xml_generation = sgmlxml2xml(sgm_xml, acron)
             outputs = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
             normalized_pkgfiles = [xml_generation.xml_pkgfiles]
             stage = 'xml'
@@ -79,7 +79,8 @@ def read_inputs(args):
         script, path, acron = items
     elif len(items) == 2:
         script, path = items
-    path = path.replace('\\', '/')
+    if path is not None:
+        path = path.replace('\\', '/')
     return (script, path, acron, DISPLAY_REPORT, GENERATE_PMC)
 
 
@@ -106,8 +107,8 @@ def evaluate_xml_path(xml_path):
     return sgm_xml, xml_list, errors
 
 
-def sgmlxml2xml(sgm_xml_filename, acron, xsl):
-    _sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xsl)
+def sgmlxml2xml(sgm_xml_filename, acron):
+    _sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xml_versions.xsl_getter)
     sgmxml_pkgfiles = workarea.PkgArticleFiles(sgm_xml_filename)
     pkg_generation = sgmlxml.SGMLXML2SPSXML(sgmxml_pkgfiles)
     pkg_generation.pack(acron, _sgmlxml2xml)

@@ -9,7 +9,7 @@ from ...generics import img_utils
 
 SUFFIXES = ['t', 'f', 'e', 'img', 'image']
 SUFFIXES.extend(['-'+s for s in SUFFIXES])
-SUFFIXES.extend(['-', '.'])
+SUFFIXES.extend(['-', '.', '0'])
 
 
 class Workarea(object):

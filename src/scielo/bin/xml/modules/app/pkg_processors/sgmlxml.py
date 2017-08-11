@@ -366,14 +366,19 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
 class SGMLXML2SPSXMLConverter(object):
 
-    def __init__(self, xsl):
-        self.xsl = xsl
+    def __init__(self, xsl_getter):
+        self.xsl_getter = xsl_getter
 
     def sgml2xml(self, xml):
         r = xml
         _xml, xml_error = xml_utils.load_xml(r)
         if _xml is not None:
-            r = java_xml_utils.xml_content_transform(xml, self.xsl)
+            sps_version = ''
+            if 'sps="' in xml:
+                sps_version = xml[xml.find('sps="')+len('sps="'):]
+                sps_version = sps_version[:sps_version.find('"')]
+            xsl = self.xsl_getter(sps_version)
+            r = java_xml_utils.xml_content_transform(xml, xsl)
         return r
 
 
@@ -434,12 +439,12 @@ class PackageNamer(object):
         for f, new in self.hrefreplacements:
             name, _ = os.path.splitext(f)
             new_name, _ = os.path.splitext(new)
-            if self.src_pkgfiles.files_by_name_except_xml.get(name) is None:
-                self.missing_href_files.append(f)
             for ext in self.src_pkgfiles.files_by_name_except_xml.get(name, []):
                 shutil.copyfile(self.src_pkgfiles.path + '/' + name + ext, self.dest_pkgfiles.path + '/' + new_name + ext)
                 self.href_files_copy.append((name + ext, new_name + ext))
                 self.href_names.append(name)
+            if self.dest_pkgfiles.files_by_name_except_xml.get(new_name) is None:
+                self.missing_href_files.append(new)
 
     def _rename_other_files(self):
         self.related_files_copy = []

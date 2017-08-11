@@ -7,10 +7,17 @@ try:
     import tkinter as tk
     import urllib.request as urllib_request
     from urllib.parse import urlencode as urllib_parse_urlencode
+    from urllib.parse import urlparse, urlencode
+    from urllib.request import urlopen, Request
+    from urllib.error import HTTPError, URLError
 except ImportError:
     import Tkinter as tk
     import urllib as urllib_request
     from urllib import urlencode as urllib_parse_urlencode
+
+    from urlparse import urlparse
+    from urllib import urlencode
+    from urllib2 import urlopen, Request, HTTPError, URLError
 
 from .. import encoding
 
@@ -174,17 +181,17 @@ def registry_proxy_opener(proxy_handler_data):
 def try_request(url, timeout=30, debug=False, force_error=False):
     response = None
     socket.setdefaulttimeout(timeout)
-    req = urllib_request.Request(encoding.encode(url))
+    req = Request(encoding.encode(url))
     http_error_proxy_auth = None
     error_message = ''
     try:
-        response = urllib_request.urlopen(req, timeout=timeout).read()
+        response = urlopen(req, timeout=timeout).read()
         response = encoding.decode(response)
-    except urllib_request.HTTPError as e:
+    except HTTPError as e:
         if e.code == 407:
             http_error_proxy_auth = e.code
         error_message = e.read()
-    except urllib_request.URLError as e:
+    except URLError as e:
         if '10061' in str(e.reason):
             http_error_proxy_auth = e.reason
         error_message = 'URLError'

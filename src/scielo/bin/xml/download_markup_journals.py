@@ -11,10 +11,10 @@ except ImportError:
     import Tkinter as tk
 
 
-from modules.generics.ws import ws_requester
-
-
-CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+from modules.app.ws import ws_journals
+from modules.app.config import config
+from modules.__init__ import BIN_MARKUP_PATH
+from modules.__init__ import BIN_PATH
 
 
 class MkpDownloadJournalListGUI(tk.Frame):
@@ -41,8 +41,8 @@ class MkpDownloadJournalListGUI(tk.Frame):
         execute_button = tk.Button(collection_frame, text='download', command=self.download)
         execute_button.pack(side='right')
 
-        options = collections.keys()
-        options.append('All')
+        options = ['All']
+        options.extend(sorted(collections.keys()))
 
         self.choice = tk.StringVar(self)
         self.choice.set(options[0])
@@ -80,7 +80,7 @@ class MkpDownloadJournalListGUI(tk.Frame):
 
 def open_main_window(collections, destination_filename, temp_filename, updated):
     tk_root = tk.Tk()
-    tk_root.iconbitmap('../cfg/Scielo.ico')
+    tk_root.iconbitmap(BIN_PATH + '/cfg/Scielo.ico')
 
     tk_root.title('Download journals data')
 
@@ -179,15 +179,17 @@ def generate_input_for_markup(journals, filename):
     codecs.open(filename, mode='w+').write('\n\r'.join(new_items))
 
 
-markup_journals_filename = CURRENT_PATH + '/../markup/markup_journals.csv'
-temp_markup_journals_filename = CURRENT_PATH + '/../markup/temp_markup_journals.csv'
+configuration = config.Configuration()
+markup_journals_filename = BIN_MARKUP_PATH + '/markup_journals.csv'
+temp_markup_journals_filename = BIN_MARKUP_PATH + '/temp_markup_journals.csv'
 
 for filename in [markup_journals_filename, temp_markup_journals_filename]:
     temp_path = os.path.dirname(filename)
     if not os.path.isdir(temp_path):
         os.makedirs(temp_path)
 
-ws_requester.wsr.update_journals_file()
+_ws_journals = ws_journals.Journals(configuration.app_ws_requester)
+_ws_journals.update_journals_file()
 
-journals_collections = journals_by_collection(ws_requester.wsr.downloaded_journals_filename)
+journals_collections = journals_by_collection(_ws_journals.downloaded_journals_filename)
 open_main_window(journals_collections, markup_journals_filename, temp_markup_journals_filename, True)
