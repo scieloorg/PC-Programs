@@ -2879,6 +2879,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</disp-formula>
 		</p>
 	</xsl:template>
+	<xsl:template match="table//equation">
+		<disp-formula>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="." mode="graphic"/>
+		</disp-formula>
+	</xsl:template>
 	<xsl:template match="p/equation">
 		<inline-formula>
 			<xsl:apply-templates select="@*"/>
