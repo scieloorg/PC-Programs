@@ -15,8 +15,9 @@ class Wayta(object):
         try:
             if result is None:
                 url = self.ws_requester.format_url(self._url, {'q':text})
-                result = self.ws_requester.request(url, timeout=30)
-                self.results[text] = format_wayta_results(result, filter_country)
+                request_result = self.ws_requester.request(url, timeout=30)
+                self.results[text] = format_wayta_results(request_result, filter_country)
+                result = self.results[text]
         except Exception as e:
             print('wayta_request:')
             print(e)
@@ -31,7 +32,8 @@ class Wayta(object):
                 if country is not None:
                     text += ', ' + country
                 result = self.request(text, filter_country)
-                results += result
+                if result is not None:
+                    results += result
             except:
                 pass
         results = sorted(list(set(results)))
@@ -44,7 +46,6 @@ def format_wayta_results(result, filter_country=None):
     keys = ['score', 'value', 'city', 'state', 'iso3166', 'country']
     try:
         if result is not None:
-            print('format_wayta_results', type(result), result)
             results = json.loads(result)
             if filter_country is None:
                 r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '']
