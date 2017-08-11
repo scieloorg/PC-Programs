@@ -366,14 +366,19 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
 class SGMLXML2SPSXMLConverter(object):
 
-    def __init__(self, xsl):
-        self.xsl = xsl
+    def __init__(self, xsl_getter):
+        self.xsl_getter = xsl_getter
 
     def sgml2xml(self, xml):
         r = xml
         _xml, xml_error = xml_utils.load_xml(r)
         if _xml is not None:
-            r = java_xml_utils.xml_content_transform(xml, self.xsl)
+            sps_version = ''
+            if 'sps="' in xml:
+                sps_version = xml[xml.find('sps="')+len('sps="'):]
+                sps_version = sps_version[:sps_version.find('"')]
+            xsl = self.xsl_getter(sps_version)
+            r = java_xml_utils.xml_content_transform(xml, xsl)
         return r
 
 
