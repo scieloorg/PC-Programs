@@ -48,7 +48,7 @@ def get_normalized_pkgfiles(version, script, xml_path, acron):
     else:
         normalized_pkgfiles = []
         if sgm_xml is not None:
-            xml_generation = sgmlxml2xml(sgm_xml, acron, xml_versions.xsl_sgml2xml(version))
+            xml_generation = sgmlxml2xml(sgm_xml, acron)
             outputs = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
             normalized_pkgfiles = [xml_generation.xml_pkgfiles]
             stage = 'xml'

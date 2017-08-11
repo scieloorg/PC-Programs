@@ -86,8 +86,14 @@ XPM_FILES['pmc1.1']['xsl_preview'] = [PMC_PATH + '/j1.1/xsl/jpub/citations-prep/
 XPM_FILES['pmc1.1']['xsl_output'] = PMC_PATH + '/j1.1/xsl/sgml2xml/pmc.xsl'
 
 
-def xsl_sgml2xml(version):
-    return XSL_SGML2XML.get(version, XSL_SGML2XML.get(DEFAULT_VERSION))
+def xsl_getter(sps_version):
+    if sps_version == '':
+        dtd_version = '3.0'
+    elif float(sps_version) < 1.7:
+        dtd_version = '1.0'
+    else:
+        dtd_version = '1.1'
+    return XSL_SGML2XML.get(dtd_version, XSL_SGML2XML.get(DEFAULT_VERSION))
 
 
 def dtd_location(xml):
