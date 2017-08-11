@@ -2215,7 +2215,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@*| * | text()"/>
 		</xsl:element>
 	</xsl:template>
-	
+	<xsl:template match="th/bold">
+		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
 	<xsl:template match="tabwrap" mode="elem-table-wrap">
 		<table-wrap>
 			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
@@ -2885,13 +2887,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="graphic"/>
 		</disp-formula>
 	</xsl:template>
-	<xsl:template match="p/equation">
+	<xsl:template match="p//equation">
 		<inline-formula>
 			<xsl:apply-templates select="@*"/>
 			<xsl:apply-templates select="." mode="graphic"/>
 		</inline-formula>
 	</xsl:template>
-	<xsl:template match="p/graphic | caption/graphic | li/graphic | p/equation//graphic | td/graphic">
+	<xsl:template match="p//graphic | caption//graphic | li//graphic | p//equation//graphic | td//graphic">
 		<inline-graphic>
 			<xsl:apply-templates select="@*"/>
 		</inline-graphic>
