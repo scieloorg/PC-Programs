@@ -1032,7 +1032,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</aff>
 	</xsl:template>
-	<xsl:template match="aff" mode="common">
+	<xsl:template match="*" mode="common">
 		<institution content-type="original"><xsl:apply-templates select="*[name()!='label']|text()" mode="original"/></institution>
 		<xsl:choose>
 			<xsl:when test="@norgname">

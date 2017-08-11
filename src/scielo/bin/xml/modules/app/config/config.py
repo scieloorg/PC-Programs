@@ -417,7 +417,7 @@ class Configuration(object):
 
     @property
     def is_web_access_enabled(self):
-        return self._data.get('ENABLED_WEB_ACCESS') == 'on'
+        return self._data.get('ENABLED_WEB_ACCESS') != 'off'
 
     @property
     def proxy_info(self):
@@ -425,4 +425,6 @@ class Configuration(object):
 
     @property
     def app_ws_requester(self):
+        if self.is_web_access_enabled is False:
+            print('ENABLED_WEB_ACCESS=off')
         return ws_requester.WebServicesRequester(self.is_web_access_enabled, self.proxy_info)
