@@ -291,9 +291,10 @@ class ArticleDisplayReport(object):
 
     @property
     def affiliations(self):
+        print(self.article.affiliations)
         r = html_reports.tag('p', 'Affiliations:', 'label')
-        for item in self.article.affiliations:
-            r += html_reports.tag('p', html_reports.format_html_data(item.xml))
+        for aff_xml in self.article.affiliations:
+            r += html_reports.tag('p', html_reports.format_html_data(aff_xml.aff.xml))
         th, w, data = self.affiliations_sheet_data()
         r += html_reports.sheet(th, data)
         return r
@@ -467,7 +468,8 @@ class ArticleDisplayReport(object):
     def affiliations_sheet_data(self):
         t_header = ['aff id', 'aff orgname', 'aff norgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', ]
         r = []
-        for a in self.article.affiliations:
+        for aff_xml in self.article.affiliations:
+            a = aff_xml.aff
             row = {}
             row['aff id'] = a.id
             row['aff norgname'] = a.norgname
