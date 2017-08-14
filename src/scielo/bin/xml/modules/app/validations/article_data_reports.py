@@ -655,9 +655,10 @@ def display_article_data_to_compare(_article):
 
 def article_history(history):
     r = []
-    for status in history:
-        r.append(html_reports.tag('div', html_reports.tag('h4', _(status)), 'hist-' + status))
-    return '<hr/>'.join(r)
+
+    h = [_(status) for status in history]
+    r.append(html_reports.tag('div', html_reports.format_html_data_list(h), 'hist-' + status))
+    return ''.join(r)
 
 
 def normalize_text(text):
