@@ -284,8 +284,6 @@ class ArticleRecords(object):
         self._metadata['14']['e'] = self.article.elocation_id
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
-        print('xc', self.article.affiliations)
-        print('xc', self.article.normalized_affiliations)
         self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
@@ -302,7 +300,6 @@ class ArticleRecords(object):
 
     @property
     def references(self):
-        print('references', self.article)
         records_c = []
         for ref_xml in self.article.references_xml:
             item = ref_xml.reference
@@ -325,11 +322,14 @@ class ArticleRecords(object):
             rec_c['17'] = []
 
             grp_idx = 0
-            for grptype, grp in item.person_group_xml_items:
-                is_analytic = (len(item.person_group_xml_items) > 1) and (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
-                grp_idx += 1
+            etals = []
+            for grptype, grp, etal in item.person_group_xml_items:
+                is_analytic = (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
 
-                for author in grp:
+                grp_idx += 1
+                etals.append(etal)
+                for contrib_xml in grp:
+                    author = contrib_xml.contrib()
                     field = author_tag(isinstance(author, PersonAuthor), is_analytic)
                     a = None
                     if isinstance(author, PersonAuthor):
@@ -351,6 +351,7 @@ class ArticleRecords(object):
                         a = author.fullname
                     if a is not None:
                         rec_c[field].append(a)
+
             rec_c['31'] = item.volume
             rec_c['32'] = {}
             rec_c['32']['_'] = item.issue
@@ -381,7 +382,7 @@ class ArticleRecords(object):
                 rec_c['20']['_'] = item.size['size']
                 rec_c['20']['u'] = item.size['units']
             rec_c['118'] = item.label
-            rec_c['810'] = item.etal
+            rec_c['810'] = etals[0] if len(etals) > 0 else None
             rec_c['37'] = item.ext_link
 
             rec_c['109'] = item.cited_date
@@ -1142,7 +1143,7 @@ class AopManager(object):
 
     def similarity_rate(self, article, aop):
         r = 0
-        if not aop is None:
+        if aop is not None:
             if article.article_type == 'correction':
                 if article.body_words is not None and aop.body_words is not None:
                     r += utils.how_similar(article.body_words[0:300], aop.body_words[0:300])
@@ -1246,13 +1247,11 @@ class AopManager(object):
 
 def format_affiliations(affiliations):
     affs = []
-    for item in affiliations:
+    for aff_xml in affiliations:
+        item = aff_xml.aff
         a = {}
         a['l'] = item.label
         a['i'] = item.id
-        if item.institution_id is not None:
-            for instid in item.institution_id:
-                a['k'], a['j'] = instid
         a['e'] = item.email
         a['3'] = item.orgdiv3
         a['2'] = item.orgdiv2
