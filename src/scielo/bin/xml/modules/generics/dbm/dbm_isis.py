@@ -208,10 +208,10 @@ class IDFile(object):
         if not os.path.isdir(path):
             os.makedirs(path)
         content = self._format_file(records)
-        content = encoding.decode(content, 'iso-8859-1')
+        #content = encoding.decode(content, 'iso-8859-1')
         content = content.replace(PRESERVECIRC, '&#94;')
         try:
-            fs_utils.write_file(filename, content)
+            fs_utils.write_file(filename, content, 'iso-8859-1')
         except Exception as e:
             utils.debugging('saving...')
             utils.debugging(e)
@@ -285,7 +285,7 @@ class CISIS(object):
         r = mst_filename + expression
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 "pft=mfn/" now > ' + r
         system.run_command(cmd)
-        return fs_utils.read_file_lines(r)
+        return fs_utils.read_file_lines(r, 'iso-8859-1')
 
     def new(self, mst_filename):
         cmd = self.cisis_path + '/mx null count=0 create="' + mst_filename + '" now -all'

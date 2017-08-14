@@ -228,11 +228,10 @@ def node_findtext(node, xpath=None, multiple=False):
 def node_text(node):
     text = tostring(node)
     if text is not None:
-        text = text.strip()[1:-1]
         text = text[text.find('>')+1:]
         if '</' in text:
             text = text[:text.rfind('</')]
-            text = text.strip()
+        text = text.strip()
     return text
 
 

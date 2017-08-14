@@ -114,7 +114,7 @@ class AffiliationXML(object):
             self._aff.state = first_item(self.state)
             country = first_item(self.country)
             if country is not None:
-                self._aff.i_country, self._aff.country = first_item(country)
+                self._aff.i_country, self._aff.country = country
             self._aff.orgname = first_item(self.orgname)
             self._aff.norgname = first_item(self.norgname)
             self._aff.orgdiv1 = first_item(self.orgdiv1)
@@ -268,12 +268,11 @@ class ContribXML(object):
         self._contrib = None
         self.fnames = self.xml_node.nodes_text(['.//given-names'])
         self.surnames = self.xml_node.nodes_text(['.//surname'])
-        self.etals = self.xml_node.nodes_text(['.//etal'])
         self.anonymous = self.xml_node.nodes_text(['.//anonymous'])
         self.suffixes = self.xml_node.nodes_text(['.//suffix'])
         self.prefixes = self.xml_node.nodes_text(['.//prefix'])
         self.contrib_id_items = self.xml_node.nodes_data(['.//contrib-id'])
-        self.xref_items = self.xml_node.nodes_data(['.//xref'])
+        self.xref_items = self.xml_node.nodes_data(['.//xref[@ref-type="aff"]'])
 
     @property
     def collabs(self):
@@ -1840,7 +1839,6 @@ class Reference(object):
         self.elocation_id = None
         self.size = None
         self.label = None
-        self.etal = None
         self.cited_date = None
         self.ext_link = None
         self.degree = None
@@ -1893,7 +1891,6 @@ class ReferenceXML(object):
         self.fpage = self.nodes_text(['.//fpage'])
         self.lpage = self.nodes_text(['.//lpage'])
         self.label = self.nodes_text(['.//label'])
-        self.etal = self.nodes_text(['.//etal'])
         self.article_title = self.nodes_text(['.//article-title'])
         self.chapter_title = self.nodes_text(['.//chapter-title'])
         self.trans_title = self.nodes_text(['.//trans-title'])
@@ -1962,7 +1959,6 @@ class ReferenceXML(object):
             self._ref.elocation_id = first_item(self.elocation_id)
             self._ref.size = first_item(self.size)
             self._ref.label = first_item(self.label)
-            self._ref.etal = first_item(self.etal)
             self._ref.cited_date = first_item(self.cited_date)
             self._ref.ext_link = first_item(self.ext_link)
             self._ref.degree = first_item(self.degree)
@@ -2035,11 +2031,15 @@ class ReferenceXML(object):
                 for person_group in self.nodes(['.//person-group']):
                     role = person_group.attrib.get('person-group-type', 'author')
                     authors = []
+                    etal = None
                     for contrib in person_group.findall('*'):
-                        contrib_xml = ContribXML(contrib)
-                        if contrib_xml.contrib() is not None:
-                            authors.append(contrib_xml)
-                    groups.append((role, authors))
+                        if contrib.tag == 'etal':
+                            etal = 'et al'
+                        else:
+                            contrib_xml = ContribXML(contrib)
+                            if contrib_xml.contrib() is not None:
+                                authors.append(contrib_xml)
+                    groups.append((role, authors, etal))
             self._person_group_xml_items = groups
         return self._person_group_xml_items
 
