@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from ...__init__ import PMC_PATH
+from ...generics import fs_utils
 
 
 DEFAULT_VERSION = '1.1'
@@ -106,6 +107,8 @@ def dtd_location(xml):
 def identify_dtd_files(xml):
     scielo_version = DEFAULT_VERSION
     pmc_version = DEFAULT_VERSION
+    if '<' not in xml:
+        xml = fs_utils.read_file(xml)
     for name, data in XPM_FILES.items():
         if data.get('dtd id') in xml:
             if 'scielo' in name:

@@ -2,7 +2,6 @@
 import sys
 import os
 import shutil
-import tempfile
 
 from . import xml_utils
 from . import fs_utils
@@ -94,7 +93,6 @@ class XMLTransformer(object):
 
         self.bkp = fs_utils.read_file(self.xml_filename)
         xml_utils.new_apply_dtd(self.xml_filename, '')
-
         fs_utils.delete_file_or_folder(self.result_filename)
         fs_utils.delete_file_or_folder(self.temp_result_filename)
         if not os.path.isdir(self.temp_result_dir):
@@ -118,7 +116,9 @@ class XMLTransformer(object):
 
 
 def xml_transform(xml, xsl, result, parameters={}):
-    return XMLTransformer(xml, xsl, result, parameters).xml_transform()
+    if xml != result:
+        return XMLTransformer(xml, xsl, result, parameters).xml_transform()
+    return 'xml_transform: xml {} must be different from result {}'.format(xml, result)
 
 
 def xml_validate(xml_filename, report_filename, doctype):

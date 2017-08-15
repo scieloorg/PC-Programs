@@ -1,4 +1,5 @@
 # coding=utf-8
+import os
 from datetime import datetime
 
 from ...__init__ import _
@@ -125,6 +126,10 @@ class ReportsMaker(object):
     @property
     def report_location(self):
         return self.files_location.report_path + '/' + self.stage + self.report_version + '.html'
+
+    @property
+    def report_link(self):
+        return self.files_location.report_link + '/' + os.path.basename(self.report_location)
 
     def save_report(self, display=True):
         print('save_report', 1)
