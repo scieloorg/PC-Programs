@@ -197,11 +197,6 @@ class IssueFiles(object):
                 os.makedirs(self.base_reports_path)
             for report_file in os.listdir(report_path):
                 shutil.copy(report_path + '/' + report_file, self.base_reports_path)
-                fs_utils.delete_file_or_folder(report_path + '/' + report_file)
-        try:
-            shutil.rmtree(report_path)
-        except:
-            pass
 
     def save_source_files(self, xml_path):
         if not self.base_source_path == xml_path:

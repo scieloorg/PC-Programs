@@ -169,23 +169,19 @@ class XMLContentValidator(object):
 
 class ArticleValidator(object):
 
-    def __init__(self, xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, scielo_dtd_files):
+    def __init__(self, xml_journal_data_validator, xml_issue_data_validator, xml_content_validator):
         self.xml_journal_data_validator = xml_journal_data_validator
         self.xml_issue_data_validator = xml_issue_data_validator
         self.xml_content_validator = xml_content_validator
-        self.xml_structure_validator = None
-        self.scielo_dtd_files = scielo_dtd_files
 
     def validate(self, article, outputs, pkgfiles):
         scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(fs_utils.read_file(pkgfiles.filename))
-        if self.scielo_dtd_files != scielo_dtd_files:
-            self.scielo_dtd_files = scielo_dtd_files
-            self.xml_structure_validator = XMLStructureValidator(self.scielo_dtd_files)
+        xml_structure_validator = XMLStructureValidator(scielo_dtd_files)
 
         artval = ArticleValidations()
         artval.journal_validations = self.xml_journal_data_validator.validate(article)
         artval.issue_validations = self.xml_issue_data_validator.validate(article)
-        artval.xml_structure_validations = self.xml_structure_validator.validate(pkgfiles.filename, outputs)
+        artval.xml_structure_validations = xml_structure_validator.validate(pkgfiles.filename, outputs)
         artval.xml_content_validations, artval.article_display_report = self.xml_content_validator.validate(article, outputs, pkgfiles)
         if self.xml_content_validator.is_xml_generation:
             stats = artval.xml_content_validations.statistics_display(False)

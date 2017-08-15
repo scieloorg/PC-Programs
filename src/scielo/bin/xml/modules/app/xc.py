@@ -8,21 +8,12 @@ from ..__init__ import _
 from ..generics import fs_utils
 from ..generics import utils
 from ..generics import xml_utils
-from ..generics.reports import html_reports
 from .pkg_processors import pkg_processors
 from .data import workarea
 from .server import mailer
 from .server import filestransfer
 from . import interface
 from .config import config
-
-
-EMAIL_SUBJECT_STATUS_ICON = {}
-EMAIL_SUBJECT_STATUS_ICON['rejected'] = [u"\u274C", _(' REJECTED ')]
-EMAIL_SUBJECT_STATUS_ICON['ignored'] = ['', _('IGNORED')]
-EMAIL_SUBJECT_STATUS_ICON['accepted'] = [u"\u2713" + ' ' + u"\u270D", _(' ACCEPTED but corrections required ')]
-EMAIL_SUBJECT_STATUS_ICON['approved'] = [u"\u2705", _(' APPROVED ')]
-EMAIL_SUBJECT_STATUS_ICON['not processed'] = ['', _(' NOT PROCESSED ')]
 
 
 def call_converter(args, version='1.0'):
@@ -41,7 +32,7 @@ def call_converter(args, version='1.0'):
             messages.append('\n'.join(errors))
             utils.display_message('\n'.join(messages))
 
-    reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)), version)
+    reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)))
     if package_path is None:
         reception.display_form()
     else:
@@ -66,11 +57,11 @@ def read_inputs(args):
 
 class XC_Reception(object):
 
-    def __init__(self, configuration, version):
+    def __init__(self, configuration):
         self.configuration = configuration
         self.mailer = mailer.Mailer(configuration)
         self.transfer = filestransfer.FilesTransfer(configuration)
-        self.proc = pkg_processors.PkgProcessor(configuration, version, DISPLAY_REPORT=True, stage='xc')
+        self.proc = pkg_processors.PkgProcessor(configuration, DISPLAY_REPORT=configuration.interative_mode, stage='xc')
 
     def display_form(self):
         interface.display_form(self.proc.stage == 'xc', None, self.call_convert_package)
@@ -88,17 +79,14 @@ class XC_Reception(object):
         package_name = os.path.basename(package_path)
         utils.display_message(package_path)
         xc_status = 'interrupted'
-        stats_msg = ''
-        report_location = None
         pkgfolder = workarea.PackageFolder(package_path)
 
         pkg = self.proc.normalized_package(pkgfolder.xml_list)
         scilista_items = []
 
         try:
-
             if len(pkg.articles) > 0:
-                scilista_items, xc_status, stats_msg, report_location = self.proc.convert_package(pkg)
+                scilista_items, xc_status, mail_info = self.proc.convert_package(pkg)
                 print(scilista_items)
         except Exception as e:
 
@@ -117,15 +105,14 @@ class XC_Reception(object):
                 self.mailer.mail_step2_failure(package_name, e)
                 raise
             try:
-                if report_location is not None and self.configuration.email_subject_package_evaluation is not None:
-                    results = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(xc_status, [])) + ' ' + stats_msg
-                    link = self.configuration.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
-                    mail_content = '<html><body>' + html_reports.link(link, link) + '</body></html>'
-                    self.transfer.transfer_report_files(acron, issue_id)
-                    self.mailer.mail_results(package_name, results, mail_content)
+                if mail_info is not None and self.configuration.email_subject_package_evaluation is not None:
+                    mail_subject, mail_content = mail_info
+                    self.mailer.mail_results(package_name, mail_subject, mail_content)
+                self.transfer.transfer_report_files(acron, issue_id)
+
             except Exception as e:
                 self.mailer.mail_step3_failure(package_name, e)
-                if len(package_paths) == 1:
+                if len(package_path) == 1:
                     print('exception as step 3')
                     raise
         utils.display_message(_('finished'))

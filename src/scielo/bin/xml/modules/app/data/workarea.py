@@ -152,12 +152,18 @@ class PkgArticleFiles(object):
         fs_utils.zip(filename, [self.path + '/' + f for f in self.all])
         return filename
 
-    def copy(self, dest_path):
+    def copy_files_except_xml(self, dest_path):
         if dest_path is not None:
             if not os.path.isdir(dest_path):
                 os.makedirs(dest_path)
             for f in self.files_except_xml:
                 shutil.copyfile(self.path + '/' + f, dest_path + '/' + f)
+
+    def copy_xml(self, dest_path):
+        if dest_path is not None:
+            if not os.path.isdir(dest_path):
+                os.makedirs(dest_path)
+            shutil.copyfile(self.path + '/' + self.filename, dest_path + '/' + self.filename)
 
 
 class PackageFolder(object):
@@ -329,6 +335,13 @@ class AssetsDestinations(object):
     def report_path(self):
         if self.web_app_path is not None:
             return self.web_app_path + '/htdocs/reports/' + self.issue_path
+        else:
+            return self.result_path + '/errors'
+
+    @property
+    def report_link(self):
+        if self.web_url is not None:
+            return self.web_url + '/htdocs/' + self.issue_path
         else:
             return self.result_path + '/errors'
 

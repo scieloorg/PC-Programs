@@ -17,44 +17,28 @@ from .pkg_processors import xml_versions
 
 def call_make_packages(args, version):
     script, xml_path, acron, DISPLAY_REPORT, GENERATE_PMC = read_inputs(args)
+    print('script', 'xml_path', 'acron', 'DISPLAY_REPORT', 'GENERATE_PMC')
     print(script, xml_path, acron, DISPLAY_REPORT, GENERATE_PMC)
     normalized_pkgfiles = None
     stage = 'xpm'
     if any([xml_path, acron]):
-        stage, normalized_pkgfiles, outputs = get_normalized_pkgfiles(version, script, xml_path, acron)
-        GENERATE_PMC = (stage == 'xml')
-    reception = XPM_Reception(version, stage, DISPLAY_REPORT)
+        result = validate_inputs(script, xml_path)
+        if result is not None:
+            sgm_xml, xml_list = result
+            stage = 'xpm'
+            normalized_pkgfiles = []
+            if sgm_xml is not None:
+                xml_generation = sgmlxml2xml(sgm_xml, acron)
+                outputs = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
+                normalized_pkgfiles = [xml_generation.xml_pkgfiles]
+                stage = 'xml'
+            else:
+                normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
+    reception = XPM_Reception(stage, DISPLAY_REPORT)
     if normalized_pkgfiles is None:
         reception.display_form()
     else:
         reception.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
-
-
-def get_normalized_pkgfiles(version, script, xml_path, acron):
-    normalized_pkgfiles = None
-    stage = 'xpm'
-    sgm_xml, xml_list, errors = evaluate_xml_path(xml_path)
-    if len(errors) > 0:
-        messages = []
-        messages.append('\n===== ATTENTION =====\n')
-        messages.append('ERROR: ' + _('Incorrect parameters'))
-        messages.append('\n' + _('Usage') + ':')
-        messages.append('python ' + script + ' <xml_src> [-auto]')
-        messages.append(_('where') + ':')
-        messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
-        messages.append('  [-auto]' + _('optional parameter to omit report'))
-        messages.append('\n'.join(errors))
-        utils.display_message('\n'.join(messages))
-    else:
-        normalized_pkgfiles = []
-        if sgm_xml is not None:
-            xml_generation = sgmlxml2xml(sgm_xml, acron)
-            outputs = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
-            normalized_pkgfiles = [xml_generation.xml_pkgfiles]
-            stage = 'xml'
-        else:
-            normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
-    return stage, normalized_pkgfiles, outputs
 
 
 def read_inputs(args):
@@ -82,6 +66,23 @@ def read_inputs(args):
     if path is not None:
         path = path.replace('\\', '/')
     return (script, path, acron, DISPLAY_REPORT, GENERATE_PMC)
+
+
+def validate_inputs(script, xml_path):
+    sgm_xml, xml_list, errors = evaluate_xml_path(xml_path)
+    if len(errors) > 0:
+        messages = []
+        messages.append('\n===== ATTENTION =====\n')
+        messages.append('ERROR: ' + _('Incorrect parameters'))
+        messages.append('\n' + _('Usage') + ':')
+        messages.append('python ' + script + ' <xml_src> [-auto]')
+        messages.append(_('where') + ':')
+        messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
+        messages.append('  [-auto]' + _('optional parameter to omit report'))
+        messages.append('\n'.join(errors))
+        utils.display_message('\n'.join(messages))
+    else:
+        return sgm_xml, xml_list
 
 
 def evaluate_xml_path(xml_path):
@@ -117,9 +118,9 @@ def sgmlxml2xml(sgm_xml_filename, acron):
 
 class XPM_Reception(object):
 
-    def __init__(self, version, stage, DISPLAY_REPORT=True):
+    def __init__(self, stage, DISPLAY_REPORT=True):
         configuration = config.Configuration()
-        self.proc = pkg_processors.PkgProcessor(configuration, version, DISPLAY_REPORT, stage)
+        self.proc = pkg_processors.PkgProcessor(configuration, DISPLAY_REPORT, stage)
 
     def display_form(self):
         interface.display_form(self.proc.stage == 'xc', None, self.call_make_package)

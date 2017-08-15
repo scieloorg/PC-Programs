@@ -15,7 +15,6 @@ from ...generics.reports import html_reports
 from ...generics.reports import validation_status
 from ..ws import institutions_manager
 from ..ws import ws_journals
-from ..pkg_processors import xml_versions
 from ..validations import article_data_reports
 from ..validations import pkg_articles_validations
 from ..validations import article_validations as article_validations_module
@@ -30,6 +29,14 @@ from ..db import registered
 from ..db import xc_models
 from . import pmc_pkgmaker
 from . import sps_pkgmaker
+
+
+EMAIL_SUBJECT_STATUS_ICON = {}
+EMAIL_SUBJECT_STATUS_ICON['rejected'] = [u"\u274C", _(' REJECTED ')]
+EMAIL_SUBJECT_STATUS_ICON['ignored'] = ['', _('IGNORED')]
+EMAIL_SUBJECT_STATUS_ICON['accepted'] = [u"\u2713" + ' ' + u"\u270D", _(' ACCEPTED but corrections required ')]
+EMAIL_SUBJECT_STATUS_ICON['approved'] = [u"\u2705", _(' APPROVED ')]
+EMAIL_SUBJECT_STATUS_ICON['not processed'] = ['', _(' NOT PROCESSED ')]
 
 
 categories_messages = {
@@ -83,7 +90,7 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
         xmlcontent.normalize()
         xmlcontent.doctype(dtd_location_type)
         fs_utils.write_file(dest.filename, xmlcontent.content)
-        src.copy(dest_path)
+        src.copy_files_except_xml(dest_path)
 
         outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
 
@@ -119,6 +126,7 @@ class ArticlesConversion(object):
                 self.articles_conversion_validations[name].message = message
 
             if len(_scilista_items) > 0:
+                # IMPROVEME
                 self.registered_issue_data.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.local_web_app_path)
                 self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
                 self.replace_ex_aop_pdf_files()
@@ -132,7 +140,7 @@ class ArticlesConversion(object):
         return {}
 
     def replace_ex_aop_pdf_files(self):
-        # FIXME
+        # IMPROVEME
         print('replace_ex_aop_pdf_files', self.db.aop_pdf_replacements)
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
@@ -175,7 +183,9 @@ class ArticlesConversion(object):
             diff = ''
             if registered is not None and pkg is not None:
                 comparison = article_data_reports.ArticlesComparison(registered, pkg)
-                diff = comparison.display_articles_differences() + '<hr/>'
+                diff = comparison.display_articles_differences()
+                if diff != '':
+                    diff += '<hr/>'
 
             values = []
             values.append(article_data_reports.display_article_data_to_compare(registered) if registered is not None else '')
@@ -223,7 +233,28 @@ class ArticlesConversion(object):
 
     @property
     def conversion_status_report(self):
-        return report_status(_('Conversion results'), self.conversion_status, 'conversion')
+        title = _('Conversion results')
+        status = self.conversion_status
+        style = 'conversion'
+        text = ''
+        if status is not None:
+            for category in sorted(status.keys()):
+                _style = style
+                if status.get(category) is None:
+                    ltype = 'ul'
+                    list_items = ['None']
+                    _style = None
+                elif len(status[category]) == 0:
+                    ltype = 'ul'
+                    list_items = ['None']
+                    _style = None
+                else:
+                    ltype = 'ol'
+                    list_items = status[category]
+                text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items, _style)
+        if len(text) > 0:
+            text = html_reports.tag('h3', title) + text
+        return text
 
     @property
     def aop_status_report(self):
@@ -310,22 +341,20 @@ class ArticlesConversion(object):
 
 class PkgProcessor(object):
 
-    def __init__(self, config, version, DISPLAY_REPORT, stage='xpm'):
+    def __init__(self, config, DISPLAY_REPORT, stage='xpm'):
         self.config = config
         self.DISPLAY_REPORT = DISPLAY_REPORT
         self.stage = stage
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
+        self.xpm_version = xpm_version() if stage == 'xpm' else ''
         self._db_manager = None
-        self.pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
-        self.scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
         self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
         self.ws_journals.update_journals_file()
         self.journals_list = xc_models.JournalsList(self.ws_journals.downloaded_journals_filename)
         self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
         self.aff_normalizer = aff_normalization.Aff(self.app_institutions_manager)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
-        self.current_dtd_files = self.scielo_dtd_files if self.is_xml_generation else None
         self.registered_issues_manager = xc_models.RegisteredIssuesManager(self.db_manager, self.journals_list)
 
     @property
@@ -353,7 +382,7 @@ class PkgProcessor(object):
         workarea_path = os.path.dirname(pkgfiles[0].path)
         return package.Package(pkgfiles, outputs, workarea_path)
 
-    def commum(self, pkg):
+    def evaluate_package(self, pkg):
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
         for xml_name in pkg.articles.keys():
@@ -361,10 +390,10 @@ class PkgProcessor(object):
             for aff_xml in pkg.articles[xml_name].affiliations:
                 if aff_xml is not None:
                     institutions_results[aff_xml.id] = self.aff_normalizer.query_institutions(aff_xml)
-                    print('commum', xml_name, aff_xml.id, aff_xml.xml, institutions_results[aff_xml.id])
+                    print('evaluate_package', xml_name, aff_xml.id, aff_xml.xml, institutions_results[aff_xml.id])
             pkg.articles[xml_name].institutions_query_results = institutions_results
             pkg.articles[xml_name].normalized_affiliations = {aff_id: info[0] for aff_id, info in institutions_results.items()}
-            print('commum', xml_name, pkg.articles[xml_name].normalized_affiliations)
+            print('evaluate_package', xml_name, pkg.articles[xml_name].normalized_affiliations)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
@@ -373,29 +402,30 @@ class PkgProcessor(object):
         return registered_issue_data, validations_reports
 
     def make_package(self, pkg, GENERATE_PMC=False):
-        registered_issue_data, validations_reports = self.commum(pkg)
+        registered_issue_data, validations_reports = self.evaluate_package(pkg)
         self.report_result(pkg, validations_reports, conversion=None)
         self.make_pmc_package(pkg, GENERATE_PMC)
         self.zip(pkg)
 
     def convert_package(self, pkg):
-        registered_issue_data, validations_reports = self.commum(pkg)
-        conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
-        print('convert_package', 3)
-        scilista_items = conversion.convert()
-        print('convert_package', 4)
-        reports = self.report_result(pkg, validations_reports, conversion)
-        print('convert_package', 5)
-        statistics_display = reports.validations.statistics_display(html_format=False)
-        print('convert_package', 6)
+        registered_issue_data, validations_reports = self.evaluate_package(pkg)
 
-        return (scilista_items, conversion.xc_status, statistics_display, reports.report_location)
+        conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
+        scilista_items = conversion.convert()
+
+        reports = self.report_result(pkg, validations_reports, conversion)
+        statistics_display = reports.validations.statistics_display(html_format=False)
+
+        subject = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(conversion.xc_status, [])) + ' ' + statistics_display
+        mail_content = '<html><body>' + html_reports.link(reports.report_link, reports.report_link) + '</body></html>'
+        mail_info = subject, mail_content
+        return (scilista_items, conversion.xc_status, mail_info)
 
     def validate_pkg_articles(self, pkg, registered_issue_data):
         xml_journal_data_validator = article_validations_module.XMLJournalDataValidator(pkg.issue_data.journal_data)
         xml_issue_data_validator = article_validations_module.XMLIssueDataValidator(registered_issue_data)
         xml_content_validator = article_validations_module.XMLContentValidator(pkg.issue_data, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator)
-        article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, self.current_dtd_files)
+        article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_content_validator)
 
         utils.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
         results = {}
@@ -412,28 +442,27 @@ class PkgProcessor(object):
             pkg.articles)
 
     def report_result(self, pkg, validations_reports, conversion=None):
-        print('report_result', 1)
         files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
-
-        print('report_result', 2)
-        reports = reports_maker.ReportsMaker(pkg, validations_reports, files_location, self.stage, xpm_version(), conversion)
-        print('report_result', 3)
-
+        reports = reports_maker.ReportsMaker(pkg, validations_reports, files_location, self.stage, self.xpm_version, conversion)
         if not self.is_xml_generation:
-            reports.save_report(self.DISPLAY_REPORT or self.config.interative_mode)
-        print('report_result', 4)
-
+            reports.save_report(self.DISPLAY_REPORT)
+        if conversion is not None:
+            conversion.registered_issue_data.issue_files.save_reports(files_location.report_path)
+        if self.config.web_app_site is not None:
+            for article_files in pkg.package_folder.pkgfiles_items.values():
+                # copia os xml para report path
+                article_files.copy_xml(reports.files_location.report_path)
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):
         if not self.is_db_generation:
             # FIXME
-            pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(self.scielo_dtd_files, self.pmc_dtd_files)
+            pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg.wk, pkg.articles, pkg.outputs)
             if self.is_xml_generation:
-                pmc_package_maker.make_report(pkg.articles, pkg.outputs)
+                pmc_package_maker.make_report()
             if pkg.is_pmc_journal:
                 if GENERATE_PMC:
-                    pmc_package_maker.make_package(pkg.wk, pkg.articles, pkg.outputs)
+                    pmc_package_maker.make_package()
                     workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
                 else:
                     print('='*10)
@@ -443,25 +472,3 @@ class PkgProcessor(object):
     def zip(self, pkg):
         if not self.is_xml_generation and not self.is_db_generation:
             workarea.PackageFolder(pkg.wk.scielo_package_path).zip()
-
-
-def report_status(title, status, style=None):
-    text = ''
-    if status is not None:
-        for category in sorted(status.keys()):
-            _style = style
-            if status.get(category) is None:
-                ltype = 'ul'
-                list_items = ['None']
-                _style = None
-            elif len(status[category]) == 0:
-                ltype = 'ul'
-                list_items = ['None']
-                _style = None
-            else:
-                ltype = 'ol'
-                list_items = status[category]
-            text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items, _style)
-    if len(text) > 0:
-        text = html_reports.tag('h3', title) + text
-    return text

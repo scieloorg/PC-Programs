@@ -45,14 +45,20 @@ def encode(content, encoding='utf-8', error_handler=None):
                 try:
                     content = content.encode(encoding, 'xmlcharrefreplace')
                     print('xmlcharrefreplace')
+                    print(e)
+                    print(content[content.find('&')-10:content.find('&')+10])
                 except Exception as e:
                     try:
                         content = content.encode(encoding, 'replace')
                         print('replace')
+                        print(content)
                     except Exception as e:
                         try:
                             content = content.encode(encoding, 'ignore')
                             print('ignore')
+                            print(content)
                         except Exception as e:
                             print('encode: ', e)
+                            print(content)
+
     return content
