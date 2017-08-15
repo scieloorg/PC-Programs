@@ -6,8 +6,8 @@ import shutil
 
 from ...__init__ import _
 from ...generics import fs_utils
-from ...generics import xml_utils
 from ...generics import java_xml_utils
+from ...generics import xml_utils
 from ...generics import img_utils
 from ...generics.reports import text_report
 from ...generics.reports import html_reports

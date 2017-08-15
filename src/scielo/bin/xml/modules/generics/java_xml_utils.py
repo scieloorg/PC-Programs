@@ -3,8 +3,8 @@ import sys
 import os
 import shutil
 
-from . import fs_utils
 from . import xml_utils
+from . import fs_utils
 from . import system
 
 from ..__init__ import JAR_PATH
@@ -93,6 +93,7 @@ class XMLTransformer(object):
 
         self.bkp = fs_utils.read_file(self.xml_filename)
         xml_utils.new_apply_dtd(self.xml_filename, '')
+        fs_utils.delete_file_or_folder(self.result_filename)
         fs_utils.delete_file_or_folder(self.temp_result_filename)
         if not os.path.isdir(self.temp_result_dir):
             os.makedirs(self.temp_result_dir)
