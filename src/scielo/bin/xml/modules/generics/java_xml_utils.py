@@ -2,7 +2,7 @@
 import sys
 import os
 import shutil
-
+import tempfile
 from . import xml_utils
 from . import fs_utils
 from . import system

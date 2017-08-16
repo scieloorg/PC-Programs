@@ -73,33 +73,35 @@ class XMLStructureValidator(object):
         if '_' in new_name or '.' in new_name:
             name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=new_name, forbidden_characters='_.') + separator
 
-        files_errors = fs_utils.read_file(outputs.err_filename) or ''
+        fs_utils.write_file(outputs.err_filename, fs_utils.read_file(outputs.mkp2xml_report_filename) or '')
+
         for f in [outputs.dtd_report_filename, outputs.style_report_filename, outputs.data_report_filename, outputs.pmc_style_report_filename]:
             fs_utils.delete_file_or_folder(f)
         xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
-        dtd_report_content = fs_utils.read_file(outputs.dtd_report_filename)
-        xml_structure_report_content = '' or dtd_report_content
-        if len(xml_structure_report_content) > 0:
-            xml_structure_report_content = rst_title(_('DTD errors')) + xml_structure_report_content
+        dtd_errors = '' or fs_utils.read_file(outputs.dtd_report_filename)
+        if len(dtd_errors) > 0:
+            dtd_errors = rst_title(_('DTD errors')) + dtd_errors
 
+        report_title = ''
         report_content = ''
         if xml is None:
             xml_f += 1
-            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file is invalid') + '\n'
+            report_title += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file is invalid') + '\n'
         if not valid_dtd:
             xml_f += 1
-            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has DTD errors') + '\n'
+            report_title += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has DTD errors') + '\n'
         if len(name_error) > 0:
             xml_f += 1
-            report_content += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has name errors') + '\n'
+            report_title += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has name errors') + '\n'
 
-        if len(report_content) > 0:
-            report_content = rst_title(_('Summary')) + report_content + separator
+        if len(report_title) > 0:
+            report_title = rst_title(_('Summary')) + report_title + separator
+            report_title = report_title.replace('\n', '<br/>')
 
         if xml_f > 0:
-            fs_utils.append_file(outputs.err_filename, name_error + xml_structure_report_content)
+            fs_utils.append_file(outputs.err_filename, name_error + dtd_errors)
         if outputs.ctrl_filename is None:
             if xml_f + xml_e + xml_w == 0:
                 fs_utils.delete_file_or_folder(outputs.style_report_filename)
@@ -110,7 +112,7 @@ class XMLStructureValidator(object):
                 report_content += extract_report_core(fs_utils.read_file(rep_file))
 
         r = validations_module.ValidationsResult()
-        r.message = report_content
+        r.message = report_title + report_content
         return r
 
 

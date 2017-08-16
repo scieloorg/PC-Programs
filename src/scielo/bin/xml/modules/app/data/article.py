@@ -994,6 +994,7 @@ class ArticleXML(object):
     def marked_to_delete(self):
         if self.article_meta is not None:
             return self.article_meta.find('article-id[@specific-use="delete"]') is not None
+        return False
 
     @property
     def previous_article_pid(self):
@@ -1005,11 +1006,9 @@ class ArticleXML(object):
         _order = self.article_id_other
         if _order is None:
             _order = self.fpage
-        if _order is None:
-            _order = '00000'
-        else:
-            _order = '00000' + _order
-        return _order[-5:]
+        if _order is None or not _order.isdigit():
+            _order = '0'
+        return _order.zfill(5)
 
     @property
     def article_id_other(self):
@@ -1080,7 +1079,9 @@ class ArticleXML(object):
     def fpage(self):
         if self._fpage is None:
             if self.article_meta is not None:
+                print(self.article_meta.findtext('fpage'))
                 self._fpage = article_utils.normalize_number(self.article_meta.findtext('fpage'))
+                print(self._fpage)
         return self._fpage
 
     @property
@@ -1899,9 +1900,9 @@ class ReferenceXML(object):
         self.comments = self.root_xml_node.nodes_text(['.//comment'])
         self.notes = self.root_xml_node.nodes_text(['.//notes'])
         self.contract_number = self.root_xml_node.nodes_text(['.//comment[@content-type="award-id"]'])
-        self.conference_name = self.nodes_text(['.//conf-name'])
-        self.conference_location = self.nodes_text(['.//conf-loc'])
-        self.conference_date = self.nodes_text(['.//conf-date'])
+        self.conference_name = self.root_xml_node.nodes_text(['.//conf-name'])
+        self.conference_location = self.root_xml_node.nodes_text(['.//conf-loc'])
+        self.conference_date = self.root_xml_node.nodes_text(['.//conf-date'])
 
     @property
     def reference(self):
@@ -1966,7 +1967,7 @@ class ReferenceXML(object):
     @property
     def trans_title_language(self):
         items = []
-        for node in self.nodes(['.//trans-title']):
+        for node in self.root_xml_node.nodes(['.//trans-title']):
             items.append(xml_utils.element_lang(node))
         return items
 
@@ -2007,7 +2008,7 @@ class ReferenceXML(object):
         if self._person_group_xml_items is None:
             groups = []
             if self.elem_citation_nodes is not None:
-                for person_group in self.nodes(['.//person-group']):
+                for person_group in self.root_xml_node.nodes(['.//person-group']):
                     role = person_group.attrib.get('person-group-type', 'author')
                     authors = []
                     etal = None
@@ -2025,7 +2026,7 @@ class ReferenceXML(object):
     @property
     def size(self):
         items = []
-        for item in self.nodes_data(['.//size']):
+        for item in self.root_xml_node.nodes_data(['.//size']):
             if item is not None:
                 text, attribs = item
                 items.append({'size': text, 'units': attribs.get('units')})
@@ -2033,7 +2034,7 @@ class ReferenceXML(object):
 
     @property
     def cited_date(self):
-        return self.nodes_text(
+        return self.root_xml_node.nodes_text(
             [
                 './/date-in-citation[@content-type="access-date"]',
                 './/date-in-citation[@content-type="update"]'
@@ -2047,7 +2048,7 @@ class ReferenceXML(object):
     @property
     def pub_id_items(self):
         if self._pub_id_items is None:
-            data = self.nodes_data(['.//pub-id'])
+            data = self.root_xml_node.nodes_data(['.//pub-id'])
             if len(data) > 0:
                 self._pub_id_items = {attribs.get('pub-id-type'): text for text, attribs in data}
         return self._pub_id_items

@@ -249,7 +249,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
     def insert_mml_namespace_reference(self):
         if '>' in self.content:
             self.content = self.content[:self.content.rfind('>') + 1]
-        if 'mml:' in self.content and not 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' in self.content:
+        if 'mml:' in self.content and 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' not in self.content:
             if '</' in self.content:
                 main_tag = self.content[self.content.rfind('</') + 2:]
                 main_tag = main_tag[:main_tag.find('>')]
@@ -463,10 +463,10 @@ class PackageNamer(object):
         log.append(_('Package path') + ':  ' + self.dest_pkgfiles.path)
         log.append(_('Source XML name') + ': ' + self.src_pkgfiles.name)
         log.append(_('Package XML name') + ': ' + self.new_name)
-        log.append(text_report.display_sorted_list(_('Total of related files'), text_report.display_pairs_list(self.related_files_copy)))
-        log.append(text_report.display_sorted_list(_('Total of files in package'), text_report.display_pairs_list(self.href_files_copy)))
-        log.append(text_report.display_sorted_list(_('Total of @href in XML'), text_report.display_pairs_list(self.hrefreplacements)))
-        log.append(text_report.display_sorted_list(_('Total of files not found in package'), self.missing_href_files))
+        log.append(text_report.display_labeled_list(_('Total of related files'), text_report.display_pairs_list(self.related_files_copy)))
+        log.append(text_report.display_labeled_list(_('Total of files in package'), text_report.display_pairs_list(self.href_files_copy)))
+        log.append(text_report.display_labeled_list(_('Total of @href in XML'), text_report.display_pairs_list(self.hrefreplacements)))
+        log.append(text_report.display_labeled_list(_('Total of files not found in package'), self.missing_href_files))
         return '\n'.join(log)
 
 
@@ -525,7 +525,7 @@ class SGMLXML2SPSXML(object):
             msg = pkgnamer.report()
             img_reports = ImagesOriginReport(self.images_origin, pkgnamer.hrefreplacements, self.xml_pkgfiles.path)
             html_reports.save(self.sgmxml_outputs.images_report_filename, '', img_reports.report())
-        fs_utils.write_file(self.sgmxml_outputs.err_filename, msg)
+        fs_utils.write_file(self.sgmxml_outputs.mkp2xml_report_filename, msg)
 
     def pack(self, acron, converter):
         self.normalize_sgmxml()

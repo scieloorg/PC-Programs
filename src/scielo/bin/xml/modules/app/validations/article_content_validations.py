@@ -472,10 +472,7 @@ class ArticleContentValidation(object):
         _valid = []
         if self.article.journal_issns is not None:
             for k, v in self.article.journal_issns.items():
-                valid = False
-                if v[4:5] == '-':
-                    if len(v) == 9:
-                        valid = True
+                valid = v is not None and len(v) == 9  and v[4:5] == '-'
                 status = validation_status.STATUS_OK if valid else validation_status.STATUS_FATAL_ERROR
                 _valid.append((k + ' ISSN', status, v))
             if len(_valid) == 0:
@@ -645,7 +642,8 @@ class ArticleContentValidation(object):
             return (('fpage', validation_status.STATUS_ERROR, _('Use only fpage and lpage. ')))
         r = ('fpage', validation_status.STATUS_OK, self.article.fpage)
         if self.article.fpage is None:
-            r = data_validations.is_required_data('elocation-id', self.article.elocation_id)
+
+            r = data_validations.conditional_required('elocation-id', self.article.elocation_id, _('in case of fpage is inexistent'))
         return r
 
     @property

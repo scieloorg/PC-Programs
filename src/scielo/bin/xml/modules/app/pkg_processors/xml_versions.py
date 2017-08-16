@@ -101,7 +101,8 @@ def dtd_location(xml):
     for name, data in XPM_FILES.items():
         if data.get('dtd id') in xml:
             return data.get('local'), data.get('remote')
-    return None, None
+    data = XPM_FILES['scielo'+DEFAULT_VERSION]
+    return data.get('local'), data.get('remote')
 
 
 def identify_dtd_files(xml):
