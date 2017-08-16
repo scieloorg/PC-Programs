@@ -1,5 +1,4 @@
 # coding=utf-8
-import sys
 import os
 import shutil
 import tempfile
@@ -9,7 +8,7 @@ from . import system
 
 from ..__init__ import JAR_PATH
 from ..__init__ import TMP_DIR
-
+from ..__init__ import SYS_DEFAULT_ENCODING
 
 JAVA_PATH = 'java'
 JAR_TRANSFORM = JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
@@ -55,9 +54,7 @@ class XMLValidator(object):
     def _is_valid(self):
         result = ''
         if os.path.exists(self.temp_result_filename):
-            encoding = sys.getfilesystemencoding()
-            print(encoding)
-            result = fs_utils.read_file(self.temp_result_filename, encoding)
+            result = fs_utils.read_file(self.temp_result_filename, SYS_DEFAULT_ENCODING)
 
             if 'ERROR' in result.upper():
                 lines = fs_utils.read_file_lines(self.xml_filename, encoding)[1:]

@@ -141,9 +141,6 @@ class PkgArticleFiles(object):
                 if source_fname not in self.files_except_xml:
                     source_fname = item + '.tiff'
                 img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
-                if item + '.jpg' not in self.all:
-                    print('!'*30)
-                    print('workarea.files problem')
 
     def zip(self, dest_path=None):
         if dest_path is None:

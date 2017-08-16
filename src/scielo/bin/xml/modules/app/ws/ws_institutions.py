@@ -2,6 +2,8 @@
 
 import json
 
+from ...generics import utils
+
 
 class Wayta(object):
 
@@ -19,8 +21,7 @@ class Wayta(object):
                 self.results[text] = format_wayta_results(request_result, filter_country)
                 result = self.results[text]
         except Exception as e:
-            print('wayta_request:')
-            print(e)
+            utils.debugging('ws_institutions.request()', e)
         return result
 
     def search(self, orgname, country, filter_country=None, complements=[]):
@@ -52,7 +53,5 @@ def format_wayta_results(result, filter_country=None):
             else:
                 r = [tuple([item.get(key) for key in keys]) for item in results.get('choices') if item.get('value', '') != '' and filter_country == item.get('country')]
     except Exception as e:
-        print('format_wayta_results:')
-        print(e)
-        print(result)
+        utils.debugging('ws_institutions.format_wayta_results()', (e, result))
     return r

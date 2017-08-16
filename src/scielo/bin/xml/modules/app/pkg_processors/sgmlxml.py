@@ -1,7 +1,6 @@
 # coding=utf-8
 
 import os
-import sys
 import shutil
 
 from ...__init__ import _
@@ -9,6 +8,7 @@ from ...generics import fs_utils
 from ...generics import java_xml_utils
 from ...generics import xml_utils
 from ...generics import img_utils
+from ...generics import encoding
 from ...generics.reports import text_report
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
@@ -90,7 +90,7 @@ class SGMLHTML(object):
 
     @property
     def html_content(self):
-        content = fs_utils.read_file(self.html_filename, sys.getfilesystemencoding())
+        content = fs_utils.read_file(self.html_filename, encoding.SYS_DEFAULT_ENCODING)
         if '<html' not in content.lower():
             c = content
             for c in content:
@@ -602,7 +602,6 @@ def get_href_content(graphic):
 
 
 def get_previous_element_which_has_id_attribute(text):
-    #print('\nget_previous_element_which_has_id_attribute:')
     elem_id = ''
     elem_name = ''
     if ' id="' in text:
@@ -623,12 +622,6 @@ def get_previous_element_which_has_id_attribute(text):
         if patch.find('</' + elem_name + '>') >= 0 or tag_end.endswith('/'):
             elem_name = ''
             elem_id = ''
-        #print((elem_name, elem_id))
-    #else:
-    #    print('No element id')
-    #    print(text.encode('utf-8'))
-    #print('---')
-
     return (elem_name, elem_id)
 
 

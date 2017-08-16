@@ -1,7 +1,6 @@
 # coding=utf-8
 
 import os
-import sys
 
 from ..__init__ import _
 from . import interface
@@ -43,7 +42,7 @@ def read_inputs(args):
     DISPLAY_REPORT = True
     GENERATE_PMC = False
 
-    args = [encoding.decode(arg, sys.getfilesystemencoding()) for arg in args]
+    args = [encoding.decode(arg, encoding.SYS_DEFAULT_ENCODING) for arg in args]
     script = args[0]
     path = None
     acron = None

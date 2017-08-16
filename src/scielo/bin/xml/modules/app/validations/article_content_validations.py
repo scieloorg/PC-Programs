@@ -1052,7 +1052,7 @@ class ArticleContentValidation(object):
                         message.append(msg)
         for xref_type, missing_xref_type_items in missing.items():
             if self.article.any_xref_ranges.get(xref_type) is None:
-                print(xref_type + ' has no xref ranges')
+                utils.debugging('missing_xref_list()', xref_type + ' has no xref ranges')
             else:
                 missing_xref_type_items = confirm_missing_xref_items(missing_xref_type_items, self.article.any_xref_ranges.get(xref_type))
 

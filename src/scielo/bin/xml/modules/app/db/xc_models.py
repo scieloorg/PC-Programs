@@ -655,13 +655,11 @@ class IssueModels(object):
                             article_seccode = self.seccode_items.get(name)
                             article_sectitle = self.sectitle_items.get(name)
                             break
-                    #print(article_seccode, article_sectitle)
                     if article_seccode is None:
                         rate = 0
                         article_section_titles = _(' or ').join(article.toc_sections)
                         for a_section in article.toc_sections:
                             section_code, matched_rate, section_title = self.most_similar_section_code(a_section)
-                            #print(section_code, matched_rate, section_title)
                             if matched_rate == 1:
                                 rate = matched_rate
                                 article_seccode = section_code
@@ -852,7 +850,7 @@ class ArticlesManager(object):
 
         if not error:
             q_registered = self.finish_conversion(i_record)
-            print('registered', q_registered)
+            utils.debugging('convert_articles()', q_registered)
             converted = q_registered >= len(articles) and q_registered > 0
             if converted:
                 if create_windows_base:
@@ -996,7 +994,7 @@ class BaseManager(object):
                 try:
                     fs_utils.delete_file_or_folder(article_files.id_filename)
                 except:
-                    print(_('Unable to exclude {item}. ').format(item=article_files.id_filename))
+                    utils.display_message(_('Unable to exclude {item}. ').format(item=article_files.id_filename))
             previous = os.path.isfile(article_files.id_filename)
 
             self.db_isis.save_id(article_files.id_filename, article_records.records, self.content_formatter)

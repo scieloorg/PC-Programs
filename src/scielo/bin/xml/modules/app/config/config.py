@@ -3,6 +3,7 @@ import os
 import shutil
 
 from ...generics import fs_utils
+from ...generics import utils
 from ...generics.ws import ws_requester
 
 from ...__init__ import CONFIG_PATH
@@ -125,11 +126,11 @@ class Configuration(object):
                     if not os.path.isdir(itemdirs):
                         os.makedirs(itemdirs)
                     shutil.copyfile(item + ext, itemdirs + '/' + name + ext)
-                    print('updating:')
-                    print(item + ext)
-                    print(' ==> ' + itemdirs + '/' + name + ext)
+                    utils.debugging('update_title_and_issue', 'updating:')
+                    utils.debugging('update_title_and_issue', item + ext)
+                    utils.debugging('update_title_and_issue', ' ==> ' + itemdirs + '/' + name + ext)
                 else:
-                    print('WARNING: Unable to find ' + item + ext)
+                    utils.debugging('update_title_and_issue', 'WARNING: Unable to find ' + item + ext)
 
     @property
     def valid(self):
@@ -183,7 +184,7 @@ class Configuration(object):
                 problems.append('WARNING: Gerapadrao is not enabled.')
             if not self.is_enabled_transference:
                 problems.append('WARNING: Files Transference is not enabled.')
-        print('\n'.join(problems))
+        utils.display_message('\n'.join(problems))
         errors = [e for e in problems if 'ERROR:' in e]
         return len(errors) == 0
 
@@ -358,7 +359,7 @@ class Configuration(object):
             errors.append('Missing EMAIL_SUBJECT_PACKAGE_EVALUATION')
         if self.email_subject_gerapadrao is None:
             errors.append('Missing EMAIL_SUBJECT_GERAPADRAO')
-        print('\n'.join(errors))
+        utils.display_message('\n'.join(errors))
         return len(errors) == 0
 
     @property
@@ -378,7 +379,7 @@ class Configuration(object):
             errors.append('Missing QUEUE_PATH')
         if self.download_path is None:
             errors.append('Missing DOWNLOAD_PATH')
-        print('\n'.join(errors))
+        utils.display_message('\n'.join(errors))
         return len(errors) == 0
 
     @property
@@ -396,7 +397,7 @@ class Configuration(object):
             errors.append('Missing SOURCE_TITLE_DB')
         if self._data.get('SOURCE_ISSUE_DB') is None:
             errors.append('Missing SOURCE_ISSUE_DB')
-        print('\n'.join(errors))
+        utils.display_message('\n'.join(errors))
         return len(errors) == 0
 
     @property
@@ -412,7 +413,7 @@ class Configuration(object):
             errors.append('Missing TRANSFER_USER')
         if self.web_app_site is None:
             errors.append('Missing WEB_APP_SITE')
-        print('\n'.join(errors))
+        utils.display_message('\n'.join(errors))
         return len(errors) == 0
 
     @property
@@ -426,5 +427,5 @@ class Configuration(object):
     @property
     def app_ws_requester(self):
         if self.is_web_access_enabled is False:
-            print('ENABLED_WEB_ACCESS=off')
+            utils.display_message('ENABLED_WEB_ACCESS=off')
         return ws_requester.WebServicesRequester(self.is_web_access_enabled, self.proxy_info)

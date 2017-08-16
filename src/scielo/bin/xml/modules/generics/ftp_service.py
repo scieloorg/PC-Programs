@@ -2,12 +2,14 @@
 from ftplib import FTP
 import os
 
+from . import utils
+
 
 actions = []
 
 
 def register_action(action):
-    print(action)
+    utils.display_message(action)
     actions.append(action)
 
 
@@ -105,7 +107,7 @@ class FTPService(object):
         r = self.ftp.close()
         register_action('ftp finished')
 
-        print(';\n'.join(files_list))
+        utils.display_message(';\n'.join(files_list))
         return files_list
 
     def list_content_of_files_of_subdir(self, path_in_ftp_server):

@@ -70,9 +70,6 @@ class RegisteredArticles(dict):
         actions = None
         conflicts = None
         old_name = None
-        #print('analyze_registered_articles')
-        #print([registered_titaut, registered_name, registered_order])
-        #print('-')
         if registered_titaut is None and registered_order is None and registered_name is None:
             actions = 'add'
         elif all([registered_titaut, registered_order, registered_name]):

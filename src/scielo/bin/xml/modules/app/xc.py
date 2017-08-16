@@ -87,7 +87,7 @@ class XC_Reception(object):
         try:
             if len(pkg.articles) > 0:
                 scilista_items, xc_status, mail_info = self.proc.convert_package(pkg)
-                print(scilista_items)
+                utils.display_message(scilista_items)
         except Exception as e:
 
             if self.configuration.queue_path is not None:
@@ -113,7 +113,7 @@ class XC_Reception(object):
             except Exception as e:
                 self.mailer.mail_step3_failure(package_name, e)
                 if len(package_path) == 1:
-                    print('exception as step 3')
+                    utils.debugging('convert_package()', 'exception as step 3')
                     raise
         utils.display_message(_('finished'))
 

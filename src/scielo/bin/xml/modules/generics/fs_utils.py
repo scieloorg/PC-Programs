@@ -8,6 +8,7 @@ import csv
 
 from . import files_extractor
 from . import encoding
+from . import utils
 
 
 def read_file(filename, encode='utf-8'):
@@ -48,8 +49,8 @@ def delete_file_or_folder(path):
         try:
             os.unlink(path)
         except:
-            print('Unable to delete: ')
-            print(path)
+            utils.display_message('Unable to delete: ')
+            utils.display_message(path)
 
 
 def move_file(src, dest):
@@ -186,4 +187,4 @@ class ProcessLogger(object):
         write_file(filename, '\n'.join(self.logged_items))
 
     def display(self):
-        print('\n'.join(self.logged_items))
+        utils.display_message('\n'.join(self.logged_items))

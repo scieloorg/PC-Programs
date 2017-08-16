@@ -36,24 +36,24 @@ def format_value(content):
     try:
         content = remove_break_lines_characters(content)
     except Exception as e:
-        utils.debugging('format_value: remove_break_lines_characters:')
-        utils.debugging(e)
-        utils.debugging(content)
+        utils.debugging('format_value()', 'format_value: remove_break_lines_characters:')
+        utils.debugging('format_value()', e)
+        utils.debugging('format_value()', content)
 
     try:
         if '&' in content:
             content, replace = xml_utils.convert_entities_to_chars(content)
     except Exception as e:
-        utils.debugging('format_value:  convert_entities_to_chars:')
-        utils.debugging(e)
-        utils.debugging(content)
+        utils.debugging('format_value()', 'format_value:  convert_entities_to_chars:')
+        utils.debugging('format_value()', e)
+        utils.debugging('format_value()', content)
 
     try:
         content = encoding.decode(content)
     except Exception as e:
-        utils.debugging('format_value: 2:')
-        utils.debugging(e)
-        utils.debugging(content)
+        utils.debugging('format_value()', 'format_value: 2:')
+        utils.debugging('format_value()', e)
+        utils.debugging('format_value()', content)
 
     return content.strip()
 
@@ -101,8 +101,8 @@ class IDFile(object):
 
     def tag_occ(self, tag, data):
         if isinstance(data, tuple):
-            utils.debugging(tag)
-            utils.debugging(data)
+            utils.debugging('tag_occ()', tag)
+            utils.debugging('tag_occ()', data)
             s = ''
         elif isinstance(data, dict):
             s = self.tag_content(tag, self.format_subfields(data))
@@ -114,7 +114,6 @@ class IDFile(object):
         try:
             first = u''
             value = u''
-            #for k, v in subf_and_value_list.items():
             for k in sorted(subf_and_value_list.keys()):
                 v = subf_and_value_list[k]
                 if v is not None and v != '' and len(k) == 1:
@@ -125,10 +124,10 @@ class IDFile(object):
                     elif k in '_':
                         first = v
         except Exception as e:
-            utils.debugging('format_subfields')
-            utils.debugging(e)
-            utils.debugging(subf_and_value_list)
-            utils.debugging(first + value)
+            utils.debugging('format_subfields()', 'format_subfields')
+            utils.debugging('format_subfields()', e)
+            utils.debugging('format_subfields()', subf_and_value_list)
+            utils.debugging('format_subfields()', first + value)
         return first + value
 
     def tag_content(self, tag, value):
@@ -140,15 +139,14 @@ class IDFile(object):
                     tag = '000' + tag
                     tag = tag[-3:]
                     value = format_value(value)
-                    #value = change_circ(value)
                     r = '!v' + tag + '!' + value + '\n'
                 except Exception as e:
-                    utils.debugging('tag_content: ')
-                    utils.debugging(e)
-                    utils.debugging(s)
-                    utils.debugging(value)
-                    utils.debugging(type(s))
-                    utils.debugging(type(value))
+                    utils.debugging('tag_content()', 'tag_content: ')
+                    utils.debugging('tag_content()', e)
+                    utils.debugging('tag_content()', s)
+                    utils.debugging('tag_content()', value)
+                    utils.debugging('tag_content()', type(s))
+                    utils.debugging('tag_content()', type(value))
         return r
 
     def read(self, filename):
@@ -213,9 +211,8 @@ class IDFile(object):
         try:
             fs_utils.write_file(filename, content, 'iso-8859-1')
         except Exception as e:
-            utils.debugging('saving...')
-            utils.debugging(e)
-            print(e)
+            utils.debugging('save()', 'saving...')
+            utils.debugging('save()', e)
 
 
 class CISIS(object):
@@ -295,7 +292,6 @@ class CISIS(object):
         fs_utils.delete_file_or_folder(result_filename + '.mst')
         fs_utils.delete_file_or_folder(result_filename + '.xrf')
         cmd = self.cisis_path + '/mx btell=0 ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
-        #print(type(cmd))
         system.run_command(cmd)
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
@@ -310,13 +306,12 @@ class CISIS(object):
 
             cmd = self.cisis_path + '/mx ' + mst_filename + ' +control now > ' + temp_file.name.replace('\\', '/')
             system.run_command(cmd)
-            ##print(cmd)
             if os.path.isfile(temp_file.name):
                 s = fs_utils.read_file(temp_file.name)
                 try:
                     fs_utils.delete_file_or_folder(temp_file.name)
                 except:
-                    print(os.path.isfile(temp_file.name))
+                    utils.debugging('dbm_isis.is_readable()', os.path.isfile(temp_file.name))
         return len(s) > 0
 
 

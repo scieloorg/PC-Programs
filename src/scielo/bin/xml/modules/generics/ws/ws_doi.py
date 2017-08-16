@@ -2,6 +2,8 @@
 
 from datetime import datetime
 
+from .. import utils
+
 
 class DOIWebServicesRequester(object):
 
@@ -77,7 +79,7 @@ class DOIData(object):
         try:
             return ' '.join(self._authors)
         except:
-            print(self.json_data.get('author'))
+            utils.debugging('ws_doi.authors()', self.json_data.get('author'))
             raise
 
     @property
@@ -131,5 +133,5 @@ class DOIData(object):
             if all([self.authors, self.pid, self.issns, self.deposited_date, self.year]):
                 return (self.pid, self.authors, self.issns, self.year, self.deposited_date)
         except:
-            print(self.json_data)
+            utils.debugging('ws_doi.data()', self.json_data)
             raise

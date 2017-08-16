@@ -1,8 +1,8 @@
 # coding=utf-8
-import sys
 import difflib
-
 from datetime import datetime
+
+from . import encoding
 
 
 IMDEBUGGING = False
@@ -65,20 +65,29 @@ def most_similar(similarity):
     return (highiest_rate, items)
 
 
-def debugging(text):
-    if IMDEBUGGING:
-        display_message(text)
-
-
-def display_message(text):
+def debugging(function_name, text):
+    print('\n')
+    print('='*10 + ' DEBUG - start' + '='*10)
+    print(function_name)
     try:
         print(text)
     except Exception as e:
         try:
-            print(text.encode(encoding=sys.getfilesystemencoding()))
-        except:
-            print('error in display_message')
-            print(sys.getfilesystemencoding())
+            print(encoding.encode(text, encoding.SYS_DEFAULT_ENCODING))
+        except Exception as e:
+            print('Exception')
+            print(e)
+    print('='*10 + ' DEBUG - end ' + '='*10 + '\n')
+
+
+def display_message(text):
+    print('\n')
+    print('='*10 + ' Message - start ' + '='*10)
+    try:
+        print(encoding.encode(text, encoding.SYS_DEFAULT_ENCODING))
+    except Exception as e:
+        print(e)
+    print('='*10 + ' Message - end ' + '='*10)
 
 
 def valid_formula_min_max_height(values, percent=0.25):

@@ -20,6 +20,7 @@ except ImportError:
     from urllib2 import urlopen, Request, HTTPError, URLError
 
 from .. import encoding
+from .. import utils
 
 
 JOURNALS_CSV_URL = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
@@ -167,7 +168,7 @@ def display_proxy_form(registered_ip, registered_port, debug=False):
 
     r = app.info
     if debug:
-        print('proxy informed:', r)
+        utils.debugging('display_proxy_form()', r)
     tk_root.destroy()
     return r
 
@@ -205,7 +206,9 @@ def try_request(url, timeout=30, debug=False, force_error=False):
         response = None
         http_error_proxy_auth = True
     if error_message != '':
-        print((url, error_message, response, http_error_proxy_auth))
+        utils.debugging(
+            'ws_requester.try_request()',
+            (url, error_message, response, http_error_proxy_auth))
     return (response, http_error_proxy_auth, error_message)
 
 

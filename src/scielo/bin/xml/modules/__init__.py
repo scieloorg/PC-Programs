@@ -1,8 +1,8 @@
 # coding=utf-8
 import os
+import sys
 
 from .app.config import app_texts
-
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 BIN_PATH = THIS_LOCATION + '/../..'

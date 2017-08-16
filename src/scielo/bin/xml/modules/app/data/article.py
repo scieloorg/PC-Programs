@@ -425,7 +425,9 @@ class ArticleXML(object):
         self.translations = []
         self.sub_articles = []
         self.responses = []
+        self._fpage_node = None
         self._fpage = None
+        self.fpage_seq = None
         self._epub_ppub_date = None
 
         if tree is not None:
@@ -546,8 +548,6 @@ class ArticleXML(object):
                                         end = int(n)
                                 if all([start, end]):
                                     _any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
-                        #else:
-                        #    print(text)
                         k += 1
         return _any_xref_ranges
 
@@ -610,8 +610,6 @@ class ArticleXML(object):
                                         end = int(n)
                                 if None not in [start, end]:
                                     _bibr_xref_ranges.append([start, end, bibr_xref_node_items[k-1], bibr_xref_node_items[k]])
-                            #elif '-' in text:
-                            #    print(text)
         return _bibr_xref_ranges
 
     @property
@@ -1079,15 +1077,11 @@ class ArticleXML(object):
     def fpage(self):
         if self._fpage is None:
             if self.article_meta is not None:
-                print(self.article_meta.findtext('fpage'))
-                self._fpage = article_utils.normalize_number(self.article_meta.findtext('fpage'))
-                print(self._fpage)
+                self._fpage_node = self.article_meta.find('fpage')
+                if self._fpage_node is not None:
+                    self._fpage = article_utils.normalize_number(self._fpage_node.text)
+                    self.fpage_seq = self._fpage_node.attrib.get('seq')
         return self._fpage
-
-    @property
-    def fpage_seq(self):
-        if self.article_meta is not None:
-            return self.article_meta.find('fpage').attrib.get('seq') if self.article_meta.find('fpage') is not None else None
 
     @property
     def lpage(self):

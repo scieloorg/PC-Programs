@@ -1,5 +1,12 @@
 # coding=utf-8
 
+import sys
+
+from . import utils
+
+
+SYS_DEFAULT_ENCODING = sys.getfilesystemencoding()
+
 
 def is_encodable(content):
     try:
@@ -16,7 +23,7 @@ def decode(content, encoding='utf-8'):
         try:
             content = content.decode(encoding)
         except Exception as e:
-            print('decode:', type(content), e)
+            utils.debugging('decode()', (type(content), e))
     return content
 
 
@@ -37,28 +44,25 @@ def encode(content, encoding='utf-8', error_handler=None):
             try:
                 content = content.encode(encoding, error_handler)
             except Exception as e:
-                print(e)
+                utils.debugging('encode()', e)
         else:
             try:
                 content = content.encode(encoding)
             except Exception as e:
                 try:
                     content = content.encode(encoding, 'xmlcharrefreplace')
-                    print('xmlcharrefreplace')
-                    print(e)
-                    print(content[content.find('&')-10:content.find('&')+10])
+                    utils.debugging(
+                        'encode()',
+                        ('xmlcharrefreplace', e, content[content.find('&')-10:content.find('&')+10]))
                 except Exception as e:
                     try:
                         content = content.encode(encoding, 'replace')
-                        print('replace')
-                        print(content)
+                        utils.debugging('encode()', ('replace', content))
                     except Exception as e:
                         try:
                             content = content.encode(encoding, 'ignore')
-                            print('ignore')
-                            print(content)
+                            utils.debugging('encode()', ('ignore', content))
                         except Exception as e:
-                            print('encode: ', e)
-                            print(content)
+                            utils.debugging('encode()', (e, content))
 
     return content

@@ -33,7 +33,7 @@ class SQL(object):
                     else:
                         _values.append('`' + item.replace('  ', ' ').strip() + '`')
                 instruction = 'insert into ' + table_name + ' (' + _fields + ') ' + ' values (' + ', '.join(_values) + ')'
-                utils.debugging(instruction)
+                utils.debugging('insert_data()', instruction)
                 conn.execute(instruction + '\n')
                 conn.commit()
         conn.close()
@@ -47,9 +47,9 @@ class SQL(object):
                 for row in cursor.fetchall():
                     results.append(row)
             except Exception as e:
-                utils.debugging('ERROR: query')
-                utils.debugging(expr)
-                utils.debugging(e)
+                utils.debugging('query()', 'ERROR: query')
+                utils.debugging('query()', expr)
+                utils.debugging('query()', e)
         conn.close()
         return results
 

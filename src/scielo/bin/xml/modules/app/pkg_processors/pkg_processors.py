@@ -141,7 +141,7 @@ class ArticlesConversion(object):
 
     def replace_ex_aop_pdf_files(self):
         # IMPROVEME
-        print('replace_ex_aop_pdf_files', self.db.aop_pdf_replacements)
+        utils.debugging('replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
 
@@ -154,7 +154,7 @@ class ArticlesConversion(object):
 
             for pdf in issue_pdf_files:
                 aop_pdf = pdf.replace(xml_name, aop_name)
-                print((issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
+                utils.debugging('replace_ex_aop_pdf_files()', (issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
                 shutil.copyfile(issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf)
 
     @property
@@ -163,7 +163,6 @@ class ArticlesConversion(object):
         labels = [_('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('article')]
         widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('executed actions'): '20'}
 
-        #print(self.articles_mergence.history_items)
         for status, status_items in self.aop_status.items():
             for status_data in status_items:
                 if status != 'aop':
@@ -390,10 +389,8 @@ class PkgProcessor(object):
             for aff_xml in pkg.articles[xml_name].affiliations:
                 if aff_xml is not None:
                     institutions_results[aff_xml.id] = self.aff_normalizer.query_institutions(aff_xml)
-                    print('evaluate_package', xml_name, aff_xml.id, aff_xml.xml, institutions_results[aff_xml.id])
             pkg.articles[xml_name].institutions_query_results = institutions_results
             pkg.articles[xml_name].normalized_affiliations = {aff_id: info[0] for aff_id, info in institutions_results.items()}
-            print('evaluate_package', xml_name, pkg.articles[xml_name].normalized_affiliations)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
@@ -465,9 +462,7 @@ class PkgProcessor(object):
                     pmc_package_maker.make_package()
                     workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
                 else:
-                    print('='*10)
-                    print(_('To generate PMC package, add -pmc as parameter'))
-                    print('='*10)
+                    utils.display_message(_('To generate PMC package, add -pmc as parameter'))
 
     def zip(self, pkg):
         if not self.is_xml_generation and not self.is_db_generation:
