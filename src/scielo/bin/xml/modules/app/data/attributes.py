@@ -572,7 +572,7 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
 
     status = ''
     suggestions = suggestions_of_article_type_by_section_title(article_section)
-    if not article_type in suggestions:
+    if article_type not in suggestions:
         suggestions_msg = ''
         status = validation_status.STATUS_ERROR
         if len(suggestions) == 0:
@@ -580,8 +580,8 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
             if has_abstract is True:
                 suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
             else:
-                suggestions = [item for item in DOCTOPIC_IN_USE if not item in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
-    if not article_type in suggestions:
+                suggestions = [item for item in DOCTOPIC_IN_USE if item not in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
+    if article_type not in suggestions:
         suggestions_msg = _('{value} is an invalid value for {label}. ').format(value=article_type, label='@article-type') + _('Expected values: {expected}. ').format(expected=_(' or ').join(suggestions))
         results.append(('@article-type', status, _('Be sure that the elements {elem1} and {elem2} are properly identified. ').format(elem1='@article-type', elem2=_('section title') + '(' + article_section + ')') + suggestions_msg))
 
@@ -593,7 +593,7 @@ def validate_iso_country_code(iso_country_code):
     if iso_country_code is None:
         r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='aff/country/@country')))
     else:
-        if not iso_country_code in COUNTRY_CODES:
+        if iso_country_code not in COUNTRY_CODES:
             r.append(('aff/country/@country', validation_status.STATUS_FATAL_ERROR, 
                 _('{value} is an invalid value for {label}. ').format(value=iso_country_code, label='aff/country/@country') + _('Expected values: {expected}. ').format(expected=' | '.join(COUNTRY_CODES))))
     return r

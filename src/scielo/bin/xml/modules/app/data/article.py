@@ -724,7 +724,7 @@ class ArticleXML(object):
                 if item['ext-link-type'] == 'scielo-pid':
                     item['ext-link-type'] = 'pid'
                 item['id'] = rel.attrib.get('id')
-                if not item['related-article-type'] in attributes.related_articles_type:
+                if item['related-article-type'] not in attributes.related_articles_type:
                     item['id'] = ''.join([c for c in item['id'] if c.isdigit()])
                 item['xml'] = xml_utils.node_xml(rel)
                 r.append(item)
@@ -783,10 +783,8 @@ class ArticleXML(object):
     @property
     def toc_sections(self):
         r = []
-        r.append(self.toc_section)
-        if self.translations is not None:
-            for node in self.translations:
-                r .extend(xml_utils.XMLNode(node).nodes_text(['.//subj-group/subject']))
+        if self.tree.find('.') is not None:
+            r = xml_utils.XMLNode(self.tree.find('.')).nodes_text(['.//subj-group/subject'])
         return r
 
     @property
@@ -801,7 +799,7 @@ class ArticleXML(object):
     def keywords_by_lang(self):
         k = {}
         for item in self.keywords:
-            if not item['l'] in k.keys():
+            if item['l'] not in k.keys():
                 k[item['l']] = []
 
             t = Text()
@@ -1696,7 +1694,7 @@ class Article(ArticleXML):
     def previous_pid(self):
         def is_valid(pid):
             r = False
-            if not pid is None:
+            if pid is not None:
                 r = (len(pid) == 23) or (pid.isdigit() and 0 < int(pid) <= 99999)
             return r
         d = None
@@ -1772,7 +1770,7 @@ class Article(ArticleXML):
         if pubdate is None:
             pubdate = self.issue_pub_date
         year = None
-        if not pubdate is None:
+        if pubdate is not None:
             year = pubdate.get('year')
         return year
 
@@ -1793,7 +1791,7 @@ class Article(ArticleXML):
     def publication_days(self):
         d1 = self.accepted_dateiso
         d2 = self.article_pub_dateiso if self.article_pub_dateiso else self.issue_pub_dateiso
-        if not d1 is None and not d2 is None:
+        if d1 is not None and d2 is not None:
             return article_utils.days('accepted date', d1, 'pub-date', d2)
 
     @property
@@ -1875,54 +1873,35 @@ class ReferenceXML(object):
         self.root = root
         self.root_xml_node = xml_utils.XMLNode(root)
         self.elem_citation_nodes = self.root_xml_node.nodes(['.//element-citation'])
-        self.elem_citation_xml_nodes = [xml_utils.XMLNode(elem) for elem in self.elem_citation_nodes]
         self._pub_id_items = None
         self._doi = None
         self._ref = None
         self._person_group_xml_items = None
         self._contrib_xml_items = None
-        self.source = self.nodes_text(['.//source'])
-        self.volume = self.nodes_text(['.//volume'])
-        self.issue = self.nodes_text(['.//issue'])
-        self.supplement = self.nodes_text(['.//supplement'])
-        self.edition = self.nodes_text(['.//edition'])
-        self.version = self.nodes_text(['.//version'])
-        self.year = self.nodes_text(['.//year'])
-        self.fpage = self.nodes_text(['.//fpage'])
-        self.lpage = self.nodes_text(['.//lpage'])
-        self.label = self.nodes_text(['.//label'])
-        self.article_title = self.nodes_text(['.//article-title'])
-        self.chapter_title = self.nodes_text(['.//chapter-title'])
-        self.trans_title = self.nodes_text(['.//trans-title'])
-        self.publisher_name = self.nodes_text(['.//publisher-name'])
-        self.publisher_loc = self.nodes_text(['.//publisher-loc'])
-        self.page_range = self.nodes_text(['.//page-range'])
-        self.elocation_id = self.nodes_text(['.//elocation-id'])
-        self.ext_link = self.nodes_text(['.//ext-link'])
-        self.comments = self.nodes_text(['.//comment'])
-        self.notes = self.nodes_text(['.//notes'])
-        self.contract_number = self.nodes_text(['.//comment[@content-type="award-id"]'])
+        self.source = self.root_xml_node.nodes_text(['.//source'])
+        self.volume = self.root_xml_node.nodes_text(['.//volume'])
+        self.issue = self.root_xml_node.nodes_text(['.//issue'])
+        self.supplement = self.root_xml_node.nodes_text(['.//supplement'])
+        self.edition = self.root_xml_node.nodes_text(['.//edition'])
+        self.version = self.root_xml_node.nodes_text(['.//version'])
+        self.year = self.root_xml_node.nodes_text(['.//year'])
+        self.fpage = self.root_xml_node.nodes_text(['.//fpage'])
+        self.lpage = self.root_xml_node.nodes_text(['.//lpage'])
+        self.label = self.root_xml_node.nodes_text(['.//label'])
+        self.article_title = self.root_xml_node.nodes_text(['.//article-title'])
+        self.chapter_title = self.root_xml_node.nodes_text(['.//chapter-title'])
+        self.trans_title = self.root_xml_node.nodes_text(['.//trans-title'])
+        self.publisher_name = self.root_xml_node.nodes_text(['.//publisher-name'])
+        self.publisher_loc = self.root_xml_node.nodes_text(['.//publisher-loc'])
+        self.page_range = self.root_xml_node.nodes_text(['.//page-range'])
+        self.elocation_id = self.root_xml_node.nodes_text(['.//elocation-id'])
+        self.ext_link = self.root_xml_node.nodes_text(['.//ext-link'])
+        self.comments = self.root_xml_node.nodes_text(['.//comment'])
+        self.notes = self.root_xml_node.nodes_text(['.//notes'])
+        self.contract_number = self.root_xml_node.nodes_text(['.//comment[@content-type="award-id"]'])
         self.conference_name = self.nodes_text(['.//conf-name'])
         self.conference_location = self.nodes_text(['.//conf-loc'])
         self.conference_date = self.nodes_text(['.//conf-date'])
-
-    def nodes(self, xpaths):
-        items = []
-        for xml_node in self.elem_citation_xml_nodes:
-            items.extend(xml_node.nodes(xpaths))
-        return items
-
-    def nodes_data(self, xpaths):
-        items = []
-        for xml_node in self.elem_citation_xml_nodes:
-            items.extend(xml_node.nodes_data(xpaths))
-        return items
-
-    def nodes_text(self, xpaths):
-        items = []
-        for xml_node in self.elem_citation_xml_nodes:
-            items.extend(xml_node.nodes_text(xpaths))
-        return items
 
     @property
     def reference(self):

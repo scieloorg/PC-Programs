@@ -26,9 +26,9 @@ class SQL(object):
             if len(items) == len(fields):
                 _values = []
                 for item in items:
-                    if not '"' in item:
+                    if '"' not in item:
                         _values.append('"' + item.replace('  ', ' ').strip() + '"')
-                    elif not "'" in item:
+                    elif "'" not in item:
                         _values.append("'" + item.replace('  ', ' ').strip() + "'")
                     else:
                         _values.append('`' + item.replace('  ', ' ').strip() + '`')

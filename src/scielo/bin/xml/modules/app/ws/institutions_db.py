@@ -50,10 +50,10 @@ class InstitutionsDBManager(object):
 
     def normalized_country_name(self, country_code, country_name):
         if country_name is None:
-            if not country_code is None:
+            if country_code is not None:
                 country_name = self.normalized_country_items.get(country_code)
         else:
-            if not country_name in self.normalized_country_items.values():
+            if country_name not in self.normalized_country_items.values():
                 country_name = None
         return country_name
 

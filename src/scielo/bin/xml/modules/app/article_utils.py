@@ -197,21 +197,6 @@ def required_one(label, value):
     return display_attributes(label, value) if value is not None else validation_status.STATUS_ERROR + ': Required ' + label + '. '
 
 
-#FIXME apagar
-def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
-    def normalize_value(value):
-        return ' '.join(value.split())
-    if key is None:
-        key = 'None'
-    if key is not None:
-        if normalize_key:
-            key = normalize_value(key)
-        if not key in dict_key_and_values.keys():
-            dict_key_and_values[key] = []
-        dict_key_and_values[key].append(value)
-    return dict_key_and_values
-
-
 def format_date(dates):
     r = ''
     if dates is not None:
@@ -242,7 +227,7 @@ def remove_xref(article_title):
 def four_digits_year(year):
     if year is not None:
         if not year.isdigit():
-            if not 's/d' in year and not 's.d' in year:
+            if 's/d' not in year and 's.d' not in year:
                 year = year.replace('/', '-')
                 splited = None
                 if '-' in year:

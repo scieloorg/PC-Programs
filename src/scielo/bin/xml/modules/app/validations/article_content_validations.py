@@ -350,7 +350,7 @@ class ArticleContentValidation(object):
         for parent, parent_id, value in self.article.months:
             error = False
             if value.isdigit():
-                if not int(value) in range(1, 13):
+                if int(value) not in range(1, 13):
                     error = True
             else:
                 error = True
@@ -463,7 +463,7 @@ class ArticleContentValidation(object):
                 if len(self.journal.nlm_title) > 0:
                     label = 'journal-id (nlm-ta)'
                     value = self.article.journal_id_nlm_ta
-                    expected_values = self.journal.nlm_title
+                    expected_values = [self.journal.nlm_title]
                     status = validation_status.STATUS_FATAL_ERROR
                     return data_validations.is_expected_value(label, value, expected_values, status)
 
@@ -718,7 +718,7 @@ class ArticleContentValidation(object):
         label_title = _(' or ').join(['article-title', 'trans-title (@xml:lang="' + lang + '")'])
         label_xml_lang = _(' or ').join(['title-group/@xml:lang', 'trans-title-group/@xml:lang'])
         label_title_group = _(' or ').join(['title-group', 'trans-title-group[@xml:lang="' + lang + '"]'])
-        if not sorted_by_lang is None:
+        if sorted_by_lang is not None:
             if len(sorted_by_lang) > 0:
                 values = [item.title for item in sorted_by_lang]
         if all(values) is True:
@@ -874,7 +874,7 @@ class ArticleContentValidation(object):
             if lang is None:
                 if self.article.sps_version_number >= 1.4:
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{label} is required. ').format(label='license/@xml:lang')))
-            elif not lang in text_languages:
+            elif lang not in text_languages:
                 r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=lang, label='license/@xml:lang') + _('The license text must be written in {langs}. ').format(langs=_(' or ').join(attributes.translate_code_languages(text_languages))) + _('Expected values for {label}: {expected}. ').format(label='xml:lang', expected=_(' or ').join(text_languages)), license['xml']))
             result = attributes.validate_license_href(license.get('href'))
             if result is not None:
@@ -1010,7 +1010,7 @@ class ArticleContentValidation(object):
                     elif sectype not in expected_values:
                         invalid = None
                         if '|' in sectype:
-                            invalid = [sec for sec in sectype.split('|') if not sec in expected_values]
+                            invalid = [sec for sec in sectype.split('|') if sec not in expected_values]
                         else:
                             invalid = sectype
                         if invalid is not None:

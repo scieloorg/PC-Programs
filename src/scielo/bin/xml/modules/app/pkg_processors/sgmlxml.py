@@ -91,7 +91,7 @@ class SGMLHTML(object):
     @property
     def html_content(self):
         content = fs_utils.read_file(self.html_filename, sys.getfilesystemencoding())
-        if not '<html' in content.lower():
+        if '<html' not in content.lower():
             c = content
             for c in content:
                 if ord(c) == 0:

@@ -12,7 +12,6 @@ class Aff(object):
         aff = aff_xml.aff
         norm_aff = None
         found_institutions = None
-        print('query_institutions', [aff.orgname, aff.norgname])
         orgnames = [item.upper() for item in [aff.orgname, aff.norgname] if item is not None]
         if aff.norgname is not None or aff.orgname is not None:
             found_institutions = self.app_institutions_manager.validate_organization(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
