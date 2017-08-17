@@ -65,31 +65,6 @@ def most_similar(similarity):
     return (highiest_rate, items)
 
 
-def debugging(function_name, text):
-    print('\n')
-    print('='*10 + ' DEBUG - start' + '='*10)
-    print(function_name)
-    try:
-        print(text)
-    except Exception as e:
-        try:
-            print(encoding.encode(text, encoding.SYS_DEFAULT_ENCODING))
-        except Exception as e:
-            print('Exception')
-            print(e)
-    print('='*10 + ' DEBUG - end ' + '='*10 + '\n')
-
-
-def display_message(text):
-    print('\n')
-    print('='*10 + ' Message - start ' + '='*10)
-    try:
-        print(encoding.encode(text, encoding.SYS_DEFAULT_ENCODING))
-    except Exception as e:
-        print(e)
-    print('='*10 + ' Message - end ' + '='*10)
-
-
 def valid_formula_min_max_height(values, percent=0.25):
     m = 0
     if len(values) > 0:

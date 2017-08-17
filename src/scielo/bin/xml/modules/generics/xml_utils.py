@@ -16,7 +16,6 @@ from ..__init__ import _
 from ..__init__ import TABLES_PATH
 from . import fs_utils
 from . import encoding
-from . import utils
 
 
 ENTITIES_TABLE = None
@@ -54,7 +53,7 @@ def load_entities_table():
             symbol, number_ent, named_ent, descr, representation = item.split('|')
             table[named_ent] = symbol
     else:
-        utils.debugging('load_entities_table()', 'NOT FOUND ' + entities_filename)
+        encoding.debugging('load_entities_table()', 'NOT FOUND ' + entities_filename)
     return table
 
 
@@ -124,16 +123,16 @@ class XMLContent(object):
             if part in tag_list:
                 tag = part
                 if debug:
-                    utils.debugging('_fix_problem()', '\ncurrent:' + tag)
+                    encoding.debugging('_fix_problem()', '\ncurrent:' + tag)
                 if tag.startswith('</'):
                     if debug:
-                        utils.debugging('_fix_problem()', 'expected')
-                        utils.debugging('_fix_problem()', expected_close_tags)
-                        utils.debugging('_fix_problem()', 'ign_list')
-                        utils.debugging('_fix_problem()', ign_list)
+                        encoding.debugging('_fix_problem()', 'expected')
+                        encoding.debugging('_fix_problem()', expected_close_tags)
+                        encoding.debugging('_fix_problem()', 'ign_list')
+                        encoding.debugging('_fix_problem()', ign_list)
                     if tag in ign_list:
                         if debug:
-                            utils.debugging('_fix_problem()', 'remove from ignore')
+                            encoding.debugging('_fix_problem()', 'remove from ignore')
                         ign_list.remove(tag)
                         parts[k] = ''
                     else:
@@ -142,17 +141,17 @@ class XMLContent(object):
                             matched = (expected_close_tags[-1] == tag)
                             if not matched:
                                 if debug:
-                                    utils.debugging('_fix_problem()', 'not matched')
+                                    encoding.debugging('_fix_problem()', 'not matched')
                                 while not matched and len(expected_close_tags) > 0:
                                     ign_list.append(expected_close_tags[-1])
                                     parts[k-1] += expected_close_tags[-1]
                                     del expected_close_tags[-1]
                                     matched = (expected_close_tags[-1] == tag)
                                 if debug:
-                                    utils.debugging('_fix_problem()', '...expected')
-                                    utils.debugging('_fix_problem()', expected_close_tags)
-                                    utils.debugging('_fix_problem()', '...ign_list')
-                                    utils.debugging('_fix_problem()', ign_list)
+                                    encoding.debugging('_fix_problem()', '...expected')
+                                    encoding.debugging('_fix_problem()', expected_close_tags)
+                                    encoding.debugging('_fix_problem()', '...ign_list')
+                                    encoding.debugging('_fix_problem()', ign_list)
 
                             if matched:
                                 del expected_close_tags[-1]
@@ -337,18 +336,15 @@ def htmlent2char(content):
                     try:
                         part = h.unescape(part)
                     except Exception as e:
-                        utils.debugging('htmlent2char()', 'h.unescape')
-                        utils.debugging('htmlent2char()', e)
-                        utils.debugging('htmlent2char()', part)
+                        encoding.report_exception('htmlent2char(): h.unescape', e, part)
                         part = '??'
                 try:
                     new += part
                 except Exception as e:
-                    utils.debugging('htmlent2char()', e)
-                    utils.debugging('htmlent2char()', part)
+                    encoding.report_exception('htmlent2char() 2', e, part)
                     new += '??'
-                    utils.debugging('htmlent2char()', type(content))
-                    utils.debugging('htmlent2char()', type(part))
+                    encoding.report_exception('htmlent2char() 3', e, type(content))
+                    encoding.report_exception('htmlent2char() 4', e, type(part))
                     x
             content = new
     return content
@@ -365,12 +361,18 @@ def restore_xml_entities(content):
 def convert_entities_to_chars(content, debug=False):
     replaced_named_ent = []
     if '&' in content:
+        if not isinstance(content, unicode):
+            encoding.debugging('convert_entities_to_chars', content)
+            encoding.debugging('convert_entities_to_chars', type(content))
         content = preserve_xml_entities(content)
         content = htmlent2char(content)
         content = content.replace('&mldr;', u"\u2026")
         content, replaced_named_ent = named_ent_to_char(content)
         register_remaining_named_entities(content)
         content = restore_xml_entities(content)
+        if not isinstance(content, unicode):
+            encoding.debugging('convert_entities_to_chars 3', content)
+            encoding.debugging('convert_entities_to_chars 4', type(content))
     return content, replaced_named_ent
 
 
@@ -610,9 +612,7 @@ class PrettyXML(object):
             self._xml = encoding.decode(doc.toprettyxml().strip())
             ign = self.split_prefix()
         except Exception as e:
-            utils.debugging('minidom_pretty_print()', 'ERROR in minidom_pretty_print')
-            utils.debugging('minidom_pretty_print()', e)
-            utils.debugging('minidom_pretty_print()', self._xml)
+            encoding.report_exception('minidom_pretty_print()', e, self._xml)
 
     @property
     def xml(self):

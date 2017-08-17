@@ -4,7 +4,6 @@ import os
 
 from ..__init__ import _
 from . import interface
-from ..generics import utils
 from ..generics import encoding
 from .data import workarea
 from .data import package
@@ -41,8 +40,10 @@ def call_make_packages(args, version):
 def read_inputs(args):
     DISPLAY_REPORT = True
     GENERATE_PMC = False
-
-    args = [encoding.decode(arg, encoding.SYS_DEFAULT_ENCODING) for arg in args]
+    print([type(arg) for arg in args])
+    print(encoding.ENCODING)
+    args = [encoding.decode(arg, encoding.ENCODING) for arg in args]
+    print([type(arg) for arg in args])
     script = args[0]
     path = None
     acron = None
@@ -77,7 +78,7 @@ def validate_inputs(script, xml_path):
         messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
         messages.append('  [-auto]' + _('optional parameter to omit report'))
         messages.append('\n'.join(errors))
-        utils.display_message('\n'.join(messages))
+        encoding.display_message('\n'.join(messages))
     else:
         return sgm_xml, xml_list
 

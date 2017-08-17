@@ -42,7 +42,7 @@ class RegisteredArticles(dict):
         for name, registered in self.items():
             comparison = article_data_reports.ArticlesComparison(registered, article)
             if comparison.are_similar:
-                similar_items.append(name)
+                similar_items.append(registered)
         return similar_items
 
     def search_articles(self, name, article):

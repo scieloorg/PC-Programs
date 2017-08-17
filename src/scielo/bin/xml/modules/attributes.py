@@ -269,7 +269,7 @@ REQUIRES_PERMISSIONS = [
     'verse-group',
 ]
 
-related_articles_type = ['corrected-article', 'article-commentary', 'press-release', 'retracted-article']
+related_articles_type = ['corrected-article', 'commentary-article', 'press-release', 'retracted-article']
 
 CONTRIB_ID_URLS = {
     'lattes': 'http://lattes.cnpq.br/',

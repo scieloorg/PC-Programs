@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 from email.header import Header
 
 from . import fs_utils
-from . import utils
+from . import encoding
 
 
 def strtolist(s):
@@ -97,7 +97,7 @@ class EmailService(object):
                     smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
 
                 except Exception as e:
-                    utils.debugging('email_service.send_message()', e)
+                    encoding.report_exception('email_service.send_message()', e)
             #except Exception as inst:
             #    msg = MIMEMultipart()
             #    msg['From'] = self.mail_from

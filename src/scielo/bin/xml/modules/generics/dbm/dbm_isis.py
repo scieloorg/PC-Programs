@@ -4,7 +4,6 @@ import os
 
 from tempfile import mkdtemp, NamedTemporaryFile
 
-from ...generics import utils
 from ...generics import xml_utils
 from ...generics import fs_utils
 from ...generics import encoding
@@ -25,37 +24,21 @@ def change_circ(content):
 
 
 def format_value(content):
-    """
-    try:
-        content = encoding.decode(content)
-    except Exception as e:
-        utils.debugging('format_value 1:')
-        utils.debugging(e)
-        utils.debugging(content)
-    """
-    try:
-        content = remove_break_lines_characters(content)
-    except Exception as e:
-        utils.debugging('format_value()', 'format_value: remove_break_lines_characters:')
-        utils.debugging('format_value()', e)
-        utils.debugging('format_value()', content)
+    if content is not None and len(content) > 0:
+        try:
+            content = remove_break_lines_characters(content)
+        except Exception as e:
+            encoding.report_exception('format_value() 1', e, content)
 
-    try:
-        if '&' in content:
-            content, replace = xml_utils.convert_entities_to_chars(content)
-    except Exception as e:
-        utils.debugging('format_value()', 'format_value:  convert_entities_to_chars:')
-        utils.debugging('format_value()', e)
-        utils.debugging('format_value()', content)
+        try:
+            if '&' in content:
+                content, replace = xml_utils.convert_entities_to_chars(content)
+        except Exception as e:
+            encoding.report_exception('format_value() 3', e, content)
 
-    try:
-        content = encoding.decode(content)
-    except Exception as e:
-        utils.debugging('format_value()', 'format_value: 2:')
-        utils.debugging('format_value()', e)
-        utils.debugging('format_value()', content)
+        content = content.strip()
 
-    return content.strip()
+    return content
 
 
 class IDFile(object):
@@ -69,22 +52,26 @@ class IDFile(object):
         for item in records:
             index += 1
             r.append(self._format_id(index) + self._format_record(item))
-        return ''.join(r)
+        return u''.join(r)
 
     def _format_id(self, index):
         i = '000000' + str(index)
         return '!ID ' + i[-6:] + '\n'
 
     def _format_record(self, record):
-        result = ''
+        result = u''
         if record is not None:
-            #utils.debugging(record)
             r = []
             for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
                 data = record.get(tag)
-                r.append(self.tag_data(tag, data))
-            result = ''.join(r)
+                if data is not None and len(data) > 0:
+                    r.append(self.tag_data(tag, data))
+                else:
+                    res = self.tag_data(tag, data)
+                    if res != u'' and res is not None:
+                        encoding.debugging('_format_record()', res)
+            result = u''.join(r)
 
             if self.content_formatter is not None:
                 result = self.content_formatter(result)
@@ -97,56 +84,48 @@ class IDFile(object):
         for item in data:
             occs.append(self.tag_occ(tag, item))
 
-        return ''.join(occs)
+        return u''.join(occs)
 
     def tag_occ(self, tag, data):
+        s = u''
         if isinstance(data, tuple):
-            utils.debugging('tag_occ()', tag)
-            utils.debugging('tag_occ()', data)
-            s = ''
+            encoding.debugging('tag_occ()', tag)
+            encoding.debugging('tag_occ()', data)
         elif isinstance(data, dict):
             s = self.tag_content(tag, self.format_subfields(data))
         else:
-            s = self.tag_content(tag, data)
+            s = self.tag_content(tag, format_value(data))
         return s
 
+    def format_subfield(self, subf, subf_value):
+        res = u''
+        if subf in 'abcdefghijklmnopqrstuvwxyz123456789':
+            res = '^' + subf + change_circ(format_value(subf_value))
+        elif subf != '_':
+            encoding.debugging('format_subfield()', ('ERR0', subf, subf_value))
+        return res
+
     def format_subfields(self, subf_and_value_list):
+        first = u''
+        value = u''
+        values = []
         try:
-            first = u''
-            value = u''
-            for k in sorted(subf_and_value_list.keys()):
-                v = subf_and_value_list[k]
-                if v is not None and v != '' and len(k) == 1:
-                    v = format_value(v)
-                    v = change_circ(v)
-                    if k in 'abcdefghijklmnopqrstuvwxyz123456789':
-                        value += u'^' + k + v
-                    elif k in '_':
-                        first = v
+            first = subf_and_value_list.get('_', u'') or u''
+            values = sorted([self.format_subfield(k, v) for k, v in subf_and_value_list.items() if v is not None and len(v) > 0])
+            value = u''.join(values)
         except Exception as e:
-            utils.debugging('format_subfields()', 'format_subfields')
-            utils.debugging('format_subfields()', e)
-            utils.debugging('format_subfields()', subf_and_value_list)
-            utils.debugging('format_subfields()', first + value)
+            encoding.report_exception('format_subfields()', e, subf_and_value_list)
+            encoding.report_exception('format_subfields()', e, (first, values))
         return first + value
 
     def tag_content(self, tag, value):
-        r = ''
-        s = value
+        r = u''
         if int(tag) <= 999:
-            if value is not None and value != '':
+            if value is not None and value != u'':
                 try:
-                    tag = '000' + tag
-                    tag = tag[-3:]
-                    value = format_value(value)
-                    r = '!v' + tag + '!' + value + '\n'
+                    r = '!v' + tag.zfill(3) + '!' + value + '\n'
                 except Exception as e:
-                    utils.debugging('tag_content()', 'tag_content: ')
-                    utils.debugging('tag_content()', e)
-                    utils.debugging('tag_content()', s)
-                    utils.debugging('tag_content()', value)
-                    utils.debugging('tag_content()', type(s))
-                    utils.debugging('tag_content()', type(value))
+                    encoding.report_exception('tag_content()', e, (s, value, type(s), type(value)))
         return r
 
     def read(self, filename):
@@ -165,7 +144,7 @@ class IDFile(object):
                 elif len(item) > 3:
                     tag = item[1]
                     content = line[6:]
-                if tag is not None and content != '':
+                if tag is not None and content != u'':
                     tag = str(int(tag[1:]))
                     if tag not in record.keys():
                         record[tag] = []
@@ -178,7 +157,7 @@ class IDFile(object):
                             v = subf[2:]
                         else:
                             if len(subfields) == 1:
-                                c = ''
+                                c = u''
                                 v = subf
                             else:
                                 c = '_'
@@ -206,13 +185,11 @@ class IDFile(object):
         if not os.path.isdir(path):
             os.makedirs(path)
         content = self._format_file(records)
-        #content = encoding.decode(content, 'iso-8859-1')
         content = content.replace(PRESERVECIRC, '&#94;')
         try:
             fs_utils.write_file(filename, content, 'iso-8859-1')
         except Exception as e:
-            utils.debugging('save()', 'saving...')
-            utils.debugging('save()', e)
+            encoding.report_exception('save()', e, 'saving...')
 
 
 class CISIS(object):
@@ -249,7 +226,7 @@ class CISIS(object):
         if reset:
             self.id2i(id_filename, mst_filename)
         else:
-            temp = id_filename.replace('.id', '')
+            temp = id_filename.replace('.id', u'')
             self.id2i(id_filename, temp)
             self.append(temp, mst_filename)
             try:
@@ -299,7 +276,7 @@ class CISIS(object):
         system.run_command(cmd)
 
     def is_readable(self, mst_filename):
-        s = ''
+        s = u''
         if os.path.isfile(mst_filename + '.mst'):
             temp_file = NamedTemporaryFile(delete=False)
             temp_file.close()
@@ -311,7 +288,7 @@ class CISIS(object):
                 try:
                     fs_utils.delete_file_or_folder(temp_file.name)
                 except:
-                    utils.debugging('dbm_isis.is_readable()', os.path.isfile(temp_file.name))
+                    encoding.debugging('dbm_isis.is_readable()', os.path.isfile(temp_file.name))
         return len(s) > 0
 
 
@@ -528,4 +505,3 @@ class IsisDB(object):
 
     def save_id(self, id_filename, records, content_formatter=None):
         IDFile(content_formatter).save(id_filename, records)
-

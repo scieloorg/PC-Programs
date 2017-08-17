@@ -1,11 +1,6 @@
 # coding=utf-8
 
-import os
-
 from ...generics import encoding
-
-
-curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 
 wos_country_list = None
@@ -18,28 +13,17 @@ location_list = None
 def remove_sgml_tags(text):
     text = text.replace('[', '***BREAK***IGNORE[')
     text = text.replace(']', ']IGNORE***BREAK***')
-    items = text.split('***BREAK***')
-    r = ''
-    for item in items:
-        if item.endswith(']IGNORE') or item.startswith('IGNORE['):
-            r += ''
-        else:
-            r += item
-    return r
+    items = [item for item in text.split('***BREAK***') if not item.endswith(']IGNORE') and not item.startswith('IGNORE[')]
+    return ''.join(items)
+
+
+def unicode2cp1252_item(item):
+    return encoding.encode(encoding.decode(item), 'cp1252', True)
 
 
 def unicode2cp1252(results):
-    r = []
-    for item in results:
-        item = encoding.decode(item)
-        item = encoding.encode(item, 'cp1252', True)
-        if len(item) > 0:
-            r.append(item)
-    return '\n'.join(r)
-
-
-def display_results(results):
-    print('\n'.join(sorted(results)))
+    items = [unicode2cp1252_item(item) for item in results]
+    return '\n'.join([item for item in items if len(item) > 0])
 
 
 def normaff_search(institutions_manager, text):
@@ -50,6 +34,7 @@ def normaff_search(institutions_manager, text):
     if '(' in country:
         country = country[0:country.find('(')].strip()
 
-    results = institutions_manager.search_institution_and_country_items(orgname, country, country)
+    results = institutions_manager.search_institution_and_country_items(
+        orgname, country, country)
 
     return results

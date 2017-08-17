@@ -20,13 +20,13 @@ def register_log(text):
 
 
 def format_author(author):
-    r = author.surname
+    r = author.surname if author.surname is not None else ''
     if author.suffix:
         r += ' (' + author.suffix + ')'
     r += ', '
     if author.prefix:
         r += '(' + author.prefix + ') '
-    r += author.fname
+    r += author.fname if author.fname is not None else ''
     if author.role:
         r += '(role: ' + author.role + ')'
     r += '(xref: ' + ','.join([xref for xref in author.xref if xref is not None]) + ')'

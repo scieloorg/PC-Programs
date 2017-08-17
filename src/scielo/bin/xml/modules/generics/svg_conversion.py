@@ -4,7 +4,7 @@ import os
 from PIL import Image
 
 from . import system
-from . import utils
+from . import encoding
 
 
 #inkscape PATH/teste.svg --export-background=COLOR --export-area-drawing --export-area-snap --export-dpi=300 --export-png=PATH/leave2.png
@@ -26,8 +26,8 @@ def svg2png(image_path, force=False):
     svg_files = [svg for svg in os.listdir(image_path) if svg.endswith('.svg')]
 
     if len(svg_files) == 0:
-        utils.display_message('\n'.join(sorted(os.listdir(image_path))))
-        utils.display_message('Nenhum arquivo .svg')
+        encoding.display_message('\n'.join(sorted(os.listdir(image_path))))
+        encoding.display_message('Nenhum arquivo .svg')
         return
 
     comm = command()
@@ -38,17 +38,17 @@ def svg2png(image_path, force=False):
         if force is True or not os.path.isfile(dest):
             try:
                 system.run_command(comm.format(src, dest))
-                utils.display_message(src + ' => ' + dest)
+                encoding.display_message(src + ' => ' + dest)
             except:
-                utils.display_message('Unable to run inkscape')
+                encoding.display_message('Unable to run inkscape')
 
 
 def png2tiff(image_path, force=False):
     png_files = [png for png in os.listdir(image_path) if png.endswith('.png')]
 
     if len(png_files) == 0:
-        utils.display_message('\n'.join(sorted(os.listdir(image_path))))
-        utils.display_message('Nenhum arquivo .png')
+        encoding.display_message('\n'.join(sorted(os.listdir(image_path))))
+        encoding.display_message('Nenhum arquivo .png')
         return
 
     for png_file in png_files:
@@ -58,9 +58,9 @@ def png2tiff(image_path, force=False):
         if force is True or not os.path.isfile(dest):
             try:
                 Image.open(src).save(dest, "TIFF")
-                utils.display_message(src + ' => ' + dest)
-            except IOError:
-                utils.debugging('svg_conversion.png2tiff()', ("cannot convert", src, dest))
+                encoding.display_message(src + ' => ' + dest)
+            except IOError as e:
+                encoding.report_exception('svg_conversion.png2tiff()', e, ("cannot convert", src, dest))
 
 
 def convert_svg2png(img_filename, destination=None, force=False):
@@ -75,9 +75,9 @@ def convert_svg2png(img_filename, destination=None, force=False):
             try:
                 comm = command()
                 system.run_command(comm.format(img_filename, dest_filename))
-                utils.display_message(img_filename + ' => ' + dest_filename)
+                encoding.display_message(img_filename + ' => ' + dest_filename)
             except:
-                utils.display_message('Unable to run inkscape')
+                encoding.display_message('Unable to run inkscape')
 
 
 def convert_png2tiff(img_filename, destination=None, force=False):
@@ -91,8 +91,8 @@ def convert_png2tiff(img_filename, destination=None, force=False):
         if force or not (os.path.isfile(dest_filename) or os.path.isfile(dest_filename + 't')):
             try:
                 Image.open(img_filename).save(dest_filename, "TIFF")
-                utils.display_message(img_filename + ' => ' + dest_filename)
-            except IOError:
-                utils.debugging(
-                    'convert_png2tiff()',
+                encoding.display_message(img_filename + ' => ' + dest_filename)
+            except IOError as e:
+                encoding.report_exception(
+                    'convert_png2tiff()', e,
                     ("cannot convert", img_filename, dest_filename))

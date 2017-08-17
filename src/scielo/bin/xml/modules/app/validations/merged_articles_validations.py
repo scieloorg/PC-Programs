@@ -6,6 +6,7 @@ from ...generics.reports import validation_status
 from . import article_data_reports
 from . import validations as validations_module
 from ..data import merged
+from ...generics import encoding
 
 
 class IssueArticlesValidationsReports(object):
@@ -138,23 +139,26 @@ class MergedArticlesReports(object):
 
     def report_merging_conflicts(self):
         merging_errors = []
+        encoding.debugging('report_merging_conflicts()', self.articles_mergence.titaut_conflicts)
+        encoding.debugging('report_merging_conflicts()', self.articles_mergence.name_order_conflicts)
+
+
+        # FIXME
+        # FIXME
+        # FIXME
+        # FIXME
+
         if len(self.articles_mergence.titaut_conflicts) + len(self.articles_mergence.name_order_conflicts) > 0:
             merge_conflicts = self.articles_mergence.titaut_conflicts.copy()
             merge_conflicts.update(self.articles_mergence.name_order_conflicts)
             merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
-            for name, conflicts in merge_conflicts.items():
-                labels = []
-                #values = [article_data_reports.display_article_data_to_compare(self.)]
-                for k, articles in conflicts.items():
-                    labels.append(k)
-                    if isinstance(articles, dict):
-                        data = []
-                        for article in articles.values():
-                            data.append(article_data_reports.display_article_data_to_compare(article))
-                        values.append(''.join(data))
-                    else:
-                        values.append(article_data_reports.display_article_data_to_compare(articles))
-                merging_errors.append(html_reports.sheet(labels, [label_values(labels, values)], table_style='dbstatus', html_cell_content=labels))
+            encoding.debugging('report_merging_conflicts()', merge_conflicts)
+            for name, reg_article_names in merge_conflicts.items():
+                labels = [reg_article_names]
+                values = []
+                for reg_name in reg_article_names:
+                    values.append(article_data_reports.display_article_data_to_compare(self.articles_mergence.registered_articles))
+                merging_errors.append(html_reports.sheet(labels, [html_reports.label_values(labels, values)], table_style='dbstatus', html_cell_content=labels))
         return ''.join(merging_errors)
 
     def report_order_conflicts(self):

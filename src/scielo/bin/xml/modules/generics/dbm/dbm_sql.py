@@ -2,7 +2,6 @@
 
 import sqlite3
 
-from .. import utils
 from .. import fs_utils
 from .. import encoding
 
@@ -33,7 +32,7 @@ class SQL(object):
                     else:
                         _values.append('`' + item.replace('  ', ' ').strip() + '`')
                 instruction = 'insert into ' + table_name + ' (' + _fields + ') ' + ' values (' + ', '.join(_values) + ')'
-                utils.debugging('insert_data()', instruction)
+                encoding.debugging('insert_data()', instruction)
                 conn.execute(instruction + '\n')
                 conn.commit()
         conn.close()
@@ -47,9 +46,7 @@ class SQL(object):
                 for row in cursor.fetchall():
                     results.append(row)
             except Exception as e:
-                utils.debugging('query()', 'ERROR: query')
-                utils.debugging('query()', expr)
-                utils.debugging('query()', e)
+                encoding.debugging('query()', e, ('ERROR: query', expr))
         conn.close()
         return results
 

@@ -15,7 +15,6 @@ from .. import fs_utils
 from .. import xml_utils
 from . import validation_status
 from .. import encoding
-from ..  import utils
 
 
 ENABLE_COMMENTS = False
@@ -267,10 +266,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_
     try:
         r = sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content, widths)
     except Exception as e:
-        utils.debugging('html_reports.sheet()', e)
-        utils.debugging('html_reports.sheet()', table_header)
-        utils.debugging('html_reports.sheet()', table_data)
-        raise
+        encoding.report_exception('html_reports.sheet()', e, (table_header, table_data))
     return r
 
 
@@ -586,12 +582,10 @@ def label_values(labels, values):
 
 
 def display_report(report_filename):
-    utils.display_message(_('Report:\n  {filename}').format(filename=report_filename))
+    encoding.display_message(_('Report:\n  {filename}').format(filename=report_filename))
 
     try:
         #f = report_filename.encode(encoding=sys.getfilesystemencoding())
         webbrowser.open(encoding.encode('file://' + report_filename, encoding=encoding.SYS_DEFAULT_ENCODING), new=2)
     except Exception as e:
-        utils.debugging('html_reports.display_report()', 'display_report: opening: ')
-        utils.debugging('html_reports.display_report()', report_filename)
-        utils.debugging('html_reports.display_report()', e)
+        encoding.report_exception('html_reports.display_report()', e, report_filename)

@@ -8,7 +8,7 @@ from ...__init__ import BIN_PATH
 from ...__init__ import FST_PATH
 
 from ...generics.dbm import dbm_isis
-from ...generics import utils
+from ...generics import encoding
 from ...generics import fs_utils
 from ...generics import doi_validations
 from ...generics.reports import html_reports
@@ -141,7 +141,7 @@ class ArticlesConversion(object):
 
     def replace_ex_aop_pdf_files(self):
         # IMPROVEME
-        utils.debugging('replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
+        encoding.debugging('replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
 
@@ -154,7 +154,7 @@ class ArticlesConversion(object):
 
             for pdf in issue_pdf_files:
                 aop_pdf = pdf.replace(xml_name, aop_name)
-                utils.debugging('replace_ex_aop_pdf_files()', (issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
+                encoding.debugging('replace_ex_aop_pdf_files()', (issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
                 shutil.copyfile(issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf)
 
     @property
@@ -424,16 +424,16 @@ class PkgProcessor(object):
         xml_content_validator = article_validations_module.XMLContentValidator(pkg.issue_data, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator)
         article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_content_validator)
 
-        utils.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
+        encoding.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
         results = {}
         for name, article in pkg.articles.items():
-            utils.display_message(_('Validate {name}').format(name=name))
+            encoding.display_message(_('Validate {name}').format(name=name))
             results[name] = article_validator.validate(article, pkg.outputs[name], pkg.package_folder.pkgfiles_items[name])
         return results
 
     def validate_merged_articles(self, pkg, registered_issue_data):
         if len(registered_issue_data.registered_articles) > 0:
-            utils.display_message(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
+            encoding.display_message(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
         return merged.ArticlesMergence(
             registered_issue_data.registered_articles,
             pkg.articles)
@@ -462,7 +462,7 @@ class PkgProcessor(object):
                     pmc_package_maker.make_package()
                     workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
                 else:
-                    utils.display_message(_('To generate PMC package, add -pmc as parameter'))
+                    encoding.display_message(_('To generate PMC package, add -pmc as parameter'))
 
     def zip(self, pkg):
         if not self.is_xml_generation and not self.is_db_generation:

@@ -20,14 +20,7 @@ if not os.path.isdir(TMP_DIR):
 
 
 def format_parameters(parameters):
-    r = ''
-    for k, v in parameters.items():
-        if v != '':
-            if ' ' in v:
-                r += k + '=' + '"' + v + '" '
-            else:
-                r += k + '=' + v + ' '
-    return r
+    return ' '.join([k + '=' + '"' + v + '"' for k, v in parameters.items()])
 
 
 class XML(object):

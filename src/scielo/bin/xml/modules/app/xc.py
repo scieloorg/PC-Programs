@@ -6,7 +6,7 @@ from datetime import datetime
 
 from ..__init__ import _
 from ..generics import fs_utils
-from ..generics import utils
+from ..generics import encoding
 from ..generics import xml_utils
 from .pkg_processors import pkg_processors
 from .data import workarea
@@ -30,7 +30,7 @@ def call_converter(args, version='1.0'):
             messages.append('  <xml_folder> = ' + _('path of folder which contains'))
             messages.append('  <collection_acron> = ' + _('collection acron'))
             messages.append('\n'.join(errors))
-            utils.display_message('\n'.join(messages))
+            encoding.display_message('\n'.join(messages))
 
     reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)))
     if package_path is None:
@@ -77,7 +77,7 @@ class XC_Reception(object):
 
     def convert_package(self, package_path):
         package_name = os.path.basename(package_path)
-        utils.display_message(package_path)
+        encoding.display_message(package_path)
         xc_status = 'interrupted'
         pkgfolder = workarea.PackageFolder(package_path)
 
@@ -87,7 +87,7 @@ class XC_Reception(object):
         try:
             if len(pkg.articles) > 0:
                 scilista_items, xc_status, mail_info = self.proc.convert_package(pkg)
-                utils.display_message(scilista_items)
+                encoding.display_message(scilista_items)
         except Exception as e:
 
             if self.configuration.queue_path is not None:
@@ -113,9 +113,8 @@ class XC_Reception(object):
             except Exception as e:
                 self.mailer.mail_step3_failure(package_name, e)
                 if len(package_path) == 1:
-                    utils.debugging('convert_package()', 'exception as step 3')
-                    raise
-        utils.display_message(_('finished'))
+                    encoding.report_exception('convert_package()', e, 'exception as step 3')
+        encoding.display_message(_('finished'))
 
     def organize_packages_locations(self, pkg_path):
         if pkg_path is None:

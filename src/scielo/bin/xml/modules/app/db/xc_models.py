@@ -850,7 +850,7 @@ class ArticlesManager(object):
 
         if not error:
             q_registered = self.finish_conversion(i_record)
-            utils.debugging('convert_articles()', q_registered)
+            encoding.debugging('convert_articles()', q_registered)
             converted = q_registered >= len(articles) and q_registered > 0
             if converted:
                 if create_windows_base:
@@ -994,7 +994,7 @@ class BaseManager(object):
                 try:
                     fs_utils.delete_file_or_folder(article_files.id_filename)
                 except:
-                    utils.display_message(_('Unable to exclude {item}. ').format(item=article_files.id_filename))
+                    encoding.display_message(_('Unable to exclude {item}. ').format(item=article_files.id_filename))
             previous = os.path.isfile(article_files.id_filename)
 
             self.db_isis.save_id(article_files.id_filename, article_records.records, self.content_formatter)

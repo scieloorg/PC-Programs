@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from .. import utils
+from .. import encoding
 
 
 class DOIWebServicesRequester(object):
@@ -78,8 +78,8 @@ class DOIData(object):
     def authors(self):
         try:
             return ' '.join(self._authors)
-        except:
-            utils.debugging('ws_doi.authors()', self.json_data.get('author'))
+        except Exception as e:
+            encoding.report_exception('ws_doi.authors()', e, self.json_data.get('author'))
             raise
 
     @property
@@ -132,6 +132,6 @@ class DOIData(object):
         try:
             if all([self.authors, self.pid, self.issns, self.deposited_date, self.year]):
                 return (self.pid, self.authors, self.issns, self.year, self.deposited_date)
-        except:
-            utils.debugging('ws_doi.data()', self.json_data)
+        except Exception as e:
+            encoding.report_exception('ws_doi.data()', e, self.json_data)
             raise

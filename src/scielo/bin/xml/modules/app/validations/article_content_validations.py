@@ -7,6 +7,7 @@ from ...__init__ import _
 from ...generics import xml_utils
 from ...generics import img_utils
 from ...generics import utils
+from ...generics import encoding
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
 from ..data import attributes
@@ -190,7 +191,7 @@ class ArticleContentValidation(object):
     def validations(self):
         if self._validations is None:
             performance = []
-            #utils.debugging(datetime.now().isoformat() + ' validations 1')
+            #encoding.debugging(datetime.now().isoformat() + ' validations 1')
             items = []
             items.append(self.sps)
             items.append(self.expiration_sps)
@@ -1052,7 +1053,7 @@ class ArticleContentValidation(object):
                         message.append(msg)
         for xref_type, missing_xref_type_items in missing.items():
             if self.article.any_xref_ranges.get(xref_type) is None:
-                utils.debugging('missing_xref_list()', xref_type + ' has no xref ranges')
+                encoding.debugging('missing_xref_list()', xref_type + ' has no xref ranges')
             else:
                 missing_xref_type_items = confirm_missing_xref_items(missing_xref_type_items, self.article.any_xref_ranges.get(xref_type))
 

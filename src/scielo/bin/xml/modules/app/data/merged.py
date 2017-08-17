@@ -253,9 +253,9 @@ class ArticlesMergence(object):
         if names is not None:
             for name in names:
                 similars = self.registered_articles.registered_titles_and_authors(self.articles.get(name))
-                if similars == 0:
+                if len(similars) == 0:
                     solved.append(name)
-                elif similars == 1 and similars[0] == name:
+                elif len(similars) == 1 and similars[0] == name:
                     solved.append(name)
                 else:
                     self.titaut_conflicts[name] = similars
@@ -271,7 +271,15 @@ class ArticlesMergence(object):
                 order = self.articles.get(name).order
                 if order in self.pkg_order_conflicts.keys():
                     # order conflicts; duplicity of order in pkg
-                    self.name_order_conflicts[name] = pkg_order_conflicts[order]
+
+
+                    # FIXME
+                    # FIXME
+                    # FIXME
+                    # FIXME
+
+
+                    self.name_order_conflicts[name] = self.pkg_order_conflicts[order]
                     self.history_items[name].append(HISTORY_PKG_ORDER_CONFLICTS)
                 else:
                     # valid order
@@ -287,7 +295,7 @@ class ArticlesMergence(object):
                         self.history_items[name].append(HISTORY_CREATED)
                     elif all([found_by_name, found_by_order]):
                         # found both in different records
-                        self.name_order_conflicts[name] = [found_by_name, found_by_order]
+                        self.name_order_conflicts[name] = [self.registered_articles.get(found_by_name), self.registered_articles.get(found_by_order)]
                         self.history_items[name].append(HISTORY_ORDER_AND_NAME_CONFLICTS)
                     elif found_by_name is not None:
                         # order not found
@@ -298,7 +306,7 @@ class ArticlesMergence(object):
                             self.history_items[name].append(HISTORY_ORDER_CHANGED)
                         else:
                             # only name is identical
-                            self.name_order_conflicts[name] = [found_by_name]
+                            self.name_order_conflicts[name] = [self.registered_articles.get(found_by_name)]
                             self.history_items[name].append(HISTORY_UNMATCHED)
                     elif found_by_order is not None:
                         # name not found
@@ -311,7 +319,7 @@ class ArticlesMergence(object):
                             self.history_items[found_by_order].append(HISTORY_REPLACED_BY + ' ' + name)
                         else:
                             # only order is identical
-                            self.name_order_conflicts[name] = [found_by_order]
+                            self.name_order_conflicts[name] = [self.registered_articles.get(found_by_order)]
                             self.history_items[name].append(HISTORY_UNMATCHED)
         return solved
 

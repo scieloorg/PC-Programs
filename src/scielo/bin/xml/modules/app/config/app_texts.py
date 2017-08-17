@@ -6,6 +6,7 @@ import gettext
 
 def get_current_locale(locale_path):
     current_locale, encoding = locale.getdefaultlocale()
+
     if encoding is None:
         encoding = 'UTF-8'
     if current_locale is None:

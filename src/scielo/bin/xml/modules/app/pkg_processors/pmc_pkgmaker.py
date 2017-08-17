@@ -4,7 +4,7 @@ import shutil
 
 from ...__init__ import _
 
-from ...generics import utils
+from ...generics import encoding
 from ...generics import fs_utils
 from ...generics import img_utils
 from ...generics import java_xml_utils
@@ -24,8 +24,8 @@ class PMCPackageMaker(object):
     def make_package(self):
         doit = False
 
-        utils.display_message('\n')
-        utils.display_message(_('Generating PMC Package'))
+        encoding.display_message('\n')
+        encoding.display_message(_('Generating PMC Package'))
         n = '/' + str(len(self.article_items))
         index = 0
 
@@ -34,7 +34,7 @@ class PMCPackageMaker(object):
 
             index += 1
             item_label = str(index) + n + ': ' + xml_name
-            utils.display_message(item_label)
+            encoding.display_message(item_label)
 
             scielo_pkgfiles = workarea.PkgArticleFiles(self.wk.scielo_package_path + '/' + xml_name + '.xml')
             pmc_pkgfiles = workarea.PkgArticleFiles(self.wk.pmc_package_path + '/' + xml_name + '.xml')
