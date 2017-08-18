@@ -1675,6 +1675,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="doc|subdoc|docresp" mode="back">
 		<xsl:variable name="otherfntest">
+			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param></xsl:apply-templates>
 			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="body//xref"></xsl:with-param></xsl:apply-templates>
 		</xsl:variable>
 		
@@ -1682,6 +1683,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<back>
 				<xsl:apply-templates select="ack"/>
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
+				<xsl:comment>fn*</xsl:comment>
+				<xsl:apply-templates select="." mode="other-fn-items">
+					<xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param>
+				</xsl:apply-templates>
 				<xsl:apply-templates select="." mode="other-fn-items">
 					<xsl:with-param name="body_xref" select="body//xref"></xsl:with-param>
 				</xsl:apply-templates>
