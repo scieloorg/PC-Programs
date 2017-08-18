@@ -80,7 +80,7 @@ class XMLStructureValidator(object):
         xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
-        dtd_errors = '' or fs_utils.read_file(outputs.dtd_report_filename)
+        dtd_errors = fs_utils.read_file(outputs.dtd_report_filename) or ''
         if len(dtd_errors) > 0:
             dtd_errors = rst_title(_('DTD errors')) + dtd_errors
 

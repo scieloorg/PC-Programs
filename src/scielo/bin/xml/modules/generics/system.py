@@ -1,7 +1,6 @@
 # coding=utf-8
 
 import os
-import sys
 
 from . import encoding
 
@@ -15,9 +14,6 @@ def format_command(command, params=None):
 
 def run_command(command):
     try:
-        cmd = encoding.encode(command, sys.getfilesystemencoding())
-        os.system(cmd)
+        os.system(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING))
     except Exception as e:
-        print('run_command():')
-        print(cmd)
-        print(e)
+        encoding.report_exception('system.run_command()', e, command)

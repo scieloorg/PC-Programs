@@ -8,7 +8,7 @@ from ...__init__ import BIN_PATH
 from ...__init__ import FST_PATH
 
 from ...generics.dbm import dbm_isis
-from ...generics import utils
+from ...generics import encoding
 from ...generics import fs_utils
 from ...generics import doi_validations
 from ...generics.reports import html_reports
@@ -114,10 +114,10 @@ class ArticlesConversion(object):
     def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
-        if self.validations_reports.blocking_errors == 0 and self.total_to_convert > 0:
+        if self.validations_reports.blocking_errors == 0 and self.accepted_articles == len(self.pkg.articles):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
 
-            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.articles_to_convert, self.registered_issue_data.issue_models.record, self.create_windows_base)
+            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
@@ -141,7 +141,7 @@ class ArticlesConversion(object):
 
     def replace_ex_aop_pdf_files(self):
         # IMPROVEME
-        print('replace_ex_aop_pdf_files', self.db.aop_pdf_replacements)
+        encoding.debugging('replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
 
@@ -154,7 +154,7 @@ class ArticlesConversion(object):
 
             for pdf in issue_pdf_files:
                 aop_pdf = pdf.replace(xml_name, aop_name)
-                print((issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
+                encoding.debugging('replace_ex_aop_pdf_files()', (issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
                 shutil.copyfile(issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf)
 
     @property
@@ -163,7 +163,6 @@ class ArticlesConversion(object):
         labels = [_('registered') + '/' + _('before conversion'), _('package'), _('executed actions'), _('article')]
         widths = {_('article'): '20', _('registered') + '/' + _('before conversion'): '20', _('package'): '20', _('executed actions'): '20'}
 
-        #print(self.articles_mergence.history_items)
         for status, status_items in self.aop_status.items():
             for status_data in status_items:
                 if status != 'aop':
@@ -206,8 +205,8 @@ class ArticlesConversion(object):
         return self.pkg.issue_data.acron_issue_label
 
     @property
-    def total_to_convert(self):
-        return self.articles_mergence.total_to_convert
+    def accepted_articles(self):
+        return len(self.articles_mergence.accepted_articles)
 
     @property
     def total_converted(self):
@@ -221,7 +220,7 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.validations_reports.blocking_errors > 0:
             result = 'rejected'
-        elif self.total_to_convert == 0:
+        elif self.accepted_articles == 0:
             result = 'ignored'
         elif self.articles_conversion_validations.blocking_errors > 0:
             result = 'rejected'
@@ -312,9 +311,9 @@ class ArticlesConversion(object):
         if self.xc_status == 'rejected':
             update = False
             status = validation_status.STATUS_BLOCKING_ERROR
-            if self.total_to_convert > 0:
+            if self.accepted_articles > 0:
                 if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.total_to_convert))
+                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
                 else:
                     reason = _('because there are blocking errors in the package. ')
             else:
@@ -335,7 +334,7 @@ class ArticlesConversion(object):
         if update:
             action = _('will be')
         text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
-        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.total_to_convert), False) + html_reports.p_message(text, False)
+        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.accepted_articles), False) + html_reports.p_message(text, False)
         return text
 
 
@@ -390,10 +389,8 @@ class PkgProcessor(object):
             for aff_xml in pkg.articles[xml_name].affiliations:
                 if aff_xml is not None:
                     institutions_results[aff_xml.id] = self.aff_normalizer.query_institutions(aff_xml)
-                    print('evaluate_package', xml_name, aff_xml.id, aff_xml.xml, institutions_results[aff_xml.id])
             pkg.articles[xml_name].institutions_query_results = institutions_results
             pkg.articles[xml_name].normalized_affiliations = {aff_id: info[0] for aff_id, info in institutions_results.items()}
-            print('evaluate_package', xml_name, pkg.articles[xml_name].normalized_affiliations)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
@@ -427,16 +424,16 @@ class PkgProcessor(object):
         xml_content_validator = article_validations_module.XMLContentValidator(pkg.issue_data, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator)
         article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_content_validator)
 
-        utils.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
+        encoding.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
         results = {}
         for name, article in pkg.articles.items():
-            utils.display_message(_('Validate {name}').format(name=name))
+            encoding.display_message(_('Validate {name}').format(name=name))
             results[name] = article_validator.validate(article, pkg.outputs[name], pkg.package_folder.pkgfiles_items[name])
         return results
 
     def validate_merged_articles(self, pkg, registered_issue_data):
         if len(registered_issue_data.registered_articles) > 0:
-            utils.display_message(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
+            encoding.display_message(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
         return merged.ArticlesMergence(
             registered_issue_data.registered_articles,
             pkg.articles)
@@ -465,9 +462,7 @@ class PkgProcessor(object):
                     pmc_package_maker.make_package()
                     workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
                 else:
-                    print('='*10)
-                    print(_('To generate PMC package, add -pmc as parameter'))
-                    print('='*10)
+                    encoding.display_message(_('To generate PMC package, add -pmc as parameter'))
 
     def zip(self, pkg):
         if not self.is_xml_generation and not self.is_db_generation:

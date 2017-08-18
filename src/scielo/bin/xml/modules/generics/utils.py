@@ -1,8 +1,8 @@
 # coding=utf-8
-import sys
 import difflib
-
 from datetime import datetime
+
+from . import encoding
 
 
 IMDEBUGGING = False
@@ -63,22 +63,6 @@ def most_similar(similarity):
         items = similarity[highiest_rate]
 
     return (highiest_rate, items)
-
-
-def debugging(text):
-    if IMDEBUGGING:
-        display_message(text)
-
-
-def display_message(text):
-    try:
-        print(text)
-    except Exception as e:
-        try:
-            print(text.encode(encoding=sys.getfilesystemencoding()))
-        except:
-            print('error in display_message')
-            print(sys.getfilesystemencoding())
 
 
 def valid_formula_min_max_height(values, percent=0.25):

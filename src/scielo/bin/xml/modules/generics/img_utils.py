@@ -2,7 +2,7 @@
 
 import os
 
-from . import utils
+from . import encoding
 from .reports import validation_status
 
 try:
@@ -43,9 +43,8 @@ def hdimg_to_jpg(source_image_filename, jpg_filename):
             im = Image.open(source_image_filename)
             im.thumbnail(im.size)
             im.save(jpg_filename, "JPEG")
-        except Exception as inst:
-            utils.display_message('Unable to generate ' + jpg_filename)
-            utils.display_message(inst)
+        except Exception as e:
+            encoding.report_exception('hdimg_to_jpg', e, 'Unable to generate ' + jpg_filename)
 
 
 def hdimages_to_jpeg(source_path, jpg_path, force_update=False):

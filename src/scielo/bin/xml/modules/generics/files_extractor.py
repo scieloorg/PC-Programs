@@ -31,11 +31,13 @@ def extract_file(path, to_directory='.'):
     os.chdir(to_directory)
     try:
         file = opener(path, mode)
-        try: file.extractall()
-        finally: file.close()
+        try:
+            file.extractall()
+        finally:
+            file.close()
         r = True
     except IOError:
-        print('Invalid file ' + path)
+        print('extract_file: Invalid file ' + path)
         r = False
     finally:
         os.chdir(cwd)

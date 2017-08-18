@@ -53,7 +53,7 @@ def load_entities_table():
             symbol, number_ent, named_ent, descr, representation = item.split('|')
             table[named_ent] = symbol
     else:
-        print('NOT FOUND ' + entities_filename)
+        encoding.debugging('load_entities_table()', 'NOT FOUND ' + entities_filename)
     return table
 
 
@@ -123,16 +123,16 @@ class XMLContent(object):
             if part in tag_list:
                 tag = part
                 if debug:
-                    print('\ncurrent:' + tag)
+                    encoding.debugging('_fix_problem()', '\ncurrent:' + tag)
                 if tag.startswith('</'):
                     if debug:
-                        print('expected')
-                        print(expected_close_tags)
-                        print('ign_list')
-                        print(ign_list)
+                        encoding.debugging('_fix_problem()', 'expected')
+                        encoding.debugging('_fix_problem()', expected_close_tags)
+                        encoding.debugging('_fix_problem()', 'ign_list')
+                        encoding.debugging('_fix_problem()', ign_list)
                     if tag in ign_list:
                         if debug:
-                            print('remove from ignore')
+                            encoding.debugging('_fix_problem()', 'remove from ignore')
                         ign_list.remove(tag)
                         parts[k] = ''
                     else:
@@ -141,17 +141,17 @@ class XMLContent(object):
                             matched = (expected_close_tags[-1] == tag)
                             if not matched:
                                 if debug:
-                                    print('not matched')
+                                    encoding.debugging('_fix_problem()', 'not matched')
                                 while not matched and len(expected_close_tags) > 0:
                                     ign_list.append(expected_close_tags[-1])
                                     parts[k-1] += expected_close_tags[-1]
                                     del expected_close_tags[-1]
                                     matched = (expected_close_tags[-1] == tag)
                                 if debug:
-                                    print('...expected')
-                                    print(expected_close_tags)
-                                    print('...ign_list')
-                                    print(ign_list)
+                                    encoding.debugging('_fix_problem()', '...expected')
+                                    encoding.debugging('_fix_problem()', expected_close_tags)
+                                    encoding.debugging('_fix_problem()', '...ign_list')
+                                    encoding.debugging('_fix_problem()', ign_list)
 
                             if matched:
                                 del expected_close_tags[-1]
@@ -336,18 +336,15 @@ def htmlent2char(content):
                     try:
                         part = h.unescape(part)
                     except Exception as e:
-                        print('h.unescape')
-                        print(e)
-                        print(part)
+                        encoding.report_exception('htmlent2char(): h.unescape', e, part)
                         part = '??'
                 try:
                     new += part
                 except Exception as e:
-                    print(e)
-                    print(part)
+                    encoding.report_exception('htmlent2char() 2', e, part)
                     new += '??'
-                    print(type(content))
-                    print(type(part))
+                    encoding.report_exception('htmlent2char() 3', e, type(content))
+                    encoding.report_exception('htmlent2char() 4', e, type(part))
                     x
             content = new
     return content
@@ -364,12 +361,18 @@ def restore_xml_entities(content):
 def convert_entities_to_chars(content, debug=False):
     replaced_named_ent = []
     if '&' in content:
+        if not isinstance(content, unicode):
+            encoding.debugging('convert_entities_to_chars', content)
+            encoding.debugging('convert_entities_to_chars', type(content))
         content = preserve_xml_entities(content)
         content = htmlent2char(content)
         content = content.replace('&mldr;', u"\u2026")
         content, replaced_named_ent = named_ent_to_char(content)
         register_remaining_named_entities(content)
         content = restore_xml_entities(content)
+        if not isinstance(content, unicode):
+            encoding.debugging('convert_entities_to_chars 3', content)
+            encoding.debugging('convert_entities_to_chars 4', type(content))
     return content, replaced_named_ent
 
 
@@ -401,7 +404,6 @@ def parse_xml(content):
     try:
         r = etree.parse(StringIO(encoding.encode(content)))
     except Exception as e:
-        #print('XML is not well formed')
         message = 'XML is not well formed\n'
         msg = str(e)
         if 'position ' in msg:
@@ -610,9 +612,7 @@ class PrettyXML(object):
             self._xml = encoding.decode(doc.toprettyxml().strip())
             ign = self.split_prefix()
         except Exception as e:
-            print('ERROR in minidom_pretty_print')
-            print(e)
-            print(self._xml)
+            encoding.report_exception('minidom_pretty_print()', e, self._xml)
 
     @property
     def xml(self):

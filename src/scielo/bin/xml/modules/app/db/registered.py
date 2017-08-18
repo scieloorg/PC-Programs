@@ -38,11 +38,11 @@ class RegisteredArticles(dict):
         return [reg_name for reg_name, reg in self.items() if reg.order == order]
 
     def registered_titles_and_authors(self, article):
-        similar_items = []
+        similar_items = {}
         for name, registered in self.items():
             comparison = article_data_reports.ArticlesComparison(registered, article)
             if comparison.are_similar:
-                similar_items.append(name)
+                similar_items.update({name: registered})
         return similar_items
 
     def search_articles(self, name, article):
@@ -70,9 +70,6 @@ class RegisteredArticles(dict):
         actions = None
         conflicts = None
         old_name = None
-        #print('analyze_registered_articles')
-        #print([registered_titaut, registered_name, registered_order])
-        #print('-')
         if registered_titaut is None and registered_order is None and registered_name is None:
             actions = 'add'
         elif all([registered_titaut, registered_order, registered_name]):

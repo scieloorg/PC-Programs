@@ -3,7 +3,7 @@
 import os
 from mimetypes import MimeTypes
 
-from ...generics import utils
+from ...generics import encoding
 from ...generics import xml_utils
 from ...generics.ws import ws_requester
 from ..data import attributes
@@ -175,13 +175,13 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                     if mixed_citation in self.content:
                         self.content = self.content.replace('<mixed-citation>' + mixed_citation + '</mixed-citation>', '<mixed-citation>' + changed + '</mixed-citation>')
                     else:
-                        print('Unable to insert label to mixed_citation')
-                        print('mixed-citation:')
-                        print(mixed_citation)
-                        print('self.content:')
-                        print(self.content)
-                        print('changes:')
-                        print(changed)
+                        encoding.debugging('fix_mixed_citation_label()', 'Unable to insert label to mixed_citation')
+                        encoding.debugging('fix_mixed_citation_label()', 'mixed-citation:')
+                        encoding.debugging('fix_mixed_citation_label()', mixed_citation)
+                        encoding.debugging('fix_mixed_citation_label()', 'self.content:')
+                        encoding.debugging('fix_mixed_citation_label()', self.content)
+                        encoding.debugging('fix_mixed_citation_label()', 'changes:')
+                        encoding.debugging('fix_mixed_citation_label()', changed)
 
     def fix_source(self):
         if '<source' in self.content and '<mixed-citation' in self.content:
@@ -224,6 +224,4 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                         pass
                 else:
                     r += item
-        else:
-            utils.debugging('.............')
         self.content = r

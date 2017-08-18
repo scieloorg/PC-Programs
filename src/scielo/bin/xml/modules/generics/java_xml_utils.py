@@ -1,5 +1,4 @@
 # coding=utf-8
-import sys
 import os
 import shutil
 import tempfile
@@ -9,6 +8,7 @@ from . import system
 
 from ..__init__ import JAR_PATH
 from ..__init__ import TMP_DIR
+from . import encoding
 
 
 JAVA_PATH = 'java'
@@ -55,15 +55,13 @@ class XMLValidator(object):
     def _is_valid(self):
         result = ''
         if os.path.exists(self.temp_result_filename):
-            encoding = sys.getfilesystemencoding()
-            print(encoding)
-            result = fs_utils.read_file(self.temp_result_filename, encoding)
+            result = fs_utils.read_file(self.temp_result_filename, encoding.SYS_DEFAULT_ENCODING)
 
             if 'ERROR' in result.upper():
-                lines = fs_utils.read_file_lines(self.xml_filename, encoding)[1:]
+                lines = fs_utils.read_file_lines(self.xml_filename, encoding.SYS_DEFAULT_ENCODING)[1:]
                 numbers = [str(i) + ':' for i in range(1, len(lines)+1)]
                 lines = '\n'.join([n + line for n, line in zip(numbers, lines)])
-                fs_utils.write_file(self.temp_result_filename, result + lines, encoding)
+                fs_utils.write_file(self.temp_result_filename, result + lines, encoding.SYS_DEFAULT_ENCODING)
         else:
             result = 'ERROR: Not valid. Unknown error.\n' + self._command
             fs_utils.write_file(self.temp_result_filename, result)

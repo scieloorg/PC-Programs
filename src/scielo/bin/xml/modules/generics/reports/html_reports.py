@@ -1,7 +1,6 @@
 # coding=utf-8
 
 import os
-import sys
 import webbrowser
 try:
     from urllib.parse import urlencode as urllib_parse_urlencode
@@ -104,14 +103,6 @@ class HideAndShowBlock(object):
 def report_date():
     procdate = datetime.now().isoformat()
     return tag('p', tag('span', procdate[0:10] + ' ' + procdate[11:19], 'report-date'))
-
-
-def join_texts(texts):
-    for text in texts:
-        if not encoding.is_encodable(text):
-            print('join_texts', text[0:100])
-    text = ''.join([encoding.encode(t) for t in texts])
-    return text
 
 
 def styles():
@@ -275,10 +266,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, colums_
     try:
         r = sheet_build(table_header, table_data, table_style, row_style, colums_styles, html_cell_content, widths)
     except Exception as e:
-        print(e)
-        print(table_header)
-        print(table_data)
-        raise
+        encoding.report_exception('html_reports.sheet()', e, (table_header, table_data))
     return r
 
 
@@ -594,12 +582,10 @@ def label_values(labels, values):
 
 
 def display_report(report_filename):
-    print(_('Report:\n  {filename}').format(filename=report_filename))
+    encoding.display_message(_('Report:\n  {filename}').format(filename=report_filename))
 
     try:
         #f = report_filename.encode(encoding=sys.getfilesystemencoding())
-        webbrowser.open(encoding.encode('file://' + report_filename, encoding=sys.getfilesystemencoding()), new=2)
+        webbrowser.open(encoding.encode('file://' + report_filename, encoding=encoding.SYS_DEFAULT_ENCODING), new=2)
     except Exception as e:
-        print('display_report: opening: ')
-        print(report_filename)
-        print(e)
+        encoding.report_exception('html_reports.display_report()', e, report_filename)

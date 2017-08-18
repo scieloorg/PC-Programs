@@ -4,7 +4,7 @@ import shutil
 
 from ...__init__ import _
 
-from ...generics import utils
+from ...generics import encoding
 from ...generics import fs_utils
 from ...generics import img_utils
 from ...generics import java_xml_utils
@@ -24,8 +24,8 @@ class PMCPackageMaker(object):
     def make_package(self):
         doit = False
 
-        utils.display_message('\n')
-        utils.display_message(_('Generating PMC Package'))
+        encoding.display_message('\n')
+        encoding.display_message(_('Generating PMC Package'))
         n = '/' + str(len(self.article_items))
         index = 0
 
@@ -34,7 +34,7 @@ class PMCPackageMaker(object):
 
             index += 1
             item_label = str(index) + n + ': ' + xml_name
-            utils.display_message(item_label)
+            encoding.display_message(item_label)
 
             scielo_pkgfiles = workarea.PkgArticleFiles(self.wk.scielo_package_path + '/' + xml_name + '.xml')
             pmc_pkgfiles = workarea.PkgArticleFiles(self.wk.pmc_package_path + '/' + xml_name + '.xml')
@@ -72,9 +72,6 @@ class PMCPackageItemMaker(object):
         if self.doc.journal_id_nlm_ta is None:
             html_reports.save(self.outputs.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
         else:
-            print(scielo_dtd_files.doctype_with_local_path,
-                pmc_dtd_files.doctype_with_local_path
-                )
             java_xml_utils.xml_transform(
                 self.scielo_pkgfiles.filename,
                 scielo_dtd_files.xsl_output,
@@ -112,7 +109,6 @@ class PMCPackageItemMaker(object):
                     if ' id="' not in elem:
                         math_id = 'math{}'.format(n)
                         item = item.replace('<mml:math', '<mml:math id="{}"'.format(math_id))
-                        print(math_id)
                 result.append(item)
             if math_id is not None:
                 fs_utils.write_file(self.pmc_pkgfiles.filename, ''.join(result))
@@ -166,5 +162,4 @@ class PMCPackageItemMaker(object):
                     new_name = tif + '.tiff'
                 if new_name in self.pmc_pkgfiles.tiff_items:
                     content = content.replace('href="'+href.src+'"', 'href="'+new_name+'"')
-                    print(href.src, new_name)
         fs_utils.write_file(self.pmc_pkgfiles.filename, content)

@@ -48,8 +48,8 @@ def delete_file_or_folder(path):
         try:
             os.unlink(path)
         except:
-            print('Unable to delete: ')
-            print(path)
+            encoding.display_message('Unable to delete: ')
+            encoding.display_message(path)
 
 
 def move_file(src, dest):
@@ -186,4 +186,4 @@ class ProcessLogger(object):
         write_file(filename, '\n'.join(self.logged_items))
 
     def display(self):
-        print('\n'.join(self.logged_items))
+        encoding.display_message('\n'.join(self.logged_items))
