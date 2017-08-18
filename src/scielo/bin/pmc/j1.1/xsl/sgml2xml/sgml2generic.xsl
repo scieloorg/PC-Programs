@@ -36,6 +36,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
         </version>
     </xsl:template>
     
+    <xsl:template match="code">
+        <xsl:param name="id"/>
+        
+        <xsl:element name="{name()}">
+            <xsl:apply-templates select="@* | * | text()">
+                <xsl:with-param name="id" select="$id"/>
+            </xsl:apply-templates>
+        </xsl:element>
+    </xsl:template>
+    
     <xsl:template match="code/@itstype">
         <xsl:attribute name="code-type">
             <xsl:value-of select="normalize-space(.)"/>
