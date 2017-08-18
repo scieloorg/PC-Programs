@@ -1016,6 +1016,7 @@ source;#FALSE#;#FALSE#
 suppl;#FALSE#;#TRUE#
 thesgrp;#FALSE#;#FALSE#
 url;#TRUE#;#TRUE#
+version;#FALSE#;#TRUE#
 volid;#TRUE#;#TRUE#
 
 elocatid
