@@ -159,11 +159,11 @@ class ArticleRecords(object):
                 self._metadata[k] = self.i_record[k]
 
     def add_issue_data(self):
-        if not '130' in self._metadata.keys():
+        if '130' not in self._metadata.keys():
             self._metadata['130'] = self.article.journal_title
-        if not '62' in self._metadata.keys():
+        if '62' not in self._metadata.keys():
             self._metadata['62'] = self.article.publisher_name
-        if not '421' in self._metadata.keys():
+        if '421' not in self._metadata.keys():
             self._metadata['421'] = self.article.journal_id_nlm_ta
         #FIXME
         #if not '435' in self._metadata.keys():
@@ -614,7 +614,7 @@ class IssueModels(object):
             # check issue data
             for label, article_data, issue_data, status in validations:
                 error = False
-                if not article_data == issue_data:
+                if article_data != issue_data:
                     error = True
                     if issue_data is None:
                         status = validation_status.STATUS_WARNING
@@ -625,7 +625,7 @@ class IssueModels(object):
             validations.append(('publisher', article.publisher_name, self.issue.publisher_name, validation_status.STATUS_ERROR))
             for label, article_data, issue_data, status in validations:
                 if utils.how_similar(article_data, issue_data) < 0.8:
-                    if not article_data in issue_data:
+                    if article_data not in issue_data:
                         _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
                         results.append((label, status, _msg))
 
@@ -634,7 +634,7 @@ class IssueModels(object):
             if self.issue.license is None:
                 results.append(('license', validation_status.STATUS_WARNING, _('Unable to identify {item}').format(item=_('issue license'))))
             elif article_license_code_and_versions is not None:
-                if not self.issue.license.lower() in article_license_code_and_versions:
+                if self.issue.license.lower() not in article_license_code_and_versions:
                     _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_license_code_and_versions, label1=_('article'), value2=self.issue.license, label2=_('issue'))
                     results.append(('license', validation_status.STATUS_ERROR, _msg))
 
@@ -817,12 +817,12 @@ class ArticlesManager(object):
         for name, status in self.articles_aop_exclusion_status.items():
             if status is not None:
                 status = 'excluded ex-aop' if status is True else 'not excluded ex-aop'
-                if not status in status_items.keys():
+                if status not in status_items.keys():
                     status_items[status] = []
                 status_items[status].append((self.articles_orders[name], name))
         for name, status in self.articles_aop_status.items():
             if status is not None:
-                if not status in status_items.keys():
+                if status not in status_items.keys():
                     status_items[status] = []
                 status_items[status].append((self.articles_orders[name], name))
         for k in status_items.keys():
@@ -1068,7 +1068,7 @@ class AopManager(object):
             for xml_name, registered in self.ex_aop_db_items[issue_files.issue_folder].registered_articles.items():
                 if registered.article_id is not None:
                     self.xmlname_indexed_by_article_id[registered.article_id] = registered.xml_name
-                if not xml_name in self.issueid_indexed_by_xmlname.keys():
+                if xml_name not in self.issueid_indexed_by_xmlname.keys():
                     self.xmlname_indexed_by_issueid_and_order[issue_files.issue_folder + '|' + registered.order] = registered.xml_name
                     self.issueid_indexed_by_xmlname[xml_name] = issue_files.issue_folder
 
@@ -1119,7 +1119,7 @@ class AopManager(object):
                 # ex aop ou current aop
                 status = self.compare_article_and_aop(article, found_aop)
                 messages = self.check_aop_message(article, found_aop, status)
-                if not status in ['matched aop', 'partially matched aop']:
+                if status not in ['matched aop', 'partially matched aop']:
                     found_aop = None
         #status = (status in ['matched aop', 'partially matched aop', 'regular article'])
         return (found_aop, status, messages)
@@ -1220,21 +1220,19 @@ class AopManager(object):
                 done, msg = self.journal_files.archive_ex_aop_files(aop, aop_issueid)
                 if done:
                     self.mark_aop_as_deleted(aop)
-                    if not aop_issueid in self.updated_issue_bases:
+                    if aop_issueid not in self.updated_issue_bases:
                         self.updated_issue_bases.append(aop_issueid)
-                    if not 'ex-' + aop_issueid in self.updated_issue_bases:
+                    if 'ex-' + aop_issueid not in self.updated_issue_bases:
                         self.updated_issue_bases.append('ex-' + aop_issueid)
         if aop_issue_folder_name is not None:
-            if not aop_issue_folder_name in self.updated_issue_bases:
+            if aop_issue_folder_name not in self.updated_issue_bases:
                 self.updated_issue_bases.append(aop_issue_folder_name)
         return (done, msg, aop_issue_folder_name)
 
     #aop_pdf_replacements
-
-
     @property
     def scilista_items(self):
-        return [self.journal_files.acron + ' ' + base for base in self.updated_issue_bases if not 'ex-' in base]
+        return [self.journal_files.acron + ' ' + base for base in self.updated_issue_bases if 'ex-' not in base]
 
     def update_all_aop_db(self):
         if len(self.updated_issue_bases) > 0:

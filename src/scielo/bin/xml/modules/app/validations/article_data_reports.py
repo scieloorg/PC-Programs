@@ -606,9 +606,15 @@ def validations_table(results):
 
 def sps_help(label):
     r = label
-    if label in attributes.SPS_HELP_ELEMENTS:
-        href = 'http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/tagset/elemento-{label}.html'.format(label=label)
-        r += ' ' + html_reports.link(href, '[?]')
+    href = 'http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/'
+    element_name = label
+    if element_name not in attributes.SPS_HELP_ELEMENTS and ' ' in element_name:
+        element_name = element_name[:element_name.find(' ')]
+    if element_name in attributes.SPS_HELP_ELEMENTS:
+        href += 'tagset/elemento-{element_name}.html'.format(element_name=element_name)
+    elif ' ' not in label:
+        href += u'/search.html?q={element_name}&check_keywords=yes&area=default'.format(element_name=element_name)
+    r += ' ' + html_reports.link(href, '[?]')
     return r
 
 

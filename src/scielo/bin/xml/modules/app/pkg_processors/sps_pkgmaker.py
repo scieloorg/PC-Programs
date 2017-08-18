@@ -140,7 +140,7 @@ class SPSRefXMLContent(xml_utils.XMLContent):
             mixed_citation = self.content[self.content.find('<mixed-citation>'):]
             mixed_citation = mixed_citation[:mixed_citation.find('</mixed-citation>')+len('</mixed-citation>')]
             new_mixed_citation = mixed_citation
-            if not '<ext-link' in mixed_citation:
+            if '<ext-link' not in mixed_citation:
                 for ext_link_item in self.content.replace('<ext-link', '~BREAK~<ext-link').split('~BREAK~'):
                     if ext_link_item.startswith('<ext-link'):
                         if '</ext-link>' in ext_link_item:
@@ -149,7 +149,7 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                             ext_link_content = ext_link_content[0:ext_link_content.find('</ext-link>')]
                             if '://' in ext_link_content:
                                 urls = ext_link_content.split('://')
-                                if not ' ' in urls[0]:
+                                if ' ' not in urls[0]:
                                     replacements[ext_link_content] = ext_link_element
                 for ext_link_content, ext_link_element in replacements.items():
                     new_mixed_citation = new_mixed_citation.replace(ext_link_content, ext_link_element)
@@ -161,7 +161,7 @@ class SPSRefXMLContent(xml_utils.XMLContent):
             mixed_citation = self.content[self.content.find('<mixed-citation>')+len('<mixed-citation>'):self.content.find('</mixed-citation>')]
             label = self.content[self.content.find('<label>')+len('<label>'):self.content.find('</label>')]
             changed = mixed_citation
-            if not '<label>' in mixed_citation:
+            if '<label>' not in mixed_citation:
                 if not changed.startswith(label):
                     sep = ' '
                     if changed.startswith('.'):
@@ -194,7 +194,7 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                     mixed_citation = mixed_citation[0:mixed_citation.find('</mixed-citation>')]
                     mixed_citation = mixed_citation[mixed_citation.find('>')+1:]
                     s = source.replace(':', ': ')
-                    if not source in mixed_citation and s in mixed_citation:
+                    if source not in mixed_citation and s in mixed_citation:
                         self.content = self.content.replace(source, s)
 
     def replace_mimetypes(self):

@@ -89,10 +89,10 @@ class XMLContent(object):
         parts = self.content.split('>')
         for s in parts:
             if '<' in s:
-                if not '</' in s and not '<!--' in s and not '<?' in s:
+                if '</' not in s and '<!--' not in s and '<?' not in s:
 
                     s = s[s.find('<')+1:]
-                    if ' ' in s and not '=' in s:
+                    if ' ' in s and '=' not in s:
                         test = s[s.find('<')+1:]
                         changes.append(test)
         for change in changes:
@@ -700,30 +700,18 @@ class XMLNode(object):
         return node_xml(self.root)
 
     def nodes(self, xpaths):
+        found_items = [self.root.findall(xpath) for xpath in xpaths]
         r = []
-        for xpath in xpaths:
-            found = self.root.findall(xpath)
+        for found in found_items:
             if found is not None:
                 r.extend(found)
         return r
 
     def nodes_text(self, xpaths):
-        r = []
-        for node in self.nodes(xpaths):
-            if node is not None:
-                r.append(node_text(node))
-        return r
+        return [node_text(node) for node in self.nodes(xpaths) if node is not None]
 
     def nodes_xml(self, xpaths):
-        r = []
-        for node in self.nodes(xpaths):
-            if node is not None:
-                r.append(node_xml(node))
-        return r
+        return [node_xml(node) for node in self.nodes(xpaths) if node is not None]
 
     def nodes_data(self, xpaths):
-        r = []
-        for node in self.nodes(xpaths):
-            if node is not None:
-                r.append((node_text(node), node.attrib))
-        return r
+        return [(node_xml(node), node.attrib) for node in self.nodes(xpaths) if node is not None]

@@ -264,6 +264,14 @@ class OutputFiles(object):
         return self.report_path + '/' + self.xml_name + '.err.html'
 
     @property
+    def mkp2xml_report_filename(self):
+        return self.report_path + '/' + self.xml_name + '.mkp2xml.txt'
+
+    @property
+    def mkp2xml_report_filename_html(self):
+        return self.report_path + '/' + self.xml_name + '.mkp2xml.html'
+
+    @property
     def data_report_filename(self):
         return self.report_path + '/' + self.xml_name + '.contents.html'
 
