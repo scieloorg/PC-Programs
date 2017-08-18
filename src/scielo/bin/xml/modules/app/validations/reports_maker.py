@@ -115,7 +115,14 @@ class ReportsMaker(object):
 
     @property
     def xc_validations(self):
-        return html_reports.tag('h3', _('Conversion Result')) + self.conversion.conclusion_message + self.articles_validations_reports.merged_articles_reports.report_changes + self.conversion.aop_status_report + self.conversion.articles_conversion_validations.report(True) + self.conversion.conversion_report
+        r = [html_reports.tag('h3', _('Conversion Result'))]
+        r.append(self.conversion.conclusion_message)
+        r.append(self.articles_validations_reports.merged_articles_reports.report_articles_data_conflicts)
+        r.append(self.articles_validations_reports.merged_articles_reports.report_articles_data_changes)
+        r.append(self.conversion.aop_status_report)
+        r.append(self.conversion.articles_conversion_validations.report(True))
+        r.append(self.conversion.conversion_report)
+        return ''.join(r)
 
     @property
     def footnote(self):

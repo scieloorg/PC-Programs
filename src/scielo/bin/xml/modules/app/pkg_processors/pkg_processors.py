@@ -114,10 +114,10 @@ class ArticlesConversion(object):
     def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
-        if self.validations_reports.blocking_errors == 0 and self.total_to_convert > 0:
+        if self.validations_reports.blocking_errors == 0 and self.accepted_articles == len(self.pkg.articles):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
 
-            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.articles_to_convert, self.registered_issue_data.issue_models.record, self.create_windows_base)
+            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
@@ -205,8 +205,8 @@ class ArticlesConversion(object):
         return self.pkg.issue_data.acron_issue_label
 
     @property
-    def total_to_convert(self):
-        return self.articles_mergence.total_to_convert
+    def accepted_articles(self):
+        return len(self.articles_mergence.accepted_articles)
 
     @property
     def total_converted(self):
@@ -220,7 +220,7 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.validations_reports.blocking_errors > 0:
             result = 'rejected'
-        elif self.total_to_convert == 0:
+        elif self.accepted_articles == 0:
             result = 'ignored'
         elif self.articles_conversion_validations.blocking_errors > 0:
             result = 'rejected'
@@ -311,9 +311,9 @@ class ArticlesConversion(object):
         if self.xc_status == 'rejected':
             update = False
             status = validation_status.STATUS_BLOCKING_ERROR
-            if self.total_to_convert > 0:
+            if self.accepted_articles > 0:
                 if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.total_to_convert))
+                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
                 else:
                     reason = _('because there are blocking errors in the package. ')
             else:
@@ -334,7 +334,7 @@ class ArticlesConversion(object):
         if update:
             action = _('will be')
         text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
-        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.total_to_convert), False) + html_reports.p_message(text, False)
+        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.accepted_articles), False) + html_reports.p_message(text, False)
         return text
 
 

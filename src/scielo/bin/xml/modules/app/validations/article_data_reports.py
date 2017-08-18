@@ -652,6 +652,10 @@ def display_article_data_to_compare(_article):
     style = 'excluded' if _article.is_ex_aop else None
     status = validation_status.STATUS_INFO + ': ' + _('This article is an ex-aop article. ') + _('Order of ex-aop is reserved, it is not allowed to reuse it for other article. ') if _article.is_ex_aop else ''
     r += html_reports.p_message(status)
+    if _article.creation_date_display is None:
+        r += html_reports.p_message(_('package'))
+    else:
+        r += html_reports.p_message(_('registered article'))
     r += display_article_metadata(_article, '<br/>')
     if _article.creation_date_display is not None:
         r += '<hr/>' + html_reports.display_label_value(_('creation date'), _article.creation_date_display, 'p')

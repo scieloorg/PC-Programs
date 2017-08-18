@@ -42,6 +42,7 @@ def call_converter(args, version='1.0'):
 def read_inputs(args):
     # python xml_converter.py <xml_src>
     # python xml_converter.py <collection_acron>
+    args = encoding.fix_args(args)
     package_path = None
     script = None
     collection_acron = None

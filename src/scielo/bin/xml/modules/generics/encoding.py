@@ -98,3 +98,7 @@ def display_message(msg):
         print(decode(encode(msg, SYS_DEFAULT_ENCODING), SYS_DEFAULT_ENCODING))
     except Exception as e:
         print(e)
+
+
+def fix_args(args):
+    return [decode(arg, SYS_DEFAULT_ENCODING) for arg in args]

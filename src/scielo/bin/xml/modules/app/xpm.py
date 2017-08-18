@@ -40,10 +40,7 @@ def call_make_packages(args, version):
 def read_inputs(args):
     DISPLAY_REPORT = True
     GENERATE_PMC = False
-    print([type(arg) for arg in args])
-    print(encoding.ENCODING)
-    args = [encoding.decode(arg, encoding.ENCODING) for arg in args]
-    print([type(arg) for arg in args])
+    args = encoding.fix_args(args)
     script = args[0]
     path = None
     acron = None
