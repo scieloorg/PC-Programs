@@ -36,7 +36,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
         </version>
     </xsl:template>
     
-    <xsl:template match="code | attrib | series | app | anonym | isbn | glossary | term | def | response | p | sec | label | subtitle | edition |  issn | corresp | ack | tbody | td | tr">
+    <xsl:template match="code">
         <xsl:param name="id"/>
         
         <xsl:element name="{name()}">
