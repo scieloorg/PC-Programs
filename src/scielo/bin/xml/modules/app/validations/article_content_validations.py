@@ -226,6 +226,7 @@ class ArticleContentValidation(object):
                 items.append(self.total_of_references)
                 items.append(self.ref_display_only_stats)
                 items.append(self.contrib)
+                items.append(self.contrib_id)
                 items.append(self.contrib_names)
                 items.append(self.contrib_collabs)
                 items.append(self.affiliations)
@@ -506,6 +507,21 @@ class ArticleContentValidation(object):
     @property
     def contrib_collabs(self):
         return [('collab', validation_status.STATUS_OK, collab.collab) for collab in self.article.contrib_collabs]
+
+    @property
+    def contrib_id(self):
+        ids = []
+        for contrib_name in self.article.contrib_names:
+            ids.extend(contrib_name.contrib_id.get('orcid', []))
+        q = self.article.count_words('orcid') + self.article.count_words('ORCID') - self.article.count_words('"orcid"')
+        if q != len(ids):
+            return (
+                    'contrib-id',
+                    validation_status.STATUS_WARNING,
+                    _('Check if all the ORCID are identified as contrib-id. ')+
+                    _('Found {} orcid words. ').format(q)+
+                    _('Found {} contrib-id. '.format(len(ids)))
+                )
 
     @property
     def trans_languages(self):

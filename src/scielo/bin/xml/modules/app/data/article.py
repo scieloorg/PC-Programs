@@ -1555,6 +1555,10 @@ class Article(ArticleXML):
         self.normalized_affiliations = {}
         self.institutions_query_results = {}
         self._issue_pub_date = None
+        self.xml = xml_utils.node_xml(self.tree.find('.'))
+
+    def count_words(self, word):
+        return self.xml.count(word)
 
     @property
     def clinical_trial_url(self):

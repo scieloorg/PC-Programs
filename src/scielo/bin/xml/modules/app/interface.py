@@ -76,7 +76,7 @@ class XMLAppGUI(tk.Frame):
             self.pmc_checkbutton = tk.Checkbutton(pmc_frame, text=_('generate PMC Package'), variable=self.pmc_var)
             self.pmc_checkbutton.pack()
 
-        self.message = tk.Label(message_frame, font='System 14 bold', width=50, bd=1, bg='gray')
+        self.message = tk.Label(message_frame, font='System 14 bold', width=150, bd=1, bg='gray')
         self.message.pack(side='left')
 
         close_button = tk.Button(buttons_frame, text=_('close'), command=self.click_close)
