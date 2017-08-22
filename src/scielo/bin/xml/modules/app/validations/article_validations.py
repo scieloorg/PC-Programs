@@ -6,7 +6,7 @@ from ...__init__ import _
 from ...generics import fs_utils
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
-from ...generics import xml_validators
+from ..validations import sps_xml_validators
 from . import article_data_reports
 from . import article_content_validations
 from . import validations as validations_module
@@ -64,7 +64,7 @@ class XMLIssueDataValidator(object):
 class XMLStructureValidator(object):
 
     def __init__(self, dtd_files):
-        self.xml_validator = xml_validators.XMLValidator(dtd_files)
+        self.xml_validator = sps_xml_validators.XMLValidator(dtd_files)
 
     def validate(self, xml_filename, outputs):
         separator = '\n\n\n' + '.........\n\n\n'

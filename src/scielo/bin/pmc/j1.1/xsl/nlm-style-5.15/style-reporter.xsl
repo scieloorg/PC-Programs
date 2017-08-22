@@ -2,8 +2,11 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output method="html"  indent="yes"/>
    <xsl:param name="filename"/>
+   <xsl:param name="full" select="'yes'"/>
 		
 	<xsl:template match="ERR">
+	<xsl:choose>
+		<xsl:when test="$full='yes'">
 		<html>
 			<head>
 				<title></title>
@@ -39,24 +42,36 @@
 				</h4>
 				</xsl:otherwise>
 			</xsl:choose>
-			
+	</ol>
+	<xsl:call-template name="reportmeat"/>	
+			</body>
+		</html>
+	</xsl:when>
+	<xsl:otherwise>
+		<xsl:call-template name="reportmeat"/>
+		</xsl:otherwise>
+	</xsl:choose>
+		</xsl:template>
+
+<xsl:template name="reportmeat">
+	<div class="report-details">
+        <ol>
          <h3>
             <xsl:if test="//warning">
-               <xsl:text>Total of warnings = </xsl:text><xsl:value-of select="count(//warning)"/><br/>        
+               <xsl:text>Total of warnings = </xsl:text><xsl:value-of select="count(//warning)"/><br/>
             </xsl:if>
             <xsl:text>Total of errors = </xsl:text><xsl:value-of select="count(//error)"/><br/>Unique errors are listed below.
          </h3>
-			<xsl:apply-templates select="descendant::*[self::error or self::warning]"/>
-			</ol>
-			<hr/>
-			<ol>
-			<pre style="white-space: pre-wrap;">
-			<xsl:apply-templates mode="copy"/>
-			</pre>
-			</ol>
-			</body>
-		</html>
-		</xsl:template>
+                        <xsl:apply-templates select="descendant::*[self::error or self::warning]"/>
+                        </ol>
+<hr/>
+                        <ol>
+                        <pre style="white-space: pre-wrap;">
+                        <xsl:apply-templates mode="copy"/>
+                        </pre>
+                        </ol>
+	</div>
+	</xsl:template>
 
 	<xsl:template match="error|warning">
 		<xsl:variable name="nodepath">

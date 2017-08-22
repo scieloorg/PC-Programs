@@ -9,7 +9,7 @@ from ...generics import fs_utils
 from ...generics import img_utils
 from ...generics import java_xml_utils
 from ...generics.reports import html_reports
-from ...generics import xml_validators
+from ..validations import sps_xml_validators
 from . import xml_versions
 from ..data import workarea
 
@@ -77,7 +77,7 @@ class PMCPackageItemMaker(object):
                 scielo_dtd_files.xsl_output,
                 self.pmc_pkgfiles.filename)
 
-            xml_validator = xml_validators.XMLValidator(pmc_dtd_files)
+            xml_validator = sps_xml_validators.XMLValidator(pmc_dtd_files)
             xml_validator.validate(
                 self.pmc_pkgfiles.filename,
                 self.outputs.pmc_dtd_report_filename,

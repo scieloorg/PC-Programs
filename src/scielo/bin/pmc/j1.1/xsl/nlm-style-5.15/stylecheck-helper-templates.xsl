@@ -144,13 +144,13 @@
 		<xsl:variable name="base">
 			<xsl:choose>
 				<xsl:when test="$stream='book'">
-					<xsl:value-of select="'http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/book/'"/>
+					<xsl:value-of select="'https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/book/'"/>
 					</xsl:when>
 				<xsl:when test="$stream='manuscript'">
-					<xsl:value-of select="'http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/manuscript/'"/>
+					<xsl:value-of select="'https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/manuscript/'"/>
 					</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="'http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/article/'"/>
+					<xsl:value-of select="'https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/article/'"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>

@@ -26,19 +26,19 @@
  -->
 <!-- ************************************************************************ -->
 <!--                                     NLM STYLECHECKER
-                                           Version 5.13
+                                           Version 5.15
     
     Stylesheet tests an XML instance to determine whether it conforms to correct
     PMC style as defined in the Tagging Guidelines located at:
     
      For Journal Articles:
-      http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/article/style.html
+      https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/article/style.html
      
      For Manuscripts:
-      http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/manuscript/style.html
+      https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/manuscript/style.html
         
     For Books
-      http://www.pubmedcentral.nih.gov/pmcdoc/tagging-guidelines/book/style.html
+      https://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/book/style.html
      
     Output from this stylesheet will have the following structure:
       -<ERR> will be the root element
@@ -76,6 +76,26 @@
      
      
    PMC Project Revision notes:
+   
+    August 10, 2017: Version 5.15
+              Public release of 3rd quarter changes
+    
+    June 1, 2017
+              Added bio as an approved parent of alternatives.
+              
+              Modified href extension check to permit extensions containing an underscore.
+              
+    May 9, 2017: Version 5.14
+              Public release of 2nd quarter changes
+              
+    March 30, 2017
+              Expanded formula-content-test to report inline-formula within disp-formula, and vice versa. 
+   
+    February 27, 2017
+    	PMC-29933 - Remove collab-contrib-grp-check because we have content 
+		that has contrib-group associated with a collab that has 
+		collab members. pmcdata/frontiers/frontpediatrics/5-2017/noissue/00018/
+		
     February 14, 2017: Version 5.13
               Public release of 1st quarter changes
               
@@ -464,7 +484,7 @@
                           not(self::text())])"/>
 
    <!-- Indicate our own version -->
-   <xsl:param name="stylechecker-version"     select="'5.13'"/>
+   <xsl:param name="stylechecker-version"     select="'5.15'"/>
    <xsl:param name="stylechecker-mainline"    select="'nlm-stylechecker5.xsl'"/>
 
    <!-- The 'style' selects the rules that can be applied by the stylechecker.

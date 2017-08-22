@@ -16,17 +16,18 @@ class RemoteServer(object):
             self.server, self.port = server.split(':')
         if log_filename is not None:
             logging.basicConfig(log_filename, format='%(asctime)s %(message)s')
+            self.logger = logging.getLogger('RemoteServer')
 
     def run_cmd(self, cmd):
         if self.log_filename is not None:
-            logging.info(cmd)
+            self.logger.info(cmd)
         try:
             system.run_command(cmd)
             if self.log_filename is not None:
-                logging.info('done')
+                self.logger.info('done')
         except:
             if self.log_filename is not None:
-                logging.error('failure')
+                self.logger.error('failure')
 
     @property
     def rsync_port_param(self):

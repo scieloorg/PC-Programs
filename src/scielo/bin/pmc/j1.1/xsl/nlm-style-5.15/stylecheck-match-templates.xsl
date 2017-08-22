@@ -683,9 +683,10 @@
       	<xsl:call-template name="ms-contrib-group-aff-test"/>
       </xsl:if>
    	
-   	<xsl:if test="parent::collab">
+   <!-- PMC-29933
+		<xsl:if test="parent::collab">
    		<xsl:call-template name="collab-contribgrp-check"/>
-   	</xsl:if>
+   	</xsl:if>  -->
       
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>

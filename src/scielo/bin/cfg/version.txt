@@ -1,13 +1,17 @@
-4.0.094 - Release 0 - 01/08/2017
+4.0.094 - Release Teste - 21/08/2017
 ================================
 - Markup
   - (new) [2602] sec as new element in app
   - (new) [2593] Generate other history date types
+  - (new) [2592] New element code
 - XML Markup 
-  - (new) [2589] Generation of city, state, postal-code
-  - (new) [2590] Generation of version from version
+  - (new) [2589] JATS 1.1 Generation of city, state, postal-code
+  - (new) [2590] JATS 1.1 Generation of version from version
   - (bug) [2622] Fix prefix generation
   - (bug) [2600] Fix sub-article/fn-group generation
+  - (new) [2592] New element code
+  - (new) [2658] JATS 1.1 Generation related to sps-1.7 version
+  - (new) [] NLM Style Checker 5.15
 - XPM
   - (new) [1256] Python3
   - (new) [2596] JATS 1.1 Validation
@@ -15,7 +19,8 @@
   - (new) [2615] ORCID Validation
   - (bug) [2599, 2623] Fix missing xref (bibr) validation
   - (bug) [2567] Fix aff validation
-  - (bug) [2620] Present more than one source in reference  
+  - (bug) [2620] Present error for more than one source in reference 
+  - (improvement) [2610] Indicate articles must have fpage/@seq if they have same fpage value
 - XC
   - (new) [1256] Python3
   - (new) [2590] Generation of v95 for version

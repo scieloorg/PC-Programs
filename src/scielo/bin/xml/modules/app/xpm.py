@@ -14,7 +14,7 @@ from .pkg_processors import xml_versions
 
 
 def call_make_packages(args, version):
-    script, xml_path, acron, DISPLAY_REPORT, GENERATE_PMC = read_inputs(args)
+    script, xml_path, acron, INTERATIVE, GENERATE_PMC = read_inputs(args)
     normalized_pkgfiles = None
     stage = 'xpm'
     if any([xml_path, acron]):
@@ -30,15 +30,16 @@ def call_make_packages(args, version):
                 stage = 'xml'
             else:
                 normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
-    reception = XPM_Reception(stage, DISPLAY_REPORT)
+    reception = XPM_Reception(stage, INTERATIVE)
     if normalized_pkgfiles is None:
-        reception.display_form()
+        if INTERATIVE is True:
+            reception.display_form()
     else:
         reception.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
 
 
 def read_inputs(args):
-    DISPLAY_REPORT = True
+    INTERATIVE = True
     GENERATE_PMC = False
     args = encoding.fix_args(args)
     script = args[0]
@@ -48,7 +49,7 @@ def read_inputs(args):
     items = []
     for item in args:
         if item == '-auto':
-            DISPLAY_REPORT = False
+            INTERATIVE = False
         elif item == '-pmc':
             GENERATE_PMC = True
         else:
@@ -60,7 +61,7 @@ def read_inputs(args):
         script, path = items
     if path is not None:
         path = path.replace('\\', '/')
-    return (script, path, acron, DISPLAY_REPORT, GENERATE_PMC)
+    return (script, path, acron, INTERATIVE, GENERATE_PMC)
 
 
 def validate_inputs(script, xml_path):
@@ -84,6 +85,7 @@ def evaluate_xml_path(xml_path):
     errors = []
     sgm_xml = None
     xml_list = None
+
     if xml_path is None:
         errors.append(_('Missing XML location. '))
     else:
@@ -96,6 +98,7 @@ def evaluate_xml_path(xml_path):
                 errors.append(_('Invalid file. XML file required. '))
         elif os.path.isdir(xml_path):
             xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
+
             if len(xml_list) == 0:
                 errors.append(_('Invalid folder. Folder must have XML files. '))
         else:
@@ -113,16 +116,16 @@ def sgmlxml2xml(sgm_xml_filename, acron):
 
 class XPM_Reception(object):
 
-    def __init__(self, stage, DISPLAY_REPORT=True):
+    def __init__(self, stage, INTERATIVE=True):
         configuration = config.Configuration()
-        self.proc = pkg_processors.PkgProcessor(configuration, DISPLAY_REPORT, stage)
+        self.proc = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
 
     def display_form(self):
         interface.display_form(self.proc.stage == 'xc', None, self.call_make_package)
 
     def call_make_package(self, xml_path, GENERATE_PMC=False):
         xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
-        normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, (self.proc.scielo_dtd_files.local, self.proc.scielo_dtd_files.remote), self.proc.stage)
+        normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', self.proc.stage)
         self.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
         return 'done', 'blue'
 

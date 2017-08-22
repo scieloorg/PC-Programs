@@ -340,9 +340,9 @@ class ArticlesConversion(object):
 
 class PkgProcessor(object):
 
-    def __init__(self, config, DISPLAY_REPORT, stage='xpm'):
+    def __init__(self, config, INTERATIVE, stage='xpm'):
         self.config = config
-        self.DISPLAY_REPORT = DISPLAY_REPORT
+        self.INTERATIVE = INTERATIVE
         self.stage = stage
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
@@ -442,7 +442,7 @@ class PkgProcessor(object):
         files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
         reports = reports_maker.ReportsMaker(pkg, validations_reports, files_location, self.stage, self.xpm_version, conversion)
         if not self.is_xml_generation:
-            reports.save_report(self.DISPLAY_REPORT)
+            reports.save_report(self.INTERATIVE)
         if conversion is not None:
             conversion.registered_issue_data.issue_files.save_reports(files_location.report_path)
         if self.config.web_app_site is not None:
