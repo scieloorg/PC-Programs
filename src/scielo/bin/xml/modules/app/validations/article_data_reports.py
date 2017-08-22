@@ -291,7 +291,6 @@ class ArticleDisplayReport(object):
 
     @property
     def affiliations(self):
-        print(self.article.affiliations)
         r = html_reports.tag('p', 'Affiliations:', 'label')
         for aff_xml in self.article.affiliations:
             r += html_reports.tag('p', html_reports.format_html_data(aff_xml.aff.xml))

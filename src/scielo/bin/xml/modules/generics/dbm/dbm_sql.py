@@ -46,7 +46,7 @@ class SQL(object):
                 for row in cursor.fetchall():
                     results.append(row)
             except Exception as e:
-                encoding.debugging('query()', e, ('ERROR: query', expr))
+                encoding.report_exception('query()', e, ('ERROR: query', expr))
         conn.close()
         return results
 
