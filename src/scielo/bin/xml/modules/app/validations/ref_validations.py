@@ -8,6 +8,7 @@ from ..data import attributes
 from . import data_validations
 from ...generics import xml_utils
 from ...generics import utils
+from ...generics.reports import html_reports 
 
 
 def validate_publication_type(publication_type):
@@ -183,11 +184,12 @@ class PersonValidation(object):
 
 class ReferenceContentValidation(object):
 
-    def __init__(self, reference_xml):
+    def __init__(self, reference_xml, previous_refxml):
         self.refxml = reference_xml
         self._mixed = None
         self._source = None
         self._elements_validations = None
+        self.previous_refxml = previous_refxml 
 
     def evaluate(self, article_year):
         self.is_valid_publication_type = is_valid_publication_type(
@@ -205,6 +207,7 @@ class ReferenceContentValidation(object):
             r.append(self.publication_type_other)
         r.extend([item for item in self.elements_validations if item is not None])
         r.extend(self.contrib_xml_items)
+        r.extend(self.previous_authors)
         r.extend(self.year(article_year))
         r.extend(self.source)
         return [item for item in r if item is not None]
@@ -342,9 +345,6 @@ class ReferenceContentValidation(object):
         else:
             for label, data in [('source', self.refxml.reference.source), ('year', self.refxml.reference.year), ('ext-link', self.refxml.reference.ext_link)]:
                 r.extend(element_in_mixed_citation(label, data, self.refxml.reference.mixed_citation))
-            if '_'*6 in ref_mixed_citation:
-                if len(self.refxml.contrib_xml_items) == 0:
-                    r.append(('person-group', validation_status.STATUS_FATAL_ERROR, _('This reference contains {}, which means the authors of this reference are the same of the previous reference. You must copy the corresponding person-group of previous reference to this reference. '.format('_'*6))))
         return r
 
     @property
@@ -357,6 +357,32 @@ class ReferenceContentValidation(object):
             no_repetition = list(set(groups_type))
             if not len(groups_type) == len(no_repetition):
                 r.append(('@person-group-type', validation_status.STATUS_FATAL_ERROR, _(u'Use @person-group-type to identify the person role. You have identified {} groups. @person-group must have different value for each one. '.format(len(groups_type)))))
+        return r
+
+    @property
+    def previous_authors(self):
+        r = []
+        q_previous = self.refxml.xml.count('_'*6)
+        if q_previous > 0:
+            # (role, authors, etal)
+            found = False
+            previous = [xml_utils.node_text(item) for item in self.previous_refxml.person_group_nodes]
+            curr = [xml_utils.node_text(item) for item in self.refxml.person_group_nodes]
+            for item in curr:
+                if item in previous:
+                    found = True
+                    break
+            if found is False:
+                found_text = _('Found {}. ').format(
+                    html_reports.format_text_as_xml(''.join(curr)))
+                expected_text = _('Expected {}. ').format(
+                    html_reports.format_text_as_xml(''.join(previous)))
+                r.append(
+                    (
+                        'person-group',
+                        validation_status.STATUS_FATAL_ERROR,
+                        _('{} indicates the authors of this reference must be the same as the authors of the previous reference. ').format('_'*6) + found_text + expected_text
+                        ), self.previous_refxml)
         return r
 
     @property
