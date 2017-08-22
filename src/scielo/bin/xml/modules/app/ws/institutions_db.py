@@ -95,7 +95,7 @@ class InstitutionsDBManager(object):
 
     def similar_institutions(self, orgname, city, state, country_code, country_name):
         r = []
-
+        orgname = orgname.replace('"', '')
         similar_orgname_expr = ' OR '.join(['name LIKE ' + "'%" + word + "%'" for word in orgname.split(' ')])
         if len(similar_orgname_expr) > 0:
             similar_orgname_expr = '(' + similar_orgname_expr + ')'

@@ -908,8 +908,10 @@ class ArticleContentValidation(object):
             year = self.article.pub_date_year
         if year is None:
             year = datetime.now().isoformat()[0:4]
+        previous_refxml = None
         for ref_xml in self.article.references_xml:
-            r.append((ref_xml.reference, ref_validations.ReferenceContentValidation(ref_xml).evaluate(year)))
+            r.append((ref_xml.reference, ref_validations.ReferenceContentValidation(ref_xml, previous_refxml).evaluate(year)))
+            previous_refxml = ref_xml
         return r
 
     @property

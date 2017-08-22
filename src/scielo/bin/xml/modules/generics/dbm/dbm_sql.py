@@ -47,6 +47,7 @@ class SQL(object):
                     results.append(row)
             except Exception as e:
                 encoding.report_exception('query()', e, ('ERROR: query', expr))
+                encoding.debugging('query()', expr)
         conn.close()
         return results
 
@@ -68,5 +69,5 @@ class SQL(object):
         return expr
 
     def format_expr(self, labels, values, connector=' OR '):
-        expr = [label + '="' + encoding.encode(value) + '"' for label, value in zip(labels, values) if value is not None]
+        expr = [label + '="' + encoding.encode(value.replace('"', '')) + '"' for label, value in zip(labels, values) if value is not None]
         return connector.join(expr)

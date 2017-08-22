@@ -268,7 +268,6 @@ class ContribXML(object):
         self._contrib = None
         self.fnames = self.xml_node.nodes_text(['.//given-names'])
         self.surnames = self.xml_node.nodes_text(['.//surname'])
-        self.anonymous = self.xml_node.nodes_text(['.//anonymous'])
         self.suffixes = self.xml_node.nodes_text(['.//suffix'])
         self.prefixes = self.xml_node.nodes_text(['.//prefix'])
         self.contrib_id_items = self.xml_node.nodes_data(['.//contrib-id'])
@@ -282,8 +281,9 @@ class ContribXML(object):
 
     @property
     def anonymous_author(self):
-        if len(self.anonymous) > 0:
+        if self.node.tag == 'anonymous':
             return AnonymousAuthor('anonymous')
+        return self.xml_node.nodes_xml(['.//anonymous'])
 
     @property
     def person_author(self):
@@ -2002,11 +2002,17 @@ class ReferenceXML(object):
         return self._contrib_xml_items
 
     @property
+    def person_group_nodes(self):
+        if not hasattr(self, '_person_group_nodes'):
+            self._person_group_nodes = self.root_xml_node.nodes(['.//person-group'])
+        return self._person_group_nodes
+
+    @property
     def person_group_xml_items(self):
         if self._person_group_xml_items is None:
             groups = []
             if self.elem_citation_nodes is not None:
-                for person_group in self.root_xml_node.nodes(['.//person-group']):
+                for person_group in self.person_group_nodes:
                     role = person_group.attrib.get('person-group-type', 'author')
                     authors = []
                     etal = None
