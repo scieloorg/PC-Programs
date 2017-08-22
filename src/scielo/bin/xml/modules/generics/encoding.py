@@ -1,9 +1,22 @@
 # coding=utf-8
 
+import os
 import sys
+import logging
 
 
 SYS_DEFAULT_ENCODING = sys.getfilesystemencoding()
+
+try:
+    os.unlink('./app.log')
+except:
+    pass
+
+logging.basicConfig(
+    filename='./app.log',
+    format=u'%(asctime)s %(message)s')
+logger = logging.getLogger('App')
+logger.setLevel(logging.DEBUG)
 
 
 def is_encodable(content):
@@ -66,34 +79,25 @@ def encode(content, encoding='utf-8', error_handler=None):
 
 
 def report_exception(function_name, e, data):
-    print('\n')
-    print('='*10 + ' Exception - start' + '='*10)
-    print(function_name)
     try:
-        print(e)
-        print(data)
-    except Exception as e:
-        try:
-            display_message(data)
-        except Exception as e:
-            print('Exception: ', e)
-    print('='*10 + ' Exception - end ' + '='*10 + '\n')
+        logger.exception('Exception at {}'.format(function_name), exc_info=True)
+    except:
+        logger.info('EXCEPTION at report_exception()')
 
 
 def debugging(function_name, data):
-    print('='*10 + ' DEBUG - start' + '='*10)
-    print(function_name)
     try:
-        print(data)
-    except Exception as e:
-        try:
-            display_message(data)
-        except Exception as e:
-            print('debugging: Exception', e)
-    print('='*10 + ' DEBUG - end ' + '='*10)
+        logger.info('DEBUG: {}'.format(function_name))
+        logger.info(data)
+    except:
+        logger.info('EXCEPTION at debugging()')
 
 
 def display_message(msg):
+    try:
+        logger.info(msg)
+    except:
+        logger.info('EXCEPTION at display_message()')
     try:
         print(decode(encode(msg, SYS_DEFAULT_ENCODING), SYS_DEFAULT_ENCODING))
     except Exception as e:

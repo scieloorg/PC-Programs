@@ -140,18 +140,11 @@ class ReportsMaker(object):
         return self.files_location.report_link + '/' + os.path.basename(self.report_location)
 
     def save_report(self, display=True):
-        encoding.debugging('save_report', 1)
         html_reports.save(self.report_location, self.report_title, self.content, self.stage)
-        encoding.debugging('save_report', 2)
         if display is True:
             html_reports.display_report(self.report_location)
-        encoding.debugging('save_report', 3)
         msg = _('Saved report: {f}').format(f=self.report_location)
-        encoding.debugging('save_report', 4)
-        encoding.debugging('save_report', type(msg))
-
         encoding.display_message(msg)
-        encoding.debugging('save_report', 5)
 
     @property
     def content(self):

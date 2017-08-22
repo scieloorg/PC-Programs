@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
    	
-    <xsl:import href="../nlm-style-5.13/nlm-stylechecker.xsl"/>
+    <xsl:import href="../nlm-style-5.15/nlm-stylechecker.xsl"/>
     
     <xsl:param name="filename"/>
 	 <xsl:template match="/">
@@ -302,6 +302,17 @@
         
         <xsl:apply-templates select="." mode="output"/>
         
+    </xsl:template>
+    
+    <xsl:template match="xref">
+        <xsl:choose>
+            <xsl:when test="$stream='book'"/>
+            <xsl:otherwise>
+                <xsl:call-template name="punctuation-in-xref"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:call-template name="xref-check"/>
+        <xsl:apply-templates select="." mode="output"/>
     </xsl:template>
     
 </xsl:stylesheet>

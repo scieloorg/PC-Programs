@@ -50,10 +50,14 @@ def load_entities_table():
     entities_filename = TABLES_PATH + '/entities.csv'
     if os.path.isfile(entities_filename):
         for item in fs_utils.read_file_lines(entities_filename):
-            symbol, number_ent, named_ent, descr, representation = item.split('|')
-            table[named_ent] = symbol
+            items = item.split('|')
+            if len(items) == 5:
+                symbol, number_ent, named_ent, descr, representation = items
+                table[named_ent] = symbol
     else:
         encoding.debugging('load_entities_table()', 'NOT FOUND ' + entities_filename)
+    encoding.display_message(entities_filename)
+    encoding.display_message(len(table))
     return table
 
 

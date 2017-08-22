@@ -1186,6 +1186,7 @@
             concat(
             'app ',
             'array ',
+            'bio ',
             'boxed-text ',
             'chem-struct ',
             'chem-struct-wrap ',
@@ -2617,6 +2618,10 @@
    <!-- *********************************************************** -->
    <!-- Template:  collab-contribgrp-check
 		1) collab/contrib-group/contrib/collab must not exist
+		
+		PMC-29933 - we must remove this check because we have content 
+		that has contrib-group associated with a collab that has 
+		collab members. pmcdata/frontiers/frontpediatrics/5-2017/noissue/00018/
 		-->
    <!-- *********************************************************** -->
    <xsl:template name="collab-contribgrp-check">
@@ -4204,6 +4209,15 @@
                   </xsl:with-param>
                </xsl:call-template>
             </xsl:if>
+            <xsl:if test="descendant::inline-formula">
+               <xsl:call-template name="make-error">
+                  <xsl:with-param name="error-type"
+                     select="'disp-formula checking'"/>
+                  <xsl:with-param name="description">
+                     <xsl:text>&lt;disp-formula> must not have descendant&lt;inline-formula&gt;</xsl:text>
+                  </xsl:with-param>
+               </xsl:call-template>
+            </xsl:if>
          </xsl:when>
          <xsl:when test="local-name($context) = 'inline-formula'">
             <xsl:if test="descendant::inline-formula">
@@ -4212,6 +4226,15 @@
                      select="'disp-formula checking'"/>
                   <xsl:with-param name="description">
                      <xsl:text>&lt;inline-formula> must not have descendant &lt;inline-formula&gt;</xsl:text>
+                  </xsl:with-param>
+               </xsl:call-template>
+            </xsl:if>
+            <xsl:if test="descendant::disp-formula">
+               <xsl:call-template name="make-error">
+                  <xsl:with-param name="error-type"
+                     select="'disp-formula checking'"/>
+                  <xsl:with-param name="description">
+                     <xsl:text>&lt;inline-formula> must not have descendant &lt;disp-formula&gt;</xsl:text>
                   </xsl:with-param>
                </xsl:call-template>
             </xsl:if>
@@ -4509,7 +4532,7 @@
          test="
             not(contains($href, '.'))
             or (contains($href, '.') and string-length($substr-after-last-dot) > 10)
-            or (contains($href, '.') and (contains($substr-after-last-dot, '-') or contains($substr-after-last-dot, '_')))
+            or (contains($href, '.') and (contains($substr-after-last-dot, '-')))
             or $substr-after-last-dot = ''">
          <xsl:call-template name="make-error">
             <xsl:with-param name="error-type" select="'@xlink:href checking'"/>
@@ -5584,7 +5607,7 @@
          </xsl:choose>
       </xsl:if>
       <xsl:if
-         test="contains($context, 'Creative Commons') and not(contains($context//@xlink:href, 'creativecommons'))">
+         test="contains(normalize-space($context), 'Creative Commons') and not(contains($context//@xlink:href, 'creativecommons'))">
          <xsl:call-template name="make-error">
             <xsl:with-param name="error-type">license check</xsl:with-param>
             <xsl:with-param name="description">
@@ -9230,7 +9253,7 @@
       <xsl:variable name="tnode" select="id($context/@rid)"/>
       <xsl:variable name="tname" select="name(id($context/@rid))"/>
       <xsl:variable name="ttoken" select="concat(' ', $tname, ' ')"/>
-
+       
       <xsl:choose>
          <xsl:when test="$context[@ref-type and not(@rid)] and $stream != 'rrn'">
             <xsl:call-template name="make-error">
@@ -9352,6 +9375,34 @@
                </xsl:call-template>
             </xsl:if>
          </xsl:when>
+      	
+      	<xsl:when test="$stream = 'book' and $context/@ref-type = 'book-part'">
+      		<xsl:if
+      			test="
+      			not(id($context/@rid)[self::book-part      			
+			or self::sec
+      			or self::book-part
+      			or self::book-part-wrapper
+      			or self::book-app
+      			or self::book-app-group
+      			or self::front-matter-part
+      			or self::preface
+      			or self::foreword
+      			or self::dedication])">
+      			<xsl:call-template name="make-error">
+      				<xsl:with-param name="error-type">xref
+      					checking</xsl:with-param>
+      				<xsl:with-param name="description">
+      					<xsl:call-template name="write-xref-error-description">
+      						<xsl:with-param name="xref" select="$context"/>
+      						<xsl:with-param name="expected-target"
+      							select="'an element of type book-part, book-part-wrapper, book-app, book-app-group, front-matter-part, preface, foreword, or dedication'"
+      						/>
+      					</xsl:call-template>
+      				</xsl:with-param>
+      			</xsl:call-template>
+      		</xsl:if>
+      	</xsl:when>
 
          <xsl:when test="$context/@ref-type = 'boxed-text'">
             <xsl:if

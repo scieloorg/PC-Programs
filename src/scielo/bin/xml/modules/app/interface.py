@@ -65,7 +65,7 @@ class XMLAppGUI(tk.Frame):
         folder_label.pack(side='left')
 
         self.selected_folder = tk.StringVar(value='')
-        self.input_folder = tk.Label(folder_label_frame, textvariable=self.selected_folder, anchor='e', width=50, bd=1, bg='gray')
+        self.input_folder = tk.Label(folder_label_frame, textvariable=self.selected_folder, anchor='e', width=150, bd=1, bg='gray')
         self.input_folder.pack(side='left')
 
         choose_button = tk.Button(folder_label_frame, text=_('choose folder'), command=self.open_file_explorer)
