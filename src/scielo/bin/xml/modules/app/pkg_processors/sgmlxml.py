@@ -564,7 +564,7 @@ class ImagesOriginReport(object):
 
     def item_report(self, item):
         chosen_image_id, chosen_name, chosen_image_origin, chosen_image_src, chosen_image_doc = item
-        elem_name, elem_id = chosen_image_id.split()
+        elem_name, elem_id = chosen_image_id.split(' ')
         style = elem_name if elem_name in ['tabwrap', 'figgrp', 'equation'] else 'inline'
         rows = []
         rows.append('<li>')
