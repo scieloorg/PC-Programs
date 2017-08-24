@@ -1555,7 +1555,7 @@ class Article(ArticleXML):
         self.normalized_affiliations = {}
         self.institutions_query_results = {}
         self._issue_pub_date = None
-        self.xml = xml_utils.node_xml(self.tree.find('.'))
+        self.xml = None if self.tree is None else xml_utils.node_xml(self.tree.find('.'))
 
     def count_words(self, word):
         return self.xml.count(word)
@@ -2131,7 +2131,6 @@ class ArticleXMLContent(object):
 
     @property
     def doc(self):
-        if self.xml is not None:
-            a = Article(self.xml, self.name)
-            a.new_prefix = self.new_name
-            return a
+        a = Article(self.xml, self.name)
+        a.new_prefix = self.new_name
+        return a

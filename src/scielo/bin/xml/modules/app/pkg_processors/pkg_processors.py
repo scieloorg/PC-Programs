@@ -384,13 +384,14 @@ class PkgProcessor(object):
     def evaluate_package(self, pkg):
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
-        for xml_name in pkg.articles.keys():
-            institutions_results = {}
-            for aff_xml in pkg.articles[xml_name].affiliations:
-                if aff_xml is not None:
-                    institutions_results[aff_xml.id] = self.aff_normalizer.query_institutions(aff_xml)
-            pkg.articles[xml_name].institutions_query_results = institutions_results
-            pkg.articles[xml_name].normalized_affiliations = {aff_id: info[0] for aff_id, info in institutions_results.items()}
+        for xml_name, a in pkg.articles.items():
+            if a is not None:
+                institutions_results = {}
+                for aff_xml in a.affiliations:
+                    if aff_xml is not None:
+                        institutions_results[aff_xml.id] = self.aff_normalizer.query_institutions(aff_xml)
+                pkg.articles[xml_name].institutions_query_results = institutions_results
+                pkg.articles[xml_name].normalized_affiliations = {aff_id: info[0] for aff_id, info in institutions_results.items()}
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)

@@ -19,9 +19,10 @@ class XMLJournalDataValidator(object):
         self.journal_data = journal_data
 
     def validate(self, article):
+        r = ''
         if self.journal_data is None:
             r = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to identify {unidentified}. ').format(unidentified=_('journal'))
-        else:
+        elif article is not None:
             items = []
             license_url = None
             if len(article.article_licenses) > 0:
@@ -75,8 +76,6 @@ class XMLStructureValidator(object):
 
         fs_utils.write_file(outputs.err_filename, fs_utils.read_file(outputs.mkp2xml_report_filename) or '')
 
-        for f in [outputs.dtd_report_filename, outputs.style_report_filename, outputs.data_report_filename, outputs.pmc_style_report_filename]:
-            fs_utils.delete_file_or_folder(f)
         xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
 
