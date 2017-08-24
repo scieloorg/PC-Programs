@@ -46,9 +46,9 @@ class PackageIssueData(object):
         self._issue_label = None
 
     def setup(self, articles):
-        data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in articles.values()]))
-        data.sort(reverse=True)
+        data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in articles.values() if a.tree is not None]))
         if len(data) > 0:
+            data.sort(reverse=True)
             data = list(data[0])
             if any(data):
                 self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = data

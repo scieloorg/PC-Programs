@@ -48,21 +48,23 @@ class PkgArticlesValidationsReports(object):
         widths[_('reports')] = '10'
         items = []
         for new_name, a_validations in self.pkg_articles_validations.items():
-            article = a_validations.article_display_report.article
             hide_and_show_block_items = a_validations.hide_and_show_block('view-reports-', new_name)
             values = []
             values.append(new_name)
-            values.append(article.order)
             if a_validations.article_display_report is None:
                 values.append('')
+                values.append('')
+                values.append('')
             else:
+                article = a_validations.article_display_report.article
+                values.append(article.order)
                 values.append(a_validations.article_display_report.table_of_contents)
-            related = {}
-            for k, v in {'article-id(previous-pid)': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
-                if v is not None:
-                    if len(v) > 0:
-                        related[k] = v
-            values.append(related)
+                related = {}
+                for k, v in {'article-id(previous-pid)': article.previous_pid, 'related': [item.get('xml', '') for item in article.related_articles]}.items():
+                    if v is not None:
+                        if len(v) > 0:
+                            related[k] = v
+                values.append(related)
             items.append((values, hide_and_show_block_items))
         report = html_reports.HideAndShowBlocksReport(labels, items, html_cell_content=[_('article')], widths=widths)
         return report.content
