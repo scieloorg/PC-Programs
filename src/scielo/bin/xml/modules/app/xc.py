@@ -62,7 +62,7 @@ class XC_Reception(object):
         self.configuration = configuration
         self.mailer = mailer.Mailer(configuration)
         self.transfer = filestransfer.FilesTransfer(configuration)
-        self.proc = pkg_processors.PkgProcessor(configuration, DISPLAY_REPORT=configuration.interative_mode, stage='xc')
+        self.proc = pkg_processors.PkgProcessor(configuration, INTERATIVE=configuration.interative_mode, stage='xc')
 
     def display_form(self):
         interface.display_form(self.proc.stage == 'xc', None, self.call_convert_package)
