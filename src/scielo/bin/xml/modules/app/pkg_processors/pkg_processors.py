@@ -454,17 +454,17 @@ class PkgProcessor(object):
 
     def make_pmc_package(self, pkg, GENERATE_PMC):
         if not self.is_db_generation:
-            # FIXME
             pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg.wk, pkg.articles, pkg.outputs)
             if self.is_xml_generation:
                 pmc_package_maker.make_report()
             if pkg.is_pmc_journal:
                 if GENERATE_PMC:
                     pmc_package_maker.make_package()
-                    workarea.PackageFolder(pkg.wk.pmc_package_path).zip()
                 else:
                     encoding.display_message(_('To generate PMC package, add -pmc as parameter'))
 
     def zip(self, pkg):
         if not self.is_xml_generation and not self.is_db_generation:
-            workarea.PackageFolder(pkg.wk.scielo_package_path).zip()
+            pkg.package_folder.zip()
+            for name, pkgfiles in pkg.package_folder.pkgfiles_items.items():
+                pkgfiles.zip(pkg.package_folder.path + '_zips')

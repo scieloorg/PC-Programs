@@ -283,7 +283,6 @@ class ContribXML(object):
     def anonymous_author(self):
         if self.node.tag == 'anonymous':
             return AnonymousAuthor('anonymous')
-        return self.xml_node.nodes_xml(['.//anonymous'])
 
     @property
     def person_author(self):

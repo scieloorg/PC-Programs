@@ -145,6 +145,8 @@ class PkgArticleFiles(object):
     def zip(self, dest_path=None):
         if dest_path is None:
             dest_path = os.path.dirname(self.path)
+        if not os.path.isdir(dest_path):
+            os.makedirs(dest_path)
         filename = dest_path + '/' + self.name + '.zip'
         fs_utils.zip(filename, [self.path + '/' + f for f in self.all])
         return filename
@@ -200,7 +202,10 @@ class PackageFolder(object):
     def zip(self, dest_path=None):
         if dest_path is None:
             dest_path = os.path.dirname(self.path)
-        filename = dest_path + '/' + os.path.basename(self.path) + '.zip'
+        if not os.path.isdir(dest_path):
+            os.makedirs(dest_path)
+        _name = os.path.basename(self.path)
+        filename = dest_path + '/' + _name + '.zip'
         fs_utils.zip(filename, [self.path + '/' + f for f in self.package_filenames])
         return filename
 
