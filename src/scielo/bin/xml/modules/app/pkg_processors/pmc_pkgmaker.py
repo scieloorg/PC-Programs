@@ -29,7 +29,6 @@ class PMCPackageMaker(object):
         n = '/' + str(len(self.article_items))
         index = 0
 
-        path = None
         for xml_name, doc in self.article_items.items():
 
             index += 1
@@ -44,8 +43,8 @@ class PMCPackageMaker(object):
                 scielo_pkgfiles,
                 pmc_pkgfiles).make_package()
 
-        if doit and path is not None:
-            workarea.PackageFolder(path).zip()
+        if doit:
+            workarea.PackageFolder(self.wk.pmc_package_path).zip()
 
     def make_report(self):
         for xml_name, doc in self.article_items.items():
