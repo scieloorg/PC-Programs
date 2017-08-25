@@ -26,7 +26,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="normalized_affs" select=".//normaff"/>
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
 	<xsl:variable name="xref_rid" select="//xref[@rid]"/>
-	<xsl:variable name="xref_id" select="//*[@id]"/>
+	<xsl:variable name="elem_id" select="//*[@id]"/>
 	<xsl:variable name="qtd_ref" select="count(//*[@standard]/*)"/>
 	<xsl:variable name="reflen"><xsl:choose>
 		<xsl:when test="string-length($qtd_ref)&gt;2"><xsl:value-of select="string-length($qtd_ref)"/></xsl:when>
@@ -1112,7 +1112,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="xref/@rid">
 		<xsl:variable name="rid"><xsl:value-of select="."/></xsl:variable>
-		<xsl:if test="$xref_id[@id=$rid]">
+		<xsl:if test="$elem_id[@id=$rid]">
 			<xsl:variable name="n1"><xsl:value-of select="substring(.,2)"/></xsl:variable>
 			<xsl:variable name="n2"><xsl:if test="contains(.,../@ref-type)"><xsl:value-of select="substring(.,string-length(../@ref-type)+1)"/></xsl:if></xsl:variable>
 			<xsl:attribute name="rid"><xsl:choose>
@@ -1125,7 +1125,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="xref[@ref-type='aff']/@rid">
 		<xsl:variable name="rid" select="."></xsl:variable>
-		<xsl:if test="$xref_id[@id=$rid]">
+		<xsl:if test="$elem_id[@id=$rid]">
 			<xsl:attribute name="rid"><xsl:choose>
 				<xsl:when test="contains(.,'aff')"><xsl:value-of select="normalize-space(.)"/></xsl:when>
 				<xsl:otherwise>aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:otherwise>
@@ -1676,7 +1676,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:if test="fngrp or fn or back/ack or back/fxmlbody or back/*[@standard]">
 			<back>
 				<xsl:apply-templates select="back"/>
-				<xsl:apply-templates select="fngrp | fn" mode="has-no-xref"></xsl:apply-templates>
 			</back>
 		</xsl:if>
 	</xsl:template>
@@ -1684,15 +1683,19 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="fn|fngrp[@id]" mode="has-no-xref">
 		<xsl:if test="@id">
 			<xsl:variable name="id" select="@id"></xsl:variable>
-			<xsl:if test="not($xref_id[@rid=$id])">
-				<xsl:apply-templates select="."></xsl:apply-templates>
-			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="$xref_rid[@rid=$id]"></xsl:when>
+				<xsl:otherwise>
+					<xsl:variable name="fna"><xsl:apply-templates select="." mode="authorfn"/></xsl:variable>
+					<xsl:if test="normalize-space($fna)=''"><xsl:apply-templates select="."></xsl:apply-templates></xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="fngrp[fn]" mode="has-no-xref">
 		<xsl:variable name="test"><xsl:apply-templates select="fn" mode="has-no-xref"/></xsl:variable>
-		<xsl:if test="$test!=''">
+		<xsl:if test="normalize-space($test)!=''">
 			<fn-group>
 				<xsl:apply-templates select="fn" mode="has-no-xref"></xsl:apply-templates>
 			</fn-group>
@@ -1715,6 +1718,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="." mode="other-fn-items">
 					<xsl:with-param name="body_xref" select="body//xref"></xsl:with-param>
 				</xsl:apply-templates>
+				<xsl:apply-templates select="fngrp | fn" mode="has-no-xref"></xsl:apply-templates>
+				
 				<xsl:apply-templates select="glossary | appgrp"/>				
 			</back>
 		</xsl:if>
@@ -2766,7 +2771,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</sup>
 				</xref>
 			</xsl:when>
-			<xsl:when test="$xref_id[@id=$rid]">
+			<xsl:when test="$elem_id[@id=$rid]">
 				<xref>
 					<xsl:apply-templates select="@*"/>
 					<xsl:apply-templates select="*[name()!='graphic']|text()" mode="ignore-style"/>
@@ -2789,7 +2794,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="@id"/>,</xsl:template>
 	<!--xsl:template match="xref[@rid!='']">
 		<xsl:variable name="rid" select="@rid"/>
-		<xsl:if test="$xref_id[@id=$rid]">
+		<xsl:if test="$elem_id[@id=$rid]">
 			<xref>
 				<xsl:apply-templates select="@*|*[name()!='graphic']|text()"/>
 			</xref>
@@ -2797,7 +2802,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="xref[graphic and @rid!='']">
 		<xsl:variable name="rid" select="@rid"/>
-		<xsl:if test="$xref_id[@id=$rid]">
+		<xsl:if test="$elem_id[@id=$rid]">
 			<xref>
 				<xsl:apply-templates select="@*|*[name()!='graphic']|text()"/>
 			</xref>
@@ -3857,7 +3862,7 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="xref[@ref-type='other']">
 		<xsl:variable name="rid"><xsl:value-of select="@rid"/></xsl:variable>
-		<xsl:if test="$xref_id[@id=$rid]">
+		<xsl:if test="$elem_id[@id=$rid]">
 			<xref>
 				<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
 			</xref>
