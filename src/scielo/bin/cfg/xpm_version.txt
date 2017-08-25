@@ -4,10 +4,12 @@
   - (new) [1256] Python3
   - (new) [2596] JATS 1.1 Validation
   - (new) [2578] Configuration of Web access status and proxy
-  - (new) [2615] ORCID Validation
+  - (new) [2615, 2630] ORCID Validation
   - (bug) [2599, 2623] Fix missing xref (bibr) validation
   - (bug) [2567] Fix aff validation
   - (bug) [2620] Present error for more than one source in reference 
+  - (bug) [2528] Reinsert the feature of zip file generation for pmc and scielo packages
+  - (bug) [2597] Consider that previous author can be anonymous
   - (improvement) [2610] Indicate articles must have fpage/@seq if they have same fpage value
 
 4.0.093 - Release 3 - 25/05/2017

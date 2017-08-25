@@ -25,6 +25,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="affs" select=".//aff"/>
 	<xsl:variable name="normalized_affs" select=".//normaff"/>
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
+	<xsl:variable name="xref_rid" select="//xref[@rid]"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
 	<xsl:variable name="qtd_ref" select="count(//*[@standard]/*)"/>
 	<xsl:variable name="reflen"><xsl:choose>
@@ -1110,20 +1111,26 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="label|label/sup|label/text()" mode="original"></xsl:template>
 	
 	<xsl:template match="xref/@rid">
-		<xsl:variable name="n1"><xsl:value-of select="substring(.,2)"/></xsl:variable>
-		<xsl:variable name="n2"><xsl:if test="contains(.,../@ref-type)"><xsl:value-of select="substring(.,string-length(../@ref-type)+1)"/></xsl:if></xsl:variable>
-		<xsl:attribute name="rid"><xsl:choose>
-			<xsl:when test="substring($n1,1,1)='0'"><xsl:value-of select="substring(.,1,1)"/><xsl:value-of select="string(number($n1))"/></xsl:when>
-			<xsl:when test="substring($n2,1,1)='0'"><xsl:value-of select="../@ref-type"/><xsl:value-of select="string(number($n2))"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
-		</xsl:choose></xsl:attribute>
+		<xsl:variable name="rid"><xsl:value-of select="."/></xsl:variable>
+		<xsl:if test="$xref_id[@id=$rid]">
+			<xsl:variable name="n1"><xsl:value-of select="substring(.,2)"/></xsl:variable>
+			<xsl:variable name="n2"><xsl:if test="contains(.,../@ref-type)"><xsl:value-of select="substring(.,string-length(../@ref-type)+1)"/></xsl:if></xsl:variable>
+			<xsl:attribute name="rid"><xsl:choose>
+				<xsl:when test="substring($n1,1,1)='0'"><xsl:value-of select="substring(.,1,1)"/><xsl:value-of select="string(number($n1))"/></xsl:when>
+				<xsl:when test="substring($n2,1,1)='0'"><xsl:value-of select="../@ref-type"/><xsl:value-of select="string(number($n2))"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
+			</xsl:choose></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="xref[@ref-type='aff']/@rid">
-		<xsl:attribute name="rid"><xsl:choose>
-			<xsl:when test="contains(.,'aff')"><xsl:value-of select="normalize-space(.)"/></xsl:when>
-			<xsl:otherwise>aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:otherwise>
-		</xsl:choose></xsl:attribute>
+		<xsl:variable name="rid" select="."></xsl:variable>
+		<xsl:if test="$xref_id[@id=$rid]">
+			<xsl:attribute name="rid"><xsl:choose>
+				<xsl:when test="contains(.,'aff')"><xsl:value-of select="normalize-space(.)"/></xsl:when>
+				<xsl:otherwise>aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:otherwise>
+			</xsl:choose></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="xref[@ref-type='bibr']/text()">
 		<xsl:choose>
@@ -1669,10 +1676,29 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:if test="fngrp or fn or back/ack or back/fxmlbody or back/*[@standard]">
 			<back>
 				<xsl:apply-templates select="back"/>
+				<xsl:apply-templates select="fngrp | fn" mode="has-no-xref"></xsl:apply-templates>
 			</back>
 		</xsl:if>
 	</xsl:template>
 
+	<xsl:template match="fn|fngrp[@id]" mode="has-no-xref">
+		<xsl:if test="@id">
+			<xsl:variable name="id" select="@id"></xsl:variable>
+			<xsl:if test="not($xref_id[@rid=$id])">
+				<xsl:apply-templates select="."></xsl:apply-templates>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="fngrp[fn]" mode="has-no-xref">
+		<xsl:variable name="test"><xsl:apply-templates select="fn" mode="has-no-xref"/></xsl:variable>
+		<xsl:if test="$test!=''">
+			<fn-group>
+				<xsl:apply-templates select="fn" mode="has-no-xref"></xsl:apply-templates>
+			</fn-group>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="doc|subdoc|docresp" mode="back">
 		<xsl:variable name="otherfntest">
 			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param></xsl:apply-templates>
