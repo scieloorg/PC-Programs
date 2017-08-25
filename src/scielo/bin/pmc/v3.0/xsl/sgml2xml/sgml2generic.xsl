@@ -1683,13 +1683,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="fn|fngrp[@id]" mode="has-no-xref">
 		<xsl:if test="@id">
 			<xsl:variable name="id" select="@id"></xsl:variable>
-			<xsl:choose>
-				<xsl:when test="$xref_rid[@rid=$id]"></xsl:when>
-				<xsl:otherwise>
+			<xsl:if test="not($xref_rid[@rid=$id])">
 					<xsl:variable name="fna"><xsl:apply-templates select="." mode="authorfn"/></xsl:variable>
 					<xsl:if test="normalize-space($fna)=''"><xsl:apply-templates select="."></xsl:apply-templates></xsl:if>
-				</xsl:otherwise>
-			</xsl:choose>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
