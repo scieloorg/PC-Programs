@@ -1,6 +1,5 @@
 # coding=utf-8
 import os
-import shutil
 from datetime import datetime
 
 from ...__init__ import _
@@ -109,12 +108,10 @@ class JavaXMLValidator(object):
         xml_report = report_filename.replace('.html', '.xml')
         result = 'ERROR: ' + _('Unable to create') + ' ' + report_filename
         parameters = {}
-        shutil.copyfile(self.xml_filename, xml_report+'.xml.bkp')
         transformed = java_xml_utils.xml_transform(self.xml_filename, self.xsl_prep_report, xml_report, parameters)
         if transformed:
             transformed = java_xml_utils.xml_transform(xml_report, self.xsl_report, report_filename, parameters)
             result = fs_utils.read_file(report_filename)
-            shutil.copyfile(xml_report, xml_report+'.bkp')
             fs_utils.delete_file_or_folder(xml_report)
         if not os.path.isfile(report_filename):
             fs_utils.write_file(report_filename, result)
