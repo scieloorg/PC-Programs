@@ -3680,7 +3680,7 @@ et al.</copyright-statement>
 		<xsl:variable name="cccompl"><xsl:if test="@cccompl!='nd'"><xsl:value-of select="translate(@cccompl,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>/</xsl:if></xsl:variable>
 		
 		<xsl:apply-templates select="." mode="license-element">
-			<xsl:with-param name="href" select="concat('http://creativecommons.org/licenses/',$ccid,$cversion,$cccompl)"/>
+			<xsl:with-param name="href" select="concat('https://creativecommons.org/licenses/',$ccid,$cversion,$cccompl)"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
@@ -3690,7 +3690,7 @@ et al.</copyright-statement>
 		<xsl:variable name="cccompl">/<xsl:value-of select="../license-complement"/></xsl:variable>
 		
 		<xsl:apply-templates select="." mode="license-element">
-			<xsl:with-param name="href" select="concat('http://creativecommons.org/licenses/',$ccid,$cversion,$cccompl)"/>
+			<xsl:with-param name="href" select="concat('https://creativecommons.org/licenses/',$ccid,$cversion,$cccompl)"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	

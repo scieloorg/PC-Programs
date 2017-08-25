@@ -16,13 +16,13 @@ class DOIWebServicesRequester(object):
         if year is None:
             year = datetime.now().year
         if issn is not None:
-            return 'http://api.crossref.org/works?filter=issn:{issn},from-pub-date:{year}'.format(issn=issn, year=year)
+            return 'https://api.crossref.org/works?filter=issn:{issn},from-pub-date:{year}'.format(issn=issn, year=year)
 
     def article_doi_checker_url(self, doi):
-        #http://api.crossref.org/works/10.1037/0003-066X.59.1.29
+        #https://api.crossref.org/works/10.1037/0003-066X.59.1.29
         url = None
         if doi is not None:
-            url = 'http://api.crossref.org/works/' + doi
+            url = 'https://api.crossref.org/works/' + doi
         return url
 
     def _fix_doi(self, doi):

@@ -21,9 +21,9 @@ from . import encoding
 ENTITIES_TABLE = None
 
 namespaces = {}
-namespaces['mml'] = 'http://www.w3.org/1998/Math/MathML'
-namespaces['xlink'] = 'http://www.w3.org/1999/xlink'
-namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'
+namespaces['mml'] = 'https://www.w3.org/1998/Math/MathML'
+namespaces['xlink'] = 'https://www.w3.org/1999/xlink'
+namespaces['xml'] = 'https://www.w3.org/XML/1998/namespace'
 
 for namespace_id, namespace_link in namespaces.items():
     etree.register_namespace(namespace_id, namespace_link)
@@ -42,7 +42,7 @@ def date_element(date_node):
 
 def element_lang(node):
     if node is not None:
-        return node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+        return node.attrib.get('{https://www.w3.org/XML/1998/namespace}lang')
 
 
 def load_entities_table():

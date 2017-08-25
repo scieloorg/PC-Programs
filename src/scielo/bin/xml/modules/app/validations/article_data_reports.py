@@ -596,24 +596,10 @@ def validations_table(results):
                 result.append('')
             if len(result) == 4:
                 label, status, msg, xml = result
-                rows.append({'label': sps_help(label), 'status': status, 'message': msg, 'xml': xml, _('why it is not a valid message?'): ' '})
+                rows.append({'label': attributes.sps_help(label), 'status': status, 'message': msg, 'xml': xml, _('why it is not a valid message?'): ' '})
             else:
                 print('validations_table: ', result)
         r = html_reports.tag('div', html_reports.sheet(['label', 'status', 'message', 'xml', _('why it is not a valid message?')], rows, table_style='validation_sheet'))
-    return r
-
-
-def sps_help(label):
-    r = label
-    href = 'http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/'
-    element_name = label
-    if element_name not in attributes.SPS_HELP_ELEMENTS and ' ' in element_name:
-        element_name = element_name[:element_name.find(' ')]
-    if element_name in attributes.SPS_HELP_ELEMENTS:
-        href += 'tagset/elemento-{element_name}.html'.format(element_name=element_name)
-    elif ' ' not in label:
-        href += u'/search.html?q={element_name}&check_keywords=yes&area=default'.format(element_name=element_name)
-    r += ' ' + html_reports.link(href, '[?]')
     return r
 
 
