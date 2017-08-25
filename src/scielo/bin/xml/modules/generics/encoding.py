@@ -3,9 +3,12 @@
 import os
 import sys
 import logging
+import locale
 
 
+LOCALE_LANG, LOCALE_ENCODING = locale.getdefaultlocale()
 SYS_DEFAULT_ENCODING = sys.getfilesystemencoding()
+
 
 try:
     os.unlink('./app.log')
