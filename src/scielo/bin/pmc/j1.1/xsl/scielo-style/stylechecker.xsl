@@ -19,29 +19,9 @@
 				<xsl:text>The document is being checked against the SciELO Tagging Guidlines rules for "</xsl:text>
 				<xsl:value-of select="$stream"/>
 				<xsl:text>" for content tagged using </xsl:text>
-				<xsl:choose>
-					<xsl:when test="$dtd-version='2'">
-						<xsl:text> version 2.3 or earlier </xsl:text>
-						</xsl:when>
-					<xsl:when test="$dtd-version='3'">
-						<xsl:text> version 3.0 </xsl:text>
-					</xsl:when>
-					<xsl:when test="$dtd-version='j1'">
-						<xsl:text> version 1.0 </xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:value-of select="$dtd-version"/>
-						</xsl:otherwise>
-					</xsl:choose>
+	            <xsl:text>version 1.1 </xsl:text>
 				<xsl:text>of the </xsl:text>
-				<xsl:choose>
-					<xsl:when test="$dtd-version='j1'">
-						<xsl:text>JATS DTD. </xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:text>NLM DTD. </xsl:text>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:text>JATS DTD. </xsl:text>
 				<xsl:text>||</xsl:text>
 				<xsl:text> The document was tagged with the language attribute value "</xsl:text>
 				<xsl:value-of select="$art-lang-att"/>
