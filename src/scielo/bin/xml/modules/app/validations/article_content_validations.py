@@ -261,19 +261,19 @@ class ArticleContentValidation(object):
     @property
     def disp_formulas(self):
         results = []
-        required_at_least_one_child = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math', 'alternatives']
+        required_at_least_one_child = ['graphic', '{https://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math', 'alternatives']
         for disp_formula_node in self.article.disp_formula_elements:
             found = False
             for child in disp_formula_node.findall('*'):
                 if child.tag in required_at_least_one_child:
                     if child.tag == 'graphic':
-                        found = self.is_not_empty_attribute(child, '{http://www.w3.org/1999/xlink}href')
-                    elif child.tag in ['{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']:
+                        found = self.is_not_empty_attribute(child, '{https://www.w3.org/1999/xlink}href')
+                    elif child.tag in ['{https://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']:
                         found = self.is_not_empty_element(child)
                     elif child.tag in ['alternatives']:
-                        if self.is_not_empty_attribute(child, '{http://www.w3.org/1999/xlink}href'):
+                        if self.is_not_empty_attribute(child, '{https://www.w3.org/1999/xlink}href'):
                             found = any([self.is_not_empty_element(child.find('math')),
-                                self.is_not_empty_element(child.find('{http://www.w3.org/1998/Math/MathML}math')),
+                                self.is_not_empty_element(child.find('{https://www.w3.org/1998/Math/MathML}math')),
                                 self.is_not_empty_element(child.find('tex-math')),
                                 ])                    
                 if found:

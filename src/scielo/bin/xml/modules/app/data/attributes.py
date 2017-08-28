@@ -8,6 +8,7 @@ from ...__init__ import TABLES_PATH
 from .. import article_utils
 from ...generics.fs_utils import read_file
 from ...generics.reports import validation_status
+from ...generics.reports import html_reports
 
 
 SPS_expiration_dates = [
@@ -262,9 +263,9 @@ PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyrig
 related_articles_type = ['corrected-article', 'commentary-article', 'press-release', 'retracted-article']
 
 CONTRIB_ID_URLS = {
-    'lattes': 'http://lattes.cnpq.br/',
-    'orcid': 'http://orcid.org/',
-    'researchid': 'http://www.researcherid.com/rid/',
+    'lattes': 'https://lattes.cnpq.br/',
+    'orcid': 'https://orcid.org/',
+    'researchid': 'https://www.researcherid.com/rid/',
     'scopus': 'https://www.scopus.com/authid/detail.uri?authorId=',
 }
 
@@ -274,7 +275,6 @@ if LICENSES is None:
     LICENSES = []
 else:
     LICENSES = LICENSES.split()
-    LICENSES.extend([item.replace('http:', 'https:') for item in LICENSES])
 
 SPS_HELP_ELEMENTS = [
     'abbrev-journal-title',
@@ -611,3 +611,17 @@ def validate_license_href(license_href):
         #if not ws_requester.wsr.is_valid_url(license_href):
         #    result = ('license/@xlink:href', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=license_href, label='license/@href'))
     return result
+
+
+def sps_help(label):
+    r = label
+    href = 'https://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/'
+    element_name = label
+    if element_name not in SPS_HELP_ELEMENTS and ' ' in element_name:
+        element_name = element_name[:element_name.find(' ')]
+    if element_name in SPS_HELP_ELEMENTS:
+        href += 'tagset/elemento-{element_name}.html'.format(element_name=element_name)
+    elif ' ' not in label:
+        href += u'/search.html?q={element_name}&check_keywords=yes&area=default'.format(element_name=element_name)
+    r += ' ' + html_reports.link(href, '[?]')
+    return r
