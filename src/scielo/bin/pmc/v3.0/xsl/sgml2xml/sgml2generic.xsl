@@ -16,9 +16,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
 	
-	<xsl:variable name="fn" select=".//*[(name()='fn' or name()='fngrp') and @fntype]"/>
-	<xsl:variable name="fn_deceased" select="$fn[@fntype='deceased']"/>
-	<xsl:variable name="fn_eqcontrib" select="$fn[@fntype='equal']"/>
+	<xsl:variable name="allfootnotes" select=".//*[(name()='fn' or name()='fngrp') and @fntype]"/>
+	<xsl:variable name="fn_deceased" select="$allfootnotes[@fntype='deceased']"/>
+	<xsl:variable name="fn_eqcontrib" select="$allfootnotes[@fntype='equal']"/>
 	<xsl:variable name="unident_back" select="//back//unidentified"/>
 	
 	
@@ -399,7 +399,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="@corresp | @deceased">
 		<xsl:if test=".='yes'">
-			<xsl:if test="not($fn[@fntype=name()])">
+			<xsl:if test="not($allfootnotes[@fntype=name()])">
 				<xsl:attribute name="{name()}">yes</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -407,7 +407,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="@eqcontr">
 		<xsl:if test=".='yes'">
-			<xsl:if test="not($fn[@fntype='eq-contrib'])">
+			<xsl:if test="not($allfootnotes[@fntype='eq-contrib'])">
 				<xsl:attribute name="eq-contrib">yes</xsl:attribute>
 			</xsl:if>
 		</xsl:if>
@@ -1205,9 +1205,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="*" mode="other-fn-items">
 		<xsl:param name="body_xref"/>
-		<xsl:variable name="selectedfn"><xsl:apply-templates select="fngrp | fn" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates></xsl:variable>
+		<xsl:variable name="selectedfn"><xsl:apply-templates select="$allfootnotes" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates></xsl:variable>
 		<xsl:if test="$selectedfn!=''">
-			<xsl:apply-templates select="fngrp | fn" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates>
+			<xsl:apply-templates select="$allfootnotes" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
 	<!-- OTHER FOOTNOTES -->
@@ -1704,7 +1704,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param></xsl:apply-templates>
 			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="body//xref"></xsl:with-param></xsl:apply-templates>
 		</xsl:variable>
-		
 		<xsl:if test="ack or normalize-space($otherfntest)!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
 			<back>
 				<xsl:apply-templates select="ack"/>
