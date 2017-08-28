@@ -8,6 +8,7 @@ from ...__init__ import TABLES_PATH
 from .. import article_utils
 from ...generics.fs_utils import read_file
 from ...generics.reports import validation_status
+from ...generics.reports import html_reports
 
 
 SPS_expiration_dates = [
@@ -616,9 +617,9 @@ def sps_help(label):
     r = label
     href = 'https://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/'
     element_name = label
-    if element_name not in attributes.SPS_HELP_ELEMENTS and ' ' in element_name:
+    if element_name not in SPS_HELP_ELEMENTS and ' ' in element_name:
         element_name = element_name[:element_name.find(' ')]
-    if element_name in attributes.SPS_HELP_ELEMENTS:
+    if element_name in SPS_HELP_ELEMENTS:
         href += 'tagset/elemento-{element_name}.html'.format(element_name=element_name)
     elif ' ' not in label:
         href += u'/search.html?q={element_name}&check_keywords=yes&area=default'.format(element_name=element_name)
