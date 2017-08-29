@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import random
 
 from ...__init__ import _
 from ...generics import fs_utils
@@ -79,7 +80,17 @@ class PackageName(object):
 
     @property
     def last(self):
-        return self.doc.order
+        if self.doc.fpage is not None and self.doc.fpage != '0':
+            _last = self.doc.fpage
+            if self.doc.fpage_seq is not None:
+                _last += self.doc.fpage_seq
+        elif self.doc.elocation_id is not None:
+            _last = self.doc.elocation_id
+        elif self.doc.number == 'ahead' and self.doc.doi is not None and '/' in self.doc.doi:
+            _last = self.doc.doi[self.doc.doi.find('/')+1:].replace('.', '-')
+        else:
+            _last = self.doc.order
+        return _last
 
 
 class SGMLHTML(object):

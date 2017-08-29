@@ -715,7 +715,7 @@ class ArticleXML(object):
             related = self.article_meta.findall('related-article')
             for rel in related:
                 item = {}
-                item['href'] = rel.attrib.get('{https://www.w3.org/1999/xlink}href')
+                item['href'] = rel.attrib.get('{http://www.w3.org/1999/xlink}href')
                 item['related-article-type'] = rel.attrib.get('related-article-type')
                 item['ext-link-type'] = rel.attrib.get('ext-link-type')
                 if item['ext-link-type'] == 'scielo-pid':
@@ -1123,7 +1123,7 @@ class ArticleXML(object):
             if node is None:
                 node = self.article_meta.find('.//uri[@content-type="ClinicalTrial"]')
             if node is not None:
-                return node.attrib.get('{https://www.w3.org/1999/xlink}href')
+                return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
     @property
     def uri_clinical_trial_text(self):
@@ -1145,7 +1145,7 @@ class ArticleXML(object):
             if node is None:
                 node = self.article_meta.find('.//ext-link[@ext-link-type="ClinicalTrial"]')
             if node is not None:
-                return node.attrib.get('{https://www.w3.org/1999/xlink}href')
+                return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
     @property
     def ext_link_clinical_trial_text(self):
@@ -1261,15 +1261,15 @@ class ArticleXML(object):
             if formula.attrib is not None:
                 eqid = formula.attrib.get('id')
 
-            maths = [formula.findall('.//math'), formula.findall('.//{https://www.w3.org/1998/Math/MathML}math'), formula.findall('.//tex-math')]
+            maths = [formula.findall('.//math'), formula.findall('.//{http://www.w3.org/1998/Math/MathML}math'), formula.findall('.//tex-math')]
             coded = []
             for math in maths:
                 if math is not None:
                     coded.extend([xml_utils.node_text(node) if node.tag == 'tex-math' else xml_utils.node_xml(node) for node in math])
-            href = formula.attrib.get('href', formula.attrib.get('{https://www.w3.org/1999/xlink}href'))
+            href = formula.attrib.get('href', formula.attrib.get('{http://www.w3.org/1999/xlink}href'))
             graphic = formula.find('graphic')
             if graphic is not None:
-                href = graphic.attrib.get('href', graphic.attrib.get('{https://www.w3.org/1999/xlink}href'))
+                href = graphic.attrib.get('href', graphic.attrib.get('{http://www.w3.org/1999/xlink}href'))
             data.append({'xml': xml_utils.node_xml(formula), 'id': eqid, 'code': '<hr/>'.join(coded), 'graphic': href})
         return data
 
@@ -1424,7 +1424,7 @@ class ArticleXML(object):
         if self.article_meta is not None:
             for license_node in self.article_meta.findall('.//license'):
                 lang = xml_utils.element_lang(license_node)
-                href = license_node.attrib.get('{https://www.w3.org/1999/xlink}href')
+                href = license_node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
                 _article_licenses[lang] = {}
                 _article_licenses[lang]['href'] = href
@@ -1488,10 +1488,10 @@ class ArticleXML(object):
     def hrefs(self):
         items = []
         if self.tree is not None:
-            for parent in self.tree.findall('.//*[@{https://www.w3.org/1999/xlink}href]/..'):
-                for elem in parent.findall('*[@{https://www.w3.org/1999/xlink}href]'):
+            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+                for elem in parent.findall('*[@{http://www.w3.org/1999/xlink}href]'):
                     if elem.tag != 'related-article':
-                        href = elem.attrib.get('{https://www.w3.org/1999/xlink}href')
+                        href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
                         _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
                         items.append(_href)
         return items
@@ -1518,7 +1518,7 @@ class ArticleXML(object):
                 graphic = t.find('./graphic')
                 _href = None
                 if graphic is not None:
-                    src = graphic.attrib.get('{https://www.w3.org/1999/xlink}href')
+                    src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
                     xml = xml_utils.node_xml(graphic)
 
                     _href = HRef(src, graphic, t, xml, self.prefix)
