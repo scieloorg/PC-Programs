@@ -165,7 +165,7 @@ class ArticleDisplayReport(object):
 
     @property
     def keywords(self):
-        return html_reports.format_list('keywords:', 'ol', ['(' + k['l'] + ') ' + k['k'] for k in self.article.keywords])
+        return html_reports.format_list('keywords:', 'ol', [display_kwd(k) for k in self.article.keywords])
 
     @property
     def order(self):
@@ -720,3 +720,9 @@ class ArticlesComparison(object):
             for label, differences in comparison_result:
                 msg.append(html_reports.tag('p', differences[0] + '&#160;=>&#160;' + differences[1]))
         return ''.join(msg)
+
+
+def display_kwd(k):
+    k_l = k['l'] if k['l'] is not None else ''
+    k_k = k['k'] if k['k'] is not None else ''
+    return u'({}) {}'.format(k_l, k_k)
