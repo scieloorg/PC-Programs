@@ -357,7 +357,7 @@ class ArticleContentValidation(object):
             else:
                 error = True
             if error:
-                msg = data_validations.inis_valid_value('month', value)
+                msg = data_validations.invalid_value_message('month', value)
                 msg += data_validations.expected_values_message(range(1, 13))
                 r.append(('{parent} ({parent_id}'.format(parent=parent, parent_id=parent_id), validation_status.STATUS_FATAL_ERROR, msg))
         for parent, parent_id, value in self.article.seasons:
@@ -377,7 +377,7 @@ class ArticleContentValidation(object):
                 error = True
             if error:
                 expected = _('initial month and final month must be separated by hyphen. E.g.: Jan-Feb. Expected values for the months: {months}. ').format(months=article_utils.MONTHS_ABBREV.replace('|', ' '))
-                msg = data_validations.inis_valid_value('season', value, expected)
+                msg = data_validations.invalid_value_message('season', value, expected)
                 r.append(('{parent} ({parent_id}'.format(parent=parent, parent_id=parent_id), validation_status.STATUS_FATAL_ERROR, msg))
         return r
 
@@ -403,7 +403,7 @@ class ArticleContentValidation(object):
                 if _doi != '':
                     errors = self.doi_validator.validate_format(_doi)
                     if errors is not None and len(errors) > 0:
-                        msg = data_validations.inis_valid_value('related-article/@xlink:href', related_article.get('href'))
+                        msg = data_validations.invalid_value_message('related-article/@xlink:href', related_article.get('href'))
                         r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
         return r
 
@@ -1277,7 +1277,7 @@ class HRefValidation(object):
         else:
             if self.check_url or 'scielo.php' in self.hrefitem.src:
                 if self.ws_requester.is_valid_url(self.hrefitem.src) is False:
-                    message = data_validations.inis_valid_value('URL', self.hrefitem.src)
+                    message = data_validations.invalid_value_message('URL', self.hrefitem.src)
                     if 'scielo.php' in self.hrefitem.src:
                         message += _('Be sure that there is no missing character such as _. ')
                     status_message.append((validation_status.STATUS_WARNING, self.hrefitem.src + message))        

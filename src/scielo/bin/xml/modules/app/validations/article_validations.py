@@ -64,8 +64,8 @@ class XMLIssueDataValidator(object):
 
 class XMLStructureValidator(object):
 
-    def __init__(self, dtd_files):
-        self.xml_validator = sps_xml_validators.XMLValidator(dtd_files)
+    def __init__(self, dtd_files, sps_version, preference):
+        self.xml_validator = sps_xml_validators.XMLValidator(dtd_files, sps_version, preference)
 
     def validate(self, xml_filename, outputs):
         separator = '\n\n\n' + '.........\n\n\n'
@@ -170,14 +170,15 @@ class XMLContentValidator(object):
 
 class ArticleValidator(object):
 
-    def __init__(self, xml_journal_data_validator, xml_issue_data_validator, xml_content_validator):
+    def __init__(self, xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, xml_struct_validator_pref):
         self.xml_journal_data_validator = xml_journal_data_validator
         self.xml_issue_data_validator = xml_issue_data_validator
         self.xml_content_validator = xml_content_validator
+        self.xml_struct_validator_pref = xml_struct_validator_pref
 
     def validate(self, article, outputs, pkgfiles):
         scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(fs_utils.read_file(pkgfiles.filename))
-        xml_structure_validator = XMLStructureValidator(scielo_dtd_files)
+        xml_structure_validator = XMLStructureValidator(scielo_dtd_files, article.sps, self.xml_struct_validator_pref)
 
         artval = ArticleValidations()
         artval.journal_validations = self.xml_journal_data_validator.validate(article)

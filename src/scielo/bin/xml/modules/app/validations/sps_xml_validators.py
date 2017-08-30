@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from ...__init__ import _
+from ...generics import encoding
 from ...generics import fs_utils
 from ...generics import java_xml_utils
 from ...generics import xml_utils
@@ -13,9 +14,11 @@ from ...generics.reports import validation_status
 
 IS_PACKTOOLS_INSTALLED = False
 try:
+    import packtools
     from packtools.catalogs import XML_CATALOG
     os.environ['XML_CATALOG_FILES'] = XML_CATALOG
-except:
+    #IS_PACKTOOLS_INSTALLED = True
+except Exception as e:
     os.environ['XML_CATALOG_FILES'] = ''
 
 
@@ -28,65 +31,64 @@ def register_log(text):
 
 class PackToolsValidator(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, dtd_name, sps_version):
+        self.xml_validator = None
+        self.dtd_name = dtd_name
+        self.dtd = packtools.etree.DTD(dtd_name)
+        self.version = packtools.__version__
+        self.is_valid = False
+        self.style_errors = 0
+        if sps_version in packtools.catalogs.SCH_SCHEMAS.keys():
+            auto_loaded_sch_label = u'@' + sps_version
+            self.style_validators = [
+                    packtools.domain.SchematronValidator.from_catalog(
+                        sps_version,
+                        label=auto_loaded_sch_label),
+                    packtools.domain.PyValidator(label=auto_loaded_sch_label),
+                    # the python based validation pipeline
+            ]
+        self.annoted = None
 
     def setup(self, xml_filename):
-        import packtools
-        self.xml_validator = packtools.stylechecker.XMLValidator(xml_filename)
-        self.is_valid, self.errors = self.xml_validator.validate()
-
-    def _save_style_report(self, content, report_filename):
-        version = ''
         try:
-            import pkg_resources
-            version = pkg_resources.get_distribution('packtools').version
-        except:
-            pass
+            self.xml_validator = packtools.XMLValidator(
+                                    packtools.etree.parse(xml_filename),
+                                    dtd=self.dtd)
+            self.xml_validator.style_validators = self.style_validators
+            self.annotate_errors()
+        except Exception as e:
+            self.xml_validator = None
 
-        q = len(content.split('SPS-ERROR')) - 1
-        msg = ''
-        title = 'Style Checker (packtools' + version + ')'
-        if q > 0:
-            msg = html_reports.tag('div', 'Total of errors = ' + str(q), 'error')
-
-        body = msg + ''.join([html_reports.display_xml(item) for item in content.split('\n')])
-        html_reports.save(report_filename, title, body)
-
-    @property
-    def _dtd_validation(self):
-        return '\n'.join([err.message for err in self.errors])
+    def annotate_errors(self):
+        if self.annoted is None:
+            content = packtools.etree.tostring(
+                self.xml_validator.annotate_errors(),
+                pretty_print=True,
+                encoding='utf-8',
+                xml_declaration=True)
+            content = encoding.decode(content)
+            self.is_valid = True
+            self.style_errors = content.count('SPS-ERROR')
+            self.annoted = content
 
     def dtd_validation(self, report_filename):
-        fs_utils.write_file(report_filename, self._dtd_validation)
+        msg = 'Validates fine'
+        if self.is_valid is False:
+            msg = _('Invalid XML File')
+        fs_utils.write_file(report_filename, msg)
         return self.is_valid
 
-    @property
-    def _style_validation(self):
-        return xml_utils.etree.tostring(self.xml_validator.annotate_errors(), pretty_print=True, encoding='utf-8', xml_declaration=True)
-
     def style_validation(self, report_filename):
-        self._save_style_report(self._style_validation, report_filename)
-        f, e, w = style_checker_statistics(self._style_validation)
-        return (f + e + w == 0)
-
-
-def save_packtools_style_report(content, report_filename):
-    version = ''
-    try:
-        import pkg_resources
-        version = pkg_resources.get_distribution('packtools').version
-    except:
-        pass
-
-    q = len(content.split('SPS-ERROR')) - 1
-    msg = ''
-    title = 'Style Checker (packtools' + version + ')'
-    if q > 0:
-        msg = html_reports.tag('div', 'Total of errors = ' + str(q), 'error')
-
-    body = msg + ''.join([html_reports.display_xml(item) for item in content.split('\n')])
-    html_reports.save(report_filename, title, body)
+        title = 'Packtools Style Checker (' + self.version + ')'
+        header = ''
+        if self.style_errors > 0:
+            header = html_reports.tag('div', 'Total of errors = ' + str(self.style_errors), 'error')
+        html = ''
+        if self.annoted is not None:
+            html = html_reports.display_xml(self.annoted)
+            html = html.replace('&lt;!--', '<div style="background-color:#DCDCDC;color: red;"><em>&lt;!--').replace('--&gt;', '--&gt;</em></div>')
+        html_reports.save(report_filename, title, header+html)
+        return (self.style_errors == 0)
 
 
 class JavaXMLValidator(object):
@@ -149,12 +151,15 @@ def style_checker_statistics(content):
 
 class XMLValidator(object):
 
-    def __init__(self, dtd_files):
+    def __init__(self, dtd_files, sps_version, preference):
         self.logger = None
-        if dtd_files.database_name == 'scielo' and IS_PACKTOOLS_INSTALLED:
-            self.validator = PackToolsValidator()
+        preference = preference[0] if preference is not None and len(preference) > 0 else ''
+        if dtd_files.database_name == 'scielo' and IS_PACKTOOLS_INSTALLED and preference == 'packtools':
+            self.validator = PackToolsValidator(dtd_files.local, sps_version)
+            encoding.display_message('    XMLValidator: packtools')
         else:
             self.validator = JavaXMLValidator(dtd_files.doctype_with_local_path, dtd_files.xsl_prep_report, dtd_files.xsl_report)
+            encoding.display_message('    XMLValidator: java')
 
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
         self.validator.logger = self.logger
