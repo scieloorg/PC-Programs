@@ -1,5 +1,5 @@
-4.0.094 - Release Teste - 21/08/2017
-================================
+4.0.094 - Release Test - 30/08/2017
+===================================
 - General
   - [2686] http to https
 - Markup
@@ -20,6 +20,7 @@
   - (new) [2596] JATS 1.1 Validation
   - (new) [2578] Configuration of Web access status and proxy
   - (new) [2615, 2630] ORCID Validation
+  - (new) [1270] Add XML Validations with packtools
   - (bug) [2599, 2623] Fix missing xref (bibr) validation
   - (bug) [2567] Fix aff validation
   - (bug) [2620] Present error for more than one source in reference 

@@ -429,3 +429,9 @@ class Configuration(object):
         if self.is_web_access_enabled is False:
             encoding.display_message('ENABLED_WEB_ACCESS=off')
         return ws_requester.WebServicesRequester(self.is_web_access_enabled, self.proxy_info)
+
+    @property
+    def xml_structure_validator_preference(self):
+        preference = self._data.get('XML_STRUCTURE_VALIDATOR_PREFERENCE', 'packtools').split('|')
+        encoding.display_message(preference)
+        return preference

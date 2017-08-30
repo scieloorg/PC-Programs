@@ -382,7 +382,8 @@ class ReferenceContentValidation(object):
                         'person-group',
                         validation_status.STATUS_FATAL_ERROR,
                         _('{} indicates the authors of this reference must be the same as the authors of the previous reference. ').format('_'*6) + found_text + expected_text
-                        ), self.previous_refxml)
+                        , self.previous_refxml)
+                    )
         return r
 
     @property

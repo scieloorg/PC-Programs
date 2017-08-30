@@ -392,7 +392,6 @@ def display_xml(value, width=40):
     value = value.replace('>', '&gt;')
     value = value.replace('\t', '&nbsp;'*2)
     value = value.replace(' ', ' <font color="#F56991">&#183;</font> ').replace('\n', '<br/>')
-
     return '<code>' + value + '</code>'
 
 
