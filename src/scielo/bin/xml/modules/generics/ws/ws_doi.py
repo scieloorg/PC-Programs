@@ -65,7 +65,15 @@ class DOIData(object):
         self.json_data = json_data.get('message')
         if self.json_data is not None:
             self.journal_titles = self.json_data.get('container-title')
-            self.article_titles = self.json_data.get('title')
+            article_titles = []
+            items = self.json_data.get('title')
+            if items is not None:
+                for article_title in items:
+                    if '/' in article_title:
+                        article_titles.extend(article_title.split('/'))
+                    else:
+                        article_titles.append(article_title)
+            self.article_titles = [item.strip() for item in article_titles]
 
     @property
     def _authors(self):
