@@ -1702,7 +1702,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="doc|subdoc|docresp" mode="back">
 		<xsl:variable name="otherfntest">
 			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param></xsl:apply-templates>
-			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="body//xref"></xsl:with-param></xsl:apply-templates>
+			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="xmlbody//xref"></xsl:with-param></xsl:apply-templates>
 		</xsl:variable>
 		<xsl:if test="ack or normalize-space($otherfntest)!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
 			<back>
@@ -1712,7 +1712,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param>
 				</xsl:apply-templates>
 				<xsl:apply-templates select="." mode="other-fn-items">
-					<xsl:with-param name="body_xref" select="body//xref"></xsl:with-param>
+					<xsl:with-param name="body_xref" select="xmlbody//xref"></xsl:with-param>
 				</xsl:apply-templates>
 				<xsl:apply-templates select="fngrp | fn" mode="has-no-xref"></xsl:apply-templates>
 				
@@ -1725,7 +1725,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 		<xsl:apply-templates select="*[@standard]"/>
 		<xsl:apply-templates select="." mode="other-fn-items">
-			<xsl:with-param name="body_xref" select="body//xref"></xsl:with-param>
+			<xsl:with-param name="body_xref" select="xmlbody//xref"></xsl:with-param>
 			</xsl:apply-templates>
 		<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>						
 	</xsl:template>
