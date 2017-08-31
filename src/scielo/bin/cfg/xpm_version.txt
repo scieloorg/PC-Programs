@@ -13,11 +13,21 @@
   - (bug) [2597] Consider that previous author can be anonymous
   - (improvement) [2610] Indicate articles must have fpage/@seq if they have same fpage value
 
+4.0.093 - Release 5 - 31/08/2017
+================================
+- XPM
+  - (improvement) [2615] ORCID Validation
+
+4.0.093 - Release 4 - 27/06/2017
+================================
+- XPM
+  - (bug) [2579] Fix the validation of history date 
+  - (improvement) [2569] Convert svg to tiff for the PMC package generation
+
 4.0.093 - Release 3 - 25/05/2017
 ==================================
 - XPM
   - (bug) [2579] Fix the validation of history date 
-  - (improvement) [2569] Convert svg to tiff for the PMC package generation
 
 4.0.093 - Release 2 - 19/04/2017
 ================================
