@@ -28,6 +28,7 @@ class SPSXMLContent(xml_utils.XMLContent):
                 for contrib_id, url in attributes.CONTRIB_ID_URLS.items():
                     self.content = self.content.replace(' contrib-id-type="' + contrib_id + '">' + url, ' contrib-id-type="' + contrib_id + '">')
             #content = remove_xmllang_off_article_title(content)
+            self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
             self.content = self.content.replace('<comment content-type="cited"', '<comment')
             self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
             self.content = self.content.replace('&amp;amp;', '&amp;')

@@ -767,7 +767,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<article-meta>
 			<xsl:apply-templates select="front/doi|doi"/>
 			
-			<xsl:variable name="fpage"><xsl:choose>
+			<xsl:variable name="fpage_number"><xsl:choose>
 				<xsl:when test="@fpageseq"><xsl:value-of select="@fpage"/></xsl:when>
 				<xsl:when test="contains(@fpage,'-')">
 					<xsl:value-of select="substring-before(@fpage,'-')"/>
@@ -779,9 +779,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:if test="not(front/doi) and not(doi)">
 				<article-id pub-id-type="publisher-id"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>						
 			</xsl:if>
-			<xsl:if test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
-				<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
-			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="normalize-space(translate($fpage_number,'0123456789','          '))!='' or @fpageseq!=''">
+					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>						
+				</xsl:when>
+				<xsl:when test="number($fpage_number)&lt;number(@order)">
+					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>						
+				</xsl:when>
+			</xsl:choose>
 			
 			<xsl:if test="@ahppid!=''"><article-id specific-use="previous-pid"><xsl:value-of select="@ahppid"/></article-id></xsl:if>
 
