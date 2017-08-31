@@ -215,10 +215,11 @@ class ArticleContentValidation(object):
                 items.append(self.issue_label)
                 items.append(self.article_date_types)
                 items.append(self.toc_section)
-                items.append(self.order)
                 items.append(self.doi)
                 items.append(self.article_id)
+                items.append(self.article_id_other)
                 items.append(self.pagination)
+                items.append(self.order)
                 items.append(self.total_of_pages)
                 items.append(self.total_of_equations)
                 items.append(self.total_of_tables)
@@ -513,7 +514,7 @@ class ArticleContentValidation(object):
         ids = []
         for contrib_name in self.article.contrib_names:
             ids.extend(contrib_name.contrib_id.get('orcid', []))
-        q = self.article.count_words('orcid') + self.article.count_words('ORCID') - self.article.count_words('"orcid"')
+        q = self.article.count_words('ORCID')
         if q != len(ids):
             return (
                     'contrib-id',
@@ -553,23 +554,37 @@ class ArticleContentValidation(object):
             else:
                 if order.isdigit():
                     if int(order) < 1 or int(order) > 99999:
-                        r = (status,  _('Invalid format of {label}. ').format(label='order') + data_validations.expected_values_message(_('number from 1 to 99999')))
+                        r = (status, order + ': ' + _('Invalid format of {label}. ').format(label='order') + data_validations.expected_values_message(_('number from 1 to 99999')))
                 else:
-                    r = (status,  _('Invalid format of {label}. ').format(label='order') + data_validations.expected_values_message(_('number from 1 to 99999')))
+                    r = (status, order + ': ' + _('Invalid format of {label}. ').format(label='order') + data_validations.expected_values_message(_('number from 1 to 99999')))
             return r
         if self.is_db_generation:
             status = validation_status.STATUS_BLOCKING_ERROR
         else:
             status = validation_status.STATUS_ERROR
         status, msg = valid(self.article.order, status)
-        return [('order', validation_status.STATUS_INFO, _('order is a 5-digits number generated from fpage or article-id (other) to compose the article PID. ')), ('order', status, msg)]
+        if status != validation_status.STATUS_OK:
+            return [('order', validation_status.STATUS_INFO, _('order is a 5-digits number generated from fpage or article-id (other) to compose the article PID. ')), ('order', status, msg)]
 
     @property
     def article_id_other(self):
         r = ('article-id[@pub-id-type="other"]', validation_status.STATUS_OK, self.article.article_id_other)
-        if self.article.fpage is not None:
-            if self.article.fpage == '00' or not self.article.fpage.isdigit():
-                r = ('article-id[@pub-id-type="other"]', validation_status.STATUS_FATAL_ERROR, _('{label} is required, {condition}. ').format(label='article-id[@pub-id-type="other"]', condition=_('if there is no first page or first page is not a number')))
+        conditions = [
+                        self.article.fpage is None,
+                        self.article.fpage_seq is not None,
+                        self.article.fpage is not None and (
+                            not self.article.fpage.isdigit() or
+                            int(self.article.fpage) == 0
+                            )
+                        ]
+        if any(conditions):
+            if self.article.article_id_other is None:
+                r = (
+                        'article-id[@pub-id-type="other"]',
+                        validation_status.STATUS_FATAL_ERROR,
+                        _('{label} is required, {condition}. ').format(
+                            label='article-id[@pub-id-type="other"]',
+                            condition=_('if there is no first page or first page is not a number') + _(' or ') + _('more than one document starts at the same page. ')))
         return r
 
     @property
@@ -655,13 +670,14 @@ class ArticleContentValidation(object):
 
     @property
     def pagination(self):
-        if all([self.article.fpage, self.article.elocation_id]) is True:
+        pages = [self.article.fpage, self.article.elocation_id]
+        if all(pages) is True:
             return (('fpage', validation_status.STATUS_ERROR, _('Use only fpage and lpage. ')))
-        r = ('fpage', validation_status.STATUS_OK, self.article.fpage)
-        if self.article.fpage is None:
-
-            r = data_validations.conditional_required('elocation-id', self.article.elocation_id, _('in case of fpage is inexistent'))
-        return r
+        elif any(pages) is False:
+            return (('fpage | elocation-id', validation_status.STATUS_FATAL_ERROR, _('Required fpage or elocation-id. ')))
+        elif self.article.fpage is not None and not self.article.fpage.isdigit() and self.article.fpage_seq is None:
+            return (('fpage/@seq', validation_status.STATUS_FATAL_ERROR, _('Required fpage/@seq because fpage is not a number. ')))
+        return ('fpage', validation_status.STATUS_OK, self.article.fpage)
 
     @property
     def affiliations(self):
