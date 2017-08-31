@@ -17,7 +17,7 @@ try:
     import packtools
     from packtools.catalogs import XML_CATALOG
     os.environ['XML_CATALOG_FILES'] = XML_CATALOG
-    #IS_PACKTOOLS_INSTALLED = True
+    IS_PACKTOOLS_INSTALLED = True
 except Exception as e:
     os.environ['XML_CATALOG_FILES'] = ''
 
