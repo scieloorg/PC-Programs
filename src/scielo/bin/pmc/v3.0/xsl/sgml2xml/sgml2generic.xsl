@@ -982,13 +982,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:choose>
 			<xsl:when test="contains($teste,'behalf')">
 				<on-behalf-of>
-					<xsl:apply-templates select="orgname | orgdiv | text()"/>
+					<xsl:apply-templates select="* | text()"/>
 				</on-behalf-of>
 			</xsl:when>
 			<xsl:otherwise>
 				<contrib contrib-type="author">
 					<collab>
-						<xsl:apply-templates select="orgname | orgdiv | text()" mode="text-only"/>
+						<xsl:apply-templates select="* | text()" mode="text-only"/>
 					</collab>
 				</contrib>
 			</xsl:otherwise>
@@ -3937,5 +3937,8 @@ et al.</copyright-statement>
 				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="@ref-type[.='author-notes']">
+		<xsl:attribute name="ref-type">fn</xsl:attribute>
 	</xsl:template>
 </xsl:stylesheet>
