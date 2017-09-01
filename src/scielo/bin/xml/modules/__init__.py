@@ -16,5 +16,6 @@ TMP_DIR = BIN_PATH + '/tmp'
 PMC_PATH = BIN_PATH + '/pmc'
 HTML_REPORTS_PATH = BIN_XML_PATH + '/modules/generics/reports/'
 FST_PATH = BIN_PATH + '/xml/modules'
+VENV_PATH = BIN_PATH + '/xml/venv/scielo-programs'
 
 _ = app_texts.get_texts(LOCALE_PATH)

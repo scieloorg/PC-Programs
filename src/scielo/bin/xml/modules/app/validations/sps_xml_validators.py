@@ -151,7 +151,7 @@ def style_checker_statistics(content):
 
 class XMLValidator(object):
 
-    def __init__(self, dtd_files, sps_version, preference):
+    def __init__(self, dtd_files, sps_version=None, preference=None):
         self.logger = None
         preference = preference[0] if preference is not None and len(preference) > 0 else ''
         if dtd_files.database_name == 'scielo' and IS_PACKTOOLS_INSTALLED and preference == 'packtools':

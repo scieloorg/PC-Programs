@@ -14,6 +14,7 @@ def format_command(command, params=None):
 
 def run_command(command):
     try:
+        print(command)
         os.system(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING))
     except Exception as e:
         encoding.report_exception('system.run_command()', e, command)

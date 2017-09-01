@@ -1,7 +1,13 @@
-# coding=utf-8
-
+import os
 import sys
 
-from modules.app import xc
+from modules.app.config import app_venv
 
-xc.call_converter(sys.argv, '1.0')
+
+THIS_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+
+venv_path = '{}/venv/scielo-programs'.format(THIS_LOCATION)
+
+commands = ['python {}/modules/app/xc_caller.py '.format(THIS_LOCATION) + ' '.join(sys.argv)]
+app_venv.execute_commands_in_venv(venv_path, commands)
+# coding=utf-8

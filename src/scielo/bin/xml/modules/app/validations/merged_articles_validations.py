@@ -153,7 +153,7 @@ class MergedArticlesReports(object):
             merging_errors = []
             if len(self.articles_mergence.titaut_conflicts) + len(self.articles_mergence.name_order_conflicts) > 0:
 
-                keys = self.articles_mergence.titaut_conflicts.keys() + self.articles_mergence.name_order_conflicts.keys()
+                keys = list(self.articles_mergence.titaut_conflicts.keys()) + list(self.articles_mergence.name_order_conflicts.keys())
                 keys = sorted(list(set(keys)))
 
                 merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
