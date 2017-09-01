@@ -1,15 +1,7 @@
-import os
 import sys
 
-from modules.app.config import app_venv
+import app_run
 
-
-THIS_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-
-venv_path = '{}/venv/scielo-programs'.format(THIS_LOCATION)
-
-commands = ['python -V',
-            'python xpm_caller.py '.format(THIS_LOCATION) + ' '.join(sys.argv[1:])]
-
-print(commands)
-app_venv.execute_commands_in_venv(venv_path, commands)
+print(sys.argv[1:])
+app_run.appvenv.run_in_venv(
+    ['python app_run.py xpm ' + ' '.join(sys.argv[1:])])

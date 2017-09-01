@@ -426,7 +426,7 @@ def format_html_data_dict(value, list_type='ul'):
     else:
         r = '<' + list_type + '>'
         for k in sorted(['' if k is None else k for k in value.keys()]):
-            v = value[k]
+            v = value.get(k, value.get(None))
             r += tag('li', display_label_value(k, v))
         r += '</' + list_type + '>'
     return r

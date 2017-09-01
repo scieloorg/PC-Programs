@@ -1,6 +1,7 @@
 
 try:
-    import twitter
+    import PIL
+    import packtools
     print('!'*30)
     print('Success')
     print('Requirements OK')
