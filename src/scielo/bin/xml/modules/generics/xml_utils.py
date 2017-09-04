@@ -365,18 +365,12 @@ def restore_xml_entities(content):
 def convert_entities_to_chars(content, debug=False):
     replaced_named_ent = []
     if '&' in content:
-        if not isinstance(content, unicode):
-            encoding.debugging('convert_entities_to_chars', content)
-            encoding.debugging('convert_entities_to_chars', type(content))
         content = preserve_xml_entities(content)
         content = htmlent2char(content)
         content = content.replace('&mldr;', u"\u2026")
         content, replaced_named_ent = named_ent_to_char(content)
         register_remaining_named_entities(content)
         content = restore_xml_entities(content)
-        if not isinstance(content, unicode):
-            encoding.debugging('convert_entities_to_chars 3', content)
-            encoding.debugging('convert_entities_to_chars 4', type(content))
     return content, replaced_named_ent
 
 

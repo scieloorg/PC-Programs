@@ -8,7 +8,7 @@ from ..data import attributes
 from . import data_validations
 from ...generics import xml_utils
 from ...generics import utils
-from ...generics.reports import html_reports 
+from ...generics.reports import html_reports
 
 
 def validate_publication_type(publication_type):

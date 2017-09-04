@@ -2,7 +2,6 @@
 
 import os
 import shutil
-import random
 
 from ...__init__ import _
 from ...generics import fs_utils

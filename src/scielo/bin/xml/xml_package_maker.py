@@ -1,7 +1,6 @@
-# coding=utf-8
-
 import sys
 
-from modules.app import xpm
+import app
 
-xpm.call_make_packages(sys.argv, '1.1')
+
+app.execute(sys.argv)
