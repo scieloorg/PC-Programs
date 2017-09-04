@@ -28,13 +28,13 @@ class AppCaller(object):
         self.venv_path = venv_path
         self.activate_command, self.deactivate_command, self.sep = info(venv_path)
 
-    def install(self, requirements_path):
+    def install(self, requirements_file, requirements_checker):
         if self.venv_path is not None:
             system.run_command('pip install virtualenv')
             system.run_command(u'virtualenv {}'.format(self.venv_path))
         self.install_requirements(
-            requirements_path+'/requirements.txt',
-            requirements_path+'/requirements_checker.py')
+            requirements_file,
+            requirements_checker)
 
     def execute(self, commands):
         _commands = []
