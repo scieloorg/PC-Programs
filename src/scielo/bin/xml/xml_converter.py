@@ -1,7 +1,6 @@
 import sys
 
-import app_run
+import app
 
 
-app_run.appvenv.run_in_venv(
-    ['python app_run.py xc ' + ' '.join(sys.argv[2:])])
+app.execute(sys.argv)

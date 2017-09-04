@@ -1,4 +1,5 @@
 
+import os
 import platform
 from ...generics import system
 
@@ -15,13 +16,13 @@ def info(venv_path):
         activate = 'source {}/bin/activate'.format(venv_path)
         deactivate = 'deactivate'
         sep = ';'
-    if venv_path is None:
+    if venv_path is None or not os.path.isdir(venv_path):
         activate = ''
         deactivate = ''
     return activate, deactivate, sep
 
 
-class AppEnv(object):
+class AppCaller(object):
 
     def __init__(self, venv_path=None):
         self.venv_path = venv_path
@@ -35,16 +36,19 @@ class AppEnv(object):
             requirements_path+'/requirements.txt',
             requirements_path+'/requirements_checker.py')
 
-    def run_in_venv(self, commands):
-        _commands = [self.activate_command]
-        _commands.append(u'echo {}'.format(self.venv_path))
-        _commands.append('python -V')
+    def execute(self, commands):
+        _commands = []
+        if os.path.isdir(self.venv_path):
+            _commands.append(self.activate_command)
+            _commands.append(u'echo {}'.format(self.venv_path))
+            _commands.append('python -V')
         _commands.extend(commands)
         _commands.append(self.deactivate_command)
-        system.run_command(self.sep.join(_commands))
+        if os.path.isdir(self.venv_path):
+            system.run_command(self.sep.join(_commands))
 
     def install_requirements(self, requirements_file, requirements_checker):
         commands = []
         commands.append('pip install -r {}'.format(requirements_file))
         commands.append('python {}'.format(requirements_checker))
-        self.run_in_venv(commands)
+        self.execute(commands)
