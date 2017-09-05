@@ -43,9 +43,10 @@ class AppCaller(object):
             _commands.append(u'echo {}'.format(self.venv_path))
             _commands.append('python -V')
         _commands.extend(commands)
-        _commands.append(self.deactivate_command)
         if os.path.isdir(self.venv_path):
-            system.run_command(self.sep.join(_commands))
+            _commands.append(self.deactivate_command)
+        _commands = [item for item in _commands if len(item) > 0]
+        system.run_command(self.sep.join(_commands))
 
     def install_requirements(self, requirements_file, requirements_checker):
         commands = []

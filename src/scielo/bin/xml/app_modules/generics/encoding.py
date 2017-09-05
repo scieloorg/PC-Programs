@@ -82,6 +82,7 @@ def encode(content, encoding='utf-8', error_handler=None):
 
 
 def report_exception(function_name, e, data):
+    print(data)
     try:
         logger.exception('Exception at {}'.format(function_name), exc_info=True)
     except:
