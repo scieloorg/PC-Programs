@@ -1,1 +1,1 @@
-python app.py install
+python run_app.py install

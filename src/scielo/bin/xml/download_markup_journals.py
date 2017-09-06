@@ -11,10 +11,10 @@ except ImportError:
     import Tkinter as tk
 
 
-from modules.app.ws import ws_journals
-from modules.app.config import config
-from modules.__init__ import BIN_MARKUP_PATH
-from modules.__init__ import BIN_PATH
+from app_modules.app.ws import ws_journals
+from app_modules.app.config import config
+from app_modules.__init__ import BIN_MARKUP_PATH
+from app_modules.__init__ import BIN_PATH
 
 
 class MkpDownloadJournalListGUI(tk.Frame):

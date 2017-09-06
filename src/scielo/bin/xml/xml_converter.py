@@ -1,6 +1,6 @@
 import sys
 
-import app
+import run_app
 
 
-app.execute(sys.argv)
+run_app.execute(sys.argv)

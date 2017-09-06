@@ -189,7 +189,7 @@ class ReferenceContentValidation(object):
         self._mixed = None
         self._source = None
         self._elements_validations = None
-        self.previous_refxml = previous_refxml 
+        self.previous_refxml = previous_refxml
 
     def evaluate(self, article_year):
         self.is_valid_publication_type = is_valid_publication_type(
@@ -382,7 +382,7 @@ class ReferenceContentValidation(object):
                         'person-group',
                         validation_status.STATUS_FATAL_ERROR,
                         _('{} indicates the authors of this reference must be the same as the authors of the previous reference. ').format('_'*6) + found_text + expected_text
-                        , self.previous_refxml)
+                        , self.previous_refxml.xml)
                     )
         return r
 

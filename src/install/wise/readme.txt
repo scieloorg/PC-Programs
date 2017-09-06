@@ -1,13 +1,13 @@
 REQUIREMENTS/REQUISITOS
 
- - PYTHON 2.7.x
- - PILLOW
+ - PYTHON >= 2.7.10 + PIP
  - JAVA
 
 
-Instalar los requisitos antes de seguir.
+Garantizar que tenga estes aplicativos instalados antes de seguir.
 
-Instale os requisitos antes de continuar.
+Garanta que tenha este aplicativos instalados antes de continuar.
 
-Install the requirements before continuing.
+Be sure you have these apps installed before continuing.
+
 

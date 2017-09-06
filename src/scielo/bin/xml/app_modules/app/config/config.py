@@ -6,8 +6,9 @@ from ...generics import fs_utils
 from ...generics import encoding
 from ...generics.ws import ws_requester
 
-from ...__init__ import CONFIG_PATH
+from ...__init__ import XC_SERVER_CONFIG_PATH
 from ...__init__ import BIN_PATH
+from ...__init__ import EMAIL_TEMPLATE_MESSAGES_PATH
 
 
 def get_configuration_filename(collection_acron=None):
@@ -17,7 +18,7 @@ def get_configuration_filename(collection_acron=None):
         if os.path.isfile(f):
             filename = f
     else:
-        filename = CONFIG_PATH + '/' + collection_acron + '.xc.ini'
+        filename = XC_SERVER_CONFIG_PATH + '/' + collection_acron + '.xc.ini'
 
     return filename
 
@@ -310,7 +311,7 @@ class Configuration(object):
     def email_header(self, filename):
         header = ''
         if filename is not None:
-            filename = CONFIG_PATH + '/' + filename
+            filename = EMAIL_TEMPLATE_MESSAGES_PATH + '/' + filename
             header = fs_utils.read_file(filename)
         return header
 
