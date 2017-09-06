@@ -2,6 +2,7 @@
 import os
 import platform
 from ...generics import system
+from ...generics import encoding
 
 
 so = platform.platform().lower()
@@ -30,22 +31,28 @@ class AppCaller(object):
 
     def install(self, requirements_file, requirements_checker):
         if self.venv_path is not None:
-            system.run_command('pip install virtualenv')
-            system.run_command(u'virtualenv {}'.format(self.venv_path))
+            if not os.path.isdir(self.venv_path):
+                commands = []
+                commands.append('pip install virtualenv')
+                commands.append(u'virtualenv {}'.format(self.venv_path))
+                self.execute(commands)
         self.install_requirements(
             requirements_file,
             requirements_checker)
 
     def execute(self, commands):
         _commands = []
+        encoding.debugging('app_caller.execute()', commands)
         if os.path.isdir(self.venv_path):
+            _commands.append(u'echo Activating {}'.format(self.venv_path))
             _commands.append(self.activate_command)
-            _commands.append(u'echo {}'.format(self.venv_path))
             _commands.append('python -V')
         _commands.extend(commands)
         if os.path.isdir(self.venv_path):
             _commands.append(self.deactivate_command)
+            _commands.append(u'echo Deactivating {}'.format(self.venv_path))
         _commands = [item for item in _commands if len(item) > 0]
+        encoding.debugging('app_caller.execute()', self.sep.join(_commands))
         system.run_command(self.sep.join(_commands))
 
     def install_requirements(self, requirements_file, requirements_checker):
