@@ -169,6 +169,7 @@ class PackageFolder(object):
 
     def __init__(self, path, pkgfiles_items=None):
         self.path = path
+        self.name = os.path.basename(path)
         if pkgfiles_items is None:
             self.pkgfiles_items = {}
             for item in os.listdir(path):

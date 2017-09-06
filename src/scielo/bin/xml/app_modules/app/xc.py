@@ -33,10 +33,14 @@ def call_converter(args, version='1.0'):
             encoding.display_message('\n'.join(messages))
 
     reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)))
-    if package_path is None:
+    if package_path is None and collection_acron is None:
         reception.display_form()
     else:
-        reception.convert_package(package_path)
+        package_paths = [package_path]
+        if collection_acron is not None:
+            package_paths = reception.queued_packages()
+        for package_path in package_paths:
+            reception.convert_package(package_path)
 
 
 def read_inputs(args):
@@ -71,16 +75,12 @@ class XC_Reception(object):
         self.convert_package(package_path)
         return 'done', 'blue'
 
-    def convert_packages(self, package_paths):
-        self.organize_packages_locations(package_paths)
-        for package_path in package_paths:
-            self.convert_package(package_path)
-
     def convert_package(self, package_path):
-        package_name = os.path.basename(package_path)
+        if package_path is None:
+            return False
+        pkgfolder = workarea.PackageFolder(package_path)
         encoding.display_message(package_path)
         xc_status = 'interrupted'
-        pkgfolder = workarea.PackageFolder(package_path)
 
         pkg = self.proc.normalized_package(pkgfolder.xml_list)
         scilista_items = []
@@ -93,7 +93,7 @@ class XC_Reception(object):
 
             if self.configuration.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
-            self.mailer.mail_step1_failure(package_name, e)
+            self.mailer.mail_step1_failure(pkgfolder.name, e)
             raise
         if len(scilista_items) > 0:
             acron, issue_id = scilista_items[0].split(' ')
@@ -103,29 +103,27 @@ class XC_Reception(object):
                         fs_utils.append_file(self.configuration.collection_scilista, '\n'.join(scilista_items) + '\n')
                     self.transfer.transfer_website_files(acron, issue_id)
             except Exception as e:
-                self.mailer.mail_step2_failure(package_name, e)
+                self.mailer.mail_step2_failure(pkgfolder.name, e)
                 raise
             try:
                 if mail_info is not None and self.configuration.email_subject_package_evaluation is not None:
                     mail_subject, mail_content = mail_info
-                    self.mailer.mail_results(package_name, mail_subject, mail_content)
+                    self.mailer.mail_results(pkgfolder.name, mail_subject, mail_content)
                 self.transfer.transfer_report_files(acron, issue_id)
 
             except Exception as e:
-                self.mailer.mail_step3_failure(package_name, e)
+                self.mailer.mail_step3_failure(pkgfolder.name, e)
                 if len(package_path) == 1:
                     encoding.report_exception('convert_package()', e, 'exception as step 3')
         encoding.display_message(_('finished'))
 
-    def organize_packages_locations(self, pkg_path):
-        if pkg_path is None:
-            pkg_path, invalid_pkg_files = self.queue_packages()
-        if pkg_path is None:
-            pkg_path = []
-        if not isinstance(pkg_path, list):
-            pkg_path = [pkg_path]
+    def queued_packages(self):
+        pkg_paths, invalid_pkg_files = self.queue_packages()
+        if pkg_paths is None:
+            pkg_paths = []
         if len(invalid_pkg_files) > 0:
             self.mailer.mail_invalid_packages(invalid_pkg_files)
+        return pkg_paths
 
     def queue_packages(self):
         download_path = self.configuration.download_path
