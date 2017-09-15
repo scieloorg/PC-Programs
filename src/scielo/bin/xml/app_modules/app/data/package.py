@@ -46,12 +46,17 @@ class PackageIssueData(object):
         self._issue_label = None
 
     def setup(self, articles):
-        data = list(set([(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in articles.values() if a.tree is not None]))
+        data = [(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in articles.values() if a.tree is not None]
         if len(data) > 0:
-            for item in data:
-                if all(item):
-                    self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = item
-                    break
+            self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = self.select(data)
+            print(self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label)
+
+    def select(self, data):
+        _data = []
+        for item in list(set(data)):
+            _data.append([field if field is not None else '' for field in item])
+        _data = sorted(_data, reverse=True)
+        return [item if item != '' else None for item in _data[0]]
 
     @property
     def acron(self):

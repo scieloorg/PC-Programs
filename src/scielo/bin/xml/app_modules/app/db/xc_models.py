@@ -1443,21 +1443,20 @@ class JournalsList(object):
         return journal_instances
 
     def get_journal_data(self, p_issn, e_issn, journal_title):
-
         journal = Journal()
         for issn in [p_issn, e_issn]:
             if issn is not None:
                 for j in self._journals.get(issn, []):
-                    update_list(journal.acron, j.acron)
-                    update_list(journal.p_issn, j.p_issn)
-                    update_list(journal.e_issn, j.e_issn)
-                    update_list(journal.abbrev_title, j.abbrev_title)
-                    update_list(journal.nlm_title, j.nlm_title)
-                    update_list(journal.publisher_name, j.publisher_name)
-                    update_list(journal.license, j.license)
-                    update_list(journal.collection_acron, j.collection_acron)
-                    update_list(journal.journal_title, j.journal_title)
-                    update_list(journal.issn_id, j.issn_id)
+                    journal.acron = update_list(journal.acron, j.acron)
+                    journal.p_issn = update_list(journal.p_issn, j.p_issn)
+                    journal.e_issn = update_list(journal.e_issn, j.e_issn)
+                    journal.abbrev_title = update_list(journal.abbrev_title, j.abbrev_title)
+                    journal.nlm_title = update_list(journal.nlm_title, j.nlm_title)
+                    journal.publisher_name = update_list(journal.publisher_name, j.publisher_name)
+                    journal.license = update_list(journal.license, j.license)
+                    journal.collection_acron = update_list(journal.collection_acron, j.collection_acron)
+                    journal.journal_title = update_list(journal.journal_title, j.journal_title)
+                    journal.issn_id = update_list(journal.issn_id, j.issn_id)
         return journal
 
     def get_journal(self, p_issn, e_issn, journal_title):
@@ -1466,16 +1465,16 @@ class JournalsList(object):
             if issn is not None:
                 for j in self._journals.get(issn, []):
                     journal = j
+                    break
         return journal
 
 
 def update_list(l, value):
     if l is None:
         l = []
-    if value is not None:
-        if len(value) > 0:
-            l.append(value)
-    l = list(set(l))
+    if value is not None and value not in l and len(value) > 0:
+        l.append(value)
+    return list(set(l))
 
 
 class RegisteredIssuesManager(object):
