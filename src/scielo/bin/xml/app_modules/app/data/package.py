@@ -49,7 +49,6 @@ class PackageIssueData(object):
         data = [(a.journal_title, a.print_issn, a.e_issn, a.issue_label) for a in articles.values() if a.tree is not None]
         if len(data) > 0:
             self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label = self.select(data)
-            print(self.pkg_journal_title, self.pkg_p_issn, self.pkg_e_issn, self.pkg_issue_label)
 
     def select(self, data):
         _data = []

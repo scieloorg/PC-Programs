@@ -1474,7 +1474,7 @@ def update_list(l, value):
         l = []
     if value is not None and value not in l and len(value) > 0:
         l.append(value)
-    return list(set(l))
+    return l
 
 
 class RegisteredIssuesManager(object):
