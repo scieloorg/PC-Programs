@@ -4,7 +4,6 @@ import os
 from datetime import datetime
 
 from ...__init__ import _
-from ...generics import xml_utils
 from ...generics import img_utils
 from ...generics import utils
 from ...generics import encoding
@@ -15,6 +14,7 @@ from .. import article_utils
 from . import ref_validations
 from . import data_validations
 from ..pkg_processors import xml_versions
+from . import article_disp_formula
 
 
 def join_not_None_items(items, sep=', '):
@@ -166,7 +166,7 @@ class AffValidator(object):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url, app_institutions_manager, doi_validator):
+    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url, app_institutions_manager, doi_validator, config):
         self.doi_validator = doi_validator
         self.app_institutions_manager = app_institutions_manager
         self.journal = journal
@@ -175,12 +175,13 @@ class ArticleContentValidation(object):
         self.check_url = check_url
         self.pkgfiles = pkgfiles
         self._validations = None
+        self.config = config
+        self.disp_formulas_validator = article_disp_formula.ArticleDispFormulasValidator(_article, config)
 
     def normalize_validations(self, validations_result_list):
         r = []
         if isinstance(validations_result_list, list):
-            for item in validations_result_list:
-                r += self.normalize_validations(item)
+            r.extend([self.normalize_validations(item) for item in validations_result_list])
         elif validations_result_list is None:
             pass
         else:
@@ -251,37 +252,9 @@ class ArticleContentValidation(object):
             self._validations = (r, performance)
         return self._validations
 
-    def is_not_empty_element(self, node):
-        if node is not None:
-            return len(xml_utils.remove_tags(xml_utils.node_text(node))) > 0
-
-    def is_not_empty_attribute(self, node, attr_name):
-        if node is not None:
-            return node.attrib.get(attr_name) != ''
-
     @property
     def disp_formulas(self):
-        results = []
-        required_at_least_one_child = ['graphic', '{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math', 'alternatives']
-        for disp_formula_node in self.article.disp_formula_elements:
-            found = False
-            for child in disp_formula_node.findall('*'):
-                if child.tag in required_at_least_one_child:
-                    if child.tag == 'graphic':
-                        found = self.is_not_empty_attribute(child, '{http://www.w3.org/1999/xlink}href')
-                    elif child.tag in ['{http://www.w3.org/1998/Math/MathML}math', 'math', 'tex-math']:
-                        found = self.is_not_empty_element(child)
-                    elif child.tag in ['alternatives']:
-                        if self.is_not_empty_attribute(child, '{http://www.w3.org/1999/xlink}href'):
-                            found = any([self.is_not_empty_element(child.find('math')),
-                                self.is_not_empty_element(child.find('{http://www.w3.org/1998/Math/MathML}math')),
-                                self.is_not_empty_element(child.find('tex-math')),
-                                ])                    
-                if found:
-                    break
-            if not found:
-                results.append(('disp-formula', validation_status.STATUS_FATAL_ERROR, _('{element} is not complete, it requires {children} with valid structure. ').format(children=_(' or ').join(required_at_least_one_child), element='disp-formula'), xml_utils.node_xml(disp_formula_node)))
-        return results
+        return self.disp_formulas_validator.validate()
 
     @property
     def dtd_version(self):

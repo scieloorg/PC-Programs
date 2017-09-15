@@ -34,14 +34,16 @@ class Configuration(object):
     def load(self):
         self._data = {}
         config_items = []
-        if os.path.isfile(BIN_PATH + '/xws.info'):
-            config_items = fs_utils.read_file_lines(BIN_PATH + '/xws.info')
+        for item in ['scielo_env.ini', 'scielo_collection.ini']:
+            if os.path.isfile(BIN_PATH + '/' + item):
+                config_items += fs_utils.read_file_lines(BIN_PATH + '/' + item)
 
         if self.filename is not None:
             coding = 'utf-8'
             if self.filename.endswith('scielo_paths.ini'):
                 coding = 'iso-8859-1'
-            config_items.extend(fs_utils.read_file_lines(self.filename, coding))
+            config_items.extend(
+                fs_utils.read_file_lines(self.filename, coding))
         for item in config_items:
             if '=' in item:
                 if ',' in item and '@' not in item:
@@ -436,3 +438,11 @@ class Configuration(object):
         preference = self._data.get('XML_STRUCTURE_VALIDATOR_PREFERENCE', 'packtools').split('|')
         encoding.display_message(preference)
         return preference
+
+    @property
+    def coded_formula_required(self):
+        return self._data.get('CODED_FORMULA_REQUIRED') == 'on'
+
+    @property
+    def coded_table_required(self):
+        return self._data.get('CODED_TABLE_REQUIRED') == 'on'

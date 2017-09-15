@@ -422,7 +422,7 @@ class PkgProcessor(object):
     def validate_pkg_articles(self, pkg, registered_issue_data):
         xml_journal_data_validator = article_validations_module.XMLJournalDataValidator(pkg.issue_data.journal_data)
         xml_issue_data_validator = article_validations_module.XMLIssueDataValidator(registered_issue_data)
-        xml_content_validator = article_validations_module.XMLContentValidator(pkg.issue_data, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator)
+        xml_content_validator = article_validations_module.XMLContentValidator(pkg.issue_data, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator, self.config)
         article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, self.config.xml_structure_validator_preference)
 
         encoding.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
