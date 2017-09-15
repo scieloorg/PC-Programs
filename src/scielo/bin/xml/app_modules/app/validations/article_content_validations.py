@@ -675,8 +675,6 @@ class ArticleContentValidation(object):
             return (('fpage', validation_status.STATUS_ERROR, _('Use only fpage and lpage. ')))
         elif any(pages) is False:
             return (('fpage | elocation-id', validation_status.STATUS_FATAL_ERROR, _('Required fpage or elocation-id. ')))
-        elif self.article.fpage is not None and not self.article.fpage.isdigit() and self.article.fpage_seq is None:
-            return (('fpage/@seq', validation_status.STATUS_FATAL_ERROR, _('Required fpage/@seq because fpage is not a number. ')))
         return ('fpage', validation_status.STATUS_OK, self.article.fpage)
 
     @property
