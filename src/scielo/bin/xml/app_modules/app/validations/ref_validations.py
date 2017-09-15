@@ -396,13 +396,14 @@ class ReferenceContentValidation(object):
 
     def year(self, article_year):
         r = []
-        if article_year is None:
-            article_year = datetime.now().isoformat()[0:4]
+        label_year, value_year = article_year
         _y = self.refxml.reference.formatted_year
         if _y is not None:
             if _y.isdigit():
-                if _y > article_year:
-                    r.append(('year', validation_status.STATUS_FATAL_ERROR, _('{value} must not be greater than {year}. ').format(value=_y, year=datetime.now().isoformat()[0:4])))
+                if _y > value_year:
+                    ref_year_label = 'ref/year ({})'.format(_y)
+                    art_year_label = '{}/year ({})'.format(label_year, value_year)
+                    r.append(('year', validation_status.STATUS_FATAL_ERROR, _('{} should not be greater than {}. ').format(ref_year_label, art_year_label)))
             elif 's.d' in _y:
                 r.append(('year', validation_status.STATUS_INFO, _y))
             elif 's/d' in _y:
