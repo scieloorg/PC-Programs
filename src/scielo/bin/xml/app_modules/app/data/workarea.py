@@ -45,7 +45,6 @@ class PkgArticleFiles(object):
             self.name, ign = os.path.splitext(self.name)
         self.previous_name = self.name
         self._all = None
-        self.listdir = sorted(os.listdir(self.path))
         self._prefixes = None
 
     def add_extension(self, new_href):
@@ -71,21 +70,12 @@ class PkgArticleFiles(object):
     def find_all_files(self):
         r = []
         for prefix in self.prefixes:
-            r.extend([item for item in self.listdir if item.startswith(prefix) and not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')])
-        return list(set(r))
-
-    @property
-    def is_changed(self):
-        current = sorted(os.listdir(self.path))
-        if current != self.listdir:
-            self.listdir = current
-            return True
-        return False
+            r.extend([item for item in os.listdir(self.path) if item.startswith(prefix) and not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')])
+        self._all = list(set(r))
 
     @property
     def all(self):
-        if self._all is None or self.is_changed is True:
-            self._all = self.find_all_files()
+        self.find_all_files()
         return self._all
 
     @property

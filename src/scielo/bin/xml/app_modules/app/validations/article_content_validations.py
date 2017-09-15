@@ -1226,7 +1226,9 @@ class ArticleContentValidation(object):
         for lang, f in self.article.expected_pdf_files.items():
             if f not in _pkg_files.keys():
                 _pkg_files[f] = []
-            _pkg_files[f].append((validation_status.STATUS_INFO, 'PDF ({lang}). '.format(lang=lang)))
+            _pkg_files[f].append(
+                (validation_status.STATUS_INFO,
+                    _('content in "{lang}". ').format(lang=lang)))
             if f not in self.pkgfiles.files_except_xml:
                 _pkg_files[f].append((validation_status.STATUS_ERROR, _('Not found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
 

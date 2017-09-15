@@ -1548,7 +1548,6 @@ class Article(ArticleXML):
         self.registered_aop_pid = None
         self._previous_pid = None
         self.article_records = None
-        self.related_files = []
         self.is_ex_aop = False
         self.section_code = None
         self.normalized_affiliations = {}

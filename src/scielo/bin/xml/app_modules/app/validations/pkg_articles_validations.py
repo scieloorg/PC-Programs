@@ -213,12 +213,16 @@ class PkgArticlesDataReports(object):
                 if ref.publication_type not in self.reftype_and_sources.keys():
                     self.reftype_and_sources[ref.publication_type] = {}
                 if ref.source not in self.reftype_and_sources[ref.publication_type].keys():
+                    if ref.source is None:
+                        ref.source = ''
                     self.reftype_and_sources[ref.publication_type][ref.source] = []
                 self.reftype_and_sources[ref.publication_type][ref.source].append(xml_name + ': ' + str(ref.id))
 
                 # year
                 if ref.publication_type in attributes.BIBLIOMETRICS_USE:
                     if ref.year not in self.years.keys():
+                        if ref.year is None:
+                            ref.year = ''
                         self.years[ref.year] = []
                     self.years[ref.year].append(xml_name + ': ' + str(ref.id))
                     if ref.year is None:
