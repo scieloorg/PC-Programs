@@ -171,7 +171,7 @@ class PersonValidation(object):
                          validation_status.STATUS_FATAL_ERROR,
                          _('{value} is a invalid value for {label}. ').format(
                             value=contrib_id,
-                            label='')))
+                            label=contrib_id_type)))
         return r
 
     def validate(self):

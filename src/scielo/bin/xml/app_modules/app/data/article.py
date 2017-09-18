@@ -260,6 +260,14 @@ class HRef(object):
         return attach_type
 
 
+class ContribId(object):
+
+    def __init__(self, node):
+        self.attrib = node.attrib
+        self.xml = xml_utils.node_xml(node)
+        self.value = node.text
+
+
 class ContribXML(object):
 
     def __init__(self, node):
@@ -270,7 +278,7 @@ class ContribXML(object):
         self.surnames = self.xml_node.nodes_text(['.//surname'])
         self.suffixes = self.xml_node.nodes_text(['.//suffix'])
         self.prefixes = self.xml_node.nodes_text(['.//prefix'])
-        self.contrib_id_items = self.xml_node.nodes_data(['.//contrib-id'])
+        self.contrib_id_items = [ContribId(item) for item in node.findall('.//contrib-id')]
         self.xref_items = self.xml_node.nodes_data(['.//xref[@ref-type="aff"]'])
 
     @property
@@ -295,9 +303,7 @@ class ContribXML(object):
             c.xref = []
             c.contrib_id = {}
             for contrib_id in self.contrib_id_items:
-                if contrib_id is not None:
-                    text, attribs = contrib_id
-                    c.contrib_id[attribs.get('contrib-id-type')] = text
+                c.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.value
             c.role = self.node.get('contrib-type')
             for xref in self.xref_items:
                 if xref is not None:

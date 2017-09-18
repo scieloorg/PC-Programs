@@ -489,9 +489,9 @@ class ArticleContentValidation(object):
     def contrib_id(self):
         ids = []
         for contrib_name in self.article.contrib_names:
-            ids.extend(contrib_name.contrib_id.get('orcid', []))
+            ids.append(contrib_name.contrib_id.get('orcid'))
         q = self.article.count_words('ORCID')
-        if q != len(ids):
+        if q > len(ids):
             return (
                     'contrib-id',
                     validation_status.STATUS_WARNING,
