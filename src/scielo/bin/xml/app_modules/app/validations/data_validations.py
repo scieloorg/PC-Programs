@@ -69,10 +69,10 @@ def required_data(label, values, status=validation_status.STATUS_ERROR):
     return [(label, validation_status.STATUS_OK, value) for value in values]
 
 
-def invalid_value_message(label, value, expected_values=None):
+def invalid_value_message(label, value, expected=None):
     msg = ''
-    if expected_values is not None:
-        msg = expected_values_message(expected_values)
+    if expected is not None:
+        msg = expected_values_message(expected)
     return _('{value} is an invalid value for {label}. ').format(value=value, label=label) + msg
 
 
@@ -80,8 +80,8 @@ def expected_values_message(expected):
     return _('Expected values: {expected}. ').format(expected=expected)
 
 
-def invalid_value_result(label, value, expected_values, status=validation_status.STATUS_ERROR):
-    return (label, status, invalid_value_message(label, value, expected_values))
+def invalid_value_result(label, value, expected, status=validation_status.STATUS_ERROR):
+    return (label, status, invalid_value_message(label, value, expected))
 
 
 def is_required_only_one(label, status=validation_status.STATUS_FATAL_ERROR):

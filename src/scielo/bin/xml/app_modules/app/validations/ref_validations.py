@@ -8,6 +8,7 @@ from ..data import attributes
 from . import data_validations
 from ...generics import xml_utils
 from ...generics import utils
+from ...generics import encoding
 from ...generics.reports import html_reports
 
 

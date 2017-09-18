@@ -6718,22 +6718,7 @@ item: Create Shortcut
   Icon Number=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\scielo.ico
 end
-item: Create Shortcut
-  Source=%PROGDIR%\uninstall.py
-  Destination=%GROUP%\uninstall.lnk
-  Icon Number=0
-  Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
-end
 item: Else Statement
-end
-item: Add ProgMan Icon
-  Group=%GROUP%
-  Icon Name=uninstall
-  Icon Name Portuguese=uninstall
-  Icon Name Spanish=uninstall
-  Command Line=%PROGDIR%\uninstall.py
-  Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
-  Flags=01000000
 end
 item: Add ProgMan Icon
   Group=%GROUP%
