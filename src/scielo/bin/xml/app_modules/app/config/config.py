@@ -421,7 +421,7 @@ class Configuration(object):
 
     @property
     def is_web_access_enabled(self):
-        return self._data.get('ENABLED_WEB_ACCESS') != 'off'
+        return self._data.get('ENABLED_WEB_ACCESS', 'on') != 'off'
 
     @property
     def proxy_info(self):
@@ -441,8 +441,8 @@ class Configuration(object):
 
     @property
     def coded_formula_required(self):
-        return self._data.get('CODED_FORMULA_REQUIRED') == 'on'
+        return self._data.get('CODED_FORMULA_REQUIRED', 'on') == 'on'
 
     @property
     def coded_table_required(self):
-        return self._data.get('CODED_TABLE_REQUIRED') == 'on'
+        return self._data.get('CODED_TABLE_REQUIRED', 'on') == 'on'
