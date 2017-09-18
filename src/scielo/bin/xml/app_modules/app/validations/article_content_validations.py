@@ -181,7 +181,10 @@ class ArticleContentValidation(object):
     def normalize_validations(self, validations_result_list):
         r = []
         if isinstance(validations_result_list, list):
-            r.extend([self.normalize_validations(item) for item in validations_result_list])
+            result = []
+            for item in validations_result_list:
+                result += self.normalize_validations(item)
+            r.extend(result)
         elif validations_result_list is None:
             pass
         else:

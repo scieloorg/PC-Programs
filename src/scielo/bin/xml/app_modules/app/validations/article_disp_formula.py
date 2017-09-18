@@ -22,7 +22,7 @@ class ArticleDispFormulasValidator(object):
             ]
         if self.config.coded_formula_required:
             self.acceptable_elements.remove('graphic')
-        return self.result()
+        return self.result
 
     @property
     def result(self):
