@@ -955,6 +955,26 @@ end
 item: End Block
 end
 item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\uninstall.py
+  Flags=01000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\uninstall.py
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\unwise.exe
+  Flags=01000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\unwise.exe
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
   Pathname=%PROGDIR%\pmc
   Flags=00000100
 end
@@ -1519,6 +1539,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\logger.py
+  Destination=%PROGDIR%\xml\app_modules\generics\logger.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\doi_validations.py
   Destination=%PROGDIR%\xml\app_modules\generics\doi_validations.py
   Flags=0000000010000010
@@ -1769,6 +1794,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_disp_formula.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\ws\institutions_db.py
   Destination=%PROGDIR%\xml\app_modules\app\ws\institutions_db.py
   Flags=0000000010000010
@@ -1879,8 +1909,13 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\xws.info.example
-  Destination=%PROGDIR%\xws.info.example
+  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_env.ini.example
+  Destination=%PROGDIR%\scielo_env.ini.example
+  Flags=0000000010000010
+end
+item: Install File
+  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_collection.ini.example
+  Destination=%PROGDIR%\scielo_collection.ini.example
   Flags=0000000010000010
 end
 item: Install File
@@ -2956,11 +2991,6 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_paths.example.ini
   Destination=%PROGDIR%\scielo_paths.example.ini
-  Flags=0000000010000010
-end
-item: Install File
-  Source=c:\InstallBuilder\Unwise.exe
-  Destination=%PROGDIR%\Unwise.exe
   Flags=0000000010000010
 end
 item: Set Variable

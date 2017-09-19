@@ -32,10 +32,8 @@ class AppCaller(object):
     def install(self, requirements_file, requirements_checker):
         if self.venv_path is not None:
             if not os.path.isdir(self.venv_path):
-                commands = []
-                commands.append('pip install virtualenv')
-                commands.append(u'virtualenv {}'.format(self.venv_path))
-                self.execute(commands)
+                system.run_command('pip install virtualenv', True)
+                system.run_command(u'virtualenv {}'.format(self.venv_path), True)
         self.install_requirements(
             requirements_file,
             requirements_checker)

@@ -47,7 +47,7 @@ class PkgArticlesValidationsReports(object):
         widths['aop pid/related'] = '10'
         widths[_('reports')] = '10'
         items = []
-        for new_name, a_validations in self.pkg_articles_validations.items():
+        for new_name, a_validations in sorted(self.pkg_articles_validations.items()):
             hide_and_show_block_items = a_validations.hide_and_show_block('view-reports-', new_name)
             values = []
             values.append(new_name)

@@ -20,7 +20,7 @@ if __name__ == '__main__':
         appcaller.install(REQUIREMENTS_FILE, REQUIREMENTS_CHECKER)
     elif sys.argv[1].endswith('xml_converter.py'):
         from app_modules.app import xc
-        xc.call_make_packages(argv, '1.1')
+        xc.call_converter(argv, '1.1')
     elif sys.argv[1].endswith('xml_package_maker.py'):
         from app_modules.app import xpm
         xpm.call_make_packages(argv, '1.1')

@@ -384,7 +384,8 @@ class PkgProcessor(object):
     def evaluate_package(self, pkg):
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
-        for xml_name, a in pkg.articles.items():
+        for xml_name in sorted(pkg.articles.keys()):
+            a = pkg.articles[xml_name]
             if a is not None:
                 institutions_results = {}
                 for aff_xml in a.affiliations:
@@ -427,7 +428,8 @@ class PkgProcessor(object):
 
         encoding.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
         results = {}
-        for name, article in pkg.articles.items():
+        for name in sorted(pkg.articles.keys()):
+            article = pkg.articles[name]
             encoding.display_message(_('Validate {name}').format(name=name))
             results[name] = article_validator.validate(article, pkg.outputs[name], pkg.package_folder.pkgfiles_items[name])
         return results
