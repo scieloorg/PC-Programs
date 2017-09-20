@@ -181,10 +181,8 @@ class ArticleContentValidation(object):
     def normalize_validations(self, validations_result_list):
         r = []
         if isinstance(validations_result_list, list):
-            result = []
             for item in validations_result_list:
-                result += self.normalize_validations(item)
-            r.extend(result)
+                r += self.normalize_validations(item)
         elif validations_result_list is None:
             pass
         else:
@@ -252,6 +250,7 @@ class ArticleContentValidation(object):
             items.append(self.refs_sources)
 
             r = self.normalize_validations(items)
+            encoding.debugging('fim normalize_validations', '')
             self._validations = (r, performance)
         return self._validations
 

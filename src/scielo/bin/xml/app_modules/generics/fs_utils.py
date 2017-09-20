@@ -187,3 +187,14 @@ class ProcessLogger(object):
 
     def display(self):
         encoding.display_message('\n'.join(self.logged_items))
+
+
+def is_compressed_file(path):
+    r = False
+    if path.endswith('.zip'):
+        r = True
+    elif path.endswith('.tar.gz') or path.endswith('.tgz'):
+        r = True
+    elif path.endswith('.tar.bz2') or path.endswith('.tbz'):
+        r = True
+    return r

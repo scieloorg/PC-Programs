@@ -29,6 +29,9 @@ class Configuration(object):
         self.filename = filename
         if filename is None:
             self.filename = get_configuration_filename()
+        if self.filename is not None and not os.path.isfile(self.filename):
+            encoding.display_message('Not found {}'.format(self.filename))
+            self.filename = None
         self.load()
 
     def load(self):

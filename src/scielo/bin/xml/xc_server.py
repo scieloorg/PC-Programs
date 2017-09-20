@@ -2,10 +2,10 @@
 import os
 import sys
 
-from ...generics import ftp_service
-from ...app.config import config
-from ...app.server import mailer
-from . import xc_gerapadrao
+from app_modules.generics import ftp_service
+from app_modules.app.config import config
+from app_modules.app.server import mailer
+from app_modules.app.server import xc_gerapadrao
 
 
 def download_packages(configuration):
@@ -19,7 +19,7 @@ def download_packages(configuration):
         configuration.download_path, configuration.ftp_dir)
     return (files, ftp.registered_actions)
 
-
+valid_parameters = False
 if len(sys.argv) == 3:
     action, collection_acron = sys.argv[1:]
     filename = config.get_configuration_filename(collection_acron)
@@ -35,8 +35,19 @@ if len(sys.argv) == 3:
                     cfg.email_to,
                     cfg.email_subject_packages_receipt,
                     cfg.email_text_packages_receipt + '\n' + msg)
+            valid_parameters = True
         elif action == 'end':
-            xc_gerapadrao.gerapadrao(collection_acron, cfg, mailer)
-        else:
-            print('Unable to execute')
-            print(sys.argv)
+            xc_gerapadrao.gerapadrao(collection_acron, cfg, msg_sender)
+            valid_parameters = True
+        elif action == 'xc':
+            from app_modules.app import xc
+            valid_parameters = True
+            xc.call_converter([action, collection_acron], '1.1')
+
+
+if valid_parameters is False:
+    print('Unable to execute')
+    print(sys.argv)
+    print('Usage: python2.7 {} [begin|end] <col>'.format(sys.argv[0]))
+
+

@@ -1,8 +1,12 @@
 # coding=utf-8
 import os
 
-from .app.config import app_texts
-from .app.config import app_caller
+try:
+    from app_modules.app.config import app_texts
+    from app_modules.app.config import app_caller
+except:
+    from .app.config import app_texts
+    from .app.config import app_caller
 
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -13,7 +17,7 @@ TMP_DIR = BIN_PATH + '/tmp'
 LOG_PATH = BIN_PATH + '/logs'
 PMC_PATH = BIN_PATH + '/pmc'
 BIN_MARKUP_PATH = BIN_PATH + '/markup'
-XC_SERVER_CONFIG_PATH = BIN_XML_PATH + '/config'
+XC_SERVER_CONFIG_PATH = BIN_PATH + '/config'
 VENV_PATH = BIN_XML_PATH + '/app_data/venv/scielo-programs'
 TABLES_PATH = BIN_XML_PATH + '/app_modules/settings/tables'
 LOCALE_PATH = BIN_XML_PATH + '/app_modules/settings/locale'

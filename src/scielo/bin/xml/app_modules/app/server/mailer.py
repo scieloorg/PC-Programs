@@ -11,7 +11,7 @@ class Mailer(object):
         if config.is_enabled_email_service:
             self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email)
 
-    def send_message(self, to, subject, text, attaches):
+    def send_message(self, to, subject, text, attaches=[]):
         self.mailer.send_message(to, subject, text, attaches)
 
     def mail_invalid_packages(self, invalid_pkg_files):
@@ -20,7 +20,10 @@ class Mailer(object):
 
     def mail_step1_failure(self, package_folder, e):
         if self.config.is_enabled_email_service:
-            self.send_message(self.config.email_to_adm, '[Step 1]' + self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
+            self.send_message(
+                self.config.email_to_adm,
+                '[Step 1]' + self.config.email_subject_invalid_packages,
+                self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
 
     def mail_results(self, package_folder, results, report_location):
         if self.config.is_enabled_email_service:

@@ -447,7 +447,8 @@ class PkgProcessor(object):
         if not self.is_xml_generation:
             reports.save_report(self.INTERATIVE)
         if conversion is not None:
-            conversion.registered_issue_data.issue_files.save_reports(files_location.report_path)
+            if conversion.registered_issue_data.issue_files is not None:
+                conversion.registered_issue_data.issue_files.save_reports(files_location.report_path)
         if self.config.web_app_site is not None:
             for article_files in pkg.package_folder.pkgfiles_items.values():
                 # copia os xml para report path

@@ -69,9 +69,12 @@ class PkgArticleFiles(object):
 
     def find_all_files(self):
         r = []
-        for prefix in self.prefixes:
-            r.extend([item for item in os.listdir(self.path) if item.startswith(prefix) and not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')])
-        self._all = list(set(r))
+        for item in os.listdir(self.path):
+            if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml'):
+                for prefix in self.prefixes:
+                    if item.startswith(prefix):
+                        r.append(item)
+        self._all = r
 
     @property
     def all(self):
@@ -152,7 +155,7 @@ class PkgArticleFiles(object):
         if dest_path is not None:
             if not os.path.isdir(dest_path):
                 os.makedirs(dest_path)
-            shutil.copyfile(self.path + '/' + self.filename, dest_path + '/' + self.filename)
+            shutil.copyfile(self.filename, dest_path + '/' + self.basename)
 
 
 class PackageFolder(object):
