@@ -10,8 +10,9 @@ so = platform.platform().lower()
 
 def info(venv_path):
     if 'windows' in so:
-        activate = '{}/Scripts/activate'.format(venv_path)
-        deactivate = '{}/Scripts/deactivate'.format(venv_path)
+        venv_path = venv_path.replace('/', '\\')
+        activate = '{}\\Scripts\\activate'.format(venv_path)
+        deactivate = '{}\\Scripts\\deactivate'.format(venv_path)
         sep = ' & '
     else:
         activate = 'source {}/bin/activate'.format(venv_path)
@@ -51,6 +52,7 @@ class AppCaller(object):
             _commands.append(u'echo Deactivating {}'.format(self.venv_path))
         _commands = [item for item in _commands if len(item) > 0]
         encoding.debugging('app_caller.execute()', self.sep.join(_commands))
+        encoding.debugging(self.sep.join(_commands))
         system.run_command(self.sep.join(_commands))
 
     def install_requirements(self, requirements_file, requirements_checker):

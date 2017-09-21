@@ -345,7 +345,7 @@ class AssetsDestinations(object):
     @property
     def report_link(self):
         if self.web_url is not None:
-            return self.web_url + '/htdocs/' + self.issue_path
+            return self.web_url + '/reports/' + self.issue_path
         else:
             return self.result_path + '/errors'
 
