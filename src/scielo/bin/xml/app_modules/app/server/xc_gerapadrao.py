@@ -7,7 +7,7 @@ from datetime import datetime
 from ...generics import fs_utils
 from ...generics import logger
 from ...generics import system
-from ...app.server import filestransfer
+from . import filestransfer
 from ...__init__ import LOG_PATH
 
 

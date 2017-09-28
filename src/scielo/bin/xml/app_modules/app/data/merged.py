@@ -230,6 +230,7 @@ class ArticlesMergence(object):
         for name in self.name_changes.values():
             del merged[name]
 
+        self.excluded_items = {name: self.articles[name].order for name in results.get(ACTION_DELETE, [])}
         self.excluded_orders = [self.articles[name].order for name in results.get(ACTION_DELETE, [])]
         self.excluded_orders.extend([previous for previous, current in self.order_changes.values()])
         return merged

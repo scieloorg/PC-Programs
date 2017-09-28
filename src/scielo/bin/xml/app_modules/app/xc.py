@@ -12,7 +12,6 @@ from .pkg_processors import pkg_processors
 from .data import workarea
 from .server import mailer
 from .server import filestransfer
-from . import interface
 from .config import config
 
 
@@ -40,7 +39,11 @@ def call_converter(args, version='1.0'):
         if collection_acron is not None:
             package_paths = reception.queued_packages()
         for package_path in package_paths:
-            reception.convert_package(package_path)
+            try:
+                reception.convert_package(package_path)
+            except Exception as e:
+                encoding.report_exception('convert_package', e, package_path)
+                raise
 
 
 def read_inputs(args):
@@ -64,12 +67,15 @@ class XC_Reception(object):
 
     def __init__(self, configuration):
         self.configuration = configuration
+
         self.mailer = mailer.Mailer(configuration)
         self.transfer = filestransfer.FilesTransfer(configuration)
         self.proc = pkg_processors.PkgProcessor(configuration, INTERATIVE=configuration.interative_mode, stage='xc')
 
     def display_form(self):
-        interface.display_form(self.proc.stage == 'xc', None, self.call_convert_package)
+        if self.configuration.interative_mode is True:
+            from . import interface
+            interface.display_form(self.proc.stage == 'xc', None, self.call_convert_package)
 
     def call_convert_package(self, package_path):
         self.convert_package(package_path)
