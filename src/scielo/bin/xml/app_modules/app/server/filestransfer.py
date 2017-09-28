@@ -8,7 +8,7 @@ class FilesTransfer(object):
     def __init__(self, config, _logger=None):
         self.config = config
         if self.config.is_enabled_transference:
-            self.servers = [remote_server.RemoteServer(server, self.config.user, _logger) for server in self.config.transference_servers]
+            self.servers = [remote_server.RemoteServer(server, self.config.transference_user, _logger) for server in self.config.transference_servers]
 
     def transfer_files(self, acron, issue_id, folders):
         if self.config.is_enabled_transference:

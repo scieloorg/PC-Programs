@@ -40,6 +40,7 @@ class PkgArticleFiles(object):
         self.filename = filename
         self.path = os.path.dirname(filename)
         self.basename = os.path.basename(filename)
+        self.folder = os.path.basename(self.path)
         self.name, self.ext = os.path.splitext(self.basename)
         if self.filename.endswith('.sgm.xml'):
             self.name, ign = os.path.splitext(self.name)
@@ -61,16 +62,22 @@ class PkgArticleFiles(object):
     def prefixes(self):
         if self._prefixes is None:
             r = []
-            if self.basename.startswith('a') and self.basename[3:4] == 'v':
-                r.append(self.basename[:3])
-            r.extend([self.name + suffix for suffix in SUFFIXES])
-            self._prefixes = list(set(r))
+            if self.folder.endswith('_package'):
+                self._prefixes = [self.name + '-', self.name + '.', ]
+            else:
+                if self.basename.startswith('a') and self.basename[3:4] == 'v':
+                    r.append(self.basename[:3])
+                r.extend([self.name + suffix for suffix in SUFFIXES])
+                self._prefixes = list(set(r))
         return self._prefixes
 
     def find_all_files(self):
         r = []
-        for prefix in self.prefixes:
-            r.extend([item for item in os.listdir(self.path) if item.startswith(prefix) and not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')])
+        for item in os.listdir(self.path):
+            if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml'):
+                for prefix in self.prefixes:
+                    if item.startswith(prefix):
+                        r.append(item)
         self._all = list(set(r))
 
     @property
@@ -152,7 +159,7 @@ class PkgArticleFiles(object):
         if dest_path is not None:
             if not os.path.isdir(dest_path):
                 os.makedirs(dest_path)
-            shutil.copyfile(self.path + '/' + self.filename, dest_path + '/' + self.filename)
+            shutil.copyfile(self.filename, dest_path + '/' + self.basename)
 
 
 class PackageFolder(object):
@@ -342,7 +349,7 @@ class AssetsDestinations(object):
     @property
     def report_link(self):
         if self.web_url is not None:
-            return self.web_url + '/htdocs/' + self.issue_path
+            return self.web_url + '/reports/' + self.issue_path
         else:
             return self.result_path + '/errors'
 
