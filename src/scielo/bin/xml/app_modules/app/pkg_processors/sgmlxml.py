@@ -51,13 +51,16 @@ class PackageName(object):
     def issueno(self):
         _issueno = self.doc.number
         if _issueno:
-            if _issueno == 'ahead' or int(_issueno) == 0:
-                _issueno = None
-            else:
-                n = len(_issueno)
-                if len(_issueno) < 2:
-                    n = 2
-                _issueno = _issueno.zfill(n)
+            if _issueno == 'ahead':
+                _issueno = '0'
+            if _issueno.isdigit():
+                if int(_issueno) == 0:
+                    _issueno = None
+                else:
+                    n = len(_issueno)
+                    if len(_issueno) < 2:
+                        n = 2
+                    _issueno = _issueno.zfill(n)
         return _issueno
 
     @property
