@@ -118,7 +118,7 @@ class ArticlesConversion(object):
     def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
-        if self.validations_reports.blocking_errors == 0 and self.accepted_articles == len(self.pkg.articles):
+        if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
 
             _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
@@ -224,7 +224,7 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.validations_reports.blocking_errors > 0:
             result = 'rejected'
-        elif self.accepted_articles == 0:
+        elif self.accepted_articles == 0 and len(self.articles_mergence.excluded_orders) == 0:
             result = 'ignored'
         elif self.articles_conversion_validations.blocking_errors > 0:
             result = 'rejected'
