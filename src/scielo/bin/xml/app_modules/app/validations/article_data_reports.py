@@ -90,7 +90,6 @@ class ArticleDisplayReport(object):
     def article_body(self):
         r = ''
         r += self.sections
-        #r += self.formulas
         r += self.tables
         return html_reports.tag('h2', 'article/body') + html_reports.tag('div', r, 'article-data')
 
@@ -215,12 +214,15 @@ class ArticleDisplayReport(object):
             _sections.append([label, type_and_title_items])
         return html_reports.format_list('sections:', 'ul', _sections)
 
+    """
     @property
     def formulas(self):
+        #FIXMEF
         r = html_reports.tag('p', 'disp-formulas:', 'label')
         for item in self.article.formulas:
             r += html_reports.tag('p', item, 'code')
         return r
+    """
 
     @property
     def footnotes(self):
@@ -281,11 +283,17 @@ class ArticleDisplayReport(object):
     def display_formulas(self):
         labels = ['id', 'code', 'graphic', 'xml']
         formulas_data = []
-        for formula_data in self.article.formulas_data:
-            if formula_data['graphic'] is not None:
-                formula_data['graphic'] = html_reports.link('{IMG_PATH}/' + formula_data['graphic'], html_reports.thumb_image('{IMG_PATH}/' + formula_data['graphic']))
-            if formula_data['code'] is not None:
-                formula_data['code'] = formula_data['code'].replace('mml:', '')
+        for formula in self.article.formulas:
+            graphics = []
+            for f in formula.graphics:
+                href = '{IMG_PATH}/' + f
+                link = html_reports.link(href, html_reports.thumb_image(href))
+                graphics.append(link)
+            formula_data = {}
+            formula_data['id'] = formula.id
+            formula_data['xml'] = formula.xml
+            formula_data['graphic'] = ''.join(graphics)
+            formula_data['code'] = ''.join(formula.codes)
             formulas_data.append(formula_data)
         return html_reports.tag('h1', _('Equations')) + html_reports.sheet(labels, formulas_data, html_cell_content=['code'])
 
@@ -616,6 +624,8 @@ def display_article_metadata(_article, sep='<br/>'):
             r += html_reports.display_label_value(_('date') + ' (' + l + ')', utils.display_datetime(d), 'p')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
     r += html_reports.tag('p', display_authors(_article.article_contrib_items, sep))
+    if _article.marked_to_delete:
+        r = html_reports.tag('p', _('MARKED TO DELETE'), 'warning') + html_reports.tag('div', r, 'delete')
     return r
 
 

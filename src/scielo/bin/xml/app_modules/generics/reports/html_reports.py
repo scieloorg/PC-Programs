@@ -214,7 +214,7 @@ def report_title(titles):
 
 
 def html(title, body):
-    has_math = '<mml:math' in body or '<math' in body
+    has_math = '<mml:math' in body or ':math' in body
     s = ''
     s += '<html>'
     s += '<head>'
