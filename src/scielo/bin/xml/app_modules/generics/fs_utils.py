@@ -130,7 +130,7 @@ def zip(zip_filename, files):
         os.makedirs(dest_path)
     try:
         zipf = zipfile.ZipFile(zip_filename, 'w')
-        for item in files:
+        for item in list(set(files)):
             zipf.write(item, arcname=os.path.basename(item))
         zipf.close()
     except:
@@ -187,3 +187,14 @@ class ProcessLogger(object):
 
     def display(self):
         encoding.display_message('\n'.join(self.logged_items))
+
+
+def is_compressed_file(path):
+    r = False
+    if path.endswith('.zip'):
+        r = True
+    elif path.endswith('.tar.gz') or path.endswith('.tgz'):
+        r = True
+    elif path.endswith('.tar.bz2') or path.endswith('.tbz'):
+        r = True
+    return r

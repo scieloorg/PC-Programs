@@ -23,6 +23,7 @@ class SPSXMLContent(xml_utils.XMLContent):
     def normalize(self):
         xml_utils.XMLContent.normalize(self)
         self.insert_mml_namespace()
+        self.xml, self.xml_error = xml_utils.load_xml(self.content)
         if self.xml is not None:
             if 'contrib-id-type="' in self.content:
                 for contrib_id, url in attributes.CONTRIB_ID_URLS.items():
@@ -55,7 +56,6 @@ class SPSXMLContent(xml_utils.XMLContent):
             self.content = self.content.replace('"' + local + '"', '"' + remote + '"')
         else:
             self.content = self.content.replace('"' + remote + '"', '"' + local + '"')
-            self.content = self.content.replace('"' + remote.replace('https:', 'http:') + '"', '"' + local + '"')
 
     def insert_mml_namespace(self):
         if '</math>' in self.content:

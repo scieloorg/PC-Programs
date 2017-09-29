@@ -399,6 +399,8 @@ class ReferenceContentValidation(object):
         r = []
         label_year, value_year = article_year
         _y = self.refxml.reference.formatted_year
+        if len(self.refxml.year) > 1:
+            r.append(('year', validation_status.STATUS_FATAL_ERROR, _('Identify as "year" the more recent publication date. ')))
         if _y is not None:
             if _y.isdigit():
                 if _y > value_year:

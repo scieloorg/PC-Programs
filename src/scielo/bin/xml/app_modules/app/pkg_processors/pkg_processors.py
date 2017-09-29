@@ -62,14 +62,18 @@ def xpm_version():
     version_files = [
         BIN_PATH + '/xpm_version.txt',
         BIN_PATH + '/cfg/xpm_version.txt',
-        BIN_PATH + '/cfg/version.txt',
     ]
-    version = ''
+    version = '|'
     for f in version_files:
+        encoding.debugging('xpm_version', f)
         if os.path.isfile(f):
             version = fs_utils.read_file_lines(f)[0]
             break
-    return version
+    if '|' not in version:
+        version += '|'
+    encoding.debugging('version', version)
+    major_version, minor_version = version.split('|')
+    return major_version, minor_version
 
 
 def normalize_xml_packages(xml_list, dtd_location_type, stage):
@@ -346,7 +350,7 @@ class PkgProcessor(object):
         self.stage = stage
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
-        self.xpm_version = xpm_version() if stage == 'xpm' else ''
+        self.xpm_version = xpm_version() if stage == 'xpm' else None
         self._db_manager = None
         self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
         self.ws_journals.update_journals_file()
@@ -384,7 +388,8 @@ class PkgProcessor(object):
     def evaluate_package(self, pkg):
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
-        for xml_name, a in pkg.articles.items():
+        for xml_name in sorted(pkg.articles.keys()):
+            a = pkg.articles[xml_name]
             if a is not None:
                 institutions_results = {}
                 for aff_xml in a.affiliations:
@@ -427,7 +432,8 @@ class PkgProcessor(object):
 
         encoding.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
         results = {}
-        for name, article in pkg.articles.items():
+        for name in sorted(pkg.articles.keys()):
+            article = pkg.articles[name]
             encoding.display_message(_('Validate {name}').format(name=name))
             results[name] = article_validator.validate(article, pkg.outputs[name], pkg.package_folder.pkgfiles_items[name])
         return results
@@ -445,7 +451,8 @@ class PkgProcessor(object):
         if not self.is_xml_generation:
             reports.save_report(self.INTERATIVE)
         if conversion is not None:
-            conversion.registered_issue_data.issue_files.save_reports(files_location.report_path)
+            if conversion.registered_issue_data.issue_files is not None:
+                conversion.registered_issue_data.issue_files.save_reports(files_location.report_path)
         if self.config.web_app_site is not None:
             for article_files in pkg.package_folder.pkgfiles_items.values():
                 # copia os xml para report path
