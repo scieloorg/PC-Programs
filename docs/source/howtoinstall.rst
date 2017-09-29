@@ -122,8 +122,8 @@ Only if applicable, edit the file corresponding to **c:\\scielo\\bin\\scielo_col
 Set CODED_FORMULA_REQUIRED=off and CODED_TABLE_REQUIRED=off, if coded data is not required.
 
 
-XML Package Maker
------------------
+XML Package Maker and XML Markup
+--------------------------------
 
 From **4.0.094** version:
 
