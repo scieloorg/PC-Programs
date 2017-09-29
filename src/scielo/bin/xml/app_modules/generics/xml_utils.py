@@ -21,9 +21,9 @@ from . import encoding
 ENTITIES_TABLE = None
 
 namespaces = {}
-namespaces['mml'] = 'https://www.w3.org/1998/Math/MathML'
-namespaces['xlink'] = 'https://www.w3.org/1999/xlink'
-namespaces['xml'] = 'https://www.w3.org/XML/1998/namespace'
+namespaces['mml'] = 'http://www.w3.org/1998/Math/MathML'
+namespaces['xlink'] = 'http://www.w3.org/1999/xlink'
+namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'
 
 for namespace_id, namespace_link in namespaces.items():
     etree.register_namespace(namespace_id, namespace_link)
@@ -403,36 +403,39 @@ def parse_xml(content):
         r = etree.parse(StringIO(encoding.encode(content)))
     except Exception as e:
         message = 'XML is not well formed\n'
-        msg = str(e)
-        if 'position ' in msg:
-            pos = msg.split('position ')
-            pos = pos[1]
-            pos = pos[0:pos.find(': ')]
-            if '-' in pos:
-                pos = pos[0:pos.find('-')]
-            if pos.isdigit():
-                pos = int(pos)
-            msg += '\n'
-            text = content[0:pos]
-            text = text[text.rfind('<'):]
-            msg += text + '[[['
-            msg += content[pos:pos+1]
-            text = content[pos+1:]
-            msg += ']]]' + text[0:text.find('>')+1]
-        elif 'line ' in msg:
-            line = msg[msg.find('line ')+len('line '):]
-            column = ''
-            if 'column ' in line:
-                column = line[line.find('column ')+len('column '):].strip()
-            line = line[:line.find(',')].strip()
-            if line.isdigit():
-                line = int(line)
-                lines = content.split('\n') if content is not None else ['']
-                col = len(lines[line-1])
-                if column.isdigit():
-                    col = int(column)
-                msg += '\n...\n' + lines[line-1][:col] + '\n\n [[[[ ' + _('ERROR here') + ' ]]]] \n\n' + lines[line-1][col:] + '\n...\n'
-
+        msg = ''
+        try:
+            msg = encoding.decode(str(e))
+            if 'position ' in msg:
+                pos = msg.split('position ')
+                pos = pos[1]
+                pos = pos[0:pos.find(': ')]
+                if '-' in pos:
+                    pos = pos[0:pos.find('-')]
+                if pos.isdigit():
+                    pos = int(pos)
+                msg += '\n'
+                text = content[0:pos]
+                text = text[text.rfind('<'):]
+                msg += text + '[[['
+                msg += content[pos:pos+1]
+                text = content[pos+1:]
+                msg += ']]]' + text[0:text.find('>')+1]
+            elif 'line ' in msg:
+                line = msg[msg.find('line ')+len('line '):]
+                column = ''
+                if 'column ' in line:
+                    column = line[line.find('column ')+len('column '):].strip()
+                line = line[:line.find(',')].strip()
+                if line.isdigit():
+                    line = int(line)
+                    lines = content.split('\n') if content is not None else ['']
+                    col = len(lines[line-1])
+                    if column.isdigit():
+                        col = int(column)
+                    msg += '\n...\n' + lines[line-1][:col] + '\n\n [[[[ ' + _('ERROR here') + ' ]]]] \n\n' + lines[line-1][col:] + '\n...\n'
+        except:
+            msg += ''
         message += msg
 
         r = None
