@@ -1,7 +1,18 @@
 
-============
-Requirements
-============
+========================
+Requirements for 4.0.094
+========================
+
+- JAVA
+- PYTHON >= 2.7.10 + PIL
+
+
+Add Java to PATH (environment variable).
+
+
+==================================
+Requirements for previous versions
+==================================
 
 - JAVA
 - PYTHON 2.7.x
