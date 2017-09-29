@@ -1,9 +1,9 @@
 Document Type: WSE
 item: Global
   Version=7.01
-  Title=SciELO XML Package Maker Installation
-  Title Portuguese=SciELO Installation
-  Title Spanish=SciELO Installation
+  Title=SciELO XPM
+  Title Portuguese=SciELO XMP
+  Title Spanish=SciELO XPM
   Flags=00010100
   Languages=65 0 0 0 0 67 66 0 0 0 0 0 0 0 0 0
   Copy Default=1
@@ -955,6 +955,26 @@ end
 item: End Block
 end
 item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\uninstall.py
+  Flags=01000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\uninstall.py
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\unwise.exe
+  Flags=01000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\unwise.exe
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
   Pathname=%PROGDIR%\pmc
   Flags=00000100
 end
@@ -1006,6 +1026,11 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\tools\requirements_checker.py
   Destination=%PROGDIR%\xml\app_modules\tools\requirements_checker.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\requirements-w64.txt
+  Destination=%PROGDIR%\xml\app_modules\settings\requirements-w64.txt
   Flags=0000000010000010
 end
 item: Install File
@@ -1504,6 +1529,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\requirements_checker.bat
+  Destination=%PROGDIR%\xml\requirements_checker.bat
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\run_app.py
   Destination=%PROGDIR%\xml\run_app.py
   Flags=0000000010000010
@@ -1516,6 +1546,11 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\pkg_articles_validations.py
   Destination=%PROGDIR%\xml\app_modules\app\validations\pkg_articles_validations.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\logger.py
+  Destination=%PROGDIR%\xml\app_modules\generics\logger.py
   Flags=0000000010000010
 end
 item: Install File
@@ -1719,6 +1754,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\ws_proxy.py
+  Destination=%PROGDIR%\xml\app_modules\generics\ws\ws_proxy.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\data\attributes.py
   Destination=%PROGDIR%\xml\app_modules\app\data\attributes.py
   Flags=0000000010000010
@@ -1744,6 +1784,16 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_disp_formula.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_tablewrap.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_tablewrap.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_validations.py
   Destination=%PROGDIR%\xml\app_modules\app\validations\article_validations.py
   Flags=0000000010000010
@@ -1766,6 +1816,11 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_content_validations.py
   Destination=%PROGDIR%\xml\app_modules\app\validations\article_content_validations.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_disp_formula.py
   Flags=0000000010000010
 end
 item: Install File
@@ -1879,8 +1934,13 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\xws.info.example
-  Destination=%PROGDIR%\xws.info.example
+  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_env.ini.example
+  Destination=%PROGDIR%\scielo_env.ini.example
+  Flags=0000000010000010
+end
+item: Install File
+  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_collection.ini.example
+  Destination=%PROGDIR%\scielo_collection.ini.example
   Flags=0000000010000010
 end
 item: Install File
@@ -2958,11 +3018,6 @@ item: Install File
   Destination=%PROGDIR%\scielo_paths.example.ini
   Flags=0000000010000010
 end
-item: Install File
-  Source=c:\InstallBuilder\Unwise.exe
-  Destination=%PROGDIR%\Unwise.exe
-  Flags=0000000010000010
-end
 item: Set Variable
   Variable=COMMON
   Value=%COMMON%
@@ -3066,6 +3121,8 @@ end
 item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=XML Package Maker
+  Icon Name Portuguese=XML Package Maker
+  Icon Name Spanish=XML Package Maker
   Command Line=%PROGDIR%\xml\xml_package_maker.py
   Icon Pathname=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\scielo.ico
   Flags=01000000
@@ -3081,7 +3138,12 @@ end
 item: Execute Program
   Pathname=python
   Command Line=%PROGDIR%\xml\run_app.py install
-  Flags=00000010
+  Flags=00000011
+end
+remarked item: Execute Program
+  Command Line=%PROGDIR%\xml\install_requirements.bat
+  Default Directory=%PROGDIR%\xml
+  Flags=00000011
 end
 remarked item: Add to AUTOEXEC.BAT
   New Text=SET BAP=OS23470a
