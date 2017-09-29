@@ -55,6 +55,7 @@ class SPSXMLContent(xml_utils.XMLContent):
             self.content = self.content.replace('"' + local + '"', '"' + remote + '"')
         else:
             self.content = self.content.replace('"' + remote + '"', '"' + local + '"')
+            self.content = self.content.replace('"' + remote.replace('https:', 'http:') + '"', '"' + local + '"')
 
     def insert_mml_namespace(self):
         if '</math>' in self.content:
