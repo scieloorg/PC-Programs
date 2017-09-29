@@ -1,17 +1,23 @@
-4.0.094 - Release Test - 05/09/2017
-===================================
+4.0.094 Release 29/09/2017 
+==========================
+- General
+  - (new) [] Requirements installation automation
+  - [2686] http to https
 - XPM
   - (new) [1256] Python3
   - (new) [2596] JATS 1.1 Validation
   - (new) [2578] Configuration of Web access status and proxy
-  - (new) [2615, 2630] ORCID Validation
+  - (new) [2615, 2630, 2715] ORCID Validation
   - (new) [1270] Add XML Validations with packtools
+  - (new) [2705] Require coded formulas and tables
   - (bug) [2599, 2623] Fix missing xref (bibr) validation
   - (bug) [2567] Fix aff validation
   - (bug) [2620] Present error for more than one source in reference 
   - (bug) [2528] Reinsert the feature of zip file generation for pmc and scielo packages
   - (bug) [2597] Consider that previous author can be anonymous
-  - (improvement) [2610] Indicate articles must have fpage/@seq if they have same fpage value
+  - (enhancement) [2610] Indicate articles must have fpage/@seq if they have same fpage value
+  - (enhancement) [2709] Fix the message about invalid citation data
+  - (enhancement) [2707] Fix the message about required PDF
 
 4.0.093 - Release 5 - 31/08/2017
 ================================

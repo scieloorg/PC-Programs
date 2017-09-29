@@ -1285,6 +1285,36 @@ end
 item: End Block
 end
 item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\bin\uninstall.py
+  Flags=01000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\bin\uninstall.py
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\unwise.exe
+  Flags=01000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\unwise.exe
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\bin\uninstall.py
+  Flags=00000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\bin\uninstall.py
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
   Pathname=%PROGDIR%\bin\markup\app_core\tables
   Flags=00000100
 end
@@ -1403,8 +1433,18 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\logger.py
+  Destination=%PROGDIR%\bin\xml\app_modules\generics\logger.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\xml_utils.py
   Destination=%PROGDIR%\bin\xml\app_modules\generics\xml_utils.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\ws_proxy.py
+  Destination=%PROGDIR%\bin\xml\app_modules\generics\ws\ws_proxy.py
   Flags=0000000010000010
 end
 item: Install File
@@ -1608,6 +1648,16 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Destination=%PROGDIR%\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_tablewrap.py
+  Destination=%PROGDIR%\bin\xml\app_modules\app\validations\article_tablewrap.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_data_reports.py
   Destination=%PROGDIR%\bin\xml\app_modules\app\validations\article_data_reports.py
   Flags=0000000010000010
@@ -1615,6 +1665,11 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_content_validations.py
   Destination=%PROGDIR%\bin\xml\app_modules\app\validations\article_content_validations.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Destination=%PROGDIR%\bin\xml\app_modules\app\validations\article_disp_formula.py
   Flags=0000000010000010
 end
 item: Install File
@@ -1745,11 +1800,6 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\__init__.py
   Destination=%PROGDIR%\bin\xml\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\uninstall.py
-  Destination=%PROGDIR%\uninstall.py
   Flags=0000000010000010
 end
 item: Install File
@@ -3703,8 +3753,13 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\xws.info.example
-  Destination=%PROGDIR%\bin\xws.info.example
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\scielo_collection.ini.example
+  Destination=%PROGDIR%\bin\scielo_collection.ini.example
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\scielo_env.ini.example
+  Destination=%PROGDIR%\bin\scielo_env.ini.example
   Flags=0000000010000010
 end
 item: If/While Statement
@@ -6838,7 +6893,8 @@ end
 item: Execute Program
   Pathname=python
   Command Line=%PROGDIR%\bin\xml\run_app.py install
-  Flags=00000010
+  Default Directory=%PROGDIR%\bin\xml\
+  Flags=00000011
 end
 remarked item: Add to AUTOEXEC.BAT
   New Text=SET BAP=OS23470a

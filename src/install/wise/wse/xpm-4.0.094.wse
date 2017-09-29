@@ -1,7 +1,7 @@
 Document Type: WSE
 item: Global
   Version=7.01
-  Title=SciELO XML Package Maker Installation
+  Title=SciELO XPM
   Title Portuguese=SciELO Installation
   Title Spanish=SciELO Installation
   Flags=00010100
@@ -955,6 +955,26 @@ end
 item: End Block
 end
 item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\uninstall.py
+  Flags=01000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\uninstall.py
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\unwise.exe
+  Flags=01000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\unwise.exe
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
   Pathname=%PROGDIR%\pmc
   Flags=00000100
 end
@@ -985,12 +1005,11 @@ end
 item: End Block
 end
 item: Check if File/Dir Exists
-  Pathname=%PROGDIR%\xml\modules
-  Flags=00000100
+  Pathname=%PROGDIR%\xml\app_data\venv
+  Flags=00000101
 end
-item: Delete File
-  Pathname=%PROGDIR%\xml\modules
-  Flags=00001100
+item: Create Directory
+  Pathname=%PROGDIR%\xml\app_data\venv
 end
 item: End Block
 end
@@ -1000,108 +1019,128 @@ item: Check Disk Space
   Component=COMPONENTS
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\xc.sql
-  Destination=%PROGDIR%\xml\tables\xc.sql
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\tools\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\tools\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\xc.db
-  Destination=%PROGDIR%\xml\tables\xc.db
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\tools\requirements_checker.py
+  Destination=%PROGDIR%\xml\app_modules\tools\requirements_checker.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\symbols.csv
-  Destination=%PROGDIR%\xml\tables\symbols.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\requirements-w64.txt
+  Destination=%PROGDIR%\xml\app_modules\settings\requirements-w64.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\orgname_location_country.csv
-  Destination=%PROGDIR%\xml\tables\orgname_location_country.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\requirements.txt
+  Destination=%PROGDIR%\xml\app_modules\settings\requirements.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\licenses.csv
-  Destination=%PROGDIR%\xml\tables\licenses.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\xc.sql
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\xc.sql
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\entities.csv
-  Destination=%PROGDIR%\xml\tables\entities.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\xc.db
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\xc.db
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\title.fst
-  Destination=%PROGDIR%\xml\modules\title.fst
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\symbols.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\symbols.csv
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\issue.fst
-  Destination=%PROGDIR%\xml\modules\issue.fst
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\orgname_location_country.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\orgname_location_country.csv
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\articles.fst
-  Destination=%PROGDIR%\xml\modules\articles.fst
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\licenses.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\licenses.csv
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\entities.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\entities.csv
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\fst\title.fst
+  Destination=%PROGDIR%\xml\app_modules\settings\fst\modules\title.fst
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\pt\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\pt\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\fst\issue.fst
+  Destination=%PROGDIR%\xml\app_modules\settings\fst\issue.fst
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\pt\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\pt\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\fst\articles.fst
+  Destination=%PROGDIR%\xml\app_modules\settings\fst\articles.fst
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es_MX\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\es_MX\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\pt_BR\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\pt_BR\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es_MX\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\es_MX\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es_ES\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\es_ES\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\pt\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\pt\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es_ES\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\es_ES\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\pt\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\pt\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\es\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es_MX\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es_MX\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\es\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es_MX\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es_MX\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\en\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\en\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es_ES\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es_ES\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\en\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\en\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es_ES\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es_ES\LC_MESSAGES\xpm-xc.mo
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es\LC_MESSAGES\xpm-xc.po
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es\LC_MESSAGES\xpm-xc.mo
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\en\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\en\LC_MESSAGES\xpm-xc.po
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\en\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\en\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
@@ -1485,413 +1524,418 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\__init__.py
-  Destination=%PROGDIR%\xml\modules\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\install_requirements.bat
+  Destination=%PROGDIR%\xml\install_requirements.bat
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\pkg_articles_validations.py
-  Destination=%PROGDIR%\xml\modules\app\validations\pkg_articles_validations.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\requirements_checker.bat
+  Destination=%PROGDIR%\xml\requirements_checker.bat
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\doi_validations.py
-  Destination=%PROGDIR%\xml\modules\generics\doi_validations.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\run_app.py
+  Destination=%PROGDIR%\xml\run_app.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\ref_validations.py
-  Destination=%PROGDIR%\xml\modules\app\validations\ref_validations.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\__init__.pyc
-  Destination=%PROGDIR%\xml\modules\app\validations\__init__.pyc
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\pkg_articles_validations.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\pkg_articles_validations.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\__init__.py
-  Destination=%PROGDIR%\xml\modules\app\validations\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\logger.py
+  Destination=%PROGDIR%\xml\app_modules\generics\logger.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\server\mailer.py
-  Destination=%PROGDIR%\xml\modules\app\server\mailer.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\doi_validations.py
+  Destination=%PROGDIR%\xml\app_modules\generics\doi_validations.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\server\filestransfer.py
-  Destination=%PROGDIR%\xml\modules\app\server\filestransfer.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\ref_validations.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\ref_validations.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\server\__init__.py
-  Destination=%PROGDIR%\xml\modules\app\server\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\utils.py
-  Destination=%PROGDIR%\xml\modules\generics\utils.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\server\mailer.py
+  Destination=%PROGDIR%\xml\app_modules\app\server\mailer.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\pkg_processors\xml_versions.py
-  Destination=%PROGDIR%\xml\modules\app\pkg_processors\xml_versions.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\server\filestransfer.py
+  Destination=%PROGDIR%\xml\app_modules\app\server\filestransfer.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\system.py
-  Destination=%PROGDIR%\xml\modules\generics\system.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\server\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\app\server\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\pkg_processors\symbols.py
-  Destination=%PROGDIR%\xml\modules\app\pkg_processors\symbols.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\utils.py
+  Destination=%PROGDIR%\xml\app_modules\generics\utils.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\dbm\__init__.py
-  Destination=%PROGDIR%\xml\modules\generics\dbm\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\pkg_processors\xml_versions.py
+  Destination=%PROGDIR%\xml\app_modules\app\pkg_processors\xml_versions.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\pkg_processors\sps_pkgmaker.py
-  Destination=%PROGDIR%\xml\modules\app\pkg_processors\sps_pkgmaker.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\system.py
+  Destination=%PROGDIR%\xml\app_modules\generics\system.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\dbm\__init__.pyc
-  Destination=%PROGDIR%\xml\modules\generics\dbm\__init__.pyc
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\pkg_processors\symbols.py
+  Destination=%PROGDIR%\xml\app_modules\app\pkg_processors\symbols.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\pkg_processors\sgmlxml.py
-  Destination=%PROGDIR%\xml\modules\app\pkg_processors\sgmlxml.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\dbm\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\generics\dbm\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\svg_conversion.py
-  Destination=%PROGDIR%\xml\modules\generics\svg_conversion.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\pkg_processors\sps_pkgmaker.py
+  Destination=%PROGDIR%\xml\app_modules\app\pkg_processors\sps_pkgmaker.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\pkg_processors\pmc_pkgmaker.py
-  Destination=%PROGDIR%\xml\modules\app\pkg_processors\pmc_pkgmaker.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\pkg_processors\sgmlxml.py
+  Destination=%PROGDIR%\xml\app_modules\app\pkg_processors\sgmlxml.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\validation_status.pyc
-  Destination=%PROGDIR%\xml\modules\generics\reports\validation_status.pyc
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\svg_conversion.py
+  Destination=%PROGDIR%\xml\app_modules\generics\svg_conversion.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\pkg_processors\pkg_processors.py
-  Destination=%PROGDIR%\xml\modules\app\pkg_processors\pkg_processors.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\pkg_processors\pmc_pkgmaker.py
+  Destination=%PROGDIR%\xml\app_modules\app\pkg_processors\pmc_pkgmaker.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\dbm\dbm_sql.pyc
-  Destination=%PROGDIR%\xml\modules\generics\dbm\dbm_sql.pyc
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\pkg_processors\pkg_processors.py
+  Destination=%PROGDIR%\xml\app_modules\app\pkg_processors\pkg_processors.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\reports_maker.py
-  Destination=%PROGDIR%\xml\modules\app\validations\reports_maker.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\reports_maker.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\reports_maker.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\dbm\dbm_sql.py
-  Destination=%PROGDIR%\xml\modules\generics\dbm\dbm_sql.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\dbm\dbm_sql.py
+  Destination=%PROGDIR%\xml\app_modules\generics\dbm\dbm_sql.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\sps_xml_validators.py
-  Destination=%PROGDIR%\xml\modules\app\validations\sps_xml_validators.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\sps_xml_validators.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\sps_xml_validators.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\dbm\dbm_isis.pyc
-  Destination=%PROGDIR%\xml\modules\generics\dbm\dbm_isis.pyc
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\validations.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\validations.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\validations.py
-  Destination=%PROGDIR%\xml\modules\app\validations\validations.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\dbm\dbm_isis.py
+  Destination=%PROGDIR%\xml\app_modules\generics\dbm\dbm_isis.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\dbm\dbm_isis.py
-  Destination=%PROGDIR%\xml\modules\generics\dbm\dbm_isis.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\reports\validation_status.py
+  Destination=%PROGDIR%\xml\app_modules\generics\reports\validation_status.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\validation_status.py
-  Destination=%PROGDIR%\xml\modules\generics\reports\validation_status.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\pkg_processors\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\app\pkg_processors\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\pkg_processors\__init__.py
-  Destination=%PROGDIR%\xml\modules\app\pkg_processors\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\reports\html_reports.css
+  Destination=%PROGDIR%\xml\app_modules\generics\reports\html_reports.css
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\html_reports.css
-  Destination=%PROGDIR%\xml\modules\generics\reports\html_reports.css
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\db\xc_models.py
+  Destination=%PROGDIR%\xml\app_modules\app\db\xc_models.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\db\xc_models.py
-  Destination=%PROGDIR%\xml\modules\app\db\xc_models.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\db\serial.py
+  Destination=%PROGDIR%\xml\app_modules\app\db\serial.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\html_reports.pyc
-  Destination=%PROGDIR%\xml\modules\generics\reports\html_reports.pyc
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\db\registered.py
+  Destination=%PROGDIR%\xml\app_modules\app\db\registered.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\db\serial.py
-  Destination=%PROGDIR%\xml\modules\app\db\serial.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\ws\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\app\ws\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\text_report.pyc
-  Destination=%PROGDIR%\xml\modules\generics\reports\text_report.pyc
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\reports\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\generics\reports\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\db\registered.py
-  Destination=%PROGDIR%\xml\modules\app\db\registered.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\data_validations.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\data_validations.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\ws\__init__.py
-  Destination=%PROGDIR%\xml\modules\app\ws\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\files_extractor.py
+  Destination=%PROGDIR%\xml\app_modules\generics\files_extractor.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\__init__.py
-  Destination=%PROGDIR%\xml\modules\generics\reports\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\generics\ws\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\data_validations.py
-  Destination=%PROGDIR%\xml\modules\app\validations\data_validations.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\db\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\app\db\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\files_extractor.py
-  Destination=%PROGDIR%\xml\modules\generics\files_extractor.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\generics\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\ws\__init__.py
-  Destination=%PROGDIR%\xml\modules\generics\ws\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\data\workarea.py
+  Destination=%PROGDIR%\xml\app_modules\app\data\workarea.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\db\__init__.py
-  Destination=%PROGDIR%\xml\modules\app\db\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\xml_utils.py
+  Destination=%PROGDIR%\xml\app_modules\generics\xml_utils.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\__init__.py
-  Destination=%PROGDIR%\xml\modules\generics\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\data\package.py
+  Destination=%PROGDIR%\xml\app_modules\app\data\package.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\data\workarea.py
-  Destination=%PROGDIR%\xml\modules\app\data\workarea.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\reports\html_reports_collapsible.js
+  Destination=%PROGDIR%\xml\app_modules\generics\reports\html_reports_collapsible.js
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\xml_utils.py
-  Destination=%PROGDIR%\xml\modules\generics\xml_utils.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\data\merged.py
+  Destination=%PROGDIR%\xml\app_modules\app\data\merged.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\data\package.py
-  Destination=%PROGDIR%\xml\modules\app\data\package.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\ws_requester.py
+  Destination=%PROGDIR%\xml\app_modules\generics\ws\ws_requester.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\html_reports_collapsible.js
-  Destination=%PROGDIR%\xml\modules\generics\reports\html_reports_collapsible.js
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\data\attributes.py
+  Destination=%PROGDIR%\xml\app_modules\app\data\attributes.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\data\merged.py
-  Destination=%PROGDIR%\xml\modules\app\data\merged.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\reports\text_report.py
+  Destination=%PROGDIR%\xml\app_modules\generics\reports\text_report.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\ws\ws_requester.py
-  Destination=%PROGDIR%\xml\modules\generics\ws\ws_requester.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\data\article.py
+  Destination=%PROGDIR%\xml\app_modules\app\data\article.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\data\attributes.py
-  Destination=%PROGDIR%\xml\modules\app\data\attributes.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\ws_doi.py
+  Destination=%PROGDIR%\xml\app_modules\generics\ws\ws_doi.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\text_report.py
-  Destination=%PROGDIR%\xml\modules\generics\reports\text_report.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\data\aff_normalization.py
+  Destination=%PROGDIR%\xml\app_modules\app\data\aff_normalization.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\data\article.py
-  Destination=%PROGDIR%\xml\modules\app\data\article.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_disp_formula.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\ws\ws_doi.py
-  Destination=%PROGDIR%\xml\modules\generics\ws\ws_doi.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_tablewrap.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_tablewrap.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\data\aff_normalization.py
-  Destination=%PROGDIR%\xml\modules\app\data\aff_normalization.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_validations.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_validations.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\article_validations.py
-  Destination=%PROGDIR%\xml\modules\app\validations\article_validations.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\fs_utils.py
+  Destination=%PROGDIR%\xml\app_modules\generics\fs_utils.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\fs_utils.py
-  Destination=%PROGDIR%\xml\modules\generics\fs_utils.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_data_reports.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_data_reports.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\article_data_reports.py
-  Destination=%PROGDIR%\xml\modules\app\validations\article_data_reports.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ftp_service.py
+  Destination=%PROGDIR%\xml\app_modules\generics\ftp_service.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\ftp_service.py
-  Destination=%PROGDIR%\xml\modules\generics\ftp_service.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_content_validations.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_content_validations.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\article_content_validations.py
-  Destination=%PROGDIR%\xml\modules\app\validations\article_content_validations.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\article_disp_formula.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\ws\institutions_db.py
-  Destination=%PROGDIR%\xml\modules\app\ws\institutions_db.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\ws\institutions_db.py
+  Destination=%PROGDIR%\xml\app_modules\app\ws\institutions_db.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\__init__.pyc
-  Destination=%PROGDIR%\xml\modules\generics\reports\__init__.pyc
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\reports\html_reports.py
+  Destination=%PROGDIR%\xml\app_modules\generics\reports\html_reports.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\reports\html_reports.py
-  Destination=%PROGDIR%\xml\modules\generics\reports\html_reports.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\data\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\app\data\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\data\__init__.py
-  Destination=%PROGDIR%\xml\modules\app\data\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\email_service.py
+  Destination=%PROGDIR%\xml\app_modules\generics\email_service.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\email_service.py
-  Destination=%PROGDIR%\xml\modules\generics\email_service.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\config\config.py
+  Destination=%PROGDIR%\xml\app_modules\app\config\config.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\config\config.py
-  Destination=%PROGDIR%\xml\modules\app\config\config.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\merged_articles_validations.py
+  Destination=%PROGDIR%\xml\app_modules\app\validations\merged_articles_validations.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\validations\merged_articles_validations.py
-  Destination=%PROGDIR%\xml\modules\app\validations\merged_articles_validations.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\config\app_texts.py
+  Destination=%PROGDIR%\xml\app_modules\app\config\app_texts.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\config\app_texts.py
-  Destination=%PROGDIR%\xml\modules\app\config\app_texts.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\config\app_caller.py
+  Destination=%PROGDIR%\xml\app_modules\app\config\app_caller.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\ws\institutions_manager.py
-  Destination=%PROGDIR%\xml\modules\app\ws\institutions_manager.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\ws\institutions_manager.py
+  Destination=%PROGDIR%\xml\app_modules\app\ws\institutions_manager.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\remote_server.py
-  Destination=%PROGDIR%\xml\modules\generics\remote_server.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\remote_server.py
+  Destination=%PROGDIR%\xml\app_modules\generics\remote_server.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\ws\institutions_service.py
-  Destination=%PROGDIR%\xml\modules\app\ws\institutions_service.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\ws\institutions_service.py
+  Destination=%PROGDIR%\xml\app_modules\app\ws\institutions_service.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\encoding.py
-  Destination=%PROGDIR%\xml\modules\generics\encoding.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\encoding.py
+  Destination=%PROGDIR%\xml\app_modules\generics\encoding.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\config\__init__.py
-  Destination=%PROGDIR%\xml\modules\app\config\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\config\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\app\config\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\ws\ws_institutions.py
-  Destination=%PROGDIR%\xml\modules\app\ws\ws_institutions.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\ws\ws_institutions.py
+  Destination=%PROGDIR%\xml\app_modules\app\ws\ws_institutions.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\java_xml_utils.py
-  Destination=%PROGDIR%\xml\modules\generics\java_xml_utils.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\java_xml_utils.py
+  Destination=%PROGDIR%\xml\app_modules\generics\java_xml_utils.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\ws\ws_journals.py
-  Destination=%PROGDIR%\xml\modules\app\ws\ws_journals.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\ws\ws_journals.py
+  Destination=%PROGDIR%\xml\app_modules\app\ws\ws_journals.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\generics\img_utils.py
-  Destination=%PROGDIR%\xml\modules\generics\img_utils.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\img_utils.py
+  Destination=%PROGDIR%\xml\app_modules\generics\img_utils.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\xpm.py
-  Destination=%PROGDIR%\xml\modules\app\xpm.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\xpm.py
+  Destination=%PROGDIR%\xml\app_modules\app\xpm.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\xc.py
-  Destination=%PROGDIR%\xml\modules\app\xc.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\xc.py
+  Destination=%PROGDIR%\xml\app_modules\app\xc.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\interface.py
-  Destination=%PROGDIR%\xml\modules\app\interface.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\interface.py
+  Destination=%PROGDIR%\xml\app_modules\app\interface.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\article_utils.py
-  Destination=%PROGDIR%\xml\modules\app\article_utils.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\article_utils.py
+  Destination=%PROGDIR%\xml\app_modules\app\article_utils.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\modules\app\__init__.py
-  Destination=%PROGDIR%\xml\modules\app\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\__init__.py
+  Destination=%PROGDIR%\xml\app_modules\app\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\xws.info.example
-  Destination=%PROGDIR%\xws.info.example
+  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_env.ini.example
+  Destination=%PROGDIR%\scielo_env.ini.example
+  Flags=0000000010000010
+end
+item: Install File
+  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_collection.ini.example
+  Destination=%PROGDIR%\scielo_collection.ini.example
   Flags=0000000010000010
 end
 item: Install File
@@ -1905,88 +1949,93 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\pt_BR\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\pt_BR\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es_ES\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\es_ES\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es_ES\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es_ES\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es_ES\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\es_ES\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es_ES\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es_ES\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es_MX\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\es_MX\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es_MX\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es_MX\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es_MX\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\es_MX\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es_MX\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es_MX\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\es\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\es\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\es\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\es\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\es\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\pt\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\pt\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\pt\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\pt\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\pt\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\pt\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\pt\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\pt\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\en\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\xml\locale\en\LC_MESSAGES\xpm-xc.po
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\en\LC_MESSAGES\xpm-xc.po
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\en\LC_MESSAGES\xpm-xc.po
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\locale\en\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\xml\locale\en\LC_MESSAGES\xpm-xc.mo
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\locale\en\LC_MESSAGES\xpm-xc.mo
+  Destination=%PROGDIR%\xml\app_modules\settings\locale\en\LC_MESSAGES\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\licenses.csv
-  Destination=%PROGDIR%\xml\tables\licenses.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\licenses.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\licenses.csv
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\xc.db
-  Destination=%PROGDIR%\xml\tables\xc.db
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\xc.db
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\xc.db
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\symbols.csv
-  Destination=%PROGDIR%\xml\tables\symbols.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\symbols.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\symbols.csv
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\orgname_location_country.csv
-  Destination=%PROGDIR%\xml\tables\orgname_location_country.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\orgname_location_country.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\orgname_location_country.csv
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\entities.csv
-  Destination=%PROGDIR%\xml\tables\entities.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\entities.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\entities.csv
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\xml_package_maker.bat
+  Destination=%PROGDIR%\xml\xml_package_maker.bat
   Flags=0000000010000010
 end
 item: Install File
@@ -1995,13 +2044,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\xml_package_maker.py
-  Destination=%PROGDIR%\xml\xml_package_maker.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\tables\entities.csv
-  Destination=%PROGDIR%\xml\tables\entities.csv
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\settings\tables\entities.csv
+  Destination=%PROGDIR%\xml\app_modules\settings\tables\entities.csv
   Flags=0000000010000010
 end
 item: Install File
@@ -2969,11 +3013,6 @@ item: Install File
   Destination=%PROGDIR%\scielo_paths.example.ini
   Flags=0000000010000010
 end
-item: Install File
-  Source=c:\InstallBuilder\Unwise.exe
-  Destination=%PROGDIR%\Unwise.exe
-  Flags=0000000010000010
-end
 item: Set Variable
   Variable=COMMON
   Value=%COMMON%
@@ -3065,10 +3104,12 @@ remarked item: Create Shortcut
   Flags=00000001
 end
 item: Create Shortcut
-  Source=%PROGDIR%\xml\xml_package_maker.py
+  Source=%PROGDIR%\xml\xml_package_maker.bat
   Destination=%GROUP%\XML Package Maker.lnk
   Icon Number=0
-  Icon Pathname=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\scielo.ico
+  Icon Pathname=%PROGDIR%\cfg\scielo.ico
+  Key Type=1536
+  Flags=00000001
 end
 item: Else Statement
 end
@@ -3086,6 +3127,16 @@ remarked item: Add to AUTOEXEC.BAT
   Search Text=SET BAP=OS23470a
   Line Number=0
   Flags=00101000
+end
+item: Execute Program
+  Pathname=python
+  Command Line=%PROGDIR%\xml\run_app.py install
+  Flags=00000011
+end
+remarked item: Execute Program
+  Command Line=%PROGDIR%\xml\install_requirements.bat
+  Default Directory=%PROGDIR%\xml
+  Flags=00000011
 end
 remarked item: Add to AUTOEXEC.BAT
   New Text=SET BAP=OS23470a
