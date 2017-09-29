@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import os
+from datetime import datetime
 
 from ..__init__ import _
 from . import interface
@@ -124,9 +125,13 @@ class XPM_Reception(object):
         interface.display_form(self.proc.stage == 'xc', None, self.call_make_package)
 
     def call_make_package(self, xml_path, GENERATE_PMC=False):
+        encoding.display_message(_('Making package') + '...')
         xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
+        encoding.display_message('...'*2)
         normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', self.proc.stage)
+        encoding.display_message('...'*3)
         self.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
+        encoding.display_message('...'*4)
         return 'done', 'blue'
 
     def make_package(self, normalized_pkgfiles, outputs, GENERATE_PMC=False):

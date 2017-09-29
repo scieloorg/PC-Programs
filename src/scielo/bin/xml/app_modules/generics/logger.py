@@ -2,7 +2,7 @@
 import logging
 
 
-def get_logger(filename, logger_name, logging_level=logging.CRITICAL):
+def get_logger(filename, logger_name, logging_level=logging.DEBUG):
     """
     CRITICAL    50
     ERROR   40

@@ -11,6 +11,7 @@ except ImportError:
 
 from ..__init__ import _
 from ..__init__ import BIN_PATH
+from ..generics import encoding
 
 
 XML_FOLDER_DEFAULT = BIN_PATH
@@ -34,20 +35,7 @@ class XMLAppGUI(tk.Frame):
 
         self.tk_root.resizable(True, False)
         self.tk_root.protocol('WM_DELETE_WINDOW', self.click_close)
-        self.tk_root.bind('<Escape>', self.click_close)
-
-        """
-        self.tkFrame.folder_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
-        self.tkFrame.folder_labelframe.pack(fill="both", expand="yes")
-        self.tkFrame.label_folder = Tkinter.Label(self.tkFrame.folder_labelframe, text=_('SPS XML Package Folder:'), font="Verdana 12 bold")
-        self.tkFrame.label_folder.pack(side='left')
-        self.tkFrame.input_folder = Tkinter.Label(self.tkFrame.folder_labelframe, width=50, bd=1, bg='gray')
-        self.tkFrame.input_folder.pack(side='left')
-        self.tkFrame.button_choose = Tkinter.Button(self.tkFrame.folder_labelframe, text=_('choose folder'), command=self.open_file_explorer)
-        self.tkFrame.button_choose.pack()
-
-
-        """
+        #self.tk_root.bind('<Escape>', self.click_close)
 
         folder_label_frame = tk.Frame(self)
         folder_label_frame.pack(padx=10, pady=5)
@@ -58,8 +46,8 @@ class XMLAppGUI(tk.Frame):
         pmc_frame = tk.Frame(self)
         pmc_frame.pack(padx=10, pady=5)
 
-        buttons_frame = tk.Frame(self)
-        buttons_frame.pack(padx=10, pady=5)
+        self.buttons_frame = tk.Frame(self)
+        self.buttons_frame.pack(padx=10, pady=5)
 
         folder_label = tk.Label(folder_label_frame, text=_('SPS XML Package Folder:'))
         folder_label.pack(side='left')
@@ -79,14 +67,14 @@ class XMLAppGUI(tk.Frame):
         self.message = tk.Label(message_frame, font='System 14 bold', width=100, bd=1, bg='gray')
         self.message.pack(side='left')
 
-        close_button = tk.Button(buttons_frame, text=_('close'), command=self.click_close)
+        close_button = tk.Button(self.buttons_frame, text=_('close'), command=self.click_close)
         close_button.pack(side='right')
 
         if self.is_converter_enabled:
-            self.xc_button = tk.Button(buttons_frame, default='active', text='XML Converter', command=self.run_xml_converter)
+            self.xc_button = tk.Button(self.buttons_frame, default='active', text='XML Converter', command=self.run_xml_converter)
             self.xc_button.pack(side='right')
         else:
-            self.xpm_button = tk.Button(buttons_frame, default='active', text='XML Package Maker', command=self.run_xml_package_maker)
+            self.xpm_button = tk.Button(self.buttons_frame, default='active', text='XML Package Maker', command=self.run_xml_package_maker)
             self.xpm_button.pack(side='right')
 
         self.selected_folder = None
@@ -123,15 +111,27 @@ class XMLAppGUI(tk.Frame):
 
     def run_xml_package_maker(self):
         if self.is_valid_folder():
-
+            self.started()
             self.generate_pmc_package = self.pmc_var.get() == 1
             msg, color = self.function(self.selected_folder, self.generate_pmc_package)
             self.display_message(msg, color)
+            self.finished(color)
 
     def run_xml_converter(self):
         if self.is_valid_folder():
+            self.started()
             msg, color = self.function(self.selected_folder)
-            self.display_message(msg, color)
+            self.finished(color)
+
+    def started(self):
+        encoding.display_message(_('Processing...'))
+        self.display_message(_('Processing...'), 'white')
+        self.tk_root.config(cursor="wait")
+
+    def finished(self, color):
+        encoding.display_message(_('Finished!'))
+        self.display_message(_('Finished!'), color)
+        self.tk_root.config(cursor="")
 
 
 def display_form(is_converter_enabled, configurations, function):
