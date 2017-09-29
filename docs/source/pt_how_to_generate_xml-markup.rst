@@ -20,7 +20,7 @@ Sugestão de Atribuição de "ID"
 ==============================
 
 O atributo "ID" é usado para identificar alguns elementos, tornando possível estabelecer referências cruzadas entre sua chamada no decorrer do texto e o elemento em si, como figuras, tabelas, afiliações etc.
-Para composição do “ID” combine o prefixo do tipo do elemento e um número inteiro, como segue:
+Para composição do "ID" combine o prefixo do tipo do elemento e um número inteiro, como segue:
 
 +------------------------+---------------------------+---------+---------------------+
 | Elemento XML           | Descrição                 | Prefixo | Exemplo             |
@@ -66,78 +66,78 @@ Para composição do “ID” combine o prefixo do tipo do elemento e um número
 Dados Básicos
 =============
 
-Estando o arquivo formatado de acordo com o manual `Preparação de Arquivos para o Programa Markup <pt_how_to_generate_xml-prepara.html>`_ e aberto no programa `Markup <markup.html>`_, selecione a tag [doc]:
+Estando o arquivo formatado de acordo com o manual `Preparação de Arquivos para o Programa Markup <pt_how_to_generate_xml-prepara.html>`_ e aberto no programa `Markup <markup.html>`_, selecione a tag **[doc]**:
 
 .. image:: img/doc-mkp-formulario.jpg
    :height: 400px
    :align: center
 
 
-Ao clicar em [doc] o programa abrirá um formulário para ser completado com os dados básicos do artigo:
+Ao clicar em **[doc]** o programa abrirá um formulário para ser completado com os dados básicos do artigo:
 
 Ao selecionar o periódico no campo “collection/journal” o programa preencherá alguns dados automaticamente, tais como: ISSNs, título abreviado, acrônimo, entre outros. Os demais dados serão preenchidos manualmente, de acordo com as orientações abaixo:
 
 
-+-------------------+-----------------------------------------------------------------------------------------------+
-| Campo             | Descrição                                                                                     |
-+===================+===============================================================================================+
-| license           | se não for inserido automaticamente, preencher com a URL da licença creative commons          |
-|                   | adotada pelo periódico. Consultar licenças em:                                                |
-|                   | http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.3-branch/tagset.html#license |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| volid             | Inserir volume, se existir. Para Ahead of Print, não incluir volume                           |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| supplvol          | Caso seja um suplemento de volume incluir sua parte ou número correspondente.                 |
-|                   | **Exemplo: vol.12 supl.A**, então preencha com **A**, neste campo                             |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| issueno           | Entre com o número do fascículo. Caso seja um artigo publicado em ahead of                    |
-|                   | print, insira ahead neste campo                                                               |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| supplno           | Caso seja um suplemento de fascículo incluir sua parte ou número                              |
-|                   | correspondente. **Exemplo: n.37, supl.A**, então preencha com **A** neste campo               |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| isidpart          | Usar em casos de press release, incluindo a sigla pr                                          |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| dateiso           | Data de publicação formada por ano, mês e dia **(YYYYMMDD)**. Preencher sempre                |
-|                   | com o último mês da periodicidade. Por exemplo, se o periódico é bimestral                    |
-|                   | preencher **20140600**. Use **00** para mês e dia nos casos em não haja sua                   |
-|                   | identificação. **Exemplo: 20140000**.                                                         |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| month/season      | Entre o mês ou mês inicial barra final, em inglês (três letras) e ponto,                      |
-|                   | exceto para May, June e July. **Ex.: May/June, July/Aug.**                                    |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| fpage             | Primeira página do documento. Para artigo em Ahead of Print, incluir 00                       |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| @seq              | Para artigos que iniciam na mesma página de um artigo anterior, incluir a                     |
-|                   | sequência com letra                                                                           |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| lpage             | Inserir a última página do documento.                                                         |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| elocatid          | Incluir paginação eletrônica. Neste caso não preencher fpage e lpage                          |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| order (in TOC)    | Incluir a ordem do artigo no sumário do fascículo. Deve ter, no mínimo, dois                  |
-|                   | dígitos. Por exemplo, se o artigo for o primeiro do sumário, preencha este                    |
-|                   | campo com **01** e assim por diante.                                                          |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| pagcount*         | Inserir o total de paginação. Para Ahead of Print, incluir o valor 1                          |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| doctopic*         | Informar o tipo de documento a ser marcado. Por exemplo: artigo original, resenha,            | 
-|                   | carta, comentário, etc. No caso de Ahead Of Print, incluir sempre o tipo artigo original,     |
-|                   | exceto para errata                                                                            |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| language*         | Informe o idioma principal do texto a ser marcado                                             |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| version*          | Identifica a versão da DTD usada no processo de marcação (A versão atual é 4.0)               |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| artdate (rolling) | Obrigatório completar com a data **YYYYMMDD** quando for um artigo rolling pass.              |
-|                   | Rolling pass é um modelo publicação onde o periódico publica seus artigos num volume          |
-|                   | único a medida em que estes ficam prontos                                                     |
-+-------------------+-----------------------------------------------------------------------------------------------+
-| ahpdate           | Indicar a data de publicação de um artigo publicado em ahead of print                         |
-+-------------------+-----------------------------------------------------------------------------------------------+
++-------------------+----------------------------------------------------------------------------------------------------+
+| Campo             | Descrição                                                                                          |
++===================+====================================================================================================+
+| license           | Se não for inserido automaticamente, preencher com a URL da licença Creative Commons               |
+|                   | adotada pelo periódico. Consultar licenças em:                                                     |
+|                   | http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/tagset/elemento-license.html |
++-------------------+----------------------------------------------------------------------------------------------------+
+| volid             | Inserir volume, se houver. Para *ahead of print*, não incluir volume                               |
++-------------------+----------------------------------------------------------------------------------------------------+
+| supplvol          | Caso seja um suplemento de volume incluir sua parte ou número correspondente.                      |
+|                   | Por exemplo, para o *vol.12 supl.A*, preencha esse campo com "A"                                   |
++-------------------+----------------------------------------------------------------------------------------------------+
+| issueno           | Insira o número do fascículo. Caso seja um artigo para publicação em *ahead of                     |
+|                   | print*, insira "ahead" neste campo                                                                 |
++-------------------+----------------------------------------------------------------------------------------------------+
+| supplno           | Caso seja um suplemento de fascículo, incluir sua parte ou número                                  |
+|                   | correspondente. Por exemplo, para o *n.37, supl.A*, preencha esse campo com "A"                    |
++-------------------+----------------------------------------------------------------------------------------------------+
+| isidpart          | Usar em casos de press release, incluindo a sigla "pr"                                             |
++-------------------+----------------------------------------------------------------------------------------------------+
+| dateiso           | Data de publicação formada por ano, mês e dia **(YYYYMMDD)**. Preencher sempre                     |
+|                   | com o último mês da periodicidade. Por exemplo, se o periódico é bimestral                         |
+|                   | preencher "20140600". Use "00" para mês e dia nos casos em que não são                             |
+|                   | identificados. Por exemplo: "20140000"                                                             |
++-------------------+----------------------------------------------------------------------------------------------------+
+| month/season      | Entre o mês ou mês inicial + *barra* + mês final, em inglês (três letras) e ponto,                 |
+|                   | exceto para *May*, *June* e *July*. Por exemplo: *May/June*, *July/Aug*.                           |
++-------------------+----------------------------------------------------------------------------------------------------+
+| fpage             | Número da primeira página do documento. Para artigo em *ahead of print*, incluir "00"              |
++-------------------+----------------------------------------------------------------------------------------------------+
+| @seq              | Para artigos que iniciam na mesma página de um artigo anterior, incluir a                          |
+|                   | sequência com letra. Por exemplo: "23b"                                                            |
++-------------------+----------------------------------------------------------------------------------------------------+
+| lpage             | Inserir o número da última página do documento                                                     |
++-------------------+----------------------------------------------------------------------------------------------------+
+| elocatid          | Incluir paginação eletrônica. Neste caso não preencher *fpage* e *lpage*                           |
++-------------------+----------------------------------------------------------------------------------------------------+
+| order (in TOC)    | Incluir a ordem do artigo no sumário do fascículo. Deve ter, no mínimo, dois                       |
+|                   | dígitos. Por exemplo, se o artigo for o primeiro do sumário, preencha este                         |
+|                   | campo com "01" e assim por diante                                                                  |
++-------------------+----------------------------------------------------------------------------------------------------+
+| doctopic*         | Informar o tipo de documento a ser marcado. Por exemplo: artigo original, resenha,                 | 
+|                   | carta, comentário etc. No caso de *ahead of print*, incluir sempre o tipo "artigo original",       |
+|                   | exceto para errata                                                                                 |
++-------------------+----------------------------------------------------------------------------------------------------+
+| language*         | Informe o idioma principal do texto a ser marcado                                                  |
++-------------------+----------------------------------------------------------------------------------------------------+
+| sps-version*      | Identifica a versão do *SciELO Publishing Schema*                                                  |
+|                   | (http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/)                           |
+|                   | usada no processo de marcação (a versão atual é 1.5)                                               |
++-------------------+----------------------------------------------------------------------------------------------------+
+| artdate (rolling) | Obrigatório completar com a data formada por ano, mês e dia **(YYYYMMDD)** quando for um artigo    |
+|                   | de um periódico que usa o modelo de publicação contínua, onde os artigos são publicados à medida   |
+|                   | em que ficam prontos                                                                               |
++-------------------+----------------------------------------------------------------------------------------------------+
+| ahpdate           | Indicar a data de publicação de um artigo publicado em *ahead of print*                            |
++-------------------+----------------------------------------------------------------------------------------------------+
 
 
-.. note:: Os campos que apresentam um asterisco ao lado, são campos obrigatórios.
+.. note:: Os campos que apresentam um asterisco ao lado são obrigatórios.
 
 
 .. _front:
@@ -145,14 +145,14 @@ Ao selecionar o periódico no campo “collection/journal” o programa preenche
 Front
 =====
 
-Tendo preenchido todos os campos, ao clicar em [Ok] será aberta uma janela perguntando se o documento está na formatação adequada para efetuar a marcação automática:
+Tendo preenchido todos os campos, ao clicar em "Ok" será aberta uma janela perguntando se o arquivo está na formatação adequada para efetuar a marcação automática:
 
 .. image:: img/doc-mkp-mkp-automatic.jpg
    :height: 450px
    :align: center
 
 
-Ao clicar em [Sim], o programa efetuará a marcação automática dos elementos básicos do documento.
+Ao clicar em "Sim", o programa efetuará a marcação automática dos elementos básicos do documento.
 
 .. image:: img/doc-mkp-mkp--auto.jpg
    :height: 400px
@@ -160,7 +160,7 @@ Ao clicar em [Sim], o programa efetuará a marcação automática dos elementos 
    :align: center
 
 
-.. note:: Caso o arquivo não esteja na formatação recomendada em “Preparação de Arquivos para o Programa Markup”, o programa 
+.. note:: Caso o arquivo não esteja na formatação recomendada em *Preparação de Arquivos para o Programa Markup*, o programa 
           não identificará corretamente os elementos.
 
 
@@ -173,8 +173,8 @@ Após a marcação automática é necessário completar a marcação dos element
 Doctitle
 --------
 
-Confira o idioma inserido em [doctitle] para títulos traduzidos e se necessário, corrija.
-Para corrigir, selecione a tag "incorreta" e clique no botão "lápis" para editar os atributos:
+Confira o idioma inserido em **[doctitle]** para títulos traduzidos e se necessário, corrija.
+Para corrigir, selecione a *tag* cujo atributo precisa ser corrigido e clique no botão "Markup: Editar atributos" (lápis) para editá-lo:
 
 
 .. image:: img/doc-mkp-language-doctitle.jpg
@@ -189,16 +189,17 @@ Faça o mesmo para os demais títulos traduzidos.
 Autores
 -------
 
-Alguns autores apresentam mais que 1 label ao lado do nome, porém o programa não faz a marcação automática de mais que 1 label. Para isso, selecione o label do autor e identifique com o elemento [xref].
+Alguns autores apresentam mais que um *label* ao lado do nome, porém o programa não faz a marcação automática de mais que um *label*. Para isso, selecione o *label* do autor e o identifique com o elemento **[xref]**.
 
 
 .. image:: img/doc-mkp-xref-label.jpg
    :height: 300px
    :align: center
 
-Por se tratar de referência cruzada (xref) de afiliação, o tipo de xref (ref-type) selecionado foi o "affiliation" e o rid (relacionado ao ID) "aff3" para relacionar o label 3 à afiliação correspondente.
 
-O programa Markup não faz marcação automática de função de autor como, por exemplo, o cargo exercido. Para isso é necessário selecionar a informação que consta ao lado do nome do autor, ir para o nível inferior do elemento [author] e identificar esse dado com a tag [role]. Veja:
+Por se tratar de referência cruzada (*xref*) de afiliação, o tipo de *xref* (*ref-type*) selecionado foi o "affiliation" e o *rid* (relacionado ao "ID") "aff3" para relacionar o *label* 3 à afiliação correspondente.
+
+O programa Markup não faz a marcação automática de função de autor como, por exemplo, o cargo exercido. Para isso é necessário selecionar a informação que consta ao lado do nome do autor, ir para o nível inferior do elemento **[author]** e identificar esse dado com a tag **[role]**. Veja:
 
 
 .. image:: img/doc-mkp-role-author.jpg
@@ -211,8 +212,8 @@ O programa Markup não faz marcação automática de função de autor como, por
    :align: center
 
 
-.. note:: O programa não identifica automaticamente símbolos ou letras como label, a qual deve ser marcada manualmente, observando-se 
-          o tipo de referência cruzada a ser incluída.
+.. note:: O programa não identifica automaticamente símbolos ou letras como *label*, que devem ser marcados manualmente, 
+          observando o tipo de referência cruzada a ser incluída.
 
 
 .. raw:: html
@@ -225,25 +226,27 @@ O programa Markup não faz marcação automática de função de autor como, por
 Sig-block
 =========
 Geralmente arquivos Editoriais, Apresentações etc possuem ao final do texto a assinatura do autor ou editor.
-Para identificar a assinatura do autor, seja em imagem, seja em texto, é necessário selecionar a assinatura e identificar com a tag [sigblock]:
+Para identificar a assinatura do autor, seja em imagem ou texto, é necessário selecionar a assinatura e identificar com a tag **[sigblock]** (no nível inferior da tag **[xmlbody]**):
 
 .. image:: img/mkp-sigblock-select.jpg
    :height: 200px
    :align: center
 
-Após isso, selecione apenas a assinatura e identifique com a tag [sig]:
+Após isso, selecione apenas a assinatura e faça a identificação com a tag **[sig]**:
 
 .. image:: img/mkp-sigblock-sig.jpg
    :height: 180px
    :align: center
 
-Abaixo o resultado da identificação de assinatura do autor/editor:
+
+.. note:: Algumas assinaturas apresentam ao lado o cargo ou função do autor. Para a identificação de **[sig]**, não considerar a função.
+
+
+Faça então a idenficação da assinatura, identificando **[fname]** e **[surname]**. Abaixo o resultado da identificação de assinatura do autor/editor:
 
 .. image:: img/mkp-result-sigblock.jpg
    :height: 150px
    :align: center
-
-.. note:: Algumas assinaturas apresentam ao lado o cargo ou função do autor. Para a identificação de [sig], não considerar a função.
 
 
 .. _onbehalf:
@@ -251,8 +254,8 @@ Abaixo o resultado da identificação de assinatura do autor/editor:
 On Behalf
 =========
 
-O elemento [on-behalf] é utilizado quando um autor exerce papel de representante de um grupo ou organização. 
-Para identificar esse dado, verifique se a informação do representante do grupo está na mesma linha do autor anterior. Exemplo:
+O elemento **[on-behalf]** é utilizado quando um autor exerce papel de representante de um grupo ou organização. 
+Para identificar esse dado, verifique se a informação do representante do grupo está na mesma linha do autor. Exemplo:
 
 
     Fernando Augusto Proietti :sup:`2`  Interdisciplinary HTLV Research Group
@@ -265,7 +268,7 @@ O programa identificará o autor "Fernando Augusto Proietti" da seguinte forma:
    :align: center
 
 
-Agora selecione o nome do grupo ou organização e identifique com a tag: [onbehalf]:
+Agora selecione o nome do grupo ou organização e identifique com a tag: **[onbehalf]**:
 
 .. image:: img/mkp-tag-onbehalf.jpg
    :height: 150px
@@ -281,16 +284,15 @@ Autores que apresentam registro no ORCID ou no Lattes devem inserir o link de re
    :height: 230px
    :align: center
 
-Ao fazer a marcação de [doc] o programa identificará automaticamente todos os dados iniciais do documento, inclusive marcará em [author] o link de registro do autor.
-Ainda que o programa inclua o link na tag [author], será necessário completar a marcação desse dado.
+Ao fazer a marcação de **[doc]** o programa identificará automaticamente todos os dados iniciais do documento, inclusive marcará em **[author]** o link de registro do autor.
+Ainda que o programa inclua o link na tag **[author]**, será necessário completar a marcação desse dado.
 
-Para isso, entre no nível de author, selecione o link do autor e clique em [author-id].
-Na janela aberta pelo programa, selecione o tipo de registro do autor: se lattes ou ORCID e clique em [Continuar]
+Para isso, entre no nível de **[author]**, selecione o link do autor e clique em **[author-id]**.
+Na janela aberta pelo programa, selecione o tipo de registro do autor: se lattes ou ORCID e clique em "Continuar".
 
 .. image:: img/mkp-marcando-id-contrib.jpg
    :height: 230px
    :align: center
-
 
 
 .. _afiliacao:
@@ -298,10 +300,10 @@ Na janela aberta pelo programa, selecione o tipo de registro do autor: se lattes
 Afiliações
 ----------
 
-O Programa Markup faz a identificação apenas de grupo de dados de cada afiliação com o elemento [normaff], ou seja, o detalhamento das afiliações não é feito automaticamente.
-Complete a marcação de afiliações identificando: instituição maior [orgname], divisão 1 [orgdiv1], divisão 2 [orgdiv2], cidade [city], estado [state] (esses 4 últimos, se presentes) e o país [country].
+O programa Markup faz a identificação apenas de grupo de dados de cada afiliação com o elemento **[normaff]**, ou seja, o detalhamento das afiliações não é feito automaticamente.
+Complete a marcação de afiliações identificando: instituição maior **[orgname]**, divisão 1 **[orgdiv1]**, divisão 2 **[orgdiv2]**, cidade **[city]**, estado **[state]** (esses 4 últimos, se presentes) e o país **[country]**.
 
-Para fazer a identificação dos elementos acima vá para o nível inferior do elemento [normaff] e faça o detalhamento de cada afiliação.
+Para fazer a identificação dos elementos acima vá para o nível inferior do elemento **[normaff]** e faça o detalhamento de cada afiliação.
 
 
 .. image:: img/doc-mkp-detalhamento-aff.jpg
@@ -309,7 +311,7 @@ Para fazer a identificação dos elementos acima vá para o nível inferior do e
    :align: center
 
 
-Após o detalhamento de afiliações, será necessário verificar se a instituição marcada e país correspondente, possui forma normalizada por SciELO. Para isso, selecione o elemento [normaff] e clique no "lapis" para editar os atributos. O programa abrirá uma janela para normalização dos elementos indicados nos campos em branco.
+Após o detalhamento de afiliações, será necessário verificar se a instituição marcada e país correspondente possuem forma normalizada pelo SciELO. Para isso, selecione o elemento **[normaff]** e clique no botão "Markup: Editar atributos" (lápis) para editar os atributos. O programa abrirá uma janela para normalização dos elementos indicados nos campos em branco.
 
 
 .. image:: img/doc-mkp-normalizacao-aff.jpg
@@ -317,8 +319,7 @@ Após o detalhamento de afiliações, será necessário verificar se a institui�
    :align: center
 
 
-
-No campo "icountry" selecione o país da instituição maior (orgname), em seguida clique em "find" para encontrar a instituição normalizada. Ao fazer esse procedimento, o programa Markup consultará nossa base de dados de instituições normalizadas e verificará se a instituição selecionada consta na lista.
+No campo "icountry" selecione o país da instituição maior (*orgname*), em seguida clique em "find" para encontrar a instituição normalizada. Ao fazer esse procedimento, o programa Markup consultará nossa base de dados de instituições normalizadas e verificará se a instituição selecionada consta na lista.
 
 
 .. image:: img/doc-mkp-normalizadas.jpg
@@ -332,9 +333,8 @@ No campo "icountry" selecione o país da instituição maior (orgname), em segui
    :align: center
 
 
-
 .. note:: Faça a busca pelo idioma de origem da instituição, exceto para línguas não latinas, quando a consulta deverá 
-         ser feita em inglês. Caso a instituição não exista na lista do Markup, selecione o elemento "No match found" e clique em [OK].
+         ser feita em inglês. Caso a instituição não exista na lista do Markup, selecione o elemento "No match found" e clique em "OK".
 
 
 .. _resumo:
@@ -342,22 +342,22 @@ No campo "icountry" selecione o país da instituição maior (orgname), em segui
 Resumos
 =======
 
-Os resumos devem ser identificados manualmente. Para marcação de resumos simples (sem seções) e para os resumos estruturados (com seções) utilizar o elemento [xmlabstr]. Na marcação, selecione o título do resumo e o texto e em seguida marque com o botão [xmlabstr].
+Os resumos devem ser identificados manualmente. Para marcação de resumos simples (sem seções) e para os resumos estruturados (com seções) utilizar o elemento **[xmlabstr]**. Na marcação, selecione o título do resumo e o texto e em seguida marque com o botão **[xmlabstr]**.
 
 Resumo sem Seção:
 -----------------
 
-**selecionando:** 
+Selecionando:
 
 .. image:: img/doc-mkp-select-abstract-s.jpg
    :height: 350px
    :align: center
 
 
-Quando clicar em [xmlabstr] o programa abrirá uma janela onde deve-se selecionar o idioma do resumo marcado:
+Quando clicar em **[xmlabstr]** o programa abrirá uma janela onde deve-se selecionar o idioma do resumo marcado:
 
 
-**marcação:** 
+Marcação: 
 
 .. image:: img/doc-mkp-idioma-resumo.jpg
    :height: 350px
@@ -365,7 +365,7 @@ Quando clicar em [xmlabstr] o programa abrirá uma janela onde deve-se seleciona
    :align: center
 
 
-**Resultado**
+Resultado:
 
 .. image:: img/doc-mkp-mkp-abstract.jpg
    :align: center
@@ -380,20 +380,20 @@ Resumo com Seção:
 Siga os mesmos passos descritos para resumo sem seção:
 
 
-**selecionando:** 
+Selecionando: 
 
 .. image:: img/doc-mkp-select-abstract.jpg
    :align: center
 
 
-**marcação:**
+Marcação:
 		  
 .. image:: img/doc-mkp-idioma-abstract.jpg
    :height: 400px
    :align: center
 
 
-**Resultado**
+Resultado:
 
 .. image:: img/doc-mkp-mkp-resumo.jpg
    :align: center
@@ -401,7 +401,7 @@ Siga os mesmos passos descritos para resumo sem seção:
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/v/FVTjDOIGV0Y" autostart="0" frameborder="0" allowfullscreen controls></iframe>
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/FVTjDOIGV0Y" autostart="0" frameborder="0" allowfullscreen controls></iframe>
 
 
 .. _palavra-chave:
@@ -409,43 +409,43 @@ Siga os mesmos passos descritos para resumo sem seção:
 Keywords
 ========
 
-O programa Markup apresenta dois botões para identificação de palavras-chave, [*kwdgrp] e [kwdgrp].
-O botão [*kwdgrp], com asterisco, é utilizada para identificação automática de cada palavra-chave e também do título. Para isso, selecione toda a informação inclusive o título e identifique os dados com o elemento [*kwdgrp].
+O programa Markup apresenta dois botões para identificação de palavras-chave, **[*kwdgrp]** e **[kwdgrp]**.
+O botão **[*kwdgrp]**, com asterisco, é utilizada para identificação automática de cada palavra-chave e do título. Para isso, selecione toda a informação – inclusive o título – e identifique os dados com o elemento **[*kwdgrp]**.
 
 Marcação Automática:
 --------------------
 
-**selecionando:**
+Selecionando:
  
 .. image:: img/doc-mkp-select-kwd.jpg
    :height: 300px
    :align: center
 
 
-Ao clicar em [*kwdgrp] o programa abrirá uma janela para seleção do idioma das palavras-chave marcadas:
+Ao clicar em **[*kwdgrp]** o programa abrirá uma janela para seleção do idioma das palavras-chave marcadas:
 
 
-**marcação:** 
+Marcação:
 
 .. image:: img/doc-mkp-mkp-kwd.jpg
    :height: 300px
    :align: center
 
 
+Resultado:
+
 .. image:: img/doc-mkp-kwd-grp.jpg
    :height: 100px
    :align: center
 
 
-
-
 Marcação Manual:
 ----------------
 
-Caso a marcação automática não ocorra conforme o esperado, pode-se marcar o grupo de palavras-chave manualmente. Selecione o grupo de palavras-chave e marque com o elemento [kwdgrp].
+Caso a marcação automática não ocorra conforme o esperado, pode-se marcar o grupo de palavras-chave manualmente. Selecione o grupo de palavras-chave e marque com o elemento **[kwdgrp]**.
 
 
-**marcação:**
+Marcação:
 
 .. image:: img/doc-mkp-selection-kwd-s.jpg
    :height: 350px
@@ -453,24 +453,27 @@ Caso a marcação automática não ocorra conforme o esperado, pode-se marcar o 
 
 
 
-Em seguida, faça a identificação de item por item. Para tanto, selecione o título das palavras-chave e identifique com o elemento [sectitle]:
+Em seguida, faça a identificação de item por item. Para tanto, selecione o título das palavras-chave e identifique com o elemento **[sectitle]**:
 
 .. image:: img/doc-mkp-sec-kwd.jpg
    :height: 300px
    :align: center
 
 
-Na sequência, selecione palavra por palavra e marque com o elemento [kwd]:
+Na sequência, selecione palavra por palavra e marque com o elemento **[kwd]**:
 
 .. image:: img/doc-mkp-kwd-kwd.jpg
    :height: 300px
    :align: center
 
 
+.. note:: Quando estiver fazendo a marcação manual das palavras-chave, note que o separador não deverá ser inserido dentro da
+          tag **[kwd]** .
+
 
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/v/6sNTlHF8WdU" autostart="0" frameborder="0" allowfullscreen controls></iframe>
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/6sNTlHF8WdU" autostart="0" frameborder="0" allowfullscreen controls></iframe>
 
 
 .. _historico:
@@ -478,7 +481,7 @@ Na sequência, selecione palavra por palavra e marque com o elemento [kwd]:
 History
 =======
 
-O elemento [hist] é utilizado para marcar o histórico do documento. Selecione todo o dado de histórico e marque com o elemento [hist]:
+O elemento **[hist]** é utilizado para marcar o histórico do documento. Selecione todo o dado de histórico e marque com o elemento **[hist]**:
 
 
 .. image:: img/doc-mkp-hist-select.jpg
@@ -486,16 +489,14 @@ O elemento [hist] é utilizado para marcar o histórico do documento. Selecione 
    :align: center
 
 
-
-Selecione então a data de recebido e marque com o elemento [received]. Confira a data ISO indicada no campo dateiso e corrija, se necessário. A estrutura da data ISO esperada nesse campo é:
-ANO MÊS DIA. Veja:
+Selecione, então, a data de recebimento e marque com o elemento **[received]**. Confira a data ISO indicada no campo "dateiso" e corrija, se necessário. A estrutura da data ISO esperada nesse campo é **ANO MÊS DIA**. Veja:
 
 .. image:: img/doc-mkp-received.jpg
    :height: 350px
    :align: center
 
 
-Caso haja a data de revisado, selecione-a e marque com o elemento [revised]. Faça o mesmo para a data de aceito; selecionando o elemento [accepted]. Confira a data ISO indicada no campo dateisso e corrija, se necessário.
+Caso haja a data de revisão, selecione-a e marque com o elemento **[revised]**. Faça o mesmo para a data de aceite, selecionando o elemento **[accepted]**. Confira a data ISO indicada no campo "dateiso" e corrija, se necessário.
 
 .. image:: img/doc-mkp-accepted.jpg
    :height: 350px
@@ -513,14 +514,14 @@ Caso haja a data de revisado, selecione-a e marque com o elemento [revised]. Fa�
 Correspondência
 ===============
 
-Com o elemento [corresp] é possível marcar os dados de correspondência do autor. Esse elemento possui um subnível para identificação do e-mail do autor. Selecione toda a informação de correspondência e marque com o elemento [corresp]. Será apresentada uma janela para marcação do ID de correspondência que, nesse caso, deve ser “c” + o número de ordem da correspondência.
+Com o elemento **[corresp]** é possível marcar os dados de correspondência do autor. Esse elemento possui um subnível para identificação do e-mail do autor. Selecione toda a informação de correspondência e marque com o elemento **[corresp]**. Será apresentada uma janela para marcação do ID de correspondência que, nesse caso, deve ser “c” + o número de ordem da correspondência.
 
 .. image:: img/doc-mkp-corresp-select.jpg
    :height: 300px
    :align: center
 
 
-Selecione o e-mail do autor correspondente e marque com o elemento [email]. Suba um nível para marcar o próximo elemento.
+Selecione o e-mail do autor correspondente e marque com o elemento **[email]**.
 
 .. image:: img/doc-mkp-email-corresp.jpg
    :height: 300px
@@ -534,26 +535,28 @@ Selecione o e-mail do autor correspondente e marque com o elemento [email]. Suba
 
 Ensaio Clínico
 ==============
-Arquivos que apresentam informação de ensaio clínico com número de registro, devem ser marcados com o elemento [cltrial]:
+Arquivos que apresentam informação de ensaio clínico com número de registro, devem ser marcados com o elemento **[cltrial]**:
 
 .. image:: img/doc-mkp-tag-cltrial.jpg
    :height: 150px
    :align: center
 
 
-Na janela aberta pelo programa, preencha o campo de URL da base de dados onde o Ensaio foi indexado e o campo "ctdbid" selecionando a base correspondente:
+Na janela aberta pelo programa, preencha o campo de URL da base de dados onde o Ensaio foi indexado no campo "cturl" e preencha o campo "ctdbid" selecionando a base correspondente. Para encontrar a URL do ensaio clínico faça uma busca na internet pelo número de registro.
 
 .. image:: img/doc-mkp-clinicaltr.jpg
    :height: 300px
    :align: center
 
-Para encontrar a URL do ensaio clínico faça uma busca na internet pelo número de registro para preenchimento do atributo conforme exemplo abaixo.
+
+Resultado:
 
 .. image:: img/doc-mkp-ensaio.jpg
    :height: 80px
    :align: center
 
-.. note:: Comumente a informação de Ensaio clínico está posicionada abaixo de resumos ou palavras-chave.
+
+.. note:: Comumente a informação de Ensaio clínico está posicionada abaixo dos resumos ou palavras-chave.
 
 
 .. raw:: html
