@@ -1443,6 +1443,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\ws_proxy.py
+  Destination=%PROGDIR%\bin\xml\app_modules\generics\ws\ws_proxy.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\ws_requester.py
   Destination=%PROGDIR%\bin\xml\app_modules\generics\ws\ws_requester.py
   Flags=0000000010000010
@@ -1640,6 +1645,16 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_validations.py
   Destination=%PROGDIR%\bin\xml\app_modules\app\validations\article_validations.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Destination=%PROGDIR%\bin\xml\app_modules\app\validations\article_disp_formula.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\app\validations\article_tablewrap.py
+  Destination=%PROGDIR%\bin\xml\app_modules\app\validations\article_tablewrap.py
   Flags=0000000010000010
 end
 item: Install File
@@ -6878,7 +6893,8 @@ end
 item: Execute Program
   Pathname=python
   Command Line=%PROGDIR%\bin\xml\run_app.py install
-  Flags=00000010
+  Default Directory=%PROGDIR%\bin\xml\
+  Flags=00000011
 end
 remarked item: Add to AUTOEXEC.BAT
   New Text=SET BAP=OS23470a

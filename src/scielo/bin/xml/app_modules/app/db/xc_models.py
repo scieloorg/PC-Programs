@@ -1116,7 +1116,7 @@ class AopManager(object):
             if found_aop is not None:
                 # ex aop ou current aop
                 status = self.compare_article_and_aop(article, found_aop)
-                messages = self.check_aop_message(article, found_aop, status)
+                messages.append(self.check_aop_message(article, found_aop, status))
                 if status not in ['matched aop', 'partially matched aop']:
                     found_aop = None
         #status = (status in ['matched aop', 'partially matched aop', 'regular article'])

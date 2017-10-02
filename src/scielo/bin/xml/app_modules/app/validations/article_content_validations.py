@@ -15,6 +15,7 @@ from . import ref_validations
 from . import data_validations
 from ..pkg_processors import xml_versions
 from . import article_disp_formula
+from . import article_tablewrap
 
 
 def join_not_None_items(items, sep=', '):
@@ -176,7 +177,8 @@ class ArticleContentValidation(object):
         self.pkgfiles = pkgfiles
         self._validations = None
         self.config = config
-        self.disp_formulas_validator = article_disp_formula.ArticleDispFormulasValidator(_article, config)
+        self.disp_formulas_validator = article_disp_formula.ArticleDispFormulasValidator(config)
+        self.tablewrap_validator = article_tablewrap.ArticleTableWrapValidator(config)
 
     def normalize_validations(self, validations_result_list):
         r = []
@@ -241,7 +243,8 @@ class ArticleContentValidation(object):
 
             items.append(self.sections)
             items.append(self.paragraphs)
-            items.append(self.disp_formulas)
+            items.append(self.disp_formulas_validator.validate(self.article))
+            items.append(self.tablewrap_validator.validate(self.article))
             items.append(self.validate_xref_reftype)
             items.append(self.missing_xref_list)
             #items.append(self.innerbody_elements_permissions)
@@ -253,10 +256,6 @@ class ArticleContentValidation(object):
             encoding.debugging('fim normalize_validations', '')
             self._validations = (r, performance)
         return self._validations
-
-    @property
-    def disp_formulas(self):
-        return self.disp_formulas_validator.validate()
 
     @property
     def dtd_version(self):
@@ -427,11 +426,15 @@ class ArticleContentValidation(object):
     def publisher_name(self):
         return data_validations.is_required_data('publisher name', self.article.publisher_name, validation_status.STATUS_FATAL_ERROR)
 
+    def check_for_sps_version_number(self, number):
+        if self.article.sps_version_number is not None:
+            return number <= self.article.sps_version_number
+        return False
+
     @property
     def journal_id_publisher_id(self):
-        if self.article.sps_version_number is not None:
-            if self.article.sps_version_number >= 1.3:
-                return data_validations.is_required_data('journal-id (publisher-id)', self.article.journal_id_publisher_id, validation_status.STATUS_FATAL_ERROR)
+        if self.check_for_sps_version_number(1.3):
+            return data_validations.is_required_data('journal-id (publisher-id)', self.article.journal_id_publisher_id, validation_status.STATUS_FATAL_ERROR)
 
     @property
     def journal_id_nlm_ta(self):
@@ -677,14 +680,14 @@ class ArticleContentValidation(object):
     def _total(self, total, count, label_total, label_count):
         r = []
         if total < 0:
-            msg = data_validations.is_expected_value(label_total, total, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
+            msg = data_validations.invalid_value_result(label_total, total, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
             r.append(msg)
         elif count is not None:
             if count.isdigit():
                 if total != int(count):
                     r.append((u'{label_count} ({count}) x {label_total} ({total})'.format(label_count=label_count, count=count, label_total=label_total, total=total), validation_status.STATUS_ERROR, _('{label1} and {label2} must have the same value. ').format(label1=label_count, label2=label_total)))
             else:
-                msg = data_validations.is_expected_value(label_count, count, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
+                msg = data_validations.invalid_value_result(label_count, count, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
                 r.append(msg)
         return r
 
@@ -859,7 +862,7 @@ class ArticleContentValidation(object):
     @property
     def innerbody_elements_permissions(self):
         r = []
-        status = validation_status.STATUS_WARNING if self.article.sps_version_number >= 1.4 else validation_status.STATUS_INFO
+        status = validation_status.STATUS_WARNING if self.check_for_sps_version_number(1.4) else validation_status.STATUS_INFO
         if len(self.article.permissions_required) > 0:
             l = [elem_id for elem_id, missing_children in self.article.permissions_required]
             if len(l) > 0:
@@ -870,13 +873,14 @@ class ArticleContentValidation(object):
     def article_permissions(self):
         text_languages = sorted(list(set(self.article.trans_languages + [self.article.language] + ['en'])))
         r = []
-        if self.article.sps_version_number >= 1.4:
+
+        if  self.check_for_sps_version_number(1.4):
             for cp_elem in ['statement', 'year', 'holder']:
                 if self.article.article_copyright.get(cp_elem) is None:
                     r.append(('copyright-' + cp_elem, validation_status.STATUS_WARNING, _('It is highly recommended identifying {elem}. ').format(elem='copyright-' + cp_elem)))
         for lang, license in self.article.article_licenses.items():
             if lang is None:
-                if self.article.sps_version_number >= 1.4:
+                if self.check_for_sps_version_number(1.4):
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{label} is required. ').format(label='license/@xml:lang')))
             elif lang not in text_languages:
                 r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=lang, label='license/@xml:lang') + _('The license text must be written in {langs}. ').format(langs=_(' or ').join(attributes.translate_code_languages(text_languages))) + _('Expected values for {label}: {expected}. ').format(label='xml:lang', expected=_(' or ').join(text_languages)), license['xml']))
@@ -1076,7 +1080,7 @@ class ArticleContentValidation(object):
                         items.append(('xref', start_node.text))
                         items.append(('@rid', end_node.attrib.get('rid')))
                         items.append(('xref', end_node.text))
-                        message.append(('xref', validation_status.STATUS_ERROR, invalid_labels_and_values(items)))
+                        message.append(('xref', validation_status.STATUS_ERROR, data_validations.invalid_labels_and_values(items)))
         return message
 
     @property
@@ -1111,7 +1115,7 @@ class ArticleContentValidation(object):
                     items.append(('xref', start_node.text))
                     items.append(('@rid', end_node.attrib.get('rid')))
                     items.append(('xref', end_node.text))
-                    message.append(('xref', validation_status.STATUS_ERROR, invalid_labels_and_values(items)))
+                    message.append(('xref', validation_status.STATUS_ERROR, data_validations.invalid_labels_and_values(items)))
             for bibr_xref in self.article.bibr_xref_nodes:
                 rid = bibr_xref.attrib.get('rid')
                 if rid is not None and bibr_xref.text is not None:
@@ -1119,7 +1123,7 @@ class ArticleContentValidation(object):
                         items = []
                         items.append(('@rid', rid))
                         items.append(('xref', bibr_xref.text))
-                        message.append(('xref', validation_status.STATUS_ERROR, invalid_labels_and_values(items)))
+                        message.append(('xref', validation_status.STATUS_ERROR, data_validations.invalid_labels_and_values(items)))
         return message
 
     @property
@@ -1132,7 +1136,7 @@ class ArticleContentValidation(object):
                     items = []
                     items.append(('@rid', rid))
                     items.append(('xref', xref_node['xml']))
-                    message.append(('xref', validation_status.STATUS_WARNING, invalid_labels_and_values(items)))
+                    message.append(('xref', validation_status.STATUS_WARNING, data_validations.invalid_labels_and_values(items)))
         return message
 
     @property
@@ -1174,7 +1178,6 @@ class ArticleContentValidation(object):
         min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
         for hrefitem in self.article.hrefs:
             href_validations = HRefValidation(self.app_institutions_manager.ws.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
-        
             href_items[hrefitem.src] = {
                 'display': href_validations.display,
                 'elem': hrefitem,
@@ -1199,11 +1202,9 @@ class ArticleContentValidation(object):
         for lang, f in self.article.expected_pdf_files.items():
             if f not in _pkg_files.keys():
                 _pkg_files[f] = []
-            _pkg_files[f].append(
-                (validation_status.STATUS_INFO,
-                    _('content in "{lang}". ').format(lang=lang)))
+            msg = _('Expected PDF file which content in "{lang}". ').format(lang=_(attributes.LANGUAGES.get(lang)))
             if f not in self.pkgfiles.files_except_xml:
-                _pkg_files[f].append((validation_status.STATUS_ERROR, _('Not found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
+                _pkg_files[f].append((validation_status.STATUS_ERROR, msg + _('Not found {label} in the {item}. ').format(label=f, item=_('package'))))
 
         #from files, find in XML
         href_items_in_xml = [item.name_without_extension for item in self.article.href_files]
@@ -1214,14 +1215,14 @@ class ArticleContentValidation(object):
                 name, ext = os.path.splitext(f)
                 if f not in _pkg_files.keys():
                     _pkg_files[f] = []
-                _pkg_files[f].append((validation_status.STATUS_INFO, _('Found {label} in the {item}. ').format(label=_('file'), item=_('package'))))
+                _pkg_files[f].append((validation_status.STATUS_INFO, _('Found {label} in the {item}. ').format(label=f, item=_('package'))))
 
                 status = validation_status.STATUS_INFO
                 message = None
                 if f in href_items_in_xml or name in href_items_in_xml:
-                    message = _('Found {label} in the {item}. ').format(label=_('file'), item='XML')
+                    message = _('Found {label} in the {item}. ').format(label='xlink:href="{}"'.format(f), item=self.pkgfiles.basename)
                 else:
-                    message = _('Not found {label} in the {item}. ').format(label=_('file'), item='XML')
+                    message = _('Not found {label} in the {item}. ').format(label='xlink:href="{}"'.format(f), item=self.pkgfiles.basename)
                     status = validation_status.STATUS_ERROR
 
                 if message is not None:

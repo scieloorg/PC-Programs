@@ -41,6 +41,9 @@ XML Package Maker
 
 .. image:: img/howtoinstall_xpm.png
 
+From **4.0.094** version, the installer automatically installs the dependences such as packtools and pillow (PIL).
+If it does not, execute the corresponding c:\\SciELO_XPM\\xml\\install_requirements.bat
+
 
 SciELO PC Programs
 ------------------
@@ -76,6 +79,9 @@ SciELO PC Programs
 
 .. image:: img/howtoinstall_programs.png
 
+From **4.0.094** version, the installer automatically installs the dependences such as packtools and pillow (PIL).
+If it does not, execute the corresponding c:\\scielo\\bin\\xml\\install_requirements.bat
+
 
 ================
 How to configure
@@ -102,6 +108,37 @@ Edit the file corresponding to **c:\\scielo\\bin\\scielo_paths.ini**, the line:
   SCI_LISTA_SITE=c:\\home\\scielo\www\\proc\\scilista.lst
 
 Change **c:\\home\\scielo\\www** to the location of local SciELO Website. E.g.: **c:\\var\\www\\scielo**
+
+
+From **4.0.094** version:
+
+Only if applicable, edit the file corresponding to **c:\\scielo\\bin\\scielo_collection.ini** and/or **c:\\SciELO_XPM\\scielo_collection.ini**:
+
+.. code::
+
+  CODED_FORMULA_REQUIRED=off
+  CODED_TABLE_REQUIRED=off
+
+Set CODED_FORMULA_REQUIRED=off and CODED_TABLE_REQUIRED=off, if coded data is not required.
+
+
+XML Package Maker and XML Markup
+--------------------------------
+
+From **4.0.094** version:
+
+Only if applicable, edit the file corresponding to **c:\\scielo\\bin\\scielo_env.ini** and/or **c:\\SciELO_XPM\\scielo_env.ini**:
+
+.. code::
+
+  PROXY_ADDRESS=123.456.789:1234
+  ENABLED_WEB_ACCESS=off
+  XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java
+
+
+Complete **PROXY_ADDRESS**, if a proxy is used to access the Internet.
+Set ENABLED_WEB_ACCESS=off, if Internet is not available.
+Set the preference order of XML Validators.
 
 
 Application menu

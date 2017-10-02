@@ -130,7 +130,7 @@ def zip(zip_filename, files):
         os.makedirs(dest_path)
     try:
         zipf = zipfile.ZipFile(zip_filename, 'w')
-        for item in files:
+        for item in list(set(files)):
             zipf.write(item, arcname=os.path.basename(item))
         zipf.close()
     except:

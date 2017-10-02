@@ -40,6 +40,7 @@ class PkgArticleFiles(object):
         self.filename = filename
         self.path = os.path.dirname(filename)
         self.basename = os.path.basename(filename)
+        self.folder = os.path.basename(self.path)
         self.name, self.ext = os.path.splitext(self.basename)
         if self.filename.endswith('.sgm.xml'):
             self.name, ign = os.path.splitext(self.name)
@@ -61,10 +62,13 @@ class PkgArticleFiles(object):
     def prefixes(self):
         if self._prefixes is None:
             r = []
-            if self.basename.startswith('a') and self.basename[3:4] == 'v':
-                r.append(self.basename[:3])
-            r.extend([self.name + suffix for suffix in SUFFIXES])
-            self._prefixes = list(set(r))
+            if self.folder.endswith('_package'):
+                self._prefixes = [self.name + '-', self.name + '.', ]
+            else:
+                if self.basename.startswith('a') and self.basename[3:4] == 'v':
+                    r.append(self.basename[:3])
+                r.extend([self.name + suffix for suffix in SUFFIXES])
+                self._prefixes = list(set(r))
         return self._prefixes
 
     def find_all_files(self):
@@ -74,7 +78,7 @@ class PkgArticleFiles(object):
                 for prefix in self.prefixes:
                     if item.startswith(prefix):
                         r.append(item)
-        self._all = r
+        self._all = list(set(r))
 
     @property
     def all(self):

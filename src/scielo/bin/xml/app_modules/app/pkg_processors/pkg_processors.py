@@ -62,14 +62,18 @@ def xpm_version():
     version_files = [
         BIN_PATH + '/xpm_version.txt',
         BIN_PATH + '/cfg/xpm_version.txt',
-        BIN_PATH + '/cfg/version.txt',
     ]
-    version = ''
+    version = '|'
     for f in version_files:
+        encoding.debugging('xpm_version', f)
         if os.path.isfile(f):
             version = fs_utils.read_file_lines(f)[0]
             break
-    return version
+    if '|' not in version:
+        version += '|'
+    encoding.debugging('version', version)
+    major_version, minor_version = version.split('|')
+    return major_version, minor_version
 
 
 def normalize_xml_packages(xml_list, dtd_location_type, stage):
@@ -114,7 +118,7 @@ class ArticlesConversion(object):
     def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
-        if self.validations_reports.blocking_errors == 0 and self.accepted_articles == len(self.pkg.articles):
+        if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
 
             _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
@@ -220,7 +224,7 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.validations_reports.blocking_errors > 0:
             result = 'rejected'
-        elif self.accepted_articles == 0:
+        elif self.accepted_articles == 0 and len(self.articles_mergence.excluded_orders) == 0:
             result = 'ignored'
         elif self.articles_conversion_validations.blocking_errors > 0:
             result = 'rejected'
@@ -346,7 +350,7 @@ class PkgProcessor(object):
         self.stage = stage
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
-        self.xpm_version = xpm_version() if stage == 'xpm' else ''
+        self.xpm_version = xpm_version() if stage == 'xpm' else None
         self._db_manager = None
         self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
         self.ws_journals.update_journals_file()

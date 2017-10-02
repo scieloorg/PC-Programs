@@ -24,7 +24,7 @@ except ImportError:
         import Tkinter as tk
     except:
         print('no Tkinter')
-    
+
 from .. import encoding
 
 

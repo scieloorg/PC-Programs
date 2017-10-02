@@ -11,6 +11,7 @@ except ImportError:
 
 from ..__init__ import _
 from ..__init__ import BIN_PATH
+from ..generics import encoding
 
 
 XML_FOLDER_DEFAULT = BIN_PATH
@@ -110,25 +111,25 @@ class XMLAppGUI(tk.Frame):
 
     def run_xml_package_maker(self):
         if self.is_valid_folder():
-            self.busy()
+            self.started()
             self.generate_pmc_package = self.pmc_var.get() == 1
             msg, color = self.function(self.selected_folder, self.generate_pmc_package)
             self.display_message(msg, color)
-            self.notbusy(color)
+            self.finished(color)
 
     def run_xml_converter(self):
         if self.is_valid_folder():
-            self.busy()
+            self.started()
             msg, color = self.function(self.selected_folder)
-            self.notbusy(color)
+            self.finished(color)
 
-    def busy(self):
-        print('busy')
+    def started(self):
+        encoding.display_message(_('Processing...'))
         self.display_message(_('Processing...'), 'white')
         self.tk_root.config(cursor="wait")
 
-    def notbusy(self, color):
-        print('free')
+    def finished(self, color):
+        encoding.display_message(_('Finished!'))
         self.display_message(_('Finished!'), color)
         self.tk_root.config(cursor="")
 

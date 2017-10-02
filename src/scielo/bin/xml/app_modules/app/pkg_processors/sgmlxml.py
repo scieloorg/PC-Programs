@@ -51,6 +51,8 @@ class PackageName(object):
     def issueno(self):
         _issueno = self.doc.number
         if _issueno:
+            if _issueno == 'ahead':
+                _issueno = '0'
             if _issueno.isdigit():
                 if int(_issueno) == 0:
                     _issueno = None

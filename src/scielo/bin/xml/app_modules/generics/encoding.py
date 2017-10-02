@@ -2,24 +2,28 @@
 
 import os
 import sys
-import logging
 import locale
 
+from . import logger
 
 LOCALE_LANG, LOCALE_ENCODING = locale.getdefaultlocale()
 SYS_DEFAULT_ENCODING = sys.getfilesystemencoding()
 
 
-try:
-    os.unlink('./app.log')
-except:
-    pass
+"""
 
 logging.basicConfig(
     filename='./app.log',
     format=u'%(asctime)s %(message)s')
 logger = logging.getLogger('App')
 logger.setLevel(logging.DEBUG)
+"""
+
+try:
+    os.unlink('./app.log')
+except:
+    pass
+app_logger = logger.get_logger('./app.log', 'App')
 
 
 def is_encodable(content):
@@ -82,26 +86,28 @@ def encode(content, encoding='utf-8', error_handler=None):
 
 
 def report_exception(function_name, e, data):
-    print(data)
     try:
-        logger.exception('Exception at {}'.format(function_name), exc_info=True)
+        app_logger.exception(
+            'Exception at {}'.format(function_name), exc_info=True)
+        app_logger.info(data)
     except:
-        logger.info('EXCEPTION at report_exception()')
+        app_logger.info('EXCEPTION at report_exception()')
+        app_logger.info(data)
 
 
 def debugging(function_name, data):
     try:
-        logger.info('DEBUG: {}'.format(function_name))
-        logger.info(data)
+        app_logger.info('DEBUG: {}'.format(function_name))
+        app_logger.info(data)
     except:
-        logger.info('EXCEPTION at debugging()')
+        app_logger.info('EXCEPTION at debugging()')
 
 
 def display_message(msg):
     try:
-        logger.info(msg)
+        app_logger.info(msg)
     except:
-        logger.info('EXCEPTION at display_message()')
+        app_logger.info('EXCEPTION at display_message()')
     try:
         print(decode(encode(msg, SYS_DEFAULT_ENCODING), SYS_DEFAULT_ENCODING))
     except Exception as e:

@@ -39,7 +39,11 @@ def call_converter(args, version='1.0'):
         if collection_acron is not None:
             package_paths = reception.queued_packages()
         for package_path in package_paths:
-            reception.convert_package(package_path)
+            try:
+                reception.convert_package(package_path)
+            except Exception as e:
+                encoding.report_exception('convert_package', e, package_path)
+                raise
 
 
 def read_inputs(args):
