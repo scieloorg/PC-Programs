@@ -38,10 +38,9 @@
 			Solicitado por Solange email: 20040429
 			Para artigos que não tenham autores, não gerar a tag </AuthorList>.			
 			-->
-			<xsl:if test="count(.//front//contrib) + count(.//front//collab) &gt; 0">
+			<xsl:if test="count(.//front//contrib)&gt; 0">
 				<AuthorList>
 					<xsl:apply-templates select=".//front//contrib" mode="scielo-xml-author"/>
-					<xsl:apply-templates select=".//front//collab" mode="scielo-xml-author"/>
 				</AuthorList>
 			</xsl:if>
 			<PublicationType/>
@@ -203,7 +202,7 @@
 	<xsl:template match="contrib" mode="scielo-xml-author">
 
 		<Author>
-			<xsl:apply-templates select="name|xref[@ref-type='aff'][1]"/>
+			<xsl:apply-templates select="name|collab|xref[@ref-type='aff'][1]"/>
 			<!--xsl:if test="not(@affiliation_code)">
 						<xsl:apply-templates select="ancestor::record/affiliation/occ"/>
 					</xsl:if-->
@@ -217,12 +216,10 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	<xsl:template match="article-title/xref"/>
-	<xsl:template match="collab" mode="scielo-xml-author">
-		<Author>
+	<xsl:template match="collab">
 			<CollectiveName>
 				<xsl:value-of select="."/>
 			</CollectiveName>
-		</Author>
 	</xsl:template>
 	<xsl:template match="name">
 		<xsl:apply-templates select="given-names"/>
