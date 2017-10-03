@@ -102,10 +102,9 @@
 			Solicitado por Solange email: 20040429
 			Para artigos que não tenham autores, não gerar a tag </AuthorList>.			
 			-->
-			<xsl:if test="count(.//front//contrib) + count(.//front//collab) &gt; 0">
+			<xsl:if test="count(.//front//contrib) &gt; 0">
 				<AuthorList>
 					<xsl:apply-templates select=".//front//contrib" mode="scielo-xml-author"/>
-					<xsl:apply-templates select=".//front//collab" mode="scielo-xml-author"/>
 				</AuthorList>
 			</xsl:if>
 			<PublicationType><xsl:apply-templates select="." mode="scielo-xml-publication-type"/></PublicationType>
@@ -488,9 +487,8 @@
 	</xsl:template>
 
 	<xsl:template match="contrib" mode="scielo-xml-author">
-
 		<Author>
-			<xsl:apply-templates select="name"/>
+			<xsl:apply-templates select="name|collab"/>
 			<xsl:choose>
 				<xsl:when test="count(xref[@ref-type='aff'])=1">
 					<xsl:apply-templates select="xref[@ref-type='aff']"/>
@@ -505,7 +503,6 @@
 					</xsl:if-->
 			<xsl:apply-templates select="contrib-id"></xsl:apply-templates>
 		</Author>
-
 	</xsl:template>
 	<xsl:template match="contrib-id">
 		<Identifier Source="{@contrib-id-type}"><xsl:value-of select="."/></Identifier>
@@ -520,12 +517,10 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	<xsl:template match="article-title/xref"/>
-	<xsl:template match="collab" mode="scielo-xml-author">
-		<Author>
+	<xsl:template match="collab">
 			<CollectiveName>
 				<xsl:value-of select="."/>
 			</CollectiveName>
-		</Author>
 	</xsl:template>
 	<xsl:template match="name">
 		<xsl:apply-templates select="given-names"/>
