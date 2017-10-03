@@ -1918,6 +1918,16 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\wayta.py
+  Destination=%PROGDIR%\bin\xml\wayta.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\xml_transform.py
+  Destination=%PROGDIR%\bin\xml\xml_transform.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\tools4dsk\wayta.py
   Destination=%PROGDIR%\bin\xml\app_modules\tools4dsk\wayta.py
   Flags=0000000010000010

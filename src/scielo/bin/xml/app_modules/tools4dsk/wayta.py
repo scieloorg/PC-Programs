@@ -3,11 +3,12 @@ import os
 import sys
 import shutil
 
-from ...app.config import config
-from ...app.ws import institutions_service
-from ...app.ws import institutions_manager
+from ..app.config import config
+from ..app.ws import institutions_service
+from ..app.ws import institutions_manager
+from ..generics import fs_utils
 
-from ...__init__ import BIN_PATH
+from ..__init__ import BIN_PATH
 
 
 configuration_filename = BIN_PATH + '/scielo_paths.ini'
@@ -15,7 +16,6 @@ configuration_filename = BIN_PATH + '/scielo_paths.ini'
 text = None
 filename = None
 ctrl_filename = None
-
 if len(sys.argv) == 4:
     ign, filename, ctrl_filename, text = sys.argv
     if os.path.isfile(filename):
@@ -29,7 +29,7 @@ if len(sys.argv) == 4:
     configuration = config.Configuration(configuration_filename)
     app_institutions_manager = institutions_manager.InstitutionsManager(configuration.app_ws_requester)
     normaff_result = institutions_service.normaff_search(app_institutions_manager, text)
-    open(filename, 'w').write(normaff_result + '\n', 'cp1252')
+    fs_utils.write_file(filename, '\n'.join(normaff_result) + '\n', 'cp1252')
     if os.path.isfile(filename):
         shutil.copyfile(filename, ctrl_filename)
     else:

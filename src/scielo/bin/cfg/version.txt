@@ -1,7 +1,10 @@
-4.0.094 Release 29/09/2017 | 02/10/2017
-=======================================
+4.0.094 Release 29/09/2017 | R2 03/10/2017
+==========================================
+- XPM
+  - (bug) [] wayta
 - PubMed
-  - (bug) [2605] Fix generation of CollectiveName 
+  - (bug) [2605] Fix PubMed files generation: CollectiveName 
+  - (bug) [2562_2561_2289] Fix PubMed files generation: Abstract  
 
 4.0.094 Release 29/09/2017
 ==========================
