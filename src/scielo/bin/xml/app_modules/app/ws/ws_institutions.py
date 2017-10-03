@@ -27,12 +27,13 @@ class Wayta(object):
     def search(self, orgname, country, filter_country=None, complements=[]):
         results = []
         for text in orgname.split(','):
+
+            terms = [text, country]
+            terms.extend(complements)
+
+            expr = ', '.join([term for term in terms if term is not None])
             try:
-                if len(complements) > 0:
-                    text += ', ' + ', '.join(complements)
-                if country is not None:
-                    text += ', ' + country
-                result = self.request(text, filter_country)
+                result = self.request(expr, filter_country)
                 if result is not None:
                     results += result
             except:

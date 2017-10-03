@@ -4,8 +4,8 @@ import shutil
 import sys
 import os
 
-from ...generics import java_xml_utils
-from ...generics import encoding
+from ..generics import java_xml_utils
+from ..generics import encoding
 
 #required_parameters = ['', 'xml filename', 'xsl filename', 'result filename', 'ctrl filename', 'err filename' ]
 
