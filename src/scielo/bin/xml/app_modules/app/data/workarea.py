@@ -39,6 +39,8 @@ class PkgArticleFiles(object):
     def __init__(self, filename):
         self.filename = filename
         self.path = os.path.dirname(filename)
+        if not os.path.isdir(self.path):
+            os.makedirs(self.path)
         self.basename = os.path.basename(filename)
         self.folder = os.path.basename(self.path)
         self.name, self.ext = os.path.splitext(self.basename)
