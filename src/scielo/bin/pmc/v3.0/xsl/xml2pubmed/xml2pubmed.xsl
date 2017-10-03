@@ -276,18 +276,43 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="*" mode="scielo-xml-abstract">
-		<Abstract>
-			<xsl:if test="@xml:lang='en'">
-				<xsl:apply-templates select=".//abstract"
-					mode="scielo-xml-content-abstract"/>
-			</xsl:if>
-			
-			<xsl:apply-templates select=".//*[contains(name(),'abstract') and @xml:lang='en']"
-				mode="scielo-xml-content-abstract"/>
-			<xsl:apply-templates select=".//sub-article[@xml:lang='en' and @article-type='translation']//abstract"
-				mode="scielo-xml-content-abstract"/>
-		</Abstract>
+	<xsl:template match="article" mode="scielo-xml-abstract">
+		<xsl:if test="@xml:lang='en'">
+			<xsl:apply-templates select=".//article-meta/abstract"
+				mode="scielo-xml-content-abstract">
+				<xsl:with-param name="name">Abstract</xsl:with-param>
+			</xsl:apply-templates>
+		</xsl:if>
+		<xsl:apply-templates select=".//*[contains(name(),'abstract') and @xml:lang='en']"
+			mode="scielo-xml-content-abstract">
+			<xsl:with-param name="name">Abstract</xsl:with-param>
+		</xsl:apply-templates>
+		<xsl:apply-templates select=".//sub-article[@xml:lang='en' and @article-type='translation']//abstract"
+			mode="scielo-xml-content-abstract">
+			<xsl:with-param name="name">Abstract</xsl:with-param>
+		</xsl:apply-templates>
+		<xsl:if test="@xml:lang!='en'">
+			<xsl:apply-templates select=".//article-meta/abstract"
+				mode="scielo-xml-content-abstract">
+				<xsl:with-param name="name">OtherAbstract</xsl:with-param>
+				<xsl:with-param name="lang"><xsl:value-of select="@xml:lang"/></xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select=".//*[contains(name(),'abstract') and @xml:lang and @xml:lang!='en']"
+				mode="scielo-xml-content-abstract">
+				<xsl:with-param name="name">OtherAbstract</xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select=".//sub-article[@xml:lang!='en' and @article-type='translation']"
+				mode="scielo-xml-abstract">
+			</xsl:apply-templates>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="sub-article" mode="scielo-xml-abstract">
+		<xsl:apply-templates select=".//abstract[1]"
+			mode="scielo-xml-content-abstract">
+			<xsl:with-param name="name">OtherAbstract</xsl:with-param>
+			<xsl:with-param name="lang"><xsl:value-of select="@xml:lang"/></xsl:with-param>
+		</xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="related-article[@related-article-type='corrected-article']" mode="label">corrects</xsl:template>
 	<xsl:template match="related-article[@related-article-type='retracted-article']" mode="label">retracts</xsl:template>
@@ -297,15 +322,24 @@
 	<xsl:template match="related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="related-article-abstract">
 		[This <xsl:apply-templates select="." mode="label"/> the article <xsl:value-of select="@ext-link-type"/>: <xsl:value-of select="@xlink:href"/>]
 	</xsl:template>
-	<xsl:template match="*" mode="scielo-xml-content-abstract">
-		<xsl:apply-templates select="*|text()" mode="scielo-xml-content-abstract"/>
-	</xsl:template>
-	<xsl:template match="*[sec]" mode="scielo-xml-content-abstract">
-		<xsl:apply-templates select="sec|text()"  mode="scielo-xml-content-abstract"/>
+	<xsl:template match="abstract | trans-abstract" mode="scielo-xml-content-abstract">
+		<xsl:param name="name"/>
+		<xsl:param name="lang" select="@xml:lang"></xsl:param>
+		<xsl:element name="{$name}">
+			<xsl:if test="$lang!='en' and $lang!=''">
+				<xsl:attribute name="Language"></xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates select="*|text()" mode="scielo-xml-content-abstract"/>
+		</xsl:element>
 	</xsl:template>
 	<xsl:template match="*/sec" mode="scielo-xml-content-abstract">
 		<AbstractText>
-			<xsl:attribute name="Label"><xsl:apply-templates select="title"/></xsl:attribute>
+			<xsl:variable name="title"><xsl:apply-templates select="title" mode="uppercase"/></xsl:variable>
+			<xsl:attribute name="Label"><xsl:choose>
+				<xsl:when test="contains($title, ':')"><xsl:value-of select="substring-before($title,':')"/></xsl:when>
+				<xsl:when test="contains($title, ' -')"><xsl:value-of select="substring-before($title,' -')"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$title"/></xsl:otherwise>
+			</xsl:choose></xsl:attribute>
 			<xsl:apply-templates select="p"/>
 		</AbstractText>
 	</xsl:template>
@@ -317,9 +351,6 @@
 <AbstractText Label="CONCLUSIONS">The findings suggest...</AbstractText>
 </Abstract>
 		-->
-	<xsl:template match="text()" mode="scielo-xml-content-abstract">
-		<xsl:value-of select="."/>
-	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-publisher_name">
 		<PublisherName>
 			<xsl:value-of select=".//journal-meta//publisher-name"/>
@@ -568,5 +599,8 @@
 	<xsl:template match="article[@article-type='book-review']">
 	</xsl:template>
 	
+	<xsl:template match="*|text()" mode="uppercase">
+		<xsl:value-of select="translate(.,'abcdefghijklmnopqrstuvwxyzáéíóúãõ','ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÃÕ')"/>
+	</xsl:template>
 	
 </xsl:stylesheet>
