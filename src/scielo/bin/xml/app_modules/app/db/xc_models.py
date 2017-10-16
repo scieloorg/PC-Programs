@@ -613,20 +613,25 @@ class IssueModels(object):
 
             # check issue data
             for label, article_data, issue_data, status in validations:
-                error = False
                 if article_data != issue_data:
                     error = True
                     if issue_data is None:
                         status = validation_status.STATUS_WARNING
-                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
-                    results.append((label, status, _msg))
+                    elif label == _('journal title'):
+                        if article_data is not None and article_data.strip() == issue_data.strip():
+                            error = False
+                        elif (article.is_ahead or is_rolling_pass) and (article_data.startswith(issue_data) or issue_data.startswith(article_data)):
+                            error = False
+                    if error is True:
+                        _msg = _('{label}: "{value1}" ({label1}) and "{value2}" ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
+                        results.append((label, status, _msg))
 
             validations = []
             validations.append(('publisher', article.publisher_name, self.issue.publisher_name, validation_status.STATUS_ERROR))
             for label, article_data, issue_data, status in validations:
                 if utils.how_similar(article_data, issue_data) < 0.8:
                     if article_data not in issue_data:
-                        _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
+                        _msg = _('{label}: "{value1}" ({label1}) and "{value2}" ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
                         results.append((label, status, _msg))
 
             # license
@@ -635,7 +640,7 @@ class IssueModels(object):
                 results.append(('license', validation_status.STATUS_WARNING, _('Unable to identify {item}').format(item=_('issue license'))))
             elif article_license_code_and_versions is not None:
                 if self.issue.license.lower() not in article_license_code_and_versions:
-                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_license_code_and_versions, label1=_('article'), value2=self.issue.license, label2=_('issue'))
+                    _msg = _('{label}: "{value1}" ({label1}) and "{value2}" ({label2}) do not match. ').format(label=label, value1=article_license_code_and_versions, label1=_('article'), value2=self.issue.license, label2=_('issue'))
                     results.append(('license', validation_status.STATUS_ERROR, _msg))
 
             # section
