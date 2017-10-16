@@ -4,7 +4,7 @@ Requirements for 4.0.094
 ========================
 
 - JAVA
-- **PYTHON >= 2.7.10 + pip**
+- &lt;span style="background-color:yellow"&gt;**PYTHON >= 2.7.10 + pip**&lt;/span&gt;
 
 
 Add Java to PATH (environment variable).
