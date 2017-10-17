@@ -106,6 +106,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
 	</xsl:template><!-- attributes -->
+	
+	<xsl:template match="text()" mode="copy-of">
+		<xsl:value-of select="." disable-output-escaping="no"/>
+	</xsl:template>
+	<!-- nodes -->
+	<xsl:template match="*" mode="copy-of">
+		<xsl:element name="{name()}">
+		<xsl:apply-templates select="@*| * | text()" mode="copy-of"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<!-- attributes -->
+	<xsl:template match="@*" mode="copy-of">
+		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
+		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
+	</xsl:template><!-- attributes -->
+	
 	<xsl:template match="fngrp/@id | fn/@id">
 		<xsl:attribute name="{name()}">fn<xsl:value-of select="string(number(substring(.,3)))"/></xsl:attribute>
 	</xsl:template>
@@ -570,7 +587,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</journal-id>
 			<journal-title-group>
 				<xsl:if test=".//journal-title!=''">
-					<xsl:copy-of select=".//journal-title"/>
+					<xsl:apply-templates select=".//journal-title" mode="copy-of"></xsl:apply-templates>
 					<abbrev-journal-title abbrev-type="publisher">
 						<xsl:value-of select="@stitle"/>
 					</abbrev-journal-title>
@@ -666,7 +683,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<contrib>
 			<xsl:apply-templates select="@role"/>
 			<xsl:apply-templates select="."/>
-			<xsl:copy-of select="../role"/>
+			<xsl:apply-templates mode="copy-of"  select="../role"/>
 			<xsl:choose>
 				<xsl:when test="xref">
 					<xsl:apply-templates select="xref"/>
@@ -975,8 +992,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</on-behalf-of>
 			</xsl:if>
 		</contrib>
-		<xsl:copy-of select="../..//aff[@id=$author_rid]/role"/>
-		<xsl:copy-of select="../..//normaff[@id=$author_rid]/role"/>
+		<xsl:apply-templates mode="copy-of"  select="../..//aff[@id=$author_rid]/role"/>
+		<xsl:apply-templates mode="copy-of"  select="../..//normaff[@id=$author_rid]/role"/>
 	</xsl:template>
 	<xsl:template match="role"><role><xsl:apply-templates/></role></xsl:template>
 	<xsl:template match="corpauth" mode="front-contrib">
@@ -1742,7 +1759,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="fxmlbody[@type='ack']">
 		<ack>
-			<xsl:copy-of select="*"/>
+			<xsl:apply-templates mode="copy-of"  select="*"/>
 		</ack>
 	</xsl:template>
 
@@ -2786,7 +2803,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:copy-of select="."/>
+				<xsl:apply-templates mode="copy-of"  select="."/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template-->
@@ -2815,7 +2832,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template-->
 	<xsl:template match="xref" mode="xref-in-sectitle">
-		<xsl:copy-of select="."/>
+		<xsl:apply-templates mode="copy-of"  select="."/>
 	</xsl:template>
 	<xsl:template match="fname">
 		<given-names>
@@ -2855,14 +2872,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="graphic and (xhtmltable or table)">
 				<alternatives>
 					<xsl:apply-templates select="graphic" mode="elem-graphic"/>
-					<xsl:copy-of select="xhtmltable/table"/>
+					<xsl:apply-templates mode="copy-of"  select="xhtmltable/table"/>
 					<xsl:apply-templates select="table" mode="pmc-table"/>
 				</alternatives>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="graphic" mode="elem-graphic"/>
 				<xsl:apply-templates select="table" mode="pmc-table"/>
-				<xsl:copy-of select="xhtmltable/table"/>
+				<xsl:apply-templates mode="copy-of"  select="xhtmltable/table"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -2901,7 +2918,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="tbody"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:copy-of select="tbody"/>
+					<xsl:apply-templates mode="copy-of"  select="tbody"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</table>
@@ -2974,7 +2991,7 @@ et al.</copyright-statement>
 	<xsl:template match="mmlmath//*" mode="mathml">
 		<xsl:choose>
 			<xsl:when test="contains(name(),'mml:')">
-				<xsl:copy-of select="."/>
+				<xsl:apply-templates mode="copy-of"  select="."/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element name="mml:{name()}">
