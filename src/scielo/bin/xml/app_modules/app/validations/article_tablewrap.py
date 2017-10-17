@@ -25,7 +25,7 @@ class ArticleTableWrapValidator(object):
                 error = True
             elif self.config.coded_table_required and len(tablewrap.codes) == 0:
                 error = True
-            if error is True:
+            if error is True and tablewrap.lang is None:
                 results.append(
                     (tablewrap.tag,
                         validation_status.STATUS_FATAL_ERROR,
