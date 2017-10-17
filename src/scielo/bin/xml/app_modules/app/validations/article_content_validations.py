@@ -894,9 +894,7 @@ class ArticleContentValidation(object):
     @property
     def references(self):
         r = []
-        year = ('received', self.article.received.get('year')) if self.article.received is not None else None
-        if year is None:
-            year = ('accepted', self.article.accepted.get('year')) if self.article.accepted is not None else None
+        year = ('accepted', self.article.accepted.get('year')) if self.article.accepted is not None else None
         if year is None:
             year = ('published', self.article.pub_date_year) if self.article.pub_date_year is not None else None
         if year is None:
