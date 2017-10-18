@@ -1155,7 +1155,9 @@ class AopManager(object):
                     r = 1
             else:
                 r += utils.how_similar(article.title, aop.title)
-                r += utils.how_similar(article.first_author_surname, aop.first_author_surname)
+                article_authors = sort([contrib.fullname for contrib in article.article_contrib_items])
+                aop_authors = sort([contrib.fullname for contrib in aop.article_contrib_items])
+                r += utils.how_similar(', '.join(article_authors), ', '.join(aop_authors))
                 r = (r * 100) / 2
         return r
 
@@ -1190,10 +1192,13 @@ class AopManager(object):
                 data.append(_('doc title') + ':' + html_reports.format_html_data(t))
                 t = '' if aop.title is None else aop.title
                 data.append(_('aop title') + ':' + html_reports.format_html_data(t))
-                t = '' if article.first_author_surname is None else article.first_author_surname
-                data.append(_('doc first author') + ':' + html_reports.format_html_data(t))
-                t = '' if aop.first_author_surname is None else aop.first_author_surname
-                data.append(_('aop first author') + ':' + html_reports.format_html_data(t))
+
+                article_authors = [contrib.fullname for contrib in article.article_contrib_items]
+                aop_authors = [contrib.fullname for contrib in aop.article_contrib_items]
+                if len(article_authors) > 0:
+                    data.append(_('doc authors') + ':' + html_reports.format_html_data(article_authors))
+                if len(aop_authors) > 0:
+                    data.append(_('aop authors') + ':' + html_reports.format_html_data(aop_authors))
         msg = ''
         msg += html_reports.tag('h5', _('Checking existence of aop version'))
         msg += ''.join([html_reports.p_message(item, False) for item in msg_list])
