@@ -221,9 +221,10 @@ class ArticleContentValidation(object):
                 items.append(self.toc_section)
                 items.append(self.doi)
                 items.append(self.article_id)
-                items.append(self.article_id_other)
                 items.append(self.pagination)
-                items.append(self.order)
+                if self.is_db_generation:
+                    items.append(self.article_id_other)
+                    items.append(self.order)
                 items.append(self.total_of_pages)
                 items.append(self.total_of_equations)
                 items.append(self.total_of_tables)
