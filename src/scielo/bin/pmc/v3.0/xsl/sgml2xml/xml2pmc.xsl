@@ -66,8 +66,14 @@
 		<xsl:apply-templates select="$translations[@xml:lang!='en']" mode="kwd-group"/>
 	</xsl:template>
 	
-	<xsl:template match="kwd-group" mode="copy">
-		<xsl:copy-of select="."/>
+	<xsl:template match="@*" mode="copy">
+		<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	
+	<xsl:template match="*" mode="copy">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="@*|*|text()" mode="copy"></xsl:apply-templates>
+		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="sub-article[@article-type='translation']" mode="kwd-group">
@@ -196,7 +202,7 @@
 	</xsl:template>
 	
 	<xsl:template match="aff/institution[@content-type='original']/*">
-		<xsl:copy-of select="."/>
+		<xsl:apply-templates select="." mode="copy"></xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template match="aff/institution[@content-type='aff-pmc']/text()">
@@ -204,7 +210,7 @@
 	</xsl:template>
 	
 	<xsl:template match="aff/institution[@content-type='aff-pmc']/*">
-		<xsl:copy-of select="."/>
+		<xsl:apply-templates select="." mode="copy"></xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template match="aff">
@@ -308,7 +314,7 @@
 	</xsl:template>
 	<xsl:template match="email" mode="aff-insert-separator">
 		<xsl:if test="position()!=1">, </xsl:if>
-		<xsl:copy-of select="."/>
+		<xsl:apply-templates select="." mode="copy"></xsl:apply-templates>
 	</xsl:template>
 
 	<xsl:template match="funding-group">
@@ -375,11 +381,11 @@
 	<xsl:template match="article/@specific-use"></xsl:template>
 	
 	<xsl:template match="equation/alternatives">
-		<xsl:copy-of select="graphic"/>
+		<xsl:apply-templates select="graphic" mode="copy"></xsl:apply-templates>
 		<xsl:if test="not(graphic)">
 			<xsl:copy-of select="mml:math"/>
 			<xsl:if test="not(mml:math)">
-				<xsl:copy-of select="tex-math"/>
+				<xsl:apply-templates select="tex-math" mode="copy"></xsl:apply-templates>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
