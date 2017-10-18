@@ -326,7 +326,7 @@
 		<xsl:param name="lang" select="@xml:lang"></xsl:param>
 		<xsl:element name="{$name}">
 			<xsl:if test="$lang!='en' and $lang!=''">
-				<xsl:attribute name="Language"></xsl:attribute>
+				<xsl:attribute name="Language"><xsl:value-of select="$lang"/></xsl:attribute>
 			</xsl:if>
 			<xsl:apply-templates select="*|text()" mode="scielo-xml-content-abstract"/>
 		</xsl:element>
