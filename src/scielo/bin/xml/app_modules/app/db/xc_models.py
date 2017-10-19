@@ -1155,8 +1155,8 @@ class AopManager(object):
                     r = 1
             else:
                 r += utils.how_similar(article.title, aop.title)
-                article_authors = sort([contrib.fullname for contrib in article.article_contrib_items])
-                aop_authors = sort([contrib.fullname for contrib in aop.article_contrib_items])
+                article_authors = sorted([contrib.fullname for contrib in article.article_contrib_items])
+                aop_authors = sorted([contrib.fullname for contrib in aop.article_contrib_items])
                 r += utils.how_similar(', '.join(article_authors), ', '.join(aop_authors))
                 r = (r * 100) / 2
         return r
