@@ -209,7 +209,7 @@ class MergedArticlesReports(object):
                     r.append(html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=changes[0], new=changes[1]), 'info'))
             if len(self.articles_mergence.excluded_orders) > 0:
                 r.append(html_reports.tag('h3', _('Orders exclusions')))
-                for name, order in self.articles_mergence.excluded_orders.items():
+                for name, order in self.articles_mergence.excluded_items.items():
                     r.append(html_reports.tag('p', '{order} ({name})'.format(name=name, order=order), 'info'))
             self._report_articles_changed_orders = ''.join(r)
         return self._report_articles_changed_orders

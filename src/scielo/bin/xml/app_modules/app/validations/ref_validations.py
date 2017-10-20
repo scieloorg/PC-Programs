@@ -25,7 +25,7 @@ def validate_publication_type(publication_type):
 
 
 def is_valid_publication_type(publication_type):
-    if len(publication_type) == 1:
+    if publication_type is not None and len(publication_type) == 1:
         if publication_type[0] in attributes.PUBLICATION_TYPE:
             return True
     return False
