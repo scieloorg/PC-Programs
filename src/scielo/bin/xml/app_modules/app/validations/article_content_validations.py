@@ -221,9 +221,10 @@ class ArticleContentValidation(object):
                 items.append(self.toc_section)
                 items.append(self.doi)
                 items.append(self.article_id)
-                items.append(self.article_id_other)
                 items.append(self.pagination)
-                items.append(self.order)
+                if self.is_db_generation:
+                    items.append(self.article_id_other)
+                    items.append(self.order)
                 items.append(self.total_of_pages)
                 items.append(self.total_of_equations)
                 items.append(self.total_of_tables)
@@ -894,9 +895,7 @@ class ArticleContentValidation(object):
     @property
     def references(self):
         r = []
-        year = ('received', self.article.received.get('year')) if self.article.received is not None else None
-        if year is None:
-            year = ('accepted', self.article.accepted.get('year')) if self.article.accepted is not None else None
+        year = ('accepted', self.article.accepted.get('year')) if self.article.accepted is not None else None
         if year is None:
             year = ('published', self.article.pub_date_year) if self.article.pub_date_year is not None else None
         if year is None:

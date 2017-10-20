@@ -613,20 +613,25 @@ class IssueModels(object):
 
             # check issue data
             for label, article_data, issue_data, status in validations:
-                error = False
                 if article_data != issue_data:
                     error = True
                     if issue_data is None:
                         status = validation_status.STATUS_WARNING
-                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
-                    results.append((label, status, _msg))
+                    elif label == _('journal title'):
+                        if article_data is not None and article_data.strip() == issue_data.strip():
+                            error = False
+                        elif (article.is_ahead or is_rolling_pass) and (article_data.startswith(issue_data) or issue_data.startswith(article_data)):
+                            error = False
+                    if error is True:
+                        _msg = _('{label}: "{value1}" ({label1}) and "{value2}" ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
+                        results.append((label, status, _msg))
 
             validations = []
             validations.append(('publisher', article.publisher_name, self.issue.publisher_name, validation_status.STATUS_ERROR))
             for label, article_data, issue_data, status in validations:
                 if utils.how_similar(article_data, issue_data) < 0.8:
                     if article_data not in issue_data:
-                        _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
+                        _msg = _('{label}: "{value1}" ({label1}) and "{value2}" ({label2}) do not match. ').format(label=label, value1=article_data, label1=_('article'), value2=issue_data, label2=_('issue'))
                         results.append((label, status, _msg))
 
             # license
@@ -635,7 +640,7 @@ class IssueModels(object):
                 results.append(('license', validation_status.STATUS_WARNING, _('Unable to identify {item}').format(item=_('issue license'))))
             elif article_license_code_and_versions is not None:
                 if self.issue.license.lower() not in article_license_code_and_versions:
-                    _msg = _('{label}: {value1} ({label1}) and {value2} ({label2}) do not match. ').format(label=label, value1=article_license_code_and_versions, label1=_('article'), value2=self.issue.license, label2=_('issue'))
+                    _msg = _('{label}: "{value1}" ({label1}) and "{value2}" ({label2}) do not match. ').format(label=label, value1=article_license_code_and_versions, label1=_('article'), value2=self.issue.license, label2=_('issue'))
                     results.append(('license', validation_status.STATUS_ERROR, _msg))
 
             # section
@@ -1150,7 +1155,9 @@ class AopManager(object):
                     r = 1
             else:
                 r += utils.how_similar(article.title, aop.title)
-                r += utils.how_similar(article.first_author_surname, aop.first_author_surname)
+                article_authors = sorted([contrib.fullname for contrib in article.article_contrib_items])
+                aop_authors = sorted([contrib.fullname for contrib in aop.article_contrib_items])
+                r += utils.how_similar(', '.join(article_authors), ', '.join(aop_authors))
                 r = (r * 100) / 2
         return r
 
@@ -1185,10 +1192,13 @@ class AopManager(object):
                 data.append(_('doc title') + ':' + html_reports.format_html_data(t))
                 t = '' if aop.title is None else aop.title
                 data.append(_('aop title') + ':' + html_reports.format_html_data(t))
-                t = '' if article.first_author_surname is None else article.first_author_surname
-                data.append(_('doc first author') + ':' + html_reports.format_html_data(t))
-                t = '' if aop.first_author_surname is None else aop.first_author_surname
-                data.append(_('aop first author') + ':' + html_reports.format_html_data(t))
+
+                article_authors = [contrib.fullname for contrib in article.article_contrib_items]
+                aop_authors = [contrib.fullname for contrib in aop.article_contrib_items]
+                if len(article_authors) > 0:
+                    data.append(_('doc authors') + ':' + html_reports.format_html_data(article_authors))
+                if len(aop_authors) > 0:
+                    data.append(_('aop authors') + ':' + html_reports.format_html_data(aop_authors))
         msg = ''
         msg += html_reports.tag('h5', _('Checking existence of aop version'))
         msg += ''.join([html_reports.p_message(item, False) for item in msg_list])

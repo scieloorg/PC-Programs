@@ -81,9 +81,8 @@ class MergedArticlesReports(object):
             parts = []
             for label, values in self.merged_articles_data.conflicting_values.items():
                 _status = validation_status.STATUS_BLOCKING_ERROR
-                if label == 'issue pub date':
-                    if self.merged_articles_data.is_rolling_pass:
-                        _status = validation_status.STATUS_WARNING
+                if self.merged_articles_data.is_rolling_pass or self.merged_articles_data.is_aop_issue:
+                    _status = validation_status.STATUS_WARNING
                 elif label == 'license':
                     _status = validation_status.STATUS_WARNING
                 _m = _('{status}: same value for {label} is required for all the documents in the package. ').format(status=_status, label=label)

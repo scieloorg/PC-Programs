@@ -2151,6 +2151,7 @@ class ArticleTableWrap(object):
         self.node = node
         self.tag = node.tag
         self.xml = xml_utils.node_xml(node)
+        self.lang = xml_utils.element_lang(node)
 
     @property
     def id(self):
