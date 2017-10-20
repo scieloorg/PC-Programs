@@ -41,8 +41,8 @@ XML Package Maker
 
 .. image:: img/howtoinstall_xpm.png
 
-&lt;span style="background-color:yellow"&gt;From **4.0.094** version, the installer automatically installs the dependences such as packtools and pillow (PIL).&lt;/span&gt;
-&lt;span style="background-color:yellow"&gt;If it does not, execute the corresponding c:\\SciELO_XPM\\xml\\install_requirements.bat&lt;/span&gt;
+From **4.0.094** version, the installer automatically installs the dependences such as packtools and pillow (PIL).
+If it does not, execute the corresponding c:\\SciELO_XPM\\xml\\install_requirements.bat
 
 
 SciELO PC Programs
@@ -79,8 +79,8 @@ SciELO PC Programs
 
 .. image:: img/howtoinstall_programs.png
 
-&lt;span style="background-color:yellow"&gt;From **4.0.094** version, the installer automatically installs the dependences such as packtools and pillow (PIL).&lt;/span&gt;
-&lt;span style="background-color:yellow"&gt;If it does not, execute the corresponding c:\\scielo\\bin\\xml\\install_requirements.bat&lt;/span&gt;
+From **4.0.094** version, the installer automatically installs the dependences such as packtools and pillow (PIL).
+If it does not, execute the corresponding c:\\scielo\\bin\\xml\\install_requirements.bat
 
 
 ================
