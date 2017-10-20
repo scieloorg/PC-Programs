@@ -10,6 +10,8 @@ from ...generics import xml_utils
 
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
+from ..pkg_processors import xml_versions
+from . import data_validations
 
 
 IS_PACKTOOLS_INSTALLED = False
@@ -173,6 +175,7 @@ class XMLValidator(object):
 
     def __init__(self, dtd_files, sps_version=None, preference=None):
         self.logger = None
+        self.SPS_versions = SPSversions()
         validator = 'java'
         preference = preference[0] if preference is not None and len(preference) > 0 else ''
         if dtd_files.database_name == 'scielo' and IS_PACKTOOLS_INSTALLED and preference == 'packtools':
@@ -187,11 +190,32 @@ class XMLValidator(object):
             self.validator = JavaXMLValidator(dtd_files.doctype_with_local_path, dtd_files.xsl_prep_report, dtd_files.xsl_report)
             encoding.display_message('    XMLValidator: java')
 
+    def validate_doctype(self, article_xml_versions_info):
+        errors = []
+        info = self.SPS_versions.dtd_infos.get(
+            article_xml_versions_info.doctype_id)
+        if article_xml_versions_info.dtd_location not in info.get('url'):
+            expected = _(' or ').join(info.get('url'))
+            msg = data_validations.invalid_value_message(
+                'DTD', article_xml_versions_info.dtd_location, expected)
+            errors.append(msg)
+        if article_xml_versions_info.sps_version not in info.get('sps'):
+            expected = _(' or ').join(info.get('sps'))
+            msg = data_validations.invalid_value_message(
+                'SPS version', article_xml_versions_info.sps_version, expected)
+            errors.append(msg)
+        return errors
+
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
         self.validator.logger = self.logger
         self.validator.setup(xml_filename)
         xml, e = xml_utils.load_xml(xml_filename)
-        is_valid_dtd = self.validator.dtd_validation(dtd_report_filename)
+        errors = self.validate_doctype(ArticleXMLVersionsInfo(xml_filename))
+        is_valid_dtd = len(errors) == 0 and self.validator.dtd_validation(dtd_report_filename)
+        if len(errors) > 0:
+            fs_utils.write_file(
+                dtd_report_filename,
+                '\n'.join(errors) + fs_utils.read_file(dtd_report_filename))
         content = ''
         if e is None:
             self.validator.style_validation(style_report_filename)
@@ -205,3 +229,68 @@ class XMLValidator(object):
             fs_utils.write_file(style_report_filename, content)
         f, e, w = style_checker_statistics(content)
         return (xml, is_valid_dtd, (f, e, w))
+
+
+class ArticleXMLVersionsInfo(object):
+
+    def __init__(self, xml_content):
+        self.xml_content = xml_content
+        self._DOCTYPE = None
+        self._doctype_id = None
+        self._dtd = None
+        self._sps_version = None
+
+    def DOCTYPE(self):
+        if self._DOCTYPE is None:
+            if '<!DOCTYPE' in self.xml_content:
+                self._DOCTYPE = self.xml_content[self.xml_content.find('<!DOCTYPE'):]
+                self._DOCTYPE = self._DOCTYPE[:self._DOCTYPE.find('>')+1]
+        return self._DOCTYPE
+
+    def doctype_id(self):
+        if self._doctype_id is None:
+            if self.DOCTYPE is not None:
+                self._doctype_id = self.DOCTYPE[self.DOCTYPE.find('"')+1:]
+                self._doctype_id = self._doctype_id[:self._doctype_id.find('"')]
+        return self._doctype_id
+
+    def dtd_location(self):
+        if self._dtd is None:
+            if 'http' in self.DOCTYPE:
+                self._dtd = self.DOCTYPE[self.DOCTYPE.find('"http')+1:]
+                self._dtd = self._dtd[:self._dtd.find('"')]
+        return self._dtd
+
+    def sps_version(self):
+        if self._sps_version is None:
+            if '<article' in self.xml_content:
+                elem = self.xml_content[self.xml_content.find('<article'):]
+                elem = elem[:elem.find('>')]
+                if 'specific-use="' in elem:
+                    self._sps_version = elem[elem.find('specific-use="')+len('specific-use="'):]
+                    self._sps_version = self._sps_version[:self._sps_version.find('"')]
+        return self._sps_version
+
+
+class SPSversions(object):
+
+    def __init__(self):
+        self.versions = {}
+        self.dtd_infos = {}
+
+        self.versions['None'] = '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN'
+        self.versions['sps-1.0'] = '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN'
+        self.versions['sps-1.1'] = '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN'
+        self.versions['sps-1.2'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
+        self.versions['sps-1.3'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
+        self.versions['sps-1.4'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
+        self.versions['sps-1.5'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
+        self.versions['sps-1.6'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
+        self.versions['sps-1.7'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN'
+
+        for name, dtd_info in xml_versions.XPM_FILES.items():
+            dtd_id = dtd_info.get('dtd id')
+            if dtd_id not in self.dtd_infos.keys():
+                self.dtd_infos[dtd_id] = {}
+            self.dtd_infos[dtd_id]['url'] = [dtd_info.get('remote'), dtd_info.get('remote').replace('https:', 'http:')]
+            self.dtd_infos[dtd_id]['sps'] = [k for k, v in self.versions.items() if v == dtd_id]
