@@ -131,7 +131,11 @@ class IDFile(object):
     def read(self, filename):
         rec_list = []
         record = {}
-        for line in fs_utils.read_file_lines(filename, 'iso-8859-1'):
+        lines = fs_utils.read_file_lines(filename, 'iso-8859-1')
+        if lines is None:
+            lines = []
+            encoding.display_message('{} sem linhas. '.format(filename))
+        for line in lines:
             if '!ID ' in line:
                 if len(record) > 0:
                     rec_list.append(self.simplify_record(record))

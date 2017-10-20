@@ -1375,6 +1375,11 @@ class ArticleXML(object):
             return xml_utils.date_element(date_node)
 
     @property
+    def ppub_date(self):
+        if self.article_meta is not None:
+            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="ppub"]'))
+
+    @property
     def is_article_press_release(self):
         return self.article_type == 'in-brief' and len(self.related_articles) > 0
 
@@ -1715,7 +1720,7 @@ class Article(ArticleXML):
     @property
     def issue_pub_date(self):
         if self._issue_pub_date is None:
-            for d in [self.epub_ppub_date, self.collection_date, self.epub_date]:
+            for d in [self.epub_ppub_date, self.collection_date, self.epub_date, self.ppub_date]:
                 if d is not None:
                     self._issue_pub_date = d
                     break

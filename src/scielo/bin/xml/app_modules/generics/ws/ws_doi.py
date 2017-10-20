@@ -42,7 +42,9 @@ class DOIWebServicesRequester(object):
         return data
 
     def journal_prefix(self, issn, year):
-        prefix = self.doi_journal_prefixes.get(issn+year)
+        key = [issn, year]
+        key = ''.join([k for k in key if k is not None])
+        prefix = self.doi_journal_prefixes.get(key)
         if prefix is None:
             url = self.journal_doi_prefix_url(issn, year)
             json_results = self.ws_requester.json_result_request(url)
@@ -55,7 +57,7 @@ class DOIWebServicesRequester(object):
                             if '/prefix/' in prefix:
                                 prefix = prefix[prefix.find('/prefix/')+len('/prefix/'):]
         if prefix is not None:
-            self.doi_journal_prefixes[issn+year] = prefix
+            self.doi_journal_prefixes[key] = prefix
         return prefix
 
 

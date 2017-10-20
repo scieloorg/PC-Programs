@@ -728,7 +728,9 @@ class ArticlesComparison(object):
         if len(comparison_result) > 0:
             msg.append(html_reports.p_message(self.status))
             for label, differences in comparison_result:
-                msg.append(html_reports.tag('p', differences[0] + '&#160;=>&#160;' + differences[1]))
+                diff = [differences[0], differences[1]]
+                diff = '&#160;=>&#160;'.join([d for d in diff if d is not None])
+                msg.append(html_reports.tag('p', diff))
         return ''.join(msg)
 
 
