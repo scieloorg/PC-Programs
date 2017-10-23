@@ -192,25 +192,30 @@ class XMLValidator(object):
 
     def validate_doctype(self, article_xml_versions_info):
         errors = []
+        print(article_xml_versions_info.public_id,
+            article_xml_versions_info.system_id,
+            article_xml_versions_info.sps_version)
         info = self.SPS_versions.dtd_infos.get(
-            article_xml_versions_info.doctype_id)
-        if article_xml_versions_info.dtd_location not in info.get('url'):
+            article_xml_versions_info.public_id)
+        if article_xml_versions_info.system_id not in info.get('url'):
             expected = _(' or ').join(info.get('url'))
             msg = data_validations.invalid_value_message(
-                'DTD', article_xml_versions_info.dtd_location, expected)
+                'SYSTEM ID', article_xml_versions_info.system_id, expected)
             errors.append(msg)
         if article_xml_versions_info.sps_version not in info.get('sps'):
             expected = _(' or ').join(info.get('sps'))
             msg = data_validations.invalid_value_message(
                 'SPS version', article_xml_versions_info.sps_version, expected)
             errors.append(msg)
+        if len(errors) > 0:
+            errors.insert(0, 'PUBLIC ID: {}'.format(article_xml_versions_info.public_id))
         return errors
 
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
         self.validator.logger = self.logger
         self.validator.setup(xml_filename)
         xml, e = xml_utils.load_xml(xml_filename)
-        errors = self.validate_doctype(ArticleXMLVersionsInfo(xml_filename))
+        errors = self.validate_doctype(ArticleXMLVersionsInfo(fs_utils.read_file(xml_filename)))
         is_valid_dtd = len(errors) == 0 and self.validator.dtd_validation(dtd_report_filename)
         if len(errors) > 0:
             fs_utils.write_file(
@@ -236,10 +241,11 @@ class ArticleXMLVersionsInfo(object):
     def __init__(self, xml_content):
         self.xml_content = xml_content
         self._DOCTYPE = None
-        self._doctype_id = None
-        self._dtd = None
+        self._public_id = None
+        self._system_id = None
         self._sps_version = None
 
+    @property
     def DOCTYPE(self):
         if self._DOCTYPE is None:
             if '<!DOCTYPE' in self.xml_content:
@@ -247,20 +253,23 @@ class ArticleXMLVersionsInfo(object):
                 self._DOCTYPE = self._DOCTYPE[:self._DOCTYPE.find('>')+1]
         return self._DOCTYPE
 
-    def doctype_id(self):
-        if self._doctype_id is None:
+    @property
+    def public_id(self):
+        if self._public_id is None:
             if self.DOCTYPE is not None:
-                self._doctype_id = self.DOCTYPE[self.DOCTYPE.find('"')+1:]
-                self._doctype_id = self._doctype_id[:self._doctype_id.find('"')]
-        return self._doctype_id
+                self._public_id = self.DOCTYPE[self.DOCTYPE.find('"')+1:]
+                self._public_id = self._public_id[:self._public_id.find('"')]
+        return self._public_id
 
-    def dtd_location(self):
-        if self._dtd is None:
+    @property
+    def system_id(self):
+        if self._system_id is None:
             if 'http' in self.DOCTYPE:
-                self._dtd = self.DOCTYPE[self.DOCTYPE.find('"http')+1:]
-                self._dtd = self._dtd[:self._dtd.find('"')]
-        return self._dtd
+                self._system_id = self.DOCTYPE[self.DOCTYPE.find('"http')+1:]
+                self._system_id = self._system_id[:self._system_id.find('"')]
+        return self._system_id
 
+    @property
     def sps_version(self):
         if self._sps_version is None:
             if '<article' in self.xml_content:
@@ -269,7 +278,7 @@ class ArticleXMLVersionsInfo(object):
                 if 'specific-use="' in elem:
                     self._sps_version = elem[elem.find('specific-use="')+len('specific-use="'):]
                     self._sps_version = self._sps_version[:self._sps_version.find('"')]
-        return self._sps_version
+        return str(self._sps_version)
 
 
 class SPSversions(object):
@@ -277,20 +286,33 @@ class SPSversions(object):
     def __init__(self):
         self.versions = {}
         self.dtd_infos = {}
-
-        self.versions['None'] = '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN'
-        self.versions['sps-1.0'] = '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN'
-        self.versions['sps-1.1'] = '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN'
-        self.versions['sps-1.2'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
-        self.versions['sps-1.3'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
-        self.versions['sps-1.4'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
-        self.versions['sps-1.5'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
-        self.versions['sps-1.6'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
-        self.versions['sps-1.7'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN'
+        self.dtd_id_items = [
+            '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+            '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+            '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+        ]
+        self.versions[self.dtd_id_items[0]] = [
+            'None',
+            'sps-1.0',
+            'sps-1.1',
+            ]
+        self.versions[self.dtd_id_items[1]] = [
+            'sps-1.2',
+            'sps-1.3',
+            'sps-1.4',
+            'sps-1.5',
+            'sps-1.6',
+            ]
+        self.versions[self.dtd_id_items[2]] = [
+            'sps-1.6',
+            'sps-1.7',
+            ]
 
         for name, dtd_info in xml_versions.XPM_FILES.items():
             dtd_id = dtd_info.get('dtd id')
             if dtd_id not in self.dtd_infos.keys():
                 self.dtd_infos[dtd_id] = {}
-            self.dtd_infos[dtd_id]['url'] = [dtd_info.get('remote'), dtd_info.get('remote').replace('https:', 'http:')]
-            self.dtd_infos[dtd_id]['sps'] = [k for k, v in self.versions.items() if v == dtd_id]
+            self.dtd_infos[dtd_id]['url'] = [
+                dtd_info.get('remote'),
+                dtd_info.get('remote').replace('https:', 'http:')]
+            self.dtd_infos[dtd_id]['sps'] = self.versions.get(dtd_id)
