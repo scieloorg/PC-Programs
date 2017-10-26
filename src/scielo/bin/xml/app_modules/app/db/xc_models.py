@@ -1089,7 +1089,7 @@ class AopManager(object):
         if issueid is not None:
             return self.aop_db_items.get(issueid, self.ex_aop_db_items.get(issueid)).registered_articles.get(xml_name)
 
-    def still_aop_items(self):
+    def bkp_still_aop_items(self):
         articles = []
         for issue_id in sorted(self.aop_db_items.keys()):
             items = []
@@ -1098,7 +1098,20 @@ class AopManager(object):
             items.sort()
 
             for order, xml_name in items:
-                articles.append((issue_id, xml_name, self.aop_db_items[issue_id].registered_articles[xml_name]))
+                #articles.append((issue_id, xml_name, self.aop_db_items[issue_id].registered_articles[xml_name]))
+                if self.aop_db_items[issue_id].registered_articles.get(xml_name) is not None:
+                    articles.append((issue_id, xml_name, self.aop_db_items[issue_id].registered_articles[xml_name]))
+                else:
+                    print(('still_aop_items', issue_id, xml_name))
+        return articles
+
+    def still_aop_items(self):
+        articles = []
+        for issue_id in sorted(self.aop_db_items.keys()):
+            items = {(article.order, xml_name): article for xml_name, article in self.aop_db_items[issue_id].registered_articles.items()}
+            for key in sorted(items.keys()):
+                articles.append((issue_id, key[1], items.get(key)))
+                print(('still_aop_items', issue_id, key[1]))
         return articles
 
     def name(self, db_filename):

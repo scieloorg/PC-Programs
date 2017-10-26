@@ -20,6 +20,8 @@
   - (bug) [2749] Remover as validações de datas das referências 
   - (bug) [2744] Considerar pelo menos um <table> em <table-wrap-group> 
   - (enhancement) [2768] Validate DOCTYPE check combination of PUBLIC ID + SYSTEM ID are correct and also sps version
+  - (enhancement) [2771] Improve the reports: fix columns width and present DOI
+  - (bug) [2772] Remove incorrect validations about order conflicts which is valid only for XC reports
 
 
 4.0.094 Release 29/09/2017 | R2 03/10/2017
