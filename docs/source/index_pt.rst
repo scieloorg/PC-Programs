@@ -28,6 +28,7 @@ Para **Gestão de Coleções** (para uso **somente** das Coordenações de uma C
 
 - Title Manager
 - Converter
+- XML Converter
 - XML SciELO (Exportador de XML para outras bases: ISI e PubMed)
 
 -------------

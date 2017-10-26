@@ -16,8 +16,7 @@ XML Package Maker
     .. image:: img/howtoinstall_xpm.png
 
 
-A partir da versão **4.0.094**, o instalador automaticamente instala as dependências, tais como packtools e pillow (PIL).
-Caso não consiga fazê-lo automaticamente, abrir um terminal (cmd) e executar os seguintes comandos:
+5. Abrir um terminal (cmd) e executar os seguintes comandos:
 
 Executar o comando abaixo para entrar na pasta onde está o programa **install_requirements.bat**:
 
@@ -55,157 +54,197 @@ Markup
 ======
 
 1. Instalar e/ou verificar os `pré-requisitos <pt_installation_requirements.html>`_
-2. Fazer o download dos `instaladores <pt_installation_download.html>`_
+2. Fazer o `download <pt_installation_download.html>`_ dos instaladores
 3. Executar o instalador
 4. Configurar:
 
-   * **Application's folder:** complete com o nome da aplicação que aparecerá no Menu de Programas
-   * **URL:** endereço do site público da coleção
-   * **Programs's destination folder:** localização da pasta dos programas (**bin**)
-   * **Data destination folder:** localização da pasta dos dados (**serial**). Repetir o mesmo valor do anterior.
+   - **Application's folder:** complete com o nome da aplicação que aparecerá no Menu de Programas
+   - **URL:** endereço do site público da coleção
+   - **Programs's destination folder:** localização da pasta dos programas (**bin**)
+   - **Data destination folder:** localização da pasta dos dados (**serial**). Repetir o mesmo valor do anterior.
 
     .. image:: img/installation_setup.jpg
 
 
 5. Selecionar:
 
-  - **Markup**: program to identify the bibliographic elements in the articles/texts
-  - **Markup - Automata files** (opcionalmente): examples of files for automatic markup
+   - **Markup**: program to identify the bibliographic elements in the articles/texts
+   - **Markup - Automata files** (opcionalmente): examples of files for automatic markup
 
 
     .. image:: img/howtoinstall_programs.png
 
-From **4.0.094** version, the installer automatically installs the dependences such as packtools and pillow (PIL).
-If it does not, execute the corresponding c:\\scielo\\bin\\xml\\install_requirements.bat
+
+6. Abrir um terminal (cmd) e executar os seguintes comandos:
+
+    Executar o comando abaixo para entrar na pasta onde está o programa **install_requirements.bat**:
+
+        .. code-block:: code
+
+          cd <LOCAL DE INSTALACAO SciELO Markup>\xml
+
+    Exemplo:
+
+        .. image:: img/installation_requirements_mkp_01.png
+
+    Resultado esperado:
+
+        .. image:: img/installation_requirements_mkp_02.png
 
 
-Gestão de coleção: Title Manager, Converter e outros
-====================================================
+    Executar o comando abaixo para instalar os pré-requisitos **install_requirements.bat**:
+
+        .. code-block:: code
+
+          install_requirements.bat
+
+    Exemplo:
+
+        .. image:: img/installation_requirements_mkp_03.png
+
+    
+    Este comando executará várias linhas, mas o resultado principal esperado é:
+
+        .. image:: img/installation_requirements_mkp_04.png
+
+
+SciELO PC Programs Completo: Title Manager, Converter, Markup, XPM etc
+======================================================================
 
 1. Instalar e/ou verificar os `pré-requisitos <pt_installation_requirements.html>`_
-2. Fazer o download dos `instaladores <pt_installation_download.html>`_
+2. Fazer o `download <pt_installation_download.html>`_ dos instaladores
 3. Executar o instalador
 
 4. Configurar:
 
-   * **Application's folder:** complete com o nome da aplicação que aparecerá no Menu de Programas
-   * **URL:** endereço do site público da coleção
-   * **Programs's destination folder:** localização da pasta dos programas (**bin**)
-   * **Data destination folder:** localização da pasta dos dados (**serial**). 
+   - **Application's folder:** complete com o nome da aplicação que aparecerá no Menu de Programas
+   - **URL:** endereço do site público da coleção
+   - **Programs's destination folder:** localização da pasta dos programas (**bin**)
+   - **Data destination folder:** localização da pasta dos dados (**serial**). 
 
 
-  .. image:: img/installation_setup.jpg
+    .. image:: img/installation_setup.jpg
 
 
-5. Select the programs you want to install in your computer, according to the purpose:
-
-- Local server (only one computer)
+5. Selecionar os programas:
 
   - Title Manager: program to manage journals and issues databases
   - Converter: program to load the marked documents into the database
-  - XML SciELO: (optional) program to create XML format for PubMed
-
-- Desktop Computer (one or more computer)
-
-  - Markup: program to identify the bibliographic elements in the articles/texts
-  - Markup - Automata files (optional): examples of files for automatic markup
+  - XML SciELO: (opcional) program to create XML format for PubMed
 
 
-.. image:: img/howtoinstall_programs.png
+    .. image:: img/howtoinstall_programs.png
 
-From **4.0.094** version, the installer automatically installs the dependences such as packtools and pillow (PIL).
-If it does not, execute the corresponding c:\\scielo\\bin\\xml\\install_requirements.bat
+6. Abrir um terminal (cmd) e executar os seguintes comandos:
 
+    Executar o comando abaixo para entrar na pasta onde está o programa **install_requirements.bat**:
 
-.. how_to_update:
+        .. code-block:: code
 
-=============
-How to update
-=============
+          cd <LOCAL DE INSTALACAO SciELO Markup>\xml
 
-Before updating
----------------
-1. Be sure **where** the programs (**bin folder**) are installed. E.g.: c:\\scielo.
-2. Be sure **where** the data (**serial folder**) are stored. E.g.: c:\\scielo.
+    Exemplo:
 
+        .. image:: img/installation_requirements_mkp_01.png
 
-.. code_and_title_error:
+    Resultado esperado:
+
+        .. image:: img/installation_requirements_mkp_02.png
 
 
-Before updating Title Manager and Code Manager 
-----------------------------------------------
+    Executar o comando abaixo para instalar os pré-requisitos **install_requirements.bat**:
 
-Only some files in **code folder** will be updated. Be sure you have  **your code folder** in **serial** before updating. DO NOT copy **serial** contents after updating. But in case you have done it, reinstall the programs again.
+        .. code-block:: code
+
+          install_requirements.bat
+
+    Exemplo:
+
+        .. image:: img/installation_requirements_mkp_03.png
+
+    
+    Este comando executará várias linhas, mas o resultado principal esperado é:
+
+        .. image:: img/installation_requirements_mkp_04.png
+
+===============
+Como configurar
+===============
+
+XML Package Maker and XML Markup
+================================
+
+Editar o arquivo **c:\\scielo\\bin\\scielo_env.ini**, somente se a situação é diferente da padrão:
+
+  - sem proxy
+  - com Internet
+  - packtools
 
 
-.. how_to_install:
+  .. code::
+
+    PROXY_ADDRESS=123.456.789:1234
+    ENABLED_WEB_ACCESS=off
+    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java
 
 
-==============
-How to install
-==============
+Complete **PROXY_ADDRESS**, se há um proxy para acessar a Internet
+
+Indique off para ENABLED_WEB_ACCESS, se não há acesso a Internet
+
+Indique a ordem de preferência dos validadores de XML
 
 
-================
-How to configure
-================
+Title Manager e Converter
+=========================
 
-Converter, Title Manager, Code Manager
---------------------------------------
+Configurar a variável de ambiente:
 
-Set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
+  Set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
 
   Check if the variable already exists. 
   If it does not, click New and enter the value.
 
-  .. image:: img/installation_setup_bap.jpg
+    .. image:: img/installation_setup_bap.jpg
 
 
 XML Converter
--------------
+=============
 
-Edit the file corresponding to **c:\\scielo\\bin\\scielo_paths.ini**, the line:
+PDF, XML e imagens para o site local
+------------------------------------
+
+Para que XML Converter copie os arquivos pdf, img, xml para o site local, edite o arquivo correspondente a **c:\\scielo\\bin\\scielo_paths.ini**, na linha:
 
 .. code::
 
-  SCI_LISTA_SITE=c:\\home\\scielo\www\\proc\\scilista.lst
+  SCI_LISTA_SITE=c:\home\scielo\www\proc\scilista.lst
 
-Change **c:\\home\\scielo\\www** to the location of local SciELO Website. E.g.: **c:\\var\\www\\scielo**
+Troque **c:\\home\\scielo\\www** pela localização do site local. Por exemplo:
+
+.. code::
+
+  SCI_LISTA_SITE=c:\var\www\scielo\proc\scilista.lst
 
 
-From **4.0.094** version:
+Validação de tabelas e fórmulas
+-------------------------------
 
-Only if applicable, edit the file corresponding to **c:\\scielo\\bin\\scielo_collection.ini** and/or **c:\\SciELO_XPM\\scielo_collection.ini**:
+O padrão de exigência para tabelas e fórmulas é que elas seja codificadas.
+
+Para alterar este nível, edite o arquivo que correspond a **c:\\scielo\\bin\\scielo_collection.ini**:
 
 .. code::
 
   CODED_FORMULA_REQUIRED=off
   CODED_TABLE_REQUIRED=off
 
-Set CODED_FORMULA_REQUIRED=off and CODED_TABLE_REQUIRED=off, if coded data is not required.
+
+**off** é para que o XML Converter não exija os elementos codificados
 
 
-XML Package Maker and XML Markup
---------------------------------
-
-From **4.0.094** version:
-
-Only if applicable, edit the file corresponding to **c:\\scielo\\bin\\scielo_env.ini** and/or **c:\\SciELO_XPM\\scielo_env.ini**:
-
-.. code::
-
-  PROXY_ADDRESS=123.456.789:1234
-  ENABLED_WEB_ACCESS=off
-  XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java
-
-
-Complete **PROXY_ADDRESS**, if a proxy is used to access the Internet.
-Set ENABLED_WEB_ACCESS=off, if Internet is not available.
-Set the preference order of XML Validators.
-
-
-Application menu
-----------------
+Menu de aplicação
+=================
 
 Sometimes the menu of the application will be created only for the Administrator user. 
 

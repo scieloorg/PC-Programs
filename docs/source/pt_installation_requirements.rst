@@ -11,8 +11,8 @@ Uma vez que os pré-requisitos estão sendo atendidos, não é necessário execu
 Verificar os pré-requisitos
 ===========================
 
-Verificar a localização da pasta serial
----------------------------------------
+Verificar a localização e situação da pasta serial
+--------------------------------------------------
 
 **Somente** para os programas de **gestão de coleção**, que devem estar instalador em um servidor local.
 
