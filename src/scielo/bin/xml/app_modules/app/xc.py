@@ -100,6 +100,7 @@ class XC_Reception(object):
             if self.configuration.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
             self.mailer.mail_step1_failure(pkgfolder.name, e)
+            encoding.report_exception('convert_package', e, pkgfolder.name)
             raise
         if len(scilista_items) > 0:
             acron, issue_id = scilista_items[0].split(' ')
