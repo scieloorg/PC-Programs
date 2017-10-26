@@ -616,9 +616,11 @@ def display_article_metadata(_article, sep='<br/>'):
     dates = [_article.collection_dateiso, _article.ahpdate_dateiso, _article.epub_dateiso, _article.epub_ppub_dateiso]
 
     r = ''
-    r += html_reports.tag('p', html_reports.tag('strong', _article.xml_name), 'doi')
-    r += html_reports.tag('p', _article.publisher_article_id, 'doi')
-    r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
+    if _article.doi is not None:
+        r += html_reports.tag('p', _article.doi, 'doi')
+    else:
+        r += html_reports.tag('p', _article.publisher_article_id, 'doi')
+    r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
     for l, d in zip(dates_labels, dates):
         if d is not None:
             r += html_reports.display_label_value(_('date') + ' (' + l + ')', utils.display_datetime(d), 'p')
@@ -651,6 +653,8 @@ def display_article_data_to_compare(_article):
         r += html_reports.p_message(_('package'))
     else:
         r += html_reports.p_message(_('registered article'))
+    r += html_reports.tag('p', _article.xml_name, 'article-title')
+    r += html_reports.tag('p', html_reports.tag('strong', _article.order), 'fpage')
     r += display_article_metadata(_article, '<br/>')
     if _article.creation_date_display is not None:
         r += '<hr/>' + html_reports.display_label_value(_('creation date'), _article.creation_date_display, 'p')
