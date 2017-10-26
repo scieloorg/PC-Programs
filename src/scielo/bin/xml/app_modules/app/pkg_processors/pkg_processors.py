@@ -398,6 +398,7 @@ class PkgProcessor(object):
                 pkg.articles[xml_name].institutions_query_results = institutions_results
                 pkg.articles[xml_name].normalized_affiliations = {aff_id: info[0] for aff_id, info in institutions_results.items()}
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
+
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
         mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
@@ -443,7 +444,7 @@ class PkgProcessor(object):
             encoding.display_message(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
         return merged.ArticlesMergence(
             registered_issue_data.registered_articles,
-            pkg.articles)
+            pkg.articles, self.is_db_generation)
 
     def report_result(self, pkg, validations_reports, conversion=None):
         files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)

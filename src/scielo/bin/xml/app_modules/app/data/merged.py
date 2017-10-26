@@ -121,7 +121,8 @@ class MergedArticlesData(object):
 
 class ArticlesMergence(object):
 
-    def __init__(self, registered_articles, articles):
+    def __init__(self, registered_articles, articles, is_db_generation):
+        self.is_db_generation = is_db_generation
         self.registered_articles = registered.RegisteredArticles(registered_articles)
         self.articles = articles
         self.titaut_conflicts = None
@@ -138,18 +139,15 @@ class ArticlesMergence(object):
 
     @property
     def registered_articles_by_order_and_name(self):
-        return {a.order + name: name for name, a in self.registered_articles.items()}
-
-    @property
-    def pkg_articles_by_order(self):
-        r = {k: [] for k in self.articles.keys()}
-        for name, a in self.articles.items():
-            r[name].append(a)
-        return r
+        if self.is_db_generation:
+            return {a.order + name: name for name, a in self.registered_articles.items()}
+        return {}
 
     @property
     def registered_articles_by_order(self):
-        return {a.order: name for name, a in self.registered_articles.items()}
+        if self.is_db_generation:
+            return {a.order: name for name, a in self.registered_articles.items()}
+        return {}
 
     @property
     def accepted_articles(self):
@@ -158,11 +156,13 @@ class ArticlesMergence(object):
     @property
     def pkg_order_conflicts(self):
         # pkg order conflicts
-        pkg_orders = {a.order: [] for name, a in self.articles.items() if a.marked_to_delete is False}
-        for name, a in self.articles.items():
-            if not a.marked_to_delete:
-                pkg_orders[a.order].append(name)
-        return {order: names for order, names in pkg_orders.items() if len(names) > 1}
+        if self.is_db_generation:
+            pkg_orders = {a.order: [] for name, a in self.articles.items() if a.marked_to_delete is False}
+            for name, a in self.articles.items():
+                if not a.marked_to_delete:
+                    pkg_orders[a.order].append(name)
+            return {order: names for order, names in pkg_orders.items() if len(names) > 1}
+        return {}
 
     @property
     def merged_articles(self):
