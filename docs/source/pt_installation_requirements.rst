@@ -156,9 +156,6 @@ Ao instalar Python, selecione todas as opções disponíveis, especialmente:
        :width: 500
 
 
-Versão recomendada: python *2.7.13*
-
-
 Como instalar Pillow
 --------------------
 
