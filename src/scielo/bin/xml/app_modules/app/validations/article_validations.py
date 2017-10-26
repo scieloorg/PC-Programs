@@ -181,6 +181,8 @@ class ArticleValidator(object):
         scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(fs_utils.read_file(pkgfiles.filename))
         xml_structure_validator = XMLStructureValidator(scielo_dtd_files, article.sps, self.xml_struct_validator_pref)
 
+        fs_utils.write_file(outputs.data_report_filename, _('Processing... '))
+
         artval = ArticleValidations()
         artval.journal_validations = self.xml_journal_data_validator.validate(article)
         artval.issue_validations = self.xml_issue_data_validator.validate(article)
