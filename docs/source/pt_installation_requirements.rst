@@ -38,6 +38,9 @@ Verificar a instalação de Python + pip
     .. image:: img/installation_python_resultado.png
 
 
+  .. note: ao executar este comando a versão do Python não necessariamente tem que ser igual a da imagem
+
+
 4. Caso o resultado não é o esperado, repita todas as instruções anteriores.
 
 5. Execute o comando no terminal:
@@ -48,6 +51,9 @@ Verificar a instalação de Python + pip
 6. Verificar se o comando apresenta a versão do pip. Por exemplo:
 
     .. image:: img/installation_pip_resultado.png
+
+
+  .. note: ao executar este comando a versão de pip não necessariamente tem que ser igual a da imagem
 
 
 7. Caso o resultado não é o esperado, **reinstalar Python**.
@@ -65,9 +71,13 @@ Verifique se foi corretamente instalado, executando os comandos no terminal:
     .. image:: img/installation_python.png
     
 
-2. Verificar que o resultado será a apresentação do terminal do Python
+2. Verificar que o resultado esperado será a apresentação do **terminal do Python**. 
 
     .. image:: img/installation_python_terminal.png
+
+
+  .. note: ao executar este comando a versão de python não necessariamente tem que ser igual a da imagem
+
     
 
 3. Executar *import PIL* (letras maiúsculas):
@@ -117,6 +127,11 @@ Verificar a instalação Java
     .. image:: img/howtoinstall_path_conferir-java.jpg
 
 
+
+  .. note: ao executar este comando a versão de **java** não necessariamente tem que ser igual a da imagem
+
+
+
    Caso a mensagem seja: *java não é um comando reconhecido ...*, repita as instruções desta seção.
 
 
@@ -139,6 +154,9 @@ Ao instalar Python, selecione todas as opções disponíveis, especialmente:
     .. image:: img/installation_add_python_to_path.png
        :height: 500
        :width: 500
+
+
+Versão recomendada: python *2.7.13*
 
 
 Como instalar Pillow
