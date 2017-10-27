@@ -75,7 +75,6 @@ class PMCPackageItemMaker(object):
                 self.scielo_pkgfiles.filename,
                 scielo_dtd_files.xsl_output,
                 self.pmc_pkgfiles.filename)
-
             xml_validator = sps_xml_validators.XMLValidator(pmc_dtd_files)
             xml_validator.validate(
                 self.pmc_pkgfiles.filename,
