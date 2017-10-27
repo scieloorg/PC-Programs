@@ -214,7 +214,7 @@ XML Converter
 PDF, XML e imagens para o site local
 ------------------------------------
 
-Para que XML Converter copie os arquivos pdf, img, xml para o site local, edite o arquivo correspondente a **c:\\scielo\\bin\\scielo_paths.ini**, na linha:
+Para que XML Converter copie os arquivos pdf, img, xml para o site local, editar o arquivo correspondente a **c:\\scielo\\bin\\scielo_paths.ini**, na linha:
 
 .. code::
 
@@ -230,9 +230,9 @@ Trocar **c:\\home\\scielo\\www** pela localização do site local. Por exemplo:
 Validação de tabelas e fórmulas
 -------------------------------
 
-O padrão de exigência para tabelas e fórmulas é que elas seja codificadas.
+O padrão de exigência para tabelas e fórmulas é que elas sejam codificadas.
 
-Para alterar este nível, edite o arquivo que correspond a **c:\\scielo\\bin\\scielo_collection.ini**:
+Para alterar este nível, editar o arquivo que correspond a **c:\\scielo\\bin\\scielo_collection.ini**:
 
 .. code::
 

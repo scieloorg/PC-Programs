@@ -8,7 +8,7 @@ XML Package Maker
 =================
 
 1. Instalar y/o verificar los `requisitos <es_installation_requirements.html>`_
-2. Fazer el `download <es_installation_download.html>`_ de los instaladores
+2. Descargar el `instalador <es_installation_download.html>`_
 3. Ejecutar el instalador
 4. Indicar la ubicación de la aplicación
 
@@ -54,14 +54,14 @@ Markup
 ======
 
 1. Instalar y/o verificar los `requisitos <es_installation_requirements.html>`_
-2. Fazer el `download <es_installation_download.html>`_ de los instaladores
+2. Descargar el `instalador <es_installation_download.html>`_
 3. Ejecutar el instalador
 4. Configurar:
 
    - **Application's folder:** complete con el nombre de la aplicación que presentará en el Menú de Programas
-   - **URL:** endereço del sitio público de la colección
+   - **URL:** dirección del sitio público de la colección
    - **Programs's destination folder:** ubicación de la carpeta de los programas (**bin**)
-   - **Data destination folder:** ubicación de la carpeta de los dados (**serial**). Repetir el mesmo valor del anterior.
+   - **Data destination folder:** ubicación de la carpeta de los datos (**serial**). Repetir el mesmo valor de lo anterior.
 
     .. image:: img/installation_setup.jpg
 
@@ -112,15 +112,15 @@ SciELO PC Programs Completo: Title Manager, Converter, Markup, XPM etc
 ======================================================================
 
 1. Instalar y/o verificar los `requisitos <es_installation_requirements.html>`_
-2. Fazer el `download <es_installation_download.html>`_ de los instaladores
+2. Descargar el `instalador <es_installation_download.html>`_
 3. Ejecutar el instalador
 
 4. Configurar:
 
    - **Application's folder:** complete con el nombre de la aplicación que presentará en el Menú de Programas
-   - **URL:** endereço del sitio público de la colección
+   - **URL:** dirección del sitio público de la colección
    - **Programs's destination folder:** ubicación de la carpeta de los programas (**bin**)
-   - **Data destination folder:** ubicación de la carpeta de los dados (**serial**). 
+   - **Data destination folder:** ubicación de la carpeta de los datos (**serial**). 
 
 
     .. image:: img/installation_setup.jpg
@@ -175,7 +175,7 @@ Cómo configurar
 XML Package Maker and XML Markup
 ================================
 
-Editar el archivo **c:\\scielo\\bin\\scielo_env.ini**, somente se la situación es diferente de la padrão:
+Editar el archivo **c:\\scielo\\bin\\scielo_env.ini**, somente si la situación es distinta de la stándar:
 
   - sín proxy
   - con Internet
@@ -189,17 +189,17 @@ Editar el archivo **c:\\scielo\\bin\\scielo_env.ini**, somente se la situación 
     XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java
 
 
-Complete **PROXY_ADDRESS**, se há un proxy para acceder la Internet
+Complete **PROXY_ADDRESS**, si hay un proxy para acceder la Internet
 
-Indique off para ENABLED_WEB_ACCESS, se no há accede la Internet
+Indique off para ENABLED_WEB_ACCESS, si no hay acceso a la Internet
 
-Indique la ordem de preferência de los validadores de XML
+Indique el orden de preferEncia de los validadores de XML
 
 
 Title Manager y Converter
 =========================
 
-Configurar la variável de ambiente:
+Configurar la variable de ambiente:
 
   Set OS23470a to the environment variable BAP, by acccedeng the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
 
@@ -215,7 +215,7 @@ XML Converter
 PDF, XML y imagens para el sitio local
 --------------------------------------
 
-Para que XML Converter copie los archivos pdf, img, xml para el sitio local, edite el archivo correspondiente a **c:\\scielo\\bin\\scielo_paths.ini**, en la linha:
+Para que XML Converter copie los archivos pdf, img, xml para el sitio local, editar el archivo correspondiente a **c:\\scielo\\bin\\scielo_paths.ini**, en la línea:
 
 .. code::
 
@@ -231,9 +231,9 @@ Reemplazar **c:\\home\\scielo\\www** por la ubicación del sitio local. Por ejem
 Validación de tabelas y fórmulas
 -------------------------------
 
-O padrão de exigência para tabelas y fórmulas es que elas seja codificadas.
+El stándar de exigencia para tablas y fórmulas es que ellas estén codificadas.
 
-Para alterar este nível, edite el archivo que correspond la **c:\\scielo\\bin\\scielo_collection.ini**:
+Para alterar este nível, editar el archivo que corresponde a **c:\\scielo\\bin\\scielo_collection.ini**:
 
 .. code::
 
@@ -241,7 +241,7 @@ Para alterar este nível, edite el archivo que correspond la **c:\\scielo\\bin\\
   CODED_TABLE_REQUIRED=off
 
 
-**off** es para que el XML Converter no exija los elementos codificados
+**off** es para que XML Converter no exija los elementos codificados
 
 
 Menu de aplicación

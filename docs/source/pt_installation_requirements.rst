@@ -98,7 +98,7 @@ Verificar se foi corretamente instalado, executando os comandos no terminal:
 
    Mas se a mensagem for similar a
 
-        .. code-block:: code
+        .. code-block:: text
 
             Traceback (most recent call last):
               File "<stdin>", line 1, in <module>
@@ -123,7 +123,7 @@ Verificar a instalação Java
 
 1. Executar no terminal:
 
-    .. code-block:: code
+    .. code-block:: text
 
         java -version
 
