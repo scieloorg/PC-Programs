@@ -3,8 +3,6 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl xlink mml">
 
-	<xsl:include href="local_dtd.xsl"/>
-
 	<xsl:param name="new_name"/>
 	<xsl:variable name="translations" select=".//sub-article[@article-type='translation']"/>
 	<xsl:variable name="display_funding">
