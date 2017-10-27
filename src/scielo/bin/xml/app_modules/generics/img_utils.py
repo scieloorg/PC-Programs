@@ -71,8 +71,12 @@ def validate_tiff_image_file(img_filename, dpi=300):
     img = tiff_image(img_filename)
     if img is not None:
         if img.info is not None:
-            if img.info.get('dpi') < dpi:
-                return _('{file} has invalid dpi: {dpi}').format(file=os.path.basename(img_filename), dpi=img.info.get('dpi'))
+            img_dpi = img.info.get('dpi')
+            if img_dpi is not None:
+                if img_dpi[0] < dpi:
+                    return _('{file} has invalid dpi: {dpi}').format(
+                        file=os.path.basename(img_filename),
+                        dpi=img.info.get('dpi'))
 
 
 def evaluate_tiff(img_filename, min_height=None, max_height=None):

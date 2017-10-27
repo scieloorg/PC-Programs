@@ -3,13 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-SciELO PC Programs
-==================
+==========
+Instalação
+==========
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
-    index_pt.rst
-    index_es.rst
-    index_en.rst
+    pt_installation_requirements.rst
+    pt_installation_download.rst
+    pt_installation_configure.rst
     
