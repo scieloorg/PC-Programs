@@ -1,10 +1,9 @@
-4.0.094 Release 29/09/2017 | R3 ?
+4.0.094 Release 29/09/2017 | R3 27/10/2017
 ==========================================
 - Markup XML
   - (bug) [2711] Solve problem of markup funding data in footnote area
   - (bug) [2742] Fix *authors for two authors markup
   - (bug) [2745] Programa gera xmlns:mml="https://www.w3.org/1998/Math/MathML" em <journal-title> 
-
 - XC
   - (enhancement) [2751] Accept some differences between aop and ex aop data to exclude aop version
   - (enhancement) [2747] Flexibilizar a validação de journal-title para aop e rolling pass 
@@ -22,6 +21,7 @@
   - (enhancement) [2768] Validate DOCTYPE check combination of PUBLIC ID + SYSTEM ID are correct and also sps version
   - (enhancement) [2771] Improve the reports: fix columns width and present DOI
   - (bug) [2772] Remove incorrect validations about order conflicts which is valid only for XC reports
+  - (bug) [2778] Fix PMC generation
 
 
 4.0.094 Release 29/09/2017 | R2 03/10/2017
