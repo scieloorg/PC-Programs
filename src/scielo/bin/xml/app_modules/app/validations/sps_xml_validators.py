@@ -176,6 +176,7 @@ class XMLValidator(object):
     def __init__(self, dtd_files, sps_version=None, preference=None):
         self.logger = None
         self.SPS_versions = SPSversions()
+        self.dtd_files = dtd_files
         validator = 'java'
         preference = preference[0] if preference is not None and len(preference) > 0 else ''
         if dtd_files.database_name == 'scielo' and IS_PACKTOOLS_INSTALLED and preference == 'packtools':
@@ -197,25 +198,32 @@ class XMLValidator(object):
             article_xml_versions_info.sps_version)
         info = self.SPS_versions.dtd_infos.get(
             article_xml_versions_info.public_id)
-        if article_xml_versions_info.system_id not in info.get('url'):
-            expected = _(' or ').join(info.get('url'))
-            msg = data_validations.invalid_value_message(
-                'SYSTEM ID', article_xml_versions_info.system_id, expected)
-            errors.append(msg)
-        if article_xml_versions_info.sps_version not in info.get('sps'):
-            expected = _(' or ').join(info.get('sps'))
-            msg = data_validations.invalid_value_message(
-                'SPS version', article_xml_versions_info.sps_version, expected)
-            errors.append(msg)
+        if info is not None:
+            if article_xml_versions_info.system_id not in info.get('url'):
+                expected = _(' or ').join(info.get('url'))
+                msg = data_validations.invalid_value_message(
+                    'SYSTEM ID', article_xml_versions_info.system_id, expected)
+                errors.append(msg)
+            if article_xml_versions_info.sps_version not in info.get('sps'):
+                expected = _(' or ').join(info.get('sps'))
+                msg = data_validations.invalid_value_message(
+                    'SPS version', article_xml_versions_info.sps_version, expected)
+                errors.append(msg)
+        else:
+            errors.append(_('Unknown PUBLIC ID: {}').format(
+                article_xml_versions_info.public_id))
         if len(errors) > 0:
-            errors.insert(0, 'PUBLIC ID: {}'.format(article_xml_versions_info.public_id))
+            errors.insert(0, 'PUBLIC ID: {}'.format(
+                article_xml_versions_info.public_id))
         return errors
 
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
         self.validator.logger = self.logger
         self.validator.setup(xml_filename)
         xml, e = xml_utils.load_xml(xml_filename)
-        errors = self.validate_doctype(ArticleXMLVersionsInfo(fs_utils.read_file(xml_filename)))
+        errors = []
+        if self.dtd_files.database_name == 'scielo':
+            errors = self.validate_doctype(ArticleXMLVersionsInfo(fs_utils.read_file(xml_filename)))
         is_valid_dtd = len(errors) == 0 and self.validator.dtd_validation(dtd_report_filename)
         if len(errors) > 0:
             fs_utils.write_file(
