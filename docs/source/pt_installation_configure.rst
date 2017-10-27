@@ -81,7 +81,7 @@ Markup
 
         .. code-block:: code
 
-          cd <LOCAL DE INSTALACAO SciELO Markup>\xml
+           cd <LOCAL DE INSTALACAO SciELO Markup>\xml
 
     Exemplo:
 
@@ -220,7 +220,7 @@ Para que XML Converter copie os arquivos pdf, img, xml para o site local, edite 
 
   SCI_LISTA_SITE=c:\home\scielo\www\proc\scilista.lst
 
-Troque **c:\\home\\scielo\\www** pela localização do site local. Por exemplo:
+Trocar **c:\\home\\scielo\\www** pela localização do site local. Por exemplo:
 
 .. code::
 

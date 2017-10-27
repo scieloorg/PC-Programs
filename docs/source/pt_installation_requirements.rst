@@ -14,7 +14,7 @@ Verificar os pré-requisitos
 Verificar a localização e situação da pasta serial
 --------------------------------------------------
 
-**Somente** para os programas de **gestão de coleção**, que devem estar instalador em um servidor local.
+**Somente** para os programas de **gestão de coleção**, que devem estar instalado em um servidor local.
 
 Este servidor deve ter acesso à pasta **serial** e esta pasta tem que estar atualizada (title, section, issue etc) antes de executar a instalação de SciELO PC Programs.
 
@@ -38,12 +38,14 @@ Verificar a instalação de Python + pip
     .. image:: img/installation_python_resultado.png
 
 
-  .. note: ao executar este comando a versão do Python não necessariamente tem que ser igual a da imagem
+  .. note::
+
+     ao executar este comando a versão do Python não necessariamente tem que ser igual a da imagem
 
 
-4. Caso o resultado não é o esperado, repita todas as instruções anteriores.
+4. Caso o resultado não é o esperado, repetir todas as instruções anteriores.
 
-5. Execute o comando no terminal:
+5. Executar o comando no terminal:
 
     .. image:: img/installation_pip_test.png
 
@@ -53,7 +55,9 @@ Verificar a instalação de Python + pip
     .. image:: img/installation_pip_resultado.png
 
 
-  .. note: ao executar este comando a versão de pip não necessariamente tem que ser igual a da imagem
+  .. note::
+
+     ao executar este comando a versão de pip não necessariamente tem que ser igual a da imagem
 
 
 7. Caso o resultado não é o esperado, **reinstalar Python**.
@@ -64,7 +68,7 @@ Verificar a instalação de Pillow
 
 Pillow é pré-requisito **somente** para **versões anteriores a SciELO PC Programs 4.0.094**.
 
-Verifique se foi corretamente instalado, executando os comandos no terminal:
+Verificar se foi corretamente instalado, executando os comandos no terminal:
 
 1. Executar python:
 
@@ -76,7 +80,9 @@ Verifique se foi corretamente instalado, executando os comandos no terminal:
     .. image:: img/installation_python_terminal.png
 
 
-  .. note: ao executar este comando a versão de python não necessariamente tem que ser igual a da imagem
+  .. note::
+
+     ao executar este comando a versão de python não necessariamente tem que ser igual a da imagem
 
     
 
@@ -128,11 +134,13 @@ Verificar a instalação Java
 
 
 
-  .. note: ao executar este comando a versão de **java** não necessariamente tem que ser igual a da imagem
+  .. note::
+
+     ao executar este comando a versão de **java** não necessariamente tem que ser igual a da imagem
 
 
 
-   Caso a mensagem seja: *java não é um comando reconhecido ...*, repita as instruções desta seção.
+  Caso a mensagem seja: *java não é um comando reconhecido ...*, repetir as instruções desta seção.
 
 
 
