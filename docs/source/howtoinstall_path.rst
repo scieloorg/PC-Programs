@@ -80,7 +80,7 @@ How to test the requirements are correctly installed
 Make sure that this procedure was done correctly using a **NEW** window of DOS terminal. Do not use any which is already open. 
 Open a **NEW** window of DOS terminal and type:
 
-.. code-block:: code
+.. code-block:: text
  
  	python -V
 
@@ -94,7 +94,7 @@ Then check Pillow:
 Continue in the DOS terminal or Open a **NEW** window and type:
 
 
-.. code-block:: code
+.. code-block:: text
  
  	python
  	import PIL
@@ -105,7 +105,7 @@ Continue in the DOS terminal or Open a **NEW** window and type:
 Expected:
 
 
-.. code-block:: code
+.. code-block:: text
 
 	Python 2.7.8 (default, Jun 30 2014, 16:03:49) [MSC v.1500 32 bit (Intel)] on win32
 	Type "help", "copyright", "credits" or "license" for more information.
@@ -115,7 +115,7 @@ Expected:
 
 If you have a message similar to:
 
-.. code-block:: code
+.. code-block:: text
 
 	Traceback (most recent call last):
 	  File "<stdin>", line 1, in <module>
@@ -126,7 +126,7 @@ Install Pillow. If you have Python 32bits, Pillow must be 32 bits too. If you ha
 
 Then check Java:
 
-.. code-block:: code
+.. code-block:: text
 
 	java -version
 
