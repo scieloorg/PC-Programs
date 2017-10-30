@@ -237,7 +237,7 @@ Validación de tablas y fórmulas
 
 El stándar de exigencia para tablas y fórmulas es que ellas estén codificadas.
 
-Para alterar el nível de exigencia, editar el archivo que corresponde a **c:\\scielo\\bin\\scielo_collection.ini**:
+Para cambiar el nível de exigencia, editar el archivo que corresponde a **c:\\scielo\\bin\\scielo_collection.ini**:
 
 .. code::
 
