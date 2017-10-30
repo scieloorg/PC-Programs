@@ -3,7 +3,7 @@
 Requisitos
 ==========
 
-Los requisitos son procedimientos ya que deben haber sido ejecutados antes de la instalación de SciELO PC Programs. 
+Los requisitos son procedimientos que ya deben haber sido ejecutados antes de la instalación de SciELO PC Programs. 
 
 Una vez que los requisitos están siendo atendidos, no es necesario ejecutar los requisitos cada vez que se instala SciELO PC Programs.
 
@@ -148,10 +148,10 @@ Instalar los requisitos
 =======================
 
 
-Cómo instalar Python y pip igual ou superior la 2.7.10
-------------------------------------------------------
+Cómo instalar Python y pip igual o superior la 2.7.10
+-----------------------------------------------------
 
-Primeiramente, garantizar que tenga **solamente uma** versión de Python 2.7.x instalada. Por si acaso sea necesario instalar una versión más reciente de Python, remover la anterior antes de proseguir.
+Primeramente, garantizar que tenga **solamente uma** versión de Python 2.7.x instalada. Por si acaso sea necesario instalar una versión más reciente de Python, remover la anterior antes de proseguir.
 
 Al instalar Python, seleccione todas las opciones disponibles, especialmente:
     

@@ -6,7 +6,7 @@
 Download
 ========
 
-Abrir un Navegador Web e acceder:
+Abrir un Navegador Web y acceder:
 
 ftp://ftp.scielo.br
 
