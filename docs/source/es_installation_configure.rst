@@ -20,7 +20,7 @@ XML Package Maker
 
 Ejecutar el comando abajo para entrar en la carpeta donde está el programa **install_requirements.bat**:
 
-    .. code-block:: code
+    .. code-block:: text
 
        cd <LOCAL DE INSTALACAO XPM>\xml
 
@@ -35,7 +35,7 @@ Resultado esperado:
 
 Ejecutar el comando abajo para instalar los requisitos **install_requirements.bat**:
 
-    .. code-block:: code
+    .. code-block:: text
 
       install_requirements.bat
 
@@ -79,7 +79,7 @@ Markup
 
     Ejecutar el comando abajo para entrar en la carpeta donde está el programa **install_requirements.bat**:
 
-        .. code-block:: code
+        .. code-block:: text
 
            cd <LOCAL DE INSTALACAO SciELO Markup>\xml
 
@@ -94,7 +94,7 @@ Markup
 
     Ejecutar el comando abajo para instalar los requisitos **install_requirements.bat**:
 
-        .. code-block:: code
+        .. code-block:: text
 
           install_requirements.bat
 
@@ -139,22 +139,25 @@ SciELO PC Programs Completo: Title Manager, Converter, Markup, XPM etc
 
     Ejecutar el comando abajo para entrar en la carpeta donde está el programa **install_requirements.bat**:
 
-        .. code-block:: code
+        .. code-block:: text
 
           cd <LOCAL DE INSTALACAO SciELO Markup>\xml
 
     Ejemplo:
 
+
         .. image:: img/installation_requirements_mkp_01.png
 
+
     Resultado esperado:
+
 
         .. image:: img/installation_requirements_mkp_02.png
 
 
     Ejecutar el comando abajo para instalar los requisitos **install_requirements.bat**:
 
-        .. code-block:: code
+        .. code-block:: text
 
           install_requirements.bat
 
@@ -175,11 +178,11 @@ Cómo configurar
 XML Package Maker and XML Markup
 ================================
 
-Editar el archivo **c:\\scielo\\bin\\scielo_env.ini**, somente si la situación es distinta de la stándar:
+Editar el archivo **c:\\scielo\\bin\\scielo_env.ini**, solamente si la situación es distinta de la stándar:
 
   - sín proxy
   - con Internet
-  - packtools
+  - packtools como validador de XML
 
 
   .. code::
@@ -189,22 +192,23 @@ Editar el archivo **c:\\scielo\\bin\\scielo_env.ini**, somente si la situación 
     XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java
 
 
-Complete **PROXY_ADDRESS**, si hay un proxy para acceder la Internet
+Complete **PROXY_ADDRESS**, si hay un proxy para acceder a la Internet
 
 Indique off para ENABLED_WEB_ACCESS, si no hay acceso a la Internet
 
-Indique el orden de preferEncia de los validadores de XML
+Indique el orden de preferencia de los validadores de XML
 
 
 Title Manager y Converter
 =========================
 
-Configurar la variable de ambiente:
+Configurar la variable de ambiente BAP:
 
   Set OS23470a to the environment variable BAP, by acccedeng the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
 
   Check if the variable already exists. 
   If it does not, click New and enter the value.
+
 
     .. image:: img/installation_setup_bap.jpg
 
@@ -228,12 +232,12 @@ Reemplazar **c:\\home\\scielo\\www** por la ubicación del sitio local. Por ejem
   SCI_LISTA_SITE=c:\var\www\scielo\proc\scilista.lst
 
 
-Validación de tabelas y fórmulas
+Validación de tablas y fórmulas
 -------------------------------
 
 El stándar de exigencia para tablas y fórmulas es que ellas estén codificadas.
 
-Para alterar este nível, editar el archivo que corresponde a **c:\\scielo\\bin\\scielo_collection.ini**:
+Para alterar el nível de exigencia, editar el archivo que corresponde a **c:\\scielo\\bin\\scielo_collection.ini**:
 
 .. code::
 
@@ -244,8 +248,8 @@ Para alterar este nível, editar el archivo que corresponde a **c:\\scielo\\bin\
 **off** es para que XML Converter no exija los elementos codificados
 
 
-Menu de aplicación
-=================
+Menú de aplicación
+==================
 
 Sometimes the menu of the application will be created only for the Administrator user. 
 
