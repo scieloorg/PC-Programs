@@ -40,7 +40,5 @@ Selecionar a pasta de acordo com os programas que deseja instalar.
 
   .. note:: 
 
-    Como os programas relacionados com Markup SGML não há mais desenvolvimentos novos, no entanto, os programas relacionados com Markup SGML podem ser instalados com o instalador que está em **xml_markup**.
-
-    Se você trabalha com as duas marcações, usar o instalador da pasta **xml_markup**.
+    Não há mais novos desenvolvimento para os programas relacionados com MArkup SGML, no entanto, eles podem ser instalados com o instalador que está em xml_markup.
 

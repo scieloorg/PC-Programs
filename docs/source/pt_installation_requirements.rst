@@ -3,9 +3,9 @@
 Pré-requisitos
 ==============
 
-Os pré-requisitos são procedimentos já que devem ter sido executados antes da instalação de SciELO PC Programs. 
+Os pré-requisitos são procedimentos que já devem ter sido executados antes da instalação de SciELO PC Programs. 
 
-Uma vez que os pré-requisitos estão sendo atendidos, não é necessário executar os pré-requisitos cada vez se instala SciELO PC Programs.
+Uma vez que os pré-requisitos estão sendo atendidos, não é necessário executar os pré-requisitos cada vez que se instala SciELO PC Programs.
 
 
 Verificar os pré-requisitos
@@ -43,7 +43,7 @@ Verificar a instalação de Python + pip
      ao executar este comando a versão do Python não necessariamente tem que ser igual a da imagem
 
 
-4. Caso o resultado não é o esperado, repetir todas as instruções anteriores.
+4. Caso o resultado não seja o esperado, repetir todas as instruções anteriores.
 
 5. Executar o comando no terminal:
 
@@ -60,7 +60,7 @@ Verificar a instalação de Python + pip
      ao executar este comando a versão de pip não necessariamente tem que ser igual a da imagem
 
 
-7. Caso o resultado não é o esperado, **reinstalar Python**.
+7. Caso o resultado não seja o esperado, **reinstalar Python**.
 
 
 Verificar a instalação de Pillow 
