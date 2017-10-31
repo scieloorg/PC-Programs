@@ -111,16 +111,12 @@ class WebServicesRequester(object):
             return None
         response = self.requests.get(url)
         if response is None and url not in self.requests.keys():
-            server = get_servername(url)
-            if server not in self.skip:
-                response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
-                if http_error_proxy_auth is not None:
-                    if self.proxy_info is not None:
-                        get_proxy_info(self.proxy_info)
-                        response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
-                if response is None and error_message != '':
-                    self.skip.append(server)
-                self.requests[url] = response
+            response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
+            if http_error_proxy_auth is not None:
+                if self.proxy_info is not None:
+                    get_proxy_info(self.proxy_info)
+                    response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
+            self.requests[url] = response
         return response
 
     def json_result_request(self, url, timeout=30, debug=False):

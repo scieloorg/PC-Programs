@@ -1,4 +1,4 @@
-4.0.094 Release 29/09/2017 | R3 30/10/2017
+4.0.094 Release 29/09/2017 | R3 31/10/2017
 ==========================================
 - Markup XML
   - (bug) [2711] Solve problem of markup funding data in footnote area
@@ -24,6 +24,7 @@
   - (enhancement) [2771] Improve the reports: fix columns width and present DOI
   - (bug) [2772] Remove incorrect validations about order conflicts which is valid only for XC reports
   - (bug) [2778] Fix PMC generation
+  - (bug) [2786] Fix DOI Validation
 
 
 4.0.094 Release 29/09/2017 | R2 03/10/2017
