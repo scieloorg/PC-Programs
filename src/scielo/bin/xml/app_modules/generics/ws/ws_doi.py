@@ -11,18 +11,22 @@ class DOIWebServicesRequester(object):
         self.ws_requester = _ws_requester
         self.doi_requested = {}
         self.doi_journal_prefixes = {}
+        self.URL = 'https://api.crossref.org/works'
+
+    def is_working(self):
+        return self.ws_requester.is_valid_url(self.URL)
 
     def journal_doi_prefix_url(self, issn, year=None):
         if year is None:
             year = datetime.now().year
         if issn is not None:
-            return 'https://api.crossref.org/works?filter=issn:{issn},from-pub-date:{year}'.format(issn=issn, year=year)
+            return self.URL + '?filter=issn:{issn},from-pub-date:{year}'.format(issn=issn, year=year)
 
     def article_doi_checker_url(self, doi):
         #https://api.crossref.org/works/10.1037/0003-066X.59.1.29
         url = None
         if doi is not None:
-            url = 'https://api.crossref.org/works/' + doi
+            url = self.URL + '/' + doi
         return url
 
     def _fix_doi(self, doi):

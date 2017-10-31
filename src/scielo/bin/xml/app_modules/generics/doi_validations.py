@@ -18,7 +18,13 @@ class DOIValidator(object):
         self.validate_format(article.doi)
         self._validate_doi_prefix(article)
         doi_data = self.ws_doi.doi_data(article.doi)
-        if doi_data is not None:
+        if doi_data is None:
+            if self.ws_doi.is_working():
+                msg = _('{} is not registered for any article. ').format(article.doi)
+            else:
+                msg = _('{} is not working. ').format(self.ws_doi.URL)
+            self.messages.append(('doi', validation_status.STATUS_WARNING, msg))
+        else:
             self._validate_journal_title(article, doi_data)
             self._validate_article_title(article, doi_data)
             self._validate_issn(article, doi_data)
@@ -63,12 +69,17 @@ class DOIValidator(object):
         if doi_data.article_titles is not None:
             status = validation_status.STATUS_INFO
             max_rate = 0
+            print('\n'*3)
+            print(article.doi)
+            print(doi_data.article_titles)
             for t in article.titles:
+                print(t.title)
                 rate, items = utils.most_similar(utils.similarity(doi_data.article_titles, xml_utils.remove_tags(t.title)))
                 if rate > max_rate:
                     max_rate = rate
             if max_rate < 0.7:
                 status = validation_status.STATUS_FATAL_ERROR
+            print(max_rate)
             self.messages.append(('doi', status, _('{item} is registered as belonging to {owner}. ').format(item=article.doi, owner='|'.join(doi_data.article_titles))))
 
     def _validate_issn(self, article, doi_data):

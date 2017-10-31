@@ -514,9 +514,10 @@ class ArticleContentValidation(object):
 
     @property
     def doi(self):
-        #FIXME
         r = []
-        if self.article.doi is not None:
+        if self.article.doi is None:
+            r.append(('doi', validation_status.STATUS_INFO, _('article has no DOI. ')))
+        else:
             r = self.doi_validator.validate(self.article)
         return r
 
