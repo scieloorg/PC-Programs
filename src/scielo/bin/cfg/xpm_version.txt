@@ -9,6 +9,7 @@
   - (bug) [2772] Remove incorrect validations about order conflicts which is valid only for XC reports
   - (bug) [2778] Fix PMC generation
   - (bug) [2786] Fix DOI Validation
+  - (bug) [2789] Consider the value for XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER in scielo_env.ini
 
 
 4.0.094 Release 29/09/2017 | R 03/10/2017

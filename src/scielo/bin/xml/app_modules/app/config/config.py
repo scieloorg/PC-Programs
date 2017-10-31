@@ -438,7 +438,7 @@ class Configuration(object):
 
     @property
     def xml_structure_validator_preference(self):
-        preference = self._data.get('XML_STRUCTURE_VALIDATOR_PREFERENCE', 'packtools').split('|')
+        preference = self._data.get('XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER', 'packtools').split('|')
         encoding.display_message(preference)
         return preference
 
