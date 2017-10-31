@@ -178,25 +178,26 @@ How to configure
 XML Package Maker and XML Markup
 ================================
 
-Edit the file **c:\\scielo\\bin\\scielo_env.ini**, only if the situation is different from the standard:
+Por padrão o programa funciona considerando acesso à Internet disponível, ausência de proxy para acesso à internet e uso do packtools como validador de estrutura de XML (em substituição ao style-checker).
 
-  - no proxy
-  - Internet access
-  - packtools as XML Validator
+Para os casos em que o acesso à Internet é feito via proxy ou não há acesso acesso à internet é necessário editar o arquivo exemplo scielo_env.ini disponível em ?/bin/ com os seguintes parâmetros:
 
+  .. code:: text
+
+    PROXY_ADDRESS=(endereço do proxy)
+    ENABLED_WEB_ACCESS=off (caso não haja acesso à internet)
+    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java (nesse caso a validação será feita preferencialmente usando a ferramenta packtools substituindo à validação no style checker, na ordem inversa usa-se o Java).
+
+
+Exemplo dos parâmetros preenchidos:
 
   .. code::
 
     PROXY_ADDRESS=123.456.789:1234
     ENABLED_WEB_ACCESS=off
-    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java
+    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=java|packtools
 
 
-Complete **PROXY_ADDRESS**, if there is a proxy to access the Internet
-
-Inform off to ENABLED_WEB_ACCESS, if there is no access to the Internet
-
-Inform preference order to use XML Validators
 
 
 Title Manager and Converter
@@ -236,7 +237,7 @@ Replace **c:\\home\\scielo\\www** by the local web site location. For instance:
 Validation of tables and formulas
 ---------------------------------
 
-Tables and formulas are required to be codified by default.
+Tables and formulas are required to be coded by default.
 
 To change this level of demanding, edit the corresponding file: **c:\\scielo\\bin\\scielo_collection.ini**:
 
@@ -246,7 +247,7 @@ To change this level of demanding, edit the corresponding file: **c:\\scielo\\bi
   CODED_TABLE_REQUIRED=off
 
 
-Set to **off** not to require codified table and formula.
+Set to **off** not to require coded table and formula.
 
 
 Application Program Menu

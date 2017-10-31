@@ -174,25 +174,24 @@ Como configurar
 XML Package Maker and XML Markup
 ================================
 
-Editar o arquivo **c:\\scielo\\bin\\scielo_env.ini**, somente se a situação é diferente da padrão:
+Por padrão o programa funciona considerando acesso à Internet disponível, ausência de proxy para acesso à internet e uso do packtools como validador de estrutura de XML (em substituição ao style-checker).
 
-  - sem proxy
-  - com Internet
-  - packtools
+Para os casos em que o acesso à Internet é feito via proxy ou não há acesso à internet é necessário editar o arquivo scielo_env.ini disponível em ?/bin/ com os seguintes parâmetros:
+
+  .. code:: text
+
+    PROXY_ADDRESS=(endereço do proxy)
+    ENABLED_WEB_ACCESS=off (caso não haja acesso à internet)
+    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java (nesse caso a validação será feita preferencialmente usando a ferramenta packtools substituindo à validação no style checker, na ordem inversa usa-se o Java).
 
 
-  .. code::
+Exemplo dos parâmetros preenchidos:
+
+  .. code:: text
 
     PROXY_ADDRESS=123.456.789:1234
     ENABLED_WEB_ACCESS=off
-    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java
-
-
-Complete **PROXY_ADDRESS**, se há um proxy para acessar a Internet
-
-Indique off para ENABLED_WEB_ACCESS, se não há acesso a Internet
-
-Indique a ordem de preferência dos validadores de XML
+    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=java|packtools
 
 
 Title Manager e Converter
