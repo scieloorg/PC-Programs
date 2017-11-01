@@ -321,6 +321,8 @@
 	<xsl:template match="related-article[@related-article-type='corrected-article' or @related-article-type='retracted-article']" mode="related-article-abstract">
 		[This <xsl:apply-templates select="." mode="label"/> the article <xsl:value-of select="@ext-link-type"/>: <xsl:value-of select="@xlink:href"/>]
 	</xsl:template>
+	<xsl:template match="abstract/title | trans-abstract/title" mode="scielo-xml-content-abstract">
+	</xsl:template>
 	<xsl:template match="abstract | trans-abstract" mode="scielo-xml-content-abstract">
 		<xsl:param name="name"/>
 		<xsl:param name="lang" select="@xml:lang"></xsl:param>
