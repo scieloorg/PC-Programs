@@ -1196,7 +1196,7 @@ class ArticleXML(object):
 
     @property
     def total_of_pages(self):
-        q = 1
+        q = None
         if self.fpage is not None and self.lpage is not None:
             if self.fpage.isdigit() and self.lpage.isdigit():
                 q = int(self.lpage) - int(self.fpage) + 1

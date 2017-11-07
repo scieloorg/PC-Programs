@@ -1645,10 +1645,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						<xsl:with-param name="element_name" select="'ref-count'"/>
 						<xsl:with-param name="count" select="@refcount"/>
 					</xsl:apply-templates>
-					<xsl:apply-templates select="." mode="element-counts">
-						<xsl:with-param name="element_name" select="'page-count'"/>
-						<xsl:with-param name="count" select="@pagcount"/>
-					</xsl:apply-templates>
+					<xsl:if test="not(@elocatid)">
+						<xsl:apply-templates select="." mode="element-counts">
+							<xsl:with-param name="element_name" select="'page-count'"/>
+							<xsl:with-param name="count" select="@pagcount"/>
+						</xsl:apply-templates>
+					</xsl:if>						
 				</xsl:otherwise>
 			</xsl:choose>
 			
