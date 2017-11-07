@@ -1707,7 +1707,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:variable name="id" select="@id"></xsl:variable>
 			<xsl:if test="not($xref_rid[@rid=$id])">
 					<xsl:variable name="fna"><xsl:apply-templates select="." mode="authorfn"/></xsl:variable>
-					<xsl:if test="normalize-space($fna)=''"><xsl:apply-templates select="."></xsl:apply-templates></xsl:if>
+					<xsl:if test="normalize-space($fna)=''">
+						<xsl:choose>
+							<xsl:when test="name()='fn'">
+								<fn-group>
+									<xsl:apply-templates select="."></xsl:apply-templates>
+								</fn-group>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates select="."></xsl:apply-templates>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
