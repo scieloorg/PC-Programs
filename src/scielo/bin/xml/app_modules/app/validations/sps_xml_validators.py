@@ -18,6 +18,7 @@ IS_PACKTOOLS_INSTALLED = False
 try:
     import packtools
     from packtools.catalogs import XML_CATALOG
+    from packtools import exceptions
     os.environ['XML_CATALOG_FILES'] = XML_CATALOG
     IS_PACKTOOLS_INSTALLED = True
 except Exception as e:
@@ -50,7 +51,6 @@ class PackToolsValidator(object):
         self.annoted = None
 
     def setup(self, xml_filename):
-        from packtools import exceptions
         self.xml_validator = None
         self.is_valid = False
         self.style_errors = 1
@@ -177,18 +177,19 @@ class XMLValidator(object):
         self.logger = None
         self.SPS_versions = SPSversions()
         self.dtd_files = dtd_files
-        validator = 'java'
+        self.dtd_validator = JavaXMLValidator(dtd_files.doctype_with_local_path, dtd_files.xsl_prep_report, dtd_files.xsl_report)
+        validator_id = 'java'
         preference = preference[0] if preference is not None and len(preference) > 0 else ''
         if dtd_files.database_name == 'scielo' and IS_PACKTOOLS_INSTALLED and preference == 'packtools':
             try:
                 self.validator = PackToolsValidator(
                     dtd_files.local, sps_version)
                 encoding.display_message('    XMLValidator: packtools')
-                validator = 'packtools'
+                validator_id = 'packtools'
             except Exception as e:
                 encoding.report_exception('XMLValidator.__init__', e, dtd_files.local)
-        if validator == 'java':
-            self.validator = JavaXMLValidator(dtd_files.doctype_with_local_path, dtd_files.xsl_prep_report, dtd_files.xsl_report)
+        if validator_id == 'java':
+            self.validator = self.dtd_validator
             encoding.display_message('    XMLValidator: java')
 
     def validate_doctype(self, article_xml_versions_info):
@@ -218,13 +219,15 @@ class XMLValidator(object):
         return errors
 
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
+        self.dtd_validator.logger = self.logger
+        self.dtd_validator.setup(xml_filename)
         self.validator.logger = self.logger
         self.validator.setup(xml_filename)
         xml, e = xml_utils.load_xml(xml_filename)
         errors = []
         if self.dtd_files.database_name == 'scielo':
             errors = self.validate_doctype(ArticleXMLVersionsInfo(fs_utils.read_file(xml_filename)))
-        is_valid_dtd = len(errors) == 0 and self.validator.dtd_validation(dtd_report_filename)
+        is_valid_dtd = len(errors) == 0 and self.dtd_validator.dtd_validation(dtd_report_filename)
         if len(errors) > 0:
             fs_utils.write_file(
                 dtd_report_filename,
