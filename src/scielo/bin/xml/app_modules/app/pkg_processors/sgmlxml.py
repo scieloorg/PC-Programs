@@ -214,7 +214,12 @@ class SGMLXMLContent(xml_utils.XMLContent):
     def __init__(self, content, sgmlhtml, src_pkgfiles):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
-        xml_utils.XMLContent.__init__(self, content)
+        xml_utils.XMLContent.__init__(self, self.fix_end(content))
+
+    def fix_end(self, content):
+        if not content.endswith('</doc>') and '</doc>' in content:
+            content = content[:content.rfind('</doc>')+len('</doc>')]
+        return content
 
     def normalize(self):
         self.fix_quotes()
@@ -225,9 +230,11 @@ class SGMLXMLContent(xml_utils.XMLContent):
         self.replace_fontsymbols()
         self.fix_styles_names()
         self.remove_exceding_styles_tags()
+        self.content = self.fix_end(self.content)
         xml, e = xml_utils.load_xml(self.content)
         if xml is None:
             self.fix()
+        self.content = self.fix_end(self.content)
 
     def fix_styles_names(self):
         for style in ['italic', 'bold', 'sup', 'sub']:
