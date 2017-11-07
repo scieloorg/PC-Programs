@@ -681,6 +681,30 @@ class ArticleContentValidation(object):
 
     def _total(self, total, count, label_total, label_count):
         r = []
+        if total is not None and count is not None:
+            if total < 0:
+                msg = data_validations.invalid_value_result(label_total, total, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
+                r.append(msg)
+            if count.isdigit():
+                if total != int(count):
+                    r.append((u'{} ({}) x {} ({})'.format(label_count, count, label_total, total), validation_status.STATUS_ERROR, _('{label1} and {label2} must have the same value. ').format(label1=label_count, label2=label_total)))
+            else:
+                msg = data_validations.invalid_value_result(label_count, count, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
+                r.append(msg)
+        elif total is None and count is not None:
+            # total is None: unable to calculate
+            pass
+        elif total is None and count is None:
+            # total is None: unable to calculate
+            r.append((label_count, validation_status.STATUS_WARNING, _('{} is absent. ').format(label_count)))
+        else:
+            # count is None
+            r.append((label_count, validation_status.STATUS_INFO, u'{}={} '.format(label_count, count)))
+            r.append((label_total, validation_status.STATUS_INFO, u'{}={} '.format(label_total, total)))
+        return r
+
+    def old_total(self, total, count, label_total, label_count):
+        r = []
         if total < 0:
             msg = data_validations.invalid_value_result(label_total, total, _('numbers greater or equal to 0'), validation_status.STATUS_FATAL_ERROR)
             r.append(msg)
@@ -695,7 +719,10 @@ class ArticleContentValidation(object):
 
     @property
     def total_of_pages(self):
-        return self._total(self.article.total_of_pages, self.article.page_count, _('total of pages'), 'page-count')
+        if self.article.total_of_pages is None and self.article.page_count is None:
+            pass
+        else:
+            return self._total(self.article.total_of_pages, self.article.page_count, _('total of pages'), 'page-count')
 
     @property
     def total_of_references(self):
