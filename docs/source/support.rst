@@ -48,3 +48,4 @@ It is the forum to discuss questions and make suggestions related to the **progr
 
 
 
+.. include:: pt_faq-scielo-xml.rst
