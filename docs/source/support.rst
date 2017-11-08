@@ -27,7 +27,6 @@ It is the forum to discuss questions and make suggestions related to **SciELO XM
     Send an e-mail to: **scielo-xml+unsubscribe@googlegroups.com**
 
 
-.. include:: pt_faq-scielo-xml.rst
 
 
 Questions about SciELO PC Programs (Markup, Title Manager, Converter, etc)
