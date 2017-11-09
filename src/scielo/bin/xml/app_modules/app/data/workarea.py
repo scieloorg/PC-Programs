@@ -12,6 +12,15 @@ SUFFIXES.extend(['-'+s for s in SUFFIXES])
 SUFFIXES.extend(['-', '.', '0'])
 
 
+class File(object):
+
+    def __init__(self, filename):
+        self.filename = filename
+        self.path = os.path.dirname(filename)
+        self.basename = os.path.basename(filename)
+        self.name, self.ext = os.path.splitext(self.basename)
+
+
 class Workarea(object):
 
     def __init__(self, output_path):
@@ -39,14 +48,16 @@ class PkgArticleFiles(object):
     def __init__(self, filename):
         self.filename = filename
         self.path = os.path.dirname(filename)
+        self.basename = os.path.basename(filename)
+        self.name, self.ext = os.path.splitext(self.basename)
+
         if not os.path.isdir(self.path):
             os.makedirs(self.path)
-        self.basename = os.path.basename(filename)
         self.folder = os.path.basename(self.path)
-        self.name, self.ext = os.path.splitext(self.basename)
         if self.filename.endswith('.sgm.xml'):
             self.name, ign = os.path.splitext(self.name)
         self.previous_name = self.name
+        self.listdir = os.listdir(self.path)
         self._all = None
         self._prefixes = None
 
@@ -75,16 +86,18 @@ class PkgArticleFiles(object):
 
     def find_all_files(self):
         r = []
-        for item in os.listdir(self.path):
-            if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml'):
-                for prefix in self.prefixes:
-                    if item.startswith(prefix):
-                        r.append(item)
-        self._all = list(set(r))
+        files = [item for item in self.listdir if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
+        for item in files:
+            selected = [item for prefix in self.prefixes if item.startswith(prefix)]
+            r.extend(selected)
+        return list(set(r))
 
     @property
     def all(self):
-        self.find_all_files()
+        listdir = os.listdir(self.path)
+        if self._all is None or set(listdir) != set(self.listdir):
+            self.listdir = listdir
+            self._all = self.find_all_files()
         return self._all
 
     @property

@@ -8,10 +8,12 @@ from ...generics import encoding
 from ...generics import fs_utils
 from ...generics import img_utils
 from ...generics import java_xml_utils
+from ...generics import xml_utils
 from ...generics.reports import html_reports
 from ..validations import sps_xml_validators
 from . import xml_versions
 from ..data import workarea
+from ..data import article
 
 
 class PMCPackageMaker(object):
@@ -29,8 +31,8 @@ class PMCPackageMaker(object):
         n = '/' + str(len(self.article_items))
         index = 0
 
+        fs_utils.delete_file_or_folder(self.wk.pmc_package_path)
         for xml_name, doc in self.article_items.items():
-
             index += 1
             item_label = str(index) + n + ': ' + xml_name
             encoding.display_message(item_label)
@@ -61,6 +63,7 @@ class PMCPackageItemMaker(object):
 
     def __init__(self, doc, outputs, scielo_pkgfiles, pmc_pkgfiles):
         self.doc = doc
+        self.doc_pmc = None
         self.outputs = outputs
         self.scielo_pkgfiles = scielo_pkgfiles
         self.pmc_pkgfiles = pmc_pkgfiles
@@ -113,9 +116,16 @@ class PMCPackageItemMaker(object):
 
     def add_files_to_pmc_package(self):
         errors = []
-        if self.doc.language == 'en':
-            self.scielo_pkgfiles.copy_files_except_xml(self.pmc_pkgfiles.path)
-            for img in self.pmc_pkgfiles.tiff_items:
+        xml, e = xml_utils.load_xml(self.pmc_pkgfiles.filename)
+        self.doc_pmc = article.Article(xml, self.doc.xml_name)
+        print(self.doc.language, self.doc_pmc.language)
+        print([href.src for href in self.doc.href_files])
+        print([href.src for href in self.doc_pmc.href_files])
+        print(os.listdir(self.pmc_pkgfiles.path))
+        if self.doc_pmc.language == 'en':
+
+            for href in self.doc_pmc.href_files:
+                img = href.src
                 error = img_utils.validate_tiff_image_file(self.pmc_pkgfiles.path+'/'+img)
                 if error is not None:
                     errors.append(error)
