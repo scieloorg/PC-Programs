@@ -11,8 +11,6 @@ Try to find an answer by reading the manual. Give us feedback which parts is not
 Try to find an answer by searching the maillist archives.
     
 
-.. include:: pt_faq-scielo-xml.rst
-
 Questions about SciELO XML / SciELO Publishing Schema
 =====================================================
 
