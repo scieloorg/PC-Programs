@@ -3,6 +3,7 @@ import os
 import shutil
 
 from ...generics import fs_utils
+from ...generics import img_utils
 from ...generics import xml_utils
 from . import article
 from . import workarea
@@ -11,32 +12,41 @@ from . import workarea
 class ArticleXML(object):
 
     def __init__(self, filename):
-        self.content = fs_utils.read_file(filename)
-        self.xml_content = xml_utils.XMLContent(self.content)
+        self.filename = filename
+        self.setUp()
+
+    def read_file(self):
+        self.content = fs_utils.read_file(self.filename)
 
     def normalize_content(self):
-        self.xml_content.normalize()
-        self.content = self.xml_content.content
+        self.xml_content_handler = xml_utils.XMLContent(self.content)
+        self.xml_content_handler.normalize()
+        self.content = self.xml_content_handler.content
 
     def load_xml(self):
         self.xml, self.xml_error = xml_utils.load_xml(self.content)
 
-    def get_doc(self):
+    def get_article(self):
+        if self.xml is not None:
+            self._doc = article.Article(self.xml, os.path.basename(self.filename))
+
+    def setUp(self):
+        self.read_file()
         self.normalize_content()
         self.load_xml()
-        if self.xml is not None:
-            return article.Article(self.xml, self.file.basename)
+        self.get_article()
 
     @property
     def doc(self):
-        if not hasattr('_doc'):
-            self._doc = self.get_doc()
+        if not hasattr(self, '_doc'):
+            self.setUp()
         return self._doc
 
 
 class ArticlePkg(object):
 
     def __init__(self, filename):
+        self._prefixes = None
         self.article_xml = ArticleXML(filename)
         self.filename = filename
         self.path = os.path.dirname(filename)
@@ -54,7 +64,7 @@ class ArticlePkg(object):
 
     def add_extension(self, new_href):
         if '.' not in new_href:
-            extensions = self.files_by_name_except_xml.get(new_href)
+            extensions = self.related_files_by_name.get(new_href)
             if extensions is not None:
                 if len(extensions) > 1:
                     extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
@@ -71,7 +81,7 @@ class ArticlePkg(object):
             else:
                 if self.basename.startswith('a') and self.basename[3:4] == 'v':
                     r.append(self.basename[:3])
-                r.extend([self.name + suffix for suffix in SUFFIXES])
+                r.extend([self.name + suffix for suffix in workarea.SUFFIXES])
                 self._prefixes = list(set(r))
         return self._prefixes
 
@@ -83,7 +93,7 @@ class ArticlePkg(object):
             r.extend(selected)
         return list(set(r))
 
-    def update_listdir(self):
+    def is_listdir_changed(self):
         listdir = os.listdir(self.path)
         if set(listdir) != set(self.listdir):
             self.listdir = listdir
@@ -91,41 +101,118 @@ class ArticlePkg(object):
         return False
 
     def update_files(self):
-        if self.update_listdir():
+        if self.is_listdir_changed():
             self.files = self.find_files()
-            self.update_files_except_xml()
-            self.update_files_by_name_except_xml()
-            self.splitext = [os.path.splitext(f) for f in self.files_except_xml]
-            self.png_items = [name+ext for name, ext in self.splitext if ext in ['.png']]
-            self.jpg_items = [name+ext for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
-            self.tiff_items = [name+ext for name, ext in self.splitext if ext in ['.tif', '.tiff']]
-            self.png_names = [name for name, ext in self.splitext if ext in ['.png']]
-            self.jpg_names = [name for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
-            self.tiff_names = [name for name, ext in self.splitext if ext in ['.tif', '.tiff']]
+            self.update_related_files()
 
-    def update_files_except_xml(self):
-        self.files_except_xml = [f for f in self.files if f != self.basename and not f.endswith('.ctrl.txt')]
+    def update_related_files(self):
+        self.related_files = [f for f in self.files if f != self.basename and not f.endswith('.ctrl.txt')]
+        self.related_files_by_name = {}
+        self.related_files_by_extension = {}
+        for f in self.related_files:
+            name, extension = os.path.splitext(f)
+            if name not in self.related_files_by_name.keys():
+                self.related_files_by_name[name] = []
+            if extension not in self.related_files_by_extension.keys():
+                self.related_files_by_extension[extension] = []
+            self.related_files_by_name[name].append(extension)
+            self.related_files_by_extension[extension].append(name)
 
-    def update_files_by_name_except_xml(self):
-        files = {}
-        for f in self.files_except_xml:
-            name, ext = os.path.splitext(f)
-            if name not in files.keys():
-                files[name] = []
-            files[name].append(ext)
-        self.files_by_name_except_xml = files
+    def files_by_ext(self, extensions):
+        r = []
+        for ext in extensions:
+            r.extend([name+ext for name in self.related_files_by_extension.get(ext, [])])
+        return r
+
+    def get_pdf_files(self):
+        expected_pdf_files = self.article_xml.doc.expected_pdf_files.values()
+        return [f for f in expected_pdf_files if f in self.related_files]
+
+    def get_package_href_files(self):
+        files = []
+        for href_name in self.get_package_href_names():
+            extensions = self.related_files_by_name.get(href_name, [])
+            names = [href_name+ext for ext in extensions]
+            files.extend(names)
+        return files
+
+    def get_package_href_names(self):
+        href_names = []
+        for href in self.article_xml.doc.href_files:
+            if href.name_without_extension in self.related_files_by_name.keys():
+                href_names.append(href.name_without_extension)
+        return href_names
+
+    @property
+    def png_items(self):
+        return self.files_by_ext(['.png'])
+
+    @property
+    def jpg_items(self):
+        return self.files_by_ext(['.jpg', '.jpeg'])
+
+    @property
+    def tiff_items(self):
+        return self.files_by_ext(['.tif', '.tiff'])
+
+    @property
+    def png_names(self):
+        return self.related_files_by_extension.get('.png', [])
+
+    @property
+    def jpg_names(self):
+        return self.related_files_by_extension.get('.jpg', []) + self.related_files_by_extension.get('.jpeg', [])
+
+    @property
+    def tiff_names(self):
+        return self.related_files_by_extension.get('.tiff', []) + self.related_files_by_extension.get('.tif', [])
 
     def clean(self):
-        for f in self.files_except_xml:
+        for f in self.related_files:
             fs_utils.delete_file_or_folder(self.path + '/' + f)
 
     def tiff2jpg(self):
         for item in self.tiff_names:
             if item not in self.jpg_names and item not in self.png_names:
                 source_fname = item + '.tif'
-                if source_fname not in self.files_except_xml:
+                if source_fname not in self.related_files:
                     source_fname = item + '.tiff'
                 img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
+        self.update_files()
+
+    def delete_files(self, files):
+        for f in files:
+            fs_utils.delete_file_or_folder(self.path + '/' + f)
+        self.update_files()
+
+    def select_pmc_files(self):
+        files = []
+        for item in self.get_package_href_names():
+            if item in self.tiff_names:
+                if item+'.tif' in self.tiff_items:
+                    files.append(item+'.tif')
+                elif item+'.tiff' in self.tiff_items:
+                    files.append(item+'.tiff')
+            else:
+                files.extend(self.related_files_by_name.get(item, []))
+        files.extend(self.get_pdf_files())
+        return files
+
+    def svg2tiff(self):
+        sgv_items = self.files_by_ext(['.svg'])
+        if len(self.tiff_items) == 0 and len(sgv_items) > 0:
+            for item in sgv_items:
+                img_utils.convert_svg2png(self.path + '/' + item)
+            self.update_files()
+            for item in self.files_by_ext(['.png']):
+                img_utils.convert_png2tiff(self.path + '/' + item)
+            self.update_files()
+
+    def evaluate_tiff_images(self):
+        errors = []
+        for f in self.tiff_items:
+            errors.append(img_utils.validate_tiff_image_file(self.path+'/'+f))
+        return [e for e in errors if e is not None]
 
     def zip(self, dest_path=None):
         if dest_path is None:
@@ -136,11 +223,11 @@ class ArticlePkg(object):
         fs_utils.zip(filename, [self.path + '/' + f for f in self.files])
         return filename
 
-    def copy_files_except_xml(self, dest_path):
+    def copy_related_files(self, dest_path):
         if dest_path is not None:
             if not os.path.isdir(dest_path):
                 os.makedirs(dest_path)
-            for f in self.files_except_xml:
+            for f in self.related_files:
                 shutil.copyfile(self.path + '/' + f, dest_path + '/' + f)
 
     def copy_xml(self, dest_path):

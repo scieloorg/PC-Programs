@@ -6,14 +6,12 @@ from ...__init__ import _
 
 from ...generics import encoding
 from ...generics import fs_utils
-from ...generics import img_utils
 from ...generics import java_xml_utils
-from ...generics import xml_utils
 from ...generics.reports import html_reports
 from ..validations import sps_xml_validators
 from . import xml_versions
 from ..data import workarea
-from ..data import article
+from ..data import package
 
 
 class PMCPackageMaker(object):
@@ -37,13 +35,13 @@ class PMCPackageMaker(object):
             item_label = str(index) + n + ': ' + xml_name
             encoding.display_message(item_label)
 
-            scielo_pkgfiles = workarea.PkgArticleFiles(self.wk.scielo_package_path + '/' + xml_name + '.xml')
-            pmc_pkgfiles = workarea.PkgArticleFiles(self.wk.pmc_package_path + '/' + xml_name + '.xml')
+            scielo_pkgfiles = package.ArticlePkg(self.wk.scielo_package_path + '/' + xml_name + '.xml')
+            pmc_filename = self.wk.pmc_package_path + '/' + xml_name + '.xml'
 
             doit = PMCPackageItemMaker(
-                doc, self.outputs[xml_name],
+                self.outputs[xml_name],
                 scielo_pkgfiles,
-                pmc_pkgfiles).make_package()
+                pmc_filename).make_package()
 
         if doit:
             workarea.PackageFolder(self.wk.pmc_package_path).zip()
@@ -61,44 +59,44 @@ class PMCPackageMaker(object):
 
 class PMCPackageItemMaker(object):
 
-    def __init__(self, doc, outputs, scielo_pkgfiles, pmc_pkgfiles):
-        self.doc = doc
-        self.doc_pmc = None
+    def __init__(self, outputs, scielo_pkgfiles, pmc_xml_filename):
         self.outputs = outputs
         self.scielo_pkgfiles = scielo_pkgfiles
-        self.pmc_pkgfiles = pmc_pkgfiles
+        self.pmc_pkgfiles = None
+        self.pmc_xml_filename = pmc_xml_filename
 
     def make_package(self):
-        scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(self.scielo_pkgfiles.filename)
+        scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(self.scielo_pkgfiles.article_xml.content)
 
-        if self.doc.journal_id_nlm_ta is None:
+        if self.scielo_pkgfiles.article_xml.doc.journal_id_nlm_ta is None:
             html_reports.save(self.outputs.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
         else:
-            java_xml_utils.xml_transform(
-                self.scielo_pkgfiles.filename,
-                scielo_dtd_files.xsl_output,
-                self.pmc_pkgfiles.filename)
-            xml_validator = sps_xml_validators.XMLValidator(pmc_dtd_files)
-            xml_validator.validate(
-                self.pmc_pkgfiles.filename,
-                self.outputs.pmc_dtd_report_filename,
-                self.outputs.pmc_style_report_filename
-                )
-            shutil.copyfile(self.pmc_pkgfiles.filename, self.pmc_pkgfiles.filename + '.xml')
-            java_xml_utils.xml_transform(
-                self.pmc_pkgfiles.filename + '.xml',
-                pmc_dtd_files.xsl_output,
-                self.pmc_pkgfiles.filename)
-            fs_utils.delete_file_or_folder(self.pmc_pkgfiles.filename + '.xml')
+            self.make_xml(scielo_dtd_files, pmc_dtd_files)
+            self.pmc_pkgfiles = package.ArticlePkg(self.pmc_xml_filename)
+            self.insert_math_id()
             self.add_files_to_pmc_package()
-            self.svg2tiff()
-            self.evaluate_tiff_images()
-            self.replace_href_values()
-            self.normalize_pmc_file()
             return True
 
-    def normalize_pmc_file(self):
-        content = fs_utils.read_file(self.pmc_pkgfiles.filename)
+    def make_xml(self, scielo_dtd_files, pmc_dtd_files):
+        java_xml_utils.xml_transform(
+            self.scielo_pkgfiles.filename,
+            scielo_dtd_files.xsl_output,
+            self.pmc_xml_filename)
+        xml_validator = sps_xml_validators.XMLValidator(pmc_dtd_files)
+        xml_validator.validate(
+            self.pmc_xml_filename,
+            self.outputs.pmc_dtd_report_filename,
+            self.outputs.pmc_style_report_filename
+            )
+        shutil.copyfile(self.pmc_xml_filename, self.pmc_xml_filename + '.xml')
+        java_xml_utils.xml_transform(
+            self.pmc_xml_filename + '.xml',
+            pmc_dtd_files.xsl_output,
+            self.pmc_xml_filename)
+        fs_utils.delete_file_or_folder(self.pmc_xml_filename + '.xml')
+
+    def insert_math_id(self):
+        content = self.pmc_pkgfiles.article_xml.content
         if 'mml:math' in content:
             result = []
             n = 0
@@ -112,62 +110,27 @@ class PMCPackageItemMaker(object):
                         item = item.replace('<mml:math', '<mml:math id="{}"'.format(math_id))
                 result.append(item)
             if math_id is not None:
-                fs_utils.write_file(self.pmc_pkgfiles.filename, ''.join(result))
+                fs_utils.write_file(self.pmc_xml_filename, ''.join(result))
+                self.pmc_pkgfiles.article_xml.setUp()
 
     def add_files_to_pmc_package(self):
-        errors = []
-        xml, e = xml_utils.load_xml(self.pmc_pkgfiles.filename)
-        self.doc_pmc = article.Article(xml, self.doc.xml_name)
-        print(self.doc.language, self.doc_pmc.language)
-        print([href.src for href in self.doc.href_files])
-        print([href.src for href in self.doc_pmc.href_files])
-        print(os.listdir(self.pmc_pkgfiles.path))
-        if self.doc_pmc.language == 'en':
+        doc = self.pmc_pkgfiles.article_xml.doc
+        if doc.language == 'en':
+            self.scielo_pkgfiles.copy_related_files(self.pmc_pkgfiles.path)
+            self.pmc_pkgfiles.update_files()
+            self.pmc_pkgfiles.svg2tiff()
+            valid_files = self.pmc_pkgfiles.select_pmc_files()
+            delete_files = [f for f in self.pmc_pkgfiles.related_files if f not in valid_files]
+            self.pmc_pkgfiles.delete_files(delete_files)
 
-            for href in self.doc_pmc.href_files:
-                img = href.src
-                error = img_utils.validate_tiff_image_file(self.pmc_pkgfiles.path+'/'+img)
-                if error is not None:
-                    errors.append(error)
-        else:
-            self.remove_en_from_filenames()
-
-    def svg2tiff(self):
-        for item in self.pmc_pkgfiles.files_except_xml:
-            if item.endswith('.svg'):
-                img_utils.convert_svg2png(self.pmc_pkgfiles.path + '/' + item)
-        for item in self.pmc_pkgfiles.files_except_xml:
-            if item.endswith('.png'):
-                img_utils.convert_png2tiff(self.pmc_pkgfiles.path + '/' + item)
-
-    def evaluate_tiff_images(self):
-        errors = []
-        for f in self.pmc_pkgfiles.tiff_items:
-            error = img_utils.validate_tiff_image_file(self.pmc_pkgfiles.path+'/'+f)
-            if error is not None:
-                errors.append(error)
-        return errors
-
-    def remove_en_from_filenames(self):
-        content = fs_utils.read_file(self.pmc_pkgfiles.filename)
-        files = [os.path.splitext(f) for f in self.scielo_pkgfiles.files_except_xml]
-        files = [(name, name[:-3], ext) for name, ext in files if name.endswith('-en')]
-        for name, new_name, ext in files:
-            shutil.copyfile(
-                self.scielo_pkgfiles.path + '/' + name+ext,
-                self.pmc_pkgfiles.path+'/'+new_name+ext)
-            content = content.replace(name+ext, new_name+ext)
-        fs_utils.write_file(self.pmc_pkgfiles.filename, content)
-
-    def replace_href_values(self):
-        content = fs_utils.read_file(self.pmc_pkgfiles.filename)
-        href_items = {href.name_without_extension: href.ext for href in self.doc.href_files}
-        for tif in self.pmc_pkgfiles.tiff_names:
-            ext = href_items.get(tif)
-            if not ext.startswith('.tif'):
-                new_name = tif + '.tif'
-                if new_name not in self.pmc_pkgfiles.tiff_items:
-                    new_name = tif + '.tiff'
-                if new_name in self.pmc_pkgfiles.tiff_items:
-                    content = content.replace('href="'+href.src+'"', 'href="'+new_name+'"')
-        fs_utils.write_file(self.pmc_pkgfiles.filename, content)
+    def rename_en_files(self):
+        en_files = [f for f in self.pmc_pkgfiles.related_files if '-en.' in f]
+        content = self.pmc_pkgfiles.article_xml.content
+        for f in en_files:
+            new = f.replace('-en.', '.')
+            os.rename(f, new)
+            content = content.replace(f, new)
+        if len(en_files) > 0:
+            fs_utils.write_file(self.pmc_xml_filename, content)
+            self.pmc_pkgfiles.article_xml.setUp()
+            self.pmc_pkgfiles.update_files()
