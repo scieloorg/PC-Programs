@@ -13,6 +13,10 @@ class ArticleXML(object):
 
     def __init__(self, filename):
         self.filename = filename
+        self.content = None
+        self.xml = None
+        self.xml_error = None
+        self.doc = None
         self.setUp()
 
     def read_file(self):
@@ -28,19 +32,14 @@ class ArticleXML(object):
 
     def get_article(self):
         if self.xml is not None:
-            self._doc = article.Article(self.xml, os.path.basename(self.filename))
+            self.doc = article.Article(self.xml, os.path.basename(self.filename))
 
     def setUp(self):
-        self.read_file()
-        self.normalize_content()
-        self.load_xml()
-        self.get_article()
-
-    @property
-    def doc(self):
-        if not hasattr(self, '_doc'):
-            self.setUp()
-        return self._doc
+        if os.path.isfile(self.filename):
+            self.read_file()
+            self.normalize_content()
+            self.load_xml()
+            self.get_article()
 
 
 class ArticlePkg(object):
