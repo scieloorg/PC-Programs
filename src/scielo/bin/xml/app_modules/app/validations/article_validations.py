@@ -28,6 +28,7 @@ class XMLJournalDataValidator(object):
             if len(article.article_licenses) > 0:
                 license_url = list(article.article_licenses.values())[0].get('href')
 
+            items.append([_('Journal title'), article.journal_title, self.journal_data.journal_title, validation_status.STATUS_FATAL_ERROR])
             items.append([_('NLM title'), article.journal_id_nlm_ta, self.journal_data.nlm_title, validation_status.STATUS_FATAL_ERROR])
             #items.append([_('journal-id (publisher-id)'), article.journal_id_publisher_id, self.journal_data.acron, validation_status.STATUS_FATAL_ERROR])
             items.append([_('e-ISSN'), article.e_issn, self.journal_data.e_issn, validation_status.STATUS_FATAL_ERROR])
