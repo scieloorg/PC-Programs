@@ -1,4 +1,4 @@
-4.0.094 Release 29/09/2017 | R 31/10/2017
+4.0.094 Release 29/09/2017 | R 10/11/2017
 ==========================================
 - XPM
   - (bug) [2757] Remover as mensagens sobre order e article-id (other) 
@@ -10,6 +10,9 @@
   - (bug) [2778] Fix PMC generation
   - (bug) [2786] Fix DOI Validation
   - (bug) [2789] Consider the value for XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER in scielo_env.ini
+  - (bug) [2795] Generate <fn-group> wrapping <fn> and display error if there is no fn-group (packtools)
+  - (bug) [2798] DTD Validation must be made by JAVA not by packtools
+  - (bug) [2796] Validate page-count existence to print documents and absence to electronic-only works
 
 
 4.0.094 Release 29/09/2017 | R 03/10/2017

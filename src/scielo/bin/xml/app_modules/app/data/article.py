@@ -2102,7 +2102,6 @@ class Journal(object):
         self.e_issn = None
         self.acron = None
         self.abbrev_title = None
-        self.journal_title = None
         self.nlm_title = None
         self.publisher_name = None
         self.license = None
