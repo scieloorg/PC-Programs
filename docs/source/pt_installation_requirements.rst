@@ -3,10 +3,9 @@
 Pré-requisitos
 ==============
 
-Os pré-requisitos são procedimentos que já devem ter sido executados antes da instalação de SciELO PC Programs. 
+Os pré-requisitos são procedimentos que devem ser executados antes da instalação de SciELO PC Programs.
 
-Uma vez que os pré-requisitos estão sendo atendidos, não é necessário executar os pré-requisitos cada vez que se instala SciELO PC Programs.
-
+Uma vez cumpridos os requisitos, não é necessário executá-los novamente ou todas as vezes que o SciELO PC Programs for instalado / atualizado.
 
 Verificar os pré-requisitos
 ===========================
