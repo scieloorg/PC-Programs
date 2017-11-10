@@ -59,7 +59,7 @@ class PkgArticleFiles(object):
             self.name, ign = os.path.splitext(self.name)
         self.previous_name = self.name
         self.listdir = []
-        self.update_files()
+        self._update()
 
     def add_extension(self, new_href):
         if '.' not in new_href:
@@ -99,23 +99,40 @@ class PkgArticleFiles(object):
             return True
         return False
 
-    def update_files(self):
+    def _update(self):
         if self.is_listdir_changed():
-            self.files = self.find_files()
-            self.update_related_files()
+            self._files = self.find_files()
+            self._related_files = [f for f in self.files if f != self.basename and not f.endswith('.ctrl.txt')]
+            self._related_files_by_name = {}
+            self._related_files_by_extension = {}
+            for f in self.related_files:
+                name, extension = os.path.splitext(f)
+                if name not in self._related_files_by_name.keys():
+                    self._related_files_by_name[name] = []
+                if extension not in self._related_files_by_extension.keys():
+                    self._related_files_by_extension[extension] = []
+                self._related_files_by_name[name].append(extension)
+                self._related_files_by_extension[extension].append(name)
 
-    def update_related_files(self):
-        self.related_files = [f for f in self.files if f != self.basename and not f.endswith('.ctrl.txt')]
-        self.related_files_by_name = {}
-        self.related_files_by_extension = {}
-        for f in self.related_files:
-            name, extension = os.path.splitext(f)
-            if name not in self.related_files_by_name.keys():
-                self.related_files_by_name[name] = []
-            if extension not in self.related_files_by_extension.keys():
-                self.related_files_by_extension[extension] = []
-            self.related_files_by_name[name].append(extension)
-            self.related_files_by_extension[extension].append(name)
+    @property
+    def files(self):
+        self._update()
+        return self._files
+
+    @property
+    def related_files(self):
+        self._update()
+        return self._related_files
+
+    @property
+    def related_files_by_name(self):
+        self._update()
+        return self._related_files_by_name
+
+    @property
+    def related_files_by_extension(self):
+        self._update()
+        return self._related_files_by_extension
 
     def files_by_ext(self, extensions):
         r = []
@@ -150,6 +167,7 @@ class PkgArticleFiles(object):
     def clean(self):
         for f in self.related_files:
             fs_utils.delete_file_or_folder(self.path + '/' + f)
+        self._update()
 
     def tiff2jpg(self):
         for item in self.tiff_names:
@@ -158,35 +176,22 @@ class PkgArticleFiles(object):
                 if source_fname not in self.related_files:
                     source_fname = item + '.tiff'
                 img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
-        self.update_files()
+        self._update()
 
     def delete_files(self, files):
         for f in files:
             fs_utils.delete_file_or_folder(self.path + '/' + f)
-        self.update_files()
-
-    def select_pmc_files(self):
-        files = []
-        for item in self.get_package_href_names():
-            if item in self.tiff_names:
-                if item+'.tif' in self.tiff_items:
-                    files.append(item+'.tif')
-                elif item+'.tiff' in self.tiff_items:
-                    files.append(item+'.tiff')
-            else:
-                files.extend(self.related_files_by_name.get(item, []))
-        files.extend(self.get_pdf_files())
-        return files
+        self._update()
 
     def svg2tiff(self):
         sgv_items = self.files_by_ext(['.svg'])
         if len(self.tiff_items) == 0 and len(sgv_items) > 0:
             for item in sgv_items:
                 img_utils.convert_svg2png(self.path + '/' + item)
-            self.update_files()
+            self._update()
             for item in self.files_by_ext(['.png']):
                 img_utils.convert_png2tiff(self.path + '/' + item)
-            self.update_files()
+            self._update()
 
     def evaluate_tiff_images(self):
         errors = []

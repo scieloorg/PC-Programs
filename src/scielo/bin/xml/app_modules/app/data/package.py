@@ -45,31 +45,8 @@ class ArticleXML(object):
 class ArticlePkg(object):
 
     def __init__(self, filename):
-        self._prefixes = None
         self.article_xml = ArticleXML(filename)
-        self.filename = filename
-        self.path = os.path.dirname(filename)
-        self.basename = os.path.basename(filename)
-        self.name, self.ext = os.path.splitext(self.basename)
-
-        if not os.path.isdir(self.path):
-            os.makedirs(self.path)
-        self.folder = os.path.basename(self.path)
-        if self.filename.endswith('.sgm.xml'):
-            self.name, ign = os.path.splitext(self.name)
-        self.previous_name = self.name
-        self.listdir = []
-        self.update_files()
-
-    def add_extension(self, new_href):
-        if '.' not in new_href:
-            extensions = self.related_files_by_name.get(new_href)
-            if extensions is not None:
-                if len(extensions) > 1:
-                    extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
-                if len(extensions) > 0:
-                    new_href += extensions[0]
-        return new_href
+        self.article_files = workarea.PkgArticleFiles(filename)
 
     @property
     def prefixes(self):
