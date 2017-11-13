@@ -214,9 +214,23 @@ class SGMLXMLContent(xml_utils.XMLContent):
     def __init__(self, content, sgmlhtml, src_pkgfiles):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
-        xml_utils.XMLContent.__init__(self, self.fix_end(content))
+        xml_utils.XMLContent.__init__(self, self.fix_begin_end(content))
 
-    def fix_end(self, content):
+    def fix_begin_end(self, content):
+        s = content
+        print([s[0:300]])
+        if '<?xml' in s:
+            s = s[s.find('>')+1:]
+            print([s[0:300]])
+
+        if '<!DOCTYPE' in s:
+            s = s[s.find('>')+1:]
+            print([s[0:300]])
+        if '<doc' in s:
+            remove = s[:s.find('<doc')]
+            if len(remove) > 0:
+                content = content.replace(remove, '')
+            print([remove, content[0:300]])
         if not content.endswith('</doc>') and '</doc>' in content:
             content = content[:content.rfind('</doc>')+len('</doc>')]
         return content
@@ -230,11 +244,10 @@ class SGMLXMLContent(xml_utils.XMLContent):
         self.replace_fontsymbols()
         self.fix_styles_names()
         self.remove_exceding_styles_tags()
-        self.content = self.fix_end(self.content)
-        xml, e = xml_utils.load_xml(self.content)
-        if xml is None:
+        self.content = self.fix_begin_end(self.content)
+        if self.xml is None:
             self.fix()
-        self.content = self.fix_end(self.content)
+        self.content = self.fix_begin_end(self.content)
 
     def fix_styles_names(self):
         for style in ['italic', 'bold', 'sup', 'sub']:

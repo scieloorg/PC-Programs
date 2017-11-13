@@ -1,52 +1,32 @@
 # coding=utf-8
 import os
-import shutil
 
 from ...generics import fs_utils
-from ...generics import img_utils
 from ...generics import xml_utils
 from . import article
 from . import workarea
 
 
-class ArticleXML(object):
-
-    def __init__(self, filename):
-        self.filename = filename
-        self.content = None
-        self.xml = None
-        self.xml_error = None
-        self.doc = None
-        self.setUp()
-
-    def read_file(self):
-        self.content = fs_utils.read_file(self.filename)
-
-    def normalize_content(self):
-        self.xml_content_handler = xml_utils.XMLContent(self.content)
-        self.xml_content_handler.normalize()
-        self.content = self.xml_content_handler.content
-
-    def load_xml(self):
-        self.xml, self.xml_error = xml_utils.load_xml(self.content)
-
-    def get_article(self):
-        if self.xml is not None:
-            self.doc = article.Article(self.xml, os.path.basename(self.filename))
-
-    def setUp(self):
-        if os.path.isfile(self.filename):
-            self.read_file()
-            self.normalize_content()
-            self.load_xml()
-            self.get_article()
-
-
 class ArticlePkg(object):
 
     def __init__(self, filename):
-        self.article_xml = ArticleXML(filename)
+        self.filename = filename
+        self.xml_content = xml_utils.XMLContent(filename)
         self.article_files = workarea.PkgArticleFiles(filename)
+        self.path = self.article_files.path
+        self.basename = self.article_files.basename
+        self.name = self.article_files.name
+        self.ext = self.article_files.ext
+        self.article_xml = self.xml_content.content
+
+    @property
+    def article_xml(self):
+        return self._article_xml
+
+    @article_xml.setter
+    def article_xml(self, content):
+        self.xml_content.content = content
+        self._article_xml = article.Article(self.xml_content.xml, os.path.basename(self.filename))
 
     @property
     def files(self):
@@ -113,7 +93,7 @@ class ArticlePkg(object):
         self.article_files.delete_files(files)
 
     def get_pdf_files(self):
-        expected_pdf_files = self.article_xml.doc.expected_pdf_files.values()
+        expected_pdf_files = self.article_xml.expected_pdf_files.values()
         return [f for f in expected_pdf_files if f in self.related_files]
 
     def get_package_href_files(self):
@@ -126,7 +106,7 @@ class ArticlePkg(object):
 
     def get_package_href_names(self):
         href_names = []
-        for href in self.article_xml.doc.href_files:
+        for href in self.article_xml.href_files:
             if href.name_without_extension in self.related_files_by_name.keys():
                 href_names.append(href.name_without_extension)
         return href_names

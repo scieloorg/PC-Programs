@@ -63,16 +63,33 @@ def load_entities_table():
 
 class XMLContent(object):
 
-    def __init__(self, content):
-        self.content = content.strip()
-        if not self.content.endswith('>'):
-            self.content = self.content[:self.content.rfind('>')+1]
+    def __init__(self, xml):
+        xml = xml.strip()
+        self._content = None
+        self.filename = None
+        if '>' in xml:
+            self.content = xml
+            if not self._content.endswith('>'):
+                self.content = self._normalize(self._content[:self._content.rfind('>')+1])
+        else:
+            self.filename = xml
+            self.content = self._normalize(fs_utils.read_file(self.filename))
 
-    def normalize(self):
-        self.content = complete_entity(self.content)
-        self.content, replaced_named_ent = convert_entities_to_chars(self.content)
+    @property
+    def content(self):
+        return self._content
 
-    def load_xml(self):
+    @content.setter
+    def content(self, value):
+        self._content = value
+        self._load_xml()
+
+    def _normalize(self, content):
+        content = complete_entity(content)
+        content, replaced_named_ent = convert_entities_to_chars(content)
+        return content
+
+    def _load_xml(self):
         self.xml, self.xml_error = load_xml(self.content)
 
     def fix(self):
@@ -80,10 +97,8 @@ class XMLContent(object):
             self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
 
-        self.load_xml()
         if self.xml is None:
             self._fix_open_and_close_style_tags()
-            self.load_xml()
 
         if self.xml is None:
             self._fix_open_close()

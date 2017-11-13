@@ -59,7 +59,7 @@ class PkgArticleFiles(object):
             self.name, ign = os.path.splitext(self.name)
         self.previous_name = self.name
         self.listdir = []
-        self._update()
+        self._load()
 
     def add_extension(self, new_href):
         if '.' not in new_href:
@@ -101,18 +101,21 @@ class PkgArticleFiles(object):
 
     def _update(self):
         if self.is_listdir_changed():
-            self._files = self.find_files()
-            self._related_files = [f for f in self.files if f != self.basename and not f.endswith('.ctrl.txt')]
-            self._related_files_by_name = {}
-            self._related_files_by_extension = {}
-            for f in self.related_files:
-                name, extension = os.path.splitext(f)
-                if name not in self._related_files_by_name.keys():
-                    self._related_files_by_name[name] = []
-                if extension not in self._related_files_by_extension.keys():
-                    self._related_files_by_extension[extension] = []
-                self._related_files_by_name[name].append(extension)
-                self._related_files_by_extension[extension].append(name)
+            self._load()
+
+    def _load(self):
+        self._files = self.find_files()
+        self._related_files = [f for f in self.files if f != self.basename and not f.endswith('.ctrl.txt')]
+        self._related_files_by_name = {}
+        self._related_files_by_extension = {}
+        for f in self._related_files:
+            name, extension = os.path.splitext(f)
+            if name not in self._related_files_by_name.keys():
+                self._related_files_by_name[name] = []
+            if extension not in self._related_files_by_extension.keys():
+                self._related_files_by_extension[extension] = []
+            self._related_files_by_name[name].append(extension)
+            self._related_files_by_extension[extension].append(name)
 
     @property
     def files(self):
@@ -245,7 +248,7 @@ class PackageFolder(object):
     def package_filenames(self):
         items = []
         for pkg in self.pkgfiles_items.values():
-            items.extend(pkg.related_files)
+            items.extend(pkg.files)
         return items
 
     @property
