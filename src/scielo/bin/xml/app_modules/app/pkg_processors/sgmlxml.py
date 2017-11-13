@@ -218,19 +218,15 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
     def fix_begin_end(self, content):
         s = content
-        print([s[0:300]])
         if '<?xml' in s:
             s = s[s.find('>')+1:]
-            print([s[0:300]])
 
         if '<!DOCTYPE' in s:
             s = s[s.find('>')+1:]
-            print([s[0:300]])
         if '<doc' in s:
             remove = s[:s.find('<doc')]
             if len(remove) > 0:
                 content = content.replace(remove, '')
-            print([remove, content[0:300]])
         if not content.endswith('</doc>') and '</doc>' in content:
             content = content[:content.rfind('</doc>')+len('</doc>')]
         return content
