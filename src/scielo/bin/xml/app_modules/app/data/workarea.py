@@ -46,6 +46,7 @@ class Workarea(object):
 class PkgArticleFiles(object):
 
     def __init__(self, filename):
+        self._prefixes = None
         self.filename = filename
         self.path = os.path.dirname(filename)
         self.basename = os.path.basename(filename)
@@ -57,13 +58,12 @@ class PkgArticleFiles(object):
         if self.filename.endswith('.sgm.xml'):
             self.name, ign = os.path.splitext(self.name)
         self.previous_name = self.name
-        self.listdir = os.listdir(self.path)
-        self._all = None
-        self._prefixes = None
+        self.listdir = []
+        self._load()
 
     def add_extension(self, new_href):
         if '.' not in new_href:
-            extensions = self.files_by_name_except_xml.get(new_href)
+            extensions = self.related_files_by_name.get(new_href)
             if extensions is not None:
                 if len(extensions) > 1:
                     extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
@@ -84,7 +84,7 @@ class PkgArticleFiles(object):
                 self._prefixes = list(set(r))
         return self._prefixes
 
-    def find_all_files(self):
+    def find_files(self):
         r = []
         files = [item for item in self.listdir if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
         for item in files:
@@ -92,67 +92,115 @@ class PkgArticleFiles(object):
             r.extend(selected)
         return list(set(r))
 
-    @property
-    def all(self):
+    def is_listdir_changed(self):
         listdir = os.listdir(self.path)
-        if self._all is None or set(listdir) != set(self.listdir):
+        if set(listdir) != set(self.listdir):
             self.listdir = listdir
-            self._all = self.find_all_files()
-        return self._all
+            return True
+        return False
+
+    def _update(self):
+        if self.is_listdir_changed():
+            self._load()
+
+    def _load(self):
+        self._files = self.find_files()
+        self._related_files = [f for f in self.files if f != self.basename and not f.endswith('.ctrl.txt')]
+        self._related_files_by_name = {}
+        self._related_files_by_extension = {}
+        for f in self._related_files:
+            name, extension = os.path.splitext(f)
+            if name not in self._related_files_by_name.keys():
+                self._related_files_by_name[name] = []
+            if extension not in self._related_files_by_extension.keys():
+                self._related_files_by_extension[extension] = []
+            self._related_files_by_name[name].append(extension)
+            self._related_files_by_extension[extension].append(name)
 
     @property
-    def files_except_xml(self):
-        return [f for f in self.all if f != self.basename and not f.endswith('.ctrl.txt')]
+    def files(self):
+        self._update()
+        return self._files
 
     @property
-    def files_by_name_except_xml(self):
-        files = {}
-        for f in self.files_except_xml:
-            name, ext = os.path.splitext(f)
-            if name not in files.keys():
-                files[name] = []
-            files[name].append(ext)
-        return files
-
-    def clean(self):
-        for f in self.files_except_xml:
-            fs_utils.delete_file_or_folder(self.path + '/' + f)
+    def related_files(self):
+        self._update()
+        return self._related_files
 
     @property
-    def splitext(self):
-        return [os.path.splitext(f) for f in self.files_except_xml]
+    def related_files_by_name(self):
+        self._update()
+        return self._related_files_by_name
+
+    @property
+    def related_files_by_extension(self):
+        self._update()
+        return self._related_files_by_extension
+
+    def files_by_ext(self, extensions):
+        r = []
+        for ext in extensions:
+            r.extend([name+ext for name in self.related_files_by_extension.get(ext, [])])
+        return r
 
     @property
     def png_items(self):
-        return [name+ext for name, ext in self.splitext if ext in ['.png']]
+        return self.files_by_ext(['.png'])
 
     @property
     def jpg_items(self):
-        return [name+ext for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
+        return self.files_by_ext(['.jpg', '.jpeg'])
 
     @property
     def tiff_items(self):
-        return [name+ext for name, ext in self.splitext if ext in ['.tif', '.tiff']]
+        return self.files_by_ext(['.tif', '.tiff'])
 
     @property
     def png_names(self):
-        return [name for name, ext in self.splitext if ext in ['.png']]
+        return self.related_files_by_extension.get('.png', [])
 
     @property
     def jpg_names(self):
-        return [name for name, ext in self.splitext if ext in ['.jpg', '.jpeg']]
+        return self.related_files_by_extension.get('.jpg', []) + self.related_files_by_extension.get('.jpeg', [])
 
     @property
     def tiff_names(self):
-        return [name for name, ext in self.splitext if ext in ['.tif', '.tiff']]
+        return self.related_files_by_extension.get('.tiff', []) + self.related_files_by_extension.get('.tif', [])
 
-    def convert_images(self):
+    def clean(self):
+        for f in self.related_files:
+            fs_utils.delete_file_or_folder(self.path + '/' + f)
+        self._update()
+
+    def tiff2jpg(self):
         for item in self.tiff_names:
             if item not in self.jpg_names and item not in self.png_names:
                 source_fname = item + '.tif'
-                if source_fname not in self.files_except_xml:
+                if source_fname not in self.related_files:
                     source_fname = item + '.tiff'
                 img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
+        self._update()
+
+    def delete_files(self, files):
+        for f in files:
+            fs_utils.delete_file_or_folder(self.path + '/' + f)
+        self._update()
+
+    def svg2tiff(self):
+        sgv_items = self.files_by_ext(['.svg'])
+        if len(self.tiff_items) == 0 and len(sgv_items) > 0:
+            for item in sgv_items:
+                img_utils.convert_svg2png(self.path + '/' + item)
+            self._update()
+            for item in self.files_by_ext(['.png']):
+                img_utils.convert_png2tiff(self.path + '/' + item)
+            self._update()
+
+    def evaluate_tiff_images(self):
+        errors = []
+        for f in self.tiff_items:
+            errors.append(img_utils.validate_tiff_image_file(self.path+'/'+f))
+        return [e for e in errors if e is not None]
 
     def zip(self, dest_path=None):
         if dest_path is None:
@@ -160,14 +208,14 @@ class PkgArticleFiles(object):
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
         filename = dest_path + '/' + self.name + '.zip'
-        fs_utils.zip(filename, [self.path + '/' + f for f in self.all])
+        fs_utils.zip(filename, [self.path + '/' + f for f in self.files])
         return filename
 
-    def copy_files_except_xml(self, dest_path):
+    def copy_related_files(self, dest_path):
         if dest_path is not None:
             if not os.path.isdir(dest_path):
                 os.makedirs(dest_path)
-            for f in self.files_except_xml:
+            for f in self.related_files:
                 shutil.copyfile(self.path + '/' + f, dest_path + '/' + f)
 
     def copy_xml(self, dest_path):
@@ -200,7 +248,7 @@ class PackageFolder(object):
     def package_filenames(self):
         items = []
         for pkg in self.pkgfiles_items.values():
-            items.extend(pkg.all)
+            items.extend(pkg.files)
         return items
 
     @property

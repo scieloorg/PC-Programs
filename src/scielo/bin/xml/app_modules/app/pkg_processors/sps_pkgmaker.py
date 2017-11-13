@@ -18,12 +18,9 @@ class SPSXMLContent(xml_utils.XMLContent):
 
     def __init__(self, content):
         xml_utils.XMLContent.__init__(self, content)
-        self.xml, self.xml_error = xml_utils.load_xml(self.content)
 
     def normalize(self):
-        xml_utils.XMLContent.normalize(self)
         self.insert_mml_namespace()
-        self.xml, self.xml_error = xml_utils.load_xml(self.content)
         if self.xml is not None:
             if 'contrib-id-type="' in self.content:
                 for contrib_id, url in attributes.CONTRIB_ID_URLS.items():
@@ -105,7 +102,7 @@ class SPSXMLContent(xml_utils.XMLContent):
         self.content = self.content.replace('<ref', '~BREAK~<ref')
         self.content = self.content.replace('</ref>', '</ref>~BREAK~')
         refs = []
-        for item in [SPSRefXMLContent(item) for item in self.content.split('~BREAK~')]:
+        for item in [SPSRefXMLContent(item) for item in self.content.split('~BREAK~') if item is not None and item.strip()!= '']:
             item.normalize()
             refs.append(item.content)
         self.content = ''.join(refs)

@@ -214,9 +214,19 @@ class SGMLXMLContent(xml_utils.XMLContent):
     def __init__(self, content, sgmlhtml, src_pkgfiles):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
-        xml_utils.XMLContent.__init__(self, self.fix_end(content))
+        xml_utils.XMLContent.__init__(self, self.fix_begin_end(content))
 
-    def fix_end(self, content):
+    def fix_begin_end(self, content):
+        s = content
+        if '<?xml' in s:
+            s = s[s.find('>')+1:]
+
+        if '<!DOCTYPE' in s:
+            s = s[s.find('>')+1:]
+        if '<doc' in s:
+            remove = s[:s.find('<doc')]
+            if len(remove) > 0:
+                content = content.replace(remove, '')
         if not content.endswith('</doc>') and '</doc>' in content:
             content = content[:content.rfind('</doc>')+len('</doc>')]
         return content
@@ -230,11 +240,10 @@ class SGMLXMLContent(xml_utils.XMLContent):
         self.replace_fontsymbols()
         self.fix_styles_names()
         self.remove_exceding_styles_tags()
-        self.content = self.fix_end(self.content)
-        xml, e = xml_utils.load_xml(self.content)
-        if xml is None:
+        self.content = self.fix_begin_end(self.content)
+        if self.xml is None:
             self.fix()
-        self.content = self.fix_end(self.content)
+        self.content = self.fix_begin_end(self.content)
 
     def fix_styles_names(self):
         for style in ['italic', 'bold', 'sup', 'sub']:
@@ -371,14 +380,14 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     for ext in img_utils.IMG_EXTENSIONS:
                         href = name + prefix_number + ext
                         possible_href_names.append(href)
-                        if href in self.src_pkgfiles.files_except_xml:
+                        if href in self.src_pkgfiles.related_files:
                             found.append(href)
         else:
             for name in self.src_pkgfiles.prefixes:
                 for ext in img_utils.IMG_EXTENSIONS:
                     href = name + elem_id + ext
                     possible_href_names.append(href)
-                    if href in self.src_pkgfiles.files_except_xml:
+                    if href in self.src_pkgfiles.related_files:
                         found.append(href)
         new_href = None if len(found) == 0 else found[0]
         return (new_href, list(set(possible_href_names)), alternative_id)
@@ -459,16 +468,16 @@ class PackageNamer(object):
         for f, new in self.hrefreplacements:
             name, _ = os.path.splitext(f)
             new_name, _ = os.path.splitext(new)
-            for ext in self.src_pkgfiles.files_by_name_except_xml.get(name, []):
+            for ext in self.src_pkgfiles.related_files_by_name.get(name, []):
                 shutil.copyfile(self.src_pkgfiles.path + '/' + name + ext, self.dest_pkgfiles.path + '/' + new_name + ext)
                 self.href_files_copy.append((name + ext, new_name + ext))
                 self.href_names.append(name)
-            if self.dest_pkgfiles.files_by_name_except_xml.get(new_name) is None:
+            if self.dest_pkgfiles.related_files_by_name.get(new_name) is None:
                 self.missing_href_files.append(new)
 
     def _rename_other_files(self):
         self.related_files_copy = []
-        for name, ext_items in self.src_pkgfiles.files_by_name_except_xml.items():
+        for name, ext_items in self.src_pkgfiles.related_files_by_name.items():
             if name not in self.href_names:
                 for ext in ext_items:
                     new_name = name.replace(self.src_pkgfiles.name, self.new_name)
@@ -516,7 +525,7 @@ class SGMLXML2SPSXML(object):
             return a
 
     def normalize_sgmxml(self):
-        self.src_pkgfiles.convert_images()
+        self.src_pkgfiles.tiff2jpg()
         sgmxml_content = SGMLXMLContent(
             fs_utils.read_file(self.src_pkgfiles.filename),
             self.sgmhtml,
