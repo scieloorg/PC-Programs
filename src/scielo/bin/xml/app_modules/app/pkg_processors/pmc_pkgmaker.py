@@ -66,9 +66,9 @@ class PMCPackageItemMaker(object):
         self.pmc_xml_filename = pmc_xml_filename
 
     def make_package(self):
-        scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(self.scielo_pkgfiles.article_xml.content)
+        scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(self.scielo_pkgfiles.xml_content.content)
 
-        if self.scielo_pkgfiles.article_xml.doc.journal_id_nlm_ta is None:
+        if self.scielo_pkgfiles.article_xml.journal_id_nlm_ta is None:
             html_reports.save(self.outputs.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
         else:
             self.make_xml(scielo_dtd_files, pmc_dtd_files)
@@ -96,7 +96,7 @@ class PMCPackageItemMaker(object):
         fs_utils.delete_file_or_folder(self.pmc_xml_filename + '.xml')
 
     def insert_math_id(self):
-        content = self.pmc_pkgfiles.article_xml.content
+        content = self.pmc_pkgfiles.xml_content.content
         if 'mml:math' in content:
             result = []
             n = 0
@@ -110,14 +110,13 @@ class PMCPackageItemMaker(object):
                         item = item.replace('<mml:math', '<mml:math id="{}"'.format(math_id))
                 result.append(item)
             if math_id is not None:
-                fs_utils.write_file(self.pmc_xml_filename, ''.join(result))
-                self.pmc_pkgfiles.article_xml.setUp()
+                self.pmc_pkgfiles.article_xml = content
+                fs_utils.write_file(self.pmc_xml_filename, content)
 
     def add_files_to_pmc_package(self):
-        doc = self.pmc_pkgfiles.article_xml.doc
+        doc = self.pmc_pkgfiles.article_xml
         if doc.language == 'en':
             self.scielo_pkgfiles.copy_related_files(self.pmc_pkgfiles.path)
-            self.pmc_pkgfiles.update_files()
             self.pmc_pkgfiles.svg2tiff()
             valid_files = self.pmc_pkgfiles.select_pmc_files()
             delete_files = [f for f in self.pmc_pkgfiles.related_files if f not in valid_files]
@@ -125,12 +124,11 @@ class PMCPackageItemMaker(object):
 
     def rename_en_files(self):
         en_files = [f for f in self.pmc_pkgfiles.related_files if '-en.' in f]
-        content = self.pmc_pkgfiles.article_xml.content
+        content = self.pmc_pkgfiles.xml_content.content
         for f in en_files:
             new = f.replace('-en.', '.')
             os.rename(f, new)
             content = content.replace(f, new)
         if len(en_files) > 0:
+            self.pmc_pkgfiles.article_xml = content
             fs_utils.write_file(self.pmc_xml_filename, content)
-            self.pmc_pkgfiles.article_xml.setUp()
-            self.pmc_pkgfiles.update_files()

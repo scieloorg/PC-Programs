@@ -1228,14 +1228,14 @@ class ArticleContentValidation(object):
             if f not in _pkg_files.keys():
                 _pkg_files[f] = []
             msg = _('Expected PDF file which content in "{lang}". ').format(lang=_(attributes.LANGUAGES.get(lang)))
-            if f not in self.pkgfiles.files_except_xml:
+            if f not in self.pkgfiles.related_files:
                 _pkg_files[f].append((validation_status.STATUS_ERROR, msg + _('Not found {label} in the {item}. ').format(label=f, item=_('package'))))
 
         #from files, find in XML
         href_items_in_xml = [item.name_without_extension for item in self.article.href_files]
         href_items_in_xml += [item.src for item in self.article.href_files]
         href_items_in_xml = list(set(href_items_in_xml))
-        for f in self.pkgfiles.files_except_xml:
+        for f in self.pkgfiles.related_files:
             if f not in self.article.expected_pdf_files.values():
                 name, ext = os.path.splitext(f)
                 if f not in _pkg_files.keys():
@@ -1306,8 +1306,8 @@ class HRefValidation(object):
     def validate_href_file(self):
         result = []
         name, ext = os.path.splitext(self.hrefitem.src)
-        if self.hrefitem.src not in self.pkgfiles.files_except_xml:
-            if name not in self.pkgfiles.files_by_name_except_xml.keys():
+        if self.hrefitem.src not in self.pkgfiles.related_files:
+            if name not in self.pkgfiles.related_files_by_name.keys():
                 result.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=self.hrefitem.src, item=_('package'))))
         if '.' not in self.hrefitem.src:
             result.append((validation_status.STATUS_WARNING, _('missing extension of ') + self.hrefitem.src + '.'))

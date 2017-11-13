@@ -89,12 +89,12 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
     dest_path = wk.scielo_package_path
     dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
     for src, dest in zip(article_files_items, dest_article_files_items):
-        src.convert_images()
+        src.tiff2jpg()
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
         xmlcontent.doctype(dtd_location_type)
         fs_utils.write_file(dest.filename, xmlcontent.content)
-        src.copy_files_except_xml(dest_path)
+        src.copy_related_files(dest_path)
 
         outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
 
