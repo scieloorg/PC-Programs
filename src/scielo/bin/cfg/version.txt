@@ -1,4 +1,4 @@
-4.0.094 Release 29/09/2017 | R3 10/11/2017
+4.0.094 Release 29/09/2017 | R3 13/11/2017
 ==========================================
 - Markup XML
   - (bug) [2711] Solve problem of markup funding data in footnote area

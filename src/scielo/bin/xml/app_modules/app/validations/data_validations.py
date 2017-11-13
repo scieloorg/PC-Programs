@@ -6,8 +6,14 @@ from ..data import attributes
 from ...generics import xml_utils
 
 
+def label_equal_value(label, value):
+    if value is None:
+        value = str(value)
+    return label + '="' + value + '"'
+
+
 def invalid_labels_and_values(labels_and_values):
-    return _(u'The items are not correct. Check: {values}. ').format(values='; '.join([label + '="' + value + '"' for label, value in labels_and_values]))
+    return _(u'The items are not correct. Check: {values}. ').format(values='; '.join([label_equal_value(label, value) for label, value in labels_and_values]))
 
 
 def check_lang(elem_name, lang):
