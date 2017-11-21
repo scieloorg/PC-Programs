@@ -1072,6 +1072,7 @@ orgdiv2;#FALSE#;#FALSE#
 city;#FALSE#;#FALSE#
 state;#FALSE#;#FALSE#
 country;#FALSE#;#FALSE#
+zipcode;#FALSE#;#FALSE#
 email;#FALSE#;#FALSE#
 
 orgdiv1
