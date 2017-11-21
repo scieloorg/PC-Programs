@@ -372,6 +372,25 @@ class SGMLXMLContent(xml_utils.XMLContent):
 
     def find_href_file_in_folder(self, elem_name, elem_id, alternative_id):
         found = []
+        number, suffixes, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
+        if number != '':
+            for f in self.src_pkgfiles.related_files:
+                f_name, f_ext = os.path.splitext(f)
+                suffix = f_name[len(self.src_pkgfiles.name):]
+                if f_ext in img_utils.IMG_EXTENSIONS and suffix in suffixes:
+                    found.append(f)
+        else:
+            for f in self.src_pkgfiles.related_files:
+                f_name, f_ext = os.path.splitext(f)
+                suffix = f_name[len(self.src_pkgfiles.name):]
+                if f_ext in img_utils.IMG_EXTENSIONS and suffix == elem_id:
+                    found.append(f)
+
+        new_href = None if len(found) == 0 else found[0]
+        return (new_href, self.src_pkgfiles.related_files, alternative_id)
+
+    def alt_find_href_file_in_folder(self, elem_name, elem_id, alternative_id):
+        found = []
         possible_href_names = []
         number, possibilities, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
         if number != '':
