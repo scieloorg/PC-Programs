@@ -9,6 +9,7 @@
   - (bug) [2795] Generate <fn-group> wrapping <fn> and display error if there is no fn-group (packtools)
   - (bug) [2796] Do not create page-count to electronic-only works
   - (bug) [2829] Add zipcode to normaff
+  - (bug) [2832] Fix getting files from src folder
 
 - XC
   - (enhancement) [2751] Accept some differences between aop and ex aop data to exclude aop version
