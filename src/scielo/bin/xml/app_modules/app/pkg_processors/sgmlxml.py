@@ -425,6 +425,8 @@ class SGMLXML2SPSXMLConverter(object):
             if 'sps="' in xml:
                 sps_version = xml[xml.find('sps="')+len('sps="'):]
                 sps_version = sps_version[:sps_version.find('"')]
+                if 'sps-' in sps_version:
+                    sps_version = sps_version[4:]
             xsl = self.xsl_getter(sps_version)
             r = java_xml_utils.xml_content_transform(xml, xsl)
         return r
