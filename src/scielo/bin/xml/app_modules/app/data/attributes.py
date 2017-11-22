@@ -104,6 +104,10 @@ AUTHORS_REQUIRED_FOR_DOCTOPIC = [
     'review-article', 
     ]
 
+AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC = [
+    'correction',
+    ]
+
 ABSTRACT_REQUIRED_FOR_DOCTOPIC = [
     'brief-report', 
     'case-report', 
