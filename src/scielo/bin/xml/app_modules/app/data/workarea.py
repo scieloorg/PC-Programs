@@ -114,8 +114,10 @@ class PkgArticleFiles(object):
                 self._related_files_by_name[name] = []
             if extension not in self._related_files_by_extension.keys():
                 self._related_files_by_extension[extension] = []
-            self._related_files_by_name[name].append(extension)
-            self._related_files_by_extension[extension].append(name)
+            if extension not in self._related_files_by_name[name]:
+                self._related_files_by_name[name].append(extension)
+            if name not in self._related_files_by_extension[extension]:
+                self._related_files_by_extension[extension].append(name)
 
     @property
     def files(self):
@@ -189,11 +191,9 @@ class PkgArticleFiles(object):
     def svg2tiff(self):
         sgv_items = self.files_by_ext(['.svg'])
         if len(self.tiff_items) == 0 and len(sgv_items) > 0:
-            for item in sgv_items:
-                img_utils.svg2png(self.path + '/' + item)
+            img_utils.svg2png(self.path)
             self._update()
-            for item in self.files_by_ext(['.png']):
-                img_utils.png2tiff(self.path + '/' + item)
+            img_utils.png2tiff(self.path)
             self._update()
 
     def evaluate_tiff_images(self):
