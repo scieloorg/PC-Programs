@@ -74,7 +74,9 @@ class PMCPackageItemMaker(object):
             self.make_xml(scielo_dtd_files, pmc_dtd_files)
             self.pmc_pkgfiles = package.ArticlePkg(self.pmc_xml_filename)
             self.insert_math_id()
+            self.replace_img_ext_to_tiff()
             self.add_files_to_pmc_package()
+            self.rename_en_files()
             return True
 
     def make_xml(self, scielo_dtd_files, pmc_dtd_files):
@@ -113,6 +115,16 @@ class PMCPackageItemMaker(object):
                 self.pmc_pkgfiles.article_xml = content
                 fs_utils.write_file(self.pmc_xml_filename, content)
 
+    def replace_img_ext_to_tiff(self):
+        missing = []
+        content = self.pmc_pkgfiles.xml_content.content
+        for href in self.pmc_pkgfiles.article_xml.image_files:
+            if self.pmc_pkgfiles.related_files_by_extension.get(href.ext) is None:
+                missing.append(href.name_without_extension + '.tif')
+                content = content.replace(href.src, href.name_without_extension + '.tif')
+        self.pmc_pkgfiles.article_xml = content
+        print('missing', missing)
+
     def add_files_to_pmc_package(self):
         doc = self.pmc_pkgfiles.article_xml
         if doc.language == 'en':
@@ -127,7 +139,7 @@ class PMCPackageItemMaker(object):
         content = self.pmc_pkgfiles.xml_content.content
         for f in en_files:
             new = f.replace('-en.', '.')
-            os.rename(f, new)
+            os.rename(self.pmc_pkgfiles.path + '/' + f, self.pmc_pkgfiles.path + '/' + new)
             content = content.replace(f, new)
         if len(en_files) > 0:
             self.pmc_pkgfiles.article_xml = content

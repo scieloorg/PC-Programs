@@ -109,7 +109,7 @@ class ArticlePkg(object):
         for href in self.article_xml.href_files:
             if href.name_without_extension in self.related_files_by_name.keys():
                 href_names.append(href.name_without_extension)
-        return href_names
+        return list(set(href_names))
 
     def select_pmc_files(self):
         files = []
@@ -120,7 +120,7 @@ class ArticlePkg(object):
                 elif item+'.tiff' in self.tiff_items:
                     files.append(item+'.tiff')
             else:
-                files.extend(self.related_files_by_name.get(item, []))
+                files.extend([item + ext for ext in self.related_files_by_name.get(item, [])])
         files.extend(self.get_pdf_files())
         return files
 

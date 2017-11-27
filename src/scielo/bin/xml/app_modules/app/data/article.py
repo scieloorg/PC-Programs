@@ -1470,6 +1470,10 @@ class ArticleXML(object):
             return self.tree.findall('.//*[@id]')
 
     @property
+    def image_files(self):
+        return [href for href in self.hrefs if href.is_image] if self.hrefs is not None else []
+
+    @property
     def href_files(self):
         return [href for href in self.hrefs if href.is_internal_file] if self.hrefs is not None else []
 

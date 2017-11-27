@@ -22,6 +22,7 @@
   - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
   - (bug) [2822] Remove extra files from PMC package
   - (bug) [2837] Fix error as converting svg2png 
+  - (bug) [2836] Fix missing supplement files in PMC package 
 
 - XPM
   - (bug) [2757] Remover as mensagens sobre order e article-id (other) 

@@ -6,9 +6,9 @@ import article_utils
 import xml_utils
 import attributes
 import ws_requester
+import img_utils
 
 
-IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', '.svg']
 REQUIRES_PERMISSIONS = [
         'boxed-text', 
         'disp-quote', 
@@ -173,7 +173,7 @@ class HRef(object):
         self.is_internal_file = (not '/' in src)
         if element.tag in ['ext-link', 'uri', 'related-article']:
             self.is_internal_file = False
-        self.is_image = self.ext in IMG_EXTENSIONS
+        self.is_image = self.ext in img_utils.IMG_EXTENSIONS
 
     @property
     def is_inline(self):
@@ -1370,6 +1370,10 @@ class ArticleXML(object):
     @property
     def href_files(self):
         return [href for href in self.hrefs if href.is_internal_file] if self.hrefs is not None else []
+
+    @property
+    def image_files(self):
+        return [href for href in self.hrefs if href.is_image] if self.hrefs is not None else []
 
     @property
     def hrefs(self):
