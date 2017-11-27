@@ -136,12 +136,10 @@ class PMCPackageItemMaker(object):
 
     def rename_en_files(self):
         en_files = [f for f in self.pmc_pkgfiles.related_files if '-en.' in f]
-        print('en_files', en_files)
         content = self.pmc_pkgfiles.xml_content.content
         for f in en_files:
-            f = self.pmc_pkgfiles.path + '/' + f
             new = f.replace('-en.', '.')
-            os.rename(f, new)
+            os.rename(self.pmc_pkgfiles.path + '/' + f, self.pmc_pkgfiles.path + '/' + new)
             content = content.replace(f, new)
         if len(en_files) > 0:
             self.pmc_pkgfiles.article_xml = content
