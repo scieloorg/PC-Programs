@@ -1,4 +1,4 @@
-4.0.094 Release 29/09/2017 | R 22/11/2017
+4.0.094 Release 29/09/2017 | R 27/11/2017
 ==========================================
 - XPM
   - (bug) [2757] Remover as mensagens sobre order e article-id (other) 
@@ -15,6 +15,11 @@
   - (bug) [2796] Validate page-count existence to print documents and absence to electronic-only works
   - (bug) [2823] Validate journal-title in XML is according to the cvs file
   - (new) [2831] @article-type=correction must not have contrib
+
+- PMC
+  - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
+  - (bug) [2822] Remove extra files from PMC package
+  - (bug) [2837] Fix error as converting svg2png 
 
 
 4.0.094 Release 29/09/2017 | R 03/10/2017
