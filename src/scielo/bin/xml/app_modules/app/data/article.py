@@ -1253,10 +1253,6 @@ class ArticleXML(object):
         return data
 
     @property
-    def disp_formulas(self):
-        return [item for item in self.formulas if item.tag == 'disp-formula']
-
-    @property
     def tablewraps(self):
         data = []
         nodes = self.tree.findall('.//table-wrap')

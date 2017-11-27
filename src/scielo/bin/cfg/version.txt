@@ -10,6 +10,7 @@
   - (bug) [2796] Do not create page-count to electronic-only works
   - (bug) [2829] Add zipcode to normaff
   - (bug) [2832] Fix getting files from src folder
+  - (bug) [2841] Generates fig/alt-text and table-wrap/alt-text
 
 - XC
   - (enhancement) [2751] Accept some differences between aop and ex aop data to exclude aop version

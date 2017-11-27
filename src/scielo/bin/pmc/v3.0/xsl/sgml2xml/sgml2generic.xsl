@@ -2255,6 +2255,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:if>
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
+			<xsl:apply-templates select=".//alttext"/>
+			
 			<xsl:apply-templates select="." mode="graphic"/>
 			<xsl:apply-templates select="attrib | cpright | licinfo"/>
 		</fig>
@@ -2289,6 +2291,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
 			<xsl:apply-templates select="label"/>
 			<xsl:apply-templates select=".//caption"/>
+			<xsl:apply-templates select=".//alttext"/>
 			<xsl:apply-templates select="." mode="graphic"/>
 			<xsl:apply-templates select="." mode="notes"/>
 			<xsl:apply-templates select="cpright | licinfo"/>
