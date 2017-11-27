@@ -190,10 +190,10 @@ class PkgArticleFiles(object):
         sgv_items = self.files_by_ext(['.svg'])
         if len(self.tiff_items) == 0 and len(sgv_items) > 0:
             for item in sgv_items:
-                img_utils.convert_svg2png(self.path + '/' + item)
+                img_utils.svg2png(self.path + '/' + item)
             self._update()
             for item in self.files_by_ext(['.png']):
-                img_utils.convert_png2tiff(self.path + '/' + item)
+                img_utils.png2tiff(self.path + '/' + item)
             self._update()
 
     def evaluate_tiff_images(self):
