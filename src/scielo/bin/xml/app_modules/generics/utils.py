@@ -16,6 +16,8 @@ def now():
 def display_datetime(dateiso, timeiso=None):
     if dateiso is None:
         return ''
+    if len(dateiso) < 8:
+        return ''
     y = dateiso[:4]
     m = dateiso[4:6]
     d = dateiso[6:8]

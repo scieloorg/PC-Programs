@@ -100,7 +100,7 @@ def evaluate_tiff(img_filename, min_height=None, max_height=None):
                 status = validation_status.STATUS_WARNING
         if status is not None:
             errors.append(_('Be sure that {img} has valid height. Recommended: min={min} and max={max}. The images must be proportional among themselves. ').format(img=os.path.basename(img_filename), min=min_height, max=max_height))
-        if dpi is not None:
+        if dpi not in [None, _('unknown')]:
             if dpi < MIN_IMG_DPI:
                 errors.append(_('Expected values: {expected}. ').format(expected=_('equal or greater than {value} dpi').format(value=MIN_IMG_DPI)))
                 status = validation_status.STATUS_ERROR
