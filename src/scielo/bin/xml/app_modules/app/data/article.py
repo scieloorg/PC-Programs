@@ -787,7 +787,7 @@ class ArticleXML(object):
     def toc_sections(self):
         r = []
         if self.tree.find('.') is not None:
-            r = xml_utils.XMLNode(self.tree.find('.')).nodes_text(['.//subj-group/subject'])
+            r = xml_utils.XMLNode(self.tree.find('.')).nodes_text(['.//subj-group[@subj-group-type="heading"]/subject'])
         return r
 
     @property

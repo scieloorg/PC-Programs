@@ -1,4 +1,4 @@
-4.0.094 Release 29/09/2017 | R 27/11/2017
+4.0.094 Release 29/09/2017 | R 30/11/2017
 ==========================================
 - XPM
   - (bug) [2757] Remover as mensagens sobre order e article-id (other) 
