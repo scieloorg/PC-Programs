@@ -227,11 +227,15 @@ class XMLValidator(object):
         errors = []
         if self.dtd_files.database_name == 'scielo':
             errors = self.validate_doctype(ArticleXMLVersionsInfo(fs_utils.read_file(xml_filename)))
-        is_valid_dtd = len(errors) == 0 and self.dtd_validator.dtd_validation(dtd_report_filename)
+        is_valid_dtd = self.dtd_validator.dtd_validation(dtd_report_filename)
+        is_valid_dtd = len(errors) == 0 and is_valid_dtd
         if len(errors) > 0:
+            dtd_report_content = fs_utils.read_file(dtd_report_filename)
+            if dtd_report_content is None:
+                dtd_report_content = ''
             fs_utils.write_file(
                 dtd_report_filename,
-                '\n'.join(errors) + fs_utils.read_file(dtd_report_filename))
+                '\n'.join(errors) + '\n' + dtd_report_content)
         content = ''
         if e is None:
             self.validator.style_validation(style_report_filename)
