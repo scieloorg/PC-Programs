@@ -91,7 +91,7 @@ class PackageName(object):
         elif self.doc.number == 'ahead' and self.doc.doi is not None and '/' in self.doc.doi:
             _last = self.doc.doi[self.doc.doi.find('/')+1:].replace('.', '-')
         else:
-            _last = self.doc.order
+            _last = self.doc.publisher_article_id
         return _last
 
 
