@@ -145,7 +145,7 @@ class AffValidator(object):
     def xref(self):
         r = []
         if self.aff.id not in self.xref_items:
-            r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Not found: {label}. ').format(label='<xref ref-type="aff" rid="' + self.aff.id + '"/>')))
+            r.append(('aff/@id', validation_status.STATUS_FATAL_ERROR, _('Not found: {label}. ').format(label='<xref ref-type="aff" rid="' + str(self.aff.id) + '"/>')))
         return r
 
     @property

@@ -12,8 +12,11 @@ from . import encoding
 
 def read_file(filename, encode='utf-8'):
     if os.path.isfile(filename):
-        r = open(filename, 'r').read()
-        return encoding.decode(r, encode)
+        try:
+            r = open(filename, 'r').read()
+            return encoding.decode(r, encode)
+        except Exception as e:
+            encoding.report_exception('read_file', e, filename)
 
 
 def read_file_lines(filename, encode='utf-8'):
