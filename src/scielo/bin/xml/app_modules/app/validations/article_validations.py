@@ -75,7 +75,7 @@ class XMLStructureValidator(object):
         if '_' in new_name or '.' in new_name:
             name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=new_name, forbidden_characters='_.') + separator
 
-        fs_utils.write_file(outputs.err_filename, fs_utils.read_file(outputs.mkp2xml_report_filename) or '')
+        err_filename_content = fs_utils.read_file(outputs.mkp2xml_report_filename) or ''
 
         xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
         xml_f, xml_e, xml_w = valid_style
@@ -85,7 +85,7 @@ class XMLStructureValidator(object):
             dtd_errors = rst_title(_('DTD errors')) + dtd_errors
 
         report_title = ''
-        report_content = ''
+        report_content = []
         if xml is None:
             xml_f += 1
             report_title += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file is invalid') + '\n'
@@ -100,8 +100,8 @@ class XMLStructureValidator(object):
             report_title = rst_title(_('Summary')) + report_title + separator
             report_title = report_title.replace('\n', '<br/>')
 
-        if xml_f > 0:
-            fs_utils.append_file(outputs.err_filename, name_error + dtd_errors)
+        if xml_f + len(err_filename_content) + len(name_error) + len(dtd_errors) > 0:
+            fs_utils.write_file(outputs.err_filename, err_filename_content + name_error + dtd_errors)
         if outputs.ctrl_filename is None:
             if xml_f + xml_e + xml_w == 0:
                 fs_utils.delete_file_or_folder(outputs.style_report_filename)
@@ -109,10 +109,11 @@ class XMLStructureValidator(object):
             fs_utils.write_file(outputs.ctrl_filename, 'Finished')
         for rep_file in [outputs.err_filename, outputs.style_report_filename]:
             if os.path.isfile(rep_file):
-                report_content += extract_report_core(fs_utils.read_file(rep_file))
+                text = extract_report_core(fs_utils.read_file(rep_file))
+                report_content.append(text)
 
         r = validations_module.ValidationsResult()
-        r.message = report_title + report_content
+        r.message = report_title + ''.join(report_content)
         return r
 
 
@@ -248,7 +249,8 @@ def extract_report_core(content):
         report = part1 + part2
         report = report.replace('<', '&lt;').replace('>', '&gt;').replace('\t', '&nbsp;'*4).replace('\n', '<br/>')
     else:
-        report = ''
+        report = content
+        report = report.replace('<', '&lt;').replace('>', '&gt;').replace('\t', '&nbsp;'*4).replace('\n', '<br/>')
     return report
 
 
