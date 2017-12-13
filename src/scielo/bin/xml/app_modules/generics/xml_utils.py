@@ -68,12 +68,12 @@ class XMLContent(object):
         self._content = None
         self.filename = None
         if '>' in xml:
-            self.content = xml
-            if not self._content.endswith('>'):
-                self.content = self._normalize(self._content[:self._content.rfind('>')+1])
+            if not xml.endswith('>'):
+                xml = xml[:xml.rfind('>')+1]
         else:
             self.filename = xml
-            self.content = self._normalize(fs_utils.read_file(self.filename))
+            xml = fs_utils.read_file(self.filename)
+        self.content = self._normalize(xml)
 
     @property
     def content(self):

@@ -70,7 +70,7 @@ def encode(content, encoding='utf-8', error_handler=None):
                         report_exception(
                             'encode(): xmlcharrefreplace',
                             e,
-                            content[content.find('&')-10:content.find('&')+10])
+                            content)
                     except Exception as e:
                         try:
                             content = content.encode(encoding, 'replace')
@@ -86,13 +86,18 @@ def encode(content, encoding='utf-8', error_handler=None):
 
 
 def report_exception(function_name, e, data):
+    app_logger.exception(
+            'Exception at {}'.format(function_name))
     try:
         app_logger.exception(
             'Exception at {}'.format(function_name), exc_info=True)
+    except:
+        pass
+    try:
         app_logger.info(data)
     except:
         app_logger.info('EXCEPTION at report_exception()')
-        app_logger.info(data)
+        app_logger.info(e)
 
 
 def debugging(function_name, data):
