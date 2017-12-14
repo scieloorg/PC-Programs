@@ -367,7 +367,9 @@ class ReferenceContentValidation(object):
         if q_previous > 0:
             # (role, authors, etal)
             found = False
-            previous = [xml_utils.node_text(item) for item in self.previous_refxml.person_group_nodes]
+            previous = []
+            if self.previous_refxml is not None:
+                previous = [xml_utils.node_text(item) for item in self.previous_refxml.person_group_nodes]
             curr = [xml_utils.node_text(item) for item in self.refxml.person_group_nodes]
             for item in curr:
                 if item in previous:
@@ -383,7 +385,7 @@ class ReferenceContentValidation(object):
                         'person-group',
                         validation_status.STATUS_FATAL_ERROR,
                         _('{} indicates the authors of this reference must be the same as the authors of the previous reference. ').format('_'*6) + found_text + expected_text
-                        , self.previous_refxml.xml)
+                        , self.previous_refxml.xml if self.previous_refxml is not None else '')
                     )
         return r
 
