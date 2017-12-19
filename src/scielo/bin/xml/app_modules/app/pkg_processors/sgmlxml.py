@@ -236,7 +236,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
         self.content = xml_utils.remove_doctype(self.content)
         self.insert_mml_namespace_reference()
         self.identify_href_values()
-        self.insert_xhtml_tables()
+        self.insert_xhtml_content()
         self.replace_fontsymbols()
         self.fix_styles_names()
         self.remove_exceding_styles_tags()
@@ -296,7 +296,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
                 self.content = self.content.replace(item, html_fontsymbol_items[i])
                 i += 1
 
-    def insert_xhtml_tables(self):
+    def insert_xhtml_content(self):
         if '<xhtml' in self.content:
             new = []
             for item in self.content.replace('<xhtml', 'BREAKXHTML<xhtml').split('BREAKXHTML'):
@@ -312,9 +312,15 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     if href != '':
                         if os.path.isfile(self.src_pkgfiles.path + '/' + href):
                             xhtml_content = fs_utils.read_file(self.src_pkgfiles.path + '/' + href)
-                            if '<table' in xhtml_content and '</table>' in xhtml_content:
-                                xhtml_content = xhtml_content[xhtml_content.find('<table'):xhtml_content.rfind('</table>')+len('</table>')]
-                    item = item.replace(xhtml, '<xhtmltable>' + xhtml_content + '</xhtmltable>')
+                            if '</body>' in xhtml_content and '<body ' in xhtml_content:
+                                body = xhtml_content[xhtml_content.find('<body ')+1:xhtml_content.rfind('</body>')].strip()
+                                body = body[body.find('<'):].strip()
+                                if body.startswith('<table') and body.endswith('</table>'):
+                                    item = item.replace(xhtml, '<xhtmltable>' + body + '</xhtmltable>')
+                                elif body.startswith('<math') and body.endswith('</math>'):
+                                    item = item.replace(xhtml, '<mmlmath>' + body + '</mmlmath>')
+                                elif body.startswith('<mml:math') and body.endswith('</mml:math>'):
+                                    item = item.replace(xhtml, '<mmlmath>' + body + '</mmlmath>')
                 new.append(item)
             self.content = ''.join(new)
 
