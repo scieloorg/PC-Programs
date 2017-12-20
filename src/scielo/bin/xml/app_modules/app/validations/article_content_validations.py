@@ -1103,12 +1103,18 @@ class ArticleContentValidation(object):
             if self.article.any_xref_ranges.get(xref_type) is not None:
                 for start, end, start_node, end_node in self.article.any_xref_ranges.get(xref_type):
                     if start > end:
-                        items = []
-                        items.append(('@rid', start_node.attrib.get('rid')))
-                        items.append(('xref', start_node.text))
-                        items.append(('@rid', end_node.attrib.get('rid')))
-                        items.append(('xref', end_node.text))
-                        message.append(('xref', validation_status.STATUS_ERROR, data_validations.invalid_labels_and_values(items)))
+                        message.append(
+                                (
+                                _('xref range'),
+                                validation_status.STATUS_ERROR,
+                                _('Invalid range ')+
+                                '{}-{} ({}-{})'.format(
+                                    start_node.text,
+                                    end_node.text,
+                                    start_node.attrib.get('rid'),
+                                    end_node.attrib.get('rid'))
+                                )
+                            )
         return message
 
     @property
