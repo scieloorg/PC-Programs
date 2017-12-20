@@ -274,6 +274,7 @@ email
 
 equation
 graphic;#FALSE#;#FALSE#
+xhtml;#FALSE#;#TRUE#
 texmath;#FALSE#;#FALSE#
 mmlmath;#FALSE#;#FALSE#
 label;#FALSE#;#FALSE#
