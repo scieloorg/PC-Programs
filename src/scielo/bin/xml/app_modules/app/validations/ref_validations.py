@@ -362,30 +362,13 @@ class ReferenceContentValidation(object):
 
     @property
     def previous_authors(self):
-        r = []
         q_previous = self.refxml.xml.count('_'*6)
-        if q_previous > 0:
-            # (role, authors, etal)
-            found = False
-            previous = []
-            if self.previous_refxml is not None:
-                previous = [xml_utils.node_text(item) for item in self.previous_refxml.person_group_nodes]
-            curr = [xml_utils.node_text(item) for item in self.refxml.person_group_nodes]
-            for item in curr:
-                if item in previous:
-                    found = True
-                    break
-            if found is False:
-                found_text = _('Found {}. ').format(
-                    html_reports.format_text_as_xml(''.join(curr)))
-                expected_text = _('Expected {}. ').format(
-                    html_reports.format_text_as_xml(''.join(previous)))
-                r.append(
+        if len(self.refxml.person_group_nodes) == 0 and q_previous > 0:
+            r.append(
                     (
                         'person-group',
                         validation_status.STATUS_FATAL_ERROR,
-                        _('{} indicates the authors of this reference must be the same as the authors of the previous reference. ').format('_'*6) + found_text + expected_text
-                        , self.previous_refxml.xml if self.previous_refxml is not None else '')
+                        _('{} indicates previous authors. ').format('_'*6) + _('Identify previous author with person-group tag. '))
                     )
         return r
 
