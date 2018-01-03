@@ -527,7 +527,7 @@
 	<xsl:template match="name">
 		<xsl:apply-templates select="given-names"/>
 		<xsl:apply-templates select="surname"/>
-		<xsl:apply-templates select="suffix"/>
+		<!--xsl:apply-templates select="suffix"/-->
 	</xsl:template>
 	<xsl:template match="given-names | FirstName ">
 		<FirstName>
@@ -537,12 +537,15 @@
 	<xsl:template match="surname | LastName">
 		<LastName>
 			<xsl:value-of select="." disable-output-escaping="yes"/>
+			<xsl:if test="../suffix or ../Suffix">
+				<xsl:value-of select="concat(' ',../suffix,../Suffix)" disable-output-escaping="yes"/>
+			</xsl:if>
 		</LastName>
 	</xsl:template>
 	<xsl:template match="suffix | Suffix">
-		<Suffix>
+		<!--Suffix>
 			<xsl:value-of select="." disable-output-escaping="yes"/>
-		</Suffix>
+		</Suffix-->
 	</xsl:template>
 	<xsl:template match="prefix ">
 		<Prefix>
