@@ -527,7 +527,7 @@
 	<xsl:template match="name">
 		<xsl:apply-templates select="given-names"/>
 		<xsl:apply-templates select="surname"/>
-		<xsl:apply-templates select="suffix"/>
+		<!--xsl:apply-templates select="suffix"/-->
 	</xsl:template>
 	<xsl:template match="given-names | FirstName ">
 		<FirstName>
