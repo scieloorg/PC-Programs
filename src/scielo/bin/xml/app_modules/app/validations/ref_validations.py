@@ -362,14 +362,14 @@ class ReferenceContentValidation(object):
 
     @property
     def previous_authors(self):
-        r = None
+        r = []
         q_previous = self.refxml.xml.count('_'*6)
         if len(self.refxml.person_group_nodes) == 0 and q_previous > 0:
             r.append(
                     (
                         'person-group',
                         validation_status.STATUS_FATAL_ERROR,
-                        _('{} indicates previous authors. ').format('_'*6) + _('Copy the previous authors\' person-group in this reference. '))
+                        _('{} indicates previous authors. ').format('_'*6) + _('Only in element-citation, replace ______ by person-group identifying the previous authors data such given-names, surnames etc. '))
                     )
         return r
 
