@@ -77,7 +77,6 @@ Título do Artigo
 
 Autores - <contrib-group>
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-
 * author – marca cada autor de um artigo - <contrib contrib-type="author">, <name>;
     * fname-surname – marca nome e sobrenome de um autor;
     * fname-spanish-surname – marca nomes de autores espanhóis;
