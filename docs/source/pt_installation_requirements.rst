@@ -3,9 +3,9 @@
 Pré-requisitos
 ==============
 
-Os pré-requisitos são procedimentos que devem ser executados antes da instalação de SciELO PC Programs.
+Os pré-requisitos são procedimentos/programas que devem ser executados antes da instalação de SciELO PC Programs.
 
-Uma vez cumpridos os requisitos, não é necessário executá-los novamente ou todas as vezes que o SciELO PC Programs for instalado / atualizado.
+Uma vez cumpridos os requisitos, não é necessário executá-los todas as vezes que o SciELO PC Programs for instalado / atualizado.
 
 Verificar os pré-requisitos
 ===========================
@@ -39,7 +39,7 @@ Verificar a instalação de Python + pip
 
   .. note::
 
-     ao executar este comando a versão do Python não necessariamente tem que ser igual a da imagem
+     ao executar o comando para verificar a versão do Python não necessariamente ela será igual a da imagem
 
 
 4. Caso o resultado não seja o esperado, repetir todas as instruções anteriores.
@@ -56,7 +56,7 @@ Verificar a instalação de Python + pip
 
   .. note::
 
-     ao executar este comando a versão de pip não necessariamente tem que ser igual a da imagem
+     ao executar o comando para verificar a versão de pip não necessariamente ela será igual a da imagem
 
 
 7. Caso o resultado não seja o esperado, **reinstalar Python**.
@@ -181,42 +181,42 @@ Depois de instalar Java, abrir a "Configuração do Sistema", indicar a localiza
 
 .. _add-paths:
 
-Add aplicação no PATH
-,,,,,,,,,,,,,,,,,,,,,
+Adicionar aplicação no PATH
+,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-Use a shortcut to open that window is: Windows + Pause Break key.
+O atalho para abrir a janela é: Windows + Pause Break key.
 
 .. image:: img/howtoinstall_path_atalho.jpg
 
-Or click on **Computer** with right button of the mouse.
+Ou clique em **Computador** com o botão direito do mouse.
 
 .. image:: img/howtoinstall_path_computer.png
 
-Then click on **Properties**.
+Então clique em **Propriedades**.
 
 .. image:: img/howtoinstall_path_computer_properties.png
 
 
 
-**Computer System Configuration**
+**Configuração do Sistema**
 
 
 .. image:: img/howtoinstall_path_variavel.jpg
 
  
-Click on Advanced Settings.
+Clique em configurações avançadas do sistema
 
 .. image:: img/howtoinstall_path_conf-advanc.jpg
 
-Then click on Environment Variables. 
+E depois em Variáveis de Ambiente 
 
 .. image:: img/howtoinstall_path_open-variavel.jpg
 
-Find Path variable in the list.
+Encontre o caminho da lista de variáveis
 
 .. image:: img/howtoinstall_path_search-path.jpg
 
-Select Path, then click on **Edit** button.
+Selecione o Path e clique em **Editar**
 
 .. image:: img/howtoinstall_path_select_variable.png
 

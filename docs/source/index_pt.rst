@@ -14,21 +14,21 @@ Para a **Produção de XML**:
 
 - **XML Package Maker**
 
-  - valida pacotes de XML SPS produzidos por quaisquer ferramentas. 
-  - **uso obrigatório** para a produção de pacotes XML validados de acordo com SPS.
+  - valida pacotes de XML SciELO PS produzidos por quaisquer ferramentas; 
+  - **uso obrigatório** para a produção de pacotes XML validados de acordo com SciELO PS.
 
 - **Markup**
 
-  - macro para Word para identificar os elementos estruturais e semânticos dentro de um texto.
-  - gerar o XML SPS a partir da identificação destes elementos.
-  - **uso opcional** já que é permitido e incentivado a usar quaisquer ferramentas para produzir os XML de acordo com o SPS.
+  - macro para Word para identificar os elementos estruturais e semânticos dentro de um texto;
+  - adaptado para gerar o XML segundo SciELO PS a partir da identificação destes elementos;
+  - **uso opcional** já que é permitido e incentivado a usar quaisquer ferramentas para produzir os XML de acordo com o SciELO PS.
 
 
 Para **Gestão de Coleções** (para uso **somente** das Coordenações de uma Coleção SciELO):
 
-- Title Manager
-- Converter
-- XML Converter
+- Title Manager;
+- Converter;
+- XML Converter;
 - XML SciELO (Exportador de XML para outras bases: ISI e PubMed)
 
 -------------

@@ -47,7 +47,7 @@ Não deve existir o arquivo */scielo/bin/markup/markup_journals_list.csv*. Se ex
 
 No lugar, deve existir:
 
-- *??_issue.mds*: atualizado/criado assim que qualquer dado de fascículo é criado ou atualizado
+- *??_issue.mds*: atualizado/criado assim que qualquer dado de número é criado ou atualizado
 - *journal-standard.txt*: atualizado/criado assim que qualquer dado de periódico é criado ou atualizado
 
 Estes arquivos são gerados pelo programa `Title Manager <titlemanager.html>`_ ou `SciELO Manager <http://docs.scielo.org/projects/scielo-manager/en/latest/>`_.
@@ -75,7 +75,7 @@ esteja como segue:
 
 Veja que dentro da pasta *markup_xml* foram inseridas duas pastas, no mesmo nível:
 
- * *src*: utilizada para inserir os arquivos *PDF*, mídia e suplementos.
+ * *src*: utilizada para inserir os arquivos *PDF*, mídia, ativos digitais (imagens, tabelas etc) e suplementos.
  * *scielo_markup*: utilizada para inserir os arquivos *.doc* ou *.docx*.
 
 
@@ -94,7 +94,7 @@ Veja que dentro da pasta *markup_xml* foram inseridas duas pastas, no mesmo nív
 Pasta *src*
 .........
 
-Os arquivos referenciados no arquivo marcado, ou seja, aqueles que identificados em **href**, devem estar na pasta *src* e devem ser nomeados da mesma forma no *.doc* (ou *.docx*). Nessa pasta também devem ser inseridos todos os arquivos que farão parte do pacote final, nas extensões desejadas. 
+Os arquivos referenciados no arquivo marcado, ou seja, aqueles identificados em **href**, devem estar na pasta *src* e devem ser nomeados da mesma forma no *.doc* (ou *.docx*). Nessa pasta também devem ser inseridos todos os arquivos que farão parte do pacote final, nas extensões desejadas. 
 
 Exemplo: 
 
@@ -111,7 +111,7 @@ Figura
   * Mesmo nome do arquivo *.doc* (sem a extensão) + *f* + identificação da figura + extensão do arquivo de imagem; ou
   * Mesmo nome do arquivo *.doc* (sem a extensão) + *fig* + identificação da figura + extensão do arquivo de imagem.
 
-Exemplo: *a01f01.svg*, *a01f01.tiff*, *a01f01.jpg*, *a01f01.png*, *a01f01.gif*, ...
+Exemplo: *a01f01.svg*, *a01f01.tiff*, *a01f01.jpg*, *a01f01.png*, ...
 
   
 Tabela
@@ -119,9 +119,20 @@ Tabela
 
   * Mesmo nome do arquivo *.doc* (sem a extensão) + *t* + identificação da tabela + extensão do arquivo de imagem; ou
   * Mesmo nome do arquivo *.doc* (sem a extensão) + *tab* + identificação da tabela + extensão do arquivo de imagem.
+  * Mesmo nome do arquivo *.doc* (sem a extensão) + *t*
 
-Exemplo: *a01t01.svg*, *a01t01.tiff*, *a01t01.jpg*, *a01t01.png*, *a01t01.gif*, ...
+Exemplo: *a01t01.svg*, *a01t01.tiff*, *a01t01.jpg*, *a01t01.png*, ...
+
+  
+Tabela codificadas em XHTML
+---------------------------
  
+ * Mesmo nome do arquivo *.doc* (sem a extensão) + *t* + identificação da tabela + extensão do arquivo html;
+ * Mesmo nome do arquivo *.doc* (sem a extensão) + *tab* + identificação da tabela + extensão do arquivo html;
+
+Exemplo: *a01t01.html*, *a01tab01.html*, ...
+
+..  note:: No caso de SciELO Brasil, a codificação da tabela é obrigatória. 
 
 Equation
 --------
@@ -132,6 +143,7 @@ Equation
 
 Exemplo: *a01eq1.svg*, *a01eq1.tiff*, *a01eq1.jpg*, *a01eq1.png*, *a01eq1.gif*, ...
 
+..  note:: No caso de SciELO Brasil, a codificação de equações é obrigatória.
 
 No arquivo marcado, o Markup rotula automaticamente os objetos gráficos, identificando-os da seguinte forma **[graphic href="?a01"] {elemento gráfico fica aqui} [/graphic]**. Este valor não deve ser alterado, pois desta forma, o Markup é capaz de associar esta referência com os arquivos localizados na pasta *src*.
 
@@ -141,16 +153,15 @@ No arquivo marcado, o Markup rotula automaticamente os objetos gráficos, identi
 .. image:: img/src_img_report_01.png
 
 
-
 O Markup também renomeia as imagens para o padrão já estabelecido. 
 
 
 .. image:: img/src_img_report_02.png
 
 
-No entanto, quando os arquivos correspondentes na pasta *src* não existem, o Markup exporta a imagem inserida no próprio arquivo *.doc*, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta src antes da geração do *XML*.
+No entanto, quando os arquivos correspondentes na pasta *src* não existem, o Markup exporta a imagem inserida no próprio arquivo *.doc*, mas há perda da qualidade da imagem. Recomenda-se, então, que as imagens de boa qualidade estejam na pasta *src* antes da geração do *XML*.
 
-O relatório indica de onde as imagens foram obtidas, se da pasta src ou extraídas do documento.
+O relatório indica de onde as imagens foram obtidas, se da pasta *src* ou extraídas do arquivo marcado *.doc*.
 
 
 .. image:: img/src_img_report_03.png
@@ -172,7 +183,7 @@ Para otimizar o processo de marcação dos elementos básicos do arquivo, é nec
 
 **Instruções para formatação de dados básicos do artigo:**
 
- * Linha 1: inserir número de *DOI*, caso não exista deixar linha em branco;
+ * Linha 1: inserir número de *DOI*, caso não exista começar pela seção do sumário;
  * Linha 2: inserir a seção do sumário, caso não exista deixar linha em branco;
  * Linha 3: título do artigo;
  * Linhas seguintes: Títulos traduzidos do arquivo;
@@ -181,16 +192,17 @@ Para otimizar o processo de marcação dos elementos básicos do arquivo, é nec
  * Pular 1 linha para separar autores de afiliações;
  * Cada afiliação deve estar em uma linha separada e ter o *label* de sua afiliação sbrescrito para que o programa consiga fazer a identificação automática;
  * Pular 1 linha para separar afiliação de resumos;
- * Resumos estruturados devem estar com os nomes das seções em negrito;
- * Palavras-chave: os separadores devem ser ou vírgula ou ponto e vírgula;
- * Seções: negrito, 16 pt, centralizadas;
- * Subseções: negrito, 14 pt, centralizadas;
- * Subseção de subseção: negrito, 13 pt, centralizadas;
+ * O título do *resumo* deve estar em negrito em um parágrafo. O resumo deve começar no parágrafo seguinte;
+ * No caso de *resumos estruturados*, título da seção em negrito e cada seção em um parágrafo;
+ * O título do grupo de *palavras-chave:* deve estar em negrito. As palavras-chave devem ser separadas por vírgula ou ponto e vírgula;
+ * Seções: negrito, 16 pt;
+ * Subseções: negrito, 14 pt;
+ * Subseção de subseção: negrito, 13 pt;
  * Texto: formatação livre;
- * Para tabelas, *label* e legenda devem estar na linha antes da imagem; os demais, após a imagem;
+ * Para tabelas, *label* e legenda devem estar na linha antes do corpo da tabela; e as notas de tabela após o corpo da tabela;
  * Separador de *label* e legenda: dois-pontos e espaço ou espaço + hífen + espaço ou ponto + espaço;
  * Para tabelas codificadas, o cabeçalho deve estar em negrito;
- * A citação de autor/data no corpo do texto deve ser: sobrenome do autor, ano;
+ * A citação do tipo autor/data no corpo do texto deve ser: sobrenome do autor, ano;
  * Para citação no sistema numérico no corpo do texto: número entre parênteses e sobrescrito;
  * Notas de rodapé no corpo do texto: se identificadas com número devem estar em sobrescrito, mas não entre parênteses;
  * Citação direta longa (*quote*): recuo de 4 cm da margem esquerda.
@@ -198,14 +210,59 @@ Para otimizar o processo de marcação dos elementos básicos do arquivo, é nec
 
 Exemplo:
 
-.. image:: img/doc-mkp-2mostra.jpg
+Dados iniciais:
+.. image:: img/doi.png
    :height: 400px
    :width: 200px
    :align: center
 
+Autores e afiliação:
+.. image:: img/autores.png
+   :height: 400px
+   :width: 200px
+   :align: center
 
-.. raw:: html
+Resumo simples + palavras-chave:
+.. image:: img/resumo-simples.png
+   :height: 400px
+   :width: 200px
+   :align: center
 
-   <iframe width="854" height="480" src="https://www.youtube.com/embed/kaYRu-bkhBE?list=PLQZT93bz3H79NTc-aUFMU_UZgo4Vl2iUH" frameborder="0" allowfullscreen></iframe>
+Resumo estruturado + palavras-chave:
+.. image:: img/resumo-estruturado.png
+   :height: 400px
+   :width: 200px
+   :align: center
+
+Figuras:
+.. image:: img/ex-img.png
+   :height: 400px
+   :width: 200px
+   :align: center
+
+Tabelas:
+.. image:: img/tabelas.png
+   :height: 400px
+   :width: 200px
+   :align: center
+
+Citação do tipo autor/data:
+.. image:: img/cit-data.png
+   :height: 400px
+   :width: 200px
+   :align: center
+
+Citação numérica:
+.. image:: img/cit-num.png
+   :height: 400px
+   :width: 200px
+   :align: center
+
+Citação direta longa:
+.. image:: img/cit-direta.png
+   :height: 400px
+   :width: 200px
+   :align: center
 
 .. {"reviewed\_on": "20170320", "by": "carolina.tanigushi@scielo.org"}
+.. {"reviewed\_on": "20171206", "by": "javani.araujo@scielo.org"}
