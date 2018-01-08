@@ -192,8 +192,7 @@ Caso a formatação do texto tenha sido feita de acordo com as instruções de p
 	* p – Identifica um parágrafo no corpo do texto - <p>;
 		* xref - Identifica a chamada de um elemento (figuras, tabelas etc) no corpo do texto (clique em `xref <http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.7-branch/tagset/elemento-xref.html#xref>`_ para ver todos tipos de referência cruzada) - <xref ref-type="xx" rid="xx">
 		* uri - Identifica uma url. Pode ocorrer em <front>, <body> e <back> - <ext-link ext-link-type="xx" xlink:href="xx">;
-	* media - Identifica uma mídia. Pode aparecer em <body> e <back> sendo mais comum em <body> (clique em `media <http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.7-branch/tagset/elemento-media.html>`_-  <media mimetype="xx"
-       mime-subtype="xx" xlink:href="nomedoarquivodemidia.extensãodoarquivodemídia"/>
+	* media - Identifica uma mídia. Pode aparecer em <body> e <back> sendo mais comum em <body> (clique em `media <http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.7-branch/tagset/elemento-media.html>`_-  <media mimetype="xx" mime-subtype="xx" xlink:href="nomedoarquivodemidia.extensãodoarquivodemídia"/>
 	* sec - Identifica uma seção e seus tipos mais comuns - <sec sec-type="xx">;
 		* sectitle - Identifica o título de uma seção - <title>
 		* p – Identifica um parágrafo dentro de uma seção - <p>;
