@@ -29,6 +29,8 @@ Tags do programa
 
 Na janela de metadados preencher os campos conforme os dados disponíveis no tipo de artigo a ser marcado. Não incluir dados que não existem no documento original.
 
+.. Note:: Usar o botão **element** nos casos em que não há a tag disponível para marcação. Preencher no formulário com o nome da tag de acordo com `SciELO PS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_
+
 Metados iniciais - <front>
 --------------------------
 
@@ -89,7 +91,6 @@ Autores - <contrib-group>
     * authorid – identifica o ID de um autor de um base de dados - <contrib-id>
     * onbehalf – identifica a instituição/grupo ao qual autor representa. Exemplo: John Smith em nome do Grupo XXX - <on-behalf-of>.
     * xref - identifica uma referência cruzada de um elemento/item relacionado ao autor, normalmente afiliação <xref ref-tye="aff" rid="xx"> e de nota de rodapé <xref ref-type="fn" rid="xx">
-
 * corpauth - Identifica autor corporativo do artigo - <collab>;
 
 Afiliação - <aff id="xx">
@@ -106,6 +107,7 @@ Afiliação - <aff id="xx">
  	* zipcode - Identifica o código postal da afiliação - <addr-line>, <postal-code>;
  	* country - Identifica o país de afiliação - <country country="XX">;
  	* email - email - <email>.
+* institid - Marca o identificador de uma instituição de acordo com as bases ISNI ou Ringgold - <institution-wrap>, <institution-id institution-id-type="XX">
 
 Notas de autor - <author-notes>
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -154,7 +156,7 @@ Histórico do artigo - <history>
 Licença CC e Copyright - <permissions>
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* cpright – Agrupa dados de copyright - <copyright-statement>;
+* cpright – Agrupa dados de copyright. Pode estar relacionado à objetos do texto (tabelas e figuras) - <copyright-statement>;
 	* cpyear – Identifica o ano do copyright - <copyright-year>;
 	* cpholder – Identifica o detentor do copyright - <copyright-holder>.
 * licinfo - Identifica dados de licença Creative Commons - <permission>, <license>, <license-p>.
@@ -167,7 +169,7 @@ Resumos - <abstract>, <trans-abstract>
 Palavras-chave - <kwd-group>
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* *kwdgrp - Identifica automaticamente todo o grupo de palavras-chave de um idioma - <kwd-group xml:lang="xx">, <kwd>;
+* \*kwdgrp - Identifica automaticamente todo o grupo de palavras-chave de um idioma - <kwd-group xml:lang="xx">, <kwd>;
 * kwdgrp - Identifica o grupo de palavras-chave de um idioma - <kwd-group xml:lang="xx">;
 	* kwd - Identifica uma palavra-chave - <kwd>.
 
@@ -176,6 +178,10 @@ Dados de financiamento - <funding-group>
 
 Os dados de financiamento podem ser marcados em nota de rodapé ou em agradecimentos. Ambos os itens fazem parte dos elementos pós-textuais, contudo ao marcar os dados de financiamento, o programa se encarrega de agrupá-los em <front>.
 
+Artigos relacionados
+^^^^^^^^^^^^^^^^^^^^
+
+* related - Identifica um artigo relacionado ao artigo em marcação. (ver tipos de `artigos relacionados aqui <http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.7-branch/tagset/elemento-related-article.html>`_) - <related-article id="XX" related-article-type="XX">
 
 Corpo do Texto - <body>
 -----------------------
@@ -199,7 +205,7 @@ Caso a formatação do texto tenha sido feita de acordo com as instruções de p
 		* defitem - Identifica um item da lista de definições - <def-item>
 			* term - Identifica o termo a ser definido - <term>;
 			* def - Identifica a definição do termo - <def>;
-	* *deflist - Identifica automaticamente todos os itens de uma lista de definições - <def-list id="xx">;
+	* \*deflist - Identifica automaticamente todos os itens de uma lista de definições - <def-list id="xx">;
 	* sigblock – Agrupa dados de uma assinatura de um artigo - <sig-block>
 		* sig – Identifica a assinatura do autor - <sig>
 	* boxedtxt - Identifica uma caixa de texto. Pode marcar caixas de texto em <front>, <body> e <back> sendo mais comum sua presença em <body> - <boxed-text>
@@ -210,7 +216,7 @@ Caso a formatação do texto tenha sido feita de acordo com as instruções de p
 				* subsec - Identifica uma subseção - <sec>;
  					* sectitle - Identifica o título da subseção - <title>;
 					* p - Identifica um parágrafo - <p>;
-		* *boxedtxt - Identifica automaticamente os dados de uma caixa de texto - <boxed-text>;
+		* \*boxedtxt - Identifica automaticamente os dados de uma caixa de texto - <boxed-text>;
 	* equation - Identifica uma fórmulas/equação. Pode ocorrer em <front>, <body> e <back> sendo mais comum sua presença em <body> - <disp-formula id="xx"> quando em um parágrafo, <inline-formula> quando no meio de um parágrafo;
 		* graphic - Identifica uma imagem de uma fórmula/equação - <graphic xlink:href="nomedoarquivodaimagem.extensãodaimagem"/>
 			* alttext - Identifica um texto que descreve a imagem - <alt-text>
@@ -227,7 +233,7 @@ Caso a formatação do texto tenha sido feita de acordo com as instruções de p
 	* list - Identifica uma lista. Pode ocorrer em <body> e <back> sendo mais comum sua presenta em <body> - <list list-type="xx">;
 			* li - Identifica um item de uma lista - <list-item> <p>;
 				* label - Identifica o label de um item, se hiuver - <label>;
-	* *list - Identifica automaticamente os elementos de uma lista;
+	* \*list - Identifica automaticamente os elementos de uma lista;
 	* tabwrap - Agrupa dados de uma tabela> Pode ocorrer em  <body> e <back> sendo mais comum em <body> - <table-wrap id="xx">;
 		* label - Identifica um label de uma tabela - <label>;
 		* caption - Identifica a legenda uma tabela - <caption>;
@@ -259,7 +265,7 @@ Agradecimentos - <ack>
 	* p - Identifica um parágrafo na seção agardecimentos - <p>;
 		* funding - Agrupa os dados de financiamento quando presentes em agradecimentos - <funding-group>
  			* award - Agrupa dados do número de contrato e a gência de fomento/financiador - <award-group>;
- 			 	* fundsrc - Identifica a agência de fomento/financiador - Mfunding-source>;
+ 			 	* fundsrc - Identifica a agência de fomento/financiador - <funding-source>;
  				* contract - Identifica o número do projeto ou contrato do financiamento - <award-id>;
 
 Notas de rodapé
@@ -290,7 +296,7 @@ Apêndices/Anexos - <app-group>
 				* defitem - Identifica um item da lista de definições no glossário - <def-item>
 					* term - Identifica o termo a ser definido no glossário - <term>;
 					* def - Identifica a definição do termo no gloassário - <def>;
-			* *deflist - Identifica automaticamente todos os itens de uma lista de definições no gloassário;
+			* \*deflist - Identifica automaticamente todos os itens de uma lista de definições no gloassário;
 
 Referências bibliográficas - <ref-list>
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -300,9 +306,9 @@ Referências bibliográficas - <ref-list>
 	* ref - Agrupa os dados de uma referência bibliográfica. Clique  `aqui <http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.7-branch/tagset/elemento-element-citation.html>`_ para consultar os tipos possíveis de referência bibliográfica - <ref> <element-citation publication-type="xx"> <mixed-citation>;
 		* text-ref - Identifica a forma original da referência - <mixed-citation>;
 		* label - Identifica o label de uma referência - <label>;
-		* *authors - Identifica automaticamente todos os elementos de uma autoria;
+		* \*authors - Identifica automaticamente todos os elementos de uma autoria;
 		* authors - Agrupa dados de autoria de una referencia - <person-group person-group-type="xx">;
-			* *pauthor - Identifica automaticamente partes do nome de UM autor;
+			* \*pauthor - Identifica automaticamente partes do nome de UM autor;
 			* pauthor - Agrupa partes do nome de UM autor - <name>;
 				* fname-surname - marca nome e sobrenome de um autor;
 				* fname-spanish-surname - marca nome e sobrenome de autores espanhós;
@@ -339,10 +345,10 @@ Referências bibliográficas - <ref-list>
 		* pubid - Identifica um id de qualquer tipo de base de dados externa. Clique  `aqui <http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.7-branch/tagset/elemento-pub-id.html>`_ para ver tipos possíveis -  <pub-id pub-id-type="xx">;
 		* publoc- Identifica o local de publicação da referência - <publisher-loc>; 
 		* pubname- Identifica a casa publicadora da referência - <publisher-name>; 
-		* *publoc/pubname- Identifica automaticamente local de publicação e casa publicadora;
-		* *pubname/publoc- Identifica automaticamente casa publicadora e local de publicação;
+		* \*publoc/pubname- Identifica automaticamente local de publicação e casa publicadora;
+		* \*pubname/publoc- Identifica automaticamente casa publicadora e local de publicação;
 		* reportid - Identifica o nome ou número de um relatório - <pub-id pub-id-type="other">;
-		* *source - Identifica automaticamente o título da fonte principal de uma referência e suas repetições na lista de referencias - <source>;
+		* \*source - Identifica automaticamente o título da fonte principal de uma referência e suas repetições na lista de referencias - <source>;
 		* source - Identifica o título da fonte principal da referência - <source>;
 		* suppl - Identifica o número de um suplemento - <supplement>;
 		* thesgrp - Agrupa dados de uma tese/dissertação;
@@ -353,4 +359,12 @@ Referências bibliográficas - <ref-list>
 			* orgname - Identifica a instituição onde a tese foi defendida/depositada - <publisher-name>;
 		* url - Identifica uma url - <ext-link ext-link-type="uri" xlink:href="http://xxxx">
 		* volid - Identifica o volume de uma referência - <volume>
+
+Artigos relacionados ao artigo principal - <sub-article>
+--------------------------------------------------------
+
+* subdoc - Identifica um artigo relacionado ao artigo principal e pode conter todos os elementos descritos anteriormente (ver tipos de `disponíveis aqui <http://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/1.7-branch/tagset.html#notas-de-autor>`_). - <sub-article article-type="xx" xml:lang="xx" id="xx">
+
+.. Note:: Traduções e outros artigos relacionados ao artigo principal devem fazer parte de um mesmo arquivo .docx. No caso de traduções, as referências bibliográficas não devem ser marcadas novamente.
+
 
