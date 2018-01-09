@@ -1,5 +1,11 @@
-4.0.094 Release 29/09/2017 | R 06/12/2017
+4.0.094 Release 29/09/2017 | R 09/01/2018
 ==========================================
+- PMC
+  - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
+  - (bug) [2822] Remove extra files from PMC package
+  - (bug) [2837] Fix error as converting svg2png 
+  - (bug) [2836] Fix missing supplement files in PMC package 
+
 - XPM
   - (bug) [2757] Remover as mensagens sobre order e article-id (other) 
   - (bug) [2749] Remover as validações de datas das referências 
@@ -16,6 +22,7 @@
   - (bug) [2823] Validate journal-title in XML is according to the cvs file
   - (new) [2831] @article-type=correction must not have contrib
   - (bug) [2852] Display the error message of compatibility of JATS versions and SPS versions (1.0)
+  - (bug) [2856] Fix previous author validation
 
 - PMC
   - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
