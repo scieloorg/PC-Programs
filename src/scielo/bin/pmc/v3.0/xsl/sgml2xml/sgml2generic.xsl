@@ -1046,6 +1046,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:choose>
 				<xsl:when test="institid">
 					<institution-wrap>
+						<xsl:apply-templates select="institid"></xsl:apply-templates>
 						<xsl:apply-templates select="." mode="common"></xsl:apply-templates>
 					</institution-wrap>
 				</xsl:when>
