@@ -68,8 +68,8 @@ Markup
 
 5. Selecionar:
 
-   - **Markup**: program to identify the bibliographic elements in the articles/texts
-   - **Markup - Automata files** (opcionalmente): examples of files for automatic markup
+   - **Markup**: programa para identificar elementos de um artigo/texto
+   - **Markup - Automata files** (opcionalmente): examplos de arquivos para marcação automática de referências bibliográficas
 
 
     .. image:: img/howtoinstall_programs.png
@@ -128,9 +128,9 @@ SciELO PC Programs Completo: Title Manager, Converter, Markup, XPM etc
 
 5. Selecionar os programas:
 
-  - Title Manager: program to manage journals and issues databases
-  - Converter: program to load the marked documents into the database
-  - XML SciELO: (opcional) program to create XML format for PubMed
+  - Title Manager: programa para gestão da coleção de periódicos
+  - Converter: programa de conversão de documentos marcados para a base de dados
+  - XML SciELO: (opcional) programa para criar formato XML para a base de dados PubMed
 
 
     .. image:: img/howtoinstall_programs.png
@@ -171,8 +171,8 @@ SciELO PC Programs Completo: Title Manager, Converter, Markup, XPM etc
 Como configurar
 ===============
 
-XML Package Maker and XML Markup
-================================
+XML Package Maker e XML Markup
+==============================
 
 Por padrão o programa funciona considerando acesso à Internet disponível, ausência de proxy para acesso à internet e uso do packtools como validador de estrutura de XML (em substituição ao style-checker).
 
@@ -197,12 +197,10 @@ Exemplo dos parâmetros preenchidos:
 Title Manager e Converter
 =========================
 
-Configurar a variável de ambiente:
+Configurar a variável de ambiente: Painel de controle -> Segurança e Manutenção -> Sistema -> Configurações avançadas do Sistema -> Variáveis de ambiente.
 
-  Set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
-
-  Check if the variable already exists. 
-  If it does not, click New and enter the value.
+  Verifique se a variável já existe. 
+  Em caso negativo, clique em Novo e adicione o valor.
 
     .. image:: img/installation_setup_bap.jpg
 
@@ -229,7 +227,7 @@ Trocar **c:\\home\\scielo\\www** pela localização do site local. Por exemplo:
 Validação de tabelas e fórmulas
 -------------------------------
 
-O padrão de exigência para tabelas e fórmulas é que elas sejam codificadas.
+Para SciELO Brasil, o padrão de exigência para tabelas e fórmulas é que elas sejam codificadas.
 
 Para alterar este nível, editar o arquivo que correspond a **c:\\scielo\\bin\\scielo_collection.ini**:
 
@@ -245,13 +243,13 @@ Para alterar este nível, editar o arquivo que correspond a **c:\\scielo\\bin\\s
 Menu de aplicação
 =================
 
-Sometimes the menu of the application will be created only for the Administrator user. 
+Em alguns casos, o menú da aplicação será criado apenas com o usuário de administrador. 
 
 .. code::
 
   C:\\Documents and Settings\\Administrador\\Menu Iniciar\\Programas
 
-In this case, copy the SciELO folder to All Users folder, to all users have the menu.
+Neste caso, copie a pasta SciELO para a pasta Usuários para que todos os usuários tenham o menú disponível. 
 
 .. code::
 
