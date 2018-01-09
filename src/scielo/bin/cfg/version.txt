@@ -1,4 +1,4 @@
-4.0.094 Release 29/09/2017 | R3 20/12/2017
+4.0.094 Release 29/09/2017 | R3 09/01/2018
 ==========================================
 - Markup XML
   - (bug) [2711] Solve problem of markup funding data in footnote area
@@ -13,6 +13,7 @@
   - (bug) [2841] Generates fig/alt-text and table-wrap/alt-text
   - (bug) [2847] Do not generate article-id (other), if there is DOI
   - (new) [2849] Get mathml content from a file similar to table
+  - (bug) [2867] Fix institution-id generation
 
 - XC
   - (enhancement) [2751] Accept some differences between aop and ex aop data to exclude aop version
@@ -21,6 +22,7 @@
 
 - PubMed
   - (bug) [2743] Fix OtherLanguage/@Language
+  - () [2862] Change Suffix and LastName generation
 
 - PMC
   - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
@@ -44,6 +46,8 @@
   - (bug) [2823] Validate journal-title in XML is according to the cvs file
   - (new) [2831] @article-type=correction must not have contrib
   - (bug) [2852] Display the error message of compatibility of JATS versions and SPS versions (1.0)
+  - (bug) [2856] Fix previous author validation
+
 
 4.0.094 Release 29/09/2017 | R2 03/10/2017
 ==========================================
