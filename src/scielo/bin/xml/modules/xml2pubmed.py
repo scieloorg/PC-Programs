@@ -55,10 +55,15 @@ def find_xml_files_in_alternative(filenames, main_path, found_files={}):
 
 def load_articles(filenames):
     files = {}
-    for filename, f in filenames.items():
-        xml, e = xml_utils.load_xml(f)
-        a = article.Article(xml, filename)
-        files[filename] = xml_utils.node_xml(a.tree.find('.'))
+    for name, f in filenames.items():
+        content = fs_utils.read_file(f)
+        xmlcontent = xml_utils.XMLContent(content)
+        xmlcontent.normalize()
+        xml, error = xml_utils.load_xml(xmlcontent.content)
+        if xml is not None:
+            files[name] = xml_utils.tostring(xml.getroot())
+        else:
+            print(' ERROR 1: Invalid XML {}'.format(name))
     return files
 
 
@@ -296,6 +301,7 @@ class PubMedXMLMaker(object):
         xml_content += self.articles_pids_xml_content
         xml_content += '</root>'
         fs_utils.write_file(temp_filename, xml_content)
+        print(xml_content[0:400])
         return temp_filename
 
     @property
