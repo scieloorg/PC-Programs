@@ -301,7 +301,6 @@ class PubMedXMLMaker(object):
         xml_content += self.articles_pids_xml_content
         xml_content += '</root>'
         fs_utils.write_file(temp_filename, xml_content)
-        print(xml_content[0:400])
         return temp_filename
 
     @property
