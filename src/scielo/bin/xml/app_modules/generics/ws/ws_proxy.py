@@ -8,14 +8,15 @@ try:
     from urllib.parse import urlencode as urllib_parse_urlencode
     from urllib.parse import urlparse, urlencode
     from urllib.request import urlopen, Request
+    from urllib.request import ProxyHandler, build_opener, install_opener
     from urllib.error import HTTPError, URLError
 except ImportError:
     import urllib as urllib_request
     from urllib import urlencode as urllib_parse_urlencode
-
     from urlparse import urlparse
     from urllib import urlencode
     from urllib2 import urlopen, Request, HTTPError, URLError
+    from urllib2 import ProxyHandler, build_opener, install_opener
 
 try:
     import tkinter as tk
@@ -154,6 +155,6 @@ def display_proxy_form(registered_ip, registered_port, debug=False):
 
 
 def registry_proxy_opener(proxy_handler_data):
-    proxy_handler = urllib_request.ProxyHandler(proxy_handler_data)
-    opener = urllib_request.build_opener(proxy_handler)
-    urllib_request.install_opener(opener)
+    proxy_handler = ProxyHandler(proxy_handler_data)
+    opener = build_opener(proxy_handler)
+    install_opener(opener)
