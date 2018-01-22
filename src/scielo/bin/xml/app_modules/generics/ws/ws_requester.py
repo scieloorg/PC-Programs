@@ -26,6 +26,7 @@ except ImportError:
         print('no Tkinter')
 
 from .. import encoding
+from . import ws_proxy
 
 
 # JOURNALS_CSV_URL = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
@@ -84,13 +85,14 @@ def try_request(url, timeout=30, debug=False, force_error=False):
 
 class WebServicesRequester(object):
 
-    def __init__(self, active=True, proxy_info=None):
+    def __init__(self, active=True, proxy_data=None):
         self.requests = {}
         self.skip = []
-        self.proxy_info = proxy_info
-        if proxy_info is not None:
-            server, port = proxy_info.split(':')
-            self.proxy_info = ProxyInfo(server, port)
+        self.proxy_data = proxy_data
+        self.proxy_info = None
+        if proxy_data is not None:
+            server, port = proxy_data.split(':')
+            self.proxy_info = ws_proxy.ProxyInfo(server, port)
         self.active = active
         self.instance = None
 
@@ -114,7 +116,8 @@ class WebServicesRequester(object):
             response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
             if http_error_proxy_auth is not None:
                 if self.proxy_info is not None:
-                    get_proxy_info(self.proxy_info)
+                    self.proxy_info = ws_proxy.ask_data(self.proxy_info.server, self.proxy_info.port)
+                    ws_proxy.registry_proxy_opener(self.proxy_info.handler_data)
                     response, http_error_proxy_auth, error_message = try_request(url, timeout, debug, force_error)
             self.requests[url] = response
         return response
@@ -134,11 +137,3 @@ class WebServicesRequester(object):
             return None
         _result = self.request(url, timeout)
         return _result is not None
-
-
-def get_proxy_info(proxy_data):
-    from . import ws_proxy
-    server, port = proxy_data.split(':')
-    proxy_info = ws_proxy.ask_data(server, port)
-    ws_proxy.registry_proxy_opener(proxy_info.handler_data)
-

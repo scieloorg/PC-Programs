@@ -1,4 +1,4 @@
-4.0.094 Release 29/09/2017 | R 09/01/2018
+4.0.094 Release 29/09/2017 | R 2018
 ==========================================
 - PMC
   - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
@@ -23,6 +23,7 @@
   - (new) [2831] @article-type=correction must not have contrib
   - (bug) [2852] Display the error message of compatibility of JATS versions and SPS versions (1.0)
   - (bug) [2856] Fix previous author validation
+  - (bug) [2877] Fix bugs related to proxy
 
 - PMC
   - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
