@@ -24,6 +24,7 @@
   - (bug) [2852] Display the error message of compatibility of JATS versions and SPS versions (1.0)
   - (bug) [2856] Fix previous author validation
   - (bug) [2877] Fix bugs related to proxy
+  - (bug) [2876] Fix the path to the reports
 
 - PMC
   - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
