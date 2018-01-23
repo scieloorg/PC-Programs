@@ -63,7 +63,7 @@ Checking the Python + pip installation
 7. If the result is not the expected, repeat the instructions to install Python and pip.
 
 
-Checking the installation de Pillow 
+Checking the Pillow installation 
 ----------------------------------
 
 Pillow is requirement **only** for **previous version of SciELO PC Programs 4.0.094**.
@@ -86,12 +86,12 @@ Checking if it is properly installed, executing the commands on the terminal:
 
     
 
-3. Execute *import PIL* (letras mayúsculas):
+3. Execute * import PIL * (uppercase letters):
 
     .. image:: img/installation_import_pil.png
     
 
-4. Checking que el resultado esperado es:
+4. Checking that the expected result is:
 
     .. image:: img/installation_import_pil_resultado.png
    
@@ -225,5 +225,5 @@ Put the cursor at the end of the line, insert the character ";" and complete wit
 
 It means, insert the character ";" and complete with the JAVA path.
 
-.. image:: img/howtoinstall_path_edit-path-insert2.jpg
+.. image:: img/installation_java.png
 

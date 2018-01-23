@@ -229,7 +229,7 @@ Validação de tabelas e fórmulas
 
 Para SciELO Brasil, o padrão de exigência para tabelas e fórmulas é que elas sejam codificadas.
 
-Para alterar este nível, editar o arquivo que correspond a **c:\\scielo\\bin\\scielo_collection.ini**:
+Para alterar este nível, editar o arquivo correspondente a **c:\\scielo\\bin\\scielo_collection.ini**:
 
 .. code::
 

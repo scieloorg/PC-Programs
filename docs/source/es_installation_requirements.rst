@@ -14,7 +14,7 @@ Verificar los requisitos
 Verificar la ubicación y situación de la carpeta serial
 -------------------------------------------------------
 
-**Solamente** para los programas de **gestión de colección**, que deben estar instalador en un servidor local.
+**Solamente** para los programas de **gestión de colección**, que deben estar instalados en un servidor local.
 
 Este servidor debe haber acceso a la carpeta **serial** y esta carpeta tiene que estar actualizada (title, section, issue etc) antes de ejecutar la instalación de SciELO PC Programs.
 
@@ -33,7 +33,7 @@ Verificar la instalación de Python + pip
     .. image:: img/installation_python_test.png
 
 
-3. Verificar si el comando presenta la versión de Python. Por exemplo:
+3. Verificar si el comando presenta la versión de Python. Por ejemplo:
 
     .. image:: img/installation_python_resultado.png
 
@@ -50,7 +50,7 @@ Verificar la instalación de Python + pip
     .. image:: img/installation_pip_test.png
 
 
-6. Verificar si el comando presenta la versión del pip. Por exemplo:
+6. Verificar si el comando presenta la versión del pip. Por ejemplo:
 
     .. image:: img/installation_pip_resultado.png
 
@@ -182,47 +182,45 @@ Después de instalar Java, abrir la "Configuración del Sistema", indicar la ubi
 
 .. _add-paths:
 
-Add aplicación en el PATH
-,,,,,,,,,,,,,,,,,,,,,,,,,
+Añada la aplicación en el PATH
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-Use el atallo to open that window is: Windows + Pause Break key.
+El atallo para abrir la ventana es: Windows + Pause Break key.
 
 .. image:: img/howtoinstall_path_atalho.jpg
 
-Or click on **Computer** with right button of the mouse.
+O haga un clic en la **Computadora** con el botón derecho del mouse.
 
 .. image:: img/howtoinstall_path_computer.png
 
-Then click on **Properties**.
+Haga un clic en **Propiedades**.
 
 .. image:: img/howtoinstall_path_computer_properties.png
 
 
 
-**Computer System Configuration**
+**Configuración del sistema de computadora**
 
 
 .. image:: img/howtoinstall_path_variavel.jpg
 
  
-Click on Advanced Settings.
+Haga un clic en configuración avanzada.
 
 .. image:: img/howtoinstall_path_conf-advanc.jpg
 
-Then click on Environment Variables. 
+Haga un clic en variables de enterno. 
 
 .. image:: img/howtoinstall_path_open-variavel.jpg
 
-Find Path variable in the list.
+Encuentre la variable Path en la lista.
 
 .. image:: img/howtoinstall_path_search-path.jpg
 
-Select Path, then click on **Edit** button.
+Selecciona la Path, haga un clic en el botón **Editar**.
 
 .. image:: img/howtoinstall_path_select_variable.png
 
-Coloque el cursor en le final de la línea, añadir el caracter punto-y-coma (;) y la ubicación de Java instalado.
+Coloque el cursor en le final de la línea, añada el caracter punto-y-coma (;) y la ubicación del Java.
 
 .. image:: img/installation_java.png
-
-

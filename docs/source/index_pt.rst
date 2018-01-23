@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-==============================================
-Benvindo à documentação de SciELO PC Programs!
-==============================================
+===============================================
+Bem-vindo à documentação de SciELO PC Programs!
+===============================================
 
 **SciELO PC Programs** é um conjunto de ferramentas para produzir entrada de dados para o processo de publicação de artigos em uma coleção SciELO.
 

@@ -68,8 +68,8 @@ Markup
 
 5. Seleccionar:
 
-   - **Markup**: program to identify the bibliographic elements in the articles/texts
-   - **Markup - Automata files** (opcionalmente): examples of files for automatic markup
+   - **Markup**: programa para identificar elementos de un artículo/texto
+   - **Markup - Arhivos Automata** (opcionalmente): ejemplos de archivos para marcaje automática de referencias bibliográficas
 
 
     .. image:: img/howtoinstall_programs.png
@@ -128,9 +128,9 @@ SciELO PC Programs Completo: Title Manager, Converter, Markup, XPM etc
 
 5. Seleccionar los programas:
 
-  - Title Manager: program to manage journals and issues databases
-  - Converter: program to load the marked documents into the database
-  - XML SciELO: (opcional) program to create XML format for PubMed
+  - Title Manager: programa para manejar las bases de revistas y números
+  - Converter: programa para convertir los documentos marcados para la base de datos
+  - XML SciELO: (opcional) programa para generar XML en el formato de Pubmed
 
 
     .. image:: img/howtoinstall_programs.png
@@ -203,10 +203,10 @@ Title Manager y Converter
 
 Configurar la variable de ambiente BAP:
 
-  Set OS23470a to the environment variable BAP, by acccedeng the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
+  Configure OS23470a en la variable de entorno BAP, accediendo al menú de Windows: Panel de control -> Rendimiento y mantenimiento -> Sistema -> Configuración avanzada -> Variables de entorno.
 
-  Check if the variable already exists. 
-  If it does not, click New and enter the value.
+  Verifica si la variable ya existe. 
+  Si no existe, haga clic en Nuevo e ingrese el valor.
 
 
     .. image:: img/installation_setup_bap.jpg
@@ -244,19 +244,19 @@ Para cambiar el nível de exigencia, editar el archivo que corresponde a **c:\\s
   CODED_TABLE_REQUIRED=off
 
 
-**off** es para que XML Converter no exija los elementos codificados
+**off** es para que XML Converter no exija los elementos codificados.
 
 
 Menú de aplicación
 ==================
 
-Sometimes the menu of the application will be created only for the Administrator user. 
+A veces, el menú de la aplicación se creará solo por el usuario administrador.
 
 .. code::
 
   C:\\Documents and Settings\\Administrador\\Menu Iniciar\\Programas
 
-In this case, copy the SciELO folder to All Users folder, to all users have the menu.
+En este caso, copie la carpeta SciELO para la carpeta Todos los usuarios, para que todos los usuarios tengan el menú.
 
 .. code::
 
