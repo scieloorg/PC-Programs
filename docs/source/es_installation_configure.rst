@@ -69,7 +69,7 @@ Markup
 5. Seleccionar:
 
    - **Markup**: programa para identificar elementos de un artículo/texto
-   - **Markup - Arhivos Automata** (opcionalmente): ejemplos de archivos para marcaje automática de referencias bibliográficas
+   - **Markup - Archivos Automata** (opcional): ejemplos de archivos para marcaje automática de referencias bibliográficas
 
 
     .. image:: img/howtoinstall_programs.png
