@@ -491,27 +491,30 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test=".='partial-retraction'">partial-retraction</xsl:when>
 				<xsl:when test=".='reply'">reply</xsl:when>
 				
-				<xsl:when test=".='ab'">other</xsl:when>
-				<xsl:when test=".='an'">other</xsl:when>
+				<xsl:when test=".='ab'">abstract</xsl:when>
+				<xsl:when test=".='an'">announcement</xsl:when>
 				<xsl:when test=".='??'">other</xsl:when>
-				<xsl:when test=".='??'">addendum</xsl:when>
-				<xsl:when test=".='??'">books-received</xsl:when>
-				<xsl:when test=".='??'">calendar</xsl:when>
+				<xsl:when test=".='addendum'">addendum</xsl:when>
+				<xsl:when test=".='guidelines'">guidelines</xsl:when>
+				<xsl:when test=".='books-received'">books-received</xsl:when>
+				<xsl:when test=".='calendar'">calendar</xsl:when>
 				<xsl:when test=".='??'">collection</xsl:when>
-				<xsl:when test=".='??'">discussion</xsl:when>
-				<xsl:when test=".='??'">dissertation</xsl:when>
+				<xsl:when test=".='discussion'">discussion</xsl:when>
+				<xsl:when test=".='dissertation'">dissertation</xsl:when>
 				<xsl:when test=".='??'">introduction</xsl:when>
-				<xsl:when test=".='??'">meeting-report</xsl:when>
-				<xsl:when test=".='pr'">news</xsl:when>
-				<xsl:when test=".='??'">obituary</xsl:when>
-				<xsl:when test=".='??'">oration</xsl:when>
-				<xsl:when test=".='rc'">product-review</xsl:when>
-				<xsl:when test=".='??'">reprint</xsl:when>
-				<xsl:when test=".='??'">translation</xsl:when>
+				<xsl:when test=".='meeting-report'">meeting-report</xsl:when>
+				<xsl:when test=".='news'">news</xsl:when>
+				<xsl:when test=".='obituary'">obituary</xsl:when>
+				<xsl:when test=".='oration'">oration</xsl:when>
+				<xsl:when test=".='product-review'">product-review</xsl:when>
+				<xsl:when test=".='reprint'">reprint</xsl:when>
+				<xsl:when test=".='translation'">translation</xsl:when>
 				<xsl:when test=".='ax'">other</xsl:when>
-				<xsl:when test=".='in'">editorial</xsl:when><!-- interview -->
+				<xsl:when test=".='in'">interview</xsl:when>
 				<xsl:when test=".='mt'">research-article</xsl:when><!-- methodology -->
 				<xsl:when test=".='pv'">editorial</xsl:when><!-- ponto de vista -->
+				<!-- -->
+				
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
