@@ -34,38 +34,40 @@ REFTYPE_AND_TAG_ITEMS = {'aff': ['aff'], 'app': ['app'], 'author-notes': ['fn'],
 DOCTOPIC = {
                 'research-article': 'oa',
                 'editorial': 'ed',
-                'abstract': 'zz',
-                'announcement': 'zz',
+                'abstract': 'ab',
+                'announcement': 'an',
                 'article-commentary': 'co',
                 'case-report': 'cr',
                 'letter': 'le',
                 'review-article': 'ra',
                 'rapid-communication': 'sc',
-                'addendum': 'zz',
+                'addendum': 'addendum',
                 'book-review': 'rc',
-                'books-received': 'zz',
+                'books-received': 'books-received',
                 'brief-report': 'rn',
-                'calendar': 'zz',
+                'calendar': 'calendar',
                 'clinical-trial': 'oa',
                 'collection': 'zz',
                 'correction': 'er',
-                'discussion': 'ed',
-                'dissertation': 'ed',
+                'discussion': 'discussion',
+                'dissertation': 'dissertation',
                 'editorial-material': 'ed',
                 'in-brief': 'pr',
                 'introduction': 'ed',
-                'meeting-report': 'zz',
-                'news': 'zz',
-                'obituary': 'zz',
-                'oration': 'zz',
+                'meeting-report': 'meeting-report',
+                'news': 'news',
+                'obituary': 'obituary',
+                'oration': 'oration',
                 'partial-retraction': 'partial-retraction',
-                'product-review': 'zz',
+                'product-review': 'product-review',
                 'reply': 'reply',
-                'reprint': 'zz',
+                'reprint': 'reprint',
                 'retraction': 're',
-                'translation': 'zz',
+                'translation': 'translation',
                 'technical-report': 'oa',
                 'other': 'zz',
+                'guidelines': 'guidelines',
+                'interview': 'in',
 }
 
 DOCTOPIC_IN_USE = [
@@ -464,17 +466,17 @@ def suggestions_of_article_type_by_section_title(section_title):
         elif 'editoria' in lower_section_title:
             suggestions.append('editorial')
         elif 'interview' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('interview')
         elif 'entrevista' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('interview')
         elif 'point' in lower_section_title and 'view' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('editorial')
         elif 'ponto' in lower_section_title and 'vista' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('editorial')
         elif 'punto' in lower_section_title and 'vista' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('editorial')
         elif 'opini' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('editorial')
         elif 'communication' in lower_section_title or 'comunica' in lower_section_title:
             suggestions.append('rapid-communication')
         elif 'atualiza' in lower_section_title or 'actualiza' in lower_section_title or 'updat' in lower_section_title:
@@ -496,8 +498,8 @@ def suggestions_of_article_type_by_section_title(section_title):
         elif 'original' in lower_section_title:
             suggestions.append('research-article')
 
-    if 'editorial-material' in suggestions:
-        suggestions = [item.replace('editorial-material', 'other') for item in suggestions]
+    if 'editorial' in suggestions:
+        suggestions = [item.replace('editorial', 'other') for item in suggestions]
     return suggestions
 
 
