@@ -264,7 +264,40 @@ class ArticleContentValidation(object):
 
     @property
     def article_type(self):
+        """
+        com autoria e afiliação institucional dos autores,
+        título próprio diferente do título da seção,
+        citações,
+        e referências bibliográficas
+        """
         results = attributes.validate_article_type_and_section(self.article.article_type, self.article.toc_section, len(self.article.abstracts) > 0)
+
+        level = validation_status.STATUS_WARNING
+        msg = _('It is not recommended to index documents which have @article-type="{}". ').format(self.article.article_type)
+        if self.config.block_not_indexable_document:
+            level = validation_status.STATUS_BLOCKING_ERROR
+            msg = _('This collection rejects documents which have @article-type="{}". ').format(self.article.article_type)
+
+        if self.article.article_type in attributes.INDEXABLE:
+            level = validation_status.STATUS_WARNING
+            msg = _('It is recommended that documents which have @article-type="{}", ').format(self.article.article_type)
+            if self.config.block_not_indexable_document:
+                level = validation_status.STATUS_BLOCKING_ERROR
+                msg = _('This collection requires that documents which have @article-type="{}", ').format(self.article.article_type)
+            items = [
+                ('contrib', len(self.article.article_contrib_items)),
+                ('aff', len(self.article.article_affiliations)),
+                ('xref (bibr)', len(self.article.bibr_xref_nodes)),
+                ('ref', len(self.references_xml))]
+            invalid = [label for label, qtd in items if qtd == 0]
+            for label in invalid:
+                results.append(('@article-type', level, msg + _('also have at least one {}').format(label)))
+            titles = [t.title for t in self.article.titles]
+            _titles = ' / '.join(['"{}"'.format(t) for t in titles])
+            if utils.is_similar(self.article.toc_section, titles):
+                results.append(('@article-type', level, _('Titles ({}) must not be similar to subject {} '.format(_titles, self.article.toc_section))))
+        else:
+            results.append(('@article-type', level, msg))
         return results
 
     @property

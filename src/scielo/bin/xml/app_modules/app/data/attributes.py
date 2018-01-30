@@ -70,41 +70,37 @@ DOCTOPIC = {
                 'interview': 'in',
 }
 
-DOCTOPIC_IN_USE = [
-    'article-commentary', 
-    'book-review', 
-    'brief-report', 
-    'case-report', 
-    'correction', 
-    'editorial', 
-    'in-brief', 
-    'letter', 
-    'other', 
-    'rapid-communication', 
-    'research-article', 
-    'partial-retraction', 
-    'retraction', 
-    'reply', 
-    'review-article', 
-    ]
+DOCTOPIC_IN_USE = DOCTOPIC.keys()
+
+INDEXABLE = [
+    'research-article',
+    'article-commentary',
+    'rapid-communication',
+    'brief-report',
+    'case-report',
+    'correction',
+    'editorial',
+    'interview',
+    'letter',
+    'other',
+    'retraction',
+    'partial-retraction',
+    'review-article',
+    'book-review',
+    'addendum',
+    'guidelines',
+    'oration',
+    'discussion',
+    'obituary',
+    'reply',
+]
 
 HISTORY_REQUIRED_FOR_DOCTOPIC = [
     'case-report', 
     'research-article',    
 ]
 
-AUTHORS_REQUIRED_FOR_DOCTOPIC = [
-    'article-commentary', 
-    'book-review', 
-    'brief-report', 
-    'case-report', 
-    'editorial', 
-    'letter', 
-    'rapid-communication', 
-    'research-article', 
-    'reply', 
-    'review-article', 
-    ]
+AUTHORS_REQUIRED_FOR_DOCTOPIC = INDEXABLE
 
 AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC = [
     'correction',
@@ -124,13 +120,7 @@ ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
     'other', 
     ]
 
-REFS_REQUIRED_FOR_DOCTOPIC = [
-    'brief-report', 
-    'case-report', 
-    'rapid-communication', 
-    'research-article', 
-    'review-article', 
-    ]
+REFS_REQUIRED_FOR_DOCTOPIC = INDEXABLE
 
 TOC_SECTIONS = { 
     u'carta': u'letter', 
@@ -490,7 +480,7 @@ def suggestions_of_article_type_by_section_title(section_title):
         elif 'revis' in lower_section_title and ('artigo' in lower_section_title or u'artículo' in lower_section_title):
             suggestions.append('review-article')
         elif ('tech' in lower_section_title and 'article' in lower_section_title) or (u'técnico' in lower_section_title and 'informe' in lower_section_title) or (u'técnico' in lower_section_title and u'relatório' in lower_section_title):
-            suggestions.append('technical-report')
+            suggestions.append('research-article')
         elif 'comment' in lower_section_title or 'coment' in lower_section_title:
             suggestions.append('article-commentary')
         elif 'article' in lower_section_title or u'artículo' in lower_section_title or 'artigo' in lower_section_title:
