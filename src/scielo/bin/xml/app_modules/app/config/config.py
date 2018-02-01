@@ -451,5 +451,5 @@ class Configuration(object):
         return self._data.get('CODED_TABLE_REQUIRED', 'on') == 'on'
 
     @property
-    def block_not_indexable_document(self):
+    def block_because_of_article_type(self):
         return self._data.get('BLOCK_NOT_INDEXABLE_DOCUMENT', 'on') == 'on'
