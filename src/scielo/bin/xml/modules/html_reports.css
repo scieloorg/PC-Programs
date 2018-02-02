@@ -245,17 +245,17 @@ h5 {
     color: white;
 }
 .ok {
-    background-color: #C5E0DC;
+    background-color: #959F1F;
     color: black;
     padding: 2px;
 }
 .valid {
-    background-color: #799888;
+    background-color: #CFF09E;
     color: white;
     padding: 2px;
 }
 .info {
-    background-color: #D8DD47;
+    background-color: #A5C8DE;
     padding: 2px;
 }
 .label {
