@@ -109,16 +109,14 @@ call temp\generateXML4scilista.bat
 
 if not "%1"=="PUBMED" goto END
 if not exist ..\..\..\bin\xml\app_modules\tools4dsk\xml_pubmed.py goto END
-%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'python ..\..\..\bin\xml\app_modules\tools4dsk\xml_pubmed.py %Serial_Directory%\',v1,'\',v2,' ',v4,' ',v5/ fi" now> temp\xml_pubmed.bat
+%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'cd ..\..\..\bin\xml'/,'python xml_pubmed.py %Serial_Directory%\',v1,'\',v2,' ',v4,' ',v5/ fi" now> temp\xml_pubmed.bat
 call temp\xml_pubmed.bat
-
 goto END
 
 :ERROR
 echo Missing PHP_EXE or JAVA_EXE
 
 :END
-
 if exist %REPROCESS% echo %REPROCESS% issues to reprocess
 if exist %REPROCESSFALTADB% echo %REPROCESSFALTADB% issues which db is missing 
 if exist %OK_LIST% echo %OK_LIST% issues OK 
@@ -126,4 +124,5 @@ if exist %OK_LIST% echo %OK_LIST% issues OK
 
 REM echo End of %0 %1 %2 %3 %4 
 
-cd ..
+cd ..\..\xml_scielo\proc
+
