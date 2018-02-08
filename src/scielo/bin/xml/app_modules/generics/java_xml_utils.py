@@ -37,7 +37,8 @@ class XMLValidator(object):
         self.validation_type = '' if self.doctype is None else '--validate'
 
         self.bkp = fs_utils.read_file(self.xml_filename)
-        xml_utils.new_apply_dtd(self.xml_filename, self.doctype)
+        if self.doctype is not None:
+            xml_utils.new_apply_dtd(self.xml_filename, self.doctype)
 
         fs_utils.delete_file_or_folder(self.result_filename)
         fs_utils.delete_file_or_folder(self.temp_result_filename)

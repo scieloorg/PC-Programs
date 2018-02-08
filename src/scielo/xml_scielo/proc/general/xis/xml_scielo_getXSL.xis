@@ -44,22 +44,49 @@
 	<field action="replace" tag="3000" split="occ"><pft>if a(v3000) then mpu,v1012,mpl fi</pft></field>
 
 	<file action="create" type="output"><pft>v1030</pft></file>
-			<!--display><pft>ALL</pft></display-->
 	
 	<display>
 		<pft>
 		(
 			,if v3000='PUBMED' then
 				,if v1011[1]<>'NONE' then
-					,'PUBMED xsl\PubMed.xsl ',v1010[1],v1011[1],v1021[1],if p(v1021[1]) then if p(v1025) then '-',v1025[1], else '_',s(date)*0.8, fi fi,'.xml utf-8',if p(v1021[1]) then ' ',v1021[1] if p(v1025) then ' ',v1025[1] fi fi/
-				fi
+					,'PUBMED xsl\PubMed.xsl ',v1010[1],v1011[1],v1021[1],
+					,if p(v1021[1]) then
+						,if p(v1025) then
+							,'-',v1025[1],
+						,else
+							,'_',s(date)*0.8, 
+						,fi 
+					,fi,
+					,'.xml utf-8',
+					,if p(v1021[1]) then
+						,' ',v1021[1]
+						,if p(v1025) then
+							,' ',v1025[1]
+						,fi 
+					,fi,
+					,#,
+				,fi
 				,if v1020[1]='YES' then
 					,'PUBMED xsl\PubMed_Link.xsl journals_',v1010[1],,'.xml utf-8'/
-				fi
+				,fi
 
 			,else
 				,if v3000='ISI' then
-					,'ISI xsl\ISI_validator.xsl ',mpu,v1010[1],mpl,v1011[1],if p(v1021[1]) then if p(v1025) then '-',v1025[1], else '_',s(date)*0.8,'.sgml iso-8859-1',if p(v1021[1]) then ' ',v1021[1] if p(v1025) then ' ',v1025[1] fi fi/,
+					,'ISI xsl\ISI_validator.xsl ',mpu,v1010[1],mpl,v1011[1],
+					,if p(v1021[1]) then
+						,if p(v1025) then
+							,'-',v1025[1],
+						,else
+							,'_',s(date)*0.8,'.sgml iso-8859-1',
+							,if p(v1021[1]) then
+								,' ',v1021[1],
+								,if p(v1025) then 
+									,' ',v1025[1]
+								,fi
+							,fi/,
+						,fi
+					,fi
 				,fi
 			,fi
 
