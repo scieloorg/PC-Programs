@@ -19,20 +19,20 @@ if not exist %PATH_DB%\%acron%\%receptorName%\ mkdir %PATH_DB%\%acron%\%receptor
 if not exist %PATH_DB%\%acron%\%issueid%\%receptorName%\ mkdir %PATH_DB%\%acron%\%issueid%\%receptorName%\
 
 copy /y %filename% %PATH_DB%\%receptorName%\%fname% >> %LOG%
-copy  /y %filename% %PATH_DB%\%acron%\%receptorName%\%fname% >> %LOG%
-copy  /y %filename% %PATH_DB%\%acron%\%issueid%\%receptorName%\%fname% >> %LOG%
+copy /y %filename% %PATH_DB%\%acron%\%receptorName%\%fname% >> %LOG%
+copy /y %filename% %PATH_DB%\%acron%\%issueid%\%receptorName%\%fname% >> %LOG%
 
 
-if exist %PATH_DB%%receptorName%\%fname% echo  Generated %PATH_DB%%receptorName%\%fname%
-rem if exist %PATH_DB%%receptorName%\%fname% dir %PATH_DB%%receptorName%\%fname%
+if exist %PATH_DB%\%receptorName%\%fname% echo  Generated %PATH_DB%\%receptorName%\%fname%
+rem if exist %PATH_DB%\%receptorName%\%fname% dir %PATH_DB%\%receptorName%\%fname%
 
-if not exist %PATH_DB%%receptorName%\%fname% echo  NOT generated %PATH_DB%%receptorName%\%fname%
+if not exist %PATH_DB%\%receptorName%\%fname% echo  NOT generated %PATH_DB%\%receptorName%\%fname%
 
 goto END
 
 
 :NOT_GENERATED
-echo  NOT generated %PATH_DB%%receptorName%\%fname%
+echo  NOT generated %PATH_DB%\%receptorName%\%fname%
 
 
 :END
