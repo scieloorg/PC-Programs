@@ -495,7 +495,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test=".='an'">announcement</xsl:when>
 				<xsl:when test=".='??'">other</xsl:when>
 				<xsl:when test=".='addendum'">addendum</xsl:when>
-				<xsl:when test=".='guidelines'">guidelines</xsl:when>
+				<xsl:when test=".='guideline'">guideline</xsl:when>
 				<xsl:when test=".='books-received'">books-received</xsl:when>
 				<xsl:when test=".='calendar'">calendar</xsl:when>
 				<xsl:when test=".='??'">collection</xsl:when>

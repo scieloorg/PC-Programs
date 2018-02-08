@@ -12,6 +12,7 @@ from ...generics.reports import html_reports
 
 
 SPS_expiration_dates = [
+    ('sps-1.8', ['20180401', '20190401']),
     ('sps-1.7', ['20171001', '20181001']),
     ('sps-1.6', ['20170401', '20180401']),
     ('sps-1.5', ['20161001', '20171001']),
@@ -66,7 +67,7 @@ DOCTOPIC = {
                 'translation': 'translation',
                 'technical-report': 'oa',
                 'other': 'zz',
-                'guidelines': 'guidelines',
+                'guideline': 'guideline',
                 'interview': 'in',
 }
 
