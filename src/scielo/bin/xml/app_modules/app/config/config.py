@@ -449,3 +449,7 @@ class Configuration(object):
     @property
     def coded_table_required(self):
         return self._data.get('CODED_TABLE_REQUIRED', 'on') == 'on'
+
+    @property
+    def block_because_of_article_type(self):
+        return self._data.get('BLOCK_NOT_INDEXABLE_DOCUMENT', 'on') == 'on'

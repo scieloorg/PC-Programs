@@ -264,7 +264,43 @@ class ArticleContentValidation(object):
 
     @property
     def article_type(self):
+        """
+        com autoria e afiliação institucional dos autores,
+        título próprio diferente do título da seção,
+        citações,
+        e referências bibliográficas
+        """
         results = attributes.validate_article_type_and_section(self.article.article_type, self.article.toc_section, len(self.article.abstracts) > 0)
+        msg = _('The documents used to generate the bibliometric indicators must have:\na) @article-type ({}); b) contributors and their affiliations; c) own title, not similar to the table of contents title; d) citations; e) and references. ').format(_(', ').join(attributes.INDEXABLE))
+        level = validation_status.STATUS_RECOMMENDATION
+
+        errors = []
+        if self.article.article_type in attributes.INDEXABLE:
+            items = [
+                ('contrib', len(self.article.article_contrib_items)),
+                ('aff', len(self.article.article_affiliations)),
+                ('xref (bibr)', len(self.article.bibr_xref_nodes)),
+                ('ref', len(self.article.references_xml))]
+            invalid = [label for label, qtd in items if qtd == 0]
+            if len(invalid) > 0:
+                errors.append(
+                    _('@article-type="{}" requires: {}. ').format(
+                        self.article.article_type,
+                        ' ; '.join(invalid)))
+            titles = [t.title for t in self.article.titles]
+            _titles = ' / '.join(['"{}"'.format(t) for t in titles])
+            if utils.is_similar(self.article.toc_section, titles):
+                errors.append(
+                    _('{} must not be similar to subject "{}" '.format(
+                        _titles, self.article.toc_section)))
+        else:
+            errors.append(
+                _('@article-type="{}" is not used to generate bibliometric indicators').format(self.article.article_type))
+        if len(errors) > 0:
+            results.append(('@article-type', level, msg))
+            if self.is_db_generation and self.config.block_because_of_article_type:
+                level = validation_status.STATUS_BLOCKING_ERROR
+            results.append(('@article-type', level, ''.join(errors)))
         return results
 
     @property

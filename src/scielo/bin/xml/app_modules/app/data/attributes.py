@@ -12,6 +12,7 @@ from ...generics.reports import html_reports
 
 
 SPS_expiration_dates = [
+    ('sps-1.8', ['20180401', '20190401']),
     ('sps-1.7', ['20171001', '20181001']),
     ('sps-1.6', ['20170401', '20180401']),
     ('sps-1.5', ['20161001', '20171001']),
@@ -34,75 +35,73 @@ REFTYPE_AND_TAG_ITEMS = {'aff': ['aff'], 'app': ['app'], 'author-notes': ['fn'],
 DOCTOPIC = {
                 'research-article': 'oa',
                 'editorial': 'ed',
-                'abstract': 'zz',
-                'announcement': 'zz',
+                'abstract': 'ab',
+                'announcement': 'an',
                 'article-commentary': 'co',
                 'case-report': 'cr',
                 'letter': 'le',
                 'review-article': 'ra',
                 'rapid-communication': 'sc',
-                'addendum': 'zz',
+                'addendum': 'addendum',
                 'book-review': 'rc',
-                'books-received': 'zz',
+                'books-received': 'books-received',
                 'brief-report': 'rn',
-                'calendar': 'zz',
+                'calendar': 'calendar',
                 'clinical-trial': 'oa',
                 'collection': 'zz',
                 'correction': 'er',
-                'discussion': 'ed',
-                'dissertation': 'ed',
+                'discussion': 'discussion',
+                'dissertation': 'dissertation',
                 'editorial-material': 'ed',
                 'in-brief': 'pr',
                 'introduction': 'ed',
-                'meeting-report': 'zz',
-                'news': 'zz',
-                'obituary': 'zz',
-                'oration': 'zz',
+                'meeting-report': 'meeting-report',
+                'news': 'news',
+                'obituary': 'obituary',
+                'oration': 'oration',
                 'partial-retraction': 'partial-retraction',
-                'product-review': 'zz',
+                'product-review': 'product-review',
                 'reply': 'reply',
-                'reprint': 'zz',
+                'reprint': 'reprint',
                 'retraction': 're',
-                'translation': 'zz',
+                'translation': 'translation',
                 'technical-report': 'oa',
                 'other': 'zz',
+                'guideline': 'guideline',
+                'interview': 'in',
 }
 
-DOCTOPIC_IN_USE = [
-    'article-commentary', 
-    'book-review', 
-    'brief-report', 
-    'case-report', 
-    'correction', 
-    'editorial', 
-    'in-brief', 
-    'letter', 
-    'other', 
-    'rapid-communication', 
-    'research-article', 
-    'partial-retraction', 
-    'retraction', 
-    'reply', 
-    'review-article', 
-    ]
+DOCTOPIC_IN_USE = DOCTOPIC.keys()
+
+INDEXABLE = [
+    'research-article',
+    'article-commentary',
+    'rapid-communication',
+    'brief-report',
+    'case-report',
+    'correction',
+    'editorial',
+    'interview',
+    'letter',
+    'other',
+    'retraction',
+    'partial-retraction',
+    'review-article',
+    'book-review',
+    'addendum',
+    'guidelines',
+    'oration',
+    'discussion',
+    'obituary',
+    'reply',
+]
 
 HISTORY_REQUIRED_FOR_DOCTOPIC = [
     'case-report', 
     'research-article',    
 ]
 
-AUTHORS_REQUIRED_FOR_DOCTOPIC = [
-    'article-commentary', 
-    'book-review', 
-    'brief-report', 
-    'case-report', 
-    'editorial', 
-    'letter', 
-    'rapid-communication', 
-    'research-article', 
-    'reply', 
-    'review-article', 
-    ]
+AUTHORS_REQUIRED_FOR_DOCTOPIC = INDEXABLE
 
 AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC = [
     'correction',
@@ -122,13 +121,7 @@ ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
     'other', 
     ]
 
-REFS_REQUIRED_FOR_DOCTOPIC = [
-    'brief-report', 
-    'case-report', 
-    'rapid-communication', 
-    'research-article', 
-    'review-article', 
-    ]
+REFS_REQUIRED_FOR_DOCTOPIC = INDEXABLE
 
 TOC_SECTIONS = { 
     u'carta': u'letter', 
@@ -464,17 +457,17 @@ def suggestions_of_article_type_by_section_title(section_title):
         elif 'editoria' in lower_section_title:
             suggestions.append('editorial')
         elif 'interview' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('interview')
         elif 'entrevista' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('interview')
         elif 'point' in lower_section_title and 'view' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('editorial')
         elif 'ponto' in lower_section_title and 'vista' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('editorial')
         elif 'punto' in lower_section_title and 'vista' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('editorial')
         elif 'opini' in lower_section_title:
-            suggestions.append('editorial-material')
+            suggestions.append('editorial')
         elif 'communication' in lower_section_title or 'comunica' in lower_section_title:
             suggestions.append('rapid-communication')
         elif 'atualiza' in lower_section_title or 'actualiza' in lower_section_title or 'updat' in lower_section_title:
@@ -488,16 +481,13 @@ def suggestions_of_article_type_by_section_title(section_title):
         elif 'revis' in lower_section_title and ('artigo' in lower_section_title or u'artículo' in lower_section_title):
             suggestions.append('review-article')
         elif ('tech' in lower_section_title and 'article' in lower_section_title) or (u'técnico' in lower_section_title and 'informe' in lower_section_title) or (u'técnico' in lower_section_title and u'relatório' in lower_section_title):
-            suggestions.append('technical-report')
+            suggestions.append('research-article')
         elif 'comment' in lower_section_title or 'coment' in lower_section_title:
             suggestions.append('article-commentary')
         elif 'article' in lower_section_title or u'artículo' in lower_section_title or 'artigo' in lower_section_title:
             suggestions.append('research-article')
         elif 'original' in lower_section_title:
             suggestions.append('research-article')
-
-    if 'editorial-material' in suggestions:
-        suggestions = [item.replace('editorial-material', 'other') for item in suggestions]
     return suggestions
 
 

@@ -253,8 +253,13 @@ h5 {
     color: white;
     padding: 2px;
 }
+.recommendation {
+    background-color: #E04DC0;
+    color: white;
+    padding: 2px;
+}
 .info {
-    background-color: #D8DD47;
+    background-color: #69D2E7;
     padding: 2px;
 }
 .label {
