@@ -1,7 +1,6 @@
 # coding=utf-8
 
 import os
-from datetime import datetime
 
 from ..__init__ import _
 from . import interface
