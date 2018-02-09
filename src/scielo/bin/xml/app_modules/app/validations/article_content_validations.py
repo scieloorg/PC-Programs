@@ -98,22 +98,22 @@ class AffValidator(object):
     @property
     def normalized(self):
         r = []
+        status_error = validation_status.STATUS_RECOMMENDATION
+        status_fatal_error = validation_status.STATUS_RECOMMENDATION
         if self.institutions_query_results is not None:
             norm_aff, found_institutions = self.institutions_query_results
             if norm_aff is None:
                 msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([self.aff.orgname, self.aff.norgname])), ' or ')
-
                 if found_institutions is None or len(found_institutions) == 0:
                     r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
                 else:
                     msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
-                    r.append((_('Suggestions:'), validation_status.STATUS_ERROR, msg))
+                    r.append((_('Suggestions:'), status_error, msg))
             else:
-                #FIXME self.article.normalized_affiliations[aff.id] = norm_aff
-                status = validation_status.STATUS_VALID
+                status = status_fatal_error
                 if self.aff.norgname is not None:
-                    if self.aff.norgname != norm_aff.norgname:
-                        status = validation_status.STATUS_FATAL_ERROR
+                    if self.aff.norgname == norm_aff.norgname:
+                        status = validation_status.STATUS_VALID
                 if status == validation_status.STATUS_VALID:
                     message = _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])
                 else:
