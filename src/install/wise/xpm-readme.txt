@@ -4,7 +4,7 @@ REQUIREMENTS/REQUISITOS
  - JAVA
 
 
-Garantizar que tenga estes aplicativos instalados antes de seguir.
+Garantizar que tenga estas aplicaciones instaladas antes de seguir.
 
 Garanta que tenha este aplicativos instalados antes de continuar.
 
