@@ -4,11 +4,21 @@ import platform
 
 from ...generics import system
 from ...generics import fs_utils
+from ...generics import encoding
 
 
 so, node, release, version, machine, processor = platform.uname()
 python_version = platform.python_version()
 so = so.lower()
+
+
+def inform(msg):
+    print('{'*30)
+    print('')
+    encoding.display_message(msg)
+    print('')
+    print('}'*30)
+    print('')
 
 
 class VirtualEnv(object):
@@ -21,46 +31,37 @@ class VirtualEnv(object):
 
     def setUp(self):
         if 'windows' in so:
-            self.activate = '{}/Scripts/activate.bat'.format(self.path)
-            self.deactivate = '{}/Scripts/deactivate.bat'.format(self.path)
+            self.activate_command = 'call {}/Scripts/activate.bat'.format(self.path)
+            self.deactivate_command = 'call {}/Scripts/deactivate.bat'.format(self.path)
             self.sep = ' & '
         else:
-            self.activate = 'source {}/bin/activate'.format(self.path)
-            self.deactivate = 'deactivate'
+            self.activate_command = 'source {}/bin/activate'.format(self.path)
+            self.deactivate_command = 'deactivate'
             self.sep = ';'
         if self.path is None or not os.path.isdir(self.path):
-            self.activate = ''
-            self.deactivate = ''
+            self.activate_command = ''
+            self.deactivate_command = ''
 
-    def install(self, force=False):
+    def install_venv(self, recreate=False):
         if self.path is not None:
-            if force:
+            if recreate:
                 if os.path.isdir(self.path):
                     fs_utils.delete_file_or_folder(self.path)
             if not os.path.isdir(self.path):
-                system.run_command('python -m pip install --upgrade pip', True)
-                system.run_command('pip install virtualenv', True)
-                system.run_command(u'virtualenv {}'.format(self.path), True)
+                system.run_command('python -m pip install --upgrade pip')
+                system.run_command('pip install virtualenv')
+                system.run_command(u'virtualenv {}'.format(self.path))
+                if os.path.isdir(self.path):
+                    inform('CREATED virtualenv: {}'.format(self.path))
 
-    def reqs_check(self):
-        system.run_command(self.activate)
-        reqs = self.requirements.checker()
-        if len(reqs) > 0:
-            self.execute(self.requirements.install_commands(uninstall=True))
-        reqs = self.requirements.checker()
-        if len(reqs) > 0:
-            self.requirements.display_errors(reqs)
-        return len(reqs) == 0
+    def install_requirements(self):
+        self.execute(self.requirements.install_commands(True))
 
     def execute(self, commands):
-        self.install()
-        if self.reqs_check():
-            _commands = [self.activate]
-            _commands.extend(commands)
-            _commands.append(self.deactivate)
-            self._execute_inline(_commands)
-        else:
-            print('Unable to run {}'.format('\n'.join(commands)))
+        self.install_venv()
+        _commands = [self.activate_command]
+        _commands.extend(commands)
+        self._execute_inline(_commands)
 
     def _execute_inline(self, commands):
         _commands = [item for item in commands if len(item) > 0]
@@ -68,53 +69,51 @@ class VirtualEnv(object):
         if 'windows' in so:
             cmd = cmd.replace('/', '\\')
         self.logger.info(cmd)
-        system.run_command(cmd)
+        system.run_command(cmd, True)
+
+    def activate(self):
+        system.run_command(self.activate_command, True)
+
+    def deactivate(self):
+        system.run_command(self.deactivate_command, True)
 
 
 class Requirements(object):
 
-    def __init__(self, requirements_file, requirements_checker):
+    def __init__(self, requirements_file):
         self.requirements_file = requirements_file
-        self.checker = requirements_checker
 
     def install_commands(self, uninstall=True):
         commands = []
         if uninstall is True:
             commands = self.uninstall_commands()
-        commands.append('pip freeze > req_i_1.txt')
+        commands.append('pip freeze > req_i1.txt')
         commands.append('pip install -r {}'.format(self.requirements_file))
-        commands.append('pip freeze > req_i_2.txt')
+        commands.append('pip freeze > req_i2.txt')
         return commands
 
     def uninstall_commands(self):
         commands = []
-        commands.append('pip freeze > req_u_1.txt')
+        commands.append('pip freeze > req_u1.txt')
         commands.append('pip uninstall -r {} -y'.format(self.requirements_file))
-        commands.append('pip freeze > req_u_2.txt')
+        commands.append('pip freeze > req_u2.txt')
         return commands
-
-    def display_errors(self, reqs):
-        print('!'*30)
-        if len(reqs) == 0:
-            print('Success')
-            print('Requirements OK')
-        else:
-            print('Failure')
-        for req in reqs:
-            print('{} is not installed'.format(req))
-        print('!'*30)
 
 
 class AppCaller(object):
 
-    def __init__(self, logger, venv_path, req_file, req_checker):
-        self.venv = VirtualEnv(logger, venv_path, Requirements(req_file, req_checker))
+    def __init__(self, logger, venv_path, req_file):
+        self.venv = VirtualEnv(logger, venv_path, Requirements(req_file))
 
-    def install_virtualenv(self):
-        self.venv.install(force=True)
+    def install_virtualenv(self, recreate=False):
+        inform('Install virtualenv')
+        self.venv.install_venv(recreate)
+        inform('==> Installed virtualenv')
 
     def install_requirements(self):
-        self.venv.requirements.install()
+        inform('Install Requirements')
+        self.venv.install_requirements()
+        inform('==> Installed Requirements')
 
     def execute(self, commands):
         self.venv.execute(commands)

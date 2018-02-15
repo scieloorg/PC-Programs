@@ -44,21 +44,7 @@ except:
     pass
 
 
-def requirements_checker():
-    required = []
-    try:
-        import PIL
-    except:
-        required.append('PIL')
-    try:
-        import packtools
-    except:
-        required.append('packtools')
-    return required
-
-
 appcaller = app_caller.AppCaller(
     logger.get_logger(LOG_PATH+'/app_caller.log', 'Environment'),
     VENV_PATH,
-    REQUIREMENTS_FILE,
-    requirements_checker)
+    REQUIREMENTS_FILE)
