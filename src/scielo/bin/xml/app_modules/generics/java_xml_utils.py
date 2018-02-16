@@ -28,17 +28,20 @@ class XMLValidator(object):
 
     def __init__(self, xml_filename, result_filename, doctype=None):
         self.xml_filename = xml_filename
+        self.alt_xml_filename = './'+os.path.basename(self.xml_filename)
+        shutil.copyfile(self.xml_filename, self.alt_xml_filename)
         self.result_filename = result_filename
         self.doctype = doctype
+        # C:/Meu usu├írio/40095/scielo/bin/xml/app_modules/../../pmc/j1.0/
 
     def _setup(self):
         self.temp_result_filename = TMP_DIR + '/' + os.path.basename(self.result_filename)
         self.temp_result_dir = os.path.dirname(self.result_filename)
         self.validation_type = '' if self.doctype is None else '--validate'
 
-        self.bkp = fs_utils.read_file(self.xml_filename)
+        ## self.bkp = fs_utils.read_file(self.xml_filename)
         if self.doctype is not None:
-            xml_utils.new_apply_dtd(self.xml_filename, self.doctype)
+            xml_utils.new_apply_dtd(self.alt_xml_filename, self.doctype)
 
         fs_utils.delete_file_or_folder(self.result_filename)
         fs_utils.delete_file_or_folder(self.temp_result_filename)
@@ -49,7 +52,7 @@ class XMLValidator(object):
     def _command(self):
         return u'java -cp "{}" br.bireme.XMLCheck.XMLCheck "{}" {}>"{}"'.format(
             JAR_VALIDATE,
-            self.xml_filename,
+            self.alt_xml_filename,
             self.validation_type,
             self.temp_result_filename)
 
@@ -59,7 +62,7 @@ class XMLValidator(object):
         if os.path.exists(self.temp_result_filename):
             result = fs_utils.read_file(self.temp_result_filename, encoding.SYS_DEFAULT_ENCODING)
             if 'ERROR' in result.upper():
-                lines = fs_utils.read_file_lines(self.xml_filename)[1:]
+                lines = fs_utils.read_file_lines(self.alt_xml_filename)[1:]
                 numbers = [str(i) + ':' for i in range(1, len(lines)+1)]
                 lines = '\n'.join([n + line for n, line in zip(numbers, lines)])
                 result += lines
@@ -73,10 +76,11 @@ class XMLValidator(object):
     def xml_validate(self):
         self._setup()
         cmd = self._command
-        system.run_command(cmd)
+        system.run_command(cmd, True)
         valid = self._is_valid()
         shutil.move(self.temp_result_filename, self.result_filename)
-        fs_utils.write_file(self.xml_filename, self.bkp)
+        ## fs_utils.write_file(self.xml_filename, self.bkp)
+        fs_utils.delete_file_or_folder(self.alt_xml_filename)
         return valid
 
 

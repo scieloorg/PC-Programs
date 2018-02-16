@@ -1,5 +1,6 @@
 import sys
 
+from app_modules.generics import encoding
 from app_modules.generics import system
 from app_modules.__init__ import appcaller
 from app_modules.__init__ import BIN_XML_PATH
@@ -8,7 +9,7 @@ from app_modules.__init__ import BIN_XML_PATH
 def execute(parameters):
     appcaller.execute(
         [system.format_command(
-            'python {}/run_app.py'.format(BIN_XML_PATH), parameters)])
+            u'python "{}/run_app.py"'.format(BIN_XML_PATH), parameters)])
 
 
 def requirements_checker():
@@ -32,6 +33,7 @@ def check_requirements():
 
 
 def main(parameters):
+    parameters = encoding.fix_args(parameters)
     argv = parameters[1:]
 
     if parameters[1].endswith('xml_package_maker.py'):

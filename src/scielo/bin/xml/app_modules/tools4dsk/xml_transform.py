@@ -10,7 +10,7 @@ from ..generics import encoding
 #required_parameters = ['', 'xml filename', 'xsl filename', 'result filename', 'ctrl filename', 'err filename' ]
 
 
-args = [encoding.decode(arg.replace('\\', '/'), encoding.SYS_DEFAULT_ENCODING) for arg in sys.argv]
+args = encoding.fix_args(sys.argv)
 script, xml_filename, xsl_filename, result_filename, ctrl_filename, err_filename = args
 
 if os.path.exists(ctrl_filename):

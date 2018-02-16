@@ -7,6 +7,7 @@ import Tkinter
 try:
     from ..__init__ import _
     from ..generics import utils
+    from ..generics import encoding
     from ..generics import xml_utils
     from ..generics import fs_utils
     from ..generics import java_xml_utils
@@ -15,6 +16,7 @@ try:
 except:
     from app_modules.__init__ import _
     from app_modules.generics import utils
+    from app_modules.generics import encoding
     from app_modules.generics import xml_utils
     from app_modules.generics import fs_utils
     from app_modules.generics import java_xml_utils
@@ -395,7 +397,7 @@ def call_execute_pubmed_procedures(args):
 
 
 def read_inputs(args):
-    args = [arg.decode(encoding=sys.getfilesystemencoding()).replace('\\', '/') for arg in args]
+    args = encoding.fix_args(args)
     script = None
     issue_path = None
     from_date = None

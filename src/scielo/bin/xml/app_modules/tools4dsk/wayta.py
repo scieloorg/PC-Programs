@@ -7,6 +7,7 @@ from ..app.config import config
 from ..app.ws import institutions_service
 from ..app.ws import institutions_manager
 from ..generics import fs_utils
+from ..generics import encoding
 
 from ..__init__ import BIN_PATH
 
@@ -17,7 +18,7 @@ text = None
 filename = None
 ctrl_filename = None
 if len(sys.argv) == 4:
-    ign, filename, ctrl_filename, text = sys.argv
+    ign, filename, ctrl_filename, text = encoding.fix_args(sys.argv)
     if os.path.isfile(filename):
         os.unlink(filename)
     if os.path.isfile(ctrl_filename):

@@ -5,10 +5,16 @@ import os
 from . import encoding
 
 
+def format_param(param):
+    if ' ' in param:
+        return u'"{}"'.format(param)
+    return param
+
+
 def format_command(command, params=None):
     parameters = ''
     if params is not None:
-        parameters = ' '.join(['"' + item + '"' for item in params])
+        parameters = u' '.join([format_param(item) for item in params])
     return command + ' ' + parameters
 
 
