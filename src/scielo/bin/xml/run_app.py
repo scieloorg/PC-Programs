@@ -1,4 +1,3 @@
-
 import sys
 
 from app_modules.generics import system
