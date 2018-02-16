@@ -1,17 +1,12 @@
 # coding=utf-8
 
-import os
-from mimetypes import MimeTypes
-
 from ...generics import encoding
 from ...generics import xml_utils
-from ...generics.ws import ws_requester
 from ..data import attributes
 from ..pkg_processors import xml_versions
 
 
 messages = []
-mime = MimeTypes()
 
 
 class SPSXMLContent(xml_utils.XMLContent):
@@ -197,31 +192,3 @@ class SPSRefXMLContent(xml_utils.XMLContent):
                     if source not in mixed_citation and s in mixed_citation:
                         self.content = self.content.replace(source, s)
 
-    def replace_mimetypes(self):
-        r = self.content
-        if 'mimetype="replace' in self.content:
-            self.content = self.content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
-            self.content = self.content.replace('mime-subtype="replace"', '_~BREAK~MIME_')
-            r = ''
-            for item in self.content.split('_~BREAK~MIME_'):
-                if item.startswith('MIME:'):
-                    f = item[5:]
-                    f = f[0:f.rfind('"')]
-                    result = ''
-                    if os.path.isfile(self.src_path + '/' + f):
-                        result = mime.guess_type(self.src_path + '/' + f)
-                    else:
-                        url = ws_requester.pathname2url(f)
-                        result = mime.guess_type(url)
-                    try:
-                        result = result[0]
-                        if '/' in result:
-                            m, ms = result.split('/')
-                            r += 'mimetype="' + m + '" mime-subtype="' + ms + '"'
-                        else:
-                            pass
-                    except:
-                        pass
-                else:
-                    r += item
-        self.content = r
