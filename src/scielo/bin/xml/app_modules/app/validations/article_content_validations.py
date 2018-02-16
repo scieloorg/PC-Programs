@@ -288,7 +288,7 @@ class ArticleContentValidation(object):
                         self.article.article_type,
                         ' ; '.join(invalid)))
             titles = [t.title for t in self.article.titles]
-            _titles = ' / '.join(['"{}"'.format(t) for t in titles])
+            _titles = ' / '.join([u'"{}"'.format(t) for t in titles])
             if utils.is_similar(self.article.toc_section, titles):
                 errors.append(
                     _('{} must not be similar to subject "{}" '.format(
