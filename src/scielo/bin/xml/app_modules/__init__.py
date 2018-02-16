@@ -26,7 +26,6 @@ LOCALE_PATH = BIN_XML_PATH + '/app_modules/settings/locale'
 FST_PATH = BIN_XML_PATH + '/app_modules/settings/fst'
 EMAIL_TEMPLATE_MESSAGES_PATH = BIN_XML_PATH + '/app_modules/settings/email'
 REQUIREMENTS_FILE = BIN_XML_PATH + '/app_modules/settings/requirements.txt'
-REQUIREMENTS_FILE_SPECIAL = BIN_XML_PATH + '/app_modules/settings/requirements-w64.txt'
 REQUIREMENTS_CHECKER = BIN_XML_PATH + '/app_modules/tools/requirements_checker.py'
 HTML_REPORTS_PATH = BIN_XML_PATH + '/app_modules/generics/reports/'
 
@@ -44,6 +43,8 @@ try:
 except:
     pass
 
+
 appcaller = app_caller.AppCaller(
     logger.get_logger(LOG_PATH+'/app_caller.log', 'Environment'),
-    VENV_PATH)
+    VENV_PATH,
+    REQUIREMENTS_FILE)
