@@ -2,6 +2,7 @@
 import os
 import sys
 
+from app_modules.generics import encoding
 from app_modules.generics import ftp_service
 from app_modules.app.config import config
 from app_modules.app.server import mailer
@@ -19,9 +20,11 @@ def download_packages(configuration):
         configuration.download_path, configuration.ftp_dir)
     return (files, ftp.registered_actions)
 
+
 valid_parameters = False
-if len(sys.argv) == 3:
-    action, collection_acron = sys.argv[1:]
+argv = encoding.fix_args(sys.argv)
+if len(argv) == 3:
+    action, collection_acron = argv[1:]
     filename = config.get_configuration_filename(collection_acron)
     if filename is None:
         print('Unable to find configuration file for ' + collection_acron)
@@ -47,7 +50,7 @@ if len(sys.argv) == 3:
 
 if valid_parameters is False:
     print('Unable to execute')
-    print(sys.argv)
-    print('Usage: python2.7 {} [begin|end] <col>'.format(sys.argv[0]))
+    print(argv)
+    print('Usage: python2.7 {} [begin|end] <col>'.format(argv[0]))
 
 

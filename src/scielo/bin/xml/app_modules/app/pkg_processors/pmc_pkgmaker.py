@@ -123,7 +123,7 @@ class PMCPackageItemMaker(object):
                 missing.append(href.name_without_extension + '.tif')
                 content = content.replace(href.src, href.name_without_extension + '.tif')
         self.pmc_pkgfiles.article_xml = content
-        print('missing', missing)
+        #print('missing', missing)
 
     def add_files_to_pmc_package(self):
         doc = self.pmc_pkgfiles.article_xml

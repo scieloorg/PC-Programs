@@ -46,7 +46,12 @@ def delete_file_or_folder(path):
     if os.path.isdir(path):
         for item in os.listdir(path):
             delete_file_or_folder(path + '/' + item)
-        shutil.rmtree(path)
+        try:
+            shutil.rmtree(path)
+        except:
+            encoding.display_message('Unable to delete: ')
+            encoding.display_message(path)
+
     elif os.path.isfile(path):
         try:
             os.unlink(path)

@@ -120,4 +120,4 @@ def display_message(msg):
 
 
 def fix_args(args):
-    return [decode(arg, SYS_DEFAULT_ENCODING) for arg in args]
+    return [decode(arg.replace('\\', '/'), SYS_DEFAULT_ENCODING) for arg in args]
