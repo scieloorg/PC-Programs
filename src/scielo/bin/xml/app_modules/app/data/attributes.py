@@ -96,6 +96,13 @@ INDEXABLE = [
     'reply',
 ]
 
+INDEXABLE_BUT_EXCEPTION = [
+    'correction',
+    'retraction',
+    'partial-retraction',
+]
+
+
 HISTORY_REQUIRED_FOR_DOCTOPIC = [
     'case-report', 
     'research-article',    

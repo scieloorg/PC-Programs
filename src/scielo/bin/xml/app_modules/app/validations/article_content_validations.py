@@ -276,17 +276,18 @@ class ArticleContentValidation(object):
 
         errors = []
         if self.article.article_type in attributes.INDEXABLE:
-            items = [
-                ('contrib', len(self.article.article_contrib_items)),
-                ('aff', len(self.article.article_affiliations)),
-                ('xref (bibr)', len(self.article.bibr_xref_nodes)),
-                ('ref', len(self.article.references_xml))]
-            invalid = [label for label, qtd in items if qtd == 0]
-            if len(invalid) > 0:
-                errors.append(
-                    _('@article-type="{}" requires: {}. ').format(
-                        self.article.article_type,
-                        ' ; '.join(invalid)))
+            if self.article.article_type not in attributes.INDEXABLE_BUT_EXCEPTION:
+                items = [
+                    ('contrib', len(self.article.article_contrib_items)),
+                    ('aff', len(self.article.article_affiliations)),
+                    ('xref (bibr)', len(self.article.bibr_xref_nodes)),
+                    ('ref', len(self.article.references_xml))]
+                invalid = [label for label, qtd in items if qtd == 0]
+                if len(invalid) > 0:
+                    errors.append(
+                        _('@article-type="{}" requires: {}. ').format(
+                            self.article.article_type,
+                            ' ; '.join(invalid)))
             titles = [t.title for t in self.article.titles]
             _titles = ' / '.join([u'"{}"'.format(t) for t in titles])
             if utils.is_similar(self.article.toc_section, titles):
