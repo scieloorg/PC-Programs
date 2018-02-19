@@ -20,10 +20,10 @@ BIN_PATH = THIS_LOCATION + '/../..'
 BIN_XML_PATH = BIN_PATH + '/xml'
 JAR_PATH = BIN_PATH + '/jar'
 JAR_PATH = JAR_PATH.replace(BIN_PATH, './..')
-print(JAR_PATH)
 TMP_DIR = BIN_PATH + '/tmp'
 LOG_PATH = BIN_PATH + '/logs'
 PMC_PATH = BIN_PATH + '/pmc'
+RELATIVE_PMC_PATH = './../pmc'
 BIN_MARKUP_PATH = BIN_PATH + '/markup'
 XC_SERVER_CONFIG_PATH = BIN_PATH + '/config'
 TABLES_PATH = BIN_XML_PATH + '/app_modules/settings/tables'
