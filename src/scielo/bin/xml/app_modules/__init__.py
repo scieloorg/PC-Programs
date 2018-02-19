@@ -37,7 +37,7 @@ HTML_REPORTS_PATH = BIN_XML_PATH + '/app_modules/generics/reports/'
 
 VENV_PATH = BIN_XML_PATH + '/app_data/venv/scielo-programs'
 try:
-    if not encoding.encode(THIS_LOCATION) == THIS_FILE_LOCATION:
+    if not str(THIS_LOCATION) == THIS_FILE_LOCATION:
         VENV_PATH = '/scielo-virtualenv/venv'
 except:
     VENV_PATH = '/scielo-virtualenv/venv'
