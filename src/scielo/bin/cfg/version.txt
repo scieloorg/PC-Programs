@@ -1,5 +1,7 @@
-4.0.095 Release 01/03/2018
-==========================
+4.0.095 Teste 20/02/2018
+========================
+- Installation with proxy
+
 - Markup XML
   - (bug) [2711] Solve problem of markup funding data in footnote area
   - (bug) [2742] Fix *authors for two authors markup
@@ -15,6 +17,7 @@
   - (new) [2849] Get mathml content from a file similar to table
   - (bug) [2867] Fix institution-id generation
   - (bug) [2874] Fix fn-group generated inner fn-group
+  - (bug) [2893] Fix mimetype and mime-subtype
   - (new) [2883] Insert new document types (article-types)
 
 - XC

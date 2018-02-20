@@ -1,6 +1,9 @@
 # coding=utf-8
 
 import os
+import sys
+import getpass
+
 
 from . import encoding
 
@@ -19,15 +22,62 @@ def format_command(command, params=None):
 
 
 def run_command(command, display=False):
-    if display is True:
-        try:
-            encoding.display_message(u'Running:\n {}'.format(command))
-        except Exception as e:
-            pass
-
-    try:
-        os.system(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING))
+    display_command = command
+    proxy_parameter = command_proxy_parameter(command)
+    if len(proxy_parameter) > 0:
+        encoding.display_message('\nDo you use Proxy, please, execute:\n{}'.format(command))
+    else:
         if display is True:
-            encoding.display_message('...done')
-    except Exception as e:
-        encoding.report_exception('system.run_command()', e, command)
+            try:
+                encoding.display_message(u'Running:\n {}'.format(command))
+            except Exception as e:
+                pass
+
+        try:
+
+            os.system(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING))
+            if display is True:
+                encoding.display_message('...done')
+        except Exception as e:
+            encoding.report_exception('system.run_command()', e, display_command)
+
+
+def input_password():
+    pswd = getpass.getpass('Password: ')
+    return encoding.decode(pswd, sys.stdin.encoding)
+
+
+def proxy_parameter(proxy_info):
+    proxy = ''
+    if proxy_info is not None:
+        resp = read_input('Do you use proxy for Internet access ({})? Y/N '.format(proxy_info))
+        if resp == 'Y':
+            username = read_input('Inform proxy Username: ')
+            password = input_password()
+            proxy = '--proxy="{}:{}@http://{}"'.format(
+                username,
+                password,
+                proxy_info
+                )
+    return proxy
+
+
+def read_input(question):
+    if sys.version_info[0] == 2:
+        return raw_input(question)
+    return input(question)
+
+
+def command_proxy_parameter(command):
+    if '--proxy="' in command:
+        p = command[command.find('--proxy="'):]
+        p = p[:p.find('" ')+1]
+        return p
+    return ''
+
+
+def proxy_password(param):
+    if ':' in param and '@' in param:
+        p = param[param.find(':'):]
+        p = p[:p.find('@')+1]
+        return p
