@@ -53,6 +53,7 @@ class VirtualEnv(object):
         return os.path.isfile(self.activate_filename)
 
     def install_venv(self):
+        self.proxy_parameter = self.proxy_parameter or ''
         if self.path is not None:
             if not self.installed:
                 commands = []

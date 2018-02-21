@@ -29,10 +29,12 @@ except Exception as e:
 THIS_FILE_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 THIS_LOCATION = encoding.decode(THIS_FILE_LOCATION, encoding.SYS_DEFAULT_ENCODING)
 
+INVALID_APP_PATH = not str(THIS_LOCATION) == THIS_FILE_LOCATION
+
 BIN_PATH = THIS_LOCATION + '/../..'
 BIN_XML_PATH = BIN_PATH + '/xml'
 JAR_PATH = BIN_PATH + '/jar'
-JAR_PATH = JAR_PATH.replace(BIN_PATH, './..')
+RELATIVE_JAR_PATH = JAR_PATH.replace(BIN_PATH, './..')
 TMP_DIR = BIN_PATH + '/tmp'
 LOG_PATH = BIN_PATH + '/logs'
 PMC_PATH = BIN_PATH + '/pmc'
@@ -49,12 +51,8 @@ HTML_REPORTS_PATH = BIN_XML_PATH + '/app_modules/generics/reports/'
 
 
 VENV_PATH = BIN_XML_PATH + '/app_data/venv/scielo-programs'
-try:
-    if not str(THIS_LOCATION) == THIS_FILE_LOCATION:
-        VENV_PATH = '/scielo-virtualenv/venv'
-except:
+if INVALID_APP_PATH:
     VENV_PATH = '/scielo-virtualenv/venv'
-
 
 if not os.path.isdir(TMP_DIR):
     os.makedirs(TMP_DIR)
