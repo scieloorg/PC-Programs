@@ -6,14 +6,24 @@ from . import xml_utils
 from . import fs_utils
 from . import system
 
+from ..__init__ import RELATIVE_JAR_PATH
 from ..__init__ import JAR_PATH
+from ..__init__ import BIN_XML_PATH
 from ..__init__ import TMP_DIR
+from ..__init__ import INVALID_APP_PATH
+
 from . import encoding
 
 
 JAVA_PATH = 'java'
 JAR_TRANSFORM = JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = JAR_PATH + '/XMLCheck.jar'
+if INVALID_APP_PATH:
+    if not os.path.isdir(RELATIVE_JAR_PATH):
+        os.chdir(BIN_XML_PATH)
+        if os.path.isdir(RELATIVE_JAR_PATH):
+            JAR_TRANSFORM = RELATIVE_JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
+            JAR_VALIDATE = RELATIVE_JAR_PATH + '/XMLCheck.jar'
 
 
 if not os.path.isdir(TMP_DIR):
@@ -32,7 +42,6 @@ class XMLValidator(object):
         shutil.copyfile(self.xml_filename, self.alt_xml_filename)
         self.result_filename = result_filename
         self.doctype = doctype
-        # C:/Meu usu├írio/40095/scielo/bin/xml/app_modules/../../pmc/j1.0/
 
     def _setup(self):
         self.temp_result_filename = TMP_DIR + '/' + os.path.basename(self.result_filename)
