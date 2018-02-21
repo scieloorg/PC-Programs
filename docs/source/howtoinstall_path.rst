@@ -69,7 +69,7 @@ Put the cursor at the end of the line, insert the character ";" and complete wit
 
 It means, insert the character ";" and complete with the JAVA path.
 
-.. image:: img/howtoinstall_path_edit-path-insert2.jpg
+.. image:: img/installation_java.png
 
 
 .. test_requirements:

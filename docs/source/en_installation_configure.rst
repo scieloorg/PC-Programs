@@ -126,7 +126,7 @@ SciELO PC Programs Completo: Title Manager, Converter, Markup, XPM etc
     .. image:: img/installation_setup.jpg
 
 
-5. Select the programas:
+5. Select the programs:
 
   - Title Manager: program to manage journals and issues databases
   - Converter: program to load the marked documents into the database
@@ -178,18 +178,18 @@ How to configure
 XML Package Maker and XML Markup
 ================================
 
-Por padrão o programa funciona considerando acesso à Internet disponível, ausência de proxy para acesso à internet e uso do packtools como validador de estrutura de XML (em substituição ao style-checker).
+By default the program works considering Internet access available, no proxy for internet access, and use of packtools as an XML structure validator (instead of the style-checker).
 
-Para os casos em que o acesso à Internet é feito via proxy ou não há acesso acesso à internet é necessário editar o arquivo exemplo scielo_env.ini disponível em ?/bin/ com os seguintes parâmetros:
+For cases where internet access is done via proxy or there is no internet access, it is necessary to edit the example file scielo_env.ini available in ?/bin/ with the following parameters:
 
   .. code:: text
 
-    PROXY_ADDRESS=(endereço do proxy)
-    ENABLED_WEB_ACCESS=off (caso não haja acesso à internet)
-    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java (nesse caso a validação será feita preferencialmente usando a ferramenta packtools substituindo à validação no style checker, na ordem inversa usa-se o Java).
+    PROXY_ADDRESS=(proxy address)
+    ENABLED_WEB_ACCESS=off (just in case of there is no internet access)
+    XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java (in this case, the validation will be done using the packtools instead of the style-checker, for inverse order, use Java).
 
 
-Exemplo dos parâmetros preenchidos:
+Example of completed parameters:
 
   .. code::
 
@@ -217,8 +217,8 @@ Configure the environment variable BAP:
 XML Converter
 =============
 
-PDF, XML and imagens to the sitio local
----------------------------------------
+PDF, XML and imagens to the local web site
+------------------------------------------
 
 Inform to XML Converter the location of local web site in order the PDF, XML and images files be copied to the local web site. 
 Edit the file **c:\\scielo\\bin\\scielo_paths.ini**, the line:
