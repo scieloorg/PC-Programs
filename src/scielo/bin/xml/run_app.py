@@ -4,6 +4,7 @@ from app_modules.generics import encoding
 from app_modules.generics import system
 from app_modules.__init__ import appcaller
 from app_modules.__init__ import BIN_XML_PATH
+from app_modules.app.config import config
 
 
 def execute(parameters):
@@ -45,6 +46,9 @@ def main(parameters):
         from app_modules.app import xc
         xc.call_converter(argv, '1.1')
     elif parameters[1] == 'install':
+        configuration = config.Configuration()
+        proxy_info = configuration.proxy_info
+        appcaller.proxy_parameter = system.proxy_parameter(proxy_info)
         appcaller.install_virtualenv(True)
         appcaller.install_requirements()
     else:

@@ -194,9 +194,6 @@ class XMLValidator(object):
 
     def validate_doctype(self, article_xml_versions_info):
         errors = []
-        print(article_xml_versions_info.public_id,
-            article_xml_versions_info.system_id,
-            article_xml_versions_info.sps_version)
         info = self.SPS_versions.dtd_infos.get(
             article_xml_versions_info.public_id)
         if info is not None:

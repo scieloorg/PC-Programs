@@ -1,5 +1,7 @@
-4.0.095 Release 01/03/2018
-==========================
+4.0.095 Teste 20/02/2018
+========================
+- Installation with proxy
+
 - PMC
   - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
   - (bug) [2822] Remove extra files from PMC package

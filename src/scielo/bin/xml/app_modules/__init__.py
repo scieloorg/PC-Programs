@@ -3,13 +3,26 @@ import os
 
 try:
     from app_modules.app.config import app_texts
-    from app_modules.app.config import app_caller
-    from app_modules.generics import logger
-    from app_modules.generics import encoding
-except:
+except Exception as e:
+    print(e)
     from .app.config import app_texts
+
+try:
+    from app_modules.app.config import app_caller
+except Exception as e:
+    print(e)
     from .app.config import app_caller
+
+try:
+    from app_modules.generics import logger
+except Exception as e:
+    print(e)
     from .generics import logger
+
+try:
+    from app_modules.generics import encoding
+except Exception as e:
+    print(e)
     from .generics import encoding
 
 

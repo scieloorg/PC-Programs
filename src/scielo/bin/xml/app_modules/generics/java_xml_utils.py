@@ -70,13 +70,14 @@ class XMLValidator(object):
                 r = True
         else:
             result = 'ERROR: Not valid. Unknown error.\n' + self._command
+            encoding.display_message(result)
         fs_utils.write_file(self.temp_result_filename, result)
         return r
 
     def xml_validate(self):
         self._setup()
         cmd = self._command
-        system.run_command(cmd, True)
+        system.run_command(cmd)
         valid = self._is_valid()
         shutil.move(self.temp_result_filename, self.result_filename)
         ## fs_utils.write_file(self.xml_filename, self.bkp)
