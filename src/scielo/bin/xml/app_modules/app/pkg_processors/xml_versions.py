@@ -1,8 +1,21 @@
 # coding=utf-8
+import os
 
 from ...__init__ import PMC_PATH
+from ...__init__ import BIN_XML_PATH
 from ...__init__ import RELATIVE_PMC_PATH
+from ...__init__ import INVALID_APP_PATH
 from ...generics import fs_utils
+
+
+JAVA_PATH = 'java'
+_PMC_PATH = PMC_PATH
+
+if INVALID_APP_PATH:
+    if not os.path.isdir(RELATIVE_PMC_PATH):
+        os.chdir(BIN_XML_PATH)
+        if os.path.isdir(RELATIVE_PMC_PATH):
+            _PMC_PATH = RELATIVE_PMC_PATH + '/saxonb9-1-0-8j/saxon9.jar'
 
 
 DEFAULT_VERSION = '1.1'
