@@ -15,7 +15,7 @@ if INVALID_APP_PATH:
     if not os.path.isdir(RELATIVE_PMC_PATH):
         os.chdir(BIN_XML_PATH)
         if os.path.isdir(RELATIVE_PMC_PATH):
-            _PMC_PATH = RELATIVE_PMC_PATH + '/saxonb9-1-0-8j/saxon9.jar'
+            _PMC_PATH = RELATIVE_PMC_PATH
 
 
 DEFAULT_VERSION = '1.1'
@@ -34,7 +34,7 @@ XPM_FILES['scielo3.0']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['sc
 XPM_FILES['scielo3.0']['local'] = 'journalpublishing3.dtd'
 XPM_FILES['scielo3.0']['remote'] = 'https://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd'
 XPM_FILES['scielo3.0']['dtd_path'] = PMC_PATH + '/v3.0/dtd/'
-XPM_FILES['scielo3.0']['relative_dtd_path'] = RELATIVE_PMC_PATH + '/v3.0/dtd/'
+XPM_FILES['scielo3.0']['relative_dtd_path'] = _PMC_PATH + '/v3.0/dtd/'
 XPM_FILES['scielo3.0']['css'] = PMC_PATH + '/v3.0/xsl/web/plus'
 XPM_FILES['scielo3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/scielo-style/stylechecker.xsl'
 XPM_FILES['scielo3.0']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
@@ -47,7 +47,7 @@ XPM_FILES['pmc3.0']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['pmc3.
 XPM_FILES['pmc3.0']['local'] = 'journalpublishing3.dtd'
 XPM_FILES['pmc3.0']['remote'] = 'https://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd'
 XPM_FILES['pmc3.0']['dtd_path'] = PMC_PATH + '/v3.0/dtd'
-XPM_FILES['pmc3.0']['relative_dtd_path'] = RELATIVE_PMC_PATH + '/v3.0/dtd'
+XPM_FILES['pmc3.0']['relative_dtd_path'] = _PMC_PATH + '/v3.0/dtd'
 XPM_FILES['pmc3.0']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
 XPM_FILES['pmc3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
 XPM_FILES['pmc3.0']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
@@ -60,7 +60,7 @@ XPM_FILES['scielo1.0']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['sc
 XPM_FILES['scielo1.0']['local'] = 'JATS-journalpublishing1.dtd'
 XPM_FILES['scielo1.0']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.0/JATS-journalpublishing1.dtd'
 XPM_FILES['scielo1.0']['dtd_path'] = PMC_PATH + '/j1.0/dtd/jats1.0'
-XPM_FILES['scielo1.0']['relative_dtd_path'] = RELATIVE_PMC_PATH + '/j1.0/dtd/jats1.0'
+XPM_FILES['scielo1.0']['relative_dtd_path'] = _PMC_PATH + '/j1.0/dtd/jats1.0'
 XPM_FILES['scielo1.0']['css'] = XPM_FILES['scielo3.0']['css']
 XPM_FILES['scielo1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
 XPM_FILES['scielo1.0']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.13/style-reporter.xsl'
@@ -73,7 +73,7 @@ XPM_FILES['pmc1.0']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['pmc1.
 XPM_FILES['pmc1.0']['local'] = 'JATS-journalpublishing1.dtd'
 XPM_FILES['pmc1.0']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.0/JATS-journalpublishing1.dtd'
 XPM_FILES['pmc1.0']['dtd_path'] = PMC_PATH + '/j1.0/dtd/jats1.0'
-XPM_FILES['pmc1.0']['relative_dtd_path'] = RELATIVE_PMC_PATH + '/j1.0/dtd/jats1.0'
+XPM_FILES['pmc1.0']['relative_dtd_path'] = _PMC_PATH + '/j1.0/dtd/jats1.0'
 XPM_FILES['pmc1.0']['css'] = XPM_FILES['pmc3.0']['css']
 XPM_FILES['pmc1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.13/nlm-stylechecker.xsl'
 XPM_FILES['pmc1.0']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.13/style-reporter.xsl'
@@ -86,7 +86,7 @@ XPM_FILES['scielo1.1']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['sc
 XPM_FILES['scielo1.1']['local'] = 'JATS-journalpublishing1.dtd'
 XPM_FILES['scielo1.1']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd'
 XPM_FILES['scielo1.1']['dtd_path'] = PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
-XPM_FILES['scielo1.1']['relative_dtd_path'] = RELATIVE_PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
+XPM_FILES['scielo1.1']['relative_dtd_path'] = _PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
 XPM_FILES['scielo1.1']['css'] = XPM_FILES['scielo3.0']['css']
 XPM_FILES['scielo1.1']['xsl_prep_report'] = PMC_PATH + '/j1.1/xsl/scielo-style/stylechecker.xsl'
 XPM_FILES['scielo1.1']['xsl_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.15/style-reporter.xsl'
@@ -99,7 +99,7 @@ XPM_FILES['pmc1.1']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['pmc1.
 XPM_FILES['pmc1.1']['local'] = 'JATS-journalpublishing1.dtd'
 XPM_FILES['pmc1.1']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd'
 XPM_FILES['pmc1.1']['dtd_path'] = PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
-XPM_FILES['pmc1.1']['relative_dtd_path'] = RELATIVE_PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
+XPM_FILES['pmc1.1']['relative_dtd_path'] = _PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
 XPM_FILES['pmc1.1']['css'] = XPM_FILES['pmc3.0']['css']
 XPM_FILES['pmc1.1']['xsl_prep_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.15/nlm-stylechecker.xsl'
 XPM_FILES['pmc1.1']['xsl_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.15/style-reporter.xsl'

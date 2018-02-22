@@ -21,7 +21,7 @@ MIN_IMG_DPI = 300
 MIN_IMG_WIDTH = 789
 MAX_IMG_WIDTH = 2250
 MAX_IMG_HEIGHT = 2625
-IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', '.svg']
+IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', '.jpeg', '.svg']
 
 
 def is_tiff(img_filename):
