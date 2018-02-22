@@ -7,9 +7,11 @@ from ...generics import fs_utils
 from ...generics import img_utils
 
 
-SUFFIXES = ['t', 'f', 'e', 'img', 'image']
-SUFFIXES.extend(['-'+s for s in SUFFIXES])
-SUFFIXES.extend(['-', '.', '0'])
+MARKUP_SUFFIXES = ['t', 'f', 'e', 'img', 'image']
+MARKUP_SUFFIXES.extend(['-'+s for s in MARKUP_SUFFIXES])
+MARKUP_SUFFIXES.extend(['-', '.', '0'])
+
+XML_SUFFIXES = ['-', '.']
 
 
 class File(object):
@@ -49,6 +51,7 @@ class PkgArticleFiles(object):
         self._prefixes = None
         self.filename = filename
         self.path = os.path.dirname(filename)
+        self.is_mkp = self.filename.endswith('.sgm.xml') or self.path.endswith('src')
         self.basename = os.path.basename(filename)
         self.name, self.ext = os.path.splitext(self.basename)
 
@@ -75,13 +78,13 @@ class PkgArticleFiles(object):
     def prefixes(self):
         if self._prefixes is None:
             r = []
-            if self.folder.endswith('_package'):
-                self._prefixes = [self.name + '-', self.name + '.', ]
-            else:
+            SUFFIXES = XML_SUFFIXES
+            if self.is_mkp:
+                SUFFIXES = MARKUP_SUFFIXES
                 if self.basename.startswith('a') and self.basename[3:4] == 'v':
-                    r.append(self.basename[:3])
-                r.extend([self.name + suffix for suffix in SUFFIXES])
-                self._prefixes = list(set(r))
+                    r.extend([self.basename[:3] + suffix for suffix in SUFFIXES])
+            r.extend([self.name + suffix for suffix in SUFFIXES])
+            self._prefixes = list(set(r))
         return self._prefixes
 
     def find_files(self):

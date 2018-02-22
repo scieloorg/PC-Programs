@@ -220,6 +220,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
     def __init__(self, content, sgmlhtml, src_pkgfiles):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
+
         xml_utils.XMLContent.__init__(self, self.fix_begin_end(content))
 
     def fix_begin_end(self, content):
@@ -359,7 +360,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     chosen_image_origin = None
 
                     src_href, possible_href_names, alternative_id = self.find_href_file_in_folder(elem_name, elem_id, alternative_id)
-
+                    
                     new_href_value = src_href
                     if src_href is not None:
                         chosen_image_src = self.src_pkgfiles.path + '/' + src_href
@@ -368,7 +369,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     if html_href is not None:
                         if os.path.isfile(self.sgmlhtml.html_img_path + '/' + html_href):
                             chosen_image_doc = self.sgmlhtml.html_img_path + '/' + html_href
-
+                    
                     if chosen_image_src is None and chosen_image_doc is not None:
                         chosen_image_origin = 'doc'
                         new_href_value = self.sgmlhtml.xml_name + html_href.replace('image', '')
@@ -385,18 +386,25 @@ class SGMLXMLContent(xml_utils.XMLContent):
     def find_href_file_in_folder(self, elem_name, elem_id, alternative_id):
         found = []
         number, suffixes, alternative_id = get_mkp_href_data(elem_name, elem_id, alternative_id)
+
         if number != '':
-            for f in self.src_pkgfiles.related_files:
+            for f in self.src_pkgfiles.files:
                 f_name, f_ext = os.path.splitext(f)
                 suffix = f_name[len(self.src_pkgfiles.name):]
-                if f_ext in img_utils.IMG_EXTENSIONS and suffix in suffixes:
-                    found.append(f)
+                if suffix in suffixes:
+                    if f_ext in img_utils.IMG_EXTENSIONS:
+                        found.append(f)
+                    else:
+                        print('\n{}: Invalid extension ({}). Expected {}. '.format(f, f_ext, '\n '.join(img_utils.IMG_EXTENSIONS)))
         else:
-            for f in self.src_pkgfiles.related_files:
+            for f in self.src_pkgfiles.files:
                 f_name, f_ext = os.path.splitext(f)
                 suffix = f_name[len(self.src_pkgfiles.name):]
-                if f_ext in img_utils.IMG_EXTENSIONS and suffix == elem_id:
-                    found.append(f)
+                if suffix == elem_id:
+                    if f_ext in img_utils.IMG_EXTENSIONS:
+                        found.append(f)
+                    else:
+                        print('\n{}: Invalid extension ({}). Expected {}. '.format(f, f_ext, '\n '.join(img_utils.IMG_EXTENSIONS)))
 
         new_href = None if len(found) == 0 else found[0]
         return (new_href, self.src_pkgfiles.related_files, alternative_id)
