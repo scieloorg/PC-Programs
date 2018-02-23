@@ -272,7 +272,7 @@ class ArticleContentValidation(object):
         """
         results = attributes.validate_article_type_and_section(self.article.article_type, self.article.toc_section, len(self.article.abstracts) > 0)
         msg = _('The documents used to generate the bibliometric indicators must have:\na) @article-type ({}); b) contributors and their affiliations; c) own title, not similar to the table of contents title; d) citations; e) and references. ').format(_(', ').join(attributes.INDEXABLE))
-        level = validation_status.STATUS_RECOMMENDATION
+        level = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERIA
 
         errors = []
         if self.article.article_type in attributes.INDEXABLE:
@@ -288,19 +288,26 @@ class ArticleContentValidation(object):
                         _('@article-type="{}" requires: {}. ').format(
                             self.article.article_type,
                             ' ; '.join(invalid)))
-            titles = [t.title for t in self.article.titles]
-            _titles = ' / '.join([u'"{}"'.format(t) for t in titles])
-            if utils.is_similar(self.article.toc_section, titles):
-                errors.append(
-                    _('{} must not be similar to subject "{}" '.format(
-                        _titles, self.article.toc_section)))
+                titles = [t.title for t in self.article.titles]
+                _titles = ' / '.join([u'"{}"'.format(t) for t in titles])
+                if utils.is_similar(self.article.toc_section, titles):
+                    errors.append(
+                        _('{} must not be similar to the table of contents section "{}" '.format(
+                            _titles, self.article.toc_section)))
         else:
             errors.append(
                 _('@article-type="{}" is not used to generate bibliometric indicators').format(self.article.article_type))
         if len(errors) > 0:
             results.append(('@article-type', level, msg))
-            if self.is_db_generation and self.config.block_because_of_article_type:
+            if self.config.BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA:
                 level = validation_status.STATUS_BLOCKING_ERROR
+            results.append(
+                (
+                    '@article-type',
+                    level,
+                    _('This document will be rejected according to SciELO Brazil\'s criteria. ') +
+                    _('Check the criteria of the corresponding SciELO Collection. ')
+                ))
             results.append(('@article-type', level, ''.join(errors)))
         return results
 

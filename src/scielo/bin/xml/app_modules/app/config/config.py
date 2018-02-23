@@ -333,19 +333,19 @@ class Configuration(object):
 
     @property
     def is_enabled_email_service(self):
-        return self._data.get('EMAIL_SERVICE_STATUS') == 'on' and self.is_valid_email_configuration
+        return self.is_activated('EMAIL_SERVICE_STATUS') and self.is_valid_email_configuration
 
     @property
     def is_enabled_package_receipt(self):
-        return self._data.get('RECEIPT_STATUS') == 'on' and self.is_valid_package_receipt_configuration
+        return self.is_activated('RECEIPT_STATUS') and self.is_valid_package_receipt_configuration
 
     @property
     def is_enabled_gerapadrao(self):
-        return self._data.get('GERAPADRAO_STATUS') == 'on' and self.is_valid_gerapadrao_configuration
+        return self.is_activated('GERAPADRAO_STATUS') and self.is_valid_gerapadrao_configuration
 
     @property
     def is_enabled_transference(self):
-        return self._data.get('TRANSFERENCE_STATUS') == 'on' and self.is_valid_transference_configuration
+        return self.is_activated('TRANSFERENCE_STATUS') and self.is_valid_transference_configuration
 
     @property
     def is_valid_email_configuration(self):
@@ -424,7 +424,7 @@ class Configuration(object):
 
     @property
     def is_web_access_enabled(self):
-        return self._data.get('ENABLED_WEB_ACCESS', 'on') != 'off'
+        return self.is_activated('ENABLED_WEB_ACCESS')
 
     @property
     def proxy_info(self):
@@ -444,12 +444,15 @@ class Configuration(object):
 
     @property
     def coded_formula_required(self):
-        return self._data.get('CODED_FORMULA_REQUIRED', 'on') == 'on'
+        return self.is_activated('CODED_FORMULA_REQUIRED')
 
     @property
     def coded_table_required(self):
-        return self._data.get('CODED_TABLE_REQUIRED', 'on') == 'on'
+        return self.is_activated('CODED_TABLE_REQUIRED')
 
     @property
-    def block_because_of_article_type(self):
-        return self._data.get('BLOCK_NOT_INDEXABLE_DOCUMENT', 'on') == 'on'
+    def BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA(self):
+        return self.is_activated('BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA')
+
+    def is_activated(self, label, default='TRUE'):
+        return self._data.get(label, default).upper() in ['ON', 'TRUE', 'YES']
