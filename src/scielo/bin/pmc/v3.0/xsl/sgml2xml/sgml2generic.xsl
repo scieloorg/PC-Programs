@@ -1050,8 +1050,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test="institid">
 					<institution-wrap>
 						<xsl:apply-templates select="institid"></xsl:apply-templates>
-						<xsl:apply-templates select="." mode="institution"></xsl:apply-templates>
 					</institution-wrap>
+					<xsl:apply-templates select="." mode="institution"></xsl:apply-templates>
 					<xsl:apply-templates select="." mode="address"></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
