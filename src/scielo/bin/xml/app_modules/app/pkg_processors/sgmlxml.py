@@ -634,7 +634,7 @@ class SGMLXML2SPSXML(object):
                             result = mime.guess_type(url)
                         except:
                             pass
-                    result = result[0]
+                    result = result[0] or ''
                     if '/' in result:
                         m, ms = result.split('/')
                         r += [item.replace(replace, 'mimetype="{}" mime-subtype="{}"'.format(m, ms))]
