@@ -1707,6 +1707,20 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 
+	<xsl:template match="fn[@id] " mode="has-no-xref">
+		<xsl:if test="@id">
+			<xsl:variable name="id" select="@id"></xsl:variable>
+			<xsl:if test="not($xref_rid[@rid=$id])">
+				<xsl:variable name="fna"><xsl:apply-templates select="." mode="authorfn"/></xsl:variable>
+				<xsl:if test="normalize-space($fna)=''">
+					<fn-group>
+						<xsl:apply-templates select="."></xsl:apply-templates>
+					</fn-group>
+				</xsl:if>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="fngrp/fn" mode="has-no-xref">
 		<xsl:if test="@id">
 			<xsl:variable name="id" select="@id"></xsl:variable>
@@ -1732,9 +1746,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
-
+	
 	<xsl:template match="fngrp[fn]" mode="has-no-xref">
-		<xsl:variable name="test"><xsl:apply-templates select="fn" mode="has-no-xref"/></xsl:variable>
+		<xsl:variable name="test"><xsl:apply-templates select=".//fn" mode="has-no-xref"/></xsl:variable>
 		<xsl:if test="normalize-space($test)!=''">
 			<fn-group>
 				<xsl:apply-templates select="sectitle"/>
@@ -1747,6 +1761,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="otherfntest">
 			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param></xsl:apply-templates>
 			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="xmlbody//xref"></xsl:with-param></xsl:apply-templates>
+			<xsl:apply-templates select="fngrp | fn" mode="has-no-xref"></xsl:apply-templates>
 		</xsl:variable>
 		<xsl:if test="ack or normalize-space($otherfntest)!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
 			<back>
