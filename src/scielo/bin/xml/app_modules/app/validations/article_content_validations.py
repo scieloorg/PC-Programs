@@ -98,8 +98,8 @@ class AffValidator(object):
     @property
     def normalized(self):
         r = []
-        status_error = validation_status.STATUS_RECOMMENDATION
-        status_fatal_error = validation_status.STATUS_RECOMMENDATION
+        status_error = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERI
+        status_fatal_error = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERI
         if self.institutions_query_results is not None:
             norm_aff, found_institutions = self.institutions_query_results
             if norm_aff is None:
