@@ -1,4 +1,4 @@
-4.0.095 Teste 23/02/2018
+4.0.095 Teste 27/02/2018
 ========================
 - Installation with proxy
 
@@ -14,10 +14,12 @@
   - (bug) [2832] Fix getting files from src folder
   - (bug) [2841] Generates fig/alt-text and table-wrap/alt-text
   - (bug) [2847] Do not generate article-id (other), if there is DOI
-  - (new) [2849] Get mathml content from a file similar to table
   - (bug) [2867] Fix institution-id generation
   - (bug) [2874] Fix fn-group generated inner fn-group
   - (bug) [2893] Fix mimetype and mime-subtype
+  - (bug) [2911] Fix *authors use for one author
+  - (bug) [2912] Fix fn-group generation
+  - (new) [2849] Get mathml content from a file similar to table
   - (new) [2883] Insert new document types (article-types)
 
 - XC
