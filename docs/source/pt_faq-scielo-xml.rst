@@ -141,8 +141,7 @@ StyleChecker: é uma ferramenta web que fornece relatório detalhado sobre a con
 11 . SciELO disponibiliza modelos de arquivos XML compatíveis com as especificações de SciELO PS?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sim. Para receber modelos de arquivos em XML é necessário enviar e-mail para scielo@scielo.org solicitando o envio desses documentos.
-
+Não temos estes modelos disponíveis.
 
 
 Produção de XML por terceiros
