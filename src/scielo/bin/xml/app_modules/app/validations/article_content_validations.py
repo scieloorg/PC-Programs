@@ -97,6 +97,7 @@ class AffValidator(object):
 
     @property
     def normalized(self):
+        return []
         r = []
         status_error = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERIA
         status_fatal_error = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERIA
