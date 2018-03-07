@@ -89,7 +89,7 @@ class PkgArticleFiles(object):
 
     def find_files(self):
         r = []
-        files = [item for item in self.listdir if not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
+        files = [item for item in self.listdir if os.path.isfile(self.path+'/'+item) and not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
         for item in files:
             selected = [item for prefix in self.prefixes if item.startswith(prefix)]
             r.extend(selected)
