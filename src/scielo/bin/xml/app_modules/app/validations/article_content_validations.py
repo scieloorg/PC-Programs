@@ -100,6 +100,8 @@ class AffValidator(object):
         r = []
         status_error = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERIA
         status_fatal_error = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERIA
+        if self.aff.norgname is None:
+            return r
         if self.institutions_query_results is not None:
             norm_aff, found_institutions = self.institutions_query_results
             if norm_aff is None:
