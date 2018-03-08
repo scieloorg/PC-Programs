@@ -7,6 +7,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
+	
+	<xsl:output media-type="xml" indent="yes"/>
 	<xsl:variable name="pub_type"><xsl:choose>
 		<xsl:when test="node()/@ahpdate!='' and node()/@issueno='ahead'"></xsl:when>
 		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">epub-ppub</xsl:when>
@@ -17,6 +19,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="corresp" select="//corresp"/>
 	
 	<xsl:variable name="allfootnotes" select=".//*[(name()='fn' or name()='fngrp') and @fntype]"/>
+	
 	<xsl:variable name="fn_deceased" select="$allfootnotes[@fntype='deceased']"/>
 	<xsl:variable name="fn_eqcontrib" select="$allfootnotes[@fntype='equal']"/>
 	<xsl:variable name="unident_back" select="//back//unidentified"/>
@@ -1228,48 +1231,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="*" mode="other-fn-items">
-		<xsl:param name="body_xref"/>
-		<xsl:variable name="selectedfn"><xsl:apply-templates select="$allfootnotes" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates></xsl:variable>
-		<xsl:if test="$selectedfn!=''">
-			<xsl:apply-templates select="$allfootnotes" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates>
-		</xsl:if>
-	</xsl:template>
-	<!-- OTHER FOOTNOTES -->
-	<xsl:template match="fngrp[not(@fntype)]" mode="other-footnotes">
-		<xsl:param name="body_xref"/>
-		<xsl:variable name="selectedfn"><xsl:apply-templates select="fn" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates></xsl:variable>
-		<xsl:if test="$selectedfn!='' or not(fn)">
-			<fn-group>
-				<xsl:apply-templates select="sectitle"></xsl:apply-templates>
-				<xsl:apply-templates select="fn" mode="other-footnotes"><xsl:with-param name="body_xref" select="$body_xref"></xsl:with-param></xsl:apply-templates>
-				<xsl:if test="not(fn)">
-					<fn fn-type="other"><xsl:apply-templates select="text()"></xsl:apply-templates></fn>
-				</xsl:if>
-			</fn-group>
-		</xsl:if>
-	</xsl:template>	
-	<xsl:template match="fngrp[@fntype]|fn" mode="other-footnotes">
-		<xsl:param name="body_xref"/>
-		<xsl:if test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)">
-			<xsl:variable name="id" select="@id"/>
-			<xsl:if test="$body_xref[@rid=$id]">
-				<xsl:choose>
-					<xsl:when test="parent::node()[name()!='fngrp']">
-						<fn-group>
-							<xsl:apply-templates select="."/>
-						</fn-group>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select="."/>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template>
 	
 	<!-- AUTHOR FOOTNOTES -->
 	<xsl:template match="fngrp[not(@fntype)]" mode="authorfn">
+		<!--xsl:comment> fngrp[not(@fntype)], authorfn </xsl:comment-->
+		
 		<xsl:variable name="selectedfn"><xsl:apply-templates select="fn" mode="authorfn"></xsl:apply-templates></xsl:variable>
 		<xsl:if test="$selectedfn!=''">
 			<xsl:apply-templates select="fn" mode="authorfn"></xsl:apply-templates>
@@ -1277,6 +1243,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="fngrp[@fntype]|fn" mode="authorfn">
+		<!--xsl:comment> fngrp[@fntype]|fn, authorfn </xsl:comment-->
+		
 		<xsl:if test="not(contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype))">
 			<xsl:apply-templates select="."/>
 		</xsl:if>
@@ -1305,6 +1273,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="fngrp[not(fn)]|fn">		
+		<!--xsl:comment> fngrp[not(fn)]|fn </xsl:comment-->
+		
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
 			<xsl:if test="not(label) and not(@label) and @fntype='other'">
@@ -1706,91 +1676,121 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</back>
 		</xsl:if>
 	</xsl:template>
-
-	<xsl:template match="fn[@id] " mode="has-no-xref">
-		<xsl:if test="@id">
-			<xsl:variable name="id" select="@id"></xsl:variable>
-			<xsl:if test="not($xref_rid[@rid=$id])">
-				<xsl:variable name="fna"><xsl:apply-templates select="." mode="authorfn"/></xsl:variable>
-				<xsl:if test="normalize-space($fna)=''">
-					<fn-group>
-						<xsl:apply-templates select="."></xsl:apply-templates>
-					</fn-group>
-				</xsl:if>
+		
+	<xsl:template match="xref[@ref-type='fn']" mode="fn_xref_rid">
+		|<xsl:value-of select="@rid"/>|
+	</xsl:template>
+	
+	<xsl:template match="fn[@id]|fngrp[@id]" mode="exist_fn_other_with_xref">
+		<xsl:param name="id_list"></xsl:param>
+		<xsl:if test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype) or not(@fntype)">			
+			<xsl:if test="contains($id_list,concat('|',@id,'|'))">
+				<xsl:apply-templates select="."></xsl:apply-templates>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="fngrp/fn" mode="has-no-xref">
-		<xsl:if test="@id">
-			<xsl:variable name="id" select="@id"></xsl:variable>
-			<xsl:if test="not($xref_rid[@rid=$id])">
-				<xsl:variable name="fna"><xsl:apply-templates select="." mode="authorfn"/></xsl:variable>
-				<xsl:if test="normalize-space($fna)=''">
-					<xsl:apply-templates select="."></xsl:apply-templates>
-				</xsl:if>
+	<xsl:template match="fn[@id]|fngrp[@id]" mode="exist_fn_other_without_xref">
+		<xsl:param name="id_list"></xsl:param>
+		<xsl:if test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype) or not(@fntype)">			
+			<xsl:if test="not(contains($id_list,concat('|',@id,'|')))">
+				<xsl:apply-templates select="."></xsl:apply-templates>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="fngrp[@id]" mode="has-no-xref">
-		<xsl:if test="@id">
-			<xsl:variable name="id" select="@id"></xsl:variable>
-			<xsl:if test="not($xref_rid[@rid=$id])">
-				<xsl:variable name="fna"><xsl:apply-templates select="." mode="authorfn"/></xsl:variable>
-				<xsl:if test="normalize-space($fna)=''">
-					<fn-group>
-						<xsl:apply-templates select="."></xsl:apply-templates>
-					</fn-group>
-				</xsl:if>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="fngrp[fn]" mode="has-no-xref">
-		<xsl:variable name="test"><xsl:apply-templates select=".//fn" mode="has-no-xref"/></xsl:variable>
-		<xsl:if test="normalize-space($test)!=''">
+	<xsl:template match="fngrp[fn]" mode="elem_fn_other_with_xref">
+		<xsl:param name="id_list"></xsl:param>
+		<xsl:variable name="teste"><xsl:apply-templates select="fn" mode="exist_fn_other_with_xref">
+			<xsl:with-param name="id_list" select="$id_list"></xsl:with-param>
+		</xsl:apply-templates></xsl:variable>
+		<xsl:if test="normalize-space($teste)!=''">
 			<fn-group>
 				<xsl:apply-templates select="sectitle"/>
-				<xsl:apply-templates select="fn" mode="has-no-xref"></xsl:apply-templates>
+				<xsl:apply-templates select="fn" mode="exist_fn_other_with_xref">
+					<xsl:with-param name="id_list" select="$id_list"></xsl:with-param>
+				</xsl:apply-templates>
 			</fn-group>
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="fn|fngrp[@id]" mode="elem_fn_other_with_xref">
+		<xsl:param name="id_list"></xsl:param>
+		<xsl:apply-templates select="." mode="exist_fn_other_with_xref">
+			<xsl:with-param name="id_list" select="$id_list"></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="fngrp[fn]" mode="elem_fn_other_without_xref">
+		<xsl:param name="id_list"></xsl:param>
+		<xsl:variable name="teste"><xsl:apply-templates select="fn" mode="exist_fn_other_without_xref">
+			<xsl:with-param name="id_list" select="$id_list"></xsl:with-param>
+		</xsl:apply-templates></xsl:variable>
+		<xsl:if test="normalize-space($teste)!=''">
+			<fn-group>
+				<xsl:apply-templates select="sectitle"/>
+				<xsl:apply-templates select="fn" mode="exist_fn_other_without_xref">
+					<xsl:with-param name="id_list" select="$id_list"></xsl:with-param>
+				</xsl:apply-templates>
+			</fn-group>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="fn|fngrp[@id]" mode="elem_fn_other_without_xref">
+		<xsl:param name="id_list"></xsl:param>
+		<xsl:apply-templates select="." mode="exist_fn_other_without_xref">
+			<xsl:with-param name="id_list" select="$id_list"></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:template>
+		
 	<xsl:template match="doc|subdoc|docresp" mode="back">
+		<xsl:variable name="local_fn_xref_rid_list"><xsl:apply-templates select="doctitle//xref[@ref-type='fn']|xmlbody//xref[@ref-type='fn']" mode="fn_xref_rid"></xsl:apply-templates></xsl:variable>
 		<xsl:variable name="otherfntest">
-			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param></xsl:apply-templates>
-			<xsl:apply-templates select="." mode="other-fn-items"><xsl:with-param name="body_xref" select="xmlbody//xref"></xsl:with-param></xsl:apply-templates>
-			<xsl:apply-templates select="fngrp | fn" mode="has-no-xref"></xsl:apply-templates>
-		</xsl:variable>
+			<xsl:apply-templates select="fn[@id]|fngrp[@id]|fngrp/fn[@id]" mode="exist_fn_other_with_xref">
+			<xsl:with-param name="id_list"><xsl:value-of select="$local_fn_xref_rid_list"/></xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select="fn[@id]|fngrp[@id]|fngrp/fn[@id]" mode="exist_fn_other_without_xref">
+				<xsl:with-param name="id_list"><xsl:value-of select="$local_fn_xref_rid_list"/></xsl:with-param>
+			</xsl:apply-templates></xsl:variable>
+		
 		<xsl:if test="ack or normalize-space($otherfntest)!='' or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
 			<back>
 				<xsl:apply-templates select="ack"/>
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
-				<xsl:apply-templates select="." mode="other-fn-items">
-					<xsl:with-param name="body_xref" select="doctitle//xref"></xsl:with-param>
-				</xsl:apply-templates>
-				<xsl:apply-templates select="." mode="other-fn-items">
-					<xsl:with-param name="body_xref" select="xmlbody//xref"></xsl:with-param>
-				</xsl:apply-templates>
-				<xsl:apply-templates select="fngrp | fn" mode="has-no-xref"></xsl:apply-templates>
 				
+				<xsl:apply-templates select="fn|fngrp" mode="elem_fn_other_with_xref">
+					<xsl:with-param name="id_list" select="$local_fn_xref_rid_list"></xsl:with-param>
+				</xsl:apply-templates>
+				<xsl:apply-templates select="fn|fngrp" mode="elem_fn_other_without_xref">
+					<xsl:with-param name="id_list" select="$local_fn_xref_rid_list"></xsl:with-param>
+				</xsl:apply-templates>
 				<xsl:apply-templates select="glossary | appgrp"/>				
 			</back>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="back">
+		<xsl:variable name="local_fn_xref_rid_list"><xsl:apply-templates select=".//xmlbody//xref[@ref-type='fn']" mode="fn_xref_rid"></xsl:apply-templates></xsl:variable>
+		<xsl:variable name="otherfntest">
+			<xsl:apply-templates select="fn[@id]|fngrp[@id]|fngrp/fn[@id]" mode="exist_fn_other_with_xref">
+			<xsl:with-param name="id_list"><xsl:value-of select="$local_fn_xref_rid_list"/></xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select="fn[@id]|fngrp[@id]|fngrp/fn[@id]" mode="exist_fn_other_without_xref">
+				<xsl:with-param name="id_list"><xsl:value-of select="$local_fn_xref_rid_list"/></xsl:with-param>
+			</xsl:apply-templates></xsl:variable>
+
 		<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 		<xsl:apply-templates select="*[@standard]"/>
-		<xsl:apply-templates select="." mode="other-fn-items">
-			<xsl:with-param name="body_xref" select="xmlbody//xref"></xsl:with-param>
-			</xsl:apply-templates>
+
+		<xsl:apply-templates select="fn|fngrp" mode="elem_fn_other_with_xref">
+			<xsl:with-param name="id_list" select="$local_fn_xref_rid_list"></xsl:with-param>
+		</xsl:apply-templates>
+		
+		<xsl:apply-templates select="fn|fngrp" mode="elem_fn_other_without_xref">
+			<xsl:with-param name="id_list" select="$local_fn_xref_rid_list"></xsl:with-param>
+		</xsl:apply-templates>
 		<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>						
 	</xsl:template>
-	
-	
-	
 	
 	<xsl:template match="unidentified"> </xsl:template>
 
@@ -2390,11 +2390,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<!--  xsl:template match="*[contains(name(),'citat')]//title/*">
-	<xsl:comment>*[contains(name(),'citat')]//title/*,<xsl:value-of select="name()"/></xsl:comment>
-			
-		<xsl:apply-templates select="*|text()"/>
-	</xsl:template>-->
+	
 	<xsl:template match="*[contains(name(),'citat')]//title/text()">
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
@@ -3704,7 +3700,7 @@ et al.</copyright-statement>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="nographic">
-		<xsl:comment>markup: graphic is identifying a text, not a graphical element</xsl:comment>
+		<!--xsl:comment>markup: graphic is identifying a text, not a graphical element</xsl:comment-->
 		<graphic>
 			<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
 		</graphic>
@@ -3990,9 +3986,13 @@ et al.</copyright-statement>
 			
 		</license>
 	</xsl:template>
+	
 	<xsl:template match="label//bold | sectitle//bold">
+		<xsl:variable name="text1" select="normalize-space(..//text())"/>
+		<xsl:variable name="text2" select="normalize-space(text())"/>
+		
 		<xsl:choose>
-			<xsl:when test="..//text()!=.//text()">
+			<xsl:when test="$text1!=text2">
 				<bold><xsl:apply-templates select="*|text()"></xsl:apply-templates></bold>
 			</xsl:when>
 			<xsl:otherwise>
@@ -4000,7 +4000,17 @@ et al.</copyright-statement>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+
+	<xsl:template match="*[normalize-space(.//text())=normalize-space(bold)]/bold">
+				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template match="*[normalize-space(.//text())!=normalize-space(bold)]/bold">
+		<bold><xsl:apply-templates select="*|text()"></xsl:apply-templates></bold>
+	</xsl:template>
 	<xsl:template match="@ref-type[.='author-notes']">
 		<xsl:attribute name="ref-type">fn</xsl:attribute>
 	</xsl:template>
+
+	
 </xsl:stylesheet>
