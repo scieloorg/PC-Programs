@@ -19,6 +19,7 @@
   - (bug) [2893] Fix mimetype and mime-subtype
   - (bug) [2911] Fix *authors use for one author
   - (bug) [2912] Fix fn-group generation
+  - (bug) [2941] Fix generation of response from docresp
   - (new) [2849] Get mathml content from a file similar to table
   - (new) [2883] Insert new document types (article-types)
 

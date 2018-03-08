@@ -368,10 +368,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@*">
 				<xsl:with-param name="parentid" select="$parentid"></xsl:with-param>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="front">
+			<!--xsl:apply-templates select="." mode="front">
 				<xsl:with-param name="language" select="@language"/>
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
-			</xsl:apply-templates>
+			</xsl:apply-templates-->
 			<xsl:apply-templates select="." mode="front-stub">
 				<xsl:with-param name="language" select="@language"/>
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
@@ -546,7 +546,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="response | subart | docresp | subdoc"/>
 		</article>
 	</xsl:template>
-	<xsl:template match="article|text|doc|response" mode="front">
+	<xsl:template match="article|text|doc|response|docresp" mode="front">
 		<xsl:param name="language"/>
 		<front>
 			<xsl:apply-templates select="." mode="journal-meta"/>
