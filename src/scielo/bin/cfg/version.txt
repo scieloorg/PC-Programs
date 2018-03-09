@@ -1,4 +1,4 @@
-4.0.095 Teste 27/02/2018
+4.0.095 Teste 09/03/2018
 ========================
 - Installation with proxy
 
@@ -14,14 +14,16 @@
   - (bug) [2832] Fix getting files from src folder
   - (bug) [2841] Generates fig/alt-text and table-wrap/alt-text
   - (bug) [2847] Do not generate article-id (other), if there is DOI
-  - (bug) [2867] Fix institution-id generation
+  - (bug) [2867,2902] Fix institution-wrap/institution-id generation
   - (bug) [2874] Fix fn-group generated inner fn-group
   - (bug) [2893] Fix mimetype and mime-subtype
   - (bug) [2911] Fix *authors use for one author
   - (bug) [2912] Fix fn-group generation
   - (bug) [2941] Fix generation of response from docresp
+  - (bug) [2926] Fix harvesting of files from src folder when it has unexpected folder 
   - (new) [2849] Get mathml content from a file similar to table
   - (new) [2883] Insert new document types (article-types)
+  - (bug) [2920] Convert quotes to entity in normaff/@normalized attribute value
 
 - XC
   - (enhancement) [2751] Accept some differences between aop and ex aop data to exclude aop version
@@ -59,8 +61,10 @@
   - (bug) [2877] Fix bugs related to proxy
   - (bug) [2876] Do not generate the reports in htdocs 
   - (bug) [2871] Fix validation that says sps-1.7 do not accept JATS 1.0 
-  - (new) [2887] Remove fatal error message for not normalized validation  
+  - (new) [2887, 2922] Remove any error messages for normalized orgname  
   - (new) [2905] Inform that document is not according to the Collection criteria
+  - () [2927] Fix message about @article-type vs subject consistence
+  - () [2924] Relax validation on authors and references for correction and retraction articles
 
 
 4.0.094 Release 29/09/2017 | R2 03/10/2017
