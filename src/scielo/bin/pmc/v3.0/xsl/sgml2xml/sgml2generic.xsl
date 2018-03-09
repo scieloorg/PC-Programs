@@ -6,8 +6,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 -->
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util"
-	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
-	
+	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">	
 	<xsl:variable name="pub_type"><xsl:choose>
 		<xsl:when test="node()/@ahpdate!='' and node()/@issueno='ahead'"></xsl:when>
 		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">epub-ppub</xsl:when>
@@ -17,7 +16,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
 	
-	<xsl:variable name="allfootnotes" select=".//*[(name()='fn' or name()='fngrp') and @fntype]"/>	
+	<xsl:variable name="allfootnotes" select=".//*[(name()='fn' or name()='fngrp') and @fntype]"/>
 	<xsl:variable name="fn_deceased" select="$allfootnotes[@fntype='deceased']"/>
 	<xsl:variable name="fn_eqcontrib" select="$allfootnotes[@fntype='equal']"/>
 	<xsl:variable name="unident_back" select="//back//unidentified"/>
@@ -1239,8 +1238,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="fngrp[@fntype]|fn" mode="authorfn">
-		<!--xsl:comment> fngrp[@fntype]|fn, authorfn </xsl:comment-->
-		
 		<xsl:if test="not(contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype))">
 			<xsl:apply-templates select="."/>
 		</xsl:if>
@@ -1269,8 +1266,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="fngrp[not(fn)]|fn">		
-		<!--xsl:comment> fngrp[not(fn)]|fn </xsl:comment-->
-		
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
 			<xsl:if test="not(label) and not(@label) and @fntype='other'">
