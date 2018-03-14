@@ -997,9 +997,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:value-of select="onbehalf"/>
 				</on-behalf-of>
 			</xsl:if>
+			<xsl:apply-templates mode="copy-of"  select="../..//aff[@id=$author_rid]/role"/>
+			<xsl:apply-templates mode="copy-of"  select="../..//normaff[@id=$author_rid]/role"/>
 		</contrib>
-		<xsl:apply-templates mode="copy-of"  select="../..//aff[@id=$author_rid]/role"/>
-		<xsl:apply-templates mode="copy-of"  select="../..//normaff[@id=$author_rid]/role"/>
 	</xsl:template>
 	<xsl:template match="role"><role><xsl:apply-templates/></role></xsl:template>
 	<xsl:template match="corpauth" mode="front-contrib">
