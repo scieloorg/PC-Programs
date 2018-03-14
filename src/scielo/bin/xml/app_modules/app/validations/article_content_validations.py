@@ -398,6 +398,8 @@ class ArticleContentValidation(object):
                     error = True
             elif '|' + value + '|' in article_utils.MONTHS_ABBREV:
                 error = True
+            elif value.isdigit():
+                error = True
             if error:
                 expected = _('initial month and final month must be separated by hyphen. E.g.: Jan-Feb. Expected values for the months: {months}. ').format(months=article_utils.MONTHS_ABBREV.replace('|', ' '))
                 msg = data_validations.invalid_value_message('season', value, expected)
