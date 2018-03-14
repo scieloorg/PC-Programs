@@ -3090,13 +3090,13 @@ et al.</copyright-statement>
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="figgrps/figgrp/caption">
+	<!--xsl:template match="figgrps/figgrp/caption">
 		<caption>
 			<p>
 				<xsl:apply-templates select="@*| * | text()"/>
 			</p>
 		</caption>
-	</xsl:template>
+	</xsl:template-->
 	<xsl:template match="*" mode="norm-abbrev-month">
 		<xsl:param name="date"/>
 		<xsl:param name="month_number"/>
