@@ -3548,7 +3548,7 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="*|text()"/>
 		</supplementary-material>
 	</xsl:template>
-	<xsl:template match="p/supplmat">
+	<xsl:template match="p/supplmat | caption//supplmat">
 		<inline-supplementary-material xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
 			<xsl:apply-templates select="*|text()"/>
 		</inline-supplementary-material>
