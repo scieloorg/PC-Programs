@@ -29,6 +29,9 @@
   - (bug) [2945] Fix generation of title-group/alt-title
   - (bug) [2938] Fix generation of aff/role
   - (bug) [2955] Fix generation of sig-block
+  - (bug) [2948] Fix generation of caption//inline-formula
+  - (bug) [2960] Fix generation of caption//inline-supplementary-material
+
 
 - XC
   - (enhancement) [2751] Accept some differences between aop and ex aop data to exclude aop version
