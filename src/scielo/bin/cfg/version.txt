@@ -27,6 +27,8 @@
   - (bug) [2954] Generation of graphic/alt-text
   - (bug) [2946] Fix identification of figgrps/@id and caption/title generation
   - (bug) [2945] Fix generation of title-group/alt-title
+  - (bug) [2938] Fix generation of aff/role
+
 
 - XC
   - (enhancement) [2751] Accept some differences between aop and ex aop data to exclude aop version
