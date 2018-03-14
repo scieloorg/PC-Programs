@@ -439,12 +439,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</sig-block>
 	</xsl:template>
 	
+	<xsl:template match="sigblock//role">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
 	<xsl:template match="role" mode="sig-block">
 	</xsl:template>
 	
 	<xsl:template match="sig" mode="sig-block">
 		<xsl:element name="{name()}">
-			<xsl:apply-templates select=".//text()"/><xsl:if test="../role"><break/><xsl:apply-templates select="../role"/></xsl:if>
+			<xsl:apply-templates select=".//text()"/><xsl:if test="..//role"><break/><xsl:apply-templates select="..//role"/></xsl:if>
 		</xsl:element>
 	</xsl:template>
 	
