@@ -71,6 +71,7 @@
   - () [2927] Fix message about @article-type vs subject consistence
   - () [2924] Relax validation on authors and references for correction and retraction articles
   - (bug) [2957] Validate season must not be number
+  - (bug) [2921] SPS-1.8 não está sendo aceita
 
 
 4.0.094 Release 29/09/2017 | R2 03/10/2017
