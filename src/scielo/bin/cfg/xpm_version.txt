@@ -32,6 +32,7 @@
   - (new) [2905] Inform that document is not according to the Collection criteria
   - () [2927] Fix message about @article-type vs subject consistence
   - () [2924] Relax validation on authors and references for correction and retraction articles
+  - (bug) [2957] Validate season must not be number
 
 - PMC
   - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"

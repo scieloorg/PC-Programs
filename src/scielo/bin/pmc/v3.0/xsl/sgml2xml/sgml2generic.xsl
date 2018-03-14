@@ -455,16 +455,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="issn">
+		<xsl:variable name="issn"><xsl:value-of select="normalize-space(.)"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test="string-length(.)=9 and substring(.,5,1)='-'">
-				<issn><xsl:value-of select="normalize-space(.)"/></issn>
+			<xsl:when test="string-length($issn)=9 and substring($issn,5,1)='-'">
+				<issn><xsl:value-of select="$issn"/></issn>
 			</xsl:when>
-			<xsl:when test="contains(.,'PMID:')">
+			<xsl:when test="contains($issn,'PMID:')">
 				<pub-id pub-id-type="pmid">
-					<xsl:value-of select="substring-after(., 'PMID:')"/>
+					<xsl:value-of select="substring-after($issn, 'PMID:')"/>
 				</pub-id>
 			</xsl:when>
-			<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
+			<xsl:otherwise><xsl:value-of select="$issn"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
@@ -2918,7 +2919,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test="../@filename"><xsl:value-of select="../@filename"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="@href"/></xsl:otherwise>
 			</xsl:choose></xsl:attribute>
-			<xsl:apply-templates select="cpright | licinfo"/>
+			<!-- cpright, licinfo, alttext -->
+			<xsl:apply-templates select="*"/>
 		</graphic>
 	</xsl:template>
 	
