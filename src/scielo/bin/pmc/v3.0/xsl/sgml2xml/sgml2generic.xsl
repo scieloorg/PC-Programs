@@ -2918,7 +2918,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test="../@filename"><xsl:value-of select="../@filename"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="@href"/></xsl:otherwise>
 			</xsl:choose></xsl:attribute>
-			<xsl:apply-templates select="cpright | licinfo"/>
+			<!-- cpright, licinfo, alttext -->
+			<xsl:apply-templates select="*"/>
 		</graphic>
 	</xsl:template>
 	

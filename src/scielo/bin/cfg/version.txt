@@ -1,4 +1,4 @@
-4.0.095 Teste 09/03/2018
+4.0.095 Teste 14/03/2018
 ========================
 - Installation with proxy
 
@@ -24,6 +24,7 @@
   - (new) [2849] Get mathml content from a file similar to table
   - (new) [2883] Insert new document types (article-types)
   - (bug) [2920] Convert quotes to entity in normaff/@normalized attribute value
+  - (bug) [2954] Generation of graphic/alt-text
 
 - XC
   - (enhancement) [2751] Accept some differences between aop and ex aop data to exclude aop version
