@@ -49,7 +49,7 @@
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
-	
+	<xsl:template match="@dtd-version"></xsl:template>
 	<xsl:template match="sub-article[@article-type='translation']">
 	</xsl:template>
 	
