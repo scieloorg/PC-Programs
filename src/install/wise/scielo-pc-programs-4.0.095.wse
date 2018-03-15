@@ -1443,6 +1443,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\ws_proxy_gui.py
+  Destination=%PROGDIR%\bin\xml\app_modules\generics\ws\ws_proxy_gui.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\app_modules\generics\ws\ws_proxy.py
   Destination=%PROGDIR%\bin\xml\app_modules\generics\ws\ws_proxy.py
   Flags=0000000010000010
