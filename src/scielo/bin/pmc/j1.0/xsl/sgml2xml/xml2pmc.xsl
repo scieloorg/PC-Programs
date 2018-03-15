@@ -5,4 +5,6 @@
 	
 	<xsl:include href="../../../v3.0/xsl/sgml2xml/xml2pmc.xsl"/>
 	<xsl:template match="article/@specific-use"/>
+	<xsl:template match="@dtd-version"></xsl:template>
+	
 </xsl:stylesheet>
