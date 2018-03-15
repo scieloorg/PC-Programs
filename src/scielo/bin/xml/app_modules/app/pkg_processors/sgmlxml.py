@@ -306,7 +306,8 @@ class SGMLXMLContent(xml_utils.XMLContent):
     def insert_xhtml_content(self):
         if '<xhtml' in self.content:
             new = []
-            for item in self.content.replace('<xhtml', 'BREAKXHTML<xhtml').split('BREAKXHTML'):
+            for item in self.content.replace(
+                '<xhtml', 'BREAKXHTML<xhtml').split('BREAKXHTML'):
                 if item.startswith('<xhtml'):
                     xhtml = item
                     if '</xhtml>' in xhtml:
@@ -318,16 +319,11 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     xhtml_content = ''
                     if href != '':
                         if os.path.isfile(self.src_pkgfiles.path + '/' + href):
-                            xhtml_content = fs_utils.read_file(self.src_pkgfiles.path + '/' + href)
-                            if '</body>' in xhtml_content and '<body ' in xhtml_content:
-                                body = xhtml_content[xhtml_content.find('<body ')+1:xhtml_content.rfind('</body>')].strip()
-                                body = body[body.find('<'):].strip()
-                                if body.startswith('<table') and body.endswith('</table>'):
-                                    item = item.replace(xhtml, '<xhtmltable>' + body + '</xhtmltable>')
-                                elif body.startswith('<math') and body.endswith('</math>'):
-                                    item = item.replace(xhtml, '<mmlmath>' + body + '</mmlmath>')
-                                elif body.startswith('<mml:math') and body.endswith('</mml:math>'):
-                                    item = item.replace(xhtml, '<mmlmath>' + body + '</mmlmath>')
+                            xhtml_content = fs_utils.read_file(
+                                self.src_pkgfiles.path + '/' + href)
+                            body = html_body(xhtml_content)
+                            if body is not None:
+                                item = item.replace(xhtml, body)
                 new.append(item)
             self.content = ''.join(new)
 
@@ -776,3 +772,22 @@ def href_attach_type(parent_tag, tag):
     else:
         attach_type = 'g'
     return attach_type
+
+
+def html_body(xhtml_content):
+    if '</body>' in xhtml_content and '<body' in xhtml_content:
+        body = xhtml_content[xhtml_content.find('<body'):xhtml_content.rfind('</body>')]
+        xhtml = {'table': 'xhtmltable', 'math': 'mmlmath', 'mml:math': 'mmlmath'}
+        tags = ['table', 'math', 'mml:math']
+        p_items = [body.find('<{}'.format(tag)) for tag in tags]
+        p_min = min([item for item in p_items if item >= 0])
+
+        if p_min >= 0:
+            body = body[p_min:]
+            tag = body[1:body.find('>')]
+            if ' ' in tag:
+                tag = tag[:tag.find(' ')]
+            close_tag = u'</{}>'.format(tag)
+            if close_tag in body:
+                body = body[:body.rfind(close_tag)+len(close_tag)]
+                return u'<{}>'.format(xhtml[tag]) + body + u'</{}>'.format(xhtml[tag])
