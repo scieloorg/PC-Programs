@@ -31,7 +31,7 @@ class VirtualEnv(object):
         self.path = venv_path
         self.requirements = requirements
         self.setUp()
-        self.proxy_parameter = None
+        self.proxy_data = None
 
     def setUp(self):
         if 'windows' in so:
@@ -48,41 +48,44 @@ class VirtualEnv(object):
             self.activate_command = ''
             self.deactivate_command = ''
 
+    def omit_password(self, cmd):
+        if self.proxy_data is not None:
+            username, password, proxy_info = self.proxy_data
+            return cmd.replace(
+                ':{}@'.format(password), ':{}@'.format('*'*len(password)))
+
+    @property
+    def proxy_parameter(self):
+        if self.proxy_data is not None:
+            return proxy_parameter(self.proxy_data)
+
     @property
     def installed(self):
-        return os.path.isfile(self.activate_filename)
+        status = os.path.isfile(self.activate_filename)
+        if status is False:
+            inform(u'Missing virtualenv: "{}"'.format(self.activate_filename))
+        return status
 
     def install_venv(self):
-        self.proxy_parameter = self.proxy_parameter or ''
         if self.path is not None:
             if not self.installed:
                 commands = []
                 commands.append('python -m pip install {} --upgrade pip'.format(self.proxy_parameter))
                 commands.append('pip install {} virtualenv'.format(self.proxy_parameter))
                 commands.append(u'virtualenv "{}"'.format(self.path))
-                if self.proxy_parameter == '':
-                    for cmd in commands:
-                        system.run_command(cmd)
-
-                    if self.installed:
-                        inform(u'CREATED virtualenv: {}'.format(self.path))
-                    else:
-                        inform(u'Unable to find: "{}"'.format(self.activate_filename))
-                        inform(u'Unable to create the virtualenv: "{}"'.format(self.path))
-                        inform('Install the programs in a path which does not have diacritics')
+                for cmd in commands:
+                    system.run_command(cmd)
+                if self.installed:
+                    inform(u'CREATED virtualenv: {}'.format(self.path))
                 else:
-                    ask_to_execute(commands)
+                    inform(u'Unable to find: "{}"'.format(self.activate_filename))
+                    inform(u'Unable to create the virtualenv: "{}"'.format(self.path))
+                    inform('Install the programs in a path which does not have diacritics')
 
     def install_requirements(self):
-        if self.installed:
-            commands = self.requirements.install_commands(
-                uninstall=True, proxy_parameter=self.proxy_parameter)
-            if self.proxy_parameter == '':
-                self.execute(commands)
-            else:
-                ask_to_execute(commands)
-        else:
-            inform(u'Missing virtualenv: "{}"'.format(self.activate_filename))
+        commands = self.requirements.install_commands(
+                uninstall=True, proxy_data=self.proxy_data)
+        self.execute(commands)
 
     def execute(self, commands):
         self.install_venv()
@@ -90,28 +93,25 @@ class VirtualEnv(object):
             _commands = [self.activate_command]
             _commands.extend(commands)
             self._execute_inline(_commands)
-        else:
-            inform(u'Missing virtualenv: "{}"'.format(self.activate_filename))
 
     def _execute_inline(self, commands):
         _commands = [item for item in commands if len(item) > 0]
         cmd = self.sep.join(_commands)
-        #if 'windows' in so:
-        #    cmd = cmd.replace('/', '\\')
-        self.logger.info(cmd)
-        system.run_command(cmd, True)
+
+        display_cmd = cmd
+        if self.proxy_data is not None:
+            display_cmd = self.omit_password(cmd)
+            encoding.display_message(display_cmd)
+        self.logger.info(display_cmd)
+        system.run_command(cmd, self.proxy_data is None)
 
     def activate(self):
         if self.installed:
             system.run_command(self.activate_command, True)
-        else:
-            inform(u'Missing virtualenv: "{}"'.format(self.activate_filename))
 
     def deactivate(self):
         if self.installed:
             system.run_command(self.deactivate_command, True)
-        else:
-            inform(u'Missing virtualenv: "{}"'.format(self.activate_filename))
 
 
 class Requirements(object):
@@ -119,13 +119,26 @@ class Requirements(object):
     def __init__(self, requirements_file):
         self.requirements_file = requirements_file
 
-    def install_commands(self, uninstall=True, proxy_parameter=None):
+    def register_proxy(self, proxy_data):
+        commands = []
+        if proxy_data is not None:
+            username, password, proxy = proxy_data
+            proxy_info = '{}:{}@{}'.format(username, password, proxy)
+            command = 'set'
+            if 'windows' not in so:
+                command = 'export'
+            commands.append('{} http=http://{}'.format(command, proxy_info))
+            commands.append('{} https=https://{}'.format(command, proxy_info))
+        return commands
+
+    def install_commands(self, uninstall=True, proxy_data=None):
         commands = []
         if uninstall is True:
             commands = self.uninstall_commands()
+        commands.extend(self.register_proxy(proxy_data))
         commands.append('pip freeze > req_i1.txt')
-        proxy_parameter = proxy_parameter or ''
-        commands.append(u'pip install {} -r "{}"'.format(proxy_parameter, self.requirements_file))
+        commands.append(u'pip install {} -r "{}"'.format(
+            proxy_parameter(proxy_data), self.requirements_file))
         commands.append('pip freeze > req_i2.txt')
         return commands
 
@@ -143,12 +156,12 @@ class AppCaller(object):
         self.venv = VirtualEnv(logger, venv_path, Requirements(req_file))
 
     @property
-    def proxy_parameter(self):
-        return self.venv.proxy_parameter
+    def proxy_data(self):
+        return self.venv.proxy_data
 
-    @proxy_parameter.setter
-    def proxy_parameter(self, value):
-        self.venv.proxy_parameter = value or ''
+    @proxy_data.setter
+    def proxy_data(self, value):
+        self.venv.proxy_data = value
 
     def install_virtualenv(self, recreate=False):
         inform('Install virtualenv')
@@ -164,3 +177,12 @@ class AppCaller(object):
 
     def execute(self, commands):
         self.venv.execute(commands)
+
+
+def proxy_parameter(proxy_data):
+    if proxy_data is not None:
+        username, password, proxy_info = proxy_data
+        return '--proxy="{}:{}@http://{}"'.format(
+                username, password, proxy_info
+            )
+    return ''

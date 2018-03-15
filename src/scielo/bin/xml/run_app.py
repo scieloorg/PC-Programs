@@ -48,7 +48,7 @@ def main(parameters):
     elif parameters[1] == 'install':
         configuration = config.Configuration()
         proxy_info = configuration.proxy_info
-        appcaller.proxy_parameter = system.proxy_parameter(proxy_info)
+        appcaller.proxy_data = system.proxy_data(proxy_info)
         appcaller.install_virtualenv(True)
         appcaller.install_requirements()
     else:

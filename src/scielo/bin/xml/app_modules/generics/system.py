@@ -23,23 +23,19 @@ def format_command(command, params=None):
 
 def run_command(command, display=False):
     display_command = command
-    proxy_parameter = command_proxy_parameter(command)
-    if len(proxy_parameter) > 0:
-        encoding.display_message('\nDo you use Proxy, please, execute:\n{}'.format(command))
-    else:
-        if display is True:
-            try:
-                encoding.display_message(u'Running:\n {}'.format(command))
-            except Exception as e:
-                pass
-
+    if display is True:
         try:
-
-            os.system(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING))
-            if display is True:
-                encoding.display_message('...done')
+            encoding.display_message(u'Running:\n {}'.format(command))
         except Exception as e:
-            encoding.report_exception('system.run_command()', e, display_command)
+            pass
+
+    try:
+
+        os.system(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING))
+        if display is True:
+            encoding.display_message('...done')
+    except Exception as e:
+        encoding.report_exception('system.run_command()', e, display_command)
 
 
 def input_password():
@@ -51,7 +47,7 @@ def proxy_parameter(proxy_info):
     proxy = ''
     if proxy_info is not None:
         resp = read_input('Do you use proxy for Internet access ({})? Y/N '.format(proxy_info))
-        if resp == 'Y':
+        if resp in 'Yy':
             username = read_input('Inform proxy Username: ')
             password = input_password()
             proxy = '--proxy="{}:{}@http://{}"'.format(
@@ -59,6 +55,21 @@ def proxy_parameter(proxy_info):
                 password,
                 proxy_info
                 )
+    return proxy
+
+
+def proxy_data(proxy_info):
+    proxy = None
+    if proxy_info is not None:
+        resp = read_input('Do you use proxy for Internet access ({})? Y/N '.format(proxy_info))
+        if resp in 'Yy':
+            username = read_input('Inform proxy Username: ')
+            password = input_password()
+            proxy = [
+                username,
+                password,
+                proxy_info
+            ]
     return proxy
 
 
