@@ -24,40 +24,66 @@ def inform(msg):
     print('')
 
 
+class ProxyInfo(object):
+
+    def __init__(self, proxy_data):
+        self.username = None
+        self.password = None
+        self.server_port = None
+        if proxy_data is not None:
+            self.username, self.password, self.server_port = proxy_data
+
+    @property
+    def parameter(self):
+        if all([self.username, self.password, self.server_port]) is True:
+            return '--proxy="{}:{}@http://{}"'.format(
+                    self.username, self.password, self.server_port
+                )
+        return ''
+
+    def ommit_password(self, cmd):
+        if self.password is not None:
+            return cmd.replace(
+                ':{}@'.format(self.password),
+                ':{}@'.format('*'*len(self.password)))
+        return cmd
+
+    @property
+    def register_commands(self):
+        commands = []
+        if all([self.username, self.password, self.server_port]) is True:
+            proxy_info = '{}:{}@{}'.format(self.username, self.password, self.proxy)
+            command = 'set'
+            if 'windows' not in so:
+                command = 'export'
+            commands.append('{} http=http://{}'.format(command, proxy_info))
+            commands.append('{} https=https://{}'.format(command, proxy_info))
+        return commands
+
+
 class VirtualEnv(object):
 
-    def __init__(self, logger, venv_path, requirements):
+    def __init__(self, logger, venv_path, requirements_filename):
         self.logger = logger
         self.path = venv_path
-        self.requirements = requirements
+        self.requirements = Requirements(requirements_filename)
+        self.proxy = None
         self.setUp()
-        self.proxy_data = None
 
     def setUp(self):
         if 'windows' in so:
             self.activate_filename = u'{}/Scripts/activate.bat'.format(self.path)
-            self.activate_command = u'call "{}/Scripts/activate.bat"'.format(self.path)
+            self.activate_command = u'call "{}"'.format(self.activate_filename)
             self.deactivate_command = u'call "{}/Scripts/deactivate.bat"'.format(self.path)
             self.sep = ' & '
         else:
             self.activate_filename = u'{}/bin/activate'.format(self.path)
-            self.activate_command = u'source "{}/bin/activate"'.format(self.path)
+            self.activate_command = u'source "{}"'.format(self.activate_filename)
             self.deactivate_command = 'deactivate'
             self.sep = ';'
         if self.path is None or not os.path.isdir(self.path):
             self.activate_command = ''
             self.deactivate_command = ''
-
-    def omit_password(self, cmd):
-        if self.proxy_data is not None:
-            username, password, proxy_info = self.proxy_data
-            return cmd.replace(
-                ':{}@'.format(password), ':{}@'.format('*'*len(password)))
-
-    @property
-    def proxy_parameter(self):
-        if self.proxy_data is not None:
-            return proxy_parameter(self.proxy_data)
 
     @property
     def installed(self):
@@ -70,11 +96,18 @@ class VirtualEnv(object):
         if self.path is not None:
             if not self.installed:
                 commands = []
-                commands.append('python -m pip install {} --upgrade pip'.format(self.proxy_parameter))
-                commands.append('pip install {} virtualenv'.format(self.proxy_parameter))
+                commands.extend(self.proxy.register_commands)
+                commands.append(
+                    'python -m pip install {} --upgrade pip'.format(
+                        self.proxy.parameter)
+                    )
+                commands.append(
+                    'pip install {} virtualenv'.format(self.proxy.parameter)
+                    )
                 commands.append(u'virtualenv "{}"'.format(self.path))
                 for cmd in commands:
                     system.run_command(cmd)
+
                 if self.installed:
                     inform(u'CREATED virtualenv: {}'.format(self.path))
                 else:
@@ -84,10 +117,11 @@ class VirtualEnv(object):
 
     def install_requirements(self):
         commands = self.requirements.install_commands(
-                uninstall=True, proxy_data=self.proxy_data)
-        self.execute(commands)
+                self.proxy,
+                uninstall=True)
+        self.execute_in_virtualenv(commands)
 
-    def execute(self, commands):
+    def execute_in_virtualenv(self, commands):
         self.install_venv()
         if self.installed:
             _commands = [self.activate_command]
@@ -97,13 +131,10 @@ class VirtualEnv(object):
     def _execute_inline(self, commands):
         _commands = [item for item in commands if len(item) > 0]
         cmd = self.sep.join(_commands)
-
-        display_cmd = cmd
-        if self.proxy_data is not None:
-            display_cmd = self.omit_password(cmd)
-            encoding.display_message(display_cmd)
+        display_cmd = self.proxy.ommit_passord(cmd)
+        encoding.display_message(display_cmd)
         self.logger.info(display_cmd)
-        system.run_command(cmd, self.proxy_data is None)
+        system.run_command(cmd, False)
 
     def activate(self):
         if self.installed:
@@ -119,49 +150,34 @@ class Requirements(object):
     def __init__(self, requirements_file):
         self.requirements_file = requirements_file
 
-    def register_proxy(self, proxy_data):
-        commands = []
-        if proxy_data is not None:
-            username, password, proxy = proxy_data
-            proxy_info = '{}:{}@{}'.format(username, password, proxy)
-            command = 'set'
-            if 'windows' not in so:
-                command = 'export'
-            commands.append('{} http=http://{}'.format(command, proxy_info))
-            commands.append('{} https=https://{}'.format(command, proxy_info))
-        return commands
-
-    def install_commands(self, uninstall=True, proxy_data=None):
+    def install_commands(self, proxy, uninstall):
         commands = []
         if uninstall is True:
             commands = self.uninstall_commands()
-        commands.extend(self.register_proxy(proxy_data))
-        commands.append('pip freeze > req_i1.txt')
+        commands.extend(proxy.register_commands)
         commands.append(u'pip install {} -r "{}"'.format(
-            proxy_parameter(proxy_data), self.requirements_file))
-        commands.append('pip freeze > req_i2.txt')
+            proxy.parameter, self.requirements_file))
+        commands.append('pip freeze > requirements_installed.txt')
         return commands
 
     def uninstall_commands(self):
         commands = []
-        commands.append('pip freeze > req_u1.txt')
         commands.append(u'pip uninstall -r "{}" -y'.format(self.requirements_file))
-        commands.append('pip freeze > req_u2.txt')
         return commands
 
 
 class AppCaller(object):
 
     def __init__(self, logger, venv_path, req_file):
-        self.venv = VirtualEnv(logger, venv_path, Requirements(req_file))
+        self.venv = VirtualEnv(logger, venv_path, req_file)
 
     @property
-    def proxy_data(self):
-        return self.venv.proxy_data
+    def proxy(self):
+        return self.venv.proxy
 
-    @proxy_data.setter
-    def proxy_data(self, value):
-        self.venv.proxy_data = value
+    @proxy.setter
+    def proxy(self, value):
+        self.venv.proxy = value
 
     def install_virtualenv(self, recreate=False):
         inform('Install virtualenv')
@@ -176,13 +192,4 @@ class AppCaller(object):
         #inform('Install Requirements: done!')
 
     def execute(self, commands):
-        self.venv.execute(commands)
-
-
-def proxy_parameter(proxy_data):
-    if proxy_data is not None:
-        username, password, proxy_info = proxy_data
-        return '--proxy="{}:{}@http://{}"'.format(
-                username, password, proxy_info
-            )
-    return ''
+        self.venv.execute_in_virtualenv(commands)
