@@ -41,7 +41,7 @@ class ProxyInfo(object):
                 )
         return ''
 
-    def ommit_password(self, cmd):
+    def hide_password(self, cmd):
         if self.password is not None:
             return cmd.replace(
                 ':{}@'.format(self.password),
@@ -52,7 +52,8 @@ class ProxyInfo(object):
     def register_commands(self):
         commands = []
         if all([self.username, self.password, self.server_port]) is True:
-            proxy_info = '{}:{}@{}'.format(self.username, self.password, self.proxy)
+            proxy_info = '{}:{}@{}'.format(
+                self.username, self.password, self.server_port)
             command = 'set'
             if 'windows' not in so:
                 command = 'export'
@@ -67,7 +68,7 @@ class VirtualEnv(object):
         self.logger = logger
         self.path = venv_path
         self.requirements = Requirements(requirements_filename)
-        self.proxy = None
+        self.proxy = ProxyInfo(None)
         self.setUp()
 
     def setUp(self):
@@ -106,8 +107,10 @@ class VirtualEnv(object):
                     )
                 commands.append(u'virtualenv "{}"'.format(self.path))
                 for cmd in commands:
-                    system.run_command(cmd)
-
+                    if 'teste' in self.proxy.parameter:
+                        encoding.display_message('Executaria\n  {}'.format(cmd))
+                    else:
+                        system.run_command(cmd)
                 if self.installed:
                     inform(u'CREATED virtualenv: {}'.format(self.path))
                 else:
@@ -131,10 +134,13 @@ class VirtualEnv(object):
     def _execute_inline(self, commands):
         _commands = [item for item in commands if len(item) > 0]
         cmd = self.sep.join(_commands)
-        display_cmd = self.proxy.ommit_passord(cmd)
-        encoding.display_message(display_cmd)
+        display_cmd = self.proxy.hide_password(cmd)
         self.logger.info(display_cmd)
-        system.run_command(cmd, False)
+        if 'teste' in cmd:
+            encoding.display_message('Executaria\n  {}'.format(cmd))
+        else:
+            encoding.display_message(display_cmd)
+            system.run_command(cmd, False)
 
     def activate(self):
         if self.installed:
@@ -157,12 +163,13 @@ class Requirements(object):
         commands.extend(proxy.register_commands)
         commands.append(u'pip install {} -r "{}"'.format(
             proxy.parameter, self.requirements_file))
-        commands.append('pip freeze > requirements_installed.txt')
+        commands.append('pip freeze > python_libraries_installed.txt')
         return commands
 
     def uninstall_commands(self):
         commands = []
-        commands.append(u'pip uninstall -r "{}" -y'.format(self.requirements_file))
+        commands.append(
+            u'pip uninstall -r "{}" -y'.format(self.requirements_file))
         return commands
 
 
@@ -177,7 +184,7 @@ class AppCaller(object):
 
     @proxy.setter
     def proxy(self, value):
-        self.venv.proxy = value
+        self.venv.proxy = ProxyInfo(value)
 
     def install_virtualenv(self, recreate=False):
         inform('Install virtualenv')
