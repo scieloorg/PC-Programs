@@ -277,7 +277,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
             for item in self.content.replace('<', '~BREAK~<').split('~BREAK~'):
                 if u'“' in item or u'”' in item and item.startswith('<'):
                     elem = item[:item.find('>')]
-                    new = elem.replace(u'“', '"').replace(u'”', '"')
+                    new = elem.replace(u'"“', '"').replace(u'”"', '"').replace(u'“"', '"').replace(u'"”', '"').replace(u'“', '"').replace(u'”', '"')
                     item = item.replace(elem, new)
                 items.append(item)
             self.content = ''.join(items)
