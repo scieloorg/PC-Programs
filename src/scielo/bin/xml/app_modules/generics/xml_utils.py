@@ -295,8 +295,8 @@ def preserve_xml_entities(content):
         content = content.replace('&#x3E;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&#x26;', '<REPLACEENT>amp</REPLACEENT>')
 
-        content = content.replace('&quot;', '<REPLACEENT>quot</REPLACEENT>')
-        content = content.replace('&#34;', '<REPLACEENT>quot</REPLACEENT>')
+        #content = content.replace('&quot;', '<REPLACEENT>quot</REPLACEENT>')
+        #content = content.replace('&#34;', '<REPLACEENT>quot</REPLACEENT>')
         content = content.replace('&#60;', '<REPLACEENT>lt</REPLACEENT>')
         content = content.replace('&#62;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&#38;', '<REPLACEENT>amp</REPLACEENT>')
@@ -379,7 +379,7 @@ def restore_xml_entities(content):
         content = content.replace('<REPLACEENT>gt</REPLACEENT>', '&gt;')
         content = content.replace('<REPLACEENT>lt</REPLACEENT>', '&lt;')
         content = content.replace('<REPLACEENT>amp</REPLACEENT>', '&amp;')
-        content = content.replace('<REPLACEENT>quot</REPLACEENT>', '&#34;')
+        #content = content.replace('<REPLACEENT>quot</REPLACEENT>', '&#34;')
     return content
 
 
