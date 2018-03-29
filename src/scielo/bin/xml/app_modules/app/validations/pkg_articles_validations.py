@@ -70,8 +70,19 @@ class PkgArticlesValidationsReports(object):
         return report.content
 
     @property
+    def validations(self):
+        _validations = self.pkg_articles_validations.values()
+        _validations.append(self.pkg_issue_validations)
+        _validations.append(self.pkg_journal_validations)
+        return _validations
+
+    @property
     def fatal_errors(self):
-        return sum([v.fatal_errors for v in self.pkg_articles_validations.values()])
+        return sum([v.fatal_errors for v in self.validations])
+
+    @property
+    def blocking_errors(self):
+        return sum([v.blocking_errors for v in self.validations])
 
 
 class PackageReports(object):
