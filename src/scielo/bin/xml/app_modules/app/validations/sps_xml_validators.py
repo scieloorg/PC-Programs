@@ -60,8 +60,14 @@ class PackToolsValidator(object):
             self.annotate_errors()
         except (packtools.etree.XMLSyntaxError, exceptions.XMLDoctypeError,
                 exceptions.XMLSPSVersionError) as e:
-            ERR_MESSAGE = "Something went wrong while working on {filename}: {details}."
-            self.annoted = ERR_MESSAGE.format(filename=xml_filename, details=e)
+            try:
+                ERR_MESSAGE = "Something went wrong while working on {filename}: {details}."
+                self.annoted = ERR_MESSAGE.format(filename=xml_filename, details=e)
+            except:
+                ERR_MESSAGE = "Something went wrong while working on {filename}."
+                self.annoted = ERR_MESSAGE.format(filename=xml_filename)
+                print(e)
+
 
     def annotate_errors(self):
         if self.annoted is None:

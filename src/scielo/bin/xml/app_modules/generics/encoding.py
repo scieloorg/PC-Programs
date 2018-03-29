@@ -94,7 +94,7 @@ def report_exception(function_name, e, data):
     except:
         pass
     try:
-        app_logger.info(data)
+        app_logger.info(encode(data))
     except:
         app_logger.info('EXCEPTION at report_exception()')
         app_logger.info(e)
