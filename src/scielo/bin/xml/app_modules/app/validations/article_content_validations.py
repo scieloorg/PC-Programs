@@ -717,7 +717,7 @@ class ArticleContentValidation(object):
             msg = _('Remove elocation-id. Use only fpage and lpage ({}). '.format(msg))
             return (label, status, msg)
         elif any(pages) is False:
-            status = validation_status.STATUS_ERROR
+            status = validation_status.STATUS_FATAL_ERROR
             msg = _('Required fpage or elocation-id. ')
             return (label, status, msg)
         return (label, status, msg)
