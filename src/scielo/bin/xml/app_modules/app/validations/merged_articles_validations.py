@@ -15,7 +15,7 @@ class IssueArticlesValidationsReports(object):
         self.merged_articles_reports = merged_articles_reports
         self.is_xml_generation = is_xml_generation
         self.blocking_errors = sum([self.merged_articles_reports.validations.blocking_errors,
-            self.pkg_validations_reports.pkg_issue_validations.blocking_errors])
+            self.pkg_validations_reports.blocking_errors])
 
     @property
     def journal_and_issue_report(self):

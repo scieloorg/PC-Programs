@@ -209,6 +209,10 @@ class ArticleValidations(object):
     def fatal_errors(self):
         return sum([item.fatal_errors for item in [self.xml_structure_validations, self.xml_content_validations]])
 
+    @property
+    def blocking_errors(self):
+        return sum([item.blocking_errors for item in [self.xml_structure_validations, self.xml_content_validations]])
+
     def hide_and_show_block(self, report_id, new_name):
         blocks = []
         block_parent_id = report_id + new_name
