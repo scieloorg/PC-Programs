@@ -163,6 +163,10 @@ class Requirements(object):
         if uninstall is True:
             commands = self.uninstall_commands()
         commands.extend(proxy.register_commands)
+        commands.append(
+                    'python -m pip install {} --upgrade pip'.format(
+                        proxy.parameter)
+                    )
         commands.append(u'pip install {} -r "{}"'.format(
             proxy.parameter, self.requirements_file))
         commands.append('pip freeze > python_libraries_installed.txt')
