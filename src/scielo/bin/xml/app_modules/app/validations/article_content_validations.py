@@ -703,11 +703,24 @@ class ArticleContentValidation(object):
     @property
     def pagination(self):
         pages = [self.article.fpage, self.article.elocation_id]
+        labels = ['fpage', 'elocation-id']
+        status = validation_status.STATUS_OK
+        label = 'fpage | elocation-id'
+        msg = ' | '.join(['{}: {}'.format(l, p) for l, p in zip(labels, pages) if p is not None])
+        if self.article.is_ahead:
+            if any(pages):
+                status = validation_status.STATUS_FATAL_ERROR
+                msg = _('It is an ahead of print article and it must not have fpage neither elocation-id ({}). '.format(msg))
+            return (label, status, msg)
         if all(pages) is True:
-            return (('fpage', validation_status.STATUS_ERROR, _('Use only fpage and lpage. ')))
+            status = validation_status.STATUS_ERROR
+            msg = _('Remove elocation-id. Use only fpage and lpage ({}). '.format(msg))
+            return (label, status, msg)
         elif any(pages) is False:
-            return (('fpage | elocation-id', validation_status.STATUS_FATAL_ERROR, _('Required fpage or elocation-id. ')))
-        return ('fpage', validation_status.STATUS_OK, self.article.fpage)
+            status = validation_status.STATUS_ERROR
+            msg = _('Required fpage or elocation-id. ')
+            return (label, status, msg)
+        return (label, status, msg)
 
     @property
     def affiliations(self):
