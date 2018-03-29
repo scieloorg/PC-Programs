@@ -295,7 +295,7 @@ class ArticleContentValidation(object):
                 _titles = ' / '.join([u'"{}"'.format(t) for t in titles])
                 if utils.is_similar(self.article.toc_section, titles):
                     errors.append(
-                        _('{} must not be similar to the table of contents section "{}" '.format(
+                        _(u'{} must not be similar to the table of contents section "{}" '.format(
                             _titles, self.article.toc_section)))
         else:
             errors.append(

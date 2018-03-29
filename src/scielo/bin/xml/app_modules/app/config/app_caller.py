@@ -36,7 +36,7 @@ class ProxyInfo(object):
     @property
     def parameter(self):
         if all([self.username, self.password, self.server_port]) is True:
-            return '--proxy="{}:{}@http://{}"'.format(
+            return '--proxy="{}:{}@{}"'.format(
                     self.username, self.password, self.server_port
                 )
         return ''
@@ -57,8 +57,10 @@ class ProxyInfo(object):
             command = 'set'
             if 'windows' not in so:
                 command = 'export'
-            commands.append('{} http=http://{}'.format(command, proxy_info))
-            commands.append('{} https=https://{}'.format(command, proxy_info))
+            commands.append(
+                '{} http_proxy=http://{}'.format(command, proxy_info))
+            commands.append(
+                '{} https_proxy=https://{}'.format(command, proxy_info))
         return commands
 
 

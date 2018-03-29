@@ -2168,7 +2168,6 @@ class ArticleTableWrap(object):
         if self.node is not None:
             for tag in ['table', 'alternatives/table']:
                 nodes = self.node.findall(tag)
-                print(nodes)
                 if nodes is not None:
                     _codes.extend([xml_utils.node_xml(item) for item in nodes])
         return _codes
@@ -2179,7 +2178,6 @@ class ArticleTableWrap(object):
         if self.node is not None:
             for tag in ['alternatives/graphic', 'graphic']:
                 nodes = self.node.findall(tag)
-                print(nodes)
                 if nodes is not None:
                     for node in nodes:
                         href = node.get(
