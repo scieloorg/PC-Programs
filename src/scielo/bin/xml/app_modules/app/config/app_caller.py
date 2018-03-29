@@ -36,7 +36,7 @@ class ProxyInfo(object):
     @property
     def parameter(self):
         if all([self.username, self.password, self.server_port]) is True:
-            return '--proxy="{}:{}@http://{}"'.format(
+            return '--proxy="{}:{}@{}"'.format(
                     self.username, self.password, self.server_port
                 )
         return ''
@@ -57,8 +57,10 @@ class ProxyInfo(object):
             command = 'set'
             if 'windows' not in so:
                 command = 'export'
-            commands.append('{} http=http://{}'.format(command, proxy_info))
-            commands.append('{} https=https://{}'.format(command, proxy_info))
+            commands.append(
+                '{} http_proxy=http://{}'.format(command, proxy_info))
+            commands.append(
+                '{} https_proxy=https://{}'.format(command, proxy_info))
         return commands
 
 
@@ -161,6 +163,10 @@ class Requirements(object):
         if uninstall is True:
             commands = self.uninstall_commands()
         commands.extend(proxy.register_commands)
+        commands.append(
+                    'python -m pip install {} --upgrade pip'.format(
+                        proxy.parameter)
+                    )
         commands.append(u'pip install {} -r "{}"'.format(
             proxy.parameter, self.requirements_file))
         commands.append('pip freeze > python_libraries_installed.txt')
