@@ -224,10 +224,10 @@ class ArticlesConversion(object):
     def xc_status(self):
         if self.validations_reports.blocking_errors > 0:
             result = 'rejected'
-        elif self.accepted_articles == 0 and len(self.articles_mergence.excluded_orders) == 0:
-            result = 'ignored'
         elif self.articles_conversion_validations.blocking_errors > 0:
             result = 'rejected'
+        elif self.accepted_articles == 0 and len(self.articles_mergence.excluded_orders) == 0:
+            result = 'ignored'
         elif self.articles_conversion_validations.fatal_errors > 0:
             result = 'accepted'
         else:
