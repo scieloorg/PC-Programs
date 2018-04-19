@@ -66,11 +66,11 @@ class ProxyInfo(object):
 
 class VirtualEnv(object):
 
-    def __init__(self, logger, venv_path, requirements_filename):
+    def __init__(self, logger, venv_path, requirements_filename, proxy_data):
         self.logger = logger
         self.path = venv_path
         self.requirements = Requirements(requirements_filename)
-        self.proxy = ProxyInfo(None)
+        self.proxy = ProxyInfo(proxy_data)
         self.setUp()
 
     def setUp(self):
@@ -153,6 +153,27 @@ class VirtualEnv(object):
             system.run_command(self.deactivate_command, True)
 
 
+class RealEnv(object):
+
+    def __init__(self, logger, requirements_filename, proxy_data):
+        self.logger = logger
+        self.requirements = Requirements(requirements_filename)
+        self.proxy = ProxyInfo(proxy_data)
+
+    def install_requirements(self):
+        commands = self.requirements.install_commands(
+                self.proxy,
+                uninstall=True)
+        self.execute_commands(commands)
+
+    def execute_commands(self, commands):
+        for cmd in commands:
+            display_cmd = self.proxy.hide_password(cmd)
+            self.logger.info(display_cmd)
+            encoding.display_message(display_cmd)
+            system.run_command(cmd, False)
+
+
 class Requirements(object):
 
     def __init__(self, requirements_file):
@@ -179,30 +200,59 @@ class Requirements(object):
         return commands
 
 
-class AppCaller(object):
+class VEnvAppCaller(object):
 
-    def __init__(self, logger, venv_path, req_file):
-        self.venv = VirtualEnv(logger, venv_path, req_file)
-
-    @property
-    def proxy(self):
-        return self.venv.proxy
-
-    @proxy.setter
-    def proxy(self, value):
-        self.venv.proxy = ProxyInfo(value)
+    def __init__(self, logger, venv_path, req_file, proxy_data):
+        self.environment = VirtualEnv(logger, venv_path, req_file, proxy_data)
 
     def install_virtualenv(self, recreate=False):
         inform('Install virtualenv')
-        self.venv.install_venv()
-        if self.venv.installed:
+        self.environment.install_venv()
+        if self.environment.installed:
             inform('Install virtualenv: done!')
 
     def install_requirements(self):
-        if self.venv.installed:
+        if self.environment.installed:
             inform('Install Requirements')
-            self.venv.install_requirements()
+            self.environment.install_requirements()
         #inform('Install Requirements: done!')
 
     def execute(self, commands):
-        self.venv.execute_in_virtualenv(commands)
+        self.environment.execute_in_virtualenv(commands)
+
+
+class RealAppCaller(object):
+
+    def __init__(self, logger, venv_path, req_file, proxy_data):
+        self.environment = RealEnv(logger, req_file, proxy_data)
+
+    def install_virtualenv(self, recreate=False):
+        pass
+
+    def install_requirements(self):
+        self.environment.install_requirements()
+
+    def execute(self, commands):
+        self.environment.execute_commands(commands)
+
+
+class AppCaller(object):
+
+    def __init__(self, logger, venv_path, req_file, proxy_data):
+        self.caller = None
+        if venv_path is not None:
+            virtual = VEnvAppCaller(logger, venv_path, req_file, proxy_data)
+            virtual.install_virtualenv(True)
+            if virtual.environment.installed:
+                self.caller = virtual
+        if self.caller is None:
+            self.caller = RealAppCaller(logger, venv_path, req_file, proxy_data)
+
+    def install_virtualenv(self, recreate=False):
+        self.caller.install_virtualenv(recreate)
+
+    def install_requirements(self):
+        self.caller.install_requirements()
+
+    def execute(self, commands):
+        self.caller.execute(commands)

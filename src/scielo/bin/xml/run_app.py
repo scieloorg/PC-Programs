@@ -1,10 +1,29 @@
 import sys
 
-from app_modules.generics import encoding
-from app_modules.generics import system
-from app_modules.__init__ import appcaller
-from app_modules.__init__ import BIN_XML_PATH
-from app_modules.app.config import config
+from app_modules.generics import (
+    encoding,
+    system,
+    logger,
+)
+from app_modules.app.config import (
+    app_caller,
+    config,
+)
+from app_modules.__init__ import (
+    BIN_XML_PATH,
+    LOG_PATH,
+    VENV_PATH,
+    REQUIREMENTS_FILE,
+)
+
+configuration = config.Configuration()
+
+appcaller = app_caller.AppCaller(
+    logger.get_logger(LOG_PATH+'/app_caller.log', 'Environment'),
+    VENV_PATH if configuration.USE_VIRTUAL_ENV is True else None,
+    REQUIREMENTS_FILE,
+    configuration.proxy_info
+)
 
 
 def execute(parameters):
@@ -46,9 +65,9 @@ def main(parameters):
         from app_modules.app import xc
         xc.call_converter(argv, '1.1')
     elif parameters[1] == 'install':
-        configuration = config.Configuration()
-        proxy_info = configuration.proxy_info
-        appcaller.proxy = system.proxy_data(proxy_info)
+        # configuration = config.Configuration()
+        # proxy_info = configuration.proxy_info
+        # appcaller.proxy = system.proxy_data(proxy_info)
         appcaller.install_virtualenv(True)
         appcaller.install_requirements()
     else:

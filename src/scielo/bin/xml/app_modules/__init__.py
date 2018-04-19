@@ -1,29 +1,29 @@
 # coding=utf-8
 import os
 
-try:
-    from app_modules.app.config import app_texts
-except Exception as e:
-    print(e)
-    from .app.config import app_texts
 
 try:
-    from app_modules.app.config import app_caller
-except Exception as e:
-    print(e)
-    from .app.config import app_caller
+    from app_modules.app.config import (
+        app_texts,
+        app_caller,
+    )
+    from app_modules.generics import (
+        logger,
+        encoding,
+        system,
+    )
 
-try:
-    from app_modules.generics import logger
 except Exception as e:
     print(e)
-    from .generics import logger
-
-try:
-    from app_modules.generics import encoding
-except Exception as e:
-    print(e)
-    from .generics import encoding
+    from .app.config import (
+        app_texts,
+        app_caller,
+    )
+    from .generics import (
+        logger,
+        encoding,
+        system,
+    )
 
 
 THIS_FILE_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -31,7 +31,7 @@ THIS_LOCATION = encoding.decode(THIS_FILE_LOCATION, encoding.SYS_DEFAULT_ENCODIN
 
 INVALID_APP_PATH = not str(THIS_LOCATION) == THIS_FILE_LOCATION
 
-BIN_PATH = THIS_LOCATION + '/../..'
+BIN_PATH = os.path.dirname(os.path.dirname(THIS_LOCATION))
 BIN_XML_PATH = BIN_PATH + '/xml'
 JAR_PATH = BIN_PATH + '/jar'
 RELATIVE_JAR_PATH = JAR_PATH.replace(BIN_PATH, './..')
@@ -66,9 +66,3 @@ try:
     os.unlink(LOG_PATH+'/app_caller.log')
 except:
     pass
-
-
-appcaller = app_caller.AppCaller(
-    logger.get_logger(LOG_PATH+'/app_caller.log', 'Environment'),
-    VENV_PATH,
-    REQUIREMENTS_FILE)
