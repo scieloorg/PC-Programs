@@ -66,11 +66,11 @@ class ProxyInfo(object):
 
 class VirtualEnv(object):
 
-    def __init__(self, logger, venv_path, requirements_filename, proxy_data):
+    def __init__(self, logger, venv_path, requirements_filename):
         self.logger = logger
         self.path = venv_path
         self.requirements = Requirements(requirements_filename)
-        self.proxy = ProxyInfo(proxy_data)
+        self.proxy_info = ProxyInfo(None)
         self.setUp()
 
     def setUp(self):
@@ -99,17 +99,21 @@ class VirtualEnv(object):
         if self.path is not None:
             if not self.installed:
                 commands = []
-                commands.extend(self.proxy.register_commands)
+                commands.extend(self.proxy_info.register_commands)
                 commands.append(
-                    'python -m pip install {} --upgrade pip'.format(
-                        self.proxy.parameter)
+                    'python -m pip install {} -U pip'.format(
+                        self.proxy_info.parameter)
                     )
                 commands.append(
-                    'pip install {} virtualenv'.format(self.proxy.parameter)
+                    'python -m pip install {} --upgrade pip'.format(
+                        self.proxy_info.parameter)
+                    )
+                commands.append(
+                    'pip install {} virtualenv'.format(self.proxy_info.parameter)
                     )
                 commands.append(u'virtualenv "{}"'.format(self.path))
                 for cmd in commands:
-                    if 'teste' in self.proxy.parameter:
+                    if 'teste' in self.proxy_info.parameter:
                         encoding.display_message('Executaria\n  {}'.format(cmd))
                     else:
                         system.run_command(cmd)
@@ -122,7 +126,7 @@ class VirtualEnv(object):
 
     def install_requirements(self):
         commands = self.requirements.install_commands(
-                self.proxy,
+                self.proxy_info,
                 uninstall=True)
         self.execute_in_virtualenv(commands)
 
@@ -136,7 +140,7 @@ class VirtualEnv(object):
     def _execute_inline(self, commands):
         _commands = [item for item in commands if len(item) > 0]
         cmd = self.sep.join(_commands)
-        display_cmd = self.proxy.hide_password(cmd)
+        display_cmd = self.proxy_info.hide_password(cmd)
         self.logger.info(display_cmd)
         if 'teste' in cmd:
             encoding.display_message('Executaria\n  {}'.format(cmd))
@@ -155,23 +159,23 @@ class VirtualEnv(object):
 
 class RealEnv(object):
 
-    def __init__(self, logger, requirements_filename, proxy_data):
+    def __init__(self, logger, requirements_filename):
         self.logger = logger
         self.requirements = Requirements(requirements_filename)
-        self.proxy = ProxyInfo(proxy_data)
+        self.proxy_info = ProxyInfo(None)
 
     def install_requirements(self):
         commands = self.requirements.install_commands(
-                self.proxy,
+                self.proxy_info,
                 uninstall=True)
         self.execute_commands(commands)
 
     def execute_commands(self, commands):
         for cmd in commands:
-            display_cmd = self.proxy.hide_password(cmd)
+            display_cmd = self.proxy_info.hide_password(cmd)
             self.logger.info(display_cmd)
             encoding.display_message(display_cmd)
-            system.run_command(cmd, False)
+            os.system(cmd)
 
 
 class Requirements(object):
@@ -184,6 +188,10 @@ class Requirements(object):
         if uninstall is True:
             commands = self.uninstall_commands()
         commands.extend(proxy.register_commands)
+        commands.append(
+                    'python -m pip install {} -U pip'.format(
+                        proxy.parameter)
+                    )
         commands.append(
                     'python -m pip install {} --upgrade pip'.format(
                         proxy.parameter)
@@ -202,8 +210,16 @@ class Requirements(object):
 
 class VEnvAppCaller(object):
 
-    def __init__(self, logger, venv_path, req_file, proxy_data):
-        self.environment = VirtualEnv(logger, venv_path, req_file, proxy_data)
+    def __init__(self, logger, venv_path, req_file):
+        self.environment = VirtualEnv(logger, venv_path, req_file)
+
+    @property
+    def proxy_info(self):
+        return self.environment.proxy_info
+
+    @proxy_info.setter
+    def proxy_info(self, _proxy_info):
+        self.environment.proxy_info = _proxy_info
 
     def install_virtualenv(self, recreate=False):
         inform('Install virtualenv')
@@ -223,8 +239,16 @@ class VEnvAppCaller(object):
 
 class RealAppCaller(object):
 
-    def __init__(self, logger, venv_path, req_file, proxy_data):
-        self.environment = RealEnv(logger, req_file, proxy_data)
+    def __init__(self, logger, venv_path, req_file):
+        self.environment = RealEnv(logger, req_file)
+
+    @property
+    def proxy_info(self):
+        return self.environment.proxy_info
+
+    @proxy_info.setter
+    def proxy_info(self, _proxy_info):
+        self.environment.proxy_info = _proxy_info
 
     def install_virtualenv(self, recreate=False):
         pass
@@ -238,15 +262,23 @@ class RealAppCaller(object):
 
 class AppCaller(object):
 
-    def __init__(self, logger, venv_path, req_file, proxy_data):
+    def __init__(self, logger, venv_path, req_file):
         self.caller = None
         if venv_path is not None:
-            virtual = VEnvAppCaller(logger, venv_path, req_file, proxy_data)
+            virtual = VEnvAppCaller(logger, venv_path, req_file)
             virtual.install_virtualenv(True)
             if virtual.environment.installed:
                 self.caller = virtual
         if self.caller is None:
-            self.caller = RealAppCaller(logger, venv_path, req_file, proxy_data)
+            self.caller = RealAppCaller(logger, venv_path, req_file)
+
+    @property
+    def proxy_data(self):
+        return self.caller.proxy_info
+
+    @proxy_data.setter
+    def proxy_data(self, _proxy_data):
+        self.caller.proxy_info = ProxyInfo(_proxy_data)
 
     def install_virtualenv(self, recreate=False):
         self.caller.install_virtualenv(recreate)

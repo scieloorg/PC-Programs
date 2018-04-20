@@ -90,5 +90,5 @@ def command_proxy_parameter(command):
 def proxy_password(param):
     if ':' in param and '@' in param:
         p = param[param.find(':'):]
-        p = p[:p.find('@')+1]
+        p = p[:p.rfind('@')+1]
         return p

@@ -16,13 +16,15 @@ from app_modules.__init__ import (
     REQUIREMENTS_FILE,
 )
 
+
 configuration = config.Configuration()
+
+# proxy_data = system.proxy_data(configuration.proxy_info)
 
 appcaller = app_caller.AppCaller(
     logger.get_logger(LOG_PATH+'/app_caller.log', 'Environment'),
     VENV_PATH if configuration.USE_VIRTUAL_ENV is True else None,
-    REQUIREMENTS_FILE,
-    configuration.proxy_info
+    REQUIREMENTS_FILE
 )
 
 
@@ -67,7 +69,7 @@ def main(parameters):
     elif parameters[1] == 'install':
         # configuration = config.Configuration()
         # proxy_info = configuration.proxy_info
-        # appcaller.proxy = system.proxy_data(proxy_info)
+        appcaller.proxy_data = system.proxy_data(configuration.proxy_info)
         appcaller.install_virtualenv(True)
         appcaller.install_requirements()
     else:
