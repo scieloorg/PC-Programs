@@ -386,12 +386,15 @@ class PkgProcessor(object):
         return package.Package(pkgfiles, outputs, workarea_path)
 
     def evaluate_package(self, pkg):
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - begin')
         registered_issue_data = registered.RegisteredIssue()
 
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - get_registered_issue_data')
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
 
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - affiliations')
         for xml_name in sorted(pkg.articles.keys()):
             a = pkg.articles[xml_name]
@@ -403,20 +406,26 @@ class PkgProcessor(object):
                 pkg.articles[xml_name].institutions_query_results = institutions_results
                 pkg.articles[xml_name].normalized_affiliations = {aff_id: info[0] for aff_id, info in institutions_results.items()}
 
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - validate_pkg_articles')
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
 
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - validate_merged_articles')
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
 
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - PkgArticlesValidationsReports')
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
 
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - MergedArticlesReports')
         mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
 
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - IssueArticlesValidationsReports')
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, mergence_reports, self.is_xml_generation)
+        encoding.display_message(_('Evaluating package... Wait. '))
         encoding.debugging('pkg_processors.make_package.evaluate_package - end')
         return registered_issue_data, validations_reports
 

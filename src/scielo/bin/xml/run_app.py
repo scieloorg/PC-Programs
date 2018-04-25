@@ -54,9 +54,8 @@ def check_requirements():
                 '\n'.join(reqs)
             )
         )
-        print('check_requirements()')
-        appcaller.install_virtualenv()
-        appcaller.install_requirements()
+        encoding.debugging('run_app.py: check_requirements()')
+        appcaller.install_requirements(False, requirements_checker)
 
 
 def main(parameters):
@@ -64,7 +63,7 @@ def main(parameters):
     argv = parameters[1:]
 
     if parameters[1].endswith('xml_package_maker.py'):
-        print('xpm')
+        encoding.debugging('run_app.py: xpm')
         check_requirements()
         from app_modules.app import xpm
         xpm.call_make_packages(argv, '1.1')
@@ -76,13 +75,12 @@ def main(parameters):
         # configuration = config.Configuration()
         # proxy_info = configuration.proxy_info
         # appcaller.proxy_data = system.proxy_data(configuration.proxy_info)
-        print('main_install()')
-        appcaller.install_virtualenv(True)
-        appcaller.install_requirements()
+        encoding.debugging('run_app.py: main_install()')
+        appcaller.install_requirements(True, requirements_checker)
     else:
-        print('unknown command')
-        print(parameters)
-        print('do nothing')
+        encoding.debugging('run_app.py: unknown command')
+        encoding.debugging(parameters)
+        encoding.debugging('run_app.py: do nothing')
 
 
 if __name__ == '__main__':
