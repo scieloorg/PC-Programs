@@ -100,7 +100,7 @@ def report_exception(function_name, e, data):
         app_logger.info(e)
 
 
-def debugging(function_name, data):
+def debugging(function_name, data=None):
     try:
         app_logger.info('DEBUG: {}'.format(function_name))
         app_logger.info(data)

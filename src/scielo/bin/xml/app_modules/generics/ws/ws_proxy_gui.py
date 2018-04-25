@@ -7,9 +7,16 @@ except ImportError:
         print('no Tkinter')
 
 
+def gettext(text):
+    return text
+
+
+_ = gettext
+
+
 class ProxyGUI(tk.Frame):
 
-    def __init__(self, tk_root, registered_ip, registered_port):
+    def __init__(self, tk_root, registered_ip, registered_port, debug):
         self.info = None
         if registered_ip is None:
             registered_ip = ''
@@ -22,15 +29,26 @@ class ProxyGUI(tk.Frame):
 
         message_frame = tk.Frame(self)
         message_frame.pack(fill="both", expand="yes")
-        message = tk.Message(message_frame,
-            font='System 14 bold',
-            text=_("""This tool requires Internet access for some services, 
-                such as DOI, affiliations, and other data validations,
-                and also to get journals data from SciELO.\n
-                If you do not use a proxy to access the Internet,
-                and click on Cancel button."""),
-            wraplength=450
-            )
+        try:
+            message = tk.Message(message_frame,
+                font='System 14 bold',
+                text=_("""This tool requires Internet access for some services, 
+                    such as DOI, affiliations, and other data validations,
+                    and also to get journals data from SciELO.\n
+                    If you do not use a proxy to access the Internet,
+                    and click on Cancel button."""),
+                wraplength=450
+                )
+        except:
+            message = tk.Message(message_frame,
+                font='System 14 bold',
+                text=_("""This tool requires Internet access for some services, 
+                    such as DOI, affiliations, and other data validations,
+                    and also to get journals data from SciELO.\n
+                    If you do not use a proxy to access the Internet,
+                    and click on Cancel button.""")
+                )
+
         message.pack()
 
         proxy_ip_frame = tk.Frame(self)

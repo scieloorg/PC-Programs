@@ -35,6 +35,15 @@ def is_similar(text, items, min_rate=0.8):
     return (highiest_rate > min_rate)
 
 
+def is_similar_alternative(text, items, min_rate=0.8):
+    if not isinstance(items, list):
+        items = [items]
+    lens = [len(item) for item in items]
+    lens.append(len(text))
+    min_len = min(lens)
+    return is_similar(text, [item[:min_len-2] for item in items], 0.95)
+
+
 def how_similar(this, that):
     if this is None:
         this = 'None'

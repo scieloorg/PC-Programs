@@ -1,10 +1,30 @@
 import sys
 
-from app_modules.generics import encoding
-from app_modules.generics import system
-from app_modules.__init__ import appcaller
-from app_modules.__init__ import BIN_XML_PATH
-from app_modules.app.config import config
+from app_modules.generics import (
+    encoding,
+    system,
+    logger,
+)
+from app_modules.app.config import (
+    app_caller,
+    config,
+)
+from app_modules.__init__ import (
+    BIN_XML_PATH,
+    LOG_PATH,
+    VENV_PATH,
+    REQUIREMENTS_FILE,
+)
+
+
+configuration = config.Configuration()
+
+appcaller = app_caller.AppCaller(
+    logger.get_logger(LOG_PATH+'/app_caller.log', 'Environment'),
+    VENV_PATH if configuration.USE_VIRTUAL_ENV is True else None,
+    REQUIREMENTS_FILE,
+    configuration.proxy_info
+)
 
 
 def execute(parameters):
@@ -29,8 +49,13 @@ def requirements_checker():
 def check_requirements():
     reqs = requirements_checker()
     if len(reqs) > 0:
-        appcaller.install_virtualenv()
-        appcaller.install_requirements()
+        encoding.display_message(
+            '#########\nChecking requirements:\n{}\n########'.format(
+                '\n'.join(reqs)
+            )
+        )
+        encoding.debugging('run_app.py: check_requirements()')
+        appcaller.install_requirements(False, requirements_checker)
 
 
 def main(parameters):
@@ -38,6 +63,7 @@ def main(parameters):
     argv = parameters[1:]
 
     if parameters[1].endswith('xml_package_maker.py'):
+        encoding.debugging('run_app.py: xpm')
         check_requirements()
         from app_modules.app import xpm
         xpm.call_make_packages(argv, '1.1')
@@ -46,15 +72,15 @@ def main(parameters):
         from app_modules.app import xc
         xc.call_converter(argv, '1.1')
     elif parameters[1] == 'install':
-        configuration = config.Configuration()
-        proxy_info = configuration.proxy_info
-        appcaller.proxy = system.proxy_data(proxy_info)
-        appcaller.install_virtualenv(True)
-        appcaller.install_requirements()
+        # configuration = config.Configuration()
+        # proxy_info = configuration.proxy_info
+        # appcaller.proxy_data = system.proxy_data(configuration.proxy_info)
+        encoding.debugging('run_app.py: main_install()')
+        appcaller.install_requirements(True, requirements_checker)
     else:
-        print('unknown command')
-        print(parameters)
-        print('do nothing')
+        encoding.debugging('run_app.py: unknown command')
+        encoding.debugging(parameters)
+        encoding.debugging('run_app.py: do nothing')
 
 
 if __name__ == '__main__':
