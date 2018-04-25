@@ -19,12 +19,11 @@ from app_modules.__init__ import (
 
 configuration = config.Configuration()
 
-# proxy_data = system.proxy_data(configuration.proxy_info)
-
 appcaller = app_caller.AppCaller(
     logger.get_logger(LOG_PATH+'/app_caller.log', 'Environment'),
     VENV_PATH if configuration.USE_VIRTUAL_ENV is True else None,
-    REQUIREMENTS_FILE
+    REQUIREMENTS_FILE,
+    configuration.proxy_info
 )
 
 
@@ -50,6 +49,12 @@ def requirements_checker():
 def check_requirements():
     reqs = requirements_checker()
     if len(reqs) > 0:
+        encoding.display_message(
+            '#########\nChecking requirements:\n{}\n########'.format(
+                '\n'.join(reqs)
+            )
+        )
+        print('check_requirements()')
         appcaller.install_virtualenv()
         appcaller.install_requirements()
 
@@ -59,6 +64,7 @@ def main(parameters):
     argv = parameters[1:]
 
     if parameters[1].endswith('xml_package_maker.py'):
+        print('xpm')
         check_requirements()
         from app_modules.app import xpm
         xpm.call_make_packages(argv, '1.1')
@@ -69,7 +75,8 @@ def main(parameters):
     elif parameters[1] == 'install':
         # configuration = config.Configuration()
         # proxy_info = configuration.proxy_info
-        appcaller.proxy_data = system.proxy_data(configuration.proxy_info)
+        # appcaller.proxy_data = system.proxy_data(configuration.proxy_info)
+        print('main_install()')
         appcaller.install_virtualenv(True)
         appcaller.install_requirements()
     else:

@@ -86,6 +86,7 @@ def try_request(url, timeout=30, debug=False, force_error=False):
 class WebServicesRequester(object):
 
     def __init__(self, active=True, proxy_data=None):
+        encoding.debugging('WebServicesRequester({}, {})'.format(active, proxy_data))
         self.requests = {}
         self.skip = []
         self.proxy_data = proxy_data
@@ -109,6 +110,8 @@ class WebServicesRequester(object):
         return url + query
 
     def request(self, url, timeout=30, debug=False, force_error=False):
+        encoding.debugging('WebServicesRequester.request({})'.format(url))
+
         if self.active is False:
             return None
         response = self.requests.get(url)

@@ -386,8 +386,13 @@ class PkgProcessor(object):
         return package.Package(pkgfiles, outputs, workarea_path)
 
     def evaluate_package(self, pkg):
+        encoding.debugging('pkg_processors.make_package.evaluate_package - begin')
         registered_issue_data = registered.RegisteredIssue()
+
+        encoding.debugging('pkg_processors.make_package.evaluate_package - get_registered_issue_data')
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
+
+        encoding.debugging('pkg_processors.make_package.evaluate_package - affiliations')
         for xml_name in sorted(pkg.articles.keys()):
             a = pkg.articles[xml_name]
             if a is not None:
@@ -397,12 +402,22 @@ class PkgProcessor(object):
                         institutions_results[aff_xml.id] = self.aff_normalizer.query_institutions(aff_xml)
                 pkg.articles[xml_name].institutions_query_results = institutions_results
                 pkg.articles[xml_name].normalized_affiliations = {aff_id: info[0] for aff_id, info in institutions_results.items()}
+
+        encoding.debugging('pkg_processors.make_package.evaluate_package - validate_pkg_articles')
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
 
+        encoding.debugging('pkg_processors.make_package.evaluate_package - validate_merged_articles')
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
+
+        encoding.debugging('pkg_processors.make_package.evaluate_package - PkgArticlesValidationsReports')
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
+
+        encoding.debugging('pkg_processors.make_package.evaluate_package - MergedArticlesReports')
         mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
+
+        encoding.debugging('pkg_processors.make_package.evaluate_package - IssueArticlesValidationsReports')
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, mergence_reports, self.is_xml_generation)
+        encoding.debugging('pkg_processors.make_package.evaluate_package - end')
         return registered_issue_data, validations_reports
 
     def make_package(self, pkg, GENERATE_PMC=False):
@@ -447,6 +462,7 @@ class PkgProcessor(object):
             pkg.articles, self.is_db_generation)
 
     def report_result(self, pkg, validations_reports, conversion=None):
+        encoding.debugging('pkg_processors.make_package.report_result - begin')
         files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label)
         if conversion is not None:
             files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
@@ -460,6 +476,7 @@ class PkgProcessor(object):
             for article_files in pkg.package_folder.pkgfiles_items.values():
                 # copia os xml para report path
                 article_files.copy_xml(reports.files_location.report_path)
+        encoding.debugging('pkg_processors.make_package.report_result - end')
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):

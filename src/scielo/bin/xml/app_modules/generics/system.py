@@ -61,9 +61,9 @@ def proxy_parameter(proxy_info):
 def proxy_data(proxy_info):
     proxy = None
     if proxy_info is not None:
-        resp = read_input('Do you use proxy for Internet access ({})? Y/N '.format(proxy_info))
-        if resp in 'Yy':
-            username = read_input('Inform proxy Username: ')
+        print('Proxy {}'.format(proxy_info))
+        username = read_input('Username: ')
+        if username.strip() != '':
             password = input_password()
             proxy = [
                 username,

@@ -124,17 +124,20 @@ class XPM_Reception(object):
         interface.display_form(self.proc.stage == 'xc', None, self.call_make_package)
 
     def call_make_package(self, xml_path, GENERATE_PMC=False):
-        encoding.display_message(_('Making package') + '...')
+        encoding.display_message(_('Execute Make package') + ':')
         xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
-        encoding.display_message('...'*2)
+        encoding.display_message('Step 1/2 ...')
         normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', self.proc.stage)
-        encoding.display_message('...'*3)
+        encoding.display_message('Step 2/2 ...')
         self.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
-        encoding.display_message('...'*4)
+        encoding.display_message('The End')
         return 'done', 'blue'
 
     def make_package(self, normalized_pkgfiles, outputs, GENERATE_PMC=False):
         if len(normalized_pkgfiles) > 0:
             workarea_path = os.path.dirname(normalized_pkgfiles[0].path)
+            encoding.debugging('xpm.XPM_Reception.make_package - package.Package')
             pkg = package.Package(normalized_pkgfiles, outputs, workarea_path)
+            encoding.debugging('xpm.XPM_Reception.make_package - proc.make_package')
+            encoding.display_message(_('Making package') + ' ...')
             self.proc.make_package(pkg, GENERATE_PMC)

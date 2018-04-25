@@ -35,6 +35,7 @@ class ProxyInfo(object):
         self.port = port
         self.user = user
         self.password = password
+        encoding.debugging('ProxyInfo({}, {}, {}, {})'.format(server, port, user, '*'))
 
     @property
     def handler_data(self):
