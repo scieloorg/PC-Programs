@@ -55,7 +55,8 @@
 	<xsl:template match="pid">
 		<xsl:variable name="f" select="@filename"/>
 		<xsl:apply-templates select="$articles[@filename=$f]/article">
-			<xsl:with-param name="pid" select="."></xsl:with-param>
+			<xsl:with-param name="pid" select="pid"></xsl:with-param>
+			<xsl:with-param name="old_pid" select="old-pid"></xsl:with-param>
 		</xsl:apply-templates>
 	</xsl:template>
 	
@@ -69,6 +70,7 @@
 	
 	<xsl:template match="article">
 		<xsl:param name="pid"/>
+		<xsl:param name="old_pid"/>
 		<Article>
 			<Journal>
 				<xsl:apply-templates select="." mode="scielo-xml-publisher_name"/>
@@ -82,6 +84,9 @@
 				<Replaces IdType="pii">
 					<xsl:apply-templates select=".//article-meta/article-id[@specific-use='previous-pid']" mode="scielo-xml-pii"/>
 				</Replaces>
+			</xsl:if>
+			<xsl:if test="$old_pid">
+				<Replaces IdType="pii"><xsl:value-of select="$old_pid"/></Replaces>
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-title"/>
 
@@ -111,6 +116,9 @@
 			<ArticleIdList>
 				<ArticleId IdType="pii">
 					<xsl:choose>
+						<xsl:when test="$old_pid">
+							<xsl:value-of select="$old_pid"/>
+						</xsl:when>
 						<xsl:when test=".//article-meta/article-id[@specific-use='previous-pid']">
 							<xsl:apply-templates select=".//article-meta/article-id[@specific-use='previous-pid']" mode="scielo-xml-pii"/>
 						</xsl:when>
