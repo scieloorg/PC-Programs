@@ -542,18 +542,29 @@ class ArticleContentValidation(object):
 
     @property
     def contrib_id(self):
-        ids = []
+        identified = []
+        msgs = []
         for contrib_name in self.article.contrib_names:
-            ids.append(contrib_name.contrib_id.get('orcid'))
+            orcid = contrib_name.contrib_id.get('orcid')
+            if orcid is not None:
+                identified.append(orcid)
+                url = 'https://orcid.org/{}'.format(orcid)
+                if self.config.app_ws_requester.is_valid_url(url) is False:
+                    r = ('ORCID',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         orcid + ': ' + _('Invalid value of ORCID'))
+                    msgs.append(r)
         q = self.article.count_words('ORCID')
-        if q > len(ids):
-            return (
+        if q > len(identified):
+            r = (
                     'contrib-id',
                     validation_status.STATUS_WARNING,
                     _('Check if all the ORCID are identified as contrib-id. ')+
-                    _('Found {} orcid words. ').format(q)+
-                    _('Found {} contrib-id. '.format(len(ids)))
+                    _('Found {} ORCID words. ').format(q)+
+                    _('Found {} contrib-id. '.format(len(identified)))
                 )
+            msgs.append(r)
+        return msgs
 
     @property
     def trans_languages(self):
