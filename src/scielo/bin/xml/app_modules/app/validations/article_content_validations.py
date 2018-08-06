@@ -308,7 +308,7 @@ class ArticleContentValidation(object):
                 (
                     '@article-type',
                     level,
-                    _('This document will be rejected according to SciELO Brazil\'s criteria. ') +
+                    _('This document will be rejected according to SciELO Collection\'s criteria. ') +
                     _('Check the criteria of the corresponding SciELO Collection. ')
                 ))
             results.append(('@article-type', level, ''.join(errors)))
@@ -567,8 +567,12 @@ class ArticleContentValidation(object):
     @property
     def doi(self):
         r = []
+        level = validation_status.STATUS_WARNING
+        if self.is_db_generation:
+            if self.config.BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA:
+                level = validation_status.STATUS_BLOCKING_ERROR
         if self.article.doi is None:
-            r.append(('doi', validation_status.STATUS_INFO, _('article has no DOI. ')))
+            r.append(('doi', level, _('article has no DOI. ')))
         else:
             r = self.doi_validator.validate(self.article)
         return r
