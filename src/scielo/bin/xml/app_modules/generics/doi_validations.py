@@ -53,8 +53,27 @@ class DOIValidator(object):
                 doi_prefix = self.ws_doi.journal_prefix(issn, article.pub_date_year)
                 if doi_prefix is not None:
                     valid_prefixes.append(doi_prefix)
+        print((valid_prefixes))
         if len(valid_prefixes) > 0 and prefix not in valid_prefixes:
             self.messages.append(('doi', validation_status.STATUS_FATAL_ERROR, _('{value} is an invalid value for {label}. ').format(value=prefix, label=_('doi prefix')) + _('{label} must starts with: {expected}. ').format(label='doi', expected=_(' or ').join(valid_prefixes))))
+        elif len(valid_prefixes) == 0:
+            issns = [article.e_issn, article.print_issn]
+            journal_provider, prefix_provider = self.ws_doi.journal_and_prefix(
+                prefix, issns)
+            if prefix_provider != journal_provider:
+                msgs = [
+                    article.doi,
+                    _('{value} is an invalid value for {label}. ').format(
+                            value=prefix,
+                            label=_('doi prefix')),
+                    _('"{}" belongs to {}. ').format(prefix, prefix_provider),
+                    _('DOI Publisher for {}: {}. ').format(
+                        article.journal_title, journal_provider)
+                ]
+                self.messages.append(
+                    ('doi',
+                     validation_status.STATUS_FATAL_ERROR,
+                     msgs))
 
     def _validate_journal_title(self, article, doi_data):
         if doi_data.journal_titles is not None:
