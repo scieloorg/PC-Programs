@@ -36,7 +36,7 @@ class DOIValidator(object):
             for item in doi:
                 if item.isdigit():
                     pass
-                elif item in '-.-;()/':
+                elif item in '-._;()/':
                     pass
                 elif item in 'abcdefghijklmnopqrstuvwxyz' or item in 'abcdefghijklmnopqrstuvwxyz'.upper():
                     pass
