@@ -368,7 +368,7 @@ class SGMLXMLContent(xml_utils.XMLContent):
                     
                     if chosen_image_src is None and chosen_image_doc is not None:
                         chosen_image_origin = 'doc'
-                        new_href_value = self.sgmlhtml.xml_name + html_href.replace('image', '')
+                        new_href_value = self.sgmlhtml.xml_name + html_href
                         shutil.copyfile(chosen_image_doc, self.src_pkgfiles.path + '/' + new_href_value)
                         #self.input_pkgfiles.files.append(new_href_value)
 
