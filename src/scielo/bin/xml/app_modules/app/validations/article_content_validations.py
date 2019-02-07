@@ -799,6 +799,8 @@ class ArticleContentValidation(object):
 
     @property
     def total_of_pages(self):
+        if self.article.elocation_id and self.article.page_count:
+            return [(_('page-count'), validation_status.STATUS_ERROR, _('Electronic-only works do not traditionally have page counts. '))]
         if self.article.total_of_pages is None and self.article.page_count is None:
             pass
         else:
