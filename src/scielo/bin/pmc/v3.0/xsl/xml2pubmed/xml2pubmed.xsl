@@ -32,8 +32,8 @@
 			* em history NADA
 	-->
 	<xsl:output 
-		doctype-public="-//NLM//DTD PubMed 2.6//EN" 
-		doctype-system="http://www.ncbi.nlm.nih.gov/entrez/query/static/PubMed.dtd" 
+		doctype-public="-//NLM//DTD PubMed 2.8//EN" 
+		doctype-system="https://dtd.nlm.nih.gov/ncbi/pubmed/in/PubMed.dtd" 
 		encoding="UTF-8" method="xml" omit-xml-declaration="no" version="1.0"
 		indent="yes" xml:space="default" 
 	/>
@@ -600,7 +600,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*|text()" mode="uppercase">
-		<xsl:value-of select="translate(.,'abcdefghijklmnopqrstuvwxyzáéíóúãõ','ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÃÕ')"/>
+		<xsl:value-of select="translate(normalize-space(.),'abcdefghijklmnopqrstuvwxyzáéíóúãõ','ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÃÕ')"/>
 	</xsl:template>
 	
 </xsl:stylesheet>
