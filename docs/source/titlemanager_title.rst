@@ -270,7 +270,7 @@ Biological Abstracts
 Web of Knowledge Databases
 ..........................
 
-Field: 854 
+Field: 851, 852,853 
 
 Indicate the Web of Knowledge Databases which the journal is registered.
 
@@ -278,7 +278,7 @@ Indicate the Web of Knowledge Databases which the journal is registered.
 Subject categories
 ..................
 
-Field: 851
+Field: 854
 
 Select all the categories which the journal is related to.
 
