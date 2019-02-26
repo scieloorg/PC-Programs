@@ -24,7 +24,7 @@ class DOIWebServicesRequester(object):
         if issn is not None:
             return self.URL + '?filter=issn:{issn},from-pub-date:{year}'.format(issn=issn, year=year)
 
-    def journal_and_prefix(self, doi_prefix, issn_items):
+    def _journal_and_prefix(self, doi_prefix, issn_items):
         for issn in issn_items:
             json_results = self.ws_requester.json_result_request(
                 self.journals_endpoint_url.format(issn)) or {}
@@ -35,6 +35,21 @@ class DOIWebServicesRequester(object):
             self.prefixes_endpoint_url.format(doi_prefix)) or {}
         prefix_provider_name = json_results.get('message', {}).get('name')
         return journal_provider_name, prefix_provider_name
+
+    def journal_publisher_by_issn(self, issn_items):
+        publisher = None
+        for issn in issn_items:
+            json_results = self.ws_requester.json_result_request(
+                self.journals_endpoint_url.format(issn)) or {}
+            publisher = json_results.get('message', {}).get('publisher')
+            if publisher is not None:
+                break
+        return publisher
+
+    def journal_publisher_by_doi_prefix(self, doi_prefix):
+        json_results = self.ws_requester.json_result_request(
+            self.prefixes_endpoint_url.format(doi_prefix)) or {}
+        return json_results.get('message', {}).get('name')
 
     def article_doi_checker_url(self, doi):
         #https://api.crossref.org/works/10.1037/0003-066X.59.1.29

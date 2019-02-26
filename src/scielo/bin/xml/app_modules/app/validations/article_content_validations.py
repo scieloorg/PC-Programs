@@ -223,6 +223,7 @@ class ArticleContentValidation(object):
                 items.append(self.article_date_types)
                 items.append(self.toc_section)
                 items.append(self.doi)
+                items.append(self.doi_and_lang)
                 items.append(self.article_id)
                 items.append(self.pagination)
                 if self.is_db_generation:
@@ -586,6 +587,31 @@ class ArticleContentValidation(object):
             r.append(('doi', level, _('article has no DOI. ')))
         else:
             r = self.doi_validator.validate(self.article)
+        return r
+
+    @property
+    def doi_and_lang(self):
+        r = []
+        if not self.article.doi:
+            return r
+        q_doi_and_lang = len(self.article.doi_and_lang)
+        doi_items = [doi for lang, doi in self.article.doi_and_lang
+                     if doi != '']
+        doi_items = set(doi_items)
+        q_doi_items = len(doi_items)
+        if q_doi_items < q_doi_and_lang:
+            level = validation_status.STATUS_WARNING
+            if self.is_db_generation:
+                if self.config.BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA:
+                    level = validation_status.STATUS_BLOCKING_ERROR
+            msg = '; '.join(['{}:&#160;{}'.format(lang, doi)
+                            for lang, doi in self.article.doi_and_lang])
+            r.append(
+                ('doi',
+                 level,
+                 _('It is required a different DOI'
+                   ' for each text language. ') + msg
+                 ))
         return r
 
     @property

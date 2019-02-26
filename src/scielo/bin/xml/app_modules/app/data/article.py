@@ -996,6 +996,16 @@ class ArticleXML(object):
                 return _doi.lower()
 
     @property
+    def doi_and_lang(self):
+        r = []
+        if self.doi:
+            r = [(self.language, self.doi)]
+        for translation in self.translations or []:
+            doi = translation.findtext('.//article-id[@pub-id-type="doi"]')
+            r.append((xml_utils.element_lang(translation), doi.lower() or ''))
+        return r
+
+    @property
     def publisher_article_id(self):
         if self.article_meta is not None:
             _publisher_article_id = self.article_meta.findtext('article-id[@pub-id-type="publisher-id"]')
