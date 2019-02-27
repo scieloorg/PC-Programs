@@ -454,5 +454,9 @@ class Configuration(object):
     def BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA(self):
         return self.is_activated('BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA')
 
+    @property
+    def USE_VIRTUAL_ENV(self):
+        return self.is_activated('USE_VIRTUAL_ENV')
+
     def is_activated(self, label, default='TRUE'):
         return self._data.get(label, default).upper() in ['ON', 'TRUE', 'YES']
