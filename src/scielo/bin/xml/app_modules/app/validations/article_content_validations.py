@@ -544,7 +544,7 @@ class ArticleContentValidation(object):
     def contrib_id(self):
         identified = []
         msgs = []
-        for contrib_name in self.article.contrib_names:
+        for contrib_name in self.article.contrib_names_with_contrib_id_type:
             orcid = contrib_name.contrib_id.get('orcid')
             if orcid is not None:
                 identified.append(orcid)
