@@ -293,7 +293,7 @@ class ArticleDisplayReport(object):
             formula_data['id'] = formula.id
             formula_data['xml'] = formula.xml
             formula_data['graphic'] = ''.join(graphics)
-            formula_data['code'] = ''.join(formula.codes)
+            formula_data['code'] = ''.join([u'<div>{}</div>'.format(c) for c in formula.codes])
             formulas_data.append(formula_data)
         return html_reports.tag('h1', _('Equations')) + html_reports.sheet(labels, formulas_data, html_cell_content=['code'])
 

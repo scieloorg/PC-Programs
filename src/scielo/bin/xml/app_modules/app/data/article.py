@@ -1910,6 +1910,7 @@ class ReferenceXML(object):
         self.conference_name = self.root_xml_node.nodes_text(['.//conf-name'])
         self.conference_location = self.root_xml_node.nodes_text(['.//conf-loc'])
         self.conference_date = self.root_xml_node.nodes_text(['.//conf-date'])
+        self._data_registration = None
 
     @property
     def reference(self):
@@ -1955,6 +1956,7 @@ class ReferenceXML(object):
             self._ref.conference_name = first_item(self.conference_name)
             self._ref.conference_location = first_item(self.conference_location)
             self._ref.conference_date = first_item(self.conference_date)
+            self._ref.data_registration = first_item(self.data_registration)
         return self._ref
 
     @property
@@ -2083,6 +2085,15 @@ class ReferenceXML(object):
     def pmcid(self):
         if self.pub_id_items is not None:
             return self.pub_id_items.get('pmcid')
+
+    @property
+    def data_registration(self):
+        if self._data_registration is None:
+            if self.pub_id_items is not None:
+                self._data_registration = self.pub_id_items.get('art-access-id')
+            if self._data_registration is None:
+                self._data_registration = self.ext_link or self.doi
+        return self._data_registration
 
 
 class Issue(object):
@@ -2221,12 +2232,17 @@ def codes(main_node):
             nodes = main_node.findall(tag)
             if nodes is not None:
                 _codes.extend([xml_utils.node_xml(item).replace('mml:', '') for item in nodes])
+        limits = ("\\begin{document}", "\\end{document}")
         for tag in ['tex-math']:
-            nodes = main_node.findall(tag)
-            if nodes is not None:
-                _codes.extend([xml_utils.node_text(item) for item in nodes])
+            for node in main_node.findall(tag) or []:
+                text = xml_utils.node_text(node)
+                if limits[0] in text:
+                    text = text[text.find(limits[0])+len(limits[0]):]
+                if limits[1] in text:
+                    text = text[:text.find(limits[1])]
+                _codes.append(text)
     return _codes
-
+ 
 
 def graphics(main_node):
     _graphics = []

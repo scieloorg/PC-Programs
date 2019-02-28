@@ -70,6 +70,7 @@ DOCTOPIC = {
                 'other': 'zz',
                 'guideline': 'guideline',
                 'interview': 'in',
+                'data-article': 'data-article',
 }
 
 DOCTOPIC_IN_USE = DOCTOPIC.keys()
@@ -95,12 +96,14 @@ INDEXABLE = [
     'discussion',
     'obituary',
     'reply',
+    'data-article',
 ]
 
 INDEXABLE_BUT_EXCEPTION = [
     'correction',
     'retraction',
     'partial-retraction',
+
 ]
 
 
@@ -170,6 +173,7 @@ PUBLICATION_TYPE = []
 PUBLICATION_TYPE.append('journal')
 PUBLICATION_TYPE.append('book')
 PUBLICATION_TYPE.append('thesis')
+PUBLICATION_TYPE.append('data')
 PUBLICATION_TYPE.append('patent')
 PUBLICATION_TYPE.append('report')
 PUBLICATION_TYPE.append('software')
@@ -187,6 +191,7 @@ REFERENCE_REQUIRED_SUBELEMENTS['book'] = ['year', 'source']
 REFERENCE_REQUIRED_SUBELEMENTS['confproc'] = ['conf-name', 'source', 'year']
 REFERENCE_REQUIRED_SUBELEMENTS['thesis'] = ['comment', 'source', 'year']
 REFERENCE_REQUIRED_SUBELEMENTS['webpage'] = ['ext-link', 'date-in-citation[@content-type="access-date"]']
+REFERENCE_REQUIRED_SUBELEMENTS['data'] = ['year', 'pub-id[@pub-id-type="art-access-id"] or ext-link']
 
 
 REFERENCE_NOT_ALLOWED_SUBELEMENTS = {}
