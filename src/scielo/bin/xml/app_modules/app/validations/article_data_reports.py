@@ -256,27 +256,37 @@ class ArticleDisplayReport(object):
                 table_data.append(html_reports.display_labeled_value('label', t.label, 'label'))
                 table_data.append(html_reports.display_labeled_value('caption',  t.caption, 'label'))
                 table_data.append(html_reports.tag('p', 'table-wrap/table (xml)', 'label'))
-                if t.table:
-                    table_data.append(html_reports.tag('div', html_reports.format_html_data(t.table), 'xml'))
+                for _table in t.codes:
+                    table_data.append(html_reports.tag('div', html_reports.format_html_data(_table), 'xml'))
                     table_data.append(html_reports.tag('p', 'table-wrap/table', 'label'))
-                    table_data.append(html_reports.tag('div', t.table, 'element-table'))
-                if t.graphic:
+                    table_data.append(html_reports.tag('div', _table, 'element-table'))
+                for _graphic in t.graphics:
                     #table_data.append(html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value'))
-                    table_data.append(html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('{IMG_PATH}'), 'value'))
+                    table_data.append(html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('{IMG_PATH}'+_graphic), 'value'))
                 r += header + html_reports.tag('div', ''.join(table_data), 'block')
         return r
 
     @property
     def table_tables(self):
         r = '<!-- no tables -->'
-        if len(self.article.tables) > 0:
-            r = html_reports.tag('p', 'Tables:', 'label')
-            for t in self.article.tables:
-                if t.table:
-                    table_data = ''
-                    table_data += html_reports.display_labeled_value('label', t.label, 'label')
-                    table_data += html_reports.tag('div', t.table, 'element-table')
-                    r += html_reports.tag('div', table_data, 'block')
+        if self.article.tables:
+            r += '<h1>Tables</h1>'
+
+            for table in self.article.tables:
+                table_content = ''
+                table_content += '<hr/><h4>xml:</h4>'
+                table_content += html_reports.tag('div', html_reports.format_html_data(table.xml), 'xml')
+                table_content += '<hr/><h4>label:</h4>'
+                table_content += html_reports.display_labeled_value('label', table.label, 'label')
+                table_content += '<hr/><h4>code:</h4>'
+                for item in table.codes:
+                    table_content += u'<div>{}</div>'.format(item)
+                table_content += '<hr/><h4>graphic:</h4>'
+                for item in table.graphics:
+                    href = '{IMG_PATH}/' + item
+                    link = html_reports.link(href, html_reports.thumb_image(href))
+                    table_content += link
+                r += html_reports.tag('div', table_content, 'block')
         return r
 
     @property

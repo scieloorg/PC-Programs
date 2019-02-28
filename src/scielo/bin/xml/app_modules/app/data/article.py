@@ -1522,7 +1522,7 @@ class ArticleXML(object):
         return article_utils.image_heights(path, self.disp_formulas)
 
     @property
-    def tables(self):
+    def __tables(self):
         r = []
         if self.tree is not None:
             for t in self.tree.findall('.//*[table]'):
@@ -1535,6 +1535,10 @@ class ArticleXML(object):
                     _href = HRef(src, graphic, t, xml, self.prefix)
                 r.append(TableParentXML(t).table_parent)
         return r
+
+    @property
+    def tables(self):
+        return self.tablewraps
 
 
 class Article(ArticleXML):
@@ -2189,6 +2193,7 @@ class ArticleTableWrap(object):
         self.tag = node.tag
         self.xml = xml_utils.node_xml(node)
         self.lang = xml_utils.element_lang(node)
+        self.label = node.findtext('label')
 
     @property
     def id(self):
