@@ -39,7 +39,7 @@ def validate_pubtype_and_ref_data(publication_type, label, values):
     required = label in attributes.REFERENCE_REQUIRED_SUBELEMENTS.get(publication_type, [])
     not_allowed = label in attributes.REFERENCE_NOT_ALLOWED_SUBELEMENTS.get(publication_type, [])
 
-    if required and len(values) == 0:
+    if required and len(values or []) == 0:
         problem = _('{requirer} requires {required}. ').format(requirer='@publication-type="' + publication_type + '"', required=label)
         compl = _('If the reference has no {label}, ignore this message. ').format(label=label)
         items = ['@publication-type', _('the elements of this reference')]
@@ -209,7 +209,6 @@ class ReferenceContentValidation(object):
         r.append(self.publication_type)
         if self.is_valid_publication_type:
             r.extend(self.publication_type_dependence)
-
         if self.publication_type_other is not None:
             r.append(self.publication_type_other)
         r.extend([item for item in self.elements_validations if item is not None])
@@ -217,6 +216,7 @@ class ReferenceContentValidation(object):
         r.extend(self.previous_authors)
         r.extend(self.year(article_year))
         r.extend(self.source)
+
         return [item for item in r if item is not None]
 
     @property
@@ -238,6 +238,8 @@ class ReferenceContentValidation(object):
                 validate_ref_data_presence(pubtype, 'fpage', self.refxml.fpage, 1),
                 validate_ref_data_presence(pubtype, 'source', self.refxml.source, 1),
                 validate_ref_data_presence(pubtype, 'year', self.refxml.year, 1),
+                validate_ref_data_presence(
+                    pubtype, 'pub-id[@pub-id-type="art-access-id"] or ext-link', self.refxml.data_registration),
                 ]
         return self._elements_validations
 
