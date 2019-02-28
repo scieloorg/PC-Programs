@@ -281,6 +281,9 @@ class ContribXML(object):
         self.contrib_id_items = [ContribId(item) for item in node.findall('.//contrib-id')]
         self.xref_items = self.xml_node.nodes_data(['.//xref[@ref-type="aff"]'])
 
+    def display(self):
+        return xml_utils.tostring(self.node)
+
     @property
     def collabs(self):
         if self.node.tag == 'collab':
