@@ -1261,10 +1261,8 @@ class ArticleXML(object):
     def formulas_nodes(self):
         r = []
         if self.tree is not None:
-            if self.tree.findall('.//disp-formula') is not None:
-                r.extend(self.tree.findall('.//disp-formula'))
-            if self.tree.findall('.//inline-formula') is not None:
-                r.extend(self.tree.findall('.//inline-formula'))
+            r.extend(self.tree.findall('.//disp-formula') or [])
+            r.extend(self.tree.findall('.//inline-formula') or [])
         return r
 
     @property
@@ -1522,7 +1520,7 @@ class ArticleXML(object):
         return article_utils.image_heights(path, self.disp_formulas)
 
     @property
-    def tables(self):
+    def __tables(self):
         r = []
         if self.tree is not None:
             for t in self.tree.findall('.//*[table]'):
@@ -1535,6 +1533,10 @@ class ArticleXML(object):
                     _href = HRef(src, graphic, t, xml, self.prefix)
                 r.append(TableParentXML(t).table_parent)
         return r
+
+    @property
+    def tables(self):
+        return self.tablewraps
 
 
 class Article(ArticleXML):
@@ -2169,18 +2171,12 @@ class ArticleFormula(object):
 
     @property
     def codes(self):
-        _codes = []
-        if self.node is not None:
-            _codes = codes(self.node)
-        return _codes
+        return codes(self.node)
 
     @property
     def graphics(self):
-        _graphics = []
-        if self.node is not None:
-            _graphics = graphics(self.node)
-        return _graphics
-
+        return graphics(self.node)
+        
 
 class ArticleTableWrap(object):
 
@@ -2189,6 +2185,7 @@ class ArticleTableWrap(object):
         self.tag = node.tag
         self.xml = xml_utils.node_xml(node)
         self.lang = xml_utils.element_lang(node)
+        self.label = node.findtext('label')
 
     @property
     def id(self):
@@ -2200,9 +2197,8 @@ class ArticleTableWrap(object):
         _codes = []
         if self.node is not None:
             for tag in ['table', 'alternatives/table']:
-                nodes = self.node.findall(tag)
-                if nodes is not None:
-                    _codes.extend([xml_utils.node_xml(item) for item in nodes])
+                nodes = self.node.findall(tag) or []
+                _codes.extend([(item.tag, xml_utils.node_xml(item)) for item in nodes])
         return _codes
 
     @property
@@ -2210,13 +2206,11 @@ class ArticleTableWrap(object):
         _graphics = []
         if self.node is not None:
             for tag in ['alternatives/graphic', 'graphic']:
-                nodes = self.node.findall(tag)
-                if nodes is not None:
-                    for node in nodes:
-                        href = node.get(
-                                '{http://www.w3.org/1999/xlink}href',
-                                node.get('href'))
-                        _graphics.append(href)
+                for node in self.node.findall(tag) or []:
+                    href = node.get(
+                            '{http://www.w3.org/1999/xlink}href',
+                            node.get('href'))
+                    _graphics.append((node.tag, href))
         return _graphics
 
 
@@ -2229,18 +2223,17 @@ def codes(main_node):
                 for item in nodes:
                     _codes.extend(codes(item))
         for tag in ['math', '{http://www.w3.org/1998/Math/MathML}math']:
-            nodes = main_node.findall(tag)
-            if nodes is not None:
-                _codes.extend([xml_utils.node_xml(item).replace('mml:', '') for item in nodes])
+            nodes = main_node.findall(tag) or []
+            _codes.extend([(item.tag, xml_utils.node_xml(item).replace('mml:', '')) for item in nodes])
         limits = ("\\begin{document}", "\\end{document}")
         for tag in ['tex-math']:
             for node in main_node.findall(tag) or []:
-                text = xml_utils.node_text(node)
+                text = xml_utils.node_text(node).strip()
                 if limits[0] in text:
                     text = text[text.find(limits[0])+len(limits[0]):]
                 if limits[1] in text:
                     text = text[:text.find(limits[1])]
-                _codes.append(text)
+                _codes.append((node.tag, text))
     return _codes
  
 
@@ -2248,18 +2241,14 @@ def graphics(main_node):
     _graphics = []
     if main_node is not None:
         for tag in ['alternatives']:
-            nodes = main_node.findall(tag)
-            if nodes is not None:
-                for item in nodes:
-                    _graphics.extend(graphics(item))
+            for item in main_node.findall(tag) or []:
+                _graphics.extend(graphics(item))
         for tag in ['inline-graphic', 'graphic']:
-            nodes = main_node.findall(tag)
-            if nodes is not None:
-                for node in nodes:
-                    href = node.get(
-                            'href',
-                            node.get('{http://www.w3.org/1999/xlink}href'))
-                    _graphics.append(href)
+            for node in main_node.findall(tag) or []:
+                href = node.get(
+                        'href',
+                        node.get('{http://www.w3.org/1999/xlink}href'))
+                _graphics.append((node.tag, href))
     return _graphics
 
 
@@ -2267,13 +2256,9 @@ def table(main_node):
     _table = []
     if main_node is not None:
         for tag in ['alternatives']:
-            nodes = main_node.findall(tag)
-            if nodes is not None:
-                for item in nodes:
-                    _table.extend(table(item))
+            for item in main_node.findall(tag) or []:
+                _table.extend(table(item))
         for tag in ['table']:
-            nodes = main_node.findall(tag)
-            if nodes is not None:
-                for node in nodes:
-                    _table.append(xml_utils.node_xml(node))
+            for node in main_node.findall(tag) or []:
+                _table.append((node.tag, xml_utils.node_xml(node)))
     return _table

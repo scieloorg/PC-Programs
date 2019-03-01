@@ -256,46 +256,78 @@ class ArticleDisplayReport(object):
                 table_data.append(html_reports.display_labeled_value('label', t.label, 'label'))
                 table_data.append(html_reports.display_labeled_value('caption',  t.caption, 'label'))
                 table_data.append(html_reports.tag('p', 'table-wrap/table (xml)', 'label'))
-                if t.table:
-                    table_data.append(html_reports.tag('div', html_reports.format_html_data(t.table), 'xml'))
+                for _table in t.codes:
+                    table_data.append(html_reports.tag('div', html_reports.format_html_data(_table), 'xml'))
                     table_data.append(html_reports.tag('p', 'table-wrap/table', 'label'))
-                    table_data.append(html_reports.tag('div', t.table, 'element-table'))
-                if t.graphic:
+                    table_data.append(html_reports.tag('div', _table, 'element-table'))
+                for _graphic in t.graphics:
                     #table_data.append(html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value'))
-                    table_data.append(html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('{IMG_PATH}'), 'value'))
+                    table_data.append(html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('{IMG_PATH}'+_graphic), 'value'))
                 r += header + html_reports.tag('div', ''.join(table_data), 'block')
         return r
 
     @property
     def table_tables(self):
+        labels = ['xml', 'data']
+        tablewraps_data = []
+        for tablewrap in self.article.tables:
+            graphics = []
+            for g in tablewrap.graphics:
+                tag, f = g
+                href = '{IMG_PATH}/' + f
+                link = html_reports.link(href, html_reports.thumb_image(href))
+                graphics.append('<h3>{}</h3>'.format(tag)+link)
+            _codes = [u'<h3>{}</h3><div>{}</div>'.format(
+                    tag, c) for tag, c in tablewrap.codes]
+            content = []
+            content += ['<b>@id</b>: {}'.format(tablewrap.id)]
+            content += ['<b>label</b>: {}'.format(tablewrap.label)]
+            content += graphics
+            content += _codes
+            content = '<hr/>'.join(content)
+            tablewraps_data.append({'xml': tablewrap.xml, 'data': ' ' + content + ' '})
+        return html_reports.tag('h1', 'table-wrap') + html_reports.sheet(labels, tablewraps_data, table_style='none', html_cell_content=['data'])
+
+    @property
+    def _table_tables(self):
         r = '<!-- no tables -->'
-        if len(self.article.tables) > 0:
-            r = html_reports.tag('p', 'Tables:', 'label')
-            for t in self.article.tables:
-                if t.table:
-                    table_data = ''
-                    table_data += html_reports.display_labeled_value('label', t.label, 'label')
-                    table_data += html_reports.tag('div', t.table, 'element-table')
-                    r += html_reports.tag('div', table_data, 'block')
+        if self.article.tables:
+            r += '<h1>Tables</h1>'
+
+            for table in self.article.tables:
+                rows = ['<h2>{}</h2>'.format(table.id)]
+                rows += [html_reports.tag('div', html_reports.format_html_data(table.xml), 'xml')]
+                rows += [u'<h3>label</h3>{}'.format(table.label)]
+                for tag, item in table.codes:
+                    rows += [u'<h3>{}</h3><div>{}</div>'.format(tag, item)]
+                for tag, item in table.graphics:
+                    href = '{IMG_PATH}/' + item
+                    link = html_reports.link(href, html_reports.thumb_image(href))
+                    rows += [u'<h3>{}</h3><{}'.format(tag, link)]
+                r += html_reports.tag('div', '<hr/>'.join(rows))
         return r
 
     @property
     def display_formulas(self):
-        labels = ['id', 'code', 'graphic', 'xml']
+        labels = ['xml', 'data']
         formulas_data = []
         for formula in self.article.formulas:
             graphics = []
-            for f in formula.graphics:
+            for g in formula.graphics:
+                tag, f = g
                 href = '{IMG_PATH}/' + f
                 link = html_reports.link(href, html_reports.thumb_image(href))
-                graphics.append(link)
-            formula_data = {}
-            formula_data['id'] = formula.id
-            formula_data['xml'] = formula.xml
-            formula_data['graphic'] = ''.join(graphics)
-            formula_data['code'] = ''.join([u'<div>{}</div>'.format(c) for c in formula.codes])
-            formulas_data.append(formula_data)
-        return html_reports.tag('h1', _('Equations')) + html_reports.sheet(labels, formulas_data, html_cell_content=['code'])
+                graphics.append('<h3>{}</h3>'.format(tag)+link)
+            _graphics = '<hr/>'.join(graphics)
+            _codes = [u'<h3>{}</h3><div>{}</div>'.format(
+                    tag, c) for tag, c in formula.codes]
+            content = []
+            content += ['<b>@id</b>: {}'.format(formula.id)]
+            content += [_graphics]
+            content += _codes
+            content = '<hr/>'.join(content)
+            formulas_data.append({'xml': formula.xml, 'data': content})
+        return html_reports.tag('h1', '*-formula') + html_reports.sheet(labels, formulas_data, table_style='none')
 
     @property
     def affiliations(self):

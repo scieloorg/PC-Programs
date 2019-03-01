@@ -2,15 +2,17 @@
 import os
 import shutil
 import tempfile
-import xml.etree.ElementTree as etree
+
 import xml.dom.minidom
 
 try:
     from io import StringIO
     import html.parser as html_parser
+    from lxml import etree
 except ImportError:
     from StringIO import StringIO
     import HTMLParser as html_parser
+    import xml.etree.ElementTree as etree
 
 from ..__init__ import _
 from ..__init__ import TABLES_PATH
@@ -256,7 +258,12 @@ def node_text(node):
 
 def node_xml(node):
     text = tostring(node)
-    if node is not None and '&' in text:
+    if text:
+        # resolve caso de inline-formula que retornou text após </inline-formula>
+        text = text.strip()
+        if not text.endswith('>'):
+            text = text[:text.rfind('>') + 1]
+    if text and '&' in text:
         text, replaced_named_ent = convert_entities_to_chars(text)
     return text
 
