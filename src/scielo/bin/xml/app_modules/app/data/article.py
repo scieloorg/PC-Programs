@@ -437,6 +437,7 @@ class ArticleXML(object):
         self._fpage = None
         self.fpage_seq = None
         self._epub_ppub_date = None
+        self._all_abstracts = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
@@ -1282,6 +1283,37 @@ class ArticleXML(object):
         return data
 
     @property
+    def abstract_nodes(self):
+        if self.article_meta is not None:
+            return self.article_meta.findall('.//abstract') or []
+
+    @property
+    def trans_abstract_nodes(self):
+        if self.article_meta is not None:
+            return self.article_meta.findall('.//trans-abstract') or []
+
+    @property
+    def subarticle_abstract_nodes(self):
+        r = []
+        for subart in self.translations:
+            r += subart.findall('.//abstract')
+        return r
+
+    @property
+    def all_abstracts(self):
+        if self._all_abstracts is None:
+            self._all_abstracts = {}
+            for a in self.abstract_nodes + self.trans_abstract_nodes + self.subarticle_abstract_nodes:
+                abstract_type = a.get('abstract-type', 'regular')
+                if abstract_type not in self._all_abstracts.keys():
+                    self._all_abstracts[abstract_type] = []
+                _abstract = Text()
+                _abstract.language = xml_utils.element_lang(a) or self.language
+                _abstract.text = xml_utils.node_text(a)
+                self._all_abstracts[abstract_type].append(_abstract)
+        return self._all_abstracts
+    """
+    @property
     def abstract(self):
         r = []
         if self.article_meta is not None:
@@ -1314,6 +1346,7 @@ class ArticleXML(object):
                 _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
         return r
+    """
 
     @property
     def abstracts_by_lang(self):
@@ -1321,7 +1354,15 @@ class ArticleXML(object):
 
     @property
     def abstracts(self):
-        return self.abstract + self.trans_abstracts + self.subarticle_abstracts
+        return self.all_abstracts.get('regular', [])
+
+    @property
+    def graphical_abstracts(self):
+        return self.all_abstracts.get('graphical', [])
+
+    @property
+    def graphical_abstracts_by_lang(self):
+        return items_by_lang(self.graphical_abstracts)
 
     @property
     def references_xml(self):

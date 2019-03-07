@@ -83,6 +83,7 @@ class ArticleDisplayReport(object):
             r += self.affiliations
             r += self.abstracts
             r += self.keywords
+            r += self.graphical_abstracts
 
         return html_reports.tag('h2', 'article/front') + html_reports.tag('div', r, 'article-data')
 
@@ -161,6 +162,10 @@ class ArticleDisplayReport(object):
     @property
     def abstracts(self):
         return self.display_text('abstracts', self.article.abstracts)
+
+    @property
+    def graphical_abstracts(self):
+        return self.display_text('graphical abstracts', self.article.graphical_abstracts)
 
     @property
     def keywords(self):

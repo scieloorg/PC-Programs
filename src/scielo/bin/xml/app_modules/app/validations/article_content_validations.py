@@ -244,6 +244,7 @@ class ArticleContentValidation(object):
                 items.append(self.article_permissions)
                 items.append(self.history)
                 items.append(self.titles_abstracts_keywords)
+
                 items.append(self.related_articles)
 
             items.append(self.sections)
@@ -366,6 +367,8 @@ class ArticleContentValidation(object):
             msg.append(data_validations.check_lang('(title-group | trans-title-group)', lang))
         for lang in self.article.abstracts_by_lang.keys():
             msg.append(data_validations.check_lang('(abstract | trans-abstract)', lang))
+        for lang in self.article.graphical_abstracts_by_lang.keys():
+            msg.append(data_validations.check_lang('graphical abstract', lang))
         for lang in self.article.keywords_by_lang.keys():
             msg.append(data_validations.check_lang('kwd-group', lang))
         return msg
@@ -929,6 +932,10 @@ class ArticleContentValidation(object):
             titles, valid, errors = self.titles_by_lang(lang, err_level)
 
             abstracts, _valid, _errors = self.texts_by_lang(lang, err_level, None, 'abstract', self.article.abstracts_by_lang)
+            valid += _valid
+            errors += _errors
+
+            graphical_abstracts, _valid, _errors = self.texts_by_lang(lang, err_level, None, 'graphical abstract', self.article.graphical_abstracts_by_lang)
             valid += _valid
             errors += _errors
 
