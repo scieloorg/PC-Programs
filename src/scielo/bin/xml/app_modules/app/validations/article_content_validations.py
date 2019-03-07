@@ -326,21 +326,19 @@ class ArticleContentValidation(object):
         if version in attributes.sps_current_versions():
             return [(label, status, msg)]
 
-        article_dateiso = self.article.article_pub_dateiso
-        if article_dateiso is None:
-            article_dateiso = self.article.issue_pub_dateiso
-        if article_dateiso is None:
+        pub_dateiso = self.article.pub_dateiso
+        if pub_dateiso is None:
             return [(label, validation_status.STATUS_ERROR, _('Unable to validate sps version because article has no publication date. '))]
 
-        expected_versions = list(set(attributes.expected_sps_versions(article_dateiso) + attributes.sps_current_versions()))
+        expected_versions = list(set(attributes.expected_sps_versions(pub_dateiso) + attributes.sps_current_versions()))
         expected_versions.sort()
 
         if version in expected_versions:
             status = validation_status.STATUS_INFO
-            msg = _('For articles published on {pubdate}, {sps_version} is valid. ').format(pubdate=utils.display_datetime(article_dateiso, None), sps_version=version)
+            msg = _('For articles published on {pubdate}, {sps_version} is valid. ').format(pubdate=utils.display_datetime(pub_dateiso, None), sps_version=version)
         else:
             status = validation_status.STATUS_ERROR
-            msg = _('For articles published on {pubdate}, {sps_version} is not valid. ').format(pubdate=utils.display_datetime(article_dateiso, None), sps_version=version) + _('Expected SPS versions for this article: {sps_versions}. ').format(sps_versions=_(' or ').join(expected_versions))
+            msg = _('For articles published on {pubdate}, {sps_version} is not valid. ').format(pubdate=utils.display_datetime(pub_dateiso, None), sps_version=version) + _('Expected SPS versions for this article: {sps_versions}. ').format(sps_versions=_(' or ').join(expected_versions))
         return [(label, status, msg)]
 
     @property
@@ -1054,19 +1052,22 @@ class ArticleContentValidation(object):
     @property
     def article_date_types(self):
         r = []
-        date_types = []
-        expected = ['epub-ppub', 'epub' + _(' and ') + 'collection', 'epub']
-        if self.article.epub_date is not None:
-            date_types.append('epub')
-        if self.article.collection_date is not None:
-            date_types.append('collection')
-        if self.article.epub_ppub_date is not None:
-            date_types.append('epub-ppub')
-        c = _(' and ').join(date_types)
-        if c in expected:
+        if self.article.sps_version_number > 1.8:
+            expected = [{'scielo|collection'}]
+            expected_items = 'scielo|collection'
+        else:
+            expected = [{'epub-ppub'}, {'epub', 'collection'}, {'epub'}]
+            expected_items = "'epub-ppub', 'epub', 'collection', 'epub'"
+        date_types = {
+              label
+              for label, value in self.article.labeled_article_dates[:-1]
+              if value
+            }
+        c = ' | '.join(date_types)
+        if date_types in expected:
             r.append(('article dates', validation_status.STATUS_OK, c))
         else:
-            r.append(('article dates', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + data_validations.expected_values_message(' | '.join(expected))))
+            r.append(('article dates', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + data_validations.expected_values_message(' | '.join(expected_items))))
         return r
 
     @property
