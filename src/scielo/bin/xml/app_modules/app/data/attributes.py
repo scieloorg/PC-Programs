@@ -287,6 +287,16 @@ if LICENSES is None:
 else:
     LICENSES = LICENSES.split()
 
+
+LICENSE_TEXTS = {
+    'pt': u'Este é um artigo publicado em acesso aberto sob uma '
+            u'licença Creative Commons',
+    'en': u'This is an article published in open access under a '
+            'Creative Commons license',
+    'es': u'Este es un artículo publicado en acceso abierto bajo una '
+            u'licencia Creative Commons',
+}
+
 SPS_HELP_ELEMENTS = [
     'abbrev-journal-title',
     'abstract',
