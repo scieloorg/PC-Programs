@@ -23,8 +23,8 @@ specyear
 
 
 reftype
-journal;book;confproc;report;thesis;patent;newspaper;legal-doc;database;software;webpage;other
-journal;book;confproc;report;thesis;patent;newspaper;legal-doc;database;software;webpage;other
+journal;book;confproc;thesis;webpage;data;report;patent;newspaper;legal-doc;database;software;other
+journal;book;confproc;thesis;webpage;data;report;patent;newspaper;legal-doc;database;software;other
 
 colspan
 
