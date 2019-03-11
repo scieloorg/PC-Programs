@@ -250,7 +250,10 @@ class ArticlesDB(object):
                     a_date = int(item.get('223', 0))
                     if int_from_date <= a_date <= int_final_date:
                         a_pid = '0'*5 + item.get('121')
-                        items[os.path.basename(item.get('702'))] = 'S' + issn_id + issue_pid + a_pid[-5:]
+                        v702 = os.path.basename(item.get('702'))
+                        v880 = 'S' + issn_id + issue_pid + a_pid[-5:]
+                        v881 = item.get('881', item.get('882'))
+                        items[v702] = (v880, v881)
                         matched.append(a_date)
                     else:
                         unmatched.append(a_date)
@@ -318,7 +321,7 @@ class PubMedXMLMaker(object):
 
     @property
     def articles_pids_xml_content(self):
-        return '<pid-set>' + ''.join(['<pid filename="' + k + '">' + v + '</pid>' for k, v in sorted(self.issue_stuff.articles_files.selected_pids.items())]) + '</pid-set>'
+        return '<pid-set>' + ''.join(['<pid filename="' + k + '">' + format_pids(v) + '</pid>' for k, v in sorted(self.issue_stuff.articles_files.selected_pids.items())]) + '</pid-set>'
 
     def execute_procedures(self):
         self.build_pubmed_xml()
@@ -360,6 +363,7 @@ class PubMedXMLMaker(object):
 def call_execute_pubmed_procedures(args):
 
     script, issue_path, from_date, final_date, debug = read_inputs(args)
+    issue_path = issue_path.replace('\\', '/').replace('//', '/')
 
     if issue_path is None:
         # GUI
@@ -427,6 +431,14 @@ def read_form_inputs(default_path=None):
     tk_root.mainloop()
     tk_root.focus_set()
     return (form.issue_path, form.from_date)
+
+
+def format_pids(pids):
+    pid, old_pid = pids
+    return '<pid>{}</pid>{}'.format(
+        pid,
+        '' if old_pid is None else '<old-pid>{}</old-pid>'.format(old_pid)
+    )
 
 
 call_execute_pubmed_procedures(sys.argv)
