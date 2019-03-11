@@ -19,6 +19,19 @@ def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
+def display_article_dates(article, style=''):
+    items = []
+    for label, value in article.labeled_article_dates:
+        items.append(
+            html_reports.display_labeled_value(
+                'date ({})'.format(label),
+                article_utils.format_date(value),
+                style
+            )
+        )
+    return ''.join(items)
+
+
 def format_author(author):
     r = author.surname if author.surname is not None else ''
     if author.suffix:
@@ -144,7 +157,7 @@ class ArticleDisplayReport(object):
 
     @property
     def article_dates(self):
-        return self.display_labeled_value('date(epub-ppub)', article_utils.format_date(self.article.epub_ppub_date)) + self.display_labeled_value('date(epub)', article_utils.format_date(self.article.epub_date)) + self.display_labeled_value('date(collection)', article_utils.format_date(self.article.collection_date))
+        return display_article_dates(self.article)
 
     @property
     def contrib_names(self):
@@ -649,8 +662,6 @@ def validations_table(results):
 
 
 def display_article_metadata(_article, sep='<br/>'):
-    dates_labels = ['collection', 'aop', 'epub', 'epub-ppub']
-    dates = [_article.collection_dateiso, _article.ahpdate_dateiso, _article.epub_dateiso, _article.epub_ppub_dateiso]
 
     r = ''
     if _article.doi is not None:
@@ -658,9 +669,7 @@ def display_article_metadata(_article, sep='<br/>'):
     else:
         r += html_reports.tag('p', _article.publisher_article_id, 'doi')
     r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
-    for l, d in zip(dates_labels, dates):
-        if d is not None:
-            r += html_reports.display_label_value(_('date') + ' (' + l + ')', utils.display_datetime(d), 'p')
+    r += display_article_dates(_article, 'p')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
     r += html_reports.tag('p', display_authors(_article.article_contrib_items, sep))
     if _article.marked_to_delete:

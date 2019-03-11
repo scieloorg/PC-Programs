@@ -436,7 +436,6 @@ class ArticleXML(object):
         self._fpage_node = None
         self._fpage = None
         self.fpage_seq = None
-        self._epub_ppub_date = None
         self._all_abstracts = None
 
         if tree is not None:
@@ -1412,19 +1411,22 @@ class ArticleXML(object):
             return xml_utils.date_element(self.article_meta.find('history/date[@date-type="accepted"]'))
 
     @property
-    def collection_date(self):
+    def raw_scielo_date(self):
+        if self.article_meta is not None:
+            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="scielo"]'))
+
+    @property
+    def raw_collection_date(self):
         if self.article_meta is not None:
             return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="collection"]'))
 
     @property
-    def epub_ppub_date(self):
-        if self._epub_ppub_date is None:
-            if self.article_meta is not None:
-                self._epub_ppub_date = xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="epub-ppub"]'))
-        return self._epub_ppub_date
+    def raw_epub_ppub_date(self):
+        if self.article_meta is not None:
+            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="epub-ppub"]'))
 
     @property
-    def epub_date(self):
+    def raw_epub_date(self):
         if self.article_meta is not None:
             date_node = self.article_meta.find('pub-date[@pub-type="epub"]')
             if date_node is None:
@@ -1432,9 +1434,39 @@ class ArticleXML(object):
             return xml_utils.date_element(date_node)
 
     @property
-    def ppub_date(self):
+    def raw_ppub_date(self):
         if self.article_meta is not None:
             return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="ppub"]'))
+
+    @property
+    def collection_date(self):
+        return self.raw_collection_date
+
+    @property
+    def epub_ppub_date(self):
+        return self.raw_epub_ppub_date
+
+    @property
+    def epub_date(self):
+        return self.raw_epub_date
+
+    @property
+    def ppub_date(self):
+        return self.raw_ppub_date
+
+    @property
+    def scielo_date(self):
+        return self.raw_scielo_date or self.raw_epub_date
+
+    @property
+    def labeled_article_dates(self):
+        return [
+            ('epub-ppub', self.raw_epub_ppub_date),
+            ('epub', self.raw_epub_date),
+            ('collection', self.raw_collection_date),
+            ('scielo', self.raw_scielo_date),
+            ('ahpdate', self.ahpdate),
+        ]
 
     @property
     def is_article_press_release(self):
@@ -1606,7 +1638,6 @@ class Article(ArticleXML):
         self.section_code = None
         self.normalized_affiliations = {}
         self.institutions_query_results = {}
-        self._issue_pub_date = None
         self.xml = None if self.tree is None else xml_utils.node_xml(self.tree.find('.'))
 
     def count_words(self, word):
@@ -1722,20 +1753,18 @@ class Article(ArticleXML):
 
     @property
     def is_epub_only(self):
-        r = False
-        if self.epub_date is not None:
-            if not self.is_ahead:
-                if self.epub_ppub_date is None and self.collection_date is None:
-                    r = True
-        return r
+        if self.raw_epub_date:
+            return (
+                not self.is_ahead and
+                not self.raw_epub_ppub_date and
+                not self.raw_collection_date
+            )
+        return False
 
     @property
     def ahpdate(self):
-        return self.article_pub_date if self.is_ahead else None
-
-    @property
-    def ahpdate_dateiso(self):
-        return article_utils.format_dateiso(self.ahpdate)
+        if self.is_ahead:
+            return self.article_pub_date
 
     @property
     def is_text(self):
@@ -1762,18 +1791,6 @@ class Article(ArticleXML):
         return d
 
     @property
-    def collection_dateiso(self):
-        return article_utils.format_dateiso(self.collection_date)
-
-    @property
-    def epub_dateiso(self):
-        return article_utils.format_dateiso(self.epub_date)
-
-    @property
-    def epub_ppub_dateiso(self):
-        return article_utils.format_dateiso(self.epub_ppub_date)
-
-    @property
     def issue_label(self):
         year = self.issue_pub_date.get('year', '') if self.issue_pub_date is not None else ''
         return article_utils.format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)
@@ -1784,12 +1801,7 @@ class Article(ArticleXML):
 
     @property
     def issue_pub_date(self):
-        if self._issue_pub_date is None:
-            for d in [self.epub_ppub_date, self.collection_date, self.epub_date, self.ppub_date]:
-                if d is not None:
-                    self._issue_pub_date = d
-                    break
-        return self._issue_pub_date
+        return self.epub_ppub_date or self.collection_date or self.epub_date
 
     @property
     def article_pub_date(self):
@@ -1804,12 +1816,7 @@ class Article(ArticleXML):
 
     @property
     def pub_date(self):
-        if self.epub_date is not None:
-            return self.epub_date
-        elif self.epub_ppub_date is not None:
-            return self.epub_ppub_date
-        elif self.collection_date is not None:
-            return self.collection_date
+        return self.article_pub_date or self.issue_pub_date
 
     @property
     def pub_dateiso(self):
@@ -1817,13 +1824,8 @@ class Article(ArticleXML):
 
     @property
     def pub_date_year(self):
-        pubdate = self.article_pub_date
-        if pubdate is None:
-            pubdate = self.issue_pub_date
-        year = None
-        if pubdate is not None:
-            year = pubdate.get('year')
-        return year
+        if self.pub_date is not None:
+            return self.pub_date.get('year')
 
     @property
     def received_dateiso(self):
@@ -1841,7 +1843,7 @@ class Article(ArticleXML):
     @property
     def publication_days(self):
         d1 = self.accepted_dateiso
-        d2 = self.article_pub_dateiso if self.article_pub_dateiso else self.issue_pub_dateiso
+        d2 = self.pub_dateiso
         if d1 is not None and d2 is not None:
             return article_utils.days('accepted date', d1, 'pub-date', d2)
 

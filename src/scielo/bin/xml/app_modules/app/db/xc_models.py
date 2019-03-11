@@ -264,7 +264,7 @@ class ArticleRecords(object):
 
         if self.article.is_ahead:
             self._metadata['32'] = 'ahead'
-            self._metadata['223'] = self.article.ahpdate_dateiso
+            self._metadata['223'] = self.article.article_pub_dateiso
         else:
             self._metadata['31'] = self.article.volume
             self._metadata['32'] = self.article.number
@@ -298,8 +298,8 @@ class ArticleRecords(object):
         for item in self.article.abstracts:
             self._metadata['83'].append({'l': item.language, 'a': item.text})
 
-        self._metadata['112'] = article_utils.format_dateiso(self.article.received)
-        self._metadata['114'] = article_utils.format_dateiso(self.article.accepted)
+        self._metadata['112'] = self.article.received_dateiso
+        self._metadata['114'] = self.article.accepted_dateiso
 
     @property
     def references(self):

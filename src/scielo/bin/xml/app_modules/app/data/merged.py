@@ -48,10 +48,6 @@ class MergedArticlesData(object):
         return l
 
     @property
-    def is_processed_in_batches(self):
-        return any([self.is_aop_issue, self.is_rolling_pass])
-
-    @property
     def is_aop_issue(self):
         return any([a.is_ahead for a in self.merged_articles.values()])
 
