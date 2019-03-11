@@ -13,6 +13,12 @@ def now():
     return now.split(' ')
 
 
+def compare_text(str1, str2):
+    s1 = [item for item in str1.upper().split() if item]
+    s2 = [item for item in str2.upper().split() if item]
+    return s1 == s2
+
+
 def display_datetime(dateiso, timeiso=None):
     if dateiso is None:
         return ''

@@ -1031,7 +1031,23 @@ class ArticleContentValidation(object):
                 r.append(result)
             r.append(data_validations.is_expected_value('license/@license-type', license.get('type'), ['open-access'], validation_status.STATUS_FATAL_ERROR))
             r.append(data_validations.is_required_data('license/license-p', license.get('text'), validation_status.STATUS_FATAL_ERROR))
+
+            license_text = license.get('text', '')
+            expected = attributes.LICENSE_TEXTS.get(lang)
+            if not utils.compare_text(license_text, expected):
+                r.append(
+                    ('license/license-p',
+                     validation_status.STATUS_WARNING,
+                     license,
+                     )
+                )
+
         return [item for item in r if r is not None]
+
+    """
+    <license xml:lang="{$language}" license-type="open-access" xlink:href="{$href}">
+            <license-p>
+    """
 
     @property
     def references(self):
