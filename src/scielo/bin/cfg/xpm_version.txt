@@ -1,3 +1,18 @@
+4.0.095 Teste 11/03/2019
+========================
+- XPM
+  - (new) [3035] Visual abstracts
+  - (new) [3040] New doctopic value (data-article) and new reference type (data)
+  - (new) [3038] SPS 1.9
+  - (new) [3034] Presentation of warning message for missing contrib-id
+  - (new) [3007] ORCID validations
+  - (new) [3033] [DOIMultilingue] DOI validations and creation of a new field for languages and DOI
+  - (new) [3023] Remove validation of required reference and xref for Editorials
+  - (enhancement) [3047] Enhancement on the alternatives elements report presentation
+  - (enhancement) [3029] Error message for electronic document with page-count
+  - (bug) [3020] Fix validation of allowed characteres of DOI
+  - (bug) [3017] Fix DOI prefix validation, checking publisher
+
 4.0.095 29/03/2018
 ==================
 - Installation with proxy
