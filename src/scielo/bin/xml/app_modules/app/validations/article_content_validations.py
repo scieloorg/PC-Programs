@@ -1069,7 +1069,7 @@ class ArticleContentValidation(object):
     def article_date_types(self):
         r = []
         if self.article.sps_version_number > 1.8:
-            expected = [{'scielo|collection'}]
+            expected = [{'scielo', 'collection'}]
             expected_items = 'scielo|collection'
         else:
             expected = [{'epub-ppub'}, {'epub', 'collection'}, {'epub'}]
@@ -1079,11 +1079,11 @@ class ArticleContentValidation(object):
               for label, value in self.article.labeled_article_dates[:-1]
               if value
             }
-        c = ' | '.join(date_types)
+        c = ' | '.join(list(date_types))
         if date_types in expected:
-            r.append(('article dates', validation_status.STATUS_OK, c))
+            r.append(('pub-date', validation_status.STATUS_OK, c))
         else:
-            r.append(('article dates', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + data_validations.expected_values_message(' | '.join(expected_items))))
+            r.append(('pub-date', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + data_validations.expected_values_message(expected_items)))
         return r
 
     @property
