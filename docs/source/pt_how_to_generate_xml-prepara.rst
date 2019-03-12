@@ -211,54 +211,64 @@ Para otimizar o processo de marcação dos elementos básicos do arquivo, é nec
 Exemplo:
 
 Dados iniciais:
+
 .. image:: img/doi.png
    :height: 400px
    :width: 200px
    :align: center
 
+
 Autores e afiliação:
+
 .. image:: img/autores.png
    :height: 400px
    :width: 200px
    :align: center
 
 Resumo simples + palavras-chave:
+
 .. image:: img/resumo-simples.png
    :height: 400px
    :width: 200px
    :align: center
 
 Resumo estruturado + palavras-chave:
+
 .. image:: img/resumo-estruturado.png
    :height: 400px
    :width: 200px
    :align: center
 
 Figuras:
+
 .. image:: img/ex-img.png
    :height: 400px
    :width: 200px
    :align: center
 
 Tabelas:
+
 .. image:: img/tabelas.png
    :height: 400px
    :width: 200px
    :align: center
 
 Citação do tipo autor/data:
+
 .. image:: img/cit-data.png
    :height: 400px
    :width: 200px
    :align: center
 
 Citação numérica:
+
 .. image:: img/cit-num.png
    :height: 400px
    :width: 200px
    :align: center
 
 Citação direta longa:
+
 .. image:: img/cit-direta.png
    :height: 400px
    :width: 200px
