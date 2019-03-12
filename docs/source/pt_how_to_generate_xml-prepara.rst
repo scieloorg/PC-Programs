@@ -226,6 +226,7 @@ Autores e afiliação:
    :align: center
 
 Resumo simples + palavras-chave:
+
 .. image:: img/resumo-simples.png
    :height: 400px
    :width: 200px
