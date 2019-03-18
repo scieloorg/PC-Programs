@@ -282,12 +282,18 @@ class ArticleContentValidation(object):
         errors = []
         if self.article.article_type in attributes.INDEXABLE:
             if self.article.article_type not in attributes.INDEXABLE_BUT_EXCEPTION:
+                check = attributes.INDEXABLE_EXCEPTIONS.get(
+                    self.article.article_type,
+                    ['contrib', 'aff', 'xref (bibr)', 'ref']
+                )
                 items = [
                     ('contrib', len(self.article.article_contrib_items)),
                     ('aff', len(self.article.article_affiliations)),
                     ('xref (bibr)', len(self.article.bibr_xref_nodes)),
                     ('ref', len(self.article.references_xml))]
-                invalid = [label for label, qtd in items if qtd == 0]
+                invalid = [label
+                           for label, qtd in items
+                           if label in check and qtd == 0]
                 if len(invalid) > 0:
                     errors.append(
                         _('@article-type="{}" requires: {}. ').format(

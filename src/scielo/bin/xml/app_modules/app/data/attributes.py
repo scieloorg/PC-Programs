@@ -75,6 +75,7 @@ DOCTOPIC = {
 
 DOCTOPIC_IN_USE = DOCTOPIC.keys()
 
+# para todos INDEXABLE validar aff, contrib, xref, ref
 INDEXABLE = [
     'research-article',
     'article-commentary',
@@ -99,11 +100,14 @@ INDEXABLE = [
     'data-article',
 ]
 
+INDEXABLE_EXCEPTIONS = {
+    'editorial': ['aff', 'contrib'],
+}
+
 INDEXABLE_BUT_EXCEPTION = [
     'correction',
     'retraction',
     'partial-retraction',
-
 ]
 
 
@@ -133,7 +137,7 @@ ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
     'other', 
     ]
 
-REFS_REQUIRED_FOR_DOCTOPIC = list(set(INDEXABLE_MINUS_EXCEPTIONS) - set(['editorial']))
+REFS_REQUIRED_FOR_DOCTOPIC = list(set(INDEXABLE_MINUS_EXCEPTIONS) - {'editorial'})
 
 TOC_SECTIONS = { 
     u'carta': u'letter', 
