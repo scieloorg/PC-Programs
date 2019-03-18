@@ -639,7 +639,10 @@ def validate_license_href(license_href):
 
 def sps_help(label):
     r = label
-    href = 'https://docs.scielo.org/projects/scielo-publishing-schema/pt_BR/latest/'
+    docs_website_url = 'docs.scielo.org'
+    docs_website_url = 'scielo.readthedocs.io'
+
+    href = 'https://{}/projects/scielo-publishing-schema/pt_BR/latest/'.format(docs_website_url)
     element_name = label
     if element_name not in SPS_HELP_ELEMENTS and ' ' in element_name:
         element_name = element_name[:element_name.find(' ')]
