@@ -344,11 +344,12 @@
 	<xsl:template match="*/sec" mode="scielo-xml-content-abstract">
 		<AbstractText>
 			<xsl:variable name="title"><xsl:apply-templates select="title" mode="uppercase"/></xsl:variable>
-			<xsl:attribute name="Label"><xsl:choose>
+			<xsl:variable name="label"><xsl:choose>
 				<xsl:when test="contains($title, ':')"><xsl:value-of select="substring-before($title,':')"/></xsl:when>
 				<xsl:when test="contains($title, ' -')"><xsl:value-of select="substring-before($title,' -')"/></xsl:when>
 				<xsl:otherwise><xsl:value-of select="$title"/></xsl:otherwise>
-			</xsl:choose></xsl:attribute>
+			</xsl:choose></xsl:variable>
+			<xsl:attribute name="Label"><xsl:value-of select="normalize-space($label)"/></xsl:attribute>
 			<xsl:apply-templates select="p"/>
 		</AbstractText>
 	</xsl:template>
