@@ -853,7 +853,7 @@ class ArticleXML(object):
     def contrib_names_with_contrib_id_type(self):
         k = []
         if self.tree is not None:
-            for contrib in self.tree.findall('.//contrib[contrib-id-type]'):
+            for contrib in self.tree.findall('.//contrib[contrib-id]'):
                 k.append(ContribXML(contrib).contrib())
             return [item for item in k if item is not None]
         return k
