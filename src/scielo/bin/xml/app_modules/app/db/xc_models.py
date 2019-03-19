@@ -272,6 +272,20 @@ class ArticleRecords(object):
             self._metadata['132'] = self.article.number_suppl
             self._metadata['223'] = self.article.article_pub_dateiso
 
+        self._metadata['265'] = []
+        if self.article.raw_scielo_date:
+            self._metadata['265'].append(
+                {'k': 'scielo',
+                 'v': article_utils.format_dateiso(
+                       self.article.raw_scielo_date)
+                 })
+        if self.article.raw_collection_date:
+            self._metadata['265'].append(
+                {'k': 'collection',
+                 'v': article_utils.format_dateiso(
+                       self.article.raw_collection_date)
+                 })
+
         self._metadata['58'] = self.article.funding_source
         self._metadata['591'] = [{'_': item for item in self.article.principal_award_recipient}]
         self._metadata['591'] += [{'n': item for item in self.article.principal_investigator}]
