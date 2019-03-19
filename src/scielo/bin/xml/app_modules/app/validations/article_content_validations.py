@@ -550,18 +550,39 @@ class ArticleContentValidation(object):
 
     @property
     def contrib_id(self):
-        identified = []
+        URL = 'https://orcid.org/'
+        identified = {}
         msgs = []
         for contrib_name in self.article.contrib_names_with_contrib_id_type:
             orcid = contrib_name.contrib_id.get('orcid')
-            if orcid is not None:
-                identified.append(orcid)
-                url = 'https://orcid.org/{}'.format(orcid)
-                if self.config.app_ws_requester.is_valid_url(url) is False:
-                    r = ('ORCID',
+            if orcid is None:
+                continue
+
+            if orcid in identified.keys():
+                if contrib_name.fullname != identified[orcid]:
+                    r = ('contrib-id',
                          validation_status.STATUS_BLOCKING_ERROR,
-                         orcid + ': ' + _('Invalid value of ORCID'))
+                         _('Both "{}" and "{}"" have the same ORCID: {}').format(
+                            contrib_name.fullname, identified[orcid], orcid
+                          )
+                         )
                     msgs.append(r)
+            else:
+                identified[orcid] = contrib_name.fullname
+                url = 'https://orcid.org/{}'.format(orcid)
+                found = self.config.app_ws_requester.is_valid_url(url)
+                if not found:
+                    if self.config.app_ws_requester.is_valid_url(URL):
+                        r = ('contrib-id',
+                             validation_status.STATUS_WARNING,
+                             _('{value} is an invalid value for {label}. ').format(
+                            value=orcid, label='ORCID'))
+                    else:
+                        r = ('contrib-id',
+                             validation_status.STATUS_WARNING,
+                             _('{} is not accessible. ').format(URL))
+                    msgs.append(r)
+
         q = self.article.count_words('ORCID')
         if q > len(identified):
             r = (

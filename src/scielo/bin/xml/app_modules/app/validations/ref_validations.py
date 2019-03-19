@@ -158,7 +158,7 @@ class PersonValidation(object):
                 self.contrib.contrib_id.get('orcid') is None:
             r.append(
                 ('contrib-id',
-                 validation_status.STATUS_INFO,
+                 validation_status.STATUS_WARNING,
                  _('{} has no "contrib-id". ').format(self.contrib.fullname)))
         for contrib_id_type, contrib_id in self.contrib.contrib_id.items():
             if contrib_id_type in attributes.CONTRIB_ID_URLS.keys():
