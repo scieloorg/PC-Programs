@@ -221,6 +221,7 @@ class ArticleContentValidation(object):
                 items.append(self.months_seasons)
                 items.append(self.issue_label)
                 items.append(self.article_date_types)
+                items.append(self.complete_dates)
                 items.append(self.toc_section)
                 items.append(self.doi)
                 items.append(self.doi_and_lang)
@@ -1111,6 +1112,23 @@ class ArticleContentValidation(object):
             r.append(('pub-date', validation_status.STATUS_OK, c))
         else:
             r.append(('pub-date', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + data_validations.expected_values_message(expected_items)))
+        return r
+
+    @property
+    def complete_dates(self):
+        r = []
+        if self.article.raw_scielo_date and self.article.raw_scielo_date.get('day') is None:
+            r.append(
+                ('pub-date',
+                 validation_status.STATUS_FATAL_ERROR,
+                 self.article.raw_scielo_date)
+            )
+        if self.article.raw_epub_date and self.article.raw_epub_date.get('day') is None:
+            r.append(
+                ('pub-date',
+                 validation_status.STATUS_FATAL_ERROR,
+                 self.article.raw_epub_date)
+            )
         return r
 
     @property
