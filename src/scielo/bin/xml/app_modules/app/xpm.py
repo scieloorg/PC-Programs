@@ -15,6 +15,7 @@ from .pkg_processors import xml_versions
 
 def call_make_packages(args, version):
     script, xml_path, acron, INTERATIVE, GENERATE_PMC = read_inputs(args)
+    print(script, xml_path, acron, INTERATIVE, GENERATE_PMC)
     normalized_pkgfiles = None
     stage = 'xpm'
     if any([xml_path, acron]):

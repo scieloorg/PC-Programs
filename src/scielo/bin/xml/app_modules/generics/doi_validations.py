@@ -25,6 +25,8 @@ class DOIValidator(object):
         journal_prefixes = self.journal_prefixes(
             journal_issns, article.pub_date_year)
         for lang, doi in article.doi_and_lang:
+            if not doi:
+                continue
             self.validate_issn_in_doi(journal_issns, doi)
             self.validate_doi_prefix(journal_prefixes, journal_issns,
                                      article.journal_title, doi)
@@ -127,7 +129,7 @@ class DOIValidator(object):
                 ('doi', status,
                     _('{item} is registered as belonging to {owner}. ').format(
                         item=article_doi,
-                        owner='|'.join(doi_data.journal_titles))))
+                        owner='|'.join(list(doi_data.journal_titles)))))
 
     def validate_article_title(self, article_titles, article_doi, doi_data):
         if doi_data.article_titles is not None:

@@ -71,7 +71,7 @@ class PkgArticlesValidationsReports(object):
 
     @property
     def validations(self):
-        _validations = self.pkg_articles_validations.values()
+        _validations = list(self.pkg_articles_validations.values())
         _validations.append(self.pkg_issue_validations)
         _validations.append(self.pkg_journal_validations)
         return _validations

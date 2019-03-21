@@ -14,6 +14,9 @@ def now():
 
 
 def compare_text(str1, str2):
+    str1 = str1 or ''
+    str2 = str2 or ''
+
     s1 = [item for item in str1.upper().split() if item]
     s2 = [item for item in str2.upper().split() if item]
     return s1 == s2

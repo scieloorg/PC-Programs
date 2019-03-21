@@ -1,8 +1,10 @@
 # coding = utf-8
 
 import os
-from PIL import Image
-
+try:
+    from PIL import Image
+except:
+    Image = None
 from . import system
 from . import encoding
 
