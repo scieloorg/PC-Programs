@@ -1,1 +1,2 @@
-python run_app.py install %1 %2
+pip install pillow
+pip install packtools

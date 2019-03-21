@@ -939,7 +939,7 @@ class ArticleContentValidation(object):
             errors.append((label_elem, err_level, res))
         if mininum == 0:
             if len(values) > 1:
-                errors.append((elem_item_name + ' (@xml:lang="' + lang + '")', validation_status.STATUS_FATAL_ERROR, _('Required only one {item} for each language. Values found for @xml:lang="{lang}": {values}. ').format(lang=lang, item=elem_item_name, values=' | '.join(values))))
+                errors.append((elem_item_name + ' (@xml:lang="' + lang + '")', validation_status.STATUS_FATAL_ERROR, _('Required only one {item} for each language. Values found for @xml:lang="{lang}": {values}. ').format(lang=lang, item=elem_item_name, values=str(len(values)))))
         else:
             if len(values) != len(list(set(values))):
                 duplicated = {}

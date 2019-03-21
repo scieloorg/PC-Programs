@@ -154,7 +154,7 @@ class PersonValidation(object):
     @property
     def contrib_id_validation_result(self):
         r = []
-        if not self.contrib.contrib_id or \
+        if self.contrib.contrib_id and \
                 self.contrib.contrib_id.get('orcid') is None:
             r.append(
                 ('contrib-id',

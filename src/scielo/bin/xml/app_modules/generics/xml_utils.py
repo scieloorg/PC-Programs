@@ -424,11 +424,29 @@ def read_xml(content):
         content = fs_utils.read_file(content)
     return content
 
+"""
+p2
+('content', <type 'unicode'>)
+('s', <type 'str'>)
+('r', <class 'xml.etree.ElementTree.Element'>)
 
+p3
+content <class 'str'>
+s <class 'str'>
+
+unicode => str
+str
+"""
 def parse_xml(content):
     message = None
+    if content.startswith('<?') and '?>' in content:
+        content = content[content.find('?>')+2:].strip()
+    if '<!DOCTYPE' in content:
+        content = remove_doctype(content)
     try:
-        r = etree.parse(StringIO(encoding.encode(content)))
+        s = encoding.encode(content)
+        sio = StringIO(s)
+        r = etree.parse(sio)
     except Exception as e:
         message = 'XML is not well formed\n'
         msg = ''

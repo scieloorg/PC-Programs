@@ -1007,8 +1007,8 @@ class ArticleXML(object):
         if self.doi:
             r = [(self.language, self.doi)]
         for translation in self.translations or []:
-            doi = translation.findtext('.//article-id[@pub-id-type="doi"]')
-            r.append((xml_utils.element_lang(translation), doi.lower() or ''))
+            doi = translation.findtext('.//article-id[@pub-id-type="doi"]') or ''
+            r.append((xml_utils.element_lang(translation), doi.lower()))
         return r
 
     @property
@@ -1295,17 +1295,10 @@ class ArticleXML(object):
             return self.article_meta.findall('.//trans-abstract') or []
 
     @property
-    def subarticle_abstract_nodes(self):
-        r = []
-        for subart in self.translations:
-            r += subart.findall('.//abstract')
-        return r
-
-    @property
     def all_abstracts(self):
         if self._all_abstracts is None:
             self._all_abstracts = {}
-            for a in self.abstract_nodes + self.trans_abstract_nodes + self.subarticle_abstract_nodes:
+            for a in self.abstract_nodes + self.trans_abstract_nodes:
                 abstract_type = a.get('abstract-type', 'regular')
                 if abstract_type not in self._all_abstracts.keys():
                     self._all_abstracts[abstract_type] = []
@@ -1313,6 +1306,17 @@ class ArticleXML(object):
                 _abstract.language = xml_utils.element_lang(a) or self.language
                 _abstract.text = xml_utils.node_text(a)
                 self._all_abstracts[abstract_type].append(_abstract)
+
+            for subart in self.translations:
+                for a in subart.findall('.//abstract'):
+                    abstract_type = a.get('abstract-type', 'regular')
+                    if abstract_type not in self._all_abstracts.keys():
+                        self._all_abstracts[abstract_type] = []
+                    _abstract = Text()
+                    lang = xml_utils.element_lang(subart)
+                    _abstract.language = xml_utils.element_lang(a) or lang
+                    _abstract.text = xml_utils.node_text(a)
+                    self._all_abstracts[abstract_type].append(_abstract)
         return self._all_abstracts
     """
     @property
