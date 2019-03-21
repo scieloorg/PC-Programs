@@ -71,46 +71,56 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
     </xsl:template>
 
     <xsl:template match="article|text|doc" mode="pub-date">
-        <xsl:variable name="preprint_date">
+        <xsl:variable name="online_pub_date">
             <xsl:choose>
-                <xsl:when test="@rvpdate">
-                    <xsl:value-of select="@rvpdate"/>
-                </xsl:when>
                 <xsl:when test="@artdate">
                     <xsl:value-of select="@artdate"/>
                 </xsl:when>
                 <xsl:when test="@ahpdate">
                     <xsl:value-of select="@ahpdate"/>
                 </xsl:when>
+                <xsl:when test="@rvpdate">
+                    <xsl:value-of select="@rvpdate"/>
+                </xsl:when>
             </xsl:choose>
         </xsl:variable>
-        <xsl:choose>
-            <xsl:when test="string-length(normalize-space($preprint_date))&gt;0">
-                <pub-date>
-                    <xsl:choose>
-                        <xsl:when test="number(@sps)&gt;1.8">scielo</xsl:when>
-                        <xsl:otherwise>epub</xsl:otherwise>
-                    </xsl:choose>
-                    <xsl:call-template name="display_date">
-                        <xsl:with-param name="dateiso">
-                            <xsl:value-of select="$preprint_date"/>
-                        </xsl:with-param>
-                    </xsl:call-template>
-                </pub-date>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:variable name="issue_date_type">
-                    <xsl:choose>
-                        <xsl:when test="number(@sps)&gt;1.8">collection</xsl:when>
-                        <xsl:when test="@issueno='ahead'"></xsl:when>
-                        <xsl:when test="(number(@issueno)=0 or not(@issueno)) and (number(@volid)=0 or not(@volid))"></xsl:when>
-                        <!--xsl:when test="@artdate">collection</xsl:when--><!-- rolling pass -->
-                        <!--xsl:when test="@ahpdate">collection</xsl:when-->
-                        <xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
-                    </xsl:choose>
-                </xsl:variable>
-                <xsl:if test="$issue_date_type!=''">
-                    <pub-date pub-type="{$issue_date_type}">
+        <xsl:if test="string-length(normalize-space($online_pub_date))&gt;0">
+            <pub-date>
+                <xsl:choose>
+                    <xsl:when test="number(@sps)&gt;1.8">                    
+                        <xsl:attribute name="publication-format">electronic</xsl:attribute>
+                        <xsl:attribute name="date-type">pub</xsl:attribute>
+                        <xsl:call-template name="display_date">
+                            <xsl:with-param name="dateiso">
+                                <xsl:value-of select="$online_pub_date"/>
+                            </xsl:with-param>
+                        </xsl:call-template>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:attribute name="pub-type">epub</xsl:attribute>
+                        <xsl:call-template name="display_date">
+                            <xsl:with-param name="dateiso">
+                                <xsl:value-of select="$online_pub_date"/>
+                            </xsl:with-param>
+                        </xsl:call-template>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </pub-date>
+        </xsl:if>
+        <xsl:variable name="issue_date_type">
+            <xsl:choose>
+                <xsl:when test="@issueno='ahead'"></xsl:when>
+                <xsl:when test="(number(@issueno)=0 or not(@issueno)) and (number(@volid)=0 or not(@volid))"></xsl:when>
+                <xsl:when test="number(@sps)&gt;1.8">collection</xsl:when>
+                <xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:if test="$issue_date_type!=''">
+            <pub-date>
+                <xsl:choose>
+                    <xsl:when test="number(@sps)&gt;1.8">                    
+                        <xsl:attribute name="publication-format">electronic</xsl:attribute>
+                        <xsl:attribute name="date-type">collection</xsl:attribute>
                         <xsl:call-template name="display_date">
                             <xsl:with-param name="dateiso">
                                 <xsl:value-of select="@dateiso"/>
@@ -126,11 +136,28 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
                                 </xsl:choose>
                             </xsl:with-param>
                         </xsl:call-template>
-                    </pub-date>
-                </xsl:if>
-            </xsl:otherwise>
-        </xsl:choose>
-        
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:attribute name="pub-type"><xsl:value-of select="$issue_date_type"/></xsl:attribute>
+                        <xsl:call-template name="display_date">
+                            <xsl:with-param name="dateiso">
+                                <xsl:value-of select="@dateiso"/>
+                            </xsl:with-param>
+                            <xsl:with-param name="date">
+                                <xsl:choose>
+                                    <xsl:when test="@season!=''">
+                                        <xsl:value-of select="@season"/>
+                                    </xsl:when>
+                                    <xsl:when test="//extra-scielo//season">
+                                        <xsl:value-of select="//extra-scielo//season"/>
+                                    </xsl:when>
+                                </xsl:choose>
+                            </xsl:with-param>
+                        </xsl:call-template>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </pub-date>
+        </xsl:if>        
     </xsl:template>
 
 </xsl:stylesheet>
