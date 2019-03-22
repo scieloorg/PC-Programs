@@ -126,7 +126,7 @@ class MergedArticlesReports(object):
                 if all([article.fpage_number, article.lpage_number]):
                     if previous is not None:
                         if previous.lpage_number > article.fpage_number:
-                            status = error_level if not article.is_epub_only else validation_status.STATUS_WARNING
+                            status = error_level if not article.is_rolling_pass else validation_status.STATUS_WARNING
                             msg.append(_('Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.lpage, fpage=article.fpage))
                         elif previous.lpage_number + 1 < article.fpage_number:
                             status = validation_status.STATUS_WARNING

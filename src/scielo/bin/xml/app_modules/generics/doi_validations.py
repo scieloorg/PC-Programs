@@ -22,8 +22,8 @@ class DOIValidator(object):
         journal_issns = [issn.lower()
                          for issn in [article.print_issn, article.e_issn]
                          if issn is not None]
-        journal_prefixes = self.journal_prefixes(
-            journal_issns, article.pub_date_year)
+        year = (article.scielo_date or article.editorial_date or {}).get('year')
+        journal_prefixes = self.journal_prefixes(journal_issns, year)
         for lang, doi in article.doi_and_lang:
             if not doi:
                 continue

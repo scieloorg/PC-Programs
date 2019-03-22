@@ -333,7 +333,7 @@ class ArticleContentValidation(object):
         if version in attributes.sps_current_versions():
             return [(label, status, msg)]
 
-        pub_dateiso = self.article.pub_dateiso
+        pub_dateiso = self.article.scielo_date or self.article.editorial_date
         if pub_dateiso is None:
             return [(label, validation_status.STATUS_ERROR, _('Unable to validate sps version because article has no publication date. '))]
 
@@ -1001,11 +1001,14 @@ class ArticleContentValidation(object):
                 dates = []
                 if not received < accepted:
                     dates.append(('received: {value}'.format(value=received), 'accepted: {value}'.format(value=accepted)))
-                if self.article.pub_date_year is not None:
-                    if self.article.pub_date_year < received[0:4]:
-                        dates.append(('received: {value}'.format(value=received), 'pub-date: {value}'.format(value=self.article.pub_date_year)))
-                    if self.article.pub_date_year < accepted[0:4]:
-                        dates.append(('accepted: {value}'.format(value=accepted), 'pub-date: {value}'.format(value=self.article.pub_date_year)))
+                year = self.article.scielo_date
+                if year:
+                    year = year.get('year')
+                if year is not None:
+                    if year < received[0:4]:
+                        dates.append(('received: {value}'.format(value=received), 'pub-date: {value}'.format(value=year)))
+                    if year < accepted[0:4]:
+                        dates.append(('accepted: {value}'.format(value=accepted), 'pub-date: {value}'.format(value=year)))
 
                 if len(dates) > 0:
                     for date in dates:
@@ -1080,8 +1083,11 @@ class ArticleContentValidation(object):
     @property
     def references(self):
         r = []
-        year = ('published', self.article.pub_date_year) if self.article.pub_date_year is not None else None
-        if year is None:
+        article_year = (
+            self.article.scielo_date or self.article.editorial_date or {}).get(
+                'year')
+        year = ('published', article_year)
+        if article_year is None:
             year = ('today', datetime.now().isoformat()[0:4])
         previous_refxml = None
         for ref_xml in self.article.references_xml:
@@ -1104,9 +1110,16 @@ class ArticleContentValidation(object):
             expected_items = "'epub-ppub', 'epub', 'collection', 'epub'"
         date_types = {
               label
-              for label, value in self.article.labeled_article_dates[:-1]
+              for label, value in self.article.labeled_xml_dates
               if value
             }
+        date_types.update(
+            {
+              label
+              for label, value in self.article.labeled_article_dates
+              if value
+            }
+        )
         c = ' | '.join(list(date_types))
         if date_types in expected:
             r.append(('pub-date', validation_status.STATUS_OK, c))
@@ -1117,35 +1130,26 @@ class ArticleContentValidation(object):
     @property
     def complete_dates(self):
         r = []
-        if self.article.raw_scielo_date and self.article.raw_scielo_date.get('day') is None:
+        if self.article.scielo_date and \
+                self.article.scielo_date.get('day') is None:
             r.append(
                 ('pub-date',
                  validation_status.STATUS_FATAL_ERROR,
-                 self.article.raw_scielo_date)
-            )
-        if self.article.raw_epub_date and self.article.raw_epub_date.get('day') is None:
-            r.append(
-                ('pub-date',
-                 validation_status.STATUS_FATAL_ERROR,
-                 self.article.raw_epub_date)
+                 self.article.scielo_date)
             )
         return r
 
     @property
-    def issue_pub_date(self):
-        return data_validations.required_one(_('issue pub-date'), self.article.issue_pub_date)
+    def editorial_date(self):
+        return data_validations.required_one(_('editorial pub-date'), self.article.editorial_date)
 
     @property
-    def article_pub_date(self):
-        return data_validations.display_attributes(_('article pub-date'), self.article.article_pub_date)
+    def scielo_date(self):
+        return data_validations.display_attributes(_('SciELO pub-date'), self.article.scielo_date)
 
     @property
     def is_ahead(self):
         return data_validations.is_valid_value(_('is aop'), self.article.is_ahead)
-
-    @property
-    def ahpdate(self):
-        return data_validations.is_valid_value(_('aop'), self.article.ahpdate)
 
     @property
     def is_article_press_release(self):
