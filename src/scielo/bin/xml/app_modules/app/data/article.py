@@ -736,7 +736,7 @@ class ArticleXML(object):
                 item['href'] = rel.attrib.get('{http://www.w3.org/1999/xlink}href')
                 item['related-article-type'] = rel.attrib.get('related-article-type')
                 item['ext-link-type'] = rel.attrib.get('ext-link-type')
-                if item['ext-link-type'] == 'scielo-pid':
+                if item['ext-link-type'] == 'real-pid':
                     item['ext-link-type'] = 'pid'
                 item['id'] = rel.attrib.get('id')
                 if item['related-article-type'] not in attributes.related_articles_type:
@@ -1449,11 +1449,11 @@ class ArticleXML(object):
         return article_utils.format_dateiso(date)
 
     @property
-    def scielo_date(self):
+    def real_pubdate(self):
         return self.raw_pubdate_datetype_pub or self.raw_pubdate_pubtype_epub
 
     @property
-    def editorial_date(self):
+    def expected_pubdate(self):
         return (
                 self.raw_pubdate_datetype_collection or
                 self.raw_pubdate_pubtype_collection or
@@ -1461,6 +1461,28 @@ class ArticleXML(object):
                 self.raw_pubdate_pubtype_epub or
                 self.raw_pubdate_pubtype_ppub
             )
+
+    @property
+    def publication_dates(self):
+        dates = []
+        date = self.raw_pubdate_datetype_pub or self.raw_pubdate_pubtype_epub
+        if date:
+            item = {'k': 'real',
+                    'v': article_utils.format_dateiso(date),
+                    's': 'xml'}
+            if not self.raw_pubdate_datetype_pub:
+                item.update({'s': 'deduced'})
+            dates.append(date)
+
+        date = self.raw_pubdate_datetype_collection or self.expected_pubdate
+        if date:
+            item = {'k': 'expected',
+                    'v': article_utils.format_dateiso(date),
+                    's': 'xml'}
+            if not self.raw_pubdate_datetype_collection:
+                item.update({'s': 'deduced'})
+            dates.append(date)
+        return dates
 
     @property
     def labeled_xml_dates(self):
@@ -1705,7 +1727,7 @@ class Article(ArticleXML):
         data['e-ISSN'] = self.e_issn
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
-        data['issue pub date'] = (self.editorial_date or {}).get('year', '')
+        data['issue pub date'] = (self.expected_pubdate or {}).get('year', '')
         data['order'] = self.order
         data['doi'] = self.doi
         data['fpage-lpage-seq-elocation-id'] = '-'.join([str(item) for item in [self.fpage, self.lpage, self.fpage_seq, self.elocation_id]])
@@ -1765,7 +1787,7 @@ class Article(ArticleXML):
 
     @property
     def is_rolling_pass(self):
-        if self.scielo_date:
+        if self.real_pubdate:
             return (
                 not self.is_ahead and
                 not self.raw_pubdate_pubtype_collection and
@@ -1778,12 +1800,12 @@ class Article(ArticleXML):
     @property
     def aop_date(self):
         if self.is_ahead:
-            return self.scielo_date
+            return self.real_pubdate
 
     @property
     def rolling_pass_date(self):
         if self.is_rolling_pass:
-            return self.scielo_date
+            return self.real_pubdate
 
     @property
     def is_text(self):
@@ -1811,7 +1833,7 @@ class Article(ArticleXML):
 
     @property
     def issue_label(self):
-        year = (self.editorial_date or self.scielo_date or {}).get('year', '')
+        year = (self.expected_pubdate or self.real_pubdate or {}).get('year', '')
         return article_utils.format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)
 
     @property
@@ -1828,9 +1850,9 @@ class Article(ArticleXML):
             return article_utils.days('received date', self.received_dateiso, 'accepted date', self.accepted_dateiso)
 
     @property
-    def accepted_to_scielo_in_days(self):
+    def accepted_to_real_in_days(self):
         d1 = self.accepted_dateiso
-        d2 = self.isoformat(self.scielo_date)
+        d2 = self.isoformat(self.real_pubdate)
         if d1 is not None and d2 is not None:
             return article_utils.days('accepted date', d1, 'SciELO date', d2)
 

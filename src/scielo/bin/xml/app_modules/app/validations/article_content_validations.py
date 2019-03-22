@@ -333,7 +333,7 @@ class ArticleContentValidation(object):
         if version in attributes.sps_current_versions():
             return [(label, status, msg)]
 
-        pub_dateiso = self.article.scielo_date or self.article.editorial_date
+        pub_dateiso = self.article.real_pubdate or self.article.expected_pubdate
         if pub_dateiso is None:
             return [(label, validation_status.STATUS_ERROR, _('Unable to validate sps version because article has no publication date. '))]
 
@@ -1001,7 +1001,7 @@ class ArticleContentValidation(object):
                 dates = []
                 if not received < accepted:
                     dates.append(('received: {value}'.format(value=received), 'accepted: {value}'.format(value=accepted)))
-                year = self.article.scielo_date
+                year = self.article.real_pubdate
                 if year:
                     year = year.get('year')
                 if year is not None:
@@ -1084,7 +1084,7 @@ class ArticleContentValidation(object):
     def references(self):
         r = []
         article_year = (
-            self.article.scielo_date or self.article.editorial_date or {}).get(
+            self.article.real_pubdate or self.article.expected_pubdate or {}).get(
                 'year')
         year = ('published', article_year)
         if article_year is None:
@@ -1103,8 +1103,8 @@ class ArticleContentValidation(object):
     def article_date_types(self):
         r = []
         if self.article.sps_version_number > 1.8:
-            expected = [{'scielo', 'collection'}]
-            expected_items = 'scielo|collection'
+            expected = [{'pub', 'collection'}]
+            expected_items = 'pub|collection'
         else:
             expected = [{'epub-ppub'}, {'epub', 'collection'}, {'epub'}]
             expected_items = "'epub-ppub', 'epub', 'collection', 'epub'"
@@ -1124,28 +1124,30 @@ class ArticleContentValidation(object):
         if date_types in expected:
             r.append(('pub-date', validation_status.STATUS_OK, c))
         else:
-            r.append(('pub-date', validation_status.STATUS_ERROR, _('Invalid combination of date types: ') + c + '. ' + data_validations.expected_values_message(expected_items)))
+            r.append(('pub-date', validation_status.STATUS_ERROR,
+                     _('Invalid combination of date types: ') + c + '. ' +
+                     data_validations.expected_values_message(expected_items)))
         return r
 
     @property
     def complete_dates(self):
         r = []
-        if self.article.scielo_date and \
-                self.article.scielo_date.get('day') is None:
+        if self.article.real_pubdate and \
+                self.article.real_pubdate.get('day') is None:
             r.append(
                 ('pub-date',
                  validation_status.STATUS_FATAL_ERROR,
-                 self.article.scielo_date)
+                 self.article.real_pubdate)
             )
         return r
 
     @property
-    def editorial_date(self):
-        return data_validations.required_one(_('editorial pub-date'), self.article.editorial_date)
+    def expected_pubdate(self):
+        return data_validations.required_one(_('editorial pub-date'), self.article.expected_pubdate)
 
     @property
-    def scielo_date(self):
-        return data_validations.display_attributes(_('SciELO pub-date'), self.article.scielo_date)
+    def real_pubdate(self):
+        return data_validations.display_attributes(_('SciELO pub-date'), self.article.real_pubdate)
 
     @property
     def is_ahead(self):

@@ -264,7 +264,7 @@ class ArticleDisplayReport(object):
     @property
     def issue_header(self):
         if self.article.tree is not None:
-            r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, article_utils.format_date(self.article.editorial_date)]
+            r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, article_utils.format_date(self.article.expected_pubdate)]
             return html_reports.tag('div', '\n'.join([html_reports.tag('h5', item) for item in r if item is not None]), 'issue-data')
         else:
             return ''

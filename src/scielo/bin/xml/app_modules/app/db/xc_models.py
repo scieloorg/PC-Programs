@@ -269,21 +269,9 @@ class ArticleRecords(object):
             self._metadata['32'] = self.article.number
             self._metadata['131'] = self.article.volume_suppl
             self._metadata['132'] = self.article.number_suppl
-        self._metadata['223'] = self.article.scielo_date
+        self._metadata['223'] = self.article.raw_pubdate_pubtype_epub or self.article.raw_pubdate_datetype_pub
 
-        self._metadata['265'] = []
-        if self.article.scielo_date:
-            self._metadata['265'].append(
-                {'k': 'scielo',
-                 'v': article_utils.format_dateiso(
-                       self.article.scielo_date)
-                 })
-        if self.article.editorial_date:
-            self._metadata['265'].append(
-                {'k': 'editorial',
-                 'v': article_utils.format_dateiso(
-                       self.article.editorial_date)
-                 })
+        self._metadata['265'] = self.article.publication_dates
 
         self._metadata['58'] = self.article.funding_source
         self._metadata['591'] = [{'_': item for item in self.article.principal_award_recipient}]
@@ -617,8 +605,8 @@ class IssueModels(object):
             article_items = [article.journal_id_nlm_ta, article.e_issn, article.print_issn]
             issue_items = [self.issue.journal_id_nlm_ta, self.issue.e_issn, self.issue.print_issn]
 
-            if article.editorial_date:
-                a_year = (article.editorial_date or {}).get('year', '')
+            if article.expected_pbudate:
+                a_year = (article.expected_pbudate or {}).get('year', '')
                 i_year = (self.issue.dateiso or ' '*4)[:4].strip()
                 article_items.append(a_year)
                 issue_items.append(i_year)
