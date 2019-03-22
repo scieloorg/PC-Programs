@@ -53,7 +53,7 @@ class MergedArticlesData(object):
 
     @property
     def is_rolling_pass(self):
-        return all([a for a in self.merged_articles.values() if a.is_epub_only])
+        return all([a for a in self.merged_articles.values() if a.is_rolling_pass])
 
     @property
     def common_data(self):

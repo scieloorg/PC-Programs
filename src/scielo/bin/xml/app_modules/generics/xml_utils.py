@@ -439,10 +439,11 @@ str
 """
 def parse_xml(content):
     message = None
-    if content.startswith('<?') and '?>' in content:
-        content = content[content.find('?>')+2:].strip()
-    if '<!DOCTYPE' in content:
-        content = remove_doctype(content)
+    if content:
+        if content.startswith('<?') and '?>' in content:
+            content = content[content.find('?>')+2:].strip()
+        if '<!DOCTYPE' in content:
+            content = remove_doctype(content)
     try:
         s = encoding.encode(content)
         sio = StringIO(s)

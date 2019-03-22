@@ -21,6 +21,14 @@ def register_log(text):
 
 def display_article_dates(article, style=''):
     items = []
+    for label, value in article.labeled_xml_dates:
+        items.append(
+            html_reports.display_labeled_value(
+                'date ({})'.format(label),
+                article_utils.format_date(value),
+                style
+            )
+        )
     for label, value in article.labeled_article_dates:
         items.append(
             html_reports.display_labeled_value(
@@ -256,7 +264,7 @@ class ArticleDisplayReport(object):
     @property
     def issue_header(self):
         if self.article.tree is not None:
-            r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, article_utils.format_date(self.article.issue_pub_date)]
+            r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, article_utils.format_date(self.article.editorial_date)]
             return html_reports.tag('div', '\n'.join([html_reports.tag('h5', item) for item in r if item is not None]), 'issue-data')
         else:
             return ''

@@ -167,7 +167,7 @@ class PkgArticlesDataReports(object):
     @property
     def articles_dates_report(self):
         labels = ['name', '@article-type',
-        'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
+        'received', 'accepted', 'receive to accepted (days)', 'SciELO date', 'editorial date', 'accepted to SciELO (days)', 'accepted to nowadays (days)']
         items = []
         for xml_name, doc in self.articles:
             values = []
@@ -176,10 +176,10 @@ class PkgArticlesDataReports(object):
             values.append(utils.display_datetime(doc.received_dateiso))
             values.append(utils.display_datetime(doc.accepted_dateiso))
             values.append(str(doc.history_days))
-            values.append(utils.display_datetime(doc.article_pub_dateiso))
-            values.append(utils.display_datetime(doc.issue_pub_dateiso))
-            values.append(str(doc.publication_days))
-            values.append(str(doc.registration_days))
+            values.append(utils.display_datetime(doc.isoformat(doc.scielo_date)))
+            values.append(utils.display_datetime(doc.isoformat(doc.editorial_date)))
+            values.append(str(doc.accepted_to_scielo_in_days))
+            values.append(str(doc.accepted_to_nowadays_in_days))
             items.append(html_reports.label_values(labels, values))
         article_dates = html_reports.sheet(labels, items, 'dbstatus')
 

@@ -1,6 +1,5 @@
 # coding=utf-8
 import re
-from datetime import datetime
 
 from ...__init__ import _
 from ...generics.reports import validation_status
@@ -8,8 +7,6 @@ from ..data import attributes
 from . import data_validations
 from ...generics import xml_utils
 from ...generics import utils
-from ...generics import encoding
-from ...generics.reports import html_reports
 
 
 def validate_publication_type(publication_type):

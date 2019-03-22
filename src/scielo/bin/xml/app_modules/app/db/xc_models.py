@@ -264,26 +264,25 @@ class ArticleRecords(object):
 
         if self.article.is_ahead:
             self._metadata['32'] = 'ahead'
-            self._metadata['223'] = self.article.article_pub_dateiso
         else:
             self._metadata['31'] = self.article.volume
             self._metadata['32'] = self.article.number
             self._metadata['131'] = self.article.volume_suppl
             self._metadata['132'] = self.article.number_suppl
-            self._metadata['223'] = self.article.article_pub_dateiso
+        self._metadata['223'] = self.article.scielo_date
 
         self._metadata['265'] = []
-        if self.article.raw_scielo_date:
+        if self.article.scielo_date:
             self._metadata['265'].append(
                 {'k': 'scielo',
                  'v': article_utils.format_dateiso(
-                       self.article.raw_scielo_date)
+                       self.article.scielo_date)
                  })
-        if self.article.raw_collection_date:
+        if self.article.editorial_date:
             self._metadata['265'].append(
-                {'k': 'collection',
+                {'k': 'editorial',
                  'v': article_utils.format_dateiso(
-                       self.article.raw_collection_date)
+                       self.article.editorial_date)
                  })
 
         self._metadata['58'] = self.article.funding_source
@@ -324,8 +323,8 @@ class ArticleRecords(object):
             rec_c['865'] = self._metadata.get('65')
             rec_c['71'] = item.publication_type
 
-            if item.article_title is not None or item.chapter_title is not None:
-                rec_c['12'] = {'_': item.article_title if item.article_title is not None else item.chapter_title, 'l': item.language}
+            if item.article_title or item.chapter_title:
+                rec_c['12'] = {'_': item.article_title or item.chapter_title, 'l': item.language}
             if item.article_title is not None:
                 rec_c['30'] = item.source
             else:
@@ -341,7 +340,7 @@ class ArticleRecords(object):
             grp_idx = 0
             etals = []
             for grptype, grp, etal in item.person_group_xml_items:
-                is_analytic = (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
+                is_analytic = (grp_idx == 0) and (item.article_title or item.chapter_title)
 
                 grp_idx += 1
                 etals.append(etal)
@@ -420,7 +419,7 @@ class ArticleRecords(object):
         d, t = utils.now()
         rec_o['91'] = d
         rec_o['92'] = t
-        rec_o['93'] = d if self.article.creation_date is None else self.article.creation_date
+        rec_o['93'] = d or self.article.creation_date
         rec_o['703'] = total_of_records
         return rec_o
 
@@ -618,9 +617,9 @@ class IssueModels(object):
             article_items = [article.journal_id_nlm_ta, article.e_issn, article.print_issn]
             issue_items = [self.issue.journal_id_nlm_ta, self.issue.e_issn, self.issue.print_issn]
 
-            if article.is_epub_only is False:
-                a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
-                i_year = self.issue.dateiso[0:4] if self.issue.dateiso is not None else ''
+            if article.editorial_date:
+                a_year = (article.editorial_date or {}).get('year', '')
+                i_year = (self.issue.dateiso or ' '*4)[:4].strip()
                 article_items.append(a_year)
                 issue_items.append(i_year)
 
@@ -635,7 +634,7 @@ class IssueModels(object):
                     if issue_data is None:
                         status = validation_status.STATUS_WARNING
                     elif label == _('journal title'):
-                        if article_data is not None and article_data.strip() == issue_data.strip():
+                        if (article_data or '').strip() == issue_data.strip():
                             error = False
                         elif (article.is_ahead or is_rolling_pass) and (article_data.startswith(issue_data) or issue_data.startswith(article_data)):
                             error = False

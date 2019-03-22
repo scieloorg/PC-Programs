@@ -449,6 +449,12 @@ class ArticleXML(object):
                     self.sub_articles.append(s)
             self.responses = self.tree.findall('./response')
 
+    def get_articlemeta_node_date(self, xpath):
+        if self.article_meta is not None:
+            node = self.article_meta.find(xpath)
+            if node is not None:
+                return xml_utils.date_element(node)
+
     def paragraphs_startswith(self, character=':'):
         paragraphs = []
         if self.tree is not None:
@@ -1409,70 +1415,69 @@ class ArticleXML(object):
 
     @property
     def received(self):
-        if self.article_meta is not None:
-            return xml_utils.date_element(self.article_meta.find('history/date[@date-type="received"]'))
+        return self.get_articlemeta_node_date('history/date[@date-type="received"]')
 
     @property
     def accepted(self):
-        if self.article_meta is not None:
-            return xml_utils.date_element(self.article_meta.find('history/date[@date-type="accepted"]'))
+        return self.get_articlemeta_node_date('history/date[@date-type="accepted"]')
 
     @property
-    def raw_scielo_date(self):
-        if self.article_meta is not None:
-            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="scielo"]'))
+    def raw_pubdate_datetype_pub(self):
+        return self.get_articlemeta_node_date('pub-date[@date-type="pub"]')
 
     @property
-    def raw_collection_date(self):
-        if self.article_meta is not None:
-            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="collection"]'))
+    def raw_pubdate_datetype_collection(self):
+        return self.get_articlemeta_node_date('pub-date[@date-type="collection"]')
 
     @property
-    def raw_epub_ppub_date(self):
-        if self.article_meta is not None:
-            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="epub-ppub"]'))
+    def raw_pubdate_pubtype_collection(self):
+        return self.get_articlemeta_node_date('pub-date[@pub-type="collection"]')
 
     @property
-    def raw_epub_date(self):
-        if self.article_meta is not None:
-            date_node = self.article_meta.find('pub-date[@pub-type="epub"]')
-            if date_node is None:
-                date_node = self.article_meta.find('pub-date[@date-type="preprint"]')
-            return xml_utils.date_element(date_node)
+    def raw_pubdate_pubtype_epubppub(self):
+        return self.get_articlemeta_node_date('pub-date[@pub-type="epub-ppub"]')
 
     @property
-    def raw_ppub_date(self):
-        if self.article_meta is not None:
-            return xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="ppub"]'))
+    def raw_pubdate_pubtype_epub(self):
+        return self.get_articlemeta_node_date('pub-date[@pub-type="epub"]')
 
     @property
-    def collection_date(self):
-        return self.raw_collection_date
+    def raw_pubdate_pubtype_ppub(self):
+        return self.get_articlemeta_node_date('pub-date[@pub-type="ppub"]')
 
-    @property
-    def epub_ppub_date(self):
-        return self.raw_epub_ppub_date
-
-    @property
-    def epub_date(self):
-        return self.raw_epub_date
-
-    @property
-    def ppub_date(self):
-        return self.raw_ppub_date
+    def isoformat(self, date):
+        return article_utils.format_dateiso(date)
 
     @property
     def scielo_date(self):
-        return self.raw_scielo_date or self.raw_epub_date
+        return self.raw_pubdate_datetype_pub or self.raw_pubdate_pubtype_epub
+
+    @property
+    def editorial_date(self):
+        return (
+                self.raw_pubdate_datetype_collection or
+                self.raw_pubdate_pubtype_collection or
+                self.raw_pubdate_pubtype_epubppub or
+                self.raw_pubdate_pubtype_epub or
+                self.raw_pubdate_pubtype_ppub
+            )
+
+    @property
+    def labeled_xml_dates(self):
+        return [
+            ('epub-ppub', self.raw_pubdate_pubtype_epubppub),
+            ('epub', self.raw_pubdate_pubtype_epub),
+            ('collection',
+                self.raw_pubdate_datetype_collection or
+                self.raw_pubdate_pubtype_collection),
+            ('pub', self.raw_pubdate_datetype_pub),
+        ]
 
     @property
     def labeled_article_dates(self):
         return [
-            ('epub-ppub', self.raw_epub_ppub_date),
-            ('epub', self.raw_epub_date),
-            ('collection', self.raw_collection_date),
-            ('scielo', self.raw_scielo_date),
-            ('ahpdate', self.ahpdate),
+            ('aop', self.aop_date),
+            ('rolling pass', self.rolling_pass_date),
         ]
 
     @property
@@ -1700,7 +1705,7 @@ class Article(ArticleXML):
         data['e-ISSN'] = self.e_issn
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
-        data['issue pub date'] = self.issue_pub_dateiso[0:4] if self.issue_pub_dateiso is not None else None
+        data['issue pub date'] = (self.editorial_date or {}).get('year', '')
         data['order'] = self.order
         data['doi'] = self.doi
         data['fpage-lpage-seq-elocation-id'] = '-'.join([str(item) for item in [self.fpage, self.lpage, self.fpage_seq, self.elocation_id]])
@@ -1759,19 +1764,26 @@ class Article(ArticleXML):
         return (self.volume is None) and (self.number == 'ahead')
 
     @property
-    def is_epub_only(self):
-        if self.raw_epub_date:
+    def is_rolling_pass(self):
+        if self.scielo_date:
             return (
                 not self.is_ahead and
-                not self.raw_epub_ppub_date and
-                not self.raw_collection_date
+                not self.raw_pubdate_pubtype_collection and
+                not self.raw_pubdate_pubtype_epub and
+                not self.raw_pubdate_pubtype_epubppub and
+                not self.raw_pubdate_pubtype_ppub
             )
         return False
 
     @property
-    def ahpdate(self):
+    def aop_date(self):
         if self.is_ahead:
-            return self.article_pub_date
+            return self.scielo_date
+
+    @property
+    def rolling_pass_date(self):
+        if self.is_rolling_pass:
+            return self.scielo_date
 
     @property
     def is_text(self):
@@ -1799,40 +1811,8 @@ class Article(ArticleXML):
 
     @property
     def issue_label(self):
-        year = self.issue_pub_date.get('year', '') if self.issue_pub_date is not None else ''
+        year = (self.editorial_date or self.scielo_date or {}).get('year', '')
         return article_utils.format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)
-
-    @property
-    def issue_pub_dateiso(self):
-        return article_utils.format_dateiso(self.issue_pub_date)
-
-    @property
-    def issue_pub_date(self):
-        return self.epub_ppub_date or self.collection_date or self.epub_date
-
-    @property
-    def article_pub_date(self):
-        if self.epub_date is not None:
-            if self.epub_date.get('day') is not None:
-                if int(self.epub_date.get('day')) != 0:
-                    return self.epub_date
-
-    @property
-    def article_pub_dateiso(self):
-        return article_utils.format_dateiso(self.article_pub_date)
-
-    @property
-    def pub_date(self):
-        return self.article_pub_date or self.issue_pub_date
-
-    @property
-    def pub_dateiso(self):
-        return article_utils.format_dateiso(self.pub_date)
-
-    @property
-    def pub_date_year(self):
-        if self.pub_date is not None:
-            return self.pub_date.get('year')
 
     @property
     def received_dateiso(self):
@@ -1848,14 +1828,14 @@ class Article(ArticleXML):
             return article_utils.days('received date', self.received_dateiso, 'accepted date', self.accepted_dateiso)
 
     @property
-    def publication_days(self):
+    def accepted_to_scielo_in_days(self):
         d1 = self.accepted_dateiso
-        d2 = self.pub_dateiso
+        d2 = self.isoformat(self.scielo_date)
         if d1 is not None and d2 is not None:
-            return article_utils.days('accepted date', d1, 'pub-date', d2)
+            return article_utils.days('accepted date', d1, 'SciELO date', d2)
 
     @property
-    def registration_days(self):
+    def accepted_to_nowadays_in_days(self):
         if self.accepted is not None:
             return article_utils.days('accepted date', self.accepted_dateiso, 'current date', datetime.now().isoformat())
 
