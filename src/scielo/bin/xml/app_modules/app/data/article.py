@@ -736,7 +736,7 @@ class ArticleXML(object):
                 item['href'] = rel.attrib.get('{http://www.w3.org/1999/xlink}href')
                 item['related-article-type'] = rel.attrib.get('related-article-type')
                 item['ext-link-type'] = rel.attrib.get('ext-link-type')
-                if item['ext-link-type'] == 'real-pid':
+                if item['ext-link-type'] == 'scielo-pid':
                     item['ext-link-type'] = 'pid'
                 item['id'] = rel.attrib.get('id')
                 if item['related-article-type'] not in attributes.related_articles_type:

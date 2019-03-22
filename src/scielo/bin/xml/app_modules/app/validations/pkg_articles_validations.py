@@ -178,7 +178,7 @@ class PkgArticlesDataReports(object):
             values.append(str(doc.history_days))
             values.append(utils.display_datetime(doc.isoformat(doc.real_pubdate)))
             values.append(utils.display_datetime(doc.isoformat(doc.expected_pubdate)))
-            values.append(str(doc.accepted_to_scielo_in_days))
+            values.append(str(doc.accepted_to_real_in_days))
             values.append(str(doc.accepted_to_nowadays_in_days))
             items.append(html_reports.label_values(labels, values))
         article_dates = html_reports.sheet(labels, items, 'dbstatus')
