@@ -328,7 +328,7 @@ class ArticleRecords(object):
             grp_idx = 0
             etals = []
             for grptype, grp, etal in item.person_group_xml_items:
-                is_analytic = (grp_idx == 0) and (item.article_title or item.chapter_title)
+                is_analytic = (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
 
                 grp_idx += 1
                 etals.append(etal)
@@ -605,8 +605,8 @@ class IssueModels(object):
             article_items = [article.journal_id_nlm_ta, article.e_issn, article.print_issn]
             issue_items = [self.issue.journal_id_nlm_ta, self.issue.e_issn, self.issue.print_issn]
 
-            if article.expected_pbudate:
-                a_year = (article.expected_pbudate or {}).get('year', '')
+            if article.expected_pubdate:
+                a_year = (article.expected_pubdate or {}).get('year', '')
                 i_year = (self.issue.dateiso or ' '*4)[:4].strip()
                 article_items.append(a_year)
                 issue_items.append(i_year)

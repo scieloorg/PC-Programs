@@ -1977,7 +1977,7 @@ item: Install File
   Destination=%PROGDIR%\bin\xml\app_modules\__init__.py
   Flags=0000000010000010
 end
-item: Install File
+remarked item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\run_app.py
   Destination=%PROGDIR%\bin\xml\run_app.py
   Flags=0000000010000010
@@ -6771,17 +6771,18 @@ item: End Block
 end
 item: Create Shortcut
   Source=%PROGDIR%\bin\xml\xml_converter.py
-  Source Portuguese=%PROGDIR%\bin\xml\xml_converter.py
+  Source Portuguese=%PROGDIR%\bin\xml\xml_converter.bat
   Destination=%GROUP%\XML Converter.lnk
   Destination Portuguese=%GROUP%\XML Converter.lnk
   Command Options=%PROGDIR%\bin\xml\xml_converter.bat
-  Command Options Portuguese=%PROGDIR%\bin\xml\xml_converter.bat
   Working Directory=%PROGDIR%\bin\xml
   Working Directory Portuguese=%PROGDIR%\bin\xml
   Icon Number=0
   Icon Number Portuguese=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Key Type Portuguese=1536
+  Flags=00000001
 end
 item: Create Shortcut
   Source=%PROGDIR%\bin\xml\xml_package_maker.py
@@ -6789,21 +6790,29 @@ item: Create Shortcut
   Destination=%GROUP%\XML Package Maker.lnk
   Destination Portuguese=%GROUP%\XML Package Maker.lnk
   Command Options=%PROGDIR%\bin\xml\xml_package_maker.bat
-  Command Options Portuguese=%PROGDIR%\bin\xml\xml_package_maker.bat
   Working Directory=%PROGDIR%\bin\xml\
   Working Directory Portuguese=%PROGDIR%\bin\xml\
   Icon Number=0
   Icon Number Portuguese=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Key Type Portuguese=1536
+  Flags=00000001
 end
 item: Create Shortcut
   Source=%PROGDIR%\bin\xml\download_markup_journals.py
+  Source Portuguese=%PROGDIR%\bin\xml\download_markup_journals.bat
   Destination=%GROUP%\Markup - update journals list.lnk
+  Destination Portuguese=%GROUP%\Markup - update journals list.lnk
   Command Options=%PROGDIR%\bin\xml\download_markup_journals.bat
   Working Directory=%PROGDIR%\bin\xml\
+  Working Directory Portuguese=%PROGDIR%\bin\xml\
   Icon Number=0
+  Icon Number Portuguese=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\scielo.ico
+  Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\scielo.ico
+  Key Type Portuguese=1536
+  Flags=00000001
 end
 item: Else Statement
 end
@@ -6922,7 +6931,7 @@ item: Execute Program
   Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PROGDIR% %DATADIR% %MYSCIELOURL%
   Flags=00000110
 end
-item: Execute Program
+remarked item: Execute Program
   Pathname=python
   Command Line=%PROGDIR%\bin\xml\run_app.py install
   Default Directory=%PROGDIR%\bin\xml\
