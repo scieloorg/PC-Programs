@@ -1472,7 +1472,7 @@ class ArticleXML(object):
                     's': 'xml'}
             if not self.raw_pubdate_datetype_pub:
                 item.update({'s': 'deduced'})
-            dates.append(date)
+            dates.append(item)
 
         date = self.raw_pubdate_datetype_collection or self.expected_pubdate
         if date:
@@ -1481,7 +1481,7 @@ class ArticleXML(object):
                     's': 'xml'}
             if not self.raw_pubdate_datetype_collection:
                 item.update({'s': 'deduced'})
-            dates.append(date)
+            dates.append(item)
         return dates
 
     @property
