@@ -151,8 +151,19 @@ class PersonValidation(object):
     @property
     def contrib_id_validation_result(self):
         r = []
-        if self.contrib.contrib_id and \
-                self.contrib.contrib_id.get('orcid') is None:
+        if not self.aff_ids:
+            return r
+        if not self.contrib.contrib_id:
+            r.append(
+                ('contrib-id',
+                 validation_status.STATUS_INFO,
+                 _('{} has no "contrib-id". ').format(self.contrib.fullname)))
+            r.append(
+                ('contrib-id',
+                 validation_status.STATUS_WARNING,
+                 _('{} has no "ORCID". ').format(self.contrib.fullname)))
+            return r
+        if self.contrib.contrib_id.get('orcid') is None:
             r.append(
                 ('contrib-id',
                  validation_status.STATUS_WARNING,
