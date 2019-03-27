@@ -1069,7 +1069,6 @@ class ArticleContentValidation(object):
                 code = code[0]
                 code_parts = code.split('-')
                 expected = attributes.LICENSE_TEXTS.get(lang)
-                print(code, code_parts, text)
                 if (not utils.compare_text(text, expected) or
                         code_parts[0] != 'by' or 'nc' in code_parts or
                         (code == 'by' and 'mercial' in text)):
