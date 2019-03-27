@@ -1471,16 +1471,16 @@ class ArticleXML(object):
                     'v': article_utils.format_dateiso(date),
                     's': 'xml'}
             if not self.raw_pubdate_datetype_pub:
-                item.update({'s': 'deduced'})
+                item.update({'s': 'estimated'})
             dates.append(item)
 
         date = self.raw_pubdate_datetype_collection or self.expected_pubdate
         if date:
             item = {'k': 'expected',
-                    'v': article_utils.format_dateiso(date),
+                    'v': article_utils.format_dateiso(date)[:-2],
                     's': 'xml'}
             if not self.raw_pubdate_datetype_collection:
-                item.update({'s': 'deduced'})
+                item.update({'s': 'estimated'})
             dates.append(item)
         return dates
 

@@ -221,7 +221,6 @@ class ArticleContentValidation(object):
                 items.append(self.months_seasons)
                 items.append(self.issue_label)
                 items.append(self.article_date_types)
-                items.append(self.complete_dates)
                 items.append(self.toc_section)
                 items.append(self.doi)
                 items.append(self.doi_and_lang)
@@ -336,6 +335,7 @@ class ArticleContentValidation(object):
         pub_dateiso = self.article.real_pubdate or self.article.expected_pubdate
         if pub_dateiso is None:
             return [(label, validation_status.STATUS_ERROR, _('Unable to validate sps version because article has no publication date. '))]
+        pub_dateiso = article_utils.format_dateiso(pub_dateiso)
 
         expected_versions = list(set(attributes.expected_sps_versions(pub_dateiso) + attributes.sps_current_versions()))
         expected_versions.sort()
@@ -623,21 +623,14 @@ class ArticleContentValidation(object):
         r = []
         if not self.article.doi:
             return r
-        q_doi_and_lang = len(self.article.doi_and_lang)
-        doi_items = [doi for lang, doi in self.article.doi_and_lang
-                     if doi != '']
-        doi_items = set(doi_items)
-        q_doi_items = len(doi_items)
-        if q_doi_items < q_doi_and_lang:
-            level = validation_status.STATUS_WARNING
-            if self.is_db_generation:
-                if self.config.BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA:
-                    level = validation_status.STATUS_BLOCKING_ERROR
+        doi_items = set([doi for lang, doi in self.article.doi_and_lang
+                         if doi != ''])
+        if len(doi_items) < len(self.article.doi_and_lang):
             msg = '; '.join(['{}:&#160;{}'.format(lang, doi)
                             for lang, doi in self.article.doi_and_lang])
             r.append(
                 ('doi',
-                 level,
+                 validation_status.STATUS_FATAL_ERROR,
                  _('It is required a different DOI'
                    ' for each text language. ') + msg
                  ))
@@ -1052,6 +1045,7 @@ class ArticleContentValidation(object):
                 if self.article.article_copyright.get(cp_elem) is None:
                     r.append(('copyright-' + cp_elem, validation_status.STATUS_WARNING, _('It is highly recommended identifying {elem}. ').format(elem='copyright-' + cp_elem)))
         for lang, license in self.article.article_licenses.items():
+
             if lang is None:
                 if self.check_for_sps_version_number(1.4):
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{label} is required. ').format(label='license/@xml:lang')))
@@ -1063,22 +1057,29 @@ class ArticleContentValidation(object):
             r.append(data_validations.is_expected_value('license/@license-type', license.get('type'), ['open-access'], validation_status.STATUS_FATAL_ERROR))
             r.append(data_validations.is_required_data('license/license-p', license.get('text'), validation_status.STATUS_FATAL_ERROR))
 
-            license_text = license.get('text', '')
-            expected = attributes.LICENSE_TEXTS.get(lang)
-            if not utils.compare_text(license_text, expected):
-                r.append(
-                    ('license/license-p',
-                     validation_status.STATUS_WARNING,
-                     license,
-                     )
-                )
+            r.extend(self.check_license_text(license, lang))
 
         return [item for item in r if r is not None]
 
-    """
-    <license xml:lang="{$language}" license-type="open-access" xlink:href="{$href}">
-            <license-p>
-    """
+    def check_license_text(self, license, lang):
+        text = license.get('text', '')
+        if text:
+            code = license.get('code-and-version', '').split('/')
+            if code:
+                code = code[0]
+                code_parts = code.split('-')
+                expected = attributes.LICENSE_TEXTS.get(lang)
+                print(code, code_parts, text)
+                if (not utils.compare_text(text, expected) or
+                        code_parts[0] != 'by' or 'nc' in code_parts or
+                        (code == 'by' and 'mercial' in text)):
+                    return [
+                            ('license/license-p',
+                             validation_status.STATUS_WARNING,
+                             license,
+                             )
+                        ]
+        return []
 
     @property
     def references(self):
@@ -1105,6 +1106,9 @@ class ArticleContentValidation(object):
         if self.article.sps_version_number > 1.8:
             expected = [{'pub', 'collection'}]
             expected_items = 'pub|collection'
+        elif self.article.sps_version_number == 1.8:
+            expected = [{'epub', 'collection'}]
+            expected_items = 'epub|collection'
         else:
             expected = [{'epub-ppub'}, {'epub', 'collection'}, {'epub'}]
             expected_items = "'epub-ppub', 'epub', 'collection', 'epub'"
@@ -1113,32 +1117,33 @@ class ArticleContentValidation(object):
               for label, value in self.article.labeled_xml_dates
               if value
             }
-        date_types.update(
-            {
-              label
-              for label, value in self.article.labeled_article_dates
-              if value
-            }
-        )
         c = ' | '.join(list(date_types))
         if date_types in expected:
             r.append(('pub-date', validation_status.STATUS_OK, c))
         else:
-            r.append(('pub-date', validation_status.STATUS_ERROR,
+            r.append(('pub-date', validation_status.STATUS_BLOCKING_ERROR,
                      _('Invalid combination of date types: ') + c + '. ' +
                      data_validations.expected_values_message(expected_items)))
-        return r
-
-    @property
-    def complete_dates(self):
-        r = []
-        if self.article.real_pubdate and \
-                self.article.real_pubdate.get('day') is None:
-            r.append(
-                ('pub-date',
-                 validation_status.STATUS_FATAL_ERROR,
-                 self.article.real_pubdate)
-            )
+        for label, value in self.article.labeled_xml_dates:
+            if value:
+                dateiso = article_utils.format_dateiso(value)
+                if label in ['epub', 'pub']:
+                    if value.get('year') is None or \
+                       value.get('month') is None or \
+                       value.get('day') is None or value.get('season'):
+                        r.append(
+                            ('pub-date',
+                             validation_status.STATUS_BLOCKING_ERROR,
+                             _('"{}" ({}) must have year, month and day').format(
+                                label, dateiso))
+                        )
+                elif value.get('year') is None or value.get('day'):
+                    r.append(
+                        ('pub-date',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         _('"{}"  ({}) must have year; can have month or season,'
+                           ' but no day').format(label, dateiso))
+                    )
         return r
 
     @property
