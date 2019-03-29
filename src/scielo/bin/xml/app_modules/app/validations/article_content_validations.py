@@ -1063,6 +1063,7 @@ class ArticleContentValidation(object):
         return [item for item in r if r is not None]
 
     def check_license_text(self, license, lang):
+        r = []
         text = license.get('text', '')
         if text:
             code = license.get('code-and-version', '').split('/')
@@ -1070,16 +1071,22 @@ class ArticleContentValidation(object):
                 code = code[0]
                 code_parts = code.split('-')
                 expected = attributes.LICENSE_TEXTS.get(lang)
+                if code == 'by' and 'mercial' in text:
+                    r += [
+                            ('license/license-p',
+                             validation_status.STATUS_ERROR,
+                             _('The license text ({}) and code ({}) are inconsistent. ').format(license['text'], code),
+                             )
+                        ]
                 if (not utils.compare_text(text, expected) or
-                        code_parts[0] != 'by' or 'nc' in code_parts or
-                        (code == 'by' and 'mercial' in text)):
-                    return [
+                        code_parts[0] != 'by' or 'nc' in code_parts):
+                    r += [
                             ('license/license-p',
                              validation_status.STATUS_WARNING,
                              license,
                              )
                         ]
-        return []
+        return r
 
     @property
     def references(self):
