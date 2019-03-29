@@ -552,6 +552,7 @@ class ArticleContentValidation(object):
     @property
     def contrib_id(self):
         URL = 'https://orcid.org/'
+        available = self.config.app_ws_requester.is_valid_url(URL)
         identified = {}
         msgs = []
         for contrib_name in self.article.contrib_names_with_contrib_id_type:
@@ -571,17 +572,20 @@ class ArticleContentValidation(object):
             else:
                 identified[orcid] = contrib_name.fullname
                 url = 'https://orcid.org/{}'.format(orcid)
-                found = self.config.app_ws_requester.is_valid_url(url)
-                if not found:
-                    if self.config.app_ws_requester.is_valid_url(URL):
+                if available:
+                    found = self.config.app_ws_requester.is_valid_url(url)
+                    if not found:
                         r = ('contrib-id',
                              validation_status.STATUS_FATAL_ERROR,
                              _('{value} is an invalid value for {label}. ').format(
                             value=orcid, label='ORCID'))
-                    else:
-                        r = ('contrib-id',
-                             validation_status.STATUS_WARNING,
-                             _('{} is not accessible. ').format(URL))
+                        msgs.append(r)
+                else:
+                    r = ('contrib-id',
+                         validation_status.STATUS_WARNING,
+                         _('Unable to check if {} belongs to {}. ').format(
+                            html_reports.link(url, orcid),
+                            contrib_name.fullname))
                     msgs.append(r)
 
         q = self.article.count_words('ORCID')
