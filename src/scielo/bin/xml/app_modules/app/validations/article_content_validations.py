@@ -623,9 +623,10 @@ class ArticleContentValidation(object):
         r = []
         if not self.article.doi:
             return r
-        doi_items = set([doi for lang, doi in self.article.doi_and_lang
-                         if doi != ''])
-        if len(doi_items) < len(self.article.doi_and_lang):
+        doi_items = [doi for lang, doi in self.article.doi_and_lang
+                     if doi != '']
+        unique = set(doi_items)
+        if len(unique) < len(doi_items):
             msg = '; '.join(['{}:&#160;{}'.format(lang, doi)
                             for lang, doi in self.article.doi_and_lang])
             r.append(
