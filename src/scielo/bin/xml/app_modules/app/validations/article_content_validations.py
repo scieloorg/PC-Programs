@@ -575,7 +575,7 @@ class ArticleContentValidation(object):
                 if not found:
                     if self.config.app_ws_requester.is_valid_url(URL):
                         r = ('contrib-id',
-                             validation_status.STATUS_WARNING,
+                             validation_status.STATUS_FATAL_ERROR,
                              _('{value} is an invalid value for {label}. ').format(
                             value=orcid, label='ORCID'))
                     else:
