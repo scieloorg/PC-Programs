@@ -1497,10 +1497,13 @@ class ArticleXML(object):
 
     @property
     def labeled_article_dates(self):
+        return []
+        """
         return [
             ('aop', self.aop_date),
             ('rolling pass', self.rolling_pass_date),
         ]
+        """
 
     @property
     def is_article_press_release(self):
@@ -1787,11 +1790,11 @@ class Article(ArticleXML):
 
     @property
     def is_rolling_pass(self):
-        if self.real_pubdate:
+        if self.raw_pubdate_pubtype_epub:
             return (
                 not self.is_ahead and
                 not self.raw_pubdate_pubtype_collection and
-                not self.raw_pubdate_pubtype_epub and
+                not self.raw_pubdate_datetype_collection and
                 not self.raw_pubdate_pubtype_epubppub and
                 not self.raw_pubdate_pubtype_ppub
             )
