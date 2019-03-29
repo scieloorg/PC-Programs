@@ -1103,6 +1103,14 @@ class ArticleContentValidation(object):
     def article_date_types(self):
         r = []
         if self.article.sps_version_number > 1.8:
+            for fmt, tp in self.article.raw_pubdate_items:
+                if tp == 'pub' and fmt != 'electronic':
+                    r.append(
+                        ('pub-date',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         _('@publication-format must be electronic. '))
+                    )
+        if self.article.sps_version_number > 1.8:
             expected = [{'pub', 'collection'}]
             expected_items = 'pub|collection'
         elif self.article.sps_version_number == 1.8:

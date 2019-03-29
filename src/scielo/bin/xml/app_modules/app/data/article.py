@@ -1422,6 +1422,13 @@ class ArticleXML(object):
         return self.get_articlemeta_node_date('history/date[@date-type="accepted"]')
 
     @property
+    def raw_pubdate_items(self):
+        if self.article_meta is not None:
+            return [(node.attrib.get('publication-format'),
+                     node.attrib.get('date-type'))
+                    for node in self.article_meta.findall('pub-date')]
+
+    @property
     def raw_pubdate_datetype_pub(self):
         return self.get_articlemeta_node_date('pub-date[@date-type="pub"]')
 
