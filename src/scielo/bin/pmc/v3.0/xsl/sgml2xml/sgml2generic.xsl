@@ -519,7 +519,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test=".='mt'">research-article</xsl:when><!-- methodology -->
 				<xsl:when test=".='pv'">editorial</xsl:when><!-- ponto de vista -->
 				<!-- -->
-				
+				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
