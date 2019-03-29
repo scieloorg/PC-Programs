@@ -1425,7 +1425,8 @@ class ArticleXML(object):
     def raw_pubdate_items(self):
         if self.article_meta is not None:
             return [(node.attrib.get('publication-format'),
-                     node.attrib.get('date-type'))
+                     node.attrib.get('date-type'),
+                     node.attrib.get('pub-type'))
                     for node in self.article_meta.findall('pub-date')]
 
     @property
