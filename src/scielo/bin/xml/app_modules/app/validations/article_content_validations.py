@@ -1103,16 +1103,78 @@ class ArticleContentValidation(object):
     def article_date_types(self):
         r = []
         if self.article.sps_version_number > 1.8:
-            for fmt, tp in self.article.raw_pubdate_items:
-                if tp == 'pub' and fmt != 'electronic':
+            for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:
+                if fmt is None:
                     r.append(
                         ('pub-date',
                          validation_status.STATUS_BLOCKING_ERROR,
-                         _('@publication-format must be electronic. '))
+                         _('@publication-format is required. '),
+                         xml
+                         )
+                    )
+                if pub_type:
+                    r.append(
+                        ('pub-date',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         _('@pub-type is invalid for this version of SPS. '),
+                         xml)
+                    )
+                if date_type == 'pub':
+                    if fmt != 'electronic':
+                        r.append(
+                            ('pub-date',
+                             validation_status.STATUS_BLOCKING_ERROR,
+                             _('@publication-format must be electronic. '),
+                             xml)
+                        )
+                elif date_type == 'collection':
+                    pass
+                else:
+                    r.append(
+                        ('pub-date',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         _('@date-type must be pub or collection. '),
+                         xml)
+                    )
+        elif self.article.sps_version_number == 1.8:
+            for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:
+                if date_type:
+                    r.append(
+                        ('pub-date',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         _('@date_type is invalid for this version of SPS. '),
+                         xml)
+                    )
+                if fmt:
+                    r.append(
+                        ('pub-date',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         _('@publication-format is invalid for this version of SPS. '),
+                         xml)
+                    )
+                if pub_type in ['epub', 'collection']:
+                    r.append(
+                        ('pub-date',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         _('@pub-type is required. '),
+                         xml)
+                    )
+        else:
+            for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:
+                if date_type:
+                    r.append(
+                        ('pub-date',
+                         validation_status.STATUS_BLOCKING_ERROR,
+                         _('@date-type is invalid for this version of SPS. '),
+                         xml)
                     )
         if self.article.sps_version_number > 1.8:
-            expected = [{'pub', 'collection'}]
-            expected_items = 'pub|collection'
+            if self.article.is_ahead:
+                expected = [{'pub'}]
+                expected_items = 'pub'
+            else:
+                expected = [{'pub', 'collection'}]
+                expected_items = 'pub|collection'
         elif self.article.sps_version_number == 1.8:
             expected = [{'epub', 'collection'}]
             expected_items = 'epub|collection'
