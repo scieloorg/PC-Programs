@@ -2250,6 +2250,7 @@ class ArticleTableWrap(object):
         self.xml = xml_utils.node_xml(node)
         self.lang = xml_utils.element_lang(node)
         self.label = node.findtext('label')
+        self.caption = node.findtext('caption/title')
 
     @property
     def id(self):
