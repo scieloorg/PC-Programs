@@ -111,7 +111,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
             <xsl:choose>
                 <xsl:when test="@issueno='ahead'"></xsl:when>
                 <xsl:when test="(number(@issueno)=0 or not(@issueno)) and (number(@volid)=0 or not(@volid))"></xsl:when>
-                <xsl:when test="number(@sps)&gt;1.8">collection</xsl:when>
+                <xsl:when test="number(@sps)&gt;=1.8">collection</xsl:when>
                 <xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
@@ -121,6 +121,24 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
                     <xsl:when test="number(@sps)&gt;1.8">                    
                         <xsl:attribute name="publication-format">electronic</xsl:attribute>
                         <xsl:attribute name="date-type">collection</xsl:attribute>
+                        <xsl:call-template name="display_date">
+                            <xsl:with-param name="dateiso">
+                                <xsl:value-of select="@dateiso"/>
+                            </xsl:with-param>
+                            <xsl:with-param name="date">
+                                <xsl:choose>
+                                    <xsl:when test="@season!=''">
+                                        <xsl:value-of select="@season"/>
+                                    </xsl:when>
+                                    <xsl:when test="//extra-scielo//season">
+                                        <xsl:value-of select="//extra-scielo//season"/>
+                                    </xsl:when>
+                                </xsl:choose>
+                            </xsl:with-param>
+                        </xsl:call-template>
+                    </xsl:when>
+                    <xsl:when test="number(@sps)=1.8">                    
+                        <xsl:attribute name="pub-type">collection</xsl:attribute>
                         <xsl:call-template name="display_date">
                             <xsl:with-param name="dateiso">
                                 <xsl:value-of select="@dateiso"/>

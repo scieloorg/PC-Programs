@@ -1,3 +1,13 @@
+4.0.096 02/04/2019
+==================
+- XPM
+  - (bug) The message: "@pub-type is required" must be shown only if there is no @pub-type.
+
+- Markup
+  - (bug) Generate pub-date[@pub-type=collection] for SPS 1.8 documents, except for AOP.
+  - (bug) Fix error as generating "Data report" because of a missing caption attribute
+     ("AttributeError: 'ArticleTableWrap' object has no attribute 'caption'")
+
 4.0.096 29/03/2019
 ==================
 - XPM

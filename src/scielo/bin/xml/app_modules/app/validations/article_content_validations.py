@@ -1164,11 +1164,11 @@ class ArticleContentValidation(object):
                          _('@publication-format is invalid for this version of SPS. '),
                          xml)
                     )
-                if pub_type in ['epub', 'collection']:
+                if pub_type not in ['epub', 'collection']:
                     r.append(
                         ('pub-date',
                          validation_status.STATUS_BLOCKING_ERROR,
-                         _('@pub-type is required. '),
+                         _('@pub-type must be epub or collection. '),
                          xml)
                     )
         else:
