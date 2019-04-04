@@ -1154,7 +1154,7 @@ class ArticleContentValidation(object):
                     r.append(
                         ('pub-date',
                          validation_status.STATUS_BLOCKING_ERROR,
-                         _('@date_type is invalid for this version of SPS. '),
+                         _('@date-type is invalid for this version of SPS. '),
                          xml)
                     )
                 if fmt:
@@ -1188,8 +1188,12 @@ class ArticleContentValidation(object):
                 expected = [{'pub', 'collection'}]
                 expected_items = 'pub|collection'
         elif self.article.sps_version_number == 1.8:
-            expected = [{'epub', 'collection'}]
-            expected_items = 'epub|collection'
+            if self.article.is_ahead:
+                expected = [{'epub'}]
+                expected_items = 'epub'
+            else:
+                expected = [{'epub', 'collection'}]
+                expected_items = 'epub|collection'
         else:
             expected = [{'epub-ppub'}, {'epub', 'collection'}, {'epub'}]
             expected_items = "'epub-ppub', 'epub', 'collection', 'epub'"
