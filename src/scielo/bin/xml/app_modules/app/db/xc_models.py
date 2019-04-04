@@ -269,7 +269,9 @@ class ArticleRecords(object):
             self._metadata['32'] = self.article.number
             self._metadata['131'] = self.article.volume_suppl
             self._metadata['132'] = self.article.number_suppl
-        self._metadata['223'] = self.article.raw_pubdate_pubtype_epub or self.article.raw_pubdate_datetype_pub
+        epub_date = self.article.raw_pubdate_pubtype_epub or self.article.raw_pubdate_datetype_pub
+        if epub_date:
+            self._metadata['223'] = article_utils.format_dateiso(epub_date)
 
         self._metadata['265'] = self.article.publication_dates
 
