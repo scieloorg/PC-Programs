@@ -326,6 +326,7 @@ class SPSversions(object):
         self.versions[self.dtd_id_items[2]] = [
             'sps-1.7',
             'sps-1.8',
+            'sps-1.9',
             ]
 
         for name, dtd_info in xml_versions.XPM_FILES.items():
