@@ -1,3 +1,13 @@
+4.0.096 05/04/2019
+==================
+- XPM
+  - (bug) [3086] Fix validation. SPS 1.8 requires only pub-date[@pub-type=epub] for aop
+  - (bug) [3091] Fix validation: "SPS 1.9 is an invalid version". 
+- Markup
+  - (bug) [3090] Fix error as generating "Data report" because of changes on ArticleTableWrap.codes return
+- XC 
+  - (bug) [3085] Save epub date (v223)
+
 4.0.096 02/04/2019
 ==================
 - XPM
