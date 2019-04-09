@@ -435,8 +435,8 @@ class ArticleContentValidation(object):
             if related_article.get('ext-link-type', '') == 'doi':
                 _doi = related_article.get('href', '')
                 if _doi != '':
-                    errors = self.doi_validator.validate_format(_doi)
-                    if errors is not None and len(errors) > 0:
+                    valid = self.doi_validator.validate_format(_doi)
+                    if not valid:
                         msg = data_validations.invalid_value_message('related-article/@xlink:href', related_article.get('href'))
                         r.append(('related-article/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-article/@xlink:href')))
         return r
