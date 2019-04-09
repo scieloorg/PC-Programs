@@ -81,7 +81,6 @@ class DOIValidator(object):
                             journal_title,
                             article_doi):
         prefix = article_doi[:article_doi.find('/')]
-
         if len(journal_prefixes) > 0 and \
                 prefix not in journal_prefixes:
             self.messages.append(
@@ -100,7 +99,10 @@ class DOIValidator(object):
                                     journal_issns)
             publisher_by_prefix = self.ws_doi.journal_publisher_by_doi_prefix(
                                     prefix)
-            if publisher_by_prefix != publisher_by_issn:
+            _publisher_by_issn = publisher_by_issn.lower()
+            _publisher_by_prefix = publisher_by_prefix.lower()
+            if (_publisher_by_issn not in _publisher_by_prefix and
+                    _publisher_by_prefix not in _publisher_by_issn):
                 msgs = [
                     article_doi,
                     _('{value} is an invalid value for {label}. ').format(
