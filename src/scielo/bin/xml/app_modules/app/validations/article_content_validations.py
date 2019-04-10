@@ -997,16 +997,20 @@ class ArticleContentValidation(object):
                 r.append(('history', validation_status.STATUS_FATAL_ERROR, '\n'.join(errors)))
             else:
                 dates = []
-                if not received < accepted:
-                    dates.append(('received: {value}'.format(value=received), 'accepted: {value}'.format(value=accepted)))
-                year = self.article.real_pubdate
-                if year:
-                    year = year.get('year')
-                if year is not None:
-                    if year < received[0:4]:
-                        dates.append(('received: {value}'.format(value=received), 'pub-date: {value}'.format(value=year)))
-                    if year < accepted[0:4]:
-                        dates.append(('accepted: {value}'.format(value=accepted), 'pub-date: {value}'.format(value=year)))
+                if received > accepted:
+                    dates.append(('received: {value}'.format(value=received),
+                                  'accepted: {value}'.format(value=accepted)))
+                if self.article.real_pubdate:
+                    real_pubdate = article_utils.format_dateiso(
+                        self.article.real_pubdate)
+                    if real_pubdate < received:
+                        dates.append(
+                            ('received: {value}'.format(value=received),
+                             'pub-date: {value}'.format(value=real_pubdate)))
+                    if real_pubdate < accepted:
+                        dates.append(
+                            ('accepted: {value}'.format(value=accepted),
+                             'pub-date: {value}'.format(value=real_pubdate)))
 
                 if len(dates) > 0:
                     for date in dates:
