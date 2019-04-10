@@ -1114,6 +1114,20 @@ class ArticleContentValidation(object):
     @property
     def article_date_types(self):
         r = []
+        dt = []
+        for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:
+            if date_type in dt or pub_type in dt:
+                r.append(
+                    ('pub-date',
+                     validation_status.STATUS_BLOCKING_ERROR,
+                     _('"pub-date" ({}) is duplicated. ').format(
+                        date_type or pub_type),
+                     xml
+                     )
+                )
+            dt.append(date_type)
+            dt.append(pub_type)
+
         if self.article.sps_version_number > 1.8:
             for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:
                 if fmt is None:
