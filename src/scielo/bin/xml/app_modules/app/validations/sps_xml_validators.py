@@ -202,23 +202,37 @@ class XMLValidator(object):
         errors = []
         info = self.SPS_versions.dtd_infos.get(
             article_xml_versions_info.public_id)
-        if info is not None:
-            if article_xml_versions_info.system_id not in info.get('url'):
-                expected = _(' or ').join(info.get('url'))
-                msg = data_validations.invalid_value_message(
-                    'SYSTEM ID', article_xml_versions_info.system_id, expected)
-                errors.append(msg)
-            if article_xml_versions_info.sps_version not in info.get('sps'):
-                expected = _(' or ').join(info.get('sps'))
-                msg = data_validations.invalid_value_message(
-                    'SPS version', article_xml_versions_info.sps_version, expected)
-                errors.append(msg)
+        if info is None:
+            errors.append(
+                _('Unknown {}: {}').format(
+                    'PUBLIC ID',
+                    article_xml_versions_info.public_id))
         else:
-            errors.append(_('Unknown PUBLIC ID: {}').format(
-                article_xml_versions_info.public_id))
+            _error = []
+            if article_xml_versions_info.system_id not in info.get('url'):
+                _error.append(
+                    ('SYSTEM ID', article_xml_versions_info.system_id))
+            if article_xml_versions_info.sps_version not in info.get('sps'):
+                _error.append(
+                    (_('SPS version'), article_xml_versions_info.sps_version))
+            if _error:
+                errors = ['{}: {}'.format(label, value)
+                          for label, value in _error]
+
+                msg = _('"{}" ({}) requires: ').format(
+                    article_xml_versions_info.public_id, 'PUBLIC ID')
+                errors.append('..'*30)
+                errors.append(msg)
+                errors.append('SYSTEM ID')
+                errors.extend(['  - {}'.format(item)
+                               for item in info.get('url')])
+                errors.append(_('SPS version'))
+                errors.extend(['  - {}'.format(item)
+                               for item in info.get('sps')])
         if len(errors) > 0:
-            errors.insert(0, 'PUBLIC ID: {}'.format(
-                article_xml_versions_info.public_id))
+            errors.insert(0, _('Found: '))
+            errors.insert(1, article_xml_versions_info.DOCTYPE)
+
         return errors
 
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
@@ -261,6 +275,7 @@ class ArticleXMLVersionsInfo(object):
         self._DOCTYPE = None
         self._public_id = None
         self._system_id = None
+        self.relative_system_id = None
         self._sps_version = None
 
     @property
@@ -285,6 +300,11 @@ class ArticleXMLVersionsInfo(object):
             if 'http' in self.DOCTYPE:
                 self._system_id = self.DOCTYPE[self.DOCTYPE.find('"http')+1:]
                 self._system_id = self._system_id[:self._system_id.find('"')]
+            if self.public_id:
+                _text = self.DOCTYPE[self.DOCTYPE.find(self.public_id)+len(self.public_id):]
+                _text = _text[_text.find('"')+1:]
+                _text = _text[_text.find('"')+1:]
+                self.relative_system_id = _text[:_text.find('"')]
         return self._system_id
 
     @property
