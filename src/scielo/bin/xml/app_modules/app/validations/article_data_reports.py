@@ -302,8 +302,8 @@ class ArticleDisplayReport(object):
                 tag, f = g
                 href = '{IMG_PATH}/' + f
                 link = html_reports.link(href, html_reports.thumb_image(href))
-                graphics.append('<h3>{}</h3>'.format(tag)+link)
-            _codes = [u'<h3>{}</h3><div>{}</div>'.format(
+                graphics.append('<h4>{}</h4>'.format(tag)+link)
+            _codes = [u'<h4>{}</h4><div>{}</div>'.format(
                     tag, c) for tag, c in tablewrap.codes]
             content = []
             content += ['<b>@id</b>: {}'.format(tablewrap.id)]
@@ -323,13 +323,13 @@ class ArticleDisplayReport(object):
             for table in self.article.tables:
                 rows = ['<h2>{}</h2>'.format(table.id)]
                 rows += [html_reports.tag('div', html_reports.format_html_data(table.xml), 'xml')]
-                rows += [u'<h3>label</h3>{}'.format(table.label)]
+                rows += [u'<h4>label</h4>{}'.format(table.label)]
                 for tag, item in table.codes:
-                    rows += [u'<h3>{}</h3><div>{}</div>'.format(tag, item)]
+                    rows += [u'<h4>{}</h4><div>{}</div>'.format(tag, item)]
                 for tag, item in table.graphics:
                     href = '{IMG_PATH}/' + item
                     link = html_reports.link(href, html_reports.thumb_image(href))
-                    rows += [u'<h3>{}</h3><{}'.format(tag, link)]
+                    rows += [u'<h4>{}</h4><{}'.format(tag, link)]
                 r += html_reports.tag('div', '<hr/>'.join(rows))
         return r
 
@@ -343,10 +343,10 @@ class ArticleDisplayReport(object):
                 tag, f = g
                 href = '{IMG_PATH}/' + f
                 link = html_reports.link(href, html_reports.thumb_image(href))
-                graphics.append('<h3>{}</h3>'.format(tag)+link)
+                graphics.append('<h4>{}</h4>'.format(tag)+link)
             _graphics = '<hr/>'.join(graphics)
-            _codes = [u'<h3>{}</h3><div>{}</div>'.format(
-                    tag, c) for tag, c in formula.codes]
+            _codes = [u'<h4>{}</h4><div>{}</div>'.format(
+                      tag, c) for tag, c in formula.codes]
             content = []
             content += ['<b>@id</b>: {}'.format(formula.id)]
             content += [_graphics]

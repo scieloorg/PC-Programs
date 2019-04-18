@@ -96,9 +96,9 @@ class DOIValidator(object):
             )
         elif len(journal_prefixes) == 0:
             publisher_by_issn = self.ws_doi.journal_publisher_by_issn(
-                                    journal_issns)
+                                    journal_issns) or ''
             publisher_by_prefix = self.ws_doi.journal_publisher_by_doi_prefix(
-                                    prefix)
+                                    prefix) or ''
             _publisher_by_issn = publisher_by_issn.lower()
             _publisher_by_prefix = publisher_by_prefix.lower()
             if (_publisher_by_issn not in _publisher_by_prefix and
