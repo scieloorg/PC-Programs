@@ -1129,8 +1129,10 @@ class ArticleContentValidation(object):
                      xml
                      )
                 )
-            dt.append(date_type)
-            dt.append(pub_type)
+            if date_type is not None:
+                dt.append(date_type)
+            if pub_type is not None:
+                dt.append(pub_type)
 
         if self.article.sps_version_number > 1.8:
             for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:

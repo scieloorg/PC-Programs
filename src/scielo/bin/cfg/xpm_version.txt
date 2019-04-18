@@ -1,3 +1,13 @@
+4.0.096 11/04/2019
+==================
+- XPM
+  - (enhancement) [3101] Display a clearer message about PUBLIC ID validation
+  - (bug) [3100] Display error message if accepted or received dates are forward dates related to real publication date
+  - (bug) [3099] Display error message there are more than one pub-date of same type
+  - (bug) [3096] Fix DOI validation: Publisher Prefix x DOI Prefix. Consider FapUnifesp (SciELO) and SciELO is the same.
+- Markup
+  - (bug) [3098] Fix error as generating "Data report" because of DOI validation
+
 4.0.096 05/04/2019
 ==================
 - XPM
