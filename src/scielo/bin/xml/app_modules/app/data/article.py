@@ -1294,11 +1294,13 @@ class ArticleXML(object):
     def abstract_nodes(self):
         if self.article_meta is not None:
             return self.article_meta.findall('.//abstract') or []
+        return []
 
     @property
     def trans_abstract_nodes(self):
         if self.article_meta is not None:
             return self.article_meta.findall('.//trans-abstract') or []
+        return []
 
     @property
     def all_abstracts(self):

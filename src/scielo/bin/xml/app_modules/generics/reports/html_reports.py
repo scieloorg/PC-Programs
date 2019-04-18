@@ -109,7 +109,33 @@ def styles():
     css_file = HTML_REPORTS_PATH + '/html_reports.css'
     css = '<style>' + fs_utils.read_file(css_file) + '</style>'
     js = fs_utils.read_file(HTML_REPORTS_PATH + '/html_reports_collapsible.js')
-    return css + js + save_report_js()
+    return css_styles() + js_styles() + save_report_js()
+
+
+def css_styles():
+    css_file = HTML_REPORTS_PATH + '/html_reports.css'
+    css = '<style>' + fs_utils.read_file(css_file) + '</style>'
+    return css
+
+
+def js_styles(has_math=False):
+    js = fs_utils.read_file(HTML_REPORTS_PATH + '/html_reports_collapsible.js')
+    if has_math:
+        js += """<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    config: ["MMLorHTML.js"],
+    jax: ["input/TeX","input/MathML","output/HTML-CSS","output/NativeMML", "output/PreviewHTML"],
+    extensions: ["tex2jax.js","mml2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js", "AssistiveMML.js", "[Contrib]/a11y/accessibility-menu.js"],
+    TeX: {
+    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+    }
+    });
+    </script>"""
+        if os.path.isfile(MathJax_PATH+'/MathJax.js'):
+            js += '<script type="text/javascript" src="{mathjax_path}/MathJax.js?config=MML_HTMLorMM-full"></script>'.format(mathjax_path=MathJax_PATH)
+        else:
+            js += '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"></script>'
+    return js
 
 
 def body_section(style, anchor_name, title, content, sections=[]):
@@ -229,27 +255,13 @@ def html(title, body):
         s += '<meta charset="utf-8"/><title>' + title + '</title>'
     if has_math:
         s += '    <meta Content-math-Type="text/mathml"/>'
-    s += styles()
-    if has_math:
-        s += """<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-  config: ["MMLorHTML.js"],
-  jax: ["input/TeX","input/MathML","output/HTML-CSS","output/NativeMML", "output/PreviewHTML"],
-  extensions: ["tex2jax.js","mml2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js", "AssistiveMML.js", "[Contrib]/a11y/accessibility-menu.js"],
-  TeX: {
-    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
-  }
-});
-</script>"""
-        if os.path.isfile(MathJax_PATH+'/MathJax.js'):
-            s += '<script type="text/javascript" src="{mathjax_path}/MathJax.js?config=MML_HTMLorMM-full"></script>'.format(mathjax_path=MathJax_PATH)
-        else:
-            s += '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"></script>'
+    s += css_styles()
     s += '</head>'
     s += '<body>'
     s += report_date()
     s += report_title(title)
     s += body
+    s += js_styles(has_math)
     s += '</body>'
     s += '</html>'
 
@@ -458,7 +470,7 @@ def format_html_data(value, width=70):
         msg, value = value.split('<OPTIONS/>')
         value = value.split('|')
         r = msg + '<select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value)]) + '</select>'
-    elif '<img' in value or '</a>' in value:
+    elif '<img' in value or '</a>' in value or '<div' in value:
         r = value
     #elif '<' in value and '>' in value and ('</' in value or '/>' in value):
     elif value.strip().startswith('<') and value.strip().endswith('>'):

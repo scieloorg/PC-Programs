@@ -206,7 +206,7 @@ class XMLValidator(object):
             errors.append(
                 _('Unknown {}: {}').format(
                     'PUBLIC ID',
-                    article_xml_versions_info.public_id))
+                    article_xml_versions_info.public_id or ''))
         else:
             _error = []
             if article_xml_versions_info.system_id not in info.get('url'):
@@ -231,7 +231,7 @@ class XMLValidator(object):
                                for item in info.get('sps')])
         if len(errors) > 0:
             errors.insert(0, _('Found: '))
-            errors.insert(1, article_xml_versions_info.DOCTYPE)
+            errors.insert(1, article_xml_versions_info.DOCTYPE or '')
 
         return errors
 
