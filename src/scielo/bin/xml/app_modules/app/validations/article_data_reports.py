@@ -307,7 +307,7 @@ class ArticleDisplayReport(object):
                     tag, c) for tag, c in tablewrap.codes]
             content = []
             content += ['<b>@id</b>: {}'.format(tablewrap.id)]
-            content += ['<b>label</b>: {}'.format(tablewrap.label)]
+            content += [u'<b>label</b>: {}'.format(tablewrap.label)]
             content += graphics
             content += _codes
             content = '<hr/>'.join(content)

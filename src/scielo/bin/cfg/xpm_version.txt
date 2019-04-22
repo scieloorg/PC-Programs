@@ -1,3 +1,9 @@
+4.0.096 22/04/2019
+==================
+- XPM
+  - (bug) [3108] Fix bugs generated in 20190411
+  - (bug) [3106] Fix formulas renderization
+
 4.0.096 11/04/2019
 ==================
 - XPM
