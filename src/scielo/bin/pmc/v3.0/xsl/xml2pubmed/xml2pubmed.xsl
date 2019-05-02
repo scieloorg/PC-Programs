@@ -414,7 +414,20 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="pub-date/@pub-type | @date-type">
+	<xsl:template match="@date-type[.='pub']">
+		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="../pub-date/@publication-format='electronic'">
+				<xsl:choose>
+					<xsl:when test="$issueid=''">aheadofprint</xsl:when>
+					<xsl:when test="$issueid!=''">epublish</xsl:when>
+					<xsl:when test="../pub-date/day">aheadofprint</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>ppublish</xsl:otherwise>			
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="pub-date/@pub-type">
 		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
 			<xsl:when test=".='epub' and $issueid=''">aheadofprint</xsl:when>
@@ -428,6 +441,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
 	<xsl:template match="date[@date-type='rev-recd']"> </xsl:template>
 	
 	<xsl:template match="pub-date|date[@date-type!='rev-recd']">
