@@ -449,6 +449,12 @@ class ArticleXML(object):
                     self.sub_articles.append(s)
             self.responses = self.tree.findall('./response')
 
+    @property
+    def is_provisional(self):
+        if self.body is not None:
+            return self.body.attrib.get('specific-use') == "provisional"
+        return False
+
     def get_articlemeta_node_date(self, xpath):
         if self.article_meta is not None:
             node = self.article_meta.find(xpath)
