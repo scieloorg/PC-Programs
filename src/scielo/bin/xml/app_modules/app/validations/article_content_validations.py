@@ -281,7 +281,8 @@ class ArticleContentValidation(object):
 
         errors = []
         if self.article.article_type in attributes.INDEXABLE:
-            if self.article.article_type not in attributes.INDEXABLE_BUT_EXCEPTION:
+            if self.article.article_type not in attributes.INDEXABLE_BUT_EXCEPTION \
+                    and not self.article.is_provisional:
                 check = attributes.INDEXABLE_EXCEPTIONS.get(
                     self.article.article_type,
                     ['contrib', 'aff', 'xref (bibr)', 'ref']
@@ -865,6 +866,8 @@ class ArticleContentValidation(object):
         r.append(self._total(self.article.total_of_references, self.article.ref_count, _('total of references'), 'ref-count'))
         if self.article.article_type in attributes.REFS_REQUIRED_FOR_DOCTOPIC:
             if self.article.total_of_references == 0:
+                if self.article.is_provisional:
+                    return r
                 r.append((_('total of references'), validation_status.STATUS_FATAL_ERROR, _('{requirer} requires {required}. ').format(requirer=self.article.article_type, required=_('references'))))
         return r
 
