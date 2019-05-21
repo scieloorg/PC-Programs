@@ -1471,13 +1471,6 @@ class ArticleXML(object):
 
     @property
     def expected_pubdate(self):
-        print((
-                self.raw_pubdate_datetype_collection,
-                self.raw_pubdate_pubtype_collection,
-                self.raw_pubdate_pubtype_epubppub,
-                self.raw_pubdate_pubtype_epub,
-                self.raw_pubdate_pubtype_ppub
-            ))
         return (
                 self.raw_pubdate_datetype_collection or
                 self.raw_pubdate_pubtype_collection or
@@ -1764,8 +1757,6 @@ class Article(ArticleXML):
         data['license'] = None
         if len(self.article_licenses) > 0:
             data['license'] = list(self.article_licenses.values())[0]['href']
-
-        print(self.textual_titles)
         return data
 
     @property
@@ -1777,7 +1768,7 @@ class Article(ArticleXML):
 
     @property
     def textual_titles(self):
-        return ' | '.join([self.article_titles.get(k) for k in sorted(self.article_titles.keys())])
+        return ' | '.join([self.article_titles.get(k) or '' for k in sorted(self.article_titles.keys())])
 
     @property
     def textual_contrib_surnames(self):
