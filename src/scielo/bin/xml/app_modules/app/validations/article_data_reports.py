@@ -770,6 +770,8 @@ class ArticlesComparison(object):
     @property
     def status(self):
         _status = validation_status.STATUS_BLOCKING_ERROR
+        if self.article1.is_provisional or self.article2.is_provisional:
+            _status = validation_status.STATUS_FATAL_ERROR
         if len(self.exact_comparison_result) == 0:
             _status = validation_status.STATUS_INFO
         elif len(self.exact_comparison_result) == 1 and len(self.relaxed_comparison_result) in [0, 1]:

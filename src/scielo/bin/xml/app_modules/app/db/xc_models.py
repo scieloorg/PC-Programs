@@ -182,6 +182,8 @@ class ArticleRecords(object):
         return self._metadata
 
     def add_article_data(self):
+        if self.article.is_provisional:
+            self._metadata['742'] = 'provisional'
         if self.article.dtd_version is not None:
             self._metadata['120'] = 'XML_' + self.article.dtd_version
         self._metadata['71'] = attributes.normalize_doctopic(self.article.article_type)
