@@ -1610,7 +1610,7 @@ class HRefValidation(object):
         name, ext = os.path.splitext(self.hrefitem.src)
         if self.hrefitem.src not in self.pkgfiles.related_files:
             if name not in self.pkgfiles.related_files_by_name.keys():
-                result.append((validation_status.STATUS_FATAL_ERROR, _('Not found {label} in the {item}. ').format(label=self.hrefitem.src, item=_('package'))))
+                result.append((validation_status.STATUS_BLOCKING_ERROR, _('Not found {label} in the {item}. ').format(label=self.hrefitem.src, item=_('package'))))
         if '.' not in self.hrefitem.src:
             result.append((validation_status.STATUS_WARNING, _('missing extension of ') + self.hrefitem.src + '.'))
         return result
