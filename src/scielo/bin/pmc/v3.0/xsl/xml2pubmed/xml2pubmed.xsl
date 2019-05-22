@@ -417,7 +417,7 @@
 	<xsl:template match="@date-type[.='pub']">
 		<xsl:variable name="issueid"><xsl:value-of select="normalize-space(translate(concat(../../volume,../../issue),'0',' '))"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test="../pub-date/@publication-format='electronic'">
+			<xsl:when test="../@publication-format='electronic'">
 				<xsl:choose>
 					<xsl:when test="$issueid=''">aheadofprint</xsl:when>
 					<xsl:when test="$issueid!=''">epublish</xsl:when>
