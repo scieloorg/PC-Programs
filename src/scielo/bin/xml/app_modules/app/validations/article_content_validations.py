@@ -277,9 +277,12 @@ class ArticleContentValidation(object):
         """
         results = attributes.validate_article_type_and_section(self.article.article_type, self.article.toc_section, len(self.article.abstracts) > 0)
         msg = _('The documents used to generate the bibliometric indicators must have:\na) @article-type ({}); b) contributors and their affiliations; c) own title, not similar to the table of contents title; d) citations; e) and references. ').format(_(', ').join(attributes.INDEXABLE))
-        level = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERIA
+        level = validation_status.STATUS_FATAL_ERROR
+        if self.config.BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA:
+            level = validation_status.STATUS_BLOCKING_ERROR
 
         errors = []
+        warnings = []
         if self.article.article_type in attributes.INDEXABLE:
             if self.article.article_type not in attributes.INDEXABLE_BUT_EXCEPTION \
                     and not self.article.is_provisional:
@@ -295,6 +298,14 @@ class ArticleContentValidation(object):
                 invalid = [label
                            for label, qtd in items
                            if label in check and qtd == 0]
+                warning = [label
+                           for label, qtd in items
+                           if label not in check and qtd == 0]
+                if len(warning) > 0:
+                    warnings.append(
+                        _('@article-type="{}" expects: {}. ').format(
+                            self.article.article_type,
+                            ' ; '.join(warning)))
                 if len(invalid) > 0:
                     errors.append(
                         _('@article-type="{}" requires: {}. ').format(
@@ -311,8 +322,6 @@ class ArticleContentValidation(object):
                 _('@article-type="{}" is not used to generate bibliometric indicators').format(self.article.article_type))
         if len(errors) > 0:
             results.append(('@article-type', level, msg))
-            if self.config.BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA:
-                level = validation_status.STATUS_BLOCKING_ERROR
             results.append(
                 (
                     '@article-type',
@@ -321,6 +330,8 @@ class ArticleContentValidation(object):
                     _('Check the criteria of the corresponding SciELO Collection. ')
                 ))
             results.append(('@article-type', level, ''.join(errors)))
+        if len(warnings) > 0:
+            results.append(('@article-type', validation_status.STATUS_FATAL_ERROR, ''.join(warnings)))
         return results
 
     @property

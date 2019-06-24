@@ -102,6 +102,7 @@ INDEXABLE = [
 
 INDEXABLE_EXCEPTIONS = {
     'editorial': ['aff', 'contrib'],
+    'other': [],
 }
 
 INDEXABLE_BUT_EXCEPTION = [
