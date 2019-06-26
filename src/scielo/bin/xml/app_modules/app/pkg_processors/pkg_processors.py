@@ -25,6 +25,7 @@ from ..data import package
 from ..data import merged
 from ..data import workarea
 from ..data import aff_normalization
+from ..data import scielo_id_manager
 from ..db import registered
 from ..db import xc_models
 from . import pmc_pkgmaker
@@ -120,6 +121,10 @@ class ArticlesConversion(object):
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
+            scielo_id_manager.add_scielo_id(
+                self.articles_mergence.accepted_articles,
+                self.articles_mergence.registered_articles,
+                self.pkg.xml_and_filepath_items)
 
             _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
@@ -131,6 +136,7 @@ class ArticlesConversion(object):
 
             if len(_scilista_items) > 0:
                 # IMPROVEME
+
                 self.registered_issue_data.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.local_web_app_path)
                 self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
                 self.replace_ex_aop_pdf_files()
@@ -478,3 +484,4 @@ class PkgProcessor(object):
             pkg.package_folder.zip()
             for name, pkgfiles in pkg.package_folder.pkgfiles_items.items():
                 pkgfiles.zip(pkg.package_folder.path + '_zips')
+

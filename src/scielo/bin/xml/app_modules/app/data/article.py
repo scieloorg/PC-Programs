@@ -1026,9 +1026,14 @@ class ArticleXML(object):
     @property
     def publisher_article_id(self):
         if self.article_meta is not None:
-            _publisher_article_id = self.article_meta.findtext('article-id[@pub-id-type="publisher-id"]')
-            if _publisher_article_id is not None:
-                return _publisher_article_id.lower()
+            for item in self.article_meta.findall('article-id[@pub-id-type="publisher-id"]'):
+                if item.attrib.get("specific-use") != 'scielo-id':
+                    return item.text
+
+    @property
+    def scielo_id(self):
+        if self.article_meta is not None:
+            return self.article_meta.findtext('article-id[@specific-use="scielo-id"]')
 
     @property
     def marked_to_delete(self):
@@ -1159,7 +1164,7 @@ class ArticleXML(object):
 
     @property
     def uri_clinical_trial_href(self):
-        #FIXME nao existe clinical-trial 
+        #FIXME nao existe clinical-trial
         #<uri content-type="ClinicalTrial" xlink:href="https://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
         if self.article_meta is not None:
             node = self.article_meta.find('.//uri[@content-type="clinical-trial"]')
@@ -1170,7 +1175,7 @@ class ArticleXML(object):
 
     @property
     def uri_clinical_trial_text(self):
-        #FIXME nao existe clinical-trial 
+        #FIXME nao existe clinical-trial
         #<uri content-type="ClinicalTrial" xlink:href="https://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
         if self.article_meta is not None:
             node = self.article_meta.find('.//uri[@content-type="clinical-trial"]')
@@ -1181,7 +1186,7 @@ class ArticleXML(object):
 
     @property
     def ext_link_clinical_trial_href(self):
-        #FIXME nao existe clinical-trial 
+        #FIXME nao existe clinical-trial
         #<ext-link ext-link-type="ClinicalTrial" xlink:href="https://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
         if self.article_meta is not None:
             node = self.article_meta.find('.//ext-link[@ext-link-type="clinical-trial"]')
@@ -1192,7 +1197,7 @@ class ArticleXML(object):
 
     @property
     def ext_link_clinical_trial_text(self):
-        #FIXME nao existe clinical-trial 
+        #FIXME nao existe clinical-trial
         #<ext-link ext-link-type="ClinicalTrial" xlink:href="https://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
         if self.article_meta is not None:
             node = self.article_meta.find('.//ext-link[@ext-link-type="clinical-trial"]')
@@ -1670,6 +1675,7 @@ class Article(ArticleXML):
 
     def __init__(self, tree, xml_name):
         ArticleXML.__init__(self, tree)
+        self.registered_scielo_id = None
         self.xml_name = xml_name
         self.prefix = xml_name.replace('.xml', '')
         self.new_prefix = self.prefix
@@ -2248,7 +2254,7 @@ class ArticleFormula(object):
     @property
     def graphics(self):
         return graphics(self.node)
-        
+
 
 class ArticleTableWrap(object):
 
@@ -2308,7 +2314,7 @@ def codes(main_node):
                     text = text[:text.find(limits[1])]
                 _codes.append((node.tag, text))
     return _codes
- 
+
 
 def graphics(main_node):
     _graphics = []
