@@ -80,6 +80,13 @@ class Configuration(object):
         return path
 
     @property
+    def kernel_gate(self):
+        return {key[3:].lower(): self._data.get(key)
+                for key in self._data.keys()
+                if key.startswith("KG_")
+                }
+
+    @property
     def remote_web_app_path(self):
         return self._data.get('REMOTE_WEB_APP_PATH')
 
