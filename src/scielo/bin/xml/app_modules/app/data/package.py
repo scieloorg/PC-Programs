@@ -138,11 +138,6 @@ class Package(object):
         self.issue_data.setup(self.articles)
 
     @property
-    def xml_items(self):
-        return {name: xml_content.xml
-                for name, xml_content in self.articles_xml_content.items()}
-
-    @property
     def file_paths(self):
         return {item.name: item.filename for item in self.pkgfiles_items}
 

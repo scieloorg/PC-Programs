@@ -1027,13 +1027,13 @@ class ArticleXML(object):
     def publisher_article_id(self):
         if self.article_meta is not None:
             for item in self.article_meta.findall('article-id[@pub-id-type="publisher-id"]'):
-                if item.attrib.get("specific-use") != 'scielo-id':
+                if item.attrib.get("specific-use") is None:
                     return item.text
 
     @property
     def scielo_id(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('article-id[@specific-use="scielo-id"]')
+            return self.article_meta.findtext('article-id[@specific-use="scielo"]')
 
     @property
     def marked_to_delete(self):

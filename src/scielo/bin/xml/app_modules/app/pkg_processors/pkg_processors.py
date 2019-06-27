@@ -124,7 +124,7 @@ class ArticlesConversion(object):
             scielo_id_manager.add_scielo_id_to_received_documents(
                 self.articles_mergence.accepted_articles,
                 self.articles_mergence.registered_articles,
-                self.pkg.xml_items, self.pkg.file_paths)
+                self.pkg.file_paths)
 
             _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
