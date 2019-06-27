@@ -121,10 +121,10 @@ class ArticlesConversion(object):
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
-            scielo_id_manager.add_scielo_id(
+            scielo_id_manager.add_scielo_id_to_received_documents(
                 self.articles_mergence.accepted_articles,
                 self.articles_mergence.registered_articles,
-                self.pkg.xml_and_filepath_items)
+                self.pkg.xml_items, self.pkg.file_paths)
 
             _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
