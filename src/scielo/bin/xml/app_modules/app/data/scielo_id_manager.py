@@ -21,14 +21,14 @@ def add_scielo_id(received, registered, file_path):
     if registered and registered.scielo_id:
         received.registered_scielo_id = registered.scielo_id
     else:
-        xml = ET.parse(file_path)
-        node = xml.find(".//article-meta")
-        if node is not None:
-            article_id = ET.Element("article-id")
-            article_id.set("specific-use", "scielo")
-            article_id.set("pub-type-id", "publisher-id")
-            article_id.text = scielo_id_gen.generate_scielo_pid()
-            received.registered_scielo_id = article_id.text
-            node.insert(0, article_id)
-            new_content = ET.tostring(xml.find(".")).decode("utf-8")
-            fs_utils.write_file(file_path, new_content)
+        received.registered_scielo_id = scielo_id_gen.generate_scielo_pid()
+    xml = ET.parse(file_path)
+    node = xml.find(".//article-meta")
+    if node is not None:
+        article_id = ET.Element("article-id")
+        article_id.set("specific-use", "scielo")
+        article_id.set("pub-type-id", "publisher-id")
+        article_id.text = received.registered_scielo_id
+        node.insert(0, article_id)
+        new_content = ET.tostring(xml.find(".")).decode("utf-8")
+        fs_utils.write_file(file_path, new_content)
