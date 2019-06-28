@@ -19,7 +19,7 @@ class TestAddSciELOIdManager(unittest.TestCase):
         self.files = ["file" + str(i) + ".xml" for i in range(1, 6)]
         for f in self.files:
             with open(f, "wb") as fp:
-                fp.write(b"<article/>")
+                fp.write(b"<article><article-meta></article-meta></article>")
 
     def tearDown(self):
         for f in self.files:
@@ -34,15 +34,13 @@ class TestAddSciELOIdManager(unittest.TestCase):
         for i in range(1, 3):
             registered.update({"file" + str(i): Article(None)})
         received = deepcopy(registered)
-        xml_items = {}
         file_paths = {}
         for fname in self.files:
             name, ext = os.path.splitext(fname)
             received.update({name: Article(None)})
-            xml_items.update({name: ET.fromstring(text)})
             file_paths.update({name: fname})
 
-        add_scielo_id_to_received_documents(received, registered, xml_items, file_paths)
+        add_scielo_id_to_received_documents(received, registered, file_paths)
         for name, item in received.items():
             with self.subTest(name):
                 self.assertIsNotNone(item.registered_scielo_id)
