@@ -128,6 +128,10 @@ class RegisteredArticle(object):
         return _order[-5:]
 
     @property
+    def scielo_id(self):
+        return self.article_records[1].get('885')
+
+    @property
     def xml_name(self):
         names = self.filename
         if names.endswith('.xml'):
@@ -263,6 +267,9 @@ class ArticleRecords(object):
 
         self._metadata['121'] = self.article.order
         self._metadata['881'] = self.article.previous_pid
+        self._metadata['885'] = (
+            self.article.scielo_id or
+            self.article.registered_scielo_id)
 
         if self.article.is_ahead:
             self._metadata['32'] = 'ahead'
@@ -931,6 +938,7 @@ class BaseManager(object):
             doc.last_update_display = registered_article.last_update_display
             doc.article_records = registered_article.article_records
             doc.is_ex_aop = self.issue_files.is_ex_aop
+            doc.registered_scielo_id = registered_article.scielo_id
             if doc.article_id is not None:
                 self.articles_by_id[doc.article_id] = xml_name
             _registered_articles[xml_name] = doc

@@ -138,6 +138,10 @@ class Package(object):
         self.issue_data.setup(self.articles)
 
     @property
+    def file_paths(self):
+        return {item.name: item.filename for item in self.pkgfiles_items}
+
+    @property
     def articles_xml_content(self):
         if self._articles_xml_content is None:
             self._articles_xml_content = {item.name: article.ArticleXMLContent(fs_utils.read_file(item.filename), item.previous_name, item.name) for item in self.pkgfiles_items}
