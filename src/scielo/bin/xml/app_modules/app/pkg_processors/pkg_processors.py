@@ -10,6 +10,7 @@ from ...__init__ import FST_PATH
 from ...generics.dbm import dbm_isis
 from ...generics import encoding
 from ...generics import fs_utils
+from ...generics.exporter import Exporter
 from ...generics import doi_validations
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
@@ -116,7 +117,7 @@ class ArticlesConversion(object):
         self.error_messages = []
         self.conversion_status = {}
 
-    def convert(self):
+    def convert(self, export_documents_package=None):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
@@ -139,6 +140,9 @@ class ArticlesConversion(object):
 
                 self.registered_issue_data.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.local_web_app_path)
                 self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
+                if export_documents_package:
+                    zip_filename = scilista_items[0].replace(" ", "_") + ".zip"
+                    export_documents_package(self.pkg.package_folder.path, zip_filename)
                 self.replace_ex_aop_pdf_files()
 
         return scilista_items
@@ -365,6 +369,11 @@ class PkgProcessor(object):
         self.aff_normalizer = aff_normalization.Aff(self.app_institutions_manager)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
         self.registered_issues_manager = xc_models.RegisteredIssuesManager(self.db_manager, self.journals_list)
+        
+    @property
+    def export_documents_package(self):
+        if self.config.kernel_gate:
+            return Exporter(self.config.kernel_gate).export
 
     @property
     def db_manager(self):
@@ -421,8 +430,9 @@ class PkgProcessor(object):
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
 
         conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
-        scilista_items = conversion.convert()
 
+        scilista_items = conversion.convert(self.export_documents_package)
+        
         reports = self.report_result(pkg, validations_reports, conversion)
         statistics_display = reports.validations.statistics_display(html_format=False)
 
