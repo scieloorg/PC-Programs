@@ -805,6 +805,9 @@ class ArticlesManager(object):
         valid_aop = None
         if not article.is_ahead:
             aop_status, valid_aop = self.get_valid_aop(article)
+            if valid_aop:
+                article.registered_scielo_id = (
+                    valid_aop.scielo_id or valid_aop.registered_scielo_id)
         id_created = self.base_manager.save_article(article, i_record)
         article_converted = id_created
         if id_created is True:
