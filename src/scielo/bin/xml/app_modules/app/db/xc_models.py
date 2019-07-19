@@ -784,6 +784,7 @@ class ArticlesManager(object):
         self.xc_messages.extend(messages)
         if valid_aop is not None:
             article.registered_aop_pid = valid_aop.pid
+            article.registered_scielo_id = valid_aop.registered_scielo_id
         return (aop_status, valid_aop)
 
     def exclude_aop(self, valid_aop):
@@ -807,6 +808,7 @@ class ArticlesManager(object):
         valid_aop = None
         if not article.is_ahead:
             aop_status, valid_aop = self.get_valid_aop(article)
+
         id_created = self.base_manager.save_article(article, i_record)
         article_converted = id_created
         if id_created is True:
