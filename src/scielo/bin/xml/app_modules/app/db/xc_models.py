@@ -263,7 +263,9 @@ class ArticleRecords(object):
         self._metadata['237'] = self.article.doi
         self._metadata['337'] = [
             {'l': lang, 'd': doi}
-            for doi, lang in self.article.doi_and_lang]
+            for lang, doi in self.article.doi_and_lang
+            if doi and lang
+            ]
 
         self._metadata['121'] = self.article.order
         self._metadata['881'] = self.article.previous_pid
