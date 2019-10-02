@@ -676,6 +676,14 @@ def display_article_metadata(_article, sep='<br/>'):
         r += html_reports.tag('p', _article.doi, 'doi')
     else:
         r += html_reports.tag('p', _article.publisher_article_id, 'doi')
+    if _article.previous_pid:
+        r += html_reports.tag(
+            'p',
+            html_reports.tag('strong', "PID (AOP): " + _article.previous_pid))
+    else:
+        r += html_reports.tag(
+            'p', html_reports.tag('strong', "PID (AOP): none"))
+
     r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
     r += display_article_dates(_article, 'p')
     r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
