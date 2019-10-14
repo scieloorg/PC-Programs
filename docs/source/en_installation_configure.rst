@@ -182,16 +182,15 @@ By default the program works considering Internet access available, no proxy for
 
 For cases where internet access is done via proxy or there is no internet access, it is necessary to edit the example file scielo_env.ini available in ?/bin/ with the following parameters:
 
-  .. code:: text
-    # just in case of using proxy
-    PROXY_ADDRESS=
+    PROXY_ADDRESS:
+        complete with proxy, if applicable
+        
+    ENABLED_WEB_ACCESS
+        complete with "off" only if there is no internet access
     
-    # just in case of there is no internet access
-    ENABLED_WEB_ACCESS=off
-    
-    # in this case, the validation will be done using the packtools instead of the style-checker, for inverse order, use Java
     XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER=packtools|java
-
+        complete with "packtools|java" if you want to use packtools to validate XML 
+    
 
 Example of completed parameters:
 
