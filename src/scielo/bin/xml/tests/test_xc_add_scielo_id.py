@@ -1,10 +1,9 @@
 import unittest
 import os
-import xml.etree.ElementTree as ET
 from copy import deepcopy
 from app_modules.app.data.scielo_id_manager import (
-    add_scielo_id,
-    add_scielo_id_to_received_documents,
+    add_scielo_id_to_documents,
+    add_scielo_id_to_xml_files,
 )
 
 
@@ -40,9 +39,11 @@ class TestAddSciELOIdManager(unittest.TestCase):
             received.update({name: Article(None)})
             file_paths.update({name: fname})
 
-        add_scielo_id_to_received_documents(received, registered, file_paths)
+        add_scielo_id_to_documents(received, registered)
+        add_scielo_id_to_xml_files(received, file_paths)
         for name, item in received.items():
             with self.subTest(name):
+
                 self.assertIsNotNone(item.registered_scielo_id)
                 with open(file_paths[name], "r") as fp:
                     content = fp.read()

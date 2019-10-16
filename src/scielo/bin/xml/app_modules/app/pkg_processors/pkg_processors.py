@@ -122,10 +122,9 @@ class ArticlesConversion(object):
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
-            scielo_id_manager.add_scielo_id_to_received_documents(
+            scielo_id_manager.add_scielo_id_to_documents(
                 self.articles_mergence.accepted_articles,
-                self.articles_mergence.registered_articles,
-                self.pkg.file_paths)
+                self.articles_mergence.registered_articles)
 
             _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
@@ -136,8 +135,10 @@ class ArticlesConversion(object):
                 self.articles_conversion_validations[name].message = message
 
             if len(_scilista_items) > 0:
+                scielo_id_manager.add_scielo_id_to_xml_files(
+                    self.articles_mergence.accepted_articles,
+                    self.pkg.file_paths)
                 # IMPROVEME
-
                 self.registered_issue_data.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.local_web_app_path)
                 self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
                 if export_documents_package:
