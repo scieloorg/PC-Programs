@@ -27,7 +27,7 @@ def add_scielo_id(received, registered, file_path):
     if node is not None:
         article_id = ET.Element("article-id")
         article_id.set("specific-use", "scielo")
-        article_id.set("pub-type-id", "publisher-id")
+        article_id.set("pub-id-type", "publisher-id")
         article_id.text = received.registered_scielo_id
         node.insert(0, article_id)
         new_content = ET.tostring(xml.find(".")).decode("utf-8")
