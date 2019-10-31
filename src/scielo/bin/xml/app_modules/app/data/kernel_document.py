@@ -32,3 +32,11 @@ def add_scielo_id(received, registered, file_path):
         node.insert(0, article_id)
         new_content = ET.tostring(xml.find(".")).decode("utf-8")
         fs_utils.write_file(file_path, new_content)
+
+
+def element_article_id(value, attributes):
+    article_id = ET.Element("article-id")
+    article_id.text = value
+    for name, value in attributes.items():
+        article_id.set(name, value)
+    return article_id
