@@ -8,11 +8,15 @@ def add_article_id_to_received_documents(
     """Atualiza scielo_id dos documentos recebidos."""
     for name, received in received_documents.items():
         if not received.scielo_id:
-            add_scielo_id(
-                received,
-                registered_documents.get(name),
-                file_paths.get(name),
-            )
+            file_path = file_paths.get(name)
+            registered = registered_documents.get(name)
+            received.registered_scielo_id = get_scielo_id(registered)
+
+            xml = ET.parse(file_path)
+            article_meta = xml.find(".//article-meta")
+            add_scielo_id(article_meta, received.registered_scielo_id)
+
+            save(file_path, xml)
 
 
 def get_scielo_id(registered):
@@ -21,20 +25,13 @@ def get_scielo_id(registered):
     return scielo_id_gen.generate_scielo_pid()
 
 
-def add_scielo_id(received, registered, file_path):
-    """Atualiza received.registered_scielo_id com o valor do
-    registered.scielo_id ou gerando um novo scielo_id."""
-    received.registered_scielo_id = get_scielo_id(registered)
-    xml = ET.parse(file_path)
-    article_meta = xml.find(".//article-meta")
+def add_scielo_id(article_meta, scielo_id):
     if article_meta is not None:
         attributes = {
             "specific-use": "scielo",
             "pub-id-type": "publisher-id",
         }
-        add_article_id(article_meta, received.registered_scielo_id, attributes)
-
-        save(file_path, xml)
+        add_article_id(article_meta, scielo_id, attributes)
 
 
 def add_article_id(article_meta, value, attributes):
