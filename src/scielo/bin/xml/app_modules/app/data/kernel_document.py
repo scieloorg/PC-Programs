@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 
 def add_article_id_to_received_documents(
-    received_documents, registered_documents, file_paths
+    issn_id, year, order_in_year, received_documents, registered_documents, file_paths
 ):
     """Atualiza scielo_id dos documentos recebidos."""
     for name, received in received_documents.items():
@@ -15,9 +15,16 @@ def add_article_id_to_received_documents(
 
             xml = ET.parse(file_path)
             article_meta = xml.find(".//article-meta")
+
+            pid = get_scielo_pid(issn_id, year, order_in_year, received.order)
             add_article_id(article_meta, received.registered_scielo_id, "scielo")
+            add_article_id(article_meta, pid, "scielo-pid")
 
             save(file_path, xml)
+
+
+def get_scielo_pid(issn_id, year, order_in_year, order_in_issue):
+    return "".join(("S", issn_id, year, order_in_year, order_in_issue))
 
 
 def get_scielo_id(registered):
