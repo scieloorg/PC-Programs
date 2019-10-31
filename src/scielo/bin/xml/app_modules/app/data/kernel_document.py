@@ -23,25 +23,23 @@ def add_scielo_id(received, registered, file_path):
     else:
         received.registered_scielo_id = scielo_id_gen.generate_scielo_pid()
     xml = ET.parse(file_path)
-    node = xml.find(".//article-meta")
-    if node is not None:
+    article_meta = xml.find(".//article-meta")
+    if article_meta is not None:
         attributes = {
             "specific-use": "scielo",
             "pub-id-type": "publisher-id",
         }
-        article_id = element_article_id(
-                received.registered_scielo_id, attributes)
-        article_id = ET.Element("article-id")
-        node.insert(0, article_id)
+        add_article_id(article_meta, received.registered_scielo_id, attributes)
+
         save(file_path, xml)
 
 
-def element_article_id(value, attributes):
+def add_article_id(article_meta, value, attributes):
     article_id = ET.Element("article-id")
     article_id.text = value
     for name, value in attributes.items():
         article_id.set(name, value)
-    return article_id
+    article_meta.insert(0, article_id)
 
 
 def save(file_path, xml):
