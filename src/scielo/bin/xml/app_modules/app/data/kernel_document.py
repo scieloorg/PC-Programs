@@ -4,7 +4,8 @@ import xml.etree.ElementTree as ET
 
 
 def add_article_id_to_received_documents(
-        received_documents, registered_documents, file_paths):
+    received_documents, registered_documents, file_paths
+):
     """Atualiza scielo_id dos documentos recebidos."""
     for name, received in received_documents.items():
         if not received.scielo_id:
@@ -14,7 +15,7 @@ def add_article_id_to_received_documents(
 
             xml = ET.parse(file_path)
             article_meta = xml.find(".//article-meta")
-            add_scielo_id(article_meta, received.registered_scielo_id)
+            add_article_id(article_meta, received.registered_scielo_id, "scielo")
 
             save(file_path, xml)
 
@@ -25,20 +26,11 @@ def get_scielo_id(registered):
     return scielo_id_gen.generate_scielo_pid()
 
 
-def add_scielo_id(article_meta, scielo_id):
-    if article_meta is not None:
-        attributes = {
-            "specific-use": "scielo",
-            "pub-id-type": "publisher-id",
-        }
-        add_article_id(article_meta, scielo_id, attributes)
-
-
-def add_article_id(article_meta, value, attributes):
+def add_article_id(article_meta, id_value, specific_use):
     article_id = ET.Element("article-id")
-    article_id.text = value
-    for name, value in attributes.items():
-        article_id.set(name, value)
+    article_id.text = id_value
+    article_id.set("specific-use", specific_use)
+    article_id.set("pub-id-type", "publisher-id")
     article_meta.insert(0, article_id)
 
 
