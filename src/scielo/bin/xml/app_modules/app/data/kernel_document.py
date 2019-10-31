@@ -15,13 +15,16 @@ def add_article_id_to_received_documents(
             )
 
 
+def get_scielo_id(registered):
+    if registered and registered.scielo_id:
+        return registered.scielo_id
+    return scielo_id_gen.generate_scielo_pid()
+
+
 def add_scielo_id(received, registered, file_path):
     """Atualiza received.registered_scielo_id com o valor do
     registered.scielo_id ou gerando um novo scielo_id."""
-    if registered and registered.scielo_id:
-        received.registered_scielo_id = registered.scielo_id
-    else:
-        received.registered_scielo_id = scielo_id_gen.generate_scielo_pid()
+    received.registered_scielo_id = get_scielo_id(registered)
     xml = ET.parse(file_path)
     article_meta = xml.find(".//article-meta")
     if article_meta is not None:
