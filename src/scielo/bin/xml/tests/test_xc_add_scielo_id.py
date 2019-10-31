@@ -1,9 +1,7 @@
 import unittest
 import os
-import xml.etree.ElementTree as ET
 from copy import deepcopy
-from app_modules.app.data.scielo_id_manager import (
-    add_scielo_id,
+from app_modules.app.data.kernel_document import (
     add_scielo_id_to_received_documents,
 )
 

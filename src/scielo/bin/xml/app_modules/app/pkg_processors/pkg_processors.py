@@ -26,7 +26,7 @@ from ..data import package
 from ..data import merged
 from ..data import workarea
 from ..data import aff_normalization
-from ..data import scielo_id_manager
+from ..data import kernel_document
 from ..db import registered
 from ..db import xc_models
 from . import pmc_pkgmaker
@@ -122,7 +122,7 @@ class ArticlesConversion(object):
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
-            scielo_id_manager.add_scielo_id_to_received_documents(
+            kernel_document.add_scielo_id_to_received_documents(
                 self.articles_mergence.accepted_articles,
                 self.articles_mergence.registered_articles,
                 self.pkg.file_paths)
