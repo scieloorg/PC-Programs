@@ -2,7 +2,7 @@ import unittest
 import os
 from copy import deepcopy
 from app_modules.app.data.kernel_document import (
-    add_scielo_id_to_received_documents,
+    add_article_id_to_received_documents,
 )
 
 
@@ -38,7 +38,7 @@ class TestAddSciELOIdManager(unittest.TestCase):
             received.update({name: Article(None)})
             file_paths.update({name: fname})
 
-        add_scielo_id_to_received_documents(received, registered, file_paths)
+        add_article_id_to_received_documents(received, registered, file_paths)
         for name, item in received.items():
             with self.subTest(name):
                 self.assertIsNotNone(item.registered_scielo_id)

@@ -3,7 +3,7 @@ from . import scielo_id_gen
 import xml.etree.ElementTree as ET
 
 
-def add_scielo_id_to_received_documents(
+def add_article_id_to_received_documents(
         received_documents, registered_documents, file_paths):
     """Atualiza scielo_id dos documentos recebidos."""
     for name, received in received_documents.items():
