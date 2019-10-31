@@ -25,10 +25,13 @@ def add_scielo_id(received, registered, file_path):
     xml = ET.parse(file_path)
     node = xml.find(".//article-meta")
     if node is not None:
+        attributes = {
+            "specific-use": "scielo",
+            "pub-id-type": "publisher-id",
+        }
+        article_id = element_article_id(
+                received.registered_scielo_id, attributes)
         article_id = ET.Element("article-id")
-        article_id.set("specific-use", "scielo")
-        article_id.set("pub-id-type", "publisher-id")
-        article_id.text = received.registered_scielo_id
         node.insert(0, article_id)
         new_content = ET.tostring(xml.find(".")).decode("utf-8")
         fs_utils.write_file(file_path, new_content)
