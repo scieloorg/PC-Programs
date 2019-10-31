@@ -33,8 +33,7 @@ def add_scielo_id(received, registered, file_path):
                 received.registered_scielo_id, attributes)
         article_id = ET.Element("article-id")
         node.insert(0, article_id)
-        new_content = ET.tostring(xml.find(".")).decode("utf-8")
-        fs_utils.write_file(file_path, new_content)
+        save(file_path, xml)
 
 
 def element_article_id(value, attributes):
@@ -43,3 +42,8 @@ def element_article_id(value, attributes):
     for name, value in attributes.items():
         article_id.set(name, value)
     return article_id
+
+
+def save(file_path, xml):
+    new_content = ET.tostring(xml.find(".")).decode("utf-8")
+    fs_utils.write_file(file_path, new_content)
