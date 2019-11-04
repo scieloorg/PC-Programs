@@ -124,10 +124,8 @@ class ArticlesConversion(object):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
             issn_id = self.registered_issue_data.issue_models.issn_id
             v36 = self.registered_issue_data.issue_models.record.get("36")
-            year = v36[:4]
-            order_in_year = year[4:].zfill(4)
             kernel_document.add_article_id_to_received_documents(
-                issn_id, year, order_in_year,
+                issn_id, v36,
                 self.articles_mergence.accepted_articles,
                 self.articles_mergence.registered_articles,
                 self.pkg.file_paths)

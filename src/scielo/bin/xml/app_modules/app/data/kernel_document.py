@@ -4,30 +4,39 @@ import xml.etree.ElementTree as ET
 
 
 def add_article_id_to_received_documents(
-    issn_id, year, order_in_year, received_documents, registered_documents, file_paths
+    issn_id, year_and_order, received_docs, registered_docs, file_paths
 ):
-    """Atualiza scielo_id dos documentos recebidos."""
-    for name, received in received_documents.items():
-        if not received.scielo_id:
-            file_path = file_paths.get(name)
-            registered = registered_documents.get(name)
-            received.registered_scielo_id = get_scielo_id(registered)
+    """Atualiza article-id (scielo-v2 e scielo-v3) dos documentos recebidos."""
+    for name, received in received_docs.items():
+        pid_v2 = received.get_scielo_pid("v2")
+        pid_v3 = received.get_scielo_pid("v3")
+        if pid_v2 and pid_v3:
+            continue
 
-            xml = ET.parse(file_path)
-            article_meta = xml.find(".//article-meta")
+        file_path = file_paths.get(name)
+        xml = ET.parse(file_path)
+        article_meta = xml.find(".//article-meta")
+        registered = registered_docs.get(name)
 
-            pid = get_scielo_pid(issn_id, year, order_in_year, received.order)
-            add_article_id(article_meta, received.registered_scielo_id, "scielo")
-            add_article_id(article_meta, pid, "scielo-pid")
+        if not pid_v3:
+            received.registered_scielo_id = get_scielo_pid_v3(registered)
+            add_article_id(
+                article_meta, received.registered_scielo_id, "scielo-v3")
 
-            save(file_path, xml)
+        if not pid_v2:
+            pid = get_scielo_pid_v2(issn_id, year_and_order, received.order)
+            add_article_id(article_meta, pid, "scielo-v2")
+
+        save(file_path, xml)
 
 
-def get_scielo_pid(issn_id, year, order_in_year, order_in_issue):
+def get_scielo_pid_v2(issn_id, year_and_order, order_in_issue):
+    year = year_and_order[:4]
+    order_in_year = year_and_order[4:].zfill(4)
     return "".join(("S", issn_id, year, order_in_year, order_in_issue))
 
 
-def get_scielo_id(registered):
+def get_scielo_pid_v3(registered):
     if registered and registered.scielo_id:
         return registered.scielo_id
     return scielo_id_gen.generate_scielo_pid()

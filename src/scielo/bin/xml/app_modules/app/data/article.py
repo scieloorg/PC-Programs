@@ -1033,7 +1033,12 @@ class ArticleXML(object):
     @property
     def scielo_id(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('article-id[@specific-use="scielo"]')
+            return self.article_meta.findtext('article-id[@specific-use="scielo-v3"]')
+
+    def get_scielo_pid(self, version):
+        if self.article_meta is not None and version.startswith("v"):
+            return self.article_meta.findtext(
+                'article-id[@specific-use="scielo-{}"]'.format(version))
 
     @property
     def marked_to_delete(self):
