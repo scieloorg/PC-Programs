@@ -13,6 +13,7 @@ from ..data import attributes
 from .. import article_utils
 from . import ref_validations
 from . import data_validations
+from . import orcid
 from ..pkg_processors import xml_versions
 from . import article_disp_formula
 from . import article_tablewrap
@@ -182,6 +183,7 @@ class ArticleContentValidation(object):
         self.config = config
         self.disp_formulas_validator = article_disp_formula.ArticleDispFormulasValidator(config)
         self.tablewrap_validator = article_tablewrap.ArticleTableWrapValidator(config)
+        self.orcid_validator = orcid.ORCIDValidator(config.app_ws_requester)
 
     def normalize_validations(self, validations_result_list):
         r = []
@@ -563,54 +565,9 @@ class ArticleContentValidation(object):
 
     @property
     def contrib_id(self):
-        URL = 'https://orcid.org/'
-        available = self.config.app_ws_requester.is_valid_url(URL)
-        identified = {}
-        msgs = []
-        for contrib_name in self.article.contrib_names_with_contrib_id_type:
-            orcid = contrib_name.contrib_id.get('orcid')
-            if orcid is None:
-                continue
-
-            if orcid in identified.keys():
-                if contrib_name.fullname != identified[orcid]:
-                    r = ('contrib-id',
-                         validation_status.STATUS_BLOCKING_ERROR,
-                         _('Both "{}" and "{}"" have the same ORCID: {}').format(
-                            contrib_name.fullname, identified[orcid], orcid
-                          )
-                         )
-                    msgs.append(r)
-            else:
-                identified[orcid] = contrib_name.fullname
-                url = 'https://orcid.org/{}'.format(orcid)
-                if available:
-                    found = self.config.app_ws_requester.is_valid_url(url)
-                    if not found:
-                        r = ('contrib-id',
-                             validation_status.STATUS_FATAL_ERROR,
-                             _('{value} is an invalid value for {label}. ').format(
-                            value=orcid, label='ORCID'))
-                        msgs.append(r)
-                else:
-                    r = ('contrib-id',
-                         validation_status.STATUS_WARNING,
-                         _('Unable to check if {} belongs to {}. ').format(
-                            html_reports.link(url, orcid),
-                            contrib_name.fullname))
-                    msgs.append(r)
-
-        q = self.article.count_words('ORCID')
-        if q > len(identified):
-            r = (
-                    'contrib-id',
-                    validation_status.STATUS_WARNING,
-                    _('Check if all the ORCID are identified as contrib-id. ')+
-                    _('Found {} ORCID words. ').format(q)+
-                    _('Found {} contrib-id. '.format(len(identified)))
-                )
-            msgs.append(r)
-        return msgs
+        if len(self.article.contrib_names) > 0:
+            return self.orcid_validator.validate_contrib_names(
+                self.article.contrib_names)
 
     @property
     def trans_languages(self):

@@ -55,19 +55,16 @@ def format_author(author):
 
 
 def display_author(author):
-    text = ''
+    texts = []
     if isinstance(author, PersonAuthor):
-        if author.surname is not None:
-            text += html_reports.tag('span', author.surname, 'surname')
-
-        if author.suffix is not None:
-            text += ' ' + html_reports.tag('span', author.suffix, 'suffix')
-
-        if author.fname is not None:
-            text += ', ' + html_reports.tag('span', author.fname, 'name')
+        labels = ('surname', 'suffix', 'name', 'orcid')
+        values = (author.surname, author.suffix, author.fname, author.contrib_id.get("orcid", ""))
+        for label, value in zip(labels, values):
+            if value:
+                texts.append(html_reports.tag('span', value, label))
     else:
-        text += html_reports.tag('span', author.collab, 'collab')
-    return text
+        texts.append(html_reports.tag('span', author.collab, 'collab'))
+    return ", ".join([text for text in texts if text])
 
 
 def display_authors(authors_list, sep):
