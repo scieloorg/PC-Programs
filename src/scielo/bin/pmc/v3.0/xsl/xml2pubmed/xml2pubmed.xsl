@@ -399,6 +399,9 @@
 			<xsl:when test=".//front//pub-date[@date-type='pub']">
 				<xsl:apply-templates select=".//front//pub-date[@date-type='pub']"/>
 			</xsl:when>
+			<xsl:when test=".//front//pub-date[@pub-type='epub']">
+				<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
+			</xsl:when>
 			<xsl:when test=".//front//pub-date[@pub-type='collection']">
 				<xsl:apply-templates select=".//front//pub-date[@pub-type='collection']"/>
 			</xsl:when>
@@ -407,9 +410,6 @@
 			</xsl:when>
 			<xsl:when test=".//front//pub-date[@pub-type='epub-ppub']">
 				<xsl:apply-templates select=".//front//pub-date[@pub-type='epub-ppub']"/>
-			</xsl:when>
-			<xsl:when test=".//front//pub-date[@pub-type='epub']">
-				<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select=".//front//pub-date[1]"/>
