@@ -122,7 +122,7 @@ class ArticlesConversion(object):
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
-            issn_id = self.registered_issue_data.issue_models.issn_id
+            issn_id = self.registered_issue_data.issue_models.issue.issn_id
             v36 = self.registered_issue_data.issue_models.record.get("36")
             kernel_document.add_article_id_to_received_documents(
                 issn_id, v36,
