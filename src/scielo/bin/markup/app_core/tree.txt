@@ -904,7 +904,7 @@ glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
-normaff;#TRUE#;#TRUE#
+aff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
 subdoc;#FALSE#;#TRUE#
@@ -968,7 +968,7 @@ glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
-normaff;#TRUE#;#TRUE#
+aff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
 subdoc;#FALSE#;#TRUE#
