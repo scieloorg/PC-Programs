@@ -1070,17 +1070,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*" mode="institution">
 		<institution content-type="original"><xsl:apply-templates select="*[name()!='label']|text()" mode="original"/></institution>
-		<xsl:choose>
-			<xsl:when test="@norgname">
-				<xsl:if test="@norgname!='Not normalized'">
-					<institution content-type="normalized"><xsl:value-of select="@norgname"/></institution>	
-				</xsl:if>
-				<xsl:apply-templates select="*[contains(name(),'org')]"/>
-			</xsl:when>				
-			<xsl:when test="@orgname">
-				<xsl:apply-templates select="@*[name()!='id']"/>
-			</xsl:when>				
-		</xsl:choose>
+		<xsl:if test="@orgname">
+			<xsl:apply-templates select="@*[name()!='id']"/>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="*" mode="address">
 		<xsl:if test="city or state or zipcode">
@@ -1088,12 +1080,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="city|state|zipcode"/>
 			</addr-line>
 		</xsl:if>
-		<xsl:choose>
-			<xsl:when test="@ncountry and @ncountry!='Not normalized'">
-				<xsl:apply-templates select="@ncountry"></xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise><xsl:apply-templates select="country"></xsl:apply-templates></xsl:otherwise>
-		</xsl:choose>
+		<xsl:apply-templates select="country"></xsl:apply-templates>
 		<xsl:apply-templates select="email"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="@icountry">
