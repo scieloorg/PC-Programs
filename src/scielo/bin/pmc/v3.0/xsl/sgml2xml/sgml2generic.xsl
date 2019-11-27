@@ -679,9 +679,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:if test="count(normaff)=1">
 					<xsl:apply-templates select="normaff"/>
 				</xsl:if>
+				<xsl:if test="count(aff)=1">
+					<xsl:apply-templates select="aff"/>
+				</xsl:if>
 			</contrib-group>
 			<xsl:if test="count(normaff)&gt;1">
 				<xsl:apply-templates select="normaff"/>
+			</xsl:if>
+			<xsl:if test="count(aff)&gt;1">
+				<xsl:apply-templates select="aff"/>
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
@@ -722,9 +728,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="doc | subdoc | docresp" mode="front-contrib-group">
 		<xsl:choose>
-			<xsl:when test=".//aff">
-				<aff content-type="USE normaff instead of aff"></aff>
-			</xsl:when>
 			<xsl:when test="author or corpauth">
 				<contrib-group>
 					<xsl:apply-templates select="author|corpauth" mode="front-contrib"/>
@@ -733,6 +736,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 							<xsl:value-of select="onbehalf"/>
 						</on-behalf-of>
 					</xsl:if>
+					<xsl:if test="count(aff)=1">
+						<xsl:apply-templates select="aff"/>
+					</xsl:if>
 					<xsl:if test="count(normaff)=1">
 						<xsl:apply-templates select="normaff"/>
 					</xsl:if>
@@ -740,6 +746,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						<xsl:apply-templates select="afftrans"/>
 					</xsl:if>
 				</contrib-group>
+				<xsl:if test="count(aff)&gt;1">
+					<xsl:apply-templates select="aff"/>
+				</xsl:if>
 				<xsl:if test="count(normaff)&gt;1">
 					<xsl:apply-templates select="normaff"/>
 				</xsl:if>
@@ -753,9 +762,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:if test="count(normaff)=1">
 						<xsl:apply-templates select="normaff"/>
 					</xsl:if>
+					<xsl:if test="count(aff)=1">
+						<xsl:apply-templates select="aff"/>
+					</xsl:if>
 				</contrib-group>
 				<xsl:if test="count(normaff)&gt;1">
 					<xsl:apply-templates select="normaff"/>
+				</xsl:if>
+				<xsl:if test="count(aff)&gt;1">
+					<xsl:apply-templates select="aff"/>
 				</xsl:if>
 			</xsl:when>
 		</xsl:choose>
@@ -1072,9 +1087,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<institution content-type="original"><xsl:apply-templates select="*[name()!='label']|text()" mode="original"/></institution>
 		<xsl:choose>
 			<xsl:when test="@norgname">
-				<xsl:if test="@norgname!='Not normalized'">
-					<institution content-type="normalized"><xsl:value-of select="@norgname"/></institution>	
-				</xsl:if>
 				<xsl:apply-templates select="*[contains(name(),'org')]"/>
 			</xsl:when>				
 			<xsl:when test="@orgname">
