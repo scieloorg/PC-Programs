@@ -301,7 +301,7 @@ class ArticleRecords(object):
         self._metadata['14']['e'] = self.article.elocation_id
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
-        self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations)
+        self._metadata['240'] = format_normalized_affiliations(self.article.affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -1303,15 +1303,13 @@ def format_affiliations(affiliations):
 
 def format_normalized_affiliations(affiliations):
     affs = []
-    for aff in affiliations.values():
+    for affiliation in affiliations:
+        aff = affiliation.aff
         if aff is not None:
-            if aff.id is not None and aff.i_country is not None and aff.norgname is not None:
+            if aff.id is not None and aff.i_country is not None:
                 a = {}
                 a['i'] = aff.id
                 a['p'] = aff.i_country
-                a['_'] = aff.norgname
-                a['c'] = aff.city
-                a['s'] = aff.state
                 affs.append(a)
     return affs
 

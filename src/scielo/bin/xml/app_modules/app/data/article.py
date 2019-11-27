@@ -1701,7 +1701,6 @@ class Article(ArticleXML):
         self.article_records = None
         self.is_ex_aop = False
         self.section_code = None
-        self.normalized_affiliations = {}
         self.institutions_query_results = {}
         self.xml = None if self.tree is None else xml_utils.node_xml(self.tree.find('.'))
 
