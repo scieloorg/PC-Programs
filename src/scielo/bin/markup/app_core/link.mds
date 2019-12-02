@@ -2,7 +2,7 @@ aff
 id;orgname;orgdiv1;orgdiv2;orgdiv3
 
 normaff
-id;ncountry;norgname;icountry
+id;icountry
 
 afftrans
 id
