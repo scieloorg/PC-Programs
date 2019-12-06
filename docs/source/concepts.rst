@@ -12,7 +12,7 @@ Glossary
 Local server
 ------------ 
 
-It's a Windows machine where the PC Programs and SciELO website (local site) run.
+It's a Windows computer where the PC Programs and SciELO website (local site) run.
 
 SciELO collection or instance
 -----------------------------
