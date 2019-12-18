@@ -95,6 +95,12 @@ class Configuration(object):
         return self._data.get('PROC_SERIAL_PATH', self._data.get('Serial Directory'))
 
     @property
+    def pid_manager_info(self):
+        return self._data.get(
+            'PID_MANAGER',
+            os.path.join(self.serial_path, "pid_manager.db"))
+
+    @property
     def issue_db(self):
         return self._data.get('SOURCE_ISSUE_DB', self._data.get('Issue Database'))
 
