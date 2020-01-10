@@ -1519,6 +1519,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:if test="$trans!=''">
 				<xsl:attribute name="xml:lang"><xsl:value-of select="@language"/></xsl:attribute>
 			</xsl:if>
+			<xsl:if test="@absttype">
+				<xsl:attribute name="abstract-type"><xsl:value-of select="@absttype"/></xsl:attribute>
+			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="sectitle or p or sec">
 					<xsl:apply-templates select="*|text()"/>

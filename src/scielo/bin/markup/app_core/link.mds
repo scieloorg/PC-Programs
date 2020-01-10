@@ -14,7 +14,7 @@ abstract
 language
 
 xmlabstr
-language
+language,absttype
 
 date
 dateiso;specyear
