@@ -1519,7 +1519,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:if test="$trans!=''">
 				<xsl:attribute name="xml:lang"><xsl:value-of select="@language"/></xsl:attribute>
 			</xsl:if>
-			<xsl:if test="@absttype">
+			<xsl:if test="@absttype!='summary'">
 				<xsl:attribute name="abstract-type"><xsl:value-of select="@absttype"/></xsl:attribute>
 			</xsl:if>
 			<xsl:choose>
