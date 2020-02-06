@@ -178,3 +178,7 @@ ctrbidtp
 ORCID
 ORCID
 
+absttype
+summary (default);graphical (visual abstract);key-points (highlights)
+summary;graphical;key-points
+

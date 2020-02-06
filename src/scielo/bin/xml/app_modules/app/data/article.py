@@ -1323,7 +1323,7 @@ class ArticleXML(object):
         if self._all_abstracts is None:
             self._all_abstracts = {}
             for a in self.abstract_nodes + self.trans_abstract_nodes:
-                abstract_type = a.get('abstract-type', 'regular')
+                abstract_type = a.get('abstract-type', 'summary')
                 if abstract_type not in self._all_abstracts.keys():
                     self._all_abstracts[abstract_type] = []
                 _abstract = Text()
@@ -1333,7 +1333,7 @@ class ArticleXML(object):
 
             for subart in self.translations:
                 for a in subart.findall('.//abstract'):
-                    abstract_type = a.get('abstract-type', 'regular')
+                    abstract_type = a.get('abstract-type', 'summary')
                     if abstract_type not in self._all_abstracts.keys():
                         self._all_abstracts[abstract_type] = []
                     _abstract = Text()
@@ -1384,7 +1384,7 @@ class ArticleXML(object):
 
     @property
     def abstracts(self):
-        return self.all_abstracts.get('regular', [])
+        return self.all_abstracts.get('summary', [])
 
     @property
     def graphical_abstracts(self):
