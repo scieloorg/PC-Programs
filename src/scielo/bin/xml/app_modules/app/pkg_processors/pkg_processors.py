@@ -131,7 +131,7 @@ class ArticlesConversion(object):
             kernel_document.add_article_id_to_received_documents(
                 scielo_pid_v3_manager,
                 issn_id, v36,
-                self.articles_mergence.accepted_articles,
+                self.articles_mergence.articles,
                 self.articles_mergence.registered_articles,
                 self.pkg.file_paths)
 
