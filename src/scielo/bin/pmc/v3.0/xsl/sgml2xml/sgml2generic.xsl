@@ -881,6 +881,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<title-group>
 			<xsl:apply-templates select="doctitle[@language=$language or not(@language)] "/>
 			<xsl:apply-templates select="doctitle[@language!=$language]" mode="trans-title-group"/>
+			<xsl:apply-templates select="doctitle//alttitle"/>
 		</title-group>
 	</xsl:template>
 	<xsl:template match="article | subart | response" mode="title-group">
@@ -914,7 +915,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<article-title>
 			<xsl:apply-templates select="*[name()!='subtitle' and name()!='alttitle'] |text()"/>
 		</article-title>
-		<xsl:apply-templates select="subtitle|alttitle">
+		<xsl:apply-templates select="subtitle">
 			<xsl:with-param name="lang"><xsl:value-of select="@language"/></xsl:with-param>
 		</xsl:apply-templates>
 	</xsl:template>
@@ -922,7 +923,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<trans-title-group>
 			<xsl:apply-templates select="@language"/>
 			<trans-title>
-			<xsl:apply-templates select="*[name()!='subtitle'] |text()"></xsl:apply-templates>
+			<xsl:apply-templates select="*[name()!='subtitle' and name()!='alttitle'] |text()"></xsl:apply-templates>
 			</trans-title>
 			<xsl:apply-templates select="subtitle" mode="trans-title"/>
 		</trans-title-group>
@@ -3897,7 +3898,19 @@ et al.</copyright-statement>
 	</xsl:template>
 	
 	<xsl:template match="alttitle">
-		<xsl:param name="lang"/>
+		<xsl:param name="lang">
+			<xsl:choose>
+				<xsl:when test="@language">
+					<xsl:value-of select="@language"/>
+				</xsl:when>
+				<xsl:when test="../@language">
+					<xsl:value-of select="../@language"/>
+				</xsl:when>
+				<xsl:when test="../../@language">
+					<xsl:value-of select="../../@language"/>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:param>
 		<alt-title>
 			<xsl:if test="$lang!=''">
 				<xsl:attribute name="xml:lang"><xsl:value-of select="$lang"/></xsl:attribute>
