@@ -155,11 +155,28 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="sub | bold | italic">
+	<xsl:template match="sub | italic | bold">
 		<xsl:param name="id"/>
+		<xsl:variable name="parent_name"><xsl:apply-templates select="parent::node()" mode="name"/></xsl:variable>
+		<xsl:variable name="parent_text"><xsl:apply-templates select="parent::node()" mode="text-only"/></xsl:variable>
+		<xsl:variable name="text"><xsl:apply-templates select="." mode="text-only"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test="normalize-space(.)=''">
-				<xsl:value-of select="concat(' ','')"/>
+			<xsl:when test="contains($parent_name, 'title') or $parent_name='label'">
+				<xsl:choose>
+					<xsl:when test="$parent_text=$text">
+						<xsl:apply-templates select="*|text()">
+							<xsl:with-param name="id" select="$id"/>
+						</xsl:apply-templates>
+					</xsl:when>
+					<xsl:otherwise>
+						<!-- cria o elemento sub italic ou bold identifica parte do título e não o título completo -->
+						<xsl:element name="{name()}">
+							<xsl:apply-templates select="*|text()">
+								<xsl:with-param name="id" select="$id"/>
+							</xsl:apply-templates>
+						</xsl:element>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element name="{name()}">
@@ -170,6 +187,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
 	<xsl:template match="ref//sup | ref//sub | ref//bold | ref//italic">
 		<xsl:param name="id"/>
 		<xsl:variable name="parent_textonly"><xsl:apply-templates select="parent::node()" mode="text-only"/></xsl:variable>
@@ -3994,30 +4012,12 @@ et al.</copyright-statement>
 		</license>
 	</xsl:template>
 	
-	<xsl:template match="label//bold | sectitle//bold">
-		<xsl:variable name="text1" select="normalize-space(..//text())"/>
-		<xsl:variable name="text2" select="normalize-space(text())"/>
-		
-		<xsl:choose>
-			<xsl:when test="$text1!=text2">
-				<bold><xsl:apply-templates select="*|text()"></xsl:apply-templates></bold>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
-			</xsl:otherwise>
-		</xsl:choose>
+	<xsl:template match="*" mode="name">
+		<xsl:value-of select="name()"/>
 	</xsl:template>
 
-	<xsl:template match="*[normalize-space(.//text())=normalize-space(bold)]/bold">
-				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
-	</xsl:template>
-
-	<xsl:template match="*[normalize-space(.//text())!=normalize-space(bold)]/bold">
-		<bold><xsl:apply-templates select="*|text()"></xsl:apply-templates></bold>
-	</xsl:template>
 	<xsl:template match="@ref-type[.='author-notes']">
 		<xsl:attribute name="ref-type">fn</xsl:attribute>
 	</xsl:template>
 
-	
 </xsl:stylesheet>
