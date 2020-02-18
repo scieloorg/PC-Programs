@@ -357,3 +357,15 @@ class SPSversions(object):
                 dtd_info.get('remote'),
                 dtd_info.get('remote').replace('https:', 'http:')]
             self.dtd_infos[dtd_id]['sps'] = self.versions.get(dtd_id)
+
+
+def dtd_locations():
+    locations = {}
+    for name, dtd_info in xml_versions.XPM_FILES.items():
+        dtd_id = dtd_info.get('dtd id')
+        if dtd_id not in locations.keys():
+            locations[dtd_id] = {}
+            locations[dtd_id] = [
+                dtd_info.get('remote'),
+                dtd_info.get('remote').replace('https:', 'http:')]
+    return locations
