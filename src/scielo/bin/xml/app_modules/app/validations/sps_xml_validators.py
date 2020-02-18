@@ -11,7 +11,6 @@ from ...generics import xml_utils
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
 from ..pkg_processors import xml_versions
-from . import data_validations
 
 
 IS_PACKTOOLS_INSTALLED = False
@@ -26,6 +25,45 @@ except Exception as e:
 
 
 log_items = []
+
+
+SPS_VERSIONS = {
+    'None': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.0': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.1': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.2': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.3': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.4': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.5': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.6': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.7': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+    'sps-1.8': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+    'sps-1.9': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+}
 
 
 def register_log(text):
