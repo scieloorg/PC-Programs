@@ -220,6 +220,7 @@ class XMLValidator(object):
     def __init__(self, dtd_files, sps_version=None, preference=None):
         self.logger = None
         self.SPS_versions = SPSversions()
+        self.dtd_locations = dtd_locations()
         self.dtd_files = dtd_files
         self.dtd_validator = JavaXMLValidator(dtd_files.doctype_with_local_path, dtd_files.xsl_prep_report, dtd_files.xsl_report)
         validator_id = 'java'
@@ -238,39 +239,33 @@ class XMLValidator(object):
 
     def validate_doctype(self, article_xml_versions_info):
         errors = []
-        info = self.SPS_versions.dtd_infos.get(
-            article_xml_versions_info.public_id)
-        if info is None:
+        dtd_public_id_items = SPS_VERSIONS.get(
+            article_xml_versions_info.sps_version)
+        if article_xml_versions_info.public_id not in dtd_public_id_items:
             errors.append(
-                _('Unknown {}: {}').format(
-                    'PUBLIC ID',
-                    article_xml_versions_info.public_id or ''))
-        else:
-            _error = []
-            if article_xml_versions_info.system_id not in info.get('url'):
-                _error.append(
-                    ('SYSTEM ID', article_xml_versions_info.system_id))
-            if article_xml_versions_info.sps_version not in info.get('sps'):
-                _error.append(
-                    (_('SPS version'), article_xml_versions_info.sps_version))
-            if _error:
-                errors = ['{}: {}'.format(label, value)
-                          for label, value in _error]
+                _('{value} is an invalid value for {label}. ').format(
+                    value=article_xml_versions_info.public_id or '',
+                    label='DTD PUBLIC ID')
+                )
+            errors.append(
+                _('SPS version {} requires {} as DTD PUBLIC ID').format(
+                    article_xml_versions_info.sps_version,
+                    _(" or ").join(dtd_public_id_items)
+                ))
+            return errors
 
-                msg = _('"{}" ({}) requires: ').format(
-                    article_xml_versions_info.public_id, 'PUBLIC ID')
-                errors.append('..'*30)
-                errors.append(msg)
-                errors.append('SYSTEM ID')
-                errors.extend(['  - {}'.format(item)
-                               for item in info.get('url')])
-                errors.append(_('SPS version'))
-                errors.extend(['  - {}'.format(item)
-                               for item in info.get('sps')])
-        if len(errors) > 0:
-            errors.insert(0, _('Found: '))
-            errors.insert(1, article_xml_versions_info.DOCTYPE or '')
-
+        locations = self.dtd_locations.get(article_xml_versions_info.public_id)
+        _location = None
+        for location in locations:
+            if article_xml_versions_info.system_id in location:
+                _location = location
+                break
+        if not _location:
+            errors.append(
+                _('{value} is an invalid value for {label}. ').format(
+                    value=article_xml_versions_info.system_id,
+                    label='DTD SYSTEM ID')
+            )
         return errors
 
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
