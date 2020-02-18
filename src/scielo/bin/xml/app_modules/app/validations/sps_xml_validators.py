@@ -247,9 +247,10 @@ class XMLValidator(object):
                     label='DTD PUBLIC ID')
                 )
             errors.append(
-                _('SPS version {} requires {} as DTD PUBLIC ID').format(
-                    article_xml_versions_info.sps_version,
-                    _(" or ").join(dtd_public_id_items)
+                _('{requirer} requires {required}. ').format(
+                    requirer='SPS version {}'.format(
+                        article_xml_versions_info.sps_version),
+                    required=_(" or ").join(dtd_public_id_items)
                 ))
             return errors
 
