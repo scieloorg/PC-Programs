@@ -219,7 +219,6 @@ class XMLValidator(object):
 
     def __init__(self, dtd_files, sps_version=None, preference=None):
         self.logger = None
-        self.SPS_versions = SPSversions()
         self.dtd_locations = dtd_locations()
         self.dtd_files = dtd_files
         self.dtd_validator = JavaXMLValidator(dtd_files.doctype_with_local_path, dtd_files.xsl_prep_report, dtd_files.xsl_report)
@@ -353,46 +352,6 @@ class ArticleXMLVersionsInfo(object):
                     self._sps_version = elem[elem.find('specific-use="')+len('specific-use="'):]
                     self._sps_version = self._sps_version[:self._sps_version.find('"')]
         return str(self._sps_version)
-
-
-class SPSversions(object):
-
-    def __init__(self):
-        self.versions = {}
-        self.dtd_infos = {}
-        self.dtd_id_items = [
-            '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
-            '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-            '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
-        ]
-        self.versions[self.dtd_id_items[0]] = [
-            'None',
-            'sps-1.0',
-            'sps-1.1',
-            ]
-        self.versions[self.dtd_id_items[1]] = [
-            'sps-1.2',
-            'sps-1.3',
-            'sps-1.4',
-            'sps-1.5',
-            'sps-1.6',
-            'sps-1.7',
-            'sps-1.8',
-            ]
-        self.versions[self.dtd_id_items[2]] = [
-            'sps-1.7',
-            'sps-1.8',
-            'sps-1.9',
-            ]
-
-        for name, dtd_info in xml_versions.XPM_FILES.items():
-            dtd_id = dtd_info.get('dtd id')
-            if dtd_id not in self.dtd_infos.keys():
-                self.dtd_infos[dtd_id] = {}
-            self.dtd_infos[dtd_id]['url'] = [
-                dtd_info.get('remote'),
-                dtd_info.get('remote').replace('https:', 'http:')]
-            self.dtd_infos[dtd_id]['sps'] = self.versions.get(dtd_id)
 
 
 def dtd_locations():
