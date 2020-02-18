@@ -282,15 +282,18 @@ class XMLValidator(object):
         errors = []
         if self.dtd_files.database_name == 'scielo':
             errors = self.validate_doctype(ArticleXMLVersionsInfo(fs_utils.read_file(xml_filename)))
-        is_valid_dtd = self.dtd_validator.dtd_validation(dtd_report_filename)
-        is_valid_dtd = len(errors) == 0 and is_valid_dtd
-        if len(errors) > 0:
-            dtd_report_content = fs_utils.read_file(dtd_report_filename)
-            if dtd_report_content is None:
-                dtd_report_content = ''
-            fs_utils.write_file(
-                dtd_report_filename,
-                '\n'.join(errors) + '\n' + dtd_report_content)
+
+        status = None
+        if errors:
+            status = validation_status.STATUS_BLOCKING_ERROR
+            content = '\n'.join(errors)
+        elif not self.dtd_validator.dtd_validation(dtd_report_filename):
+            status = validation_status.STATUS_FATAL_ERROR
+            content = fs_utils.read_file(dtd_report_filename)
+
+        content = "" if not status else status + '\n' + content + '\n' * 10
+        fs_utils.write_file(dtd_report_filename, content)
+
         content = ''
         if e is None:
             self.validator.style_validation(style_report_filename)
@@ -303,7 +306,7 @@ class XMLValidator(object):
                 pass
             fs_utils.write_file(style_report_filename, content)
         f, e, w = style_checker_statistics(content)
-        return (xml, is_valid_dtd, (f, e, w))
+        return (xml, status is None, (f, e, w))
 
 
 class ArticleXMLVersionsInfo(object):
