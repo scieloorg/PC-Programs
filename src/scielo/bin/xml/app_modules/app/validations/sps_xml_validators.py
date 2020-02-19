@@ -11,7 +11,6 @@ from ...generics import xml_utils
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
 from ..pkg_processors import xml_versions
-from . import data_validations
 
 
 IS_PACKTOOLS_INSTALLED = False
@@ -26,6 +25,45 @@ except Exception as e:
 
 
 log_items = []
+
+
+SPS_VERSIONS = {
+    'None': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.0': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.1': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.2': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.3': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.4': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.5': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.6': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.7': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+    'sps-1.8': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+    'sps-1.9': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+}
 
 
 def register_log(text):
@@ -181,7 +219,7 @@ class XMLValidator(object):
 
     def __init__(self, dtd_files, sps_version=None, preference=None):
         self.logger = None
-        self.SPS_versions = SPSversions()
+        self.dtd_locations = dtd_locations()
         self.dtd_files = dtd_files
         self.dtd_validator = JavaXMLValidator(dtd_files.doctype_with_local_path, dtd_files.xsl_prep_report, dtd_files.xsl_report)
         validator_id = 'java'
@@ -200,39 +238,34 @@ class XMLValidator(object):
 
     def validate_doctype(self, article_xml_versions_info):
         errors = []
-        info = self.SPS_versions.dtd_infos.get(
-            article_xml_versions_info.public_id)
-        if info is None:
+        dtd_public_id_items = SPS_VERSIONS.get(
+            article_xml_versions_info.sps_version)
+        if article_xml_versions_info.public_id not in dtd_public_id_items:
             errors.append(
-                _('Unknown {}: {}').format(
-                    'PUBLIC ID',
-                    article_xml_versions_info.public_id or ''))
-        else:
-            _error = []
-            if article_xml_versions_info.system_id not in info.get('url'):
-                _error.append(
-                    ('SYSTEM ID', article_xml_versions_info.system_id))
-            if article_xml_versions_info.sps_version not in info.get('sps'):
-                _error.append(
-                    (_('SPS version'), article_xml_versions_info.sps_version))
-            if _error:
-                errors = ['{}: {}'.format(label, value)
-                          for label, value in _error]
+                _('{value} is an invalid value for {label}. ').format(
+                    value=article_xml_versions_info.public_id or '',
+                    label='DTD PUBLIC ID')
+                )
+            errors.append(
+                _('{requirer} requires {required}. ').format(
+                    requirer='SPS version {}'.format(
+                        article_xml_versions_info.sps_version),
+                    required=_(" or ").join(dtd_public_id_items)
+                ))
+            return errors
 
-                msg = _('"{}" ({}) requires: ').format(
-                    article_xml_versions_info.public_id, 'PUBLIC ID')
-                errors.append('..'*30)
-                errors.append(msg)
-                errors.append('SYSTEM ID')
-                errors.extend(['  - {}'.format(item)
-                               for item in info.get('url')])
-                errors.append(_('SPS version'))
-                errors.extend(['  - {}'.format(item)
-                               for item in info.get('sps')])
-        if len(errors) > 0:
-            errors.insert(0, _('Found: '))
-            errors.insert(1, article_xml_versions_info.DOCTYPE or '')
-
+        locations = self.dtd_locations.get(article_xml_versions_info.public_id)
+        _location = None
+        for location in locations:
+            if article_xml_versions_info.system_id in location:
+                _location = location
+                break
+        if not _location:
+            errors.append(
+                _('{value} is an invalid value for {label}. ').format(
+                    value=article_xml_versions_info.system_id,
+                    label='DTD SYSTEM ID')
+            )
         return errors
 
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
@@ -244,15 +277,18 @@ class XMLValidator(object):
         errors = []
         if self.dtd_files.database_name == 'scielo':
             errors = self.validate_doctype(ArticleXMLVersionsInfo(fs_utils.read_file(xml_filename)))
-        is_valid_dtd = self.dtd_validator.dtd_validation(dtd_report_filename)
-        is_valid_dtd = len(errors) == 0 and is_valid_dtd
-        if len(errors) > 0:
-            dtd_report_content = fs_utils.read_file(dtd_report_filename)
-            if dtd_report_content is None:
-                dtd_report_content = ''
-            fs_utils.write_file(
-                dtd_report_filename,
-                '\n'.join(errors) + '\n' + dtd_report_content)
+
+        status = None
+        if errors:
+            status = validation_status.STATUS_BLOCKING_ERROR
+            content = '\n'.join(errors)
+        elif not self.dtd_validator.dtd_validation(dtd_report_filename):
+            status = validation_status.STATUS_FATAL_ERROR
+            content = fs_utils.read_file(dtd_report_filename)
+
+        content = "" if not status else status + '\n' + content + '\n' * 10
+        fs_utils.write_file(dtd_report_filename, content)
+
         content = ''
         if e is None:
             self.validator.style_validation(style_report_filename)
@@ -265,7 +301,7 @@ class XMLValidator(object):
                 pass
             fs_utils.write_file(style_report_filename, content)
         f, e, w = style_checker_statistics(content)
-        return (xml, is_valid_dtd, (f, e, w))
+        return (xml, status is None, (f, e, w))
 
 
 class ArticleXMLVersionsInfo(object):
@@ -319,41 +355,13 @@ class ArticleXMLVersionsInfo(object):
         return str(self._sps_version)
 
 
-class SPSversions(object):
-
-    def __init__(self):
-        self.versions = {}
-        self.dtd_infos = {}
-        self.dtd_id_items = [
-            '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
-            '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-            '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
-        ]
-        self.versions[self.dtd_id_items[0]] = [
-            'None',
-            'sps-1.0',
-            'sps-1.1',
-            ]
-        self.versions[self.dtd_id_items[1]] = [
-            'sps-1.2',
-            'sps-1.3',
-            'sps-1.4',
-            'sps-1.5',
-            'sps-1.6',
-            'sps-1.7',
-            'sps-1.8',
-            ]
-        self.versions[self.dtd_id_items[2]] = [
-            'sps-1.7',
-            'sps-1.8',
-            'sps-1.9',
-            ]
-
-        for name, dtd_info in xml_versions.XPM_FILES.items():
-            dtd_id = dtd_info.get('dtd id')
-            if dtd_id not in self.dtd_infos.keys():
-                self.dtd_infos[dtd_id] = {}
-            self.dtd_infos[dtd_id]['url'] = [
+def dtd_locations():
+    locations = {}
+    for name, dtd_info in xml_versions.XPM_FILES.items():
+        dtd_id = dtd_info.get('dtd id')
+        if dtd_id not in locations.keys():
+            locations[dtd_id] = {}
+            locations[dtd_id] = [
                 dtd_info.get('remote'),
                 dtd_info.get('remote').replace('https:', 'http:')]
-            self.dtd_infos[dtd_id]['sps'] = self.versions.get(dtd_id)
+    return locations
