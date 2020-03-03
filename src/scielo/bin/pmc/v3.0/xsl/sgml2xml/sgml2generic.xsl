@@ -890,8 +890,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			
 			<xsl:apply-templates
 				select="confgrp | front//confgrp | back//bbibcom/confgrp | thesgrp | front//thesgrp | back//bbibcom/thesgrp"/>
-			
-			<xsl:apply-templates select="." mode="counts"/>
 		</article-meta>
 	</xsl:template>
 	<xsl:template match="doc | subdoc | docresp" mode="title-group">
