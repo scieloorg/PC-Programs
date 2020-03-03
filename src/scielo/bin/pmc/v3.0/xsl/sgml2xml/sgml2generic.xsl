@@ -1665,16 +1665,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				mode="xref-in-sectitle"/>
 		</title>
 	</xsl:template>
-	<xsl:template match="app/sectitle"> 
-		<!-- #2387 -->
-		<label>
-			<xsl:apply-templates select="*|text()"/>
-			<xsl:apply-templates select="following-sibling::node()[1 and name()='xref']"
-				mode="xref-in-sectitle"/>
-		</label>
-	</xsl:template><!--xsl:template match="@href">
-		<xsl:attribute name="xlink:href"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
-	</xsl:template-->
+
 	<!-- BACK -->
 	<xsl:template match="article|text|subart|response" mode="back">
 		<xsl:if test="fngrp or fn or back/ack or back/fxmlbody or back/*[@standard]">
