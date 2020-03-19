@@ -1,0 +1,2946 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" dtd-version="1.1" specific-use="sps-1.9" article-type="research-article" xml:lang="en">
+	<front>
+		<journal-meta>
+			<journal-id journal-id-type="nlm-ta">An Acad Bras Cienc</journal-id>
+			<journal-id journal-id-type="publisher-id">aabc</journal-id>
+			<journal-title-group>
+				<journal-title>Anais da Academia Brasileira de Ciências</journal-title>
+				<abbrev-journal-title abbrev-type="publisher">An. Acad. Bras. Ciênc.</abbrev-journal-title>
+			</journal-title-group>
+			<issn pub-type="ppub">0001-3765</issn>
+			<issn pub-type="epub">1678-2690</issn>
+			<publisher>
+				<publisher-name>Academia Brasileira de Ciências</publisher-name>
+			</publisher>
+		</journal-meta>
+		<article-meta>
+			<article-id pub-id-type="other">00601</article-id>
+			<article-id pub-id-type="doi">10.1590/0001-3765202020180981</article-id>
+			<article-categories>
+				<subj-group subj-group-type="heading">
+					<subject>Earth Sciences</subject>
+				</subj-group>
+			</article-categories>
+			<title-group>
+				<article-title>
+					<bold>Characterization of volcanic structures associated to the silicic magmatism of the Paraná-Etendeka Province, in the Aparados da Serra region, southern Brazil </bold>
+				</article-title>
+			</title-group>
+			<contrib-group>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid">0000-0002-4668-4239</contrib-id>
+					<name>
+						<surname>BENITES</surname>
+						<given-names>SUSANA</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid">0000-0001-8696-7084</contrib-id>
+					<name>
+						<surname>SOMMER</surname>
+						<given-names>CARLOS A.</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff2">
+						<sup>2</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid">0000-0002-4101-3161</contrib-id>
+					<name>
+						<surname>LIMA</surname>
+						<given-names>EVANDRO F. DE</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff3">
+						<sup>3</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid">0000-0002-5032-3217</contrib-id>
+					<name>
+						<surname>SAVIAN</surname>
+						<given-names>JAIRO F.</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff4">
+						<sup>4</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid">0000-0001-5038-4418</contrib-id>
+					<name>
+						<surname>HAAG</surname>
+						<given-names>MAURICIO B.</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff1">
+						<sup>1</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid">0000-0003-3458-0560</contrib-id>
+					<name>
+						<surname>MONCINHATTO</surname>
+						<given-names>THIAGO R.</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff5">
+						<sup>5</sup>
+					</xref>
+				</contrib>
+				<contrib contrib-type="author">
+					<contrib-id contrib-id-type="orcid">0000-0001-9848-9550</contrib-id>
+					<name>
+						<surname>TRINDADE</surname>
+						<given-names>RICARDO I.F. DA</given-names>
+					</name>
+					<xref ref-type="aff" rid="aff6">
+						<sup>6</sup>
+					</xref>
+				</contrib>
+			</contrib-group>
+			<aff id="aff1">
+				<label>
+					<sup>1</sup>
+				</label>
+				<institution content-type="orgname">Universidade Federal do Rio Grande do Sul,Instituto de Geociencias</institution>
+				<institution content-type="orgdiv1">Programa de Pós-Graduação em Geociências</institution>
+				<addr-line>
+					<named-content content-type="city">Porto Alegre</named-content>
+					<named-content content-type="state">RS</named-content>
+				</addr-line>
+				<country country="BR">Brazil</country>
+				<institution content-type="original">Universidade Federal do Rio Grande do Sul,Instituto de Geociencias, Programa de Pós-Graduação em Geociências, Av. Bento Goncalves, 9500, Prédio 43113, 91501-970 Porto Alegre, RS, Brazil  </institution>
+			</aff>
+			<aff id="aff2">
+				<label>
+					<sup>2</sup>
+				</label>
+				<institution content-type="orgname">Universidade Federal do Rio Grande do Sul</institution>
+				<institution content-type="orgdiv1">Instituto de Geociências</institution>
+				<institution content-type="orgdiv2">Departamento de Geodésia</institution>
+				<addr-line>
+					<named-content content-type="city">Porto Alegre</named-content>
+					<named-content content-type="state">RS</named-content>
+				</addr-line>
+				<country country="BR">Brazil</country>
+				<institution content-type="original">Universidade Federal do Rio Grande do Sul, Instituto de Geociências, Departamento de Geodésia, Av. Bento Gonçalves, 9500, Prédio 43113, 91501-970 Porto Alegre, RS, Brazil </institution>
+			</aff>
+			<aff id="aff3">
+				<label>
+					<sup>3</sup>
+				</label>
+				<institution content-type="orgname">Universidade Federal do Rio Grande do Sul,</institution>
+				<institution content-type="orgdiv1">Instituto de Geociências</institution>
+				<institution content-type="orgdiv2">Departamento de Mineralogia e Petrologia</institution>
+				<addr-line>
+					<named-content content-type="city">Porto Alegre</named-content>
+					<named-content content-type="state">RS</named-content>
+				</addr-line>
+				<country country="BR">Brazil</country>
+				<institution content-type="original">Universidade Federal do Rio Grande do Sul, Instituto de Geociências, Departamento de Mineralogia e Petrologia, Av. Bento Gonçalves, 9500, Prédio 43113, 91501-970 Porto Alegre, RS, Brazil </institution>
+			</aff>
+			<aff id="aff4">
+				<label>
+					<sup>4</sup>
+				</label>
+				<institution content-type="orgname">Universidade Federal do Rio Grande do Sul</institution>
+				<institution content-type="orgdiv1">Instituto de Geociências</institution>
+				<institution content-type="orgdiv2">Departamento de Geologia</institution>
+				<addr-line>
+					<named-content content-type="city">Porto Alegre</named-content>
+					<named-content content-type="state">RS</named-content>
+				</addr-line>
+				<country country="BR">Brazil</country>
+				<institution content-type="original">Universidade Federal do Rio Grande do Sul, Instituto de Geociências, Departamento de Geologia,Av. Bento Goncalves, 9500, Prédio 43113,  91501-970 Porto Alegre, RS, Brazil </institution>
+			</aff>
+			<aff id="aff5">
+				<label>
+					<sup>5</sup>
+				</label>
+				<institution content-type="orgname"/>
+				<institution content-type="orgdiv1"/>
+				<addr-line>
+					<named-content content-type="city">São Paulo</named-content>
+					<named-content content-type="state">SP</named-content>
+				</addr-line>
+				<country country="BR">Brazil</country>
+				<institution content-type="original">5Universidade de São Paulo, Instituto de Astronomia Geofísica e Ciências Atmosféricas, Programa de Pós-Graduação em Geofísica, Rua do Matão,  1226, Butantã, 05508-090 São Paulo, SP, Brazil </institution>
+			</aff>
+			<aff id="aff6">
+				<label>
+					<sup>6</sup>
+				</label>
+				<institution content-type="orgname">Universidade de São Paulo</institution>
+				<institution content-type="orgdiv1">Instituto de Astronomia Geofísica e Ciências Atmosféricas</institution>
+				<institution content-type="orgdiv2">Departamento de Geofísica</institution>
+				<addr-line>
+					<named-content content-type="city">São Paulo</named-content>
+					<named-content content-type="state">SP</named-content>
+				</addr-line>
+				<country country="BR">Brazil</country>
+				<institution content-type="original">Universidade de São Paulo, Instituto de Astronomia Geofísica e Ciências Atmosféricas, Departamento de Geofísica, Rua do Matão, 1226, Butantã, 05508-090 São Paulo, SP, Brazil  </institution>
+			</aff>
+			<author-notes>
+				<corresp id="c1">Correspondence to: Susana Benites E-mail: <email>susanabenites@outlook.com</email>
+				</corresp>
+				<fn fn-type="con">
+					<p>
+						<bold>AUTHOR CONTRIBUTIONS</bold>
+					</p>
+					<p>All authors had full access to all of the data in the study and takes responsibility for the integrity of the data and the accuracy of the data analysis. All authors participated in the drafting the article or revising it critically content, approving the final version submitted for publication. Susana Benites was responsible for the literature review, acquisition of field and geophysical data, analysis and interpretation of geomorphological data, geoprocessing and data integration. Carlos A. Sommer was academic advisor and project supervisor, responsible for study conception and design, acquisition of field and geophysical data. Evandro F. de Lima was responsible for analysis and interpretation of petrographic and lithogeochemical data.Jairo F. Savian, Maurício B. Haag, Thiago R. Moncinhatto and Ricardo I. F. da Trindade were responsible for acquisition, processing, analysis and interpretation of geophysical data.</p>
+				</fn>
+			</author-notes>
+			<pub-date publication-format="electronic" date-type="pub">
+				<day>00</day>
+				<month>00</month>
+				<year>2020</year>
+			</pub-date>
+			<pub-date publication-format="electronic" date-type="collection">
+				<year>2020</year>
+			</pub-date>
+			<volume>92</volume>
+			<issue>suppl 2</issue>
+			<elocation-id>e20180981</elocation-id>
+			<history>
+				<date date-type="received">
+					<day>9</day>
+					<month>09</month>
+					<year>2018</year>
+				</date>
+				<date date-type="accepted">
+					<day>18</day>
+					<month>12</month>
+					<year>2018</year>
+				</date>
+			</history>
+			<permissions>
+				<license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/" xml:lang="en">
+					<license-p>This is an open-access article distributed under the terms of the Creative Commons Attribution License</license-p>
+				</license>
+			</permissions>
+			<abstract>
+				<title>Abstract</title>
+				<p> The Paraná-Etendeka Magmatic Province is associated with the distensive tectonics that caused the rupture of the Gondwana continent during the Lower Cretaceous and generated an intense volcanism that covers South America and the NW portion of Namibia in Africa. In Brazil, this volcanic sequence is named Serra Geral Group and predominantly consists of basalts and subordinated silicic rocks. The goal of this study is to characterize the geomorphological features observed in the Aparados da Serra region, southern Brazil, and to evaluate the relationship between these structures and the primary silicic volcanic structures. The geomorphological features were first identified using remote sensing and then correlated with flow structures observed in the field, as well as petrographic and geochemical data. AMS data were used to determine magnetic patterns and the direction of magmatic flow of the rocks. Despite the low degree of anisotropy, clear patterns of lineation and foliation were identified in the studied rocks. Our data shows that Units I and II correspond to silicic lava flows linked to effusive fissure eruptions, presenting a dome morphology caused by differential erosion. Unit III rocks may correspond to true volcanic domes, whereas the Unit IV corresponds to the effusive feeder structures. </p>
+			</abstract>
+			<kwd-group xml:lang="en">
+				<title>Key words</title>
+				<kwd>Anisotropy of Magnetic Susceptibility</kwd>
+				<kwd>image processing</kwd>
+				<kwd>silicic lavas</kwd>
+				<kwd>volcanic morphologies</kwd>
+			</kwd-group>
+			<funding-group>
+				<award-group>
+					<funding-source>CNPq</funding-source>
+					<award-id>400724/2014-6</award-id>
+					<award-id>441766/2014-5</award-id>
+					<award-id>302213/2012-0</award-id>
+					<award-id>303584/2009-2</award-id>
+					<award-id>473683/2007</award-id>
+					<award-id>5470641/2008-8</award-id>
+					<award-id>470203/2007-2</award-id>
+					<award-id>471402/2012-5</award-id>
+					<award-id>303038/2009-8</award-id>
+					<award-id>470505/2010-9</award-id>
+				</award-group>
+				<award-group>
+					<funding-source>FAPERGS</funding-source>
+					<award-id>1180/12-8</award-id>
+				</award-group>
+				<award-group>
+					<funding-source>PRONEX</funding-source>
+					<award-id>10/0045-6</award-id>
+				</award-group>
+			</funding-group>
+		</article-meta>
+	</front>
+	<body>
+		<sec>
+			<title>INTRODUCTION </title>
+			<p>The Serra Geral Group (SGG) represents the Brazilian portion of the Paraná-Etendeka Magmatic Province (PEMP), which is the second largest Large Igneous Province (LIP) in the world (<xref ref-type="bibr" rid="B81">White</xref> &amp; Mckenzie 1995 <italic>apud</italic>
+				<xref ref-type="bibr" rid="B17">Frank</xref> 2008). About 10% of PEMP corresponds to silicic magmatism, which is concentrated on the top of this sequence (<xref ref-type="bibr" rid="B30">Lima</xref> et al. 2012a, <xref ref-type="bibr" rid="B78">Waichel</xref> et al. 2012). The region known as Aparados da Serra is located in the extreme south of Brazil and hosts several geomorphological structures identified by remote sensing (<xref ref-type="bibr" rid="B6">Benites</xref> 2015). These structures may correspond to domes and volcanic conduits, or they may result from differential erosion processes (Benites 2015). According to <xref ref-type="bibr" rid="B80">Werlang</xref> (2004), the superposition of different lithologies with different degrees of resistance to weathering creates zones of lithostructural weaknesses, playing an important role in the Paraná Basin relief carving. The morphology of lava domes is variable. They are typically thick, steep extrusions, with morphologies varying from circular, low-profile domes to cylindrical spines with thick talus slopes (<xref ref-type="bibr" rid="B24">Jain</xref> 2013). According to <xref ref-type="bibr" rid="B56">Polo</xref> et al. (2017a), the wide variety of structures such as lava-domes, simple or compound lobate flows, and tabular flows point to an effusive volcanism fed by unstable and continuous fluxes, without significant temporal intervals between the eruptions, but with important variation in the discharge rate. The volcanic conduits are associated with a linear top horizontal morphology, with sub-vertical to vertical flow structures. This study aims to investigate the landforms related to the silicic magmatism of the Serra Geral Group in the Aparados da Serra region (<xref ref-type="fig" rid="f1">Fig. 1</xref>), with the intend to draw considerations about its genesis and to analyze if the landforms identified through remote sensing are primary structures or resulting from secondary erosive processes. In this study, the geomorphological features of the candidate domes and conduits were integrated to petrological, geochemical, and main magmatic and magnetic flow directions obtained through the anisotropy of magnetic susceptibility (AMS) to establish the correlation between the magmatic flow and the structures present in the outcrops. </p>
+			<fig id="f1">
+				<label>Figure 1</label>
+				<caption>
+					<title>Location map of the study area.</title>
+				</caption>
+				<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f1.jpg"/>
+			</fig>
+		</sec>
+		<sec>
+			<title>MATERIALS AND METHODS </title>
+			<p>Using the Google Earth Pro software, images were observed to identify features that could correspond to volcanic structures. Based on this analysis, the most representative targets were selected to be verified in the field stage. LANDSAT-5 images in the R5G4B3 and R5G4B7 compositions were used for the analysis of structural lineaments on a regional scale because they return the best visual result. The results obtained were used as a basis to elaborate thematic maps, supporting the data interpretation.  </p>
+			<p>From the set of collected samples, 22 petrographic thin sections were prepared and 11 whole-rock samples were analyzed to obtain the oxides, some trace elements and REEs with the use of the ICP-AES and ICP-MS techniques, performed by Acme-Analytical Laboratories Ltda. </p>
+			<p>For the application of AMS (Anisotropy of Magnetic Susceptibility), four prominent targets were selected, and six representative paleomagnetic sites were sampled, with a total of 64 oriented cylinders. The cylinders were cut into standard specimens measuring 2.5 cm in diameter and 2.2 cm in height, totaling 185 specimens for AMS measurements. The measurements were performed using a MKF1A Multifunction KAPPABRIDGE instrument, at the Laboratório de Paleomagnetismo da Universidade de São Paulo (USPmag). The data acquisition and analysis were accomplished with the software SUFAR and ANISOFT 5. For the identification of the magnetic minerals, thermomagnetic curves, remnant magnetization acquisition curves and hysteresis curves were obtained. To obtain the thermomagnetic curves, the magnetic susceptibility was measured under a low magnetic field as a function of temperature, using an AGICO Kappabridge susceptibility meter. To obtain the remnant magnetization acquisition and hysteresis curves, a MicroMag 3900 vibrating sample magnetometer was used. </p>
+		</sec>
+		<sec>
+			<title>GEOLOGICAL SETTING </title>
+			<p>The Paraná-Etendeka Magmatic Province (PEMP) is associated with the distensive tectonics that led to the opening of the South Atlantic Ocean due to the rupture of the Gondwana continent in the Lower Cretaceous. About 90% of its area is in the South American continent and the rest is on the African continent (<xref ref-type="bibr" rid="B16">Ewart</xref> et al. 1998). In Brazil, these rocks are represented by the Serra Geral Group (SGG), which covers the predominantly siliciclastic sediments of the Paraná Basin and is considered one of the largest volcanic mafic continental manifestations on the planet (<xref ref-type="bibr" rid="B38">Milani</xref> 2004, <xref ref-type="bibr" rid="B39">Milani et al. 2007</xref>). According to <xref ref-type="bibr" rid="B86">Zalán</xref> et al. (1987, <xref ref-type="bibr" rid="B87">1991</xref>), the NW and NE lineaments stand out in the structural framework of the basin. These lineaments are considered older structures originated from the reactivation of weakness zones present in the basement, recurrently reactivated during the Phanerozoic period. These weakness zones influenced the paleogeography, sedimentation, and distribution of facies in the basin, as well as the development of tectono-sedimentary structures; E-W, developed during the Gondwana separation, active since the Triassic, as well as many of the NW-oriented faults, while those of NE direction remained inactive.  </p>
+			<p>Geochronological data indicate ages between 134 and 137 Ma for the SGG rocks (<xref ref-type="bibr" rid="B25">Janasi</xref> et al. 2011, <xref ref-type="bibr" rid="B54">Pinto</xref> et al. 2011, <xref ref-type="bibr" rid="B72">Thiede</xref> &amp; Vasconcelos 2010). According to some authors, the main magmatic phase occurred between 133 and 130 Ma (<xref ref-type="bibr" rid="B60">Renne</xref> et al. 1992, <xref ref-type="bibr" rid="B59">1996a</xref>, <xref ref-type="bibr" rid="B61">1996b</xref>, <xref ref-type="bibr" rid="B49">Peate</xref> et al. 1992, <xref ref-type="bibr" rid="B74">Turner</xref> et al. 1994, <xref ref-type="bibr" rid="B69">Stewart</xref> et al. 1996, <xref ref-type="bibr" rid="B12">Ernesto</xref> et al. 1999, <xref ref-type="bibr" rid="B13">2002</xref>, <xref ref-type="bibr" rid="B42">Mincato</xref> et al. 2003) and the dataset was consistent with the short volcanism duration. </p>
+			<p>Several studies based on chemical data (<xref ref-type="bibr" rid="B4">Bellieni</xref> et al. 1984, <xref ref-type="bibr" rid="B35">Mantovani</xref> et al. 1985, <xref ref-type="bibr" rid="B53">Piccirillo</xref> &amp; Melfi 1988, <xref ref-type="bibr" rid="B52">Piccirillo et al. 1989</xref>, <xref ref-type="bibr" rid="B36">Marques</xref> et al. 1989) have suggested a division of the basic volcanic rocks into two large groups: high-Ti basalts (TiO2 &gt; 2%) and low-Ti basalts (TiO2 &lt; 2%). The silicic volcanic rocks were subdivided into the Chapecó type and Palmas type. The main distinguishing factor of these groups is the abundance of incompatible elements. The Chapecó facies show Zr &gt; 500 ppm, Ba &gt; 900 ppm and Sr &gt; 250 ppm, while the Palmas facies presents Zr &lt; 400 ppm, Ba &lt; 800 ppm and Sr &lt; 170 ppm (Peate et al. 1992). </p>
+			<p>The Chapecó type silicic rocks are concentrated in the center of the Paraná Basin and are represented by dacites, rhyodacites, quartz latites, and rhyolites, hypohyaline, porphyritic to strongly porphyritic. They are subdivided into Guarapuava (64.3 &lt; SiO2 &lt; 66.3%; TiO2 &gt; 1.47%; 0.7055 &lt; <sup>87</sup>Sr/<sup>86</sup>Sr &lt; 0.7060), Tamarana (65 &lt; SiO2 &lt; 66%; 1.29 &lt; TiO2 &lt; 1.47; 0.7060 &lt; <sup>87</sup>Sr/<sup>86</sup>Sr &lt; 0.7070) and Ourinhos (65 &lt; SiO2 &lt; 69%; TiO2 &lt; 1.29%; 0.7076 &lt; <sup>87</sup>Sr/<sup>86</sup>Sr &lt; 0.7080) based on chemical data (Mantovani et al. 1985, Peate et al. 1992, <xref ref-type="bibr" rid="B18">Garland</xref> et al. 1995, <xref ref-type="bibr" rid="B46">Nardy</xref> et al. 2008). </p>
+			<p>The Palmas type silicic rocks correspond to rhyolites and rhyodacites, typically aphyric, with “salt-and-pepper” structure, holohyaline to hypocrystalline. They are subdivided into Santa Maria (69.56 &lt; SiO2 &lt; 70.28%; TiO2 &lt; 0.87%; 0.7217 &lt; <sup>87</sup>Sr/<sup>86</sup>Sr &lt; 0.7274), Clevelândia (69.56 &lt; SiO2 &lt; 70.28%; TiO2 &lt; 0.87%; 0.714 &lt; <sup>87</sup>Sr/<sup>86</sup>Sr &lt; 0.727), Anita Garibaldi (63.83 &lt; SiO2 &lt; 69.56%; 1.06 &lt; TiO2 &lt; 1.25%; 0.7137 &lt; <sup>87</sup>Sr/<sup>86</sup>Sr &lt; 0.7147), Caxias do Sul (68 &lt; SiO2 &lt; 69.56%; 0.91 &lt; TiO2 &lt; 1.03%; 0.7137 &lt; <sup>87</sup>Sr/<sup>86</sup>Sr &lt; 0.7264) and Jacuí (63.83 &lt; SiO2 &lt; 69.56%; 1.05 &lt; TiO2 &lt; 1.16%; 0.714 &lt; <sup>87</sup>Sr/<sup>86</sup>Sr &lt; 0.727) showing a particular geochemical signature (<xref ref-type="bibr" rid="B48">Peate</xref> 1997, Garland et al. 1995, Nardy et al. 2008). </p>
+			<p>Nardy et al. (2008) established an ideal stratigraphic column for the Palmas type, divided into 3 levels: i) lower portion, characterized by areas of epiclastic breccias and horizontal igneous bedding; ii) massive main portion with vertical diaclasing; and iii) upper portion, characterized by horizontal igneous bedding zones, followed by contorted bedding, lens-shaped pichestones and top vesicular area. </p>
+			<p>In general, these rocks of silicic composition are preferentially present in the states of Rio Grande do Sul, Santa Catarina, and Paraná (<xref ref-type="bibr" rid="B3">Bellieni</xref> et al. 1986, Piccirillo et al. 1989, <xref ref-type="bibr" rid="B45">Nardy</xref> 1995).  </p>
+			<p>Recent studies, focusing on a more detailed work scale, have suggested new stratigraphic models for the SGG, based on the facies architecture. These models have been proposed for the Torres Syncline region (<xref ref-type="bibr" rid="B32">Lima</xref> et al. 2012b, Waichel et al. 2012) and are based on the morphology of basic and silicic flows, paleotopography and effusion rates, complementing similar studies based on the volcanism stratigraphy of the Etendeka Province (e.g. <xref ref-type="bibr" rid="B43">Mountney</xref> et al. 1998, <xref ref-type="bibr" rid="B27">Jerram</xref> et al. 1999, <xref ref-type="bibr" rid="B28">2000</xref>) in the Huab Basin, Namibia. With this approach, this region is mainly composed, in its lower portions, by basic lavas with thick pahoehoe morphology that fill the interdune spaces of the Botucatu Formation. The intermediate portions of this province are composed of pahoehoe and rubbly pahoehoe flows at the top, with less frequent occurrences of basic/intermediate intrusive bodies. The magmatism that originated the SGG is predominantly basic (about 97.5%), and the silicic flows and domes predominate in the upper units of this volcanic sequence (Lima et al. 2012a, Waichel et al. 2012).  </p>
+			<p>Although several volcanic structures associated with fissure-fed magmatism have been identified, the genesis of the silicic volcanic deposits in the PEMP continues to be questioned, and their generation is debated, which may be by lava flows (<xref ref-type="bibr" rid="B8">Comin-Chiaramonti</xref> et al 1988, <xref ref-type="bibr" rid="B5">Bellieni et al. 1988</xref>, <xref ref-type="bibr" rid="B23">Henry</xref> &amp; Wolff 1992, <xref ref-type="bibr" rid="B76">Umann</xref> et al. 2001, <xref ref-type="bibr" rid="B31">Lima</xref> et al. 2012a,  Lucchetti et al. 2014, <xref ref-type="bibr" rid="B55">Polo</xref> &amp; Janasi 2014,  <xref ref-type="bibr" rid="B65">Simões</xref> et al. 2014, 2017, 2018, <xref ref-type="bibr" rid="B21">Guimarães</xref> et al. 2018, Polo et al. 2017a, <xref ref-type="bibr" rid="B58">2017b</xref>) and/or pyroclastic flows (<xref ref-type="bibr" rid="B50">Petrini</xref> et al. 1989, <xref ref-type="bibr" rid="B63">Roisenberg</xref> 1989, <xref ref-type="bibr" rid="B82">Whittingham</xref> 1989, <xref ref-type="bibr" rid="B40">Milner</xref> et al. 1992, <xref ref-type="bibr" rid="B41">1995</xref>, <xref ref-type="bibr" rid="B83">Wildner</xref> et al. 2006a, <xref ref-type="bibr" rid="B62">Riccomini</xref> et al. 2016, <xref ref-type="bibr" rid="B33">Luchetti</xref> et al. 2018).  </p>
+			<p>Feeder conduits of silicic lavas were suggested by Lima et al. (2012a, 2018) and may be represented by silicic rocks with composite magmatic foliation, but with a sub-vertical pattern, revealed by the alternation of different degrees of crystallinity and oxidation. Following this study, conduit systems were described to the south of the Antas Lineament in the northeast of Rio Grande do Sul (Simões et al. 2017, 2018). These conduits are characterized by banded vitrophyres, containing many vesicular fragments, laterally gradating into breccias. These structures have dominant sub-vertical orientations trending NE-SW and NW-SE, and, on a regional scale, these outcrops of conduits are elongated from NW-SE to NE-SW. </p>
+			<p>The magnetic flow orientations obtained by the AMS technique for conduits and lavas coincide with the orientations of the magmatic structures in most cases (Simões 2018). According to these authors, the flat arrangement of the magnetic foliation in lavas indicates a predominantly horizontal magmatic flow. The distinction between conduits and lavas is evidenced in field structures, microscopic textures and the orientation of the magnetic fabric. The conduits have a greater dispersion of the AMS data and may have horizontal or locally vertical kmax, but the complexity of the rheological behavior along the conduits has divided these systems into different domains of magmatic flow. In the lavas, horizontal kmax values associated with horizontal magnetic foliations are a common pattern. </p>
+			<p>The results of Polo et al. (2017b) show that the effusive deposits appear to predominate in the Palmas type silicic units, and structures like lava domes, lobed flows, sheet flows and auto-brecciation are common, indicating that they are more abundant than it was previously thought in the PMP silicic volcanism.  </p>
+			<p>According to <xref ref-type="bibr" rid="B1">Angelini</xref> (2018) the geothermometric data calculated using different models indicate that the Chapecó-type rocks crystallized from very hot magmas, with temperatures on the order of 950 – 1,050°C. Simões et al. (2014) suggest very high temperatures between 1,000°C and 1,100°C for samples of Palmas-type rocks obtained by saturation in apatite method. This one reflects the amounts of P2O5 and SiO2, because the level of dissolved P2O5 required for apatite saturation is positively dependent upon temperature and negatively dependent upon SiO2 content. Results obtained by <xref ref-type="bibr" rid="B57">Polo &amp; Janasi (2014)</xref> indicate mean temperatures of the magmas of 992, 992.7 and 1,000°C for the rocks of the Santa Maria, Barros Cassal and Caxias do Sul sequences respectively, from the saturation in apatite method. The very high pre- and syn-eruptive temperatures, obtained from this method and pyroxene-liquid geothermometry data, in the order of 1,000–1,100°C, as well as low relative viscosities for rhyodacite-rhyolite magmas is the significant rheological property of the Paraná-Etendeka silicic volcanic rocks (Milner et al. 1992, Bellieni et al. 1984, 1986, Garland et al.1995, <xref ref-type="bibr" rid="B26">Janasi et al. 2007</xref>, <xref ref-type="bibr" rid="B68">Simões et al. 2014</xref>, Angelini 2018). Lima et al. (2012a) estimated the <italic>liquidus</italic> temperature of the felsic volcanites in a range between 946 and 1001°C. They affirm that these high values are consistent with the hypocrystalline to aphanitic textural pattern of the silicic volcanites of the Paraná-Etendeka Basin and resemble super <italic>liquidus</italic> temperatures (<xref ref-type="bibr" rid="B19">Green</xref> &amp; Fitz 1993) where primary crystallization may occur after eruption. </p>
+			<p>Simões (2018) attributed the genesis of the SGG to the constant generation of hot silicic magma derived from the fractionation of basalt and andesite caused by a constant source of mantle heat, with high temperatures, inhibiting the crystallization and the association of OH- radicals to form hydrated minerals, combined with the low water content of 1-2% by weight. This constant generation and rapid ascending through faults could explain the large volume of silicic magma in the south of the PEMP, as their high temperature and low viscosity flows may result in a non-explosive volcanism and simple deposition as lava flows.<bold> </bold>
+			</p>
+		</sec>
+		<sec>
+			<title>RESULTS </title>
+			<sec>
+				<title>Analysis of geomorphological features  </title>
+				<p>The geomorphological features observed in the images were divided into two groups: linear and circular (<xref ref-type="fig" rid="f2">Fig. 2</xref>a). The linear features correspond to elongated bodies of positive relief or linear depressions (Fig. 2b). The circular features comprise rounded bodies (Fig. 2c) and were subdivided into four groups (<xref ref-type="fig" rid="f3">Fig. 3</xref>) according to their geometries: (i) circular features with positive relief from the edge to the center and a domed top; (ii) circular features with positive relief from edge to center and flattened top; (iii) circular features with positive relief from the edge to center and depressed center; (iv) composite features, with a central uplift followed by a depressed peripheral zone and uplifted edge. The analysis resulted in the identification of 320 geomorphological features in the region, with a predominance of the circular type (i): with positive relief from the edge to the center and domed top (Benites 2015). </p>
+				<fig id="f2">
+					<label>Figure 2</label>
+					<caption>
+						<title>Geomorphological features. <bold>(a)</bold> Distribution of linear and circular features in the investigated area. <bold>(b)</bold> example of linear feature and <bold>(c)</bold> circular feature.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f2.jpg"/>
+				</fig>
+				<fig id="f3">
+					<label>Figure 3</label>
+					<caption>
+						<title>Subdivision of circular features. <bold>(a)</bold> circular feature with positive relief from the edge to the center and a domed top; <bold>(b)</bold> circular feature with positive relief from edge to center and flattened top; <bold>(c)</bold> circular features with positive relief from the edge to the center and depressed center; <bold>(d)</bold> composite feature, with a raised center followed by a depressed peripheral zone and uplifted edge. NASA’s Shuttle Radar Topography Mission (SRTM) is the source of the Google Earth altimetry base and has a space resolution of 90 meters. The average altitude error varies between five and ten meters. Despite the error seen in terrain elevation profiles, especially where sharp relief breaks occur, this Google Earth tool allows you to view relief shapes.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f3.jpg"/>
+				</fig>
+			</sec>
+			<sec>
+				<title>Geological and petrological characterization of geomorphological features </title>
+				<p>The identified geomorphological features from satellite images processing were divided into linear and circular groups. In the field, both groups were correlated with the type of flow structures observed and individualized in four units.  </p>
+				<p>The circular features were individualized into the following units: (i) lava flows with magmatic foliation incipient to massive, (ii) lava flows with sub-horizontal flow structures, and (iii) lava flows with dome flow structures. </p>
+				<p>The linear features were individualized into the following unit: (iv) lava flows with sub-vertical flow structures. </p>
+				</sec>
+				<sec>
+					<title>UNIT I: Lava flows with magmatic foliation incipient to massive </title>
+				
+				<p>This unit is composed of black obsidians and vitrophyres and microporphyritic rocks (<xref ref-type="fig" rid="f4">Fig. 4</xref>a, b). The presence of amygdales, filled by carbonates is common, which may be well-rounded or horizontally stretched and aligned in the flow direction, with a NW preferential direction. This incipient foliation is defined by the alignment of amygdales. </p>
+				<fig id="f4">
+					<label>Figure 4</label>
+					<caption>
+						<title>Representative photographs of the individualized units. UNIT I: <bold>(a)</bold> and <bold>(b)</bold> lava flows massive and fractured; UNIT II: <bold>(c) </bold>and <bold>(d)</bold> lava flows with sub-horizontal flow structures; UNIT III: <bold>(e)</bold> lava flows with dome flow structures; <bold>(f)</bold> highlight for observed foliation; UNIT IV: <bold>(g) </bold>lava flows with sub-vertical flows structures; <bold>(h)</bold> sub-vertical flow under plan view.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f4.jpg"/>
+				</fig>
+			</sec>
+			<sec>
+				<title>UNIT II: Lava flows with sub-horizontal flow structures </title>
+				<p>This unit is composed of black obsidians and vitrophyres and microporphyritic rhyolites (Fig. 4c, d). It shows either tabular structures or horizontal to sub-horizontal flow structures, with predominating SE bedding. The rocks display an aphanitic texture, and sometimes, a granophyric texture. Amygdales filled by quartz and/or chalcedony, elongated up to 4 mm in the major axis, and colorless quartz geodes are common. This foliation is defined by a strong horizontal or tabular diaclasing, common in the central zone of the silicic lava flows according to schematic representation of the structuring of the lava flows of the Paraná Basin proposed by Wildner et al. (2006a). </p>
+			</sec>
+			<sec>
+				<title>UNIT III: Lava flows with dome flow structures </title>
+				<p>This unit consists of gray obsidian and aphanitic rocks (Fig. 4e, f), with a massive and well-preserved core, well-marked foliation by diaclasing and highly vesiculated edges that can be quite altered and autobrecciated. It has vesicles and amygdales, elongated and well-rounded, up to 7 mm and geodes of up to 4 cm in size.  </p>
+			</sec>
+			<sec>
+				<title>UNIT IV: Lava flows with sub-vertical flow structures </title>
+				<p>This unit is composed by rocks of aphanitic texture with strong flow structures (Fig. 4g, h), characterized by a colorimetric lamination/banding, given by the alternation of dark gray and red colors. The foliations are defined by the diaclasing and a highly sloped to sub-vertical colorimetric banding, with preferential NE direction. The gray portion contains the most diagnostic feature in the lamination, while in the burgundy portion the presence of autobrecciation is common. Localized homogenization seems to occur with a full mixture of these two lithotypes, but the red portion also appears as breccias within the gray portion. There are pockets of angular breccias, composed of clay and a high concentration of elongated vesicles, and approximately 15 cm in size.  </p>
+			</sec>
+			<sec>
+				<title>Petrography </title>
+				<p>The units I, II and III are characterized by microphenocrysts of plagioclase and, subordinately, clinopyroxene, scattered in a glassy matrix formed by quartz-feldspar crystallization residue (<xref ref-type="fig" rid="f5">Fig. 5</xref>b, c). The plagioclase grains commonly exhibit chaotic orientation and swallow-tail termination, skeletal, and hollow crystal textures, indicative of rapid cooling. An intergranular texture with interstitial pyroxene it is also common. The pyroxene is represented by anhedral to subhedral crystals. The presence of spherulites is common (Fig. 5a) due to devitrification. There are microfractures filled by oxides scattered throughout the thin section as well as very fine quartz veins and quartz-filled amygdales. </p>
+				<p>The unit IV is characterized by the presence of a thin banding, parallel to the sub-vertical flow direction (Fig. 5d). The color variations are due to differences in the degree of crystallinity, and an intense oxidation of the ferromagnesian minerals, associated with a lower amount of plagioclase is observed in the red band. The gray color bands are devitrified, with crystallization residue in the matrix and a greater proportion of plagioclases. Parallel to these bands, quartz venules occur, while the venules of oxides occur orthogonally to the layers. It can present a fluid texture, characterized by the slight alignment of plagioclases crystals. The crystals are euhedral and sometimes thin and elongated, with swallow-tail terminations. Hollow/skeletal crystals may also occur, indicating rapid cooling. They may occur aligned in the flow direction, sometimes exhibiting two preferential directions. Oxidation is also present around fractures and quartz vein. Microlites and oxidation tracks may be present. It also contains quartz-filled amygdales stretched in the flow direction. </p>
+				<fig id="f5">
+					<label>Figure 5</label>
+					<caption>
+						<title>Representative photomicrographs of the samples: <bold>(a)</bold> Presence of spherulites; <bold>(b)</bold> Plagioclase with swallow-tail termination are common. <bold>(c)</bold> Presence of Plagioclase microphenocrysts in matrix of quartz-feldspathic crystallization residue. <bold>(d)</bold> Aspect of banding formed by a difference in degree of oxidation commonly found in Unit IV. Mx: Matrix. Pl: plagioclase. Qz: quartz. Px: pyroxene. Sf: spherulite. Op: opaque.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f5.jpg"/>
+				</fig>
+			</sec>
+			<sec>
+				<title>Lithochemistry </title>
+				<p>In general, the obtained data indicate a slight compositional variation among the individual units. Samples show a silica concentration ranging between 65.6 and 68.1% and alkali content between 6.54 and 7.2%. They occupy the dacite field (<xref ref-type="fig" rid="f6">Fig. 6</xref>a) when plotted in the TAS diagram (<xref ref-type="bibr" rid="B29">Le Bas</xref> et al. 1986), and the rhyodacite field (Fig. 6b) by the classification obtained from the R1-R2 diagram (<xref ref-type="bibr" rid="B10">De</xref> La Roche et al. 1980). They also display a sub-alkaline and tholeiitic affinity and a metaluminous character (Fig. 6c, d).  </p>
+				<fig id="f6">
+					<label>Figure 6</label>
+					<caption>
+						<title>Diagrams based on lithochemistry. <bold>(a)</bold> TAS Diagram based on the alkali (wt. %) vs. SiO2 (wt. %) ratio (Le Bas et al. 1986); <bold>(b)</bold> R1-R2 Diagram (De la Roche et al. 1980); <bold>(c)</bold> Shand’s index Diagram based on the A/NK vs A/CNK in mol.% (Shand 1943); <bold>(d)</bold> AFM Diagram composed of the vertices F (FeOtotal), A (Na2O + K2O) and M (MgO) in wt.% (Irvine &amp; Baragar 1971). The main discriminant factor between these series is the F, which separates the toleitic and calcium-alkaline fields according to Ferner’s trend.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f6.jpg"/>
+				</fig>
+				<p>When primitive mantle-normalized (<xref ref-type="bibr" rid="B70">Sun</xref> &amp; McDonough 1989) the samples show a similar behavior of the incompatible trace elements, highlighting positive anomalies in Cs, U, K, Th, and Nd as well as the negative anomalies in Ba, Nb, Sr, P, and Ti (<xref ref-type="fig" rid="f7">Fig. 7</xref>a). The anomaly in these elements is a common feature in more differentiated rocks and may be explained by the higher degree of fractionation involving minerals such as plagioclase, apatite and Fe-Ti oxides (<xref ref-type="bibr" rid="B7">Brown</xref> et al. 1984). </p>
+				<fig id="f7">
+					<label>Figure 7</label>
+					<caption>
+						<title>Diagrams based on lithochemistry. <bold>(a)</bold> Primitive mantle-normalized spider diagram (Sun &amp; McDonough 1989). Trace elements and REE amounts in ppm; <bold>(b)</bold> REE Diagram normalized by the chondrite (Nakamura 1974). REE amounts in ppm; <bold>(c)</bold> Diagram for silicic volcanic rocks subdivision of the Palmas and Chapecó types according to the TAS diagram (Le Bas et al. 1986) modified from Nardy et al. (2008). <bold>(d)</bold> Diagrams to classification of subtype Palmas as already defined in the literature. The color areas in the diagram Rb (ppm) vs. Zr (ppm) correspond to the study by Nardy et al. 2008.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f7.jpg"/>
+				</fig>
+				<p>When chondrite-normalized (<xref ref-type="bibr" rid="B44">Nakamura</xref> 1974), the samples show a moderate concentration of rare earth elements (∑ETR= 194 – 229 ppm). The fractionation between LREE and HREE is moderate in the representative samples of the Units, with a LaN/YbN ratio ranging approximately between 6 and 7.75. In general, the fractionation of the LREEs is higher than that of the HREEs, with LaN/SmN ratios (2.66 – 3.43) higher than the TbN/LuN ratios (1.51 – 1.75). A strong negative Eu anomaly (Eu/Eu* = 0.61 – 0.72) occurs in all samples and is probably related to the bivalent character of this element and the fractionation of feldspars (Fig. 7b). </p>
+				<p>The studied samples show properties compatible with the typical characteristics of the Palmas Group (Nardy et al. 2008, Lima et al. 2012a). They occupy the dacite field by the classification obtained from the Na2O+K2O x SiO2 diagram (Fig. 7c) and show a low Rb/Ba ratio ranging from 0.21 to 0.27 ppm and a low Nb content, between 17.9 and 20.5 ppm. To discriminate the subgroups of the Palmas type, the diagram was based on the work of Garland et al. 1995, Nardy et al. 2008, Lima et al. 2012a and Polo 2014. The studied samples vary among the subgroups Anita Garibaldi, Caxias do Sul and Jacuí. (Fig. 7d). </p>
+			</sec>
+			<sec>
+				<title>AMS - Anisotropy of Magnetic Susceptibility  </title>
+				<p>Volcanic rocks preserve the structural features associated with the processes of ascent, placement, and extrusion of magmas through the alignment of magnetic crystals (<xref ref-type="bibr" rid="B20">Guimarães</xref> 2014). By applying this principle, the AMS can be used to determine the magnetic fabric allowing the identification of flow directions in volcanic rocks. </p>
+				<p>Recent studies have applied this technique to silicic volcanic systems, enabling the reconstruction of volcanic environments, such as domes related to caldera collapses (<xref ref-type="bibr" rid="B73">Tomek et al. 2016</xref>) and fissure systems associated with large igneous provinces (Simões 2018). In these studies, satisfactory relationships were found among the bedding planes and lineations with the directions of maximum mean susceptibility, intermediate mean susceptibility and the plane that contains the maximum and intermediate susceptibility directions.  </p>
+			</sec>
+			<sec>
+				<title>Directional data </title>
+				<p>The AMS directional results were displaying using equal area stereograms and, using the software ANISOFT 5 AGICO (Advanced Geoscience Instruments Company) a statistical bootstrap analysis was applied to the data (<xref ref-type="bibr" rid="B71">Tauxe</xref> et al. 1991), allowing a better identification of the Kmin, Kint and Kmax axes of the magnetic tensor. This technique allowed to determine more reliably the attitude of the tensor and the lava flow direction. Figure 8 shows the directional data (P <italic>vs</italic>. Km) and (T <italic>vs</italic>. P) plots for the sampled sites. The mean susceptibility (Km) of the sample ranges between 11.7 and 40.8 x 10-<sup>3</sup> SI. The degree of anisotropy (P) found is low, not exceeding 1.036. Regarding the shape of the ellipsoids, the shape parameter (T) indicates a presence of both oblate and prolate ellipsoids. Despite the low degree of anisotropy of the samples, it was possible to identify clear patterns of lineation and foliation, as can be seen in the stereograms of <xref ref-type="fig" rid="f8">Figure 8</xref>. </p>
+				<fig id="f8">
+					<label>Figure 8</label>
+					<caption>
+						<title>Directional data by anisotropy of magnetic susceptibility and bootstrap analysis, as well as anisotropy degree diagrams (P), mean magnetic susceptibility (Km) and shape parameter (T). K1, K2 and K3: maximum, intermediate and minimum axis of magnetic susceptibility. PAS06v: sub-vertical flow structure. PAS06h: sub-horizontal flow structure. PAS038: dome flow structure. PAS017: sub-vertical flow structure. PAS041c: raised center of the composite geomorphology. PAS041e: uplifted edge of the composite geomorphology.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f8.jpg"/>
+				</fig>
+			</sec>
+			<sec>
+				<title>Magnetic mineralogy </title>
+				<p>
+					<xref ref-type="fig" rid="f9">Figure 9</xref> shows a representative thermomagnetic curve for each sampled site. In most cases, the samples show reversible curves (PAS17, PAS38, PAS41c, PAS41e), except for samples PAS06v and PAS06h, with irreversible behavior. However, in all cases, it is possible to observe a total loss of susceptibility (the Curie temperature) at temperatures between 550°C and 580°C. The reversible curves do not indicate mineralogical alteration or destruction during heating. The Curie temperature spectrum is mainly associated with the variation of the titanium content in the samples and their oxidation state. The opposite happens with irreversible curves. The curves with reversible behaviors indicate that the magnetic mineralogy is composed of titanomagnetites with low titanium. Eventually, some hematites are present, as well as small amounts of maghemite, as seen in curves PAS06v, PAS06h, and PAS17. </p>
+				<fig id="f9">
+					<label>Figure 9</label>
+					<caption>
+						<title>Thermomagnetic, hysteresis and MRI acquisition curves, and SEM observations of representative samples of the studied sites. The results show that mineralogy is related predominantly to a low coercivity mineral, such as magnetite and/or titanomagnetite.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f9.jpg"/>
+				</fig>
+				<p>Figure 9 also shows the hysteresis loops obtained for the same set of samples. The hysteresis loops are similar, typical of low coercivity magnetic minerals, with values (<xref ref-type="table" rid="t01">Table I</xref>) within the pseudo-single domain – PSD (<xref ref-type="bibr" rid="B9">Day</xref> et al. 1977, <xref ref-type="bibr" rid="B11">Dunlop</xref> 2002). This field is a transition between single-domain (SD) and multi-domain grains (MD). In igneous rocks, most of the magnetite and titanomagnetite grains carrying stable thermal remnant magnetization fall into the field of PSD grains (<xref ref-type="bibr" rid="B12">Dunlop &amp; Özdemir 1997</xref>). The IRM curves for all the samples saturate in fields lower than or near 300 nT, indicating that the main magnetization carrier shows low coercivity compatible with titanomagnetites.   </p>
+				
+				<table-wrap id="t01">
+					<label>TABLE I</label>
+					<caption>
+						<title>AMS data parameters and field data. N: number of specimens; Km: site-average magnetic susceptibility; P: anisotropy degree; T: shape parameter; F: magnetic foliation; L: magnetic lineation; K1, K2 and K3: maximum, intermediate and minimum axis of magnetic susceptibility; e/z: angular error for the maximum and minimum ellipses of Jelineck’s statistics.</title>
+					</caption>
+					<table rules="rows">
+						<thead>
+							<tr>
+								<th rowspan="2"/>
+								<th>Site</th>
+								<th>PAS06v</th>
+								<th>PAS06h</th>
+								<th>PAS017</th>
+								<th>PAS038</th>
+								<th>PAS41c</th>
+								<th>PAS41e</th>
+							</tr>
+							<tr>
+								<th>N</th>
+								<th>26</th>
+								<th>22</th>
+								<th>26</th>
+								<th>39</th>
+								<th>39</th>
+								<th>33</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td rowspan="5">Scalar Data</td>
+								<td>km (10<sup>-3</sup>SI)</td>
+								<td>31.5</td>
+								<td>36.9</td>
+								<td>40.8</td>
+								<td>11.7</td>
+								<td>17.2</td>
+								<td>20.6</td>
+							</tr>
+							<tr>
+								<td>P</td>
+								<td>1.036</td>
+								<td>1.023</td>
+								<td>1.017</td>
+								<td>1.009</td>
+								<td>1.011</td>
+								<td>1.007</td>
+							</tr>
+							<tr>
+								<td>T</td>
+								<td>0.320</td>
+								<td>-0.075</td>
+								<td>-0.125</td>
+								<td>-0.490</td>
+								<td>0.240</td>
+								<td>0.142</td>
+							</tr>
+							<tr>
+								<td>F</td>
+								<td>1.023</td>
+								<td>1.010</td>
+								<td>1.006</td>
+								<td>1.002</td>
+								<td>1.007</td>
+								<td>1.004</td>
+							</tr>
+							<tr>
+								<td>L</td>
+								<td>1.013</td>
+								<td>1.013</td>
+								<td>1.011</td>
+								<td>1.007</td>
+								<td>1.004</td>
+								<td>1.003</td>
+							</tr>
+							<tr>
+								<td rowspan="6">Directional Data</td>
+								<td>K<sub>1</sub></td>
+								<td>241/14</td>
+								<td>212/80</td>
+								<td>232/29</td>
+								<td>068/02</td>
+								<td>039/11</td>
+								<td>122/07</td>
+							</tr>
+							<tr>
+								<td>e/z</td>
+								<td>32/12</td>
+								<td>37/17</td>
+								<td>34/24</td>
+								<td>33/9</td>
+								<td>68/24</td>
+								<td>37/13</td>
+							</tr>
+							<tr>
+								<td>K<sub>2</sub></td>
+								<td>335/11</td>
+								<td>331/05</td>
+								<td>063/61</td>
+								<td>337/26</td>
+								<td>307/12</td>
+								<td>032/00</td>
+							</tr>
+							<tr>
+								<td>e/z</td>
+								<td>32/11</td>
+								<td>36/33</td>
+								<td>52/29</td>
+								<td>44/32</td>
+								<td>68/20</td>
+								<td>37/19</td>
+							</tr>
+							<tr>
+								<td>K<sub>3</sub></td>
+								<td>102/72</td>
+								<td>062/08</td>
+								<td>325/05</td>
+								<td>163/64</td>
+								<td>170/74</td>
+								<td>299/83</td>
+							</tr>
+							<tr>
+								<td>e/z</td>
+								<td>14/9</td>
+								<td>34/17</td>
+								<td>52/29</td>
+								<td>44/9</td>
+								<td>26/18</td>
+								<td>20/13</td>
+							</tr>
+							<tr>
+								<td>Field Data</td>
+								<td>Foliation Pole</td>
+								<td>10/280</td>
+								<td>81/041</td>
+								<td>10/290</td>
+								<td>48/312</td>
+								<td>64/315</td>
+								<td>72/232</td>
+							</tr>
+						</tbody>
+					</table>
+				</table-wrap>
+				
+			</sec>
+			<sec>
+				<title>Scanning Electron Microscopy (SEM) </title>
+				<p>Though the use of Scanning Electron Microscopy was determined the habit and distribution of the magnetic minerals and obtained the present elements through Energy Dispersive Spectroscopy (EDS). Through the SEM observations, four types of magnetic fabrics were identified in the samples (Fig. 9), which are characterized by the predominance of:   </p>
+				<p>I - anhedral phenocrysts (≥100 μm) and euhedral, scattered microcrystals (≤ 20 μm), (samples PAS06v and PAS06h). In these samples, the tensor obtained by AMS for the magnetic foliation and lineation does not coincide with the field data, although the axes are well grouped with low e/z values; </p>
+				<p>II - anhedral phenocrysts (≥100 μm) and small anhedral crystals (≤ 10 μm) associated with oriented plagioclase crystals (PAS17). In this fabric, it is observed that the AMS tensor does not agree with the flow structures and the magnetic axes are scattered, showing high e/z values. </p>
+				<p>III - anhedral phenocryst (≥300 μm), sometimes clustered, exhibiting glomeroporphyrytic texture and with a low number of microcrystals (PAS41c and PAS41e). In these samples, the magnetic fabric is consistent with the flow orientations measured in the field, although there is a high dispersion of the magnetic axes. </p>
+				<p>IV - euhedral phenocrysts (≥400 μm), showing ilmenite exsolution features, sometimes with a glomeroporphyritic texture, and anhedral microcrystals (≤ 10 μm), associated with crystals of plagioclase (PAS38).  In these samples, there is no concordance between the magnetic data and the geological structures, although the magnetic axes are relatively clustered and may represent a mixture between fabrics II and III. </p>
+			</sec>
+			<sec>
+				<title>Geoprocessing </title>
+				<p>The results obtained using satellite images served as the basis to elaborate thematic maps, supporting the data interpretation. The rosette diagrams prepared with the field measurements and the measurements taken from the satellite images (<xref ref-type="fig" rid="f10">Fig. 10</xref>) indicated the predominance of NE-SW trending structures, followed by NW-SE and E-W directions in the field, and a predominance of NE-SW over NW-SE trending structures on a regional scale. It is usually the bedding planes identified in the field are concordant with the lineaments observed in the image analysis.  </p>
+				<fig id="f10">
+					<label>Figure 10</label>
+					<caption>
+						<title>Thematic map, containing comparison between the patterns of lineaments measurements in the field and observed in the satellite images on the lithotypes present in the region and highlighting structures identified in satellite images.</title>
+					</caption>
+					<graphic xlink:href="0001-3765-aabc-92-s2-e20180981-f10.jpg"/>
+				</fig>
+				<p>There is a greater concentration of features, both linear and circular in the municipality of São José dos Ausentes, where the lineaments are scarce and more spaced, but more extensive. The landforms are less common in regions where there is a great density of small lineaments of NE direction, such as in the municipalities of Cambará do Sul and Bom Jesus. </p>
+				<p>The thematic map (<xref ref-type="fig" rid="f10">Fig. 10</xref>) allows verifying the behavior patterns of the structures. The small domed circular features have a preferential alignment in the NNE direction in the city of São José dos Ausentes, while the larger features have a random distribution throughout the region and may be related to large N-S direction lineaments. The flat top circular features did not show a preferential distribution, presenting only a slight tendency to form clusters of smaller features, while the larger structures are widely spaced. The smaller linear features, with sizes up to 500 meters, often occur in aligned clusters, with directions ranging from NE-NNE to N-NNW. This pattern follows the predominant trending of the lineaments observed at the sites. However, the larger features are not oriented. </p>
+				<p>Based on the analysis of the satellite images, structures similar to lava flows and lava flows with vertical foliations were identified. Some of these structures are depicted in the map of Figure 10. Structures similar to vertical foliations commonly occur associated with large lineaments. The presence of linear and circular geomorphological features in these areas is frequent and may be an indicative of effusive volcanic systems in the region such as feeder conduits. </p>
+			</sec>
+		</sec>
+		<sec>
+			<title>DISCUSSION </title>
+			<p>The region known as “Aparados da Serra” in southern Brazil consists of the silicic volcanic rocks of the Serra Geral Group, which is linked to the PEMP. These silicic rocks are related to tabular deposits of great extension, whose origin is still a subject of discussion, and the debate regarding its genesis by lava flows (Bellieni et al. 1988, Comin-Chiaramonti 1988, Henry &amp; Wolff 1992, Umann et al. 2001, Lima et al. 2012b, Polo et al. 2017a, b, Guimarães et al. 2018, Lima 2018, Simões 2018) or pyroclastic flows (Petrini et al. 1989, Roisenberg 1989, Whittingham 1989, Milner et al. 1992, 1995, <xref ref-type="bibr" rid="B34">Luchetti</xref> et al. 2018) remains. In the investigation of the Serra Geral volcanism, the emphasis is usually given to the lithochemical and isotopic aspects, usually organizing the data on a regional scale, where aspects related to local structures, flow regime and effusion are suppressed or overlooked (<xref ref-type="bibr" rid="B77">Waichel</xref> 2006). The apparent monotonous and homogeneous nature, much ascribed to the PEMP, has been one of the main factors for the geochemical characterization to be the central definition focus for the units (<xref ref-type="bibr" rid="B51">Piccirillo</xref> et al. 1990, Peate et al. 1992, <xref ref-type="bibr" rid="B75">Turner et al. 1999</xref>, (<xref ref-type="bibr" rid="B15">Ewart et al. 2004</xref>). The stratigraphic lithofaciological approaches have been the subject of recent research, focusing mainly on the basic units related to this magmatism. (e.g. Lima et al. 2012a, Waichel et al. 2012, <xref ref-type="bibr" rid="B2">Barreto</xref> et al. 2014, <xref ref-type="bibr" rid="B64">Rossetti</xref> et al. 2014, Lima 2018, <xref ref-type="bibr" rid="B67">Simões 2018</xref>). </p>
+			<p>Umann et al. (2001) suggest that the silicic volcanism of the Aparados da Serra region can be interpreted as successive high-temperature pyroclastic flows. The authors did not identify diagnostic fragments of explosive volcanic activity in any of the studied units, such as pyroclasts and accidental fragments. They locally observed basal breccias, similar to those reported by Roisenberg (1989) in the region of Nova Prata (RS) and by Milner et al. (1992) in the Etendeka Group (NW of Namibia). However, these brecciated layers are characterized by a random distribution of rhyolitic angular clasts, usually banded, of decimetric dimensions, surrounded by a quartz-feldspar matrix, typical of an auto-breccia generated by the friction of the flow base with the substrate. Flow foliations are commonly observed, sometimes with continuous asymmetric folds, which are frequent features in intermediate to silicic lavas, although they may also occur in high-temperature pyroclastic flows (<xref ref-type="bibr" rid="B22">Henry</xref> et al. 1988, Henry &amp; Wolff 1992, <xref ref-type="bibr" rid="B37">McPhie</xref> et al. 1993). Pumice, fiamme, crystalloclasts, and lithoclasts were not observed, and a vitrophyre under scanning electron microscopy indicated a compact holohyaline condition, with crystallites and microliths of feldspars randomly distributed, typical of silicic flows. </p>
+			<p>Lima et al. (2012b, 2018) identified feeder systems related to the silicic lavas and, according to these authors, the presence of a feeder root suggests that, in certain portions, the structures may assume dome shapes in response to the resistance to the flow. </p>
+			<p>Polo (2014) concludes that the silicic volcanic sequences of the Soledade region are widely dominated by effusive deposits and that the extrusion occurred through fissures. The volcanic eruptions of the Palmas type began with the effusion of lava flows and lava domes of dacitic compositions, identified as subtype Caxias do Sul. </p>
+			<p>Among the 320 individualized structures in the Aparados da Serra region, there is a predominance of circular features related to group I, with positive relief from the edge to the center and domed top. In the field, these features are represented by mounds with rounded to acute convex tops. The linear features are usually represented by elongated bodies (Benites 2015). The foliations found in the field are often concordant with the lineaments identified in the image analysis. Some lineaments may represent the structural framework of the Paraná Basin, where NW and NE orientations are considered to be older and originate from the reactivation of weak zones present in the basement and the E-W lineaments were developed from the Triassic during the Gondwana separation (Zalán et al. 1987, 1991).  </p>
+			<p>The “flat” domes (pancake-like) and the possible coulées of the early sequence of Caxias do Sul dacites are preferentially aligned in the NE-SW direction, following the main structural directions of the crystalline basement of the Paraná Basin and approximately perpendicular to the Torres Syncline axis (Waichel et al. 2012). </p>
+			<p>The analysis of the structures that characterize the volcanic conduits in the area investigated by <xref ref-type="bibr" rid="B66">Simões</xref> et al. (2015), covering the municipalities of Mato Perso, São Marcos and Cambará do Sul, indicates a banding arranged with predominant NE-SW over NW-SE directions, with subordinate E-W and N-S directions and dipping ranging from 1 to 89°, with predominant sub-vertical dips. In the Jaquirana region, the sub-vertical banding measurements are predominant in the NE-SW direction. </p>
+			<p>The conduits identified by Simões (2018) present predominant sub-vertical orientations trending NE-SW and NW-SE, and, on a regional scale, these conduits are elongated from NW-SE to NE-SW. The field measurements of the conduits banding inferred by Simões (2018) also show NW-SE and NE-SW trends, as well as the magmatic flow directions obtained through the AMS technique for conduits and lavas. </p>
+			<p>The direction of the foliations measured in this study show preferentially SE for the sub-horizontal foliations of the lava flows and NE for the sub-vertical foliations of the feeders. The identified units show lava flows features, such as the presence of auto-breccias typical of flows combined with the absence of pyroclastic structures and textures, lithoclasts, crystalloclasts, shards and pumices.  </p>
+			<p>According to Simões (2018), the rheological homogeneity of the lava flows allows interpreting the magmatic flow directly from the magnetic foliations and the kmax directions. In lavas, horizontal kmax values are associated with flat magnetic foliations, which indicate a predominantly horizontal magmatic flow. In the conduits, a high dispersion of the axis data kmax, kmin and kint resulting from the random orientation of the magnetic fabric is often observed, and they may present a horizontal or locally vertical kmax. Domes exhibit almost vertical kmin, high-angle kmax and horizontal kmax-kint axes and also show fabric zoning with high angle kmax near the conduit zone and horizontal kmax on the edges of the flow. </p>
+			<p>In samples PAS41c and PAS41e, which represent Unit I in this study, the kmax is horizontal and the magnetic fabric is consistent with the flow orientations measured in the field that indicates directions ranging from NE and SW for the edge portion and SE direction for the core portion. In sample PAS38, which represents Unit III in this study, kmax is horizontal, which could indicate a flow boundary, but can also indicate a predominantly horizontal magmatic flow. In samples PAS06h, PAS06v, PAS17, which represent Unit IV in this study, a high dispersion of the kmax, kmin and kint axis is observed, similar to the one observed in the conduits studied by Simões (2018).  </p>
+			<p>The units identified in this study are formed by dacites, rhyodacites, and rhyolites of tholeiitic affinities and metaluminous character. These units are chemically homogeneous, with the distinction based primarily on field structural aspects.  </p>
+			<p>According to Polo et al. (2017a), a predominantly effusive model is consistent with the physical properties of the Serra Geral Group silicic magmas, such as higher temperatures (1,010-930ºC), lower water content (1-2% of weight) and lower viscosities (104-106 Pas), unlike typical silicic magmas. </p>
+			<p>High effusion rates could explain how large areas were covered by silicic lava flows since the distance traveled by lava can be directly proportional to the effusion rate (<xref ref-type="bibr" rid="B79">Walker</xref> 1973).  </p>
+			<p>Regarding the structural difference shown in Units I and II (lava flows with magmatic foliation incipient to massive <italic>vs</italic>. lava flows with sub-horizontal flow structures), this can be explained by the preserved area after erosion. The core presents a massive structure, while the peripheral zones, both in the upper and lower portions, present horizontal bedding, according to the model suggested by Nardy et al. (2008).  </p>
+			<p>Unit III could be interpreted as a possible lava dome, due to the presence of flow foliations, auto-breccias, and characteristic textural variations, according to the model proposed by McPhie et al. (1993). The auto-brecciation could be explained by the non-explosive fragmentation of a lava flow, since the upper and lower portions of a lava flow present a faster heat loss when compared to its core, responding to stress in a fragile manner and causing the external fragmentation of the shell (McPhie et al. 1993). According to the endogenous dome model (<xref ref-type="bibr" rid="B85">Williams</xref> 1932 <italic>apud</italic>
+				<xref ref-type="bibr" rid="B47">Newhall</xref> and Melson 1983), when the surface of the dome expands to accommodate the effusion of lava through the conduit, the external portions that are already cooled (base, top and front), break due to the great expansion pressure exerted on them and develop auto-breccias (the previously cooled shell, formed by massive obsidian, banded or pumice, is broken, generating angular clasts that are surrounded by a lava that stills in a plastic flow). The foliated edge around the solid core is caused by shearing of the fluid.  </p>
+			<p>Unit IV is interpreted as a feeder conduit system. This unit shows a banding pattern and foliation attitudes similar to the results obtained by Simões et al. (2015), who investigated the occurrence of volcanic conduits in the northeastern region of Rio Grande do Sul. The foliations measured in the outcrops of Unit IV have two preferential directions. Foliations with sub-vertical dipping have a preferred NE-SW direction, while foliations with sub-horizontal dipping have a preferred NW-SE direction. </p>
+		</sec>
+		<sec>
+			<title>CONCLUSIONS </title>
+			<p>Among the landforms investigated in the Aparados da Serra region, there is a predominance of circular features, and the linear features are usually represented by elongated bodies of subordinate occurrence. The identified units are formed by dacites, rhyodacites, and rhyolites of tholeiitic affinities and metaluminous character. They are chemically homogeneous, which led to a new classification based on the present geological structures. They are: (i) Unit I: lava flows with incipient magmatic foliation to massive, (ii) Unit II: lava flows with sub-horizontal flow structures, (iii) Unit III: lava flows with dome flow structures, all associated with the circular features; (iv) Unit IV: lava flows with sub-vertical flow structures, associated with the linear features. </p>
+			<p>The unit I was confirmed by the AMS technique, which showed a flat arrangement of the magnetic foliation of the lavas, indicating a predominantly horizontal magmatic flow, characteristic of lavas flows. The landforms can also be explained by weathering processes that cause differential erosion, resulting in dome geomorphologies, and the structural difference between Units I and II is the result of the exposure of different portions of the lava flows. Thus, Unit I represents the core, most central zone of the effusion, while Unit II represents the peripheral zones, both in the upper and lower portions. The results obtained using the AMS technique were not conclusive to correlate the targets to volcanic domes in the samples of Unit III, such as the almost vertical kmin, high-angle kmax, and horizontal kmax-kint axes. However, the circular features grouped in this unit may correspond to volcanic domes, due to field observations as the presence of auto-breccias, foliated edges surrounding massive cores and texture features such as the presence of highly vesicular breccias at the edges. The structures measured in the field in Unit IV were also confirmed by the AMS technique, which showed horizontal or locally vertical kmax and a greater dispersion of AMS data as a result of very complex, sometimes turbulent magmatic flow patterns, as expected for volcanic conduits. These feeder conduits are possibly associated with extensive lineaments, similar to that described by Simões et al. 2017. </p>
+			<p>Therefore, the circular landforms represented by Units I and II can be considered secondary and derived from the differential erosion of silicic lava flows associated with subsequent tectonism. Regarding Unit III, it is suggested that the circular feature and the dome morphology have a direct relationship with a volcanic morphology, due to its primary geological structures. The linear features represented by Unit IV can also be considered as primary structures related to feeder conduits and directly associated with primary volcanic processes. </p>
+		</sec>
+	</body>
+	<back>
+		<ack>
+			<title>ACKNOWLEGMENTS</title>
+			<p>This work had partial financial support to C.A. Sommer and E.F. Lima from Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq) (400724/2014-6, 441766/2014-5, 302213/2012-0, 303584/2009-2, 473683/2007, 5470641/2008-8, 470203/2007-2, 471402/2012-5, 303038/2009-8 and 470505/2010-9), and from the Fundação de Amparo à Pesquisa do Estado do Rio Grande do Sul (FAPERGS) 1180/12-8, and PRONEX 10/0045-6. We thank the laboratory support from the IGEO/UFRGS and Laboratório de Paleomagnetismo da Universidade de São Paulo (USPMag). We also thank the anonymous reviewers for their important contribution to the research paper. </p>
+		</ack>
+		<ref-list>
+			<title>REFERENCES</title>
+			<ref id="B1">
+				<mixed-citation>ANGELINI PG. 2018. Petrological and volcanological insights into acid lavas from the Paraná-Etendeka Magmatic Province on the surroundings of Guarapuava city, Paraná, Southern Brazil: A contribution of detailed textural characterization combined with in situ Sr isotopes in plagioclase phenocrysts. São Paulo, Dissertacao de Mestrado (Unpublished), Instituto de Geociencias, Universidade de São Paulo, 90 p.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>ANGELINI</surname>
+							<given-names>PG</given-names>
+						</name>
+					</person-group>
+					<source>Petrological and volcanological insights into acid lavas from the Paraná-Etendeka Magmatic Province on the surroundings of Guarapuava city, Paraná, Southern Brazil: A contribution of detailed textural characterization combined with in situ Sr isotopes in plagioclase phenocrysts</source>
+					<comment>Dissertacao de Mestrado</comment>
+					<year>2018</year>
+					<publisher-name>Instituto de Geociencias, Universidade de São Paulo</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B2">
+				<mixed-citation>BARRETO CJS, LIMA EF, SCHERER CM &amp; ROSSETTI LMM. 2014. Lithofacies analysis of basic lava flows of the Paraná igneous province in the south hinge of Torres Syncline, Southern Brazil. J Volcanol Geotherm Res 285: 81-99.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>BARRETO</surname>
+							<given-names>CJS</given-names>
+						</name>
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>SCHERER</surname>
+							<given-names>CM</given-names>
+						</name>
+						<name>
+							<surname>ROSSETTI</surname>
+							<given-names>LMM</given-names>
+						</name>
+					</person-group>
+					<article-title>Lithofacies analysis of basic lava flows of the Paraná igneous province in the south hinge of Torres Syncline, Southern Brazil</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>2014</year>
+					<volume>285</volume>
+					<page-range>81-99</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B3">
+				<mixed-citation>BELLIENI G, COMIN-CHIARAMONTI P, MARQUES LS, MARTINEZ LA, MELFI AJ, NARDY AJR, PAPATRECHAS C, PICCIRILLO E, ROISENBERG A &amp; STOLFA D. 1986. Petrogenetic aspects of acid and basaltic lavas from the Paraná plateau (Brazil): geological, mineralogical and petrochemical relationships. J Petrol 27(4): 915-944.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>BELLIENI</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>COMIN-CHIARAMONTI</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>MARQUES</surname>
+							<given-names>LS</given-names>
+						</name>
+						<name>
+							<surname>MARTINEZ</surname>
+							<given-names>LA</given-names>
+						</name>
+						<name>
+							<surname>MELFI</surname>
+							<given-names>AJ</given-names>
+						</name>
+						<name>
+							<surname>NARDY</surname>
+							<given-names>AJR</given-names>
+						</name>
+						<name>
+							<surname>PAPATRECHAS</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>PICCIRILLO</surname>
+							<given-names>E</given-names>
+						</name>
+						<name>
+							<surname>ROISENBERG</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>STOLFA</surname>
+							<given-names>D</given-names>
+						</name>
+					</person-group>
+					<article-title>Petrogenetic aspects of acid and basaltic lavas from the Paraná plateau (Brazil): geological, mineralogical and petrochemical relationships</article-title>
+					<source>J Petrol</source>
+					<year>1986</year>
+					<volume>27</volume>
+					<page-range>915-944</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B4">
+				<mixed-citation>BELLIENI G, COMIN-CHIARAMONTI P, MARQUES LS, MELFI AJ, NARDY AJR, PICCIRILO EM &amp; ROISENBERG A. 1984. High- and low-TiO2 flood basalts from the Paraná plateu (Brazil): petrology and geochemical aspects bearing on their mantle origin. Neues Jahrbuch für Mineralogie – Abhandlungen. J Miner Geoch 150: 276-306.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>BELLIENI</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>COMIN-CHIARAMONTI</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>MARQUES</surname>
+							<given-names>LS</given-names>
+						</name>
+						<name>
+							<surname>MELFI</surname>
+							<given-names>AJ</given-names>
+						</name>
+						<name>
+							<surname>NARDY</surname>
+							<given-names>AJR</given-names>
+						</name>
+						<name>
+							<surname>PICCIRILO</surname>
+							<given-names>EM</given-names>
+						</name>
+						<name>
+							<surname>ROISENBERG</surname>
+							<given-names>A</given-names>
+						</name>
+					</person-group>
+					<article-title>High- and low-TiO2 flood basalts from the Paraná plateu (Brazil): petrology and geochemical aspects bearing on their mantle origin</article-title>
+					<source>J Miner  Geoch</source>
+					<year>1984</year>
+					<volume>150</volume>
+					<page-range>276-306</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B5">
+				<mixed-citation>BELLIENI G, PICCIRILLO EM, COMIN-CHIARAMONTI P, MELFI AJ &amp; ROIT P. 1988. Mineral chemistry of continental stratoid volcanics and related intrusives from the Paraná Basin (Brazil). In: Piccirillo EM &amp; Melfi AJ (Eds), The mesozoic flood volcanism of the Paraná Basin. São Paulo: Instituto Astronômico e Geofísico, Universidade de São Paulo 1: 73-92.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>BELLIENI</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>PICCIRILLO</surname>
+							<given-names>EM</given-names>
+						</name>
+						<name>
+							<surname>COMIN-CHIARAMONTI</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>MELFI</surname>
+							<given-names>AJ</given-names>
+						</name>
+						<name>
+							<surname>ROIT</surname>
+							<given-names>P</given-names>
+						</name>
+					</person-group>
+					<article-title>Mineral chemistry of continental stratoid volcanics and related intrusives from the Paraná Basin (Brazil)</article-title>
+					<source>Instituto Astronômico e Geofísico, Universidade de São Paulo</source>
+					<year>1988</year>
+					<volume>1</volume>
+					<page-range>73-92</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B6">
+				<mixed-citation>BENITES S. 2015. Investigação das estruturas associadas ao vulcanismo ácido da Formação Serra Geral na região de Aparados da Serra, RS. Porto Alegre. Monografia de Conclusao de Curso, Curso de Geologia, Instituto de Geociencias, Universidade Federal do Rio Grande do Sul, 155 p.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>BENITES</surname>
+							<given-names>S</given-names>
+						</name>
+					</person-group>
+					<source>Investigação das estruturas associadas ao vulcanismo ácido da Formação Serra Geral na região de Aparados da Serra, RS</source>
+					<comment>Monografia de Conclusao de Curso</comment>
+					<year>2015</year>
+					<publisher-name>Universidade Federal do Rio Grande do Sul</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B7">
+				<mixed-citation>BROWN GC, THORPE RS &amp; WEBB PC. 1984. The geochemical characteristics of granitoids in contrasting arcs and comments on magma sources. J Geol Soc 141(3): 413-426.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>BROWN</surname>
+							<given-names>GC</given-names>
+						</name>
+						<name>
+							<surname>THORPE</surname>
+							<given-names>RS</given-names>
+						</name>
+						<name>
+							<surname>WEBB</surname>
+							<given-names>PC</given-names>
+						</name>
+					</person-group>
+					<article-title>The geochemical characteristics of granitoids in contrasting arcs and comments on magma sources</article-title>
+					<source>J Geol Soc</source>
+					<year>1984</year>
+					<volume>141</volume>
+					<page-range>413-426</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B8">
+				<mixed-citation>COMIN-CHIARAMONTI P, BELLIENI G, PICCIRILLO EM &amp; MELFI AJ. 1988. Classification and petrography of continental stratoid volcanic and related intrusive from the Paraná Basin (Brazil). In: Piccirillo EM &amp; Melfi AJ. The mesozoic flood volcanism of the Paraná Basin. São Paulo: Instituto Astronômico e Geofísico, Universidade de São Paulo, 1: 47-72.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>COMIN-CHIARAMONTI</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>BELLIENI</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>PICCIRILLO</surname>
+							<given-names>EM</given-names>
+						</name>
+						<name>
+							<surname>MELFI</surname>
+							<given-names>AJ</given-names>
+						</name>
+					</person-group>
+					<article-title>Classification and petrography of continental stratoid volcanic and related intrusive from the Paraná Basin (Brazil)</article-title>
+					<source>Instituto Astronômico e Geofísico, Universidade de São Paulo</source>
+					<year>1988</year>
+					<volume>1</volume>
+					<page-range>47-72</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B9">
+				<mixed-citation>DAY R, FULLER M &amp; SCHMIDT VA. 1977. Hysteresis properties of titanomagnetites: grain-size and compositional dependence. Phys Earth Planet Inter 13(4): 260-267.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>DAY</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>FULLER</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>SCHMIDT</surname>
+							<given-names>VA</given-names>
+						</name>
+					</person-group>
+					<article-title>Hysteresis properties of titanomagnetites: grain-size and compositional dependence</article-title>
+					<source>Phys Earth Planet Inter</source>
+					<year>1977</year>
+					<volume>13</volume>
+					<page-range>260-267</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B10">
+				<mixed-citation>DE LA ROCHE H, LETERRIER J, GRANDCLAUDE P &amp; MARCHAL M. 1980. A classification of volcanic and plutonic rocks using R1R2-diagram and major element analyses – its relationships with current nomenclature. Chem Geol 29(1-4): 183-210.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>DE</surname>
+							<given-names>LA ROCHE H</given-names>
+						</name>
+						<name>
+							<surname>LETERRIER</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>GRANDCLAUDE</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>MARCHAL</surname>
+							<given-names>M</given-names>
+						</name>
+					</person-group>
+					<article-title>A classification of volcanic and plutonic rocks using R1R2-diagram and major element analyses – its relationships with current nomenclature</article-title>
+					<source>Chem Geol</source>
+					<year>1980</year>
+					<volume>29</volume>
+					<issue>1-4</issue>
+					<page-range>183-210</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B11">
+				<mixed-citation>DUNLOP DJ. 2002. Theory and application of the Day plot (Mrs/Ms versus Hcr/Hc) 1. Theorical curves and tests using titanomagnetita data. J Geophys Res 107(B3): 2056-2057.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>DUNLOP</surname>
+							<given-names>DJ</given-names>
+						</name>
+					</person-group>
+					<article-title>Theory and application of the Day plot (Mrs/Ms versus Hcr/Hc) 1. Theorical curves and tests using titanomagnetita data</article-title>
+					<source>J Geophys Res</source>
+					<year>2002</year>
+					<volume>107</volume>
+					<issue>B3</issue>
+					<page-range>2056-2057</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B12">
+				<mixed-citation>DUNLOP DJ &amp; ÖZDEMIR Ö. 1997. Rock Magnetism, fundamentals and frontiers. Cambridge Studies in Magnetism Series, 689 p.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>DUNLOP</surname>
+							<given-names>DJ</given-names>
+						</name>
+						<name>
+							<surname>ÖZDEMIR</surname>
+							<given-names>Ö</given-names>
+						</name>
+					</person-group>
+					<source>Rock Magnetism, fundamentals and frontiers</source>
+					<year>1997</year>
+					<publisher-name> Cambridge Studies in Magnetism Serie</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B13">
+				<mixed-citation>ERNESTO M, MARQUES LS, PICCIRILLO EM, MOLINA EC, USAMI N &amp; BELLIENI G. 2002. Paraná Magmatic Province – Tristan da Cunha plume system: fixed versus mobile plume, petrogenetic considerations and alternative heat sources. J Volcanol Geotherm Res 118(1): 15-36.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>ERNESTO</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>MARQUES</surname>
+							<given-names>LS</given-names>
+						</name>
+						<name>
+							<surname>PICCIRILLO</surname>
+							<given-names>EM</given-names>
+						</name>
+						<name>
+							<surname>MOLINA</surname>
+							<given-names>EC</given-names>
+						</name>
+						<name>
+							<surname>USAMI</surname>
+							<given-names>N</given-names>
+						</name>
+						<name>
+							<surname>BELLIENI</surname>
+							<given-names>G</given-names>
+						</name>
+					</person-group>
+					<article-title>Paraná Magmatic Province – Tristan da Cunha plume system: fixed versus mobile plume, petrogenetic considerations and alternative heat sources</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>2002</year>
+					<volume>118</volume>
+					<page-range>15-36</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B14">
+				<mixed-citation>ERNESTO M, RAPOSO MIB, MARQUES LS, RENNE PR, DIOGO LA &amp; DE MIM A. 1999. Paleomagnetism, geochemistry and 40Ar/39Ar dating of the North-eastern Paraná Magmatic Province: tectonic implication. J Geodyn, Netherlands 28: 321-340.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>ERNESTO</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>RAPOSO</surname>
+							<given-names>MIB</given-names>
+						</name>
+						<name>
+							<surname>MARQUES</surname>
+							<given-names>LS</given-names>
+						</name>
+						<name>
+							<surname>RENNE</surname>
+							<given-names>PR</given-names>
+						</name>
+						<name>
+							<surname>DIOGO</surname>
+							<given-names>LA</given-names>
+						</name>
+						<name>
+							<surname>DE</surname>
+							<given-names>MIM A</given-names>
+						</name>
+					</person-group>
+					<article-title>Paleomagnetism, geochemistry and </article-title>
+					<source>J Geodyn, Netherlands</source>
+					<year>1999</year>
+					<volume>28</volume>
+					<page-range>321-340</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B15">
+				<mixed-citation>EWART A, MARSH JS, MILNER SC, DUNCAN AR, KAMBER BS &amp; ARMSTRONG RA. 2004. Petrology and geochemistry of Early Cretaceous bimodal continental flood volcanism of the NW Etendeka, Namibia, part 1: introduction, mafic lavas and reevaluation of mantle source components. J Petrol 45: 59-105.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>EWART</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>MARSH</surname>
+							<given-names>JS</given-names>
+						</name>
+						<name>
+							<surname>MILNER</surname>
+							<given-names>SC</given-names>
+						</name>
+						<name>
+							<surname>DUNCAN</surname>
+							<given-names>AR</given-names>
+						</name>
+						<name>
+							<surname>KAMBER</surname>
+							<given-names>BS</given-names>
+						</name>
+						<name>
+							<surname>ARMSTRONG</surname>
+							<given-names>RA</given-names>
+						</name>
+					</person-group>
+					<article-title>Petrology and geochemistry of Early Cretaceous bimodal continental flood volcanism of the NW Etendeka, Namibia, part 1: introduction, mafic lavas and reevaluation of mantle source components</article-title>
+					<source>J Petrol</source>
+					<year>2004</year>
+					<volume>1</volume>
+					<page-range>59-105</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B16">
+				<mixed-citation>EWART A, MILNER SC &amp; ARMSTRONG RA. 1998. Etendeka Volcanism of the Goboboseb Mountains and Messum Igneous Complex, Namibia. Part I: Geochemical Evidence of Early Cretaceous Tristan Plume Melts and the Role of Crustal Contamination in the Paraná-Etendeka CFB. J Petrol 39(2): 191-225.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>EWART</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>MILNER</surname>
+							<given-names>SC</given-names>
+						</name>
+						<name>
+							<surname>ARMSTRONG</surname>
+							<given-names>RA</given-names>
+						</name>
+					</person-group>
+					<article-title>Etendeka Volcanism of the Goboboseb Mountains and Messum Igneous Complex, Namibia</article-title>
+					<source>J Petrol</source>
+					<year>1998</year>
+					<volume>39</volume>
+					<page-range>191-225</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B17">
+				<mixed-citation>FRANK HT. 2008. Gênese e padrões de distribuição de minerais secundários na Formação Serra Geral (Bacia do Paraná). Porto Alegre, Tese de Doutorado, Programa de Pós-graduação em Geociências, Instituto de Geociências, Universidade Federal do Rio Grande do Sul, 322 p.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>FRANK</surname>
+							<given-names>HT</given-names>
+						</name>
+					</person-group>
+					<source>Gênese e padrões de distribuição de minerais secundários na Formação Serra Geral (Bacia do Paraná)</source>
+					<comment>Tese de Doutorado</comment>
+					<year>2008</year>
+					<publisher-name>Programa de Pós-graduação em Geociências, Instituto de Geociências, Universidade Federal do Rio Grande do Sul</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B18">
+				<mixed-citation>GARLAND F, HAWKESWORTH CJ &amp; MANTOVANI MSM. 1995. Description and petrogenesis of the Paraná Rhyolites [sic], Southern Brazil. J Petrol 36: 1193-1227.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>GARLAND</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>HAWKESWORTH</surname>
+							<given-names>CJ</given-names>
+						</name>
+						<name>
+							<surname>MANTOVANI</surname>
+							<given-names>MSM</given-names>
+						</name>
+					</person-group>
+					<article-title>Description and petrogenesis of the Paraná Rhyolites [sic], Southern Brazil</article-title>
+					<source>J Petrol</source>
+					<year>1995</year>
+					<volume>36</volume>
+					<page-range>1193-1227</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B19">
+				<mixed-citation>GREEN JC &amp; FITZ TJ. 1993. Extensive felsic lavas and rheoignimbrites in the Keweenawan Midcontinent Rift plateau volcanics, Minnesota: petrographic and field recognition. J Volcanol Geotherm Res 54: 177-196.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>GREEN</surname>
+							<given-names>JC</given-names>
+						</name>
+						<name>
+							<surname>FITZ</surname>
+							<given-names>TJ</given-names>
+						</name>
+					</person-group>
+					<article-title>Extensive felsic lavas and rheoignimbrites in the Keweenawan Midcontinent Rift plateau volcanics, Minnesota: petrographic and field recognition</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>1993</year>
+					<volume>54</volume>
+					<page-range>177-196</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B20">
+				<mixed-citation>GUIMARÃES LF. 2014. Características físicas e químicas e modelo eruptivo para os riolitos tipo Santa Maria (Província Magmática Paraná) na região de Gramado Xavier, RS. São Paulo, Dissertação de Mestrado (unpublished), Programa de Pós-Graduação em Mineralogia e Petrologia, Instituto de Geociências, Universidade de São Paulo, 179 p.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>GUIMARÃES</surname>
+							<given-names>LF</given-names>
+						</name>
+					</person-group>
+					<source>Características físicas e químicas e modelo eruptivo para os riolitos tipo Santa Maria (Província Magmática Paraná) na região de Gramado Xavier, RS</source>
+					<comment>Dissertação de Mestrado</comment>
+					<year>2014</year>
+					<publisher-name>Programa de Pós-Graduação em Mineralogia e Petrologia, Instituto de Geociências, Universidade de São Paulo</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B21">
+				<mixed-citation>GUIMARÃES LF, RAPOSO MIB, JANASI VA, CAÑÓN-TAPIA E &amp; POLO LA. 2018. An AMS study of different silicic units from the southern Paraná-Etendeka Magmatic Province in Brazil: implications for the identification of flow directions and local sources. J Volcanol Geotherm Res 355: 304-318.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>GUIMARÃES</surname>
+							<given-names>LF</given-names>
+						</name>
+						<name>
+							<surname>RAPOSO</surname>
+							<given-names>MIB</given-names>
+						</name>
+						<name>
+							<surname>JANASI</surname>
+							<given-names>VA</given-names>
+						</name>
+						<name>
+							<surname>CAÑÓN-TAPIA</surname>
+							<given-names>E</given-names>
+						</name>
+						<name>
+							<surname>POLO</surname>
+							<given-names>LA</given-names>
+						</name>
+					</person-group>
+					<article-title>An AMS study of different silicic units from the southern Paraná-Etendeka Magmatic Province in Brazil: implications for the identification of flow directions and local sources</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>2018</year>
+					<volume>355</volume>
+					<page-range>304-318</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B22">
+				<mixed-citation>HENRY CD, PRICE JG, RUBIN JN, PARKER DF, WOLFF JA, SELF S, FRANKLIN R &amp; BARKER DS. 1988. Widespread, lava-like volcanic rocks of Trans-Pecos Texas. Geology 16: 509-512.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>HENRY</surname>
+							<given-names>CD</given-names>
+						</name>
+						<name>
+							<surname>PRICE</surname>
+							<given-names>JG</given-names>
+						</name>
+						<name>
+							<surname>RUBIN</surname>
+							<given-names>JN</given-names>
+						</name>
+						<name>
+							<surname>PARKER</surname>
+							<given-names>DF</given-names>
+						</name>
+						<name>
+							<surname>WOLFF</surname>
+							<given-names>JA</given-names>
+						</name>
+						<name>
+							<surname>SELF</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>FRANKLIN</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>BARKER</surname>
+							<given-names>DS</given-names>
+						</name>
+					</person-group>
+					<article-title>Widespread, lava-like volcanic rocks of Trans-Pecos Texas</article-title>
+					<source>Geology</source>
+					<year>1988</year>
+					<volume>16</volume>
+					<page-range>509-512</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B23">
+				<mixed-citation>HENRY CD &amp; WOLFF JA. 1992. Distinguishing strongly rheomorphic tuffs from extensive silicic lavas. Bull Volcanol 54: 171-186.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>HENRY</surname>
+							<given-names>CD</given-names>
+						</name>
+						<name>
+							<surname>WOLFF</surname>
+							<given-names>JA</given-names>
+						</name>
+					</person-group>
+					<article-title>Distinguishing strongly rheomorphic tuffs from extensive silicic lavas</article-title>
+					<source>Bull Volcanol</source>
+					<year>1992</year>
+					<volume>54</volume>
+					<page-range>171-186</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B24">
+				<mixed-citation>JAIN S. 2013. Fundamentals of Physical Geology. Springer Sci &amp; Bus Media, 488 p.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>JAIN</surname>
+							<given-names>S</given-names>
+						</name>
+					</person-group>
+					<source>Fundamentals of Physical Geology</source>
+					<year>2013</year>
+					<publisher-name>Springer Sci &amp; Bus Media</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B25">
+				<mixed-citation>JANASI VA, FREITAS VA &amp; HEAMAN LH. 2011. The onset of flood basalt volcanism, Northern Paraná Basin, Brazil: A precise U-Pb baddeleyite/zircon age for a Chapecó-type dacite. Earth Planet Sci Lett 302(1-2): 147-153.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>JANASI</surname>
+							<given-names>VA</given-names>
+						</name>
+						<name>
+							<surname>FREITAS</surname>
+							<given-names>VA</given-names>
+						</name>
+						<name>
+							<surname>HEAMAN</surname>
+							<given-names>LH</given-names>
+						</name>
+					</person-group>
+					<article-title>The onset of flood basalt volcanism, Northern Paraná Basin, Brazil: A precise U-Pb baddeleyite/zircon age for a Chapecó-type dacite</article-title>
+					<source>Earth Planet Sci Lett</source>
+					<year>2011</year>
+					<volume>302</volume>
+					<issue>1-2</issue>
+					<page-range>147-153</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B26">
+				<mixed-citation>JANASI VA, MONTANHEIRO TJ, FREITAS VA, REIS PM, NEGRI FA &amp; DANTAS FA. 2007. Geology, petrography and geochemistry of the acid volcanism of the Paraná Magmatic Province in the Piraju-Ourinhos region, SE Brazil. Rev Bras Geoc 37(4): 745-759.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>JANASI</surname>
+							<given-names>VA</given-names>
+						</name>
+						<name>
+							<surname>MONTANHEIRO</surname>
+							<given-names>TJ</given-names>
+						</name>
+						<name>
+							<surname>FREITAS</surname>
+							<given-names>VA</given-names>
+						</name>
+						<name>
+							<surname>REIS</surname>
+							<given-names>PM</given-names>
+						</name>
+						<name>
+							<surname>NEGRI</surname>
+							<given-names>FA</given-names>
+						</name>
+						<name>
+							<surname>DANTAS</surname>
+							<given-names>FA</given-names>
+						</name>
+					</person-group>
+					<article-title>Geology, petrography and geochemistry of the acid volcanism of the Paraná Magmatic Province in the Piraju-Ourinhos region, SE Brazil</article-title>
+					<source>Rev Bras Geoc</source>
+					<year>2007</year>
+					<volume>37</volume>
+					<page-range>745-759</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B27">
+				<mixed-citation>JERRAM DA, MOUNTNEY NP, HOLZFORSTER F &amp; STOLLHOFEN H. 1999. Internal stratigraphic relationships in the Etendeka group in the Huab Basin, NW Namibia: understanding the onset of flood volcanism. J Geodyn 28(4-5): 393-418.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>JERRAM</surname>
+							<given-names>DA</given-names>
+						</name>
+						<name>
+							<surname>MOUNTNEY</surname>
+							<given-names>NP</given-names>
+						</name>
+						<name>
+							<surname>HOLZFORSTER</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>STOLLHOFEN</surname>
+							<given-names>H</given-names>
+						</name>
+					</person-group>
+					<article-title>Internal stratigraphic relationships in the Etendeka group in the Huab Basin, NW Namibia: understanding the onset of flood volcanism</article-title>
+					<source>J Geodyn</source>
+					<year>1999</year>
+					<volume>28</volume>
+					<issue>4-5</issue>
+					<page-range>393-418</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B28">
+				<mixed-citation>JERRAM DA, MOUNTNEY NP, HOWELL JA, LONG D &amp; STOLLHOFEN H. 2000. Death of a sandsea: an active aeolian erg systematically buried by the Etendeka flood basalts of NW Namibia. J Geol Soc, London 157: 513-516.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>JERRAM</surname>
+							<given-names>DA</given-names>
+						</name>
+						<name>
+							<surname>MOUNTNEY</surname>
+							<given-names>NP</given-names>
+						</name>
+						<name>
+							<surname>HOWELL</surname>
+							<given-names>JA</given-names>
+						</name>
+						<name>
+							<surname>LONG</surname>
+							<given-names>D</given-names>
+						</name>
+						<name>
+							<surname>STOLLHOFEN</surname>
+							<given-names>H</given-names>
+						</name>
+					</person-group>
+					<article-title>Death of a sandsea: an active aeolian erg systematically buried by the Etendeka flood basalts of NW Namibia</article-title>
+					<source>J Geol Soc, London</source>
+					<year>2000</year>
+					<volume>157</volume>
+					<page-range>513-516</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B29">
+				<mixed-citation>LE BAS MJ, LE MAITRE RW, STRECKEISEN A &amp; ZANNETIN BA. 1986. Chemical classification of volcanic rocks based on total alkali-silica diagram. J Petrol 27(3): 745-750.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>LE</surname>
+							<given-names>BAS MJ</given-names>
+						</name>
+						<name>
+							<surname>LE</surname>
+							<given-names>MAITRE RW</given-names>
+						</name>
+						<name>
+							<surname>STRECKEISEN</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>ZANNETIN</surname>
+							<given-names>BA</given-names>
+						</name>
+					</person-group>
+					<article-title>Chemical classification of volcanic rocks based on total alkali-silica diagram</article-title>
+					<source>J Petrol</source>
+					<year>1986</year>
+					<volume>27</volume>
+					<page-range>745-750</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B30">
+				<mixed-citation>LIMA EF, PHILIPP RP, RIZZON GC, WAICHEL BL &amp; ROSSETTI LMM. 2012a. Sucessões vulcânicas e modelo de alimentação e geração de domos de lava ácidos da Formação Serra Geral na região de São Marcos-Antônio Prado (RS). Geologia USP - Série Científica 12(2): 49-64.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>PHILIPP</surname>
+							<given-names>RP</given-names>
+						</name>
+						<name>
+							<surname>RIZZON</surname>
+							<given-names>GC</given-names>
+						</name>
+						<name>
+							<surname>WAICHEL</surname>
+							<given-names>BL</given-names>
+						</name>
+						<name>
+							<surname>ROSSETTI</surname>
+							<given-names>LMM</given-names>
+						</name>
+					</person-group>
+					<article-title>Sucessões vulcânicas e modelo de alimentação e geração de domos de lava ácidos da Formação Serra Geral na região de São Marcos-Antônio Prado (RS).</article-title>
+					<source>Geologia USP - Série Científica</source>
+					<year>2012</year>
+					<volume>12</volume>
+					<issue>2</issue>
+					<page-range>49-64</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B31">
+				<mixed-citation>LIMA EF, WAICHEL BL, ROSSETTI LMM, SOMMER CA &amp; SIMÕES MS. 2018. Feeder systems of acidic lava flows from the Paraná-Etendeka Igneous Province in southern Brazil and their implications for eruption style. J S Am Earth Sci 81: 1-9.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>WAICHEL</surname>
+							<given-names>BL</given-names>
+						</name>
+						<name>
+							<surname>ROSSETTI</surname>
+							<given-names>LMM</given-names>
+						</name>
+						<name>
+							<surname>SOMMER</surname>
+							<given-names>CA</given-names>
+						</name>
+						<name>
+							<surname>SIMÕES</surname>
+							<given-names>MS</given-names>
+						</name>
+					</person-group>
+					<article-title>Feeder systems of acidic lava flows from the Paraná-Etendeka Igneous Province in southern Brazil and their implications for eruption style</article-title>
+					<source>J S Am Earth Sci</source>
+					<year>2018</year>
+					<volume>81</volume>
+					<page-range>1-9</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B32">
+				<mixed-citation>LIMA EF, WAICHEL BL, ROSSETTI LMM, VIANA AR, SCHERER CM, BUENO GV &amp; DUTRA G. 2012b. Morphology and petrographyc patterns of the pahoehoe and ‘a’a flows of the Serra Geral Formation in the Torres Syncline, Rio Grande do Sul state, Brazil. Rev Bras Geociênc 42(4): 744-753.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>WAICHEL</surname>
+							<given-names>BL</given-names>
+						</name>
+						<name>
+							<surname>ROSSETTI</surname>
+							<given-names>LMM</given-names>
+						</name>
+						<name>
+							<surname>VIANA</surname>
+							<given-names>AR</given-names>
+						</name>
+						<name>
+							<surname>SCHERER</surname>
+							<given-names>CM</given-names>
+						</name>
+						<name>
+							<surname>BUENO</surname>
+							<given-names>GV</given-names>
+						</name>
+						<name>
+							<surname>DUTRA</surname>
+							<given-names>G</given-names>
+						</name>
+					</person-group>
+					<article-title>Morphology and petrographyc patterns of the pahoehoe and ‘a’a flows of the Serra Geral Formation in the Torres Syncline, Rio Grande do Sul state, Brazil</article-title>
+					<source>Rev Bras Geociênc</source>
+					<year>2012</year>
+					<volume>42</volume>
+					<page-range>744-753</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B33">
+				<mixed-citation>LUCHETTI ACF, GRAVLEY DM, GUALDA GAR &amp; NARDY AJR. 2018. Textural evidence for high-grade ignimbrites formed by low-explosivity eruptions, Paraná Magmatic Province, southern Brazil. J Volcanol Geotherm Res 355: 87-97.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>LUCHETTI</surname>
+							<given-names>ACF</given-names>
+						</name>
+						<name>
+							<surname>GRAVLEY</surname>
+							<given-names>DM</given-names>
+						</name>
+						<name>
+							<surname>GUALDA</surname>
+							<given-names>GAR</given-names>
+						</name>
+						<name>
+							<surname>NARDY</surname>
+							<given-names>AJR</given-names>
+						</name>
+					</person-group>
+					<article-title>Textural evidence for high-grade ignimbrites formed by low-explosivity eruptions, Paraná Magmatic Province, southern Brazil</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>2018</year>
+					<volume>355</volume>
+					<page-range>87-97</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B34">
+				<mixed-citation>LUCHETTI ACF, NARDY AJR, MACHADO FB, MADEIRA JEO &amp; ARNOSIO JM. 2014. New insights on the occurrence of peperites and sedimentary deposits within the silicic volcanics sequences of the Paraná Magmatic Province, Brazil. Solid Earth 5(1): 121-130.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>LUCHETTI</surname>
+							<given-names>ACF</given-names>
+						</name>
+						<name>
+							<surname>NARDY</surname>
+							<given-names>AJR</given-names>
+						</name>
+						<name>
+							<surname>MACHADO</surname>
+							<given-names>FB</given-names>
+						</name>
+						<name>
+							<surname>MADEIRA</surname>
+							<given-names>JEO</given-names>
+						</name>
+						<name>
+							<surname>ARNOSIO</surname>
+							<given-names>JM</given-names>
+						</name>
+					</person-group>
+					<article-title>New insights on the occurrence of peperites and sedimentary deposits within the silicic volcanics sequences of the Paraná Magmatic Province, Brazil</article-title>
+					<source>Solid Earth</source>
+					<year>2014</year>
+					<volume>5</volume>
+					<page-range>121-130</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B35">
+				<mixed-citation>MANTOVANI MSM, MARQUES LS, SOUZA MA, ATALLA L, CIVETA L &amp; INONOCENTI F. 1985. Trace element and strontium isotope constrains of the origin and evolution of Paraná continental flood basalts of Santa Catarina State (Southern Brazil). J Petrol 26(1): 187-209.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MANTOVANI</surname>
+							<given-names>MSM</given-names>
+						</name>
+						<name>
+							<surname>MARQUES</surname>
+							<given-names>LS</given-names>
+						</name>
+						<name>
+							<surname>SOUZA</surname>
+							<given-names>MA</given-names>
+						</name>
+						<name>
+							<surname>ATALLA</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>CIVETA</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>INONOCENTI</surname>
+							<given-names>F</given-names>
+						</name>
+					</person-group>
+					<article-title> Trace element and strontium isotope constrains of the origin and evolution of Paraná continental flood basalts of Santa Catarina State (Southern Brazil)</article-title>
+					<source>J Petrol</source>
+					<year>1985</year>
+					<volume>26</volume>
+					<page-range>187-209</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B36">
+				<mixed-citation>MARQUES LS, FIGUEIREDO AMG, SAIKI M &amp; VASCONCELLOS MBA. 1989. Geoquímica analítica dos elementos terras raras - aplicação da técnica de análise por ativação neutrônica. In: Formoso MLL, Nardy LVS &amp; Hartmann LA (Eds), Geoquímica Dos Elementos Terras Raras No Brasil (15-20), CPRM/DNPM. Sociedade Brasileira de Geoquímica, Rio de Janeiro 1: 15-20.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MARQUES</surname>
+							<given-names>LS</given-names>
+						</name>
+						<name>
+							<surname>FIGUEIREDO</surname>
+							<given-names>AMG</given-names>
+						</name>
+						<name>
+							<surname>SAIKI</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>VASCONCELLOS</surname>
+							<given-names>MBA</given-names>
+						</name>
+					</person-group>
+					<article-title>Geoquímica analítica dos elementos terras raras - aplicação da técnica de análise por ativação neutrônica</article-title>
+					<source>Sociedade Brasileira de Geoquímica</source>
+					<year>1989</year>
+					<volume>1</volume>
+					<page-range>15-20</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B37">
+				<mixed-citation>MCPHIE J, DOYLE M &amp; ALLEN R. 1993. Volcanic Textures: A guide to the interpretation of textures in volcanic rocks. Centre for Ore Deposit and Exploration Studies, University of Tasmania, Hobart, 191 p.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MCPHIE</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>DOYLE</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>ALLEN</surname>
+							<given-names>R</given-names>
+						</name>
+					</person-group>
+					<source>Volcanic Textures: A guide to the interpretation of textures in volcanic rocks</source>
+					<year>1993</year>
+					<publisher-name> Centre for Ore Deposit and Exploration Studies, University of Tasmania</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B38">
+				<mixed-citation>MILANI EJ. 2004. Comentários sobre a origem e a evolução tectônica da Bacia do Paraná. In: Mantesso-Neto V, Bartorelli A, Carneiro C &amp; Neves B (Eds), Geologia do continente sulamericano: evolução da obra de Fernando Flávio Marques de Almeida. São Paulo: Beca, p. 265-279.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MILANI</surname>
+							<given-names>EJ</given-names>
+						</name>
+					</person-group>
+					<chapter-title>Comentários sobre a origem e a evolução tectônica da Bacia do Paraná</chapter-title>
+					<source>Geologia do continente sulamericano: evolução da obra de Fernando Flávio Marques de Almeida</source>
+					<year>2004</year>
+					<publisher-name>Beca</publisher-name>
+					<page-range>265-279</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B39">
+				<mixed-citation>MILANI EJ, FERNANDES LA, FRANÇA AB, MELO JHG &amp; SOUZA PA. 2007. Bacia do Paraná. In: Milani EJ (Ed), Boletim de geociências da Petrobrás, Cartas estratigráficas. Petrobrás 15(2): 265-287.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MILANI</surname>
+							<given-names>EJ</given-names>
+						</name>
+						<name>
+							<surname>FERNANDES</surname>
+							<given-names>LA</given-names>
+						</name>
+						<name>
+							<surname>FRANÇA</surname>
+							<given-names>AB</given-names>
+						</name>
+						<name>
+							<surname>MELO</surname>
+							<given-names>JHG</given-names>
+						</name>
+						<name>
+							<surname>SOUZA</surname>
+							<given-names>PA</given-names>
+						</name>
+					</person-group>
+					<article-title>Bacia do Paraná</article-title>
+					<source>Petrobrás</source>
+					<year>2007</year>
+					<volume>15</volume>
+					<page-range>265-287</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B40">
+				<mixed-citation>MILNER SC, DUNCAN AR &amp; EWART A. 1992. Quartz latite rheoignimbrites flows of the Etendeka Formation, north-western Namibia. Bull Volcanol 54(3): 200-219.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MILNER</surname>
+							<given-names>SC</given-names>
+						</name>
+						<name>
+							<surname>DUNCAN</surname>
+							<given-names>AR</given-names>
+						</name>
+						<name>
+							<surname>EWART</surname>
+							<given-names>A</given-names>
+						</name>
+					</person-group>
+					<article-title>Quartz latite rheoignimbrites flows of the Etendeka Formation, north-western Namibia</article-title>
+					<source>Bull Volcanol</source>
+					<year>1992</year>
+					<volume>54</volume>
+					<page-range>200-219</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B41">
+				<mixed-citation>MILNER SC, DUNCAN AR, WHITTINGHAM AM &amp; EWART A. 1995. TransAtlantic correlation of eruptive sequences and individual silicic volcanic units within Paraná- Etendeka Igneous Province. J Volcanol Geotherm Res 69(3-4): 137-157.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MILNER</surname>
+							<given-names>SC</given-names>
+						</name>
+						<name>
+							<surname>DUNCAN</surname>
+							<given-names>AR</given-names>
+						</name>
+						<name>
+							<surname>WHITTINGHAM</surname>
+							<given-names>AM</given-names>
+						</name>
+						<name>
+							<surname>EWART</surname>
+							<given-names>A</given-names>
+						</name>
+					</person-group>
+					<article-title>TransAtlantic correlation of eruptive sequences and individual silicic volcanic units within Paraná- Etendeka Igneous Province</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>1995</year>
+					<volume>69</volume>
+					<issue>3-4</issue>
+					<page-range>137-157</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B42">
+				<mixed-citation>MINCATO RL, ENZWEILER J &amp; SCHRANK A. 2003. Novas idades 39Ar/40Ar e implicações na metalogênese dos depósitos de sulfetos magmáticos de Ni-Cu-EPG na Província Ígnea Continental do Paraná. In: IX Congresso Brasileiro de Geoquímica, Belém, Resumo Expandido, Belém/Pará, SBGq, p. 67-92.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MINCATO</surname>
+							<given-names>RL</given-names>
+						</name>
+						<name>
+							<surname>ENZWEILER</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>SCHRANK</surname>
+							<given-names>A</given-names>
+						</name>
+					</person-group>
+					<chapter-title> Novas idades 39Ar/40Ar e implicações na metalogênese dos depósitos de sulfetos magmáticos de Ni-Cu-EPG na Província Ígnea Continental do Paraná.</chapter-title>
+					<source>IX Congresso Brasileiro de Geoquímica, Belém, Resumo Expandido</source>
+					<year>2003</year>
+					<publisher-name>SBGq</publisher-name>
+					<page-range>67-92</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B43">
+				<mixed-citation>MOUNTNEY N, HOWELL J, FLINT S &amp; JERRAM D. 1998. Aeolian and alluvial deposition within the mesozoic Etjo sandstone formation, northwest Namibia. J Afr Earth Sci 27(2): 175-192.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>MOUNTNEY</surname>
+							<given-names>N</given-names>
+						</name>
+						<name>
+							<surname>HOWELL</surname>
+							<given-names>J</given-names>
+						</name>
+						<name>
+							<surname>FLINT</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>JERRAM</surname>
+							<given-names>D</given-names>
+						</name>
+					</person-group>
+					<article-title>Aeolian and alluvial deposition within the mesozoic Etjo sandstone formation, northwest Namibia</article-title>
+					<source>J Afr Earth Sci</source>
+					<year>1998</year>
+					<volume>27</volume>
+					<page-range>175-192</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B44">
+				<mixed-citation>NAKAMURA N. 1974. Determination of REE, Ba, Fe, Mg, Na and K in carbonaceous and ordinary chondrites. Geochim Cosmochim Ac 38(5): 757-775.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>NAKAMURA</surname>
+							<given-names>N</given-names>
+						</name>
+					</person-group>
+					<article-title>Determination of REE, Ba, Fe, Mg, Na and K in carbonaceous and ordinary chondrites</article-title>
+					<source>Geochim Cosmochim Ac</source>
+					<year>1974</year>
+					<volume>38</volume>
+					<page-range>757-775</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B45">
+				<mixed-citation>NARDY AJR. 1995. Geologia e petrologia do vulcanismo mesozoico da região central da Bacia do Paraná, Rio Claro, Tese de Doutorado, Instituto de Geociências e Ciências Exatas, Universidade Estadual Paulista, 316 p.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>NARDY</surname>
+							<given-names>AJR</given-names>
+						</name>
+					</person-group>
+					<source>Geologia e petrologia do vulcanismo mesozoico da região central da Bacia do Paraná, Rio Claro</source>
+					<comment>Tese de Doutorado</comment>
+					<year>1995</year>
+					<publisher-name>Instituto de Geociências e Ciências Exatas, Universidade Estadual Paulista</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B46">
+				<mixed-citation>NARDY AJR, MACHADO FB &amp; OLIVEIRA MAF. 2008. As rochas vulcânicas mesozoicas ácidas da Bacia do Paraná: litoestratigrafia e considerações geoquímico-estratigráficas. Rev Bras Geociênc 38(1): 178-195.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>NARDY</surname>
+							<given-names>AJR</given-names>
+						</name>
+						<name>
+							<surname>MACHADO</surname>
+							<given-names>FB</given-names>
+						</name>
+						<name>
+							<surname>OLIVEIRA</surname>
+							<given-names>MAF</given-names>
+						</name>
+					</person-group>
+					<article-title>As rochas vulcânicas mesozoicas ácidas da Bacia do Paraná: litoestratigrafia e considerações geoquímico-estratigráficas</article-title>
+					<source>Rev Bras Geociênc</source>
+					<year>2008</year>
+					<volume>38</volume>
+					<page-range>178-195</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B47">
+				<mixed-citation>NEWHALL CG &amp; MELSON WG. 1983. Explosive activity associated with the growth of volcanic domes. J Volcanol Geotherm Res 17(1-4): 111-131.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>NEWHALL</surname>
+							<given-names>CG</given-names>
+						</name>
+						<name>
+							<surname>MELSON</surname>
+							<given-names>WG</given-names>
+						</name>
+					</person-group>
+					<article-title>Explosive activity associated with the growth of volcanic domes</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>1983</year>
+					<volume>17</volume>
+					<issue>1-4</issue>
+					<page-range>111-131</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B48">
+				<mixed-citation>PEATE DW. 1997. The Paraná-Etendeka province. In: Mahoney JJ &amp; Coffin MF (Eds), Large Igneous Provinces: Continental, Oceanic and Planetary Flood Volcanism. Washington, DC: American Geophysical Union, p. 217-245.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>PEATE</surname>
+							<given-names>DW</given-names>
+						</name>
+					</person-group>
+					<chapter-title>The Paraná-Etendeka province</chapter-title>
+					<source>Large Igneous Provinces: Continental, Oceanic and Planetary Flood Volcanism</source>
+					<year>1997</year>
+					<publisher-name>American Geophysical Union</publisher-name>
+					<page-range>217-245</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B49">
+				<mixed-citation>PEATE DW, HAWKESWORTH CJ &amp; MANTOVANI MSM. 1992. Chemical stratigraphy of the Paraná lavas (South América): classification of magma types and their spatial distribution. Bull Volcanol 55(1-2): 119-139.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>PEATE</surname>
+							<given-names>DW</given-names>
+						</name>
+						<name>
+							<surname>HAWKESWORTH</surname>
+							<given-names>CJ</given-names>
+						</name>
+						<name>
+							<surname>MANTOVANI</surname>
+							<given-names>MSM</given-names>
+						</name>
+					</person-group>
+					<article-title>Chemical stratigraphy of the Paraná lavas (South América): classification of magma types and their spatial distribution</article-title>
+					<source>Bull Volcanol</source>
+					<year>1992</year>
+					<volume>55</volume>
+					<issue>1-2</issue>
+					<page-range>119-139</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B50">
+				<mixed-citation>PETRINI R et al. 1989. High temperature flood silicic lavas (?) from the Paraná Basin (Brasil). New Mex Bur Mines Min Res Bul 131: 213.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>PETRINI</surname>
+							<given-names>R et al</given-names>
+						</name>
+					</person-group>
+					<article-title>High temperature flood silicic lavas (</article-title>
+					<source>New Mex Bur Mines Min Res Bul</source>
+					<year>1989</year>
+					<volume>131</volume>
+				</element-citation>
+			</ref>
+			<ref id="B51">
+				<mixed-citation>PICCIRILLO EM, BELLIENI G, CAVAZZINI G, COMIN-CHIARAMONTI P, PETRINI R, MELFI AJ, PINESE JPR, ZANTADESCHI R &amp; DE MIN A. 1990. Lower Cretaceous tholeiitic dyke swarms from the Ponta Grossa Arch (southeast Brazil): Petrology, Sr-Nd isotopes and genetic relationships with the Paraná flood volcanics. Chem Geol 89(1-2): 19-48.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>PICCIRILLO</surname>
+							<given-names>EM</given-names>
+						</name>
+						<name>
+							<surname>BELLIENI</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>CAVAZZINI</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>COMIN-CHIARAMONTI</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>PETRINI</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>MELFI</surname>
+							<given-names>AJ</given-names>
+						</name>
+						<name>
+							<surname>PINESE</surname>
+							<given-names>JPR</given-names>
+						</name>
+						<name>
+							<surname>ZANTADESCHI</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>DE</surname>
+							<given-names>MIN A</given-names>
+						</name>
+					</person-group>
+					<article-title>Lower Cretaceous tholeiitic dyke swarms from the Ponta Grossa Arch (southeast Brazil): Petrology, Sr-Nd isotopes and genetic relationships with the Paraná flood volcanic</article-title>
+					<source>Chem Geol </source>
+					<year>1990</year>
+					<volume>89</volume>
+					<issue>1-2</issue>
+					<page-range>19-48</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B52">
+				<mixed-citation>PICCIRILLO EM, CIVETTA L, PETRINI R, LONGINELLI A, BELLIENI G, COMIN-CHIARAMONTI P, MARQUES LS &amp; MELFI AJ. 1989. Regional variations within the Paraná Flood Basalts (Southern Brazil): evidence for subcontinental mantle heterogeneity and crustal contamination. Chem Geol 75(1-2): 103-122.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>PICCIRILLO</surname>
+							<given-names>EM</given-names>
+						</name>
+						<name>
+							<surname>CIVETTA</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>PETRINI</surname>
+							<given-names>R</given-names>
+						</name>
+						<name>
+							<surname>LONGINELLI</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>BELLIENI</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>COMIN-CHIARAMONTI</surname>
+							<given-names>P</given-names>
+						</name>
+						<name>
+							<surname>MARQUES</surname>
+							<given-names>LS</given-names>
+						</name>
+						<name>
+							<surname>MELFI</surname>
+							<given-names>AJ</given-names>
+						</name>
+					</person-group>
+					<article-title>Regional variations within the Paraná Flood Basalts (Southern Brazil): evidence for subcontinental mantle heterogeneity and crustal contamination</article-title>
+					<source>Chem Geol</source>
+					<year>1989</year>
+					<volume>75</volume>
+					<issue>1-2</issue>
+					<page-range>103-122</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B53">
+				<mixed-citation>PICCIRILLO EM &amp; MELFI AJ. 1988. The Mesozoic flood volcanism of the Paraná Basin: petrogenetic and geophysical aspects. In: Piccirillo EM &amp; Melfi AJ (Eds), Instituto Astronômico e Geofísico, Universidade de São Paulo, São Paulo, 600 p.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>PICCIRILLO</surname>
+							<given-names>EM</given-names>
+						</name>
+						<name>
+							<surname>MELFI</surname>
+							<given-names>AJ</given-names>
+						</name>
+					</person-group>
+					<source>The Mesozoic flood volcanism of the Paraná Basin: petrogenetic and geophysical aspects</source>
+					<year>1988</year>
+					<publisher-name>Universidade de São Paulo</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B54">
+				<mixed-citation>PINTO VM, HARTMANN LA, SANTOS JOS, MCNAUGHTON NJ &amp; WILDNER W. 2011. Zircon U-Pb geochronology from the Paraná bimodal volcanic province support a brief eruptive cycle at ~ 135 Ma. Chem Geol 281(1-2): 93-102.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>PINTO</surname>
+							<given-names>VM</given-names>
+						</name>
+						<name>
+							<surname>HARTMANN</surname>
+							<given-names>LA</given-names>
+						</name>
+						<name>
+							<surname>SANTOS</surname>
+							<given-names>JOS</given-names>
+						</name>
+						<name>
+							<surname>MCNAUGHTON</surname>
+							<given-names>NJ</given-names>
+						</name>
+						<name>
+							<surname>WILDNER</surname>
+							<given-names>W</given-names>
+						</name>
+					</person-group>
+					<article-title>Zircon U-Pb geochronology from the Paraná bimodal volcanic province support a brief eruptive cycle at ~ 135 Ma.</article-title>
+					<source>Chem Geol</source>
+					<year>2011</year>
+					<volume>281</volume>
+					<issue>1-2</issue>
+					<page-range>93-102</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B55">
+				<mixed-citation>POLO LA. 2014. O vulcanismo ácido da Província Magmática Paraná-Etendeka, na região de Gramado Xavier, RS: estratigrafia, estruturas, petrogênese e modelo eruptivo. São Paulo, Tese de Doutorado, Programa de Pós-Graduação em Mineralogia e Petrologia, Instituto de Geociências, Universidade de São Paulo, 340 p.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>POLO</surname>
+							<given-names>LA</given-names>
+						</name>
+					</person-group>
+					<source>O vulcanismo ácido da Província Magmática Paraná-Etendeka, na região de Gramado Xavier, RS: estratigrafia, estruturas, petrogênese e modelo eruptivo</source>
+					<comment>Tese de Doutorado</comment>
+					<year>2014</year>
+					<publisher-name>Programa de Pós-Graduação em Mineralogia e Petrologia, Instituto de Geociências, Universidade de São Paulo</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B56">
+				<mixed-citation>POLO LA, GIORDANO D, JANASI VA &amp; GUIMARÃES LF. 2017a. Effusive silicic volcanism in the Paraná Magmatic Province, South Brazil: Physico-chemical conditions of storage and eruption and considerations on the rheological behavior during emplacement. J Volcanol Geotherm Res 355: 115-135.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>POLO</surname>
+							<given-names>LA</given-names>
+						</name>
+						<name>
+							<surname>GIORDANO</surname>
+							<given-names>D</given-names>
+						</name>
+						<name>
+							<surname>JANASI</surname>
+							<given-names>VA</given-names>
+						</name>
+						<name>
+							<surname>GUIMARÃES</surname>
+							<given-names>LF</given-names>
+						</name>
+					</person-group>
+					<article-title>Effusive silicic volcanism in the Paraná Magmatic Province, South Brazil: Physico-chemical conditions of storage and eruption and considerations on the rheological behavior during emplacement</article-title>
+					<source> J Volcanol Geotherm Res</source>
+					<year>2017</year>
+					<volume>355</volume>
+					<page-range>115-135</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B57">
+				<mixed-citation>POLO LA &amp; JANASI VA. 2014. Volcanic stratigraphy of intermediate to silicic rocks in Southern Paraná Magmatic Province, Brazil. Geol USP - Sér Cient 14(2): 83-100.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>POLO</surname>
+							<given-names>LA</given-names>
+						</name>
+						<name>
+							<surname>JANASI</surname>
+							<given-names>VA</given-names>
+						</name>
+					</person-group>
+					<article-title>Volcanic stratigraphy of intermediate to silicic rocks in Southern Paraná Magmatic Province, Brazil</article-title>
+					<source>Geol USP - Sér Cient</source>
+					<year>2014</year>
+					<volume>14</volume>
+					<page-range>83-100</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B58">
+				<mixed-citation>POLO LA, JANASI VA, GIORDANO D, LIMA EF, CAÑÓN-TAPIA E &amp; ROVERATO M. 2017b. Effusive silicic volcanism in the Paraná Magmatic Province, South Brazil: evidence for locally-fed lava flows and domes from detailed field work. J Volcanol Geotherm Res 355: 204-218.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>POLO</surname>
+							<given-names>LA</given-names>
+						</name>
+						<name>
+							<surname>JANASI</surname>
+							<given-names>VA</given-names>
+						</name>
+						<name>
+							<surname>GIORDANO</surname>
+							<given-names>D</given-names>
+						</name>
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>CAÑÓN-TAPIA</surname>
+							<given-names>E</given-names>
+						</name>
+						<name>
+							<surname>ROVERATO</surname>
+							<given-names>M</given-names>
+						</name>
+					</person-group>
+					<article-title>Effusive silicic volcanism in the Paraná Magmatic Province, South Brazil: evidence for locally-fed lava flows and domes from detailed field work</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>2017</year>
+					<volume>355</volume>
+					<page-range>204-218</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B59">
+				<mixed-citation>RENNE PR, DECKART K, ERNESTO M, FÉRRAUD G &amp; PICCIRILLO EM. 1996a. Age of the Ponta Grossa dike swarm (Brazil) and implications to Paraná flood volcanism. ‎Earth Planet Sci Lett 144(1-2): 199-212.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>RENNE</surname>
+							<given-names>PR</given-names>
+						</name>
+						<name>
+							<surname>DECKART</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>ERNESTO</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>FÉRRAUD</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>PICCIRILLO</surname>
+							<given-names>EM</given-names>
+						</name>
+					</person-group>
+					<article-title>Age of the Ponta Grossa dike swarm (Brazil) and implications to Paraná flood volcanism</article-title>
+					<source>Earth Planet Sci Lett</source>
+					<year>1996</year>
+					<volume>144</volume>
+					<page-range>199-212</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B60">
+				<mixed-citation>RENNE PR, ERNESTO M, PACCA IG, COE RS, GLEN JM, PRÉVOT M &amp; PERRIN M. 1992. The age of Paraná flood volcanism, rifting of Gondwana land, and the Jurassic-Cretaceous boundary. Science 258(5084): 975-979.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>RENNE</surname>
+							<given-names>PR</given-names>
+						</name>
+						<name>
+							<surname>ERNESTO</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>PACCA</surname>
+							<given-names>IG</given-names>
+						</name>
+						<name>
+							<surname>COE</surname>
+							<given-names>RS</given-names>
+						</name>
+						<name>
+							<surname>GLEN</surname>
+							<given-names>JM</given-names>
+						</name>
+						<name>
+							<surname>PRÉVOT</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>PERRIN</surname>
+							<given-names>M</given-names>
+						</name>
+					</person-group>
+					<article-title>The age of Paraná flood volcanism, rifting of Gondwana land, and the Jurassic-Cretaceous boundary</article-title>
+					<source>Science</source>
+					<year>1992</year>
+					<volume>258</volume>
+					<page-range>975-979</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B61">
+				<mixed-citation>RENNE PR, GLEN JM, MILNER SC &amp; DUNCAN AR. 1996b. Age of Etendeka flood volcanism and associated intrusions in southwestern Africa. Geology 24(7): 659-662.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>RENNE</surname>
+							<given-names>PR</given-names>
+						</name>
+						<name>
+							<surname>GLEN</surname>
+							<given-names>JM</given-names>
+						</name>
+						<name>
+							<surname>MILNER</surname>
+							<given-names>SC</given-names>
+						</name>
+						<name>
+							<surname>DUNCAN</surname>
+							<given-names>AR</given-names>
+						</name>
+					</person-group>
+					<article-title>Age of Etendeka flood volcanism and associated intrusions in southwestern Africa</article-title>
+					<source>Geology</source>
+					<year>1996</year>
+					<volume>24</volume>
+					<page-range>659-662</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B62">
+				<mixed-citation>RICCOMINI C, SANT’ANNA LG &amp; FAMBRINI GL. 2016. The Early Cretaceous Jacuí Group, a newly discovered volcaniclastic–epiclastic accumulation at the top of the Paraná Basin, southern Brazil. Cretac Res 59: 111-128.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>RICCOMINI</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>SANT’ANNA</surname>
+							<given-names>LG</given-names>
+						</name>
+						<name>
+							<surname>FAMBRINI</surname>
+							<given-names>GL</given-names>
+						</name>
+					</person-group>
+					<article-title>The Early Cretaceous Jacuí Group, a newly discovered volcaniclastic–epiclastic accumulation at the top of the Paraná Basin, southern Brazil</article-title>
+					<source>Cretac Res</source>
+					<year>2016</year>
+					<volume>59</volume>
+					<page-range>111-128</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B63">
+				<mixed-citation>ROISENBERG A. 1989. Petrologia e geoquímica do vulcanismo ácido mesozóico da Província Meridional da Bacia do Paraná, Tese de Doutorado, Instituto de Geociências, Universidade Federal do Rio Grande do Sul, Porto Alegre, 285 p.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>ROISENBERG</surname>
+							<given-names>A</given-names>
+						</name>
+					</person-group>
+					<source>Petrologia e geoquímica do vulcanismo ácido mesozóico da Província Meridional da Bacia do Paraná, Tese de Doutorado, Instituto de Geociências, Universidade Federal do Rio Grande do Sul, Porto Alegre, 285 p</source>
+					<comment>Tese de Doutorado</comment>
+					<year>1989</year>
+					<publisher-name>Universidade Federal do Rio Grande do Sul</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B64">
+				<mixed-citation>ROSSETTI LMM, LIMA EF, WAICHEL BL, SCHERER CM &amp; BARRETO CJ. 2014. Stratigraphical framework of basaltic lavas in Torres Syncline main valley, southern Paraná-Etendeka Volcanic Province. J South Am Earth Sci 56: 409-421.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>ROSSETTI</surname>
+							<given-names>LMM</given-names>
+						</name>
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>WAICHEL</surname>
+							<given-names>BL</given-names>
+						</name>
+						<name>
+							<surname>SCHERER</surname>
+							<given-names>CM</given-names>
+						</name>
+						<name>
+							<surname>BARRETO</surname>
+							<given-names>CJ</given-names>
+						</name>
+					</person-group>
+					<article-title>Stratigraphical framework of basaltic lavas in Torres Syncline main valley, southern Paraná-Etendeka Volcanic Province</article-title>
+					<source>J South Am Earth Sci</source>
+					<year>2014</year>
+					<volume>56</volume>
+					<page-range>409-421</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B65">
+				<mixed-citation>SIMÕES MS. 2018. Litofácies, fábrica magnética e geoquímica de condutos alimentadores e lavas ácidas do Grupo Serra Geral no nordeste do Rio Grande do Sul, Porto Alegre, 253 p. Tese de Doutorado, Instituto de Geociências, Universidade Federal do Rio Grande do Sul, Porto Alegre, RS.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>SIMÕES</surname>
+							<given-names>MS</given-names>
+						</name>
+					</person-group>
+					<source>Litofácies, fábrica magnética e geoquímica de condutos alimentadores e lavas ácidas do Grupo Serra Geral no nordeste do Rio Grande do Sul, Porto Alegre, 253 p</source>
+					<comment>Tese de Doutorado</comment>
+					<year>2018</year>
+					<publisher-name>Instituto de Geociências, Universidade Federal do Rio Grande do Sul</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B66">
+				<mixed-citation>SIMÕES MS, LIMA EF, SOMMER CA &amp; ROSSETTI LMM. 2015. Reconhecimento de condutos vulcânicos das rochas ácidas da PBC Paraná-Etendeka na porção NE do Rio Grande do Sul. In: VI Simpósio de Vulcanismo e Ambientes Associados, São Paulo, Anais, São Paulo, SP 1: 86-87.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>SIMÕES</surname>
+							<given-names>MS</given-names>
+						</name>
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>SOMMER</surname>
+							<given-names>CA</given-names>
+						</name>
+						<name>
+							<surname>ROSSETTI</surname>
+							<given-names>LMM</given-names>
+						</name>
+					</person-group>
+					<article-title>Reconhecimento de condutos vulcânicos das rochas ácidas da PBC Paraná-Etendeka na porção NE do Rio Grande do Sul</article-title>
+					<source>VI Simpósio de Vulcanismo e Ambientes Associados, São Paulo, Anais, São Paulo, SP</source>
+					<year>2015</year>
+					<volume>1</volume>
+					<page-range>86-87</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B67">
+				<mixed-citation>SIMÕES MS, LIMA EF, SOMMER CA &amp; ROSSETTI LMM. 2017. Structures and lithofacies of felsic volcanic feeder conduit systems in the Paraná-Etendeka LIP, southernmost Brazil. J Volcanol Geotherm Res 355: 319-336.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>SIMÕES</surname>
+							<given-names>MS</given-names>
+						</name>
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>SOMMER</surname>
+							<given-names>CA</given-names>
+						</name>
+						<name>
+							<surname>ROSSETTI</surname>
+							<given-names>LMM</given-names>
+						</name>
+					</person-group>
+					<article-title>Structures and lithofacies of felsic volcanic feeder conduit systems in the Paraná-Etendeka LIP, southernmost Brazil</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>2017</year>
+					<volume>355</volume>
+					<page-range>319-336</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B68">
+				<mixed-citation>SIMÕES MS, ROSSETTI LMM, LIMA EF &amp; RIBEIRO BP. 2014. The role of viscosity in the emplacement of high-temperature silicic flows of Serra Geral Formation in Torres Syncline (Rio Grande do Sul State, Brazil). Braz J Geol 44(4): 669-679.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>SIMÕES</surname>
+							<given-names>MS</given-names>
+						</name>
+						<name>
+							<surname>ROSSETTI</surname>
+							<given-names>LMM</given-names>
+						</name>
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>RIBEIRO</surname>
+							<given-names>BP</given-names>
+						</name>
+					</person-group>
+					<article-title>The role of viscosity in the emplacement of high-temperature silicic flows of Serra Geral Formation in Torres Syncline (Rio Grande do Sul State, Brazil)</article-title>
+					<source>Braz J Geol</source>
+					<year>2014</year>
+					<volume>44</volume>
+					<page-range>669-679</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B69">
+				<mixed-citation>STEWART K, TURNER S, KELLEY S, HAWKESWORTH C, KIRSTEIN L &amp; MANTOVANI M. 1996. 3-D 40Ar-39Ar geochronology in the Paraná continental flood basalt province. Earth Planet Sci Lett 143(1-4): 95-109.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>STEWART</surname>
+							<given-names>K</given-names>
+						</name>
+						<name>
+							<surname>TURNER</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>KELLEY</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>HAWKESWORTH</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>KIRSTEIN</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>MANTOVANI</surname>
+							<given-names>M</given-names>
+						</name>
+					</person-group>
+					<article-title>3-D 40Ar-39Ar geochronology in the Paraná continental flood basalt province</article-title>
+					<source>Earth Planet Sci Lett</source>
+					<year>1996</year>
+					<volume>143</volume>
+					<issue>1-4</issue>
+					<page-range>95-109</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B70">
+				<mixed-citation>SUN SS &amp; MCDONOUGH W. 1989. Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes. J Geol Soc, London, Special Publications 42(1): 313-345.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>SUN</surname>
+							<given-names>SS</given-names>
+						</name>
+						<name>
+							<surname>MCDONOUGH</surname>
+							<given-names>W</given-names>
+						</name>
+					</person-group>
+					<article-title>Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes</article-title>
+					<source> Geol Soc, London, Special Publications</source>
+					<year>1989</year>
+					<volume>42</volume>
+					<page-range>313-345</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B71">
+				<mixed-citation>TAUXE L, KYLSTRA N &amp; CONSTABLE C. 1991. Bootstrap statistics for paleomagnetic data. J Geophys Res 96(B7): 11723-11740.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>TAUXE</surname>
+							<given-names>L</given-names>
+						</name>
+						<name>
+							<surname>KYLSTRA</surname>
+							<given-names>N</given-names>
+						</name>
+						<name>
+							<surname>CONSTABLE</surname>
+							<given-names>C</given-names>
+						</name>
+					</person-group>
+					<article-title>Bootstrap statistics for paleomagnetic data</article-title>
+					<source>J Geophys Res</source>
+					<year>1991</year>
+					<volume>96</volume>
+					<issue>B7</issue>
+					<page-range>11723-11740</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B72">
+				<mixed-citation>THIEDE DS &amp; VASCONCELOS PM. 2010. Paraná flood basalts: Rapid extrusion hypothesis confirmed by new 40Ar/39Ar results. Geology 38(8): 747-750.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>THIEDE</surname>
+							<given-names>DS</given-names>
+						</name>
+						<name>
+							<surname>VASCONCELOS</surname>
+							<given-names>PM</given-names>
+						</name>
+					</person-group>
+					<article-title>Paraná flood basalts: Rapid extrusion hypothesis confirmed by new </article-title>
+					<source>Geology</source>
+					<year>2010</year>
+					<volume>38</volume>
+					<page-range>747-750</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B73">
+				<mixed-citation>TOMEK F, JIŘÍ Ž, KRYŠTOF V, FRANTIŠEK VH, JIŘÍ S, SCOTT RP &amp; VALBONE M. 2017. Mineral fabrics in high-level intrusions recording crustal strainand volcano–tectonic interactions: the Shellenbarger pluton, SierraNevada, California. J Geol Soc 174: 193-208.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>TOMEK</surname>
+							<given-names>F</given-names>
+						</name>
+						<name>
+							<surname>JIR</surname>
+							<given-names>̌Í Ž</given-names>
+						</name>
+						<name>
+							<surname>KRYŠTOF</surname>
+							<given-names>V</given-names>
+						</name>
+						<name>
+							<surname>FRANTIŠEK</surname>
+							<given-names>VH</given-names>
+						</name>
+						<name>
+							<surname>JIR</surname>
+							<given-names>̌Í S</given-names>
+						</name>
+						<name>
+							<surname>SCOTT</surname>
+							<given-names>RP</given-names>
+						</name>
+						<name>
+							<surname>VALBONE</surname>
+							<given-names>M</given-names>
+						</name>
+					</person-group>
+					<article-title>Mineral fabrics in high-level intrusions recording crustal strainand volcano–tectonic interactions: the Shellenbarger pluton, SierraNevada, California</article-title>
+					<source>J Geol Soc</source>
+					<year>2017</year>
+					<volume>174</volume>
+					<page-range>193-208</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B74">
+				<mixed-citation>TURNER SP, PEATE DW, HAWKESWORTH CJ &amp; MANTOVANI MSM. 1999. Chemical stratigraphy of the Parana basalt succession in western Uruguay: further evidence for the diachronous nature of the Parana magma types. J Geodyn 28(4-5): 459-469.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>TURNER</surname>
+							<given-names>SP</given-names>
+						</name>
+						<name>
+							<surname>PEATE</surname>
+							<given-names>DW</given-names>
+						</name>
+						<name>
+							<surname>HAWKESWORTH</surname>
+							<given-names>CJ</given-names>
+						</name>
+						<name>
+							<surname>MANTOVANI</surname>
+							<given-names>MSM</given-names>
+						</name>
+					</person-group>
+					<article-title>Chemical stratigraphy of the Parana basalt succession in western Uruguay: further evidence for the diachronous nature of the Parana magma types</article-title>
+					<source>J Geodyn</source>
+					<year>1999</year>
+					<volume>28</volume>
+					<page-range>459-469</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B75">
+				<mixed-citation>TURNER S, REGELOUS M, KELLEY S, HAWKSWORTH C &amp; MANTOVANI MMS. 1994. Magmatism and continental break-up in the South Atlantic: high precision 40Ar/39Ar geochronology. Earth Planet Sci Lett 121: 333-348.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>TURNER</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>REGELOUS</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>KELLEY</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>HAWKSWORTH</surname>
+							<given-names>C</given-names>
+						</name>
+						<name>
+							<surname>MANTOVANI</surname>
+							<given-names>MMS</given-names>
+						</name>
+					</person-group>
+					<article-title>Magmatism and continental break-up in the South Atlantic: high precision 40Ar/39Ar geochronology</article-title>
+					<source>Earth Planet Sci Lett</source>
+					<year>1994</year>
+					<volume>121</volume>
+					<page-range>333-348</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B76">
+				<mixed-citation>UMANN LV, LIMA EF, SOMMER CA &amp; LIZ JD. 2001. Vulcanismo ácido da região de Cambará do Sul; RS: litoquímica e discussão sobre a origem dos depósitos. R Bras Bioci 31(3): 357-364.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>UMANN</surname>
+							<given-names>LV</given-names>
+						</name>
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>SOMMER</surname>
+							<given-names>CA</given-names>
+						</name>
+						<name>
+							<surname>LIZ</surname>
+							<given-names>JD</given-names>
+						</name>
+					</person-group>
+					<article-title>Vulcanismo ácido da região de Cambará do Sul; RS: litoquímica e discussão sobre a origem dos depósitos</article-title>
+					<source>R Bras Bioci</source>
+					<year>2001</year>
+					<volume>31</volume>
+					<page-range>357-364</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B77">
+				<mixed-citation>WAICHEL BL. 2006. Estruturação de derrames e interações lava-sedimento na porção central da Província Basáltica Continental do Paraná. Rio Grande do Sul. Porto Alegre. 123p. Tese de Doutorado, Instituto de Geociências, Universidade Federal do Rio Grande do Sul.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WAICHEL</surname>
+							<given-names>BL</given-names>
+						</name>
+					</person-group>
+					<source> Estruturação de derrames e interações lava-sedimento na porção central da Província Basáltica Continental do Paraná. Rio Grande do Sul. Porto Alegre. 123p</source>
+					<comment>Tese de Doutorado</comment>
+					<year>2006</year>
+					<publisher-name>Instituto de Geociências, Universidade Federal do Rio Grande do Sul</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B78">
+				<mixed-citation>WAICHEL BL, LIMA EF, VIANA A, SCHERER CMS, BUENO G &amp; DUTRA G. 2012. Stratigraphy and volcanic facies architecture of the Torres Syncline, Southern Brazil, and its role in understanding the Paraná-Etendeka Continental Flood Basalt Province. J Volcanol Geotherm Res 215: 74-82.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WAICHEL</surname>
+							<given-names>BL</given-names>
+						</name>
+						<name>
+							<surname>LIMA</surname>
+							<given-names>EF</given-names>
+						</name>
+						<name>
+							<surname>VIANA</surname>
+							<given-names>A</given-names>
+						</name>
+						<name>
+							<surname>SCHERER</surname>
+							<given-names>CMS</given-names>
+						</name>
+						<name>
+							<surname>BUENO</surname>
+							<given-names>G</given-names>
+						</name>
+						<name>
+							<surname>DUTRA</surname>
+							<given-names>G</given-names>
+						</name>
+					</person-group>
+					<article-title>Stratigraphy and volcanic facies architecture of the Torres Syncline, Southern Brazil, and its role in understanding the Paraná-Etendeka Continental Flood Basalt Province</article-title>
+					<source>J Volcanol Geotherm Res</source>
+					<year>2012</year>
+					<volume>215</volume>
+					<page-range>74-82</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B79">
+				<mixed-citation>WALKER GPL. 1973. Lengths of lava flows. Philos Trans Royal Soc A274: 107-116.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WALKER</surname>
+							<given-names>GPL</given-names>
+						</name>
+					</person-group>
+					<article-title>Lengths of lava flows</article-title>
+					<source>Philos Trans Royal Soc</source>
+					<year>1973</year>
+					<volume>274</volume>
+					<page-range>107-116</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B80">
+				<mixed-citation>WERLANG MK. 2004. Configuração da rede de drenagem e modelado do relevo: Conformação da paisagem na zona de transição da Bacia do Paraná na Depressão Central do Rio Grande do Sul. Tese de Doutorado, Universidade Federal de Santa Maria, Santa Maria, RS.</mixed-citation>
+				<element-citation publication-type="thesis">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WERLANG</surname>
+							<given-names>MK</given-names>
+						</name>
+					</person-group>
+					<source> Configuração da rede de drenagem e modelado do relevo: Conformação da paisagem na zona de transição da Bacia do Paraná na Depressão Central do Rio Grande do Sul</source>
+					<comment>Tese de Doutorado</comment>
+					<year>2004</year>
+					<publisher-name>Universidade Federal de Santa Maria, Santa Maria, RS</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B81">
+				<mixed-citation>WHITE RS &amp; MCKENZIE D. 1995. Mantle plume and flood basalts. J Geophys Res 100(b9): 17543-17585.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WHITE</surname>
+							<given-names>RS</given-names>
+						</name>
+						<name>
+							<surname>MCKENZIE</surname>
+							<given-names>D</given-names>
+						</name>
+					</person-group>
+					<article-title>Mantle plume and flood basalts</article-title>
+					<source>J Geophys Res</source>
+					<year>1995</year>
+					<volume>100</volume>
+					<page-range>17543-17585</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B82">
+				<mixed-citation>WHITTINGHAM AM. 1989. Geological features and geochemistry of the acid units of the Serra Geral Formation, south Brazil. Bull Volcanol - IAVCEI abstracts, Santa Fé, New México, p. 293.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WHITTINGHAM</surname>
+							<given-names>AM</given-names>
+						</name>
+					</person-group>
+					<source>Bull Volcanol - IAVCEI abstracts, Santa Fé, New México</source>
+					<year>1989</year>
+					<publisher-name>Geological features and geochemistry of the acid units of the Serra Geral Formation, south Brazil</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B83">
+				<mixed-citation>WILDNER W, BRITO RSC, LICHT OAB &amp; ARIOLI EE. 2006a. Geologia e Recursos Minerais do Estado do Paraná: texto explicativo dos mapas geológico e de recursos minerais. Curitiba: CPRM (Convênio CPRM/MINEROPAR). 95 p + mapas, Escala 1:200.000.</mixed-citation>
+				<element-citation publication-type="book">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WILDNER</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>BRITO</surname>
+							<given-names>RSC</given-names>
+						</name>
+						<name>
+							<surname>LICHT</surname>
+							<given-names>OAB</given-names>
+						</name>
+						<name>
+							<surname>ARIOLI</surname>
+							<given-names>EE</given-names>
+						</name>
+					</person-group>
+					<source>Geologia e Recursos Minerais do Estado do Paraná: texto explicativo dos mapas geológico e de recursos minerais</source>
+					<year>2006</year>
+					<publisher-name>CPRM (Convênio CPRM/MINEROPAR)</publisher-name>
+				</element-citation>
+			</ref>
+			<ref id="B84">
+				<mixed-citation>WILDNER W, ORLANDI FILHO V &amp; GIFFONI LE. 2006b. Itaimbezinho e Fortaleza, RS e SC - Magníficos canyons esculpidos nas escarpas Aparados da Serra do planalto vulcânico da Bacia do Paraná. In: Winge M, Schobbenhaus C, Berbert-Born M, Queiroz ET, Campos DA, Souza CRG &amp; Fernandes ACS (Eds), Sítios Geológicos e Paleontológicos do Brasil. Publicado na Internet em 01/07/2006 no endereço http://www.unb.br/ig/sigep/sitio050/sitio050.pdf [atualmente http://sigep.cprm.gov.br/sitio050/sitio050.pdf ]</mixed-citation>
+				<element-citation publication-type="webpage">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WILDNER</surname>
+							<given-names>W</given-names>
+						</name>
+						<name>
+							<surname>ORLANDI</surname>
+							<given-names>FILHO V</given-names>
+						</name>
+						<name>
+							<surname>GIFFONI</surname>
+							<given-names>LE</given-names>
+						</name>
+					</person-group>
+					<source>Itaimbezinho e Fortaleza, RS e SC - Magníficos canyons esculpidos nas escarpas Aparados da Serra do planalto vulcânico da Bacia do Paraná</source>
+					<year>2006</year>
+					<comment>Disponível em: <ext-link ext-link-type="uri" xlink:href="http://sigep.cprm.gov.br/sitio050/sitio050.pdf ">http://sigep.cprm.gov.br/sitio050/sitio050.pdf </ext-link>
+					</comment>
+					<date-in-citation content-type="access-date">01/07/2006</date-in-citation>
+				</element-citation>
+			</ref>
+			<ref id="B85">
+				<mixed-citation>WILLIAMS H. 1932. The history and character of volcanic domes. University of California publications. Department of Geological Sciences, Bulletin 21: 51-146.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>WILLIAMS</surname>
+							<given-names>H</given-names>
+						</name>
+					</person-group>
+					<article-title>The history and character of volcanic domes</article-title>
+					<source>University of California publications. Department of Geological Sciences, Bulletin</source>
+					<year>1932</year>
+					<volume>21</volume>
+					<page-range>51-146</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B86">
+				<mixed-citation>ZALÁN PV, WOLF S, CONCEIÇÃO JC, ASTOLFÍ AM, VIEIRA IS, APPI VT, ZANOTTO OA &amp; MARQUES A. 1991. Tectonics and sedimentation of the Paraná Basin. In: Ulbrich, HHGJ. &amp; Rocha-Campos, AC (Eds), Gondwana Seven. São Paulo, Instituto de Geociências, Universidade de São Paulo, 1: 83-117.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>ZALÁN</surname>
+							<given-names>PV</given-names>
+						</name>
+						<name>
+							<surname>WOLF</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>CONCEIÇÃO</surname>
+							<given-names>JC</given-names>
+						</name>
+						<name>
+							<surname>ASTOLFÍ</surname>
+							<given-names>AM</given-names>
+						</name>
+						<name>
+							<surname>VIEIRA</surname>
+							<given-names>IS</given-names>
+						</name>
+						<name>
+							<surname>APPI</surname>
+							<given-names>VT</given-names>
+						</name>
+						<name>
+							<surname>ZANOTTO</surname>
+							<given-names>OA</given-names>
+						</name>
+						<name>
+							<surname>MARQUES</surname>
+							<given-names>A</given-names>
+						</name>
+					</person-group>
+					<article-title>Tectonics and sedimentation of the Paraná Basin</article-title>
+					<source>Instituto de Geociências, Universidade de São Paulo</source>
+					<year>1991</year>
+					<volume>1</volume>
+					<page-range>83-117</page-range>
+				</element-citation>
+			</ref>
+			<ref id="B87">
+				<mixed-citation>ZALÁN PV, WOLFF S, CONCEIÇÃO JCJ, ASTOLF M, VIEIRA I, APPI VT &amp; ZANOTTO OA. 1987. Tectônica e sedimentação da Bacia do Paraná. In: III Simpósio Sul-Brasileiro de Geologia. Curitiba: SBGEO 1: 441-473.</mixed-citation>
+				<element-citation publication-type="journal">
+					<person-group person-group-type="author">
+						<name>
+							<surname>ZALÁN</surname>
+							<given-names>PV</given-names>
+						</name>
+						<name>
+							<surname>WOLFF</surname>
+							<given-names>S</given-names>
+						</name>
+						<name>
+							<surname>CONCEIÇÃO</surname>
+							<given-names>JCJ</given-names>
+						</name>
+						<name>
+							<surname>ASTOLF</surname>
+							<given-names>M</given-names>
+						</name>
+						<name>
+							<surname>VIEIRA</surname>
+							<given-names>I</given-names>
+						</name>
+						<name>
+							<surname>APPI</surname>
+							<given-names>VT</given-names>
+						</name>
+						<name>
+							<surname>ZANOTTO</surname>
+							<given-names>OA</given-names>
+						</name>
+					</person-group>
+					<article-title>Tectônica e sedimentação da Bacia do Paraná</article-title>
+					<source>SBGEO </source>
+					<year>1987</year>
+					<volume>1</volume>
+					<page-range>441-473</page-range>
+				</element-citation>
+			</ref>
+		</ref-list>
+	</back>
+</article>

@@ -5,14 +5,12 @@ import tempfile
 
 import xml.dom.minidom
 
+from lxml import etree
+
 try:
-    from io import StringIO
     import html.parser as html_parser
-    from lxml import etree
 except ImportError:
-    from StringIO import StringIO
     import HTMLParser as html_parser
-    import xml.etree.ElementTree as etree
 
 from ..__init__ import _
 from ..__init__ import TABLES_PATH
@@ -438,55 +436,18 @@ unicode => str
 str
 """
 def parse_xml(content):
-    message = None
-    if content:
-        if content.startswith('<?') and '?>' in content:
-            content = content[content.find('?>')+2:].strip()
-        if '<!DOCTYPE' in content:
-            content = remove_doctype(content)
     try:
-        s = encoding.encode(content)
-        sio = StringIO(s)
-        r = etree.parse(sio)
+        xml = None
+        errors = None
+        # bytes (python3) e str (python2)
+        xml = etree.XML(encoding.encode(content))
+    except etree.XMLSyntaxError as e:
+        errors = e
+    except ValueError as e:
+        errors = e
     except Exception as e:
-        message = 'XML is not well formed\n'
-        msg = ''
-        try:
-            msg = encoding.decode(str(e))
-            if 'position ' in msg:
-                pos = msg.split('position ')
-                pos = pos[1]
-                pos = pos[0:pos.find(': ')]
-                if '-' in pos:
-                    pos = pos[0:pos.find('-')]
-                if pos.isdigit():
-                    pos = int(pos)
-                msg += '\n'
-                text = content[0:pos]
-                text = text[text.rfind('<'):]
-                msg += text + '[[['
-                msg += content[pos:pos+1]
-                text = content[pos+1:]
-                msg += ']]]' + text[0:text.find('>')+1]
-            elif 'line ' in msg:
-                line = msg[msg.find('line ')+len('line '):]
-                column = ''
-                if 'column ' in line:
-                    column = line[line.find('column ')+len('column '):].strip()
-                line = line[:line.find(',')].strip()
-                if line.isdigit():
-                    line = int(line)
-                    lines = content.split('\n') if content is not None else ['']
-                    col = len(lines[line-1])
-                    if column.isdigit():
-                        col = int(column)
-                    msg += '\n...\n' + lines[line-1][:col] + '\n\n [[[[ ' + _('ERROR here') + ' ]]]] \n\n' + lines[line-1][col:] + '\n...\n'
-        except:
-            msg += ''
-        message += msg
-
-        r = None
-    return (r, message)
+        errors = e
+    return xml, errors
 
 
 def load_xml(content):
