@@ -1,45 +1,95 @@
 # coding=utf-8
+import sys
 import os
 import shutil
 import tempfile
 import zipfile
 from datetime import datetime
-import csv
 
 from . import files_extractor
 from . import encoding
 
 
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
+
+python_version = sys.version_info.major
+
+
 def read_file(filename, encode='utf-8'):
-    if os.path.isfile(filename):
+    if python_version < 3:
         try:
-            r = open(filename, 'r').read()
-            return encoding.decode(r, encode)
-        except Exception as e:
-            encoding.report_exception('read_file', e, filename)
+            with open(filename, 'r') as fp:
+                content = fp.read()
+                r = encoding.decode(content, encode)
+        except FileNotFoundError as e:
+            encoding.report_exception(
+                'read_file "%s" (%s, %s)' % (
+                    filename, python_version, encode), e)
+        except UnicodeDecodeError as e:
+            encoding.report_exception(
+                'read_file "%s" (%s, %s)' % (
+                    filename, python_version, encode), e)
+        except OSError as e:
+            encoding.report_exception(
+                'read_file "%s" (%s, %s)' % (
+                    filename, python_version, encode), e)
+        else:
+            return r
+        return
+    try:
+        with open(filename, 'r', encoding=encode) as fp:
+            content = fp.read()
+    except (FileNotFoundError, OSError) as e:
+        encoding.report_exception(
+            'read_file "%s" (%s, %s)' % (
+                filename, python_version, encode), e)
+    else:
+        return content
 
 
 def read_file_lines(filename, encode='utf-8'):
-    if os.path.isfile(filename):
-        content = read_file(filename, encode)
-        return content.replace('\r', '').split('\n')
+    content = read_file(filename, encode) or ""
+    return content.replace('\r', '').split('\n')
+
+
+def _write_file(filename, content, encode='utf-8', mode="w"):
+    if python_version < 3:
+        try:
+            with open(filename, mode) as fp:
+                fp.write(content.encode(encode))
+        except OSError as e:
+            encoding.report_exception(
+                "_write_file %s %s (%s, %s)" % (
+                    mode, filename, python_version, encode), e)
+        except UnicodeEncodeError as e:
+            encoding.report_exception(
+                "_write_file %s %s (%s, %s)" % (
+                    mode, filename, python_version, encode), e)
+        return
+    try:
+        with open(filename, mode, encoding=encode) as fp:
+            fp.write(content)
+    except OSError as e:
+        encoding.report_exception(
+            "_write_file %s %s (%s, %s)" % (
+                mode, filename, python_version, encode), e)
+    except UnicodeEncodeError as e:
+        encoding.report_exception(
+            "_write_file %s %s (%s, %s)" % (
+                mode, filename, python_version, encode), e)
+    return
 
 
 def write_file(filename, content, encode='utf-8'):
-    open(filename, 'w').write(encoding.encode(content, encode))
+    _write_file(filename, content, encode)
 
 
 def append_file(filename, content, encode='utf-8'):
-    open(filename, 'a+').write(encoding.encode(content, encode) + '\n')
-
-
-def read_csv_file(filename, encode='utf-8'):
-    lines = []
-    with open(filename, 'r') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter='\t')
-        for item in spamreader:
-            lines.append([encoding.decode(elem, encode).strip() for elem in item])
-    return lines
+    _write_file(filename, content + '\n', encode, "a+")
 
 
 def delete_file_or_folder(path):
@@ -157,25 +207,6 @@ def zip_report(report_filename):
     myZipFile = zipfile.ZipFile(zip_path, "w")
     myZipFile.write(report_filename, os.path.basename(report_filename), zipfile.ZIP_DEFLATED)
     return zip_path
-
-
-def update_file_content_if_there_is_new_items(new_content, filename):
-    current_content = ''
-    if not os.path.isfile(filename):
-        write_file(filename, '')
-
-    if os.path.isfile(filename):
-        current_content = read_file(filename)
-    current_items = current_content.split('\n')
-
-    if new_content is None:
-        new_content = ''
-    new_items = new_content.split('\n')
-
-    allow_update = (len(new_items) != len(current_items)) or (len(new_items) == len(current_items) and new_content != current_content)
-
-    if allow_update is True:
-        write_file(filename, new_content)
 
 
 def last_modified_datetime(filename):

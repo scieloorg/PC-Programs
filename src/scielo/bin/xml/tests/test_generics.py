@@ -13,7 +13,10 @@ class TestFSUtils(unittest.TestCase):
     def test_read_file(self):
         text = fs_utils.read_file(
             "./tests/fixtures/arquivo-utf8.txt")
-        self.assertIn("宿", text)
+        if python_version < 3:
+            self.assertIn(u"宿", text)
+        else:
+            self.assertIn("宿", text)
 
     def test_write_file(self):
         read_text = fs_utils.read_file(
