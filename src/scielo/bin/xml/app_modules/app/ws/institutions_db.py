@@ -2,7 +2,6 @@
 
 import os
 
-from ...generics import encoding
 from ...generics import fs_utils
 from ...generics.dbm import dbm_sql
 
@@ -11,7 +10,6 @@ from ...__init__ import TABLES_PATH
 
 def normalize_term(term):
     if term is not None:
-        term = encoding.decode(term)
         term = ' '.join([item.strip() for item in term.split()])
     return term
 
