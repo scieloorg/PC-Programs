@@ -40,7 +40,7 @@ class SPSXMLContent(xml_utils.XMLContent):
                 self.remove_styles_from_tagged_content(tag)
             self.content = self.content.replace('<institution content-type="normalized"/>', '')
             self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
-            self.content = xml_utils.pretty_print(self.content)
+            self.content = self.pretty_print
 
     def doctype(self, dtd_location_type):
         local, remote = xml_versions.dtd_location(self.content)
