@@ -31,7 +31,7 @@ def run_command(command, display=False):
 
     try:
 
-        os.system(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING))
+        os.system(encoding.decode(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING), encoding.SYS_DEFAULT_ENCODING))
         if display is True:
             encoding.display_message('...done')
     except Exception as e:

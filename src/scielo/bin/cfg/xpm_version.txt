@@ -1,3 +1,8 @@
+4.0.096 22/04/2019 - (4.0.097 experimental 19/03/2020)
+==================
+- XPM
+  - (bug) [3182] Correções resolver problema de leitura/escrita de arquivos relacionadas com codificação no Windows 10 e com python 3
+
 4.0.096 22/04/2019
 ==================
 - XPM
