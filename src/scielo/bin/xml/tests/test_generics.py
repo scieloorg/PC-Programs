@@ -75,6 +75,17 @@ class TestXMLUtils(unittest.TestCase):
         node = xml.find(".//article")
         self.assertEqual(expected, xml_utils.tostring(node))
 
+    def test_tostring_returns_type_equal_to_text(self):
+        if python_version < 3:
+            text = u"""<root><article><title>Bá</title></article></root>"""
+            expected = u"""<article><title>Bá</title></article>"""
+        else:
+            text = "<root><article><title>Bá</title></article></root>"
+            expected = "<article><title>Bá</title></article>"
+        xml, e = xml_utils.load_xml(header + text)
+        node = xml.find(".//article")
+        self.assertEqual(type(expected), type(xml_utils.tostring(node, True)))
+
     @unittest.skip("")
     def test_tostring_returns_doctype(self):
         if python_version < 3:
@@ -91,8 +102,7 @@ class TestXMLUtils(unittest.TestCase):
             text = u"""<root><article><title>Bá</title></article></root>"""
         else:
             text = "<root><article><title>Bá</title></article></root>"
-        xml, e = xml_utils.load_xml(header + text)
-        result = xml_utils.pretty_print(xml)
+        result = xml_utils.pretty_print(header + text)
         self.assertNotIn("<root><article>", result)
         self.assertIn("<root>", result)
         self.assertIn("<article>", result)

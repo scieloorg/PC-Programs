@@ -3,8 +3,6 @@ import os
 import shutil
 import tempfile
 
-import xml.dom.minidom
-
 from lxml import etree
 
 try:
@@ -268,8 +266,9 @@ def node_xml(node):
 
 def tostring(node, pretty_print=False):
     if node is not None:
-        return etree.tostring(
-            node, encoding='unicode', pretty_print=pretty_print)
+        s = etree.tostring(
+                node, pretty_print=pretty_print, encoding='utf-8')
+        return encoding.decode(s)
 
 
 def complete_entity(xml_content):
@@ -501,7 +500,8 @@ def remove_break_lines_off_element_content(content):
 
 
 def pretty_print(content):
-    return tostring(content, True)
+    node, e = load_xml(content)
+    return tostring(node, True)
 
 
 def is_valid_xml_file(xml_path):
