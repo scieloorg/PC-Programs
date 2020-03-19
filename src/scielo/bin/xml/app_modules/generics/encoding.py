@@ -26,21 +26,13 @@ except:
 app_logger = logger.get_logger('./app.log', 'App')
 
 
-def is_encodable(content):
-    try:
-        r = isinstance(content, unicode)
-    except:
-        r = False
-    return r
-
-
 def decode(content, encoding='utf-8'):
-    if content is not None:
-        if not is_encodable(content) and hasattr(content, 'decode'):
-            try:
-                content = content.decode(encoding)
-            except Exception as e:
-                report_exception('decode()', e, type(content))
+    try:
+        content = content.decode(encoding)
+    except UnicodeDecodeError as e:
+        report_exception('decode()', e, type(content))
+    except AttributeError as e:
+        return content
     return content
 
 
@@ -54,68 +46,52 @@ def encode(content, encoding='utf-8', error_handler=None):
     >>> u.encode('ascii', 'xmlcharrefreplace')
     '&#40960;abcd&#1972;'
     """
-    if content is not None:
-        if is_encodable(content):
-            if error_handler in ['xmlcharrefreplace', 'replace', 'ignore']:
-                try:
-                    content = content.encode(encoding, error_handler)
-                except Exception as e:
-                    report_exception('encode() 1', e)
-            else:
-                try:
-                    content = content.encode(encoding)
-                except Exception as e:
+    errors = ('xmlcharrefreplace', 'replace', 'ignore')
+    if hasattr(content, "encode"):
+        _content = content
+        if error_handler in errors:
+            try:
+                _content = content.encode(encoding, error_handler)
+            except UnicodeEncodeError as e:
+                report_exception('encode()', e, error_handler)
+        else:
+            try:
+                _content = content.encode(encoding)
+            except UnicodeEncodeError as e:
+                for error in errors:
                     try:
-                        content = content.encode(encoding, 'xmlcharrefreplace')
-                        report_exception(
-                            'encode(): xmlcharrefreplace',
-                            e,
-                            content)
-                    except Exception as e:
-                        try:
-                            content = content.encode(encoding, 'replace')
-                            report_exception('encode(): replace', e, content)
-                        except Exception as e:
-                            try:
-                                content = content.encode(encoding, 'ignore')
-                                report_exception('encode(): ignore', e, content)
-                            except Exception as e:
-                                report_exception('encode() n', e, content)
-
+                        _content = content.encode(encoding, error)
+                    except UnicodeEncodeError:
+                        continue
+                    else:
+                        debugging("encode", _content)
+                        debugging("encode", error)
+                        break
+        return _content
     return content
 
 
-def report_exception(function_name, e, data):
-    app_logger.exception(
-            'Exception at {}'.format(function_name))
-    try:
-        app_logger.exception(
-            'Exception at {}'.format(function_name), exc_info=True)
-    except:
-        pass
-    try:
-        app_logger.info(encode(data))
-    except:
-        app_logger.info('EXCEPTION at report_exception()')
-        app_logger.info(e)
+def report_exception(function_name, e, data=None):
+    app_logger.debug("Exception at %s" % function_name)
+    app_logger.exception(e, exc_info=True)
+    if data:
+        app_logger.debug(data)
 
 
 def debugging(function_name, data):
+    app_logger.debug(function_name)
     try:
-        app_logger.info('DEBUG: {}'.format(function_name))
-        app_logger.info(data)
-    except:
-        app_logger.info('EXCEPTION at debugging()')
+        app_logger.debug(data)
+    except TypeError:
+        app_logger.debug('Unable to log data')
+    except ValueError:
+        app_logger.debug('Unable to log data')
 
 
 def display_message(msg):
     try:
-        app_logger.info(msg)
-    except:
-        app_logger.info('EXCEPTION at display_message()')
-    try:
         print(decode(encode(msg, SYS_DEFAULT_ENCODING), SYS_DEFAULT_ENCODING))
-    except Exception as e:
+    except UnicodeError as e:
         print(e)
 
 
