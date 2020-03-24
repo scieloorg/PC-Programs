@@ -1,2 +1,1 @@
-pip install pillow
-pip install packtools
+pip install -r requirements.txt

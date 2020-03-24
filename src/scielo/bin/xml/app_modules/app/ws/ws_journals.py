@@ -17,8 +17,9 @@ class Journals(object):
         self.ws_requester = _ws_requester
 
     def update_journals_file(self):
-        self.journals_file_content = self.ws_requester.request(self.journals_url)
-        fs_utils.update_file_content_if_there_is_new_items(self.journals_file_content, self.downloaded_journals_filename)
+        data = self.ws_requester.request(self.journals_url)
+        if data:
+            fs_utils.write_file(self.downloaded_journals_filename, data)
 
     @property
     def downloaded_journals_filename(self):

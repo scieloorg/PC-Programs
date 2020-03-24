@@ -1,0 +1,2 @@
+packtools=2.5.4
+pillow=6.0.0

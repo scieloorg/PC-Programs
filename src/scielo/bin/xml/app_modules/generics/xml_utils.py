@@ -3,16 +3,12 @@ import os
 import shutil
 import tempfile
 
-import xml.dom.minidom
+from lxml import etree
 
 try:
-    from io import StringIO
     import html.parser as html_parser
-    from lxml import etree
 except ImportError:
-    from StringIO import StringIO
     import HTMLParser as html_parser
-    import xml.etree.ElementTree as etree
 
 from ..__init__ import _
 from ..__init__ import TABLES_PATH
@@ -66,15 +62,11 @@ def load_entities_table():
 class XMLContent(object):
 
     def __init__(self, xml):
-        xml = xml.strip()
-        self._content = None
         self.filename = None
-        if '>' in xml:
-            if not xml.endswith('>'):
-                xml = xml[:xml.rfind('>')+1]
-        else:
+        if '>' not in xml:
             self.filename = xml
             xml = fs_utils.read_file(self.filename)
+        self.original = xml
         self.content = self._normalize(xml)
 
     @property
@@ -84,102 +76,42 @@ class XMLContent(object):
     @content.setter
     def content(self, value):
         self._content = value
-        self._load_xml()
+
+    @property
+    def processing_instruction(self):
+        if self.original.startswith("<?xml"):
+            return self.original[:self.original.find("?>")+2]
+
+    @property
+    def DOCTYPE(self):
+        if "<!DOCTYPE" in self.original:
+            _doctype = self.original[self.original.find("<!DOCTYPE"):]
+            _doctype = _doctype[:_doctype.find(">")+1]
+            return _doctype
+
+    @property
+    def pretty_print(self):
+        if self.xml is None:
+            return self.content
+        items = [
+            self.processing_instruction or "",
+            self.DOCTYPE or "",
+            tostring(self.xml, True)
+        ]
+        return "\n".join([item for item in items if item])
+
+    @property
+    def xml(self):
+        _xml, self.xml_error = load_xml(self.content)
+        return _xml
 
     def _normalize(self, content):
+        content = content.strip()
+        if not content.endswith('>'):
+            content = content[:content.rfind('>')+1]
         content = complete_entity(content)
         content, replaced_named_ent = convert_entities_to_chars(content)
         return content
-
-    def _load_xml(self):
-        self.xml, self.xml_error = load_xml(self.content)
-
-    def fix(self):
-        if '<' in self.content:
-            self.content = self.content[self.content.find('<'):]
-        self.content = self.content.replace(' '*2, ' '*1)
-
-        if self.xml is None:
-            self._fix_open_and_close_style_tags()
-
-        if self.xml is None:
-            self._fix_open_close()
-
-    def _fix_open_close(self):
-        changes = []
-        parts = self.content.split('>')
-        for s in parts:
-            if '<' in s:
-                if '</' not in s and '<!--' not in s and '<?' not in s:
-
-                    s = s[s.find('<')+1:]
-                    if ' ' in s and '=' not in s:
-                        test = s[s.find('<')+1:]
-                        changes.append(test)
-        for change in changes:
-            self.content = self.content.replace('<' + test + '>', '[' + test + ']')
-
-    def _fix_open_and_close_style_tags(self):
-        rcontent = self.content
-        tags = ['italic', 'bold', 'sub', 'sup']
-        tag_list = []
-        for tag in tags:
-            rcontent = rcontent.replace('<' + tag.upper() + '>', '<' + tag + '>')
-            rcontent = rcontent.replace('</' + tag.upper() + '>', '</' + tag + '>')
-            tag_list.append('<' + tag + '>')
-            tag_list.append('</' + tag + '>')
-            rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
-        if self.content != rcontent:
-            parts = rcontent.split('BREAKBEGINCONSERTA')
-            self.content = self._fix_problem(tag_list, parts)
-        for tag in tags:
-            self.content = self.content.replace('</' + tag + '><' + tag + '>', '')
-
-    def _fix_problem(self, tag_list, parts):
-        expected_close_tags = []
-        ign_list = []
-        debug = False
-        k = 0
-        for part in parts:
-            if part in tag_list:
-                tag = part
-                if debug:
-                    encoding.debugging('_fix_problem()', '\ncurrent:' + tag)
-                if tag.startswith('</'):
-                    if debug:
-                        encoding.debugging('_fix_problem()', 'expected')
-                        encoding.debugging('_fix_problem()', expected_close_tags)
-                        encoding.debugging('_fix_problem()', 'ign_list')
-                        encoding.debugging('_fix_problem()', ign_list)
-                    if tag in ign_list:
-                        if debug:
-                            encoding.debugging('_fix_problem()', 'remove from ignore')
-                        ign_list.remove(tag)
-                        parts[k] = ''
-                    else:
-                        matched = False
-                        if len(expected_close_tags) > 0:
-                            matched = (expected_close_tags[-1] == tag)
-                            if not matched:
-                                if debug:
-                                    encoding.debugging('_fix_problem()', 'not matched')
-                                while not matched and len(expected_close_tags) > 0:
-                                    ign_list.append(expected_close_tags[-1])
-                                    parts[k-1] += expected_close_tags[-1]
-                                    del expected_close_tags[-1]
-                                    matched = (expected_close_tags[-1] == tag)
-                                if debug:
-                                    encoding.debugging('_fix_problem()', '...expected')
-                                    encoding.debugging('_fix_problem()', expected_close_tags)
-                                    encoding.debugging('_fix_problem()', '...ign_list')
-                                    encoding.debugging('_fix_problem()', ign_list)
-
-                            if matched:
-                                del expected_close_tags[-1]
-                else:
-                    expected_close_tags.append(tag.replace('<', '</'))
-            k += 1
-        return ''.join(parts)
 
 
 def remove_doctype(content):
@@ -268,9 +200,11 @@ def node_xml(node):
     return text
 
 
-def tostring(node):
+def tostring(node, pretty_print=False):
     if node is not None:
-        return encoding.decode(etree.tostring(node, encoding='utf-8'))
+        s = etree.tostring(
+                node, pretty_print=pretty_print, encoding='utf-8')
+        return encoding.decode(s)
 
 
 def complete_entity(xml_content):
@@ -438,55 +372,18 @@ unicode => str
 str
 """
 def parse_xml(content):
-    message = None
-    if content:
-        if content.startswith('<?') and '?>' in content:
-            content = content[content.find('?>')+2:].strip()
-        if '<!DOCTYPE' in content:
-            content = remove_doctype(content)
     try:
-        s = encoding.encode(content)
-        sio = StringIO(s)
-        r = etree.parse(sio)
+        xml = None
+        errors = None
+        # bytes (python3) e str (python2)
+        xml = etree.XML(encoding.encode(content))
+    except etree.XMLSyntaxError as e:
+        errors = e
+    except ValueError as e:
+        errors = e
     except Exception as e:
-        message = 'XML is not well formed\n'
-        msg = ''
-        try:
-            msg = encoding.decode(str(e))
-            if 'position ' in msg:
-                pos = msg.split('position ')
-                pos = pos[1]
-                pos = pos[0:pos.find(': ')]
-                if '-' in pos:
-                    pos = pos[0:pos.find('-')]
-                if pos.isdigit():
-                    pos = int(pos)
-                msg += '\n'
-                text = content[0:pos]
-                text = text[text.rfind('<'):]
-                msg += text + '[[['
-                msg += content[pos:pos+1]
-                text = content[pos+1:]
-                msg += ']]]' + text[0:text.find('>')+1]
-            elif 'line ' in msg:
-                line = msg[msg.find('line ')+len('line '):]
-                column = ''
-                if 'column ' in line:
-                    column = line[line.find('column ')+len('column '):].strip()
-                line = line[:line.find(',')].strip()
-                if line.isdigit():
-                    line = int(line)
-                    lines = content.split('\n') if content is not None else ['']
-                    col = len(lines[line-1])
-                    if column.isdigit():
-                        col = int(column)
-                    msg += '\n...\n' + lines[line-1][:col] + '\n\n [[[[ ' + _('ERROR here') + ' ]]]] \n\n' + lines[line-1][col:] + '\n...\n'
-        except:
-            msg += ''
-        message += msg
-
-        r = None
-    return (r, message)
+        errors = e
+    return xml, errors
 
 
 def load_xml(content):
@@ -539,7 +436,8 @@ def remove_break_lines_off_element_content(content):
 
 
 def pretty_print(content):
-    return PrettyXML(content).xml
+    xmlcontent = XMLContent(content)
+    return xmlcontent.pretty_print
 
 
 def is_valid_xml_file(xml_path):
@@ -634,108 +532,6 @@ def remove_exceding_style_tags(content):
         doit = (new != content)
         content = new
     return new
-
-
-class PrettyXML(object):
-
-    def __init__(self, xml):
-        self._xml = xml.replace('\r', '')
-
-    def split_prefix(self):
-        prefix = ''
-        p = self._xml.rfind('</')
-        p2 = self._xml.rfind('>')
-        if p > 0 and p2 > 0:
-            self._xml = self._xml[:p2 + 1]
-            tag = self._xml[p + 2:p2]
-            if '<' + tag in self._xml:
-                prefix = self._xml[:self._xml.find('<' + tag)]
-                self._xml = self._xml[self._xml.find('<' + tag):]
-        self._xml = self._xml.strip()
-        return prefix
-
-    def minidom_pretty_print(self):
-        try:
-            doc = xml.dom.minidom.parseString(encoding.encode(self._xml))
-            self._xml = encoding.decode(doc.toprettyxml().strip())
-            ign = self.split_prefix()
-        except Exception as e:
-            encoding.report_exception('minidom_pretty_print()', e, self._xml)
-
-    @property
-    def xml(self):
-        node, e = load_xml(self._xml)
-        if node is not None:
-            prefix = self.split_prefix()
-            self.remove_exceding_style_tags()
-            self.mark_valid_spaces()
-            self.preserve_styles()
-            self.minidom_pretty_print()
-            self.restore_valid_spaces()
-            self.restore_styles()
-            self.remove_exceding_style_tags()
-            return prefix + self._xml
-        return self._xml
-
-    def preserve_styles(self):
-        for tag in ['italic', 'bold', 'sup', 'sub']:
-            self._xml = self._xml.replace('<' + tag + '>', '[' + tag + ']')
-            self._xml = self._xml.replace('</' + tag + '>', '[/' + tag + ']')
-
-    def restore_styles(self):
-        for tag in ['italic', 'bold', 'sup', 'sub']:
-            self._xml = self._xml.replace('[' + tag + ']', '<' + tag + '>')
-            self._xml = self._xml.replace('[/' + tag + ']', '</' + tag + '>')
-
-    def restore_valid_spaces(self):
-        self._xml = '\n'.join([item for item in self._xml.split('\n') if item.strip() != ''])
-        self._xml = self._xml.replace('>', '>NORMALIZESPACES')
-        self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        self._xml = ''.join([item if item.strip() == '' else item.strip() for item in self._xml.split('NORMALIZESPACES')])
-        self._xml = self._xml.replace('PRESERVESPACES', ' ')
-
-    def mark_valid_spaces(self):
-        self._xml = self._xml.replace('>', '>NORMALIZESPACES')
-        self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        self._xml = ''.join([self.insert_preserve_spaces_mark(item) for item in self._xml.split('NORMALIZESPACES')])
-
-    def remove_exceding_style_tags(self):
-        doit = True
-        while doit is True:
-            doit = False
-            curr_value = self._xml
-
-            for style in ['sup', 'sub', 'bold', 'italic']:
-                tclose = '</' + style + '>'
-                topen = '<' + style + '>'
-                x = self._xml
-                self._xml = self._xml.replace('<' + style + '/>', '')
-                self._xml = self._xml.replace('<' + style + '> ', ' <' + style + '>')
-                self._xml = self._xml.replace(' </' + style + '>', '</' + style + '> ')
-                self._xml = self._xml.replace('</' + style + '> <' + style + '>', ' ')
-                self._xml = self._xml.replace(tclose + topen, '')
-                self._xml = self._xml.replace(topen + tclose, '')
-                """
-                if self._xml != x:
-                    from datetime import datetime
-                    it = datetime.now().isoformat()
-                    print('changed', style)
-                    fs_utils.write_file(style + '{}_antes.txt'.format(it), x)
-                    fs_utils.write_file(style + '{}_depois.txt'.format(it), self._xml)
-                """
-            doit = (curr_value != self._xml)
-        while ' '*2 in self._xml:
-            self._xml = self._xml.replace(' '*2, ' ')
-
-    def insert_preserve_spaces_mark(self, text):
-        if text.startswith('<') and text.endswith('>'):
-            text = '<' + ' '.join(text[1:-1].split()) + '>'
-        elif text.strip() != '':
-            text = text.replace(' ', 'PRESERVESPACES').replace('\n', 'PRESERVESPACES')
-            text = ' '.join(text.split())
-            while 'PRESERVESPACESPRESERVESPACES' in text:
-                text = text.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
-        return text
 
 
 class XMLNode(object):

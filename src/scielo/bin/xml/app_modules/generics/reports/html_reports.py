@@ -600,6 +600,6 @@ def display_report(report_filename):
 
     try:
         #f = report_filename.encode(encoding=sys.getfilesystemencoding())
-        webbrowser.open(encoding.encode('file://' + report_filename, encoding=encoding.SYS_DEFAULT_ENCODING), new=2)
+        webbrowser.open('file://' + report_filename, new=2)
     except Exception as e:
         encoding.report_exception('html_reports.display_report()', e, report_filename)
