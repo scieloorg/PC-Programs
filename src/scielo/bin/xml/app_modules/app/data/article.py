@@ -2222,6 +2222,7 @@ class Journal(object):
         self.nlm_title = None
         self.publisher_name = None
         self.license = None
+        self.frequency = None
 
 
 class ArticleXMLContent(object):
