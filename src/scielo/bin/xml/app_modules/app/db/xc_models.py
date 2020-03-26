@@ -26,6 +26,27 @@ ISSN_TYPE_CONVERSION = {
     'ppub': 'PRINT',
 }
 
+FREQ = dict([
+    ("?", "Unknown"),
+    ("A", "Annual"),
+    ("B", "Bimonthly (every two months)"),
+    ("C", "Semiweekly (twice a week)"),
+    ("D", "Daily"),
+    ("E", "Biweekly (every two weeks)"),
+    ("F", "Semiannual (twice a year)"),
+    ("G", "Biennial (every two years)"),
+    ("H", "Triennial (every three years)"),
+    ("I", "Three times a week"),
+    ("J", "Three times a month"),
+    ("K", "Irregular (known to be so)"),
+    ("M", "Monthly"),
+    ("Q", "Quarterly"),
+    ("S", "Semimonthly (twice a month)"),
+    ("T", "Three times a year"),
+    ("W", "Weekly"),
+    ("Z", "Other frequencies"),
+])
+
 
 def author_tag(is_person, is_analytic_author):
     r = {}
@@ -528,6 +549,11 @@ class RegisteredTitle(object):
     def issn_id(self):
         if self.record is not None:
             return self.record.get('400')
+
+    @property
+    def frequency(self):
+        if self.record is not None:
+            return FREQ.get(self.record.get('380'), "None")
 
 
 class IssueModels(object):
@@ -1398,6 +1424,7 @@ class DBManager(object):
                 else:
                     t = RegisteredTitle(j_record)
                     j = Journal()
+                    j.frequency = t.frequency
                     j.acron = t.acron
                     j.p_issn = t.print_issn
                     j.e_issn = t.e_issn
@@ -1410,6 +1437,7 @@ class DBManager(object):
                     j.issn_id = t.issn_id
                     j_data = Journal()
                     j_data.acron = [t.acron]
+                    j_data.frequency = [t.frequency]
                     j_data.p_issn = [t.print_issn]
                     j_data.e_issn = [t.e_issn]
                     j_data.abbrev_title = [t.abbrev_title]
