@@ -1,36 +1,62 @@
 # coding=utf-8
+import sys
 import os
 import shutil
 import tempfile
 import zipfile
-from datetime import datetime
 import csv
+from datetime import datetime
 
 from . import files_extractor
 from . import encoding
 
 
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
+
+python_version = sys.version_info.major
+
+
 def read_file(filename, encode='utf-8'):
-    if os.path.isfile(filename):
+    if python_version < 3:
         try:
-            r = open(filename, 'r').read()
-            return encoding.decode(r, encode)
-        except Exception as e:
-            encoding.report_exception('read_file', e, filename)
+            with open(filename, 'r') as fp:
+                content = fp.read()
+                r = encoding.decode(content, encode)
+        except (FileNotFoundError, OSError):
+            return
+        else:
+            return r
+        return
+    try:
+        with open(filename, 'r', encoding=encode) as fp:
+            content = fp.read()
+    except (FileNotFoundError, OSError):
+        return
+    else:
+        return content
+    return
 
 
 def read_file_lines(filename, encode='utf-8'):
-    if os.path.isfile(filename):
-        content = read_file(filename, encode)
-        return content.replace('\r', '').split('\n')
+    content = read_file(filename, encode) or ""
+    return content.splitlines()
 
 
-def write_file(filename, content, encode='utf-8'):
-    open(filename, 'w').write(encoding.encode(content, encode))
+def write_file(filename, content, encode='utf-8', mode="w"):
+    if python_version < 3:
+        with open(filename, mode) as fp:
+            fp.write(content.encode(encode))
+        return
+    with open(filename, mode, encoding=encode) as fp:
+        fp.write(content)
 
 
 def append_file(filename, content, encode='utf-8'):
-    open(filename, 'a+').write(encoding.encode(content, encode) + '\n')
+    write_file(filename, content + '\n', encode, "a+")
 
 
 def read_csv_file(filename, encode='utf-8'):
