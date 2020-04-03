@@ -59,15 +59,6 @@ def append_file(filename, content, encode='utf-8'):
     write_file(filename, content + '\n', encode, "a+")
 
 
-def read_csv_file(filename, encode='utf-8'):
-    lines = []
-    with open(filename, 'r') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter='\t')
-        for item in spamreader:
-            lines.append([encoding.decode(elem, encode).strip() for elem in item])
-    return lines
-
-
 def delete_file_or_folder(path):
     if os.path.isdir(path):
         for item in os.listdir(path):

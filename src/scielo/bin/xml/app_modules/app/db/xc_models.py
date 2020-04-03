@@ -1479,27 +1479,27 @@ class JournalsList(object):
 
     def __init__(self, downloaded_journals_filename):
         self._journals = {}
-        for item in fs_utils.read_csv_file(downloaded_journals_filename):
-            if len(item) >= 10:
-                item = [encoding.decode(elem).strip() for elem in item]
-                if item[1] != 'ISSN':
-                    j = Journal()
-                    j.collection_acron = item[0]
-                    j.collection_name = item[4]
-                    j.issn_id = item[1]
-                    j.p_issn = item[2]
-                    j.e_issn = item[3]
-                    j.acron = item[5]
-                    j.abbrev_title = item[6]
-                    j.journal_title = item[7]
-                    j.nlm_title = item[8]
-                    j.publisher_name = item[9]
-                    if len(item) == 12:
-                        j.license = item[11]
-                    for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
-                        if issn not in self._journals.keys():
-                            self._journals[issn] = []
-                        self._journals[issn].append(j)
+        for row in fs_utils.read_file_lines(downloaded_journals_filename)[1:]:
+            cols = row.split("\t")
+            if len(cols) >= 10:
+                item = [col.strip() for col in cols]
+                j = Journal()
+                j.collection_acron = item[0]
+                j.collection_name = item[4]
+                j.issn_id = item[1]
+                j.p_issn = item[2]
+                j.e_issn = item[3]
+                j.acron = item[5]
+                j.abbrev_title = item[6]
+                j.journal_title = item[7]
+                j.nlm_title = item[8]
+                j.publisher_name = item[9]
+                if len(item) == 12:
+                    j.license = item[11]
+                for issn in list(set([j.issn_id, j.p_issn, j.e_issn])):
+                    if issn not in self._journals.keys():
+                        self._journals[issn] = []
+                    self._journals[issn].append(j)
 
     def get_journal_instances(self, p_issn, e_issn, journal_title):
         journal_instances = []
