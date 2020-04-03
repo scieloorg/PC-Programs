@@ -22,20 +22,11 @@ def format_command(command, params=None):
 
 
 def run_command(command, display=False):
-    display_command = command
-    if display is True:
-        try:
-            encoding.display_message(u'Running:\n {}'.format(command))
-        except Exception as e:
-            pass
-
-    try:
-
-        os.system(encoding.encode(command, encoding.SYS_DEFAULT_ENCODING))
-        if display is True:
-            encoding.display_message('...done')
-    except Exception as e:
-        encoding.report_exception('system.run_command()', e, display_command)
+    if display:
+        encoding.display_message(u'Running:\n {}'.format(command))
+    os.system(command)
+    if display:
+        encoding.display_message('...done')
 
 
 def input_password():
