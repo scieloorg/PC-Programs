@@ -14,9 +14,8 @@ PRESERVECIRC = '[PRESERVECIRC]'
 
 
 def remove_break_lines_characters(content):
-    r = ' '.join(content.split())
-    r = r.replace(' </', '</')
-    return r
+    content = content or ""
+    return ' '.join(content.split())
 
 
 def change_circ(content):
@@ -24,21 +23,11 @@ def change_circ(content):
 
 
 def format_value(content):
-    if content is not None and len(content) > 0:
-        try:
-            content = remove_break_lines_characters(content)
-        except Exception as e:
-            encoding.report_exception('format_value() 1', e, content)
-
-        try:
-            if '&' in content:
-                content, replace = xml_utils.convert_entities_to_chars(content)
-        except Exception as e:
-            encoding.report_exception('format_value() 3', e, content)
-
-        content = content.strip()
-
-    return content
+    """
+    Formata o valor de um subcampo ou campo sem subcampo
+    """
+    return remove_break_lines_characters(
+        content).strip().replace('^', PRESERVECIRC)
 
 
 class IDFile(object):
@@ -55,28 +44,27 @@ class IDFile(object):
         return u''.join(r)
 
     def _format_id(self, index):
+        """
+        Cria o ID do registro
+        """
         if index in range(1, 999999+1):
             return '!ID {}\n'.format(str(index).zfill(6))
         raise IndexError("IDFile._format_id: {} is out of range".format(index))
 
     def _format_record(self, record):
-        result = u''
-        if record is not None:
-            r = []
-            for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
+        """
+        Formata o registro
+        """
+        if record:
+            items = []
+            for tag_i in sorted([int(s) for s in record.keys()]):
                 tag = str(tag_i)
-                data = record.get(tag)
-                if data is not None and len(data) > 0:
-                    r.append(self.tag_data(tag, data))
-                else:
-                    res = self.tag_data(tag, data)
-                    if res != u'' and res is not None:
-                        encoding.debugging('_format_record()', res)
-            result = u''.join(r)
-
-            if self.content_formatter is not None:
+                items.extend(self.tag_data(tag, record[tag]))
+            result = "".join([item for item in items if item])
+            if self.content_formatter:
                 result = self.content_formatter(result)
-        return result
+            return result
+        return ""
 
     def tag_data(self, tag, data):
         occs = []
