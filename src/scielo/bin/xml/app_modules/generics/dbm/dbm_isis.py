@@ -18,10 +18,6 @@ def remove_break_lines_characters(content):
     return ' '.join(content.split())
 
 
-def change_circ(content):
-    return content.replace('^', PRESERVECIRC)
-
-
 def format_value(content):
     """
     Formata o valor de um subcampo ou campo sem subcampo
@@ -59,14 +55,14 @@ class IDFile(object):
             items = []
             for tag_i in sorted([int(s) for s in record.keys()]):
                 tag = str(tag_i)
-                items.extend(self.tag_data(tag, record[tag]))
+                items.extend(self._tag_data(tag, record[tag]))
             result = "".join(items)
             if self.content_formatter:
                 result = self.content_formatter(result)
             return result
         return ""
 
-    def tag_data(self, tag, data):
+    def _tag_data(self, tag, data):
         """
         Cria os campos com respectivos conteúdos
         """
@@ -76,50 +72,40 @@ class IDFile(object):
         if not isinstance(data, list):
             data = [data]
         for item in data:
-            occs.append(self.tag_occ(tag, item))
+            occs.append(self._tag_occ(tag, item))
         return occs
 
-    def tag_occ(self, tag, data):
-        s = u''
-        if isinstance(data, tuple):
-            encoding.debugging('tag_occ()', tag)
-            encoding.debugging('tag_occ()', data)
-        elif isinstance(data, dict):
-            s = self.tag_content(tag, self.format_subfields(data))
-        else:
-            s = self.tag_content(tag, format_value(data))
-        return s
-
-    def format_subfield(self, subf, subf_value):
-        res = u''
-        if subf in 'abcdefghijklmnopqrstuvwxyz123456789':
-            res = '^' + subf + change_circ(format_value(subf_value))
-        elif subf != '_':
-            encoding.debugging('format_subfield()', ('ERR0', subf, subf_value))
-        return res
-
-    def format_subfields(self, subf_and_value_list):
-        first = u''
-        value = u''
-        values = []
+    def _tag_occ(self, tag, data):
+        """
+        Cria cada ocorrência de um dado campo
+        """
+        if not data:
+            return ""
         try:
-            first = subf_and_value_list.get('_', u'') or u''
-            values = sorted([self.format_subfield(k, v) for k, v in subf_and_value_list.items() if v is not None and len(v) > 0])
-            value = u''.join(values)
-        except Exception as e:
-            encoding.report_exception('format_subfields()', e, subf_and_value_list)
-            encoding.report_exception('format_subfields()', e, (first, values))
+            data = {"_": data + ""}
+        except TypeError:
+            if not isinstance(data, dict):
+                raise TypeError("IDFile.tag_occ expects dict or str")
+        return self._tag_content(tag, self._format_subfields(data))
+
+    def _format_subfield(self, subf, subf_value):
+        if subf_value and subf in 'abcdefghijklmnopqrstuvwxyz123456789':
+            return '^' + subf + format_value(subf_value)
+        return ""
+
+    def _format_subfields(self, subf_and_value_list):
+        first = format_value(subf_and_value_list.get('_') or "")
+        values = [self._format_subfield(k, v)
+                  for k, v in subf_and_value_list.items()]
+        value = "".join(sorted(values))
         return first + value
 
-    def tag_content(self, tag, value):
-        r = u''
-        if int(tag) <= 999:
-            if value is not None and value != u'':
-                try:
-                    r = '!v' + tag.zfill(3) + '!' + value + '\n'
-                except Exception as e:
-                    encoding.report_exception('tag_content()', e, (s, value, type(s), type(value)))
-        return r
+    def _tag_content(self, tag, value):
+        if not 0 < int(tag) <= 999:
+            raise ValueError("IDFile.tag_content expects tag <= 999")
+        if not value:
+            return ""
+        return '!v{}!{}\n'.format(tag.zfill(3), value)
 
     def read(self, filename):
         rec_list = []

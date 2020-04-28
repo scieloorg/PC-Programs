@@ -62,5 +62,25 @@ class TestIDFile(TestCase):
             ""
         ]
 
-        result = self.idfile.tag_data("4", data)
+        result = self.idfile._tag_data("4", data)
         self.assertEqual(result, expected)
+
+    def test_tag_occ_returns_subfields(self):
+        data = {"x": "&#91;", "3": "subcampo 4b1"}
+        expected = "!v004!^3subcampo 4b1^x&#91;\n"
+        result = self.idfile._tag_occ("4", data)
+        self.assertEqual(result, expected)
+
+    def test_tag_occ_returns_field(self):
+        data = "texto"
+        expected = "!v004!texto\n"
+        result = self.idfile._tag_occ("4", data)
+        self.assertEqual(result, expected)
+
+    def test_tag_occ_raises_error(self):
+        data = [1111]
+        self.assertRaises(
+            TypeError,
+            self.idfile._tag_occ,
+            "4", data
+        )
