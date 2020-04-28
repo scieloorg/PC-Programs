@@ -60,20 +60,24 @@ class IDFile(object):
             for tag_i in sorted([int(s) for s in record.keys()]):
                 tag = str(tag_i)
                 items.extend(self.tag_data(tag, record[tag]))
-            result = "".join([item for item in items if item])
+            result = "".join(items)
             if self.content_formatter:
                 result = self.content_formatter(result)
             return result
         return ""
 
     def tag_data(self, tag, data):
+        """
+        Cria os campos com respectivos conteúdos
+        """
+        if not data:
+            return []
         occs = []
         if not isinstance(data, list):
             data = [data]
         for item in data:
             occs.append(self.tag_occ(tag, item))
-
-        return u''.join(occs)
+        return occs
 
     def tag_occ(self, tag, data):
         s = u''

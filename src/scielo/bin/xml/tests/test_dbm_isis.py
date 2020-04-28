@@ -31,6 +31,7 @@ class TestIDFile(TestCase):
             "1": "Dado do campo É 1",
             "2": ["x ^ y", "&#91;", "&ccedil;"],
             "3": {"_": "sem subcampo", "b": "subcampo 3b", "a": "subcampo 3a"},
+            "9999": "",
         }
         expected = (
             "!v001!Dado do campo É 1\n"
@@ -46,4 +47,20 @@ class TestIDFile(TestCase):
             "!v077!&#91;\n"
         )
         result = self.idfile._format_record(record)
+        self.assertEqual(result, expected)
+
+    def test_tag_data_returns_list(self):
+        data = [{"x": "&#91;", "3": "subcampo 4b1"},
+                {"x": "subcxmpo 4x2", "3": "&ccedil;"},
+                "x ^ y",
+                ""
+                ]
+        expected = [
+            "!v004!^3subcampo 4b1^x&#91;\n",
+            "!v004!^3&ccedil;^xsubcxmpo 4x2\n",
+            "!v004!x [PRESERVECIRC] y\n",
+            ""
+        ]
+
+        result = self.idfile.tag_data("4", data)
         self.assertEqual(result, expected)
