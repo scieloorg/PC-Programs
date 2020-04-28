@@ -55,8 +55,9 @@ class IDFile(object):
         return u''.join(r)
 
     def _format_id(self, index):
-        i = '000000' + str(index)
-        return '!ID ' + i[-6:] + '\n'
+        if index in range(1, 999999+1):
+            return '!ID {}\n'.format(str(index).zfill(6))
+        raise IndexError("IDFile._format_id: {} is out of range".format(index))
 
     def _format_record(self, record):
         result = u''
