@@ -1,10 +1,10 @@
 # coding=utf-8
 
 import os
+import html
 
 from tempfile import mkdtemp, NamedTemporaryFile
 
-from ...generics import xml_utils
 from ...generics import fs_utils
 from ...generics import encoding
 from ...generics import system
@@ -37,7 +37,7 @@ class IDFile(object):
         for item in records:
             index += 1
             r.append(self._format_id(index) + self._format_record(item))
-        return u''.join(r)
+        return "".join(r)
 
     def _format_id(self, index):
         """
@@ -163,16 +163,21 @@ class IDFile(object):
                 record[tag] = content[0]
         return record
 
-    def save(self, filename, records):
+    def write(self, filename, records):
         path = os.path.dirname(filename)
         if not os.path.isdir(path):
             os.makedirs(path)
         content = self._format_file(records)
+        content, changes = html.unescape(content)
+
         content = content.replace(PRESERVECIRC, '&#94;')
-        try:
-            fs_utils.write_file(filename, content, 'iso-8859-1')
-        except Exception as e:
-            encoding.report_exception('save()', e, 'saving...')
+
+        # converterá a entidades, os caracteres utf-8 que não tem
+        # correspondencia em iso-8859-1
+        content = encoding.encode(content, "iso-8859-1")
+        content = encoding.decode(content, "iso-8859-1")
+
+        fs_utils.write_file(filename, content, 'iso-8859-1')
 
 
 class CISIS(object):
@@ -359,7 +364,7 @@ class IsisDAO(object):
     def save_records(self, records, db_filename, fst_filename=None):
         temp_file = NamedTemporaryFile(delete=False)
         temp_file.close()
-        IDFile().save(temp_file.name, records)
+        IDFile().write(temp_file.name, records)
         self.cisis.id2i(temp_file.name, db_filename)
         fs_utils.delete_file_or_folder(temp_file.name)
         self.update_indexes(db_filename, fst_filename)
@@ -374,7 +379,7 @@ class IsisDAO(object):
             os.makedirs(path)
         temp_file = NamedTemporaryFile(delete=False)
         temp_file.close()
-        IDFile().save(temp_file.name, records)
+        IDFile().write(temp_file.name, records)
         self.cisis.append_id_to_master(temp_file.name, db_filename, False)
         fs_utils.delete_file_or_folder(temp_file.name)
         self.update_indexes(db_filename, fst_filename)
@@ -417,7 +422,7 @@ class IsisDAO(object):
         return IDFile().read(id_filename)
 
     def save_id(self, id_filename, records, content_formatter=None):
-        IDFile(content_formatter).save(id_filename, records)
+        IDFile(content_formatter).write(id_filename, records)
 
 
 class IsisDB(object):
@@ -430,7 +435,7 @@ class IsisDB(object):
     def save_records(self, records):
         temp_file = NamedTemporaryFile(delete=False)
         temp_file.close()
-        IDFile().save(temp_file.name, records)
+        IDFile().write(temp_file.name, records)
         self.cisis.id2i(temp_file.name, self.db_filename)
         fs_utils.delete_file_or_folder(temp_file.name)
         self.update_indexes()
@@ -445,7 +450,7 @@ class IsisDB(object):
             os.makedirs(path)
         temp_file = NamedTemporaryFile(delete=False)
         temp_file.close()
-        IDFile().save(temp_file.name, records)
+        IDFile().write(temp_file.name, records)
         self.cisis.append_id_to_master(temp_file.name, self.db_filename, False)
         fs_utils.delete_file_or_folder(temp_file.name)
         self.update_indexes()
@@ -487,4 +492,4 @@ class IsisDB(object):
         return IDFile().read(id_filename)
 
     def save_id(self, id_filename, records, content_formatter=None):
-        IDFile(content_formatter).save(id_filename, records)
+        IDFile(content_formatter).write(id_filename, records)
