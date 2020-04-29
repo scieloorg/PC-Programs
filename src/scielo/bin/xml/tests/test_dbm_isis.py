@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from unittest import TestCase, skipIf
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 import sys
 
 from app_modules.generics.dbm.dbm_isis import IDFile
@@ -113,14 +113,14 @@ class TestIDFile(TestCase):
         data = (
             "!ID 000001\n"
             "!v001!&#30952;\n"
-            "!v002!x &#94; y\n"
+            "!v002!x \\^ y\n"
             "!v002![\n"
             "!v002!ç\n"
             "!v003!sem subcampo^asubcampo 3a^bsubcampo 3b\n"
             "!v004!^3subcampo 4b1^x[\n"
             "!v004!^3ç^xsubcxmpo 4x2\n"
-            "!v004!^xx &#94; y\n"
-            "!v005!x &#94; y\n"
+            "!v004!^xx \\^ y\n"
+            "!v005!x \\^ y\n"
             "!v006!ç\n"
             "!v077![\n"
         )
@@ -147,14 +147,14 @@ class TestIDFile(TestCase):
         data = (
             "!ID 000001\n"
             "!v001!&#30952;\n"
-            "!v002!x &#94; y\n"
+            "!v002!x \\^ y\n"
             "!v002![\n"
             "!v002!ç\n"
             "!v003!sem subcampo^asubcampo 3a^bsubcampo 3b\n"
             "!v004!^3subcampo 4b1^x[\n"
             "!v004!^3ç^xsubcxmpo 4x2\n"
-            "!v004!^xx &#94; y\n"
-            "!v005!x &#94; y\n"
+            "!v004!^xx \\^ y\n"
+            "!v005!x \\^ y\n"
             "!v006!ç\n"
             "!v077![\n"
         )
@@ -182,14 +182,14 @@ class TestIDFile(TestCase):
         data = (
             "!ID 000001\n"
             "!v001!&#30952;\n"
-            "!v002!x &#94; y\n"
+            "!v002!x \\^ y\n"
             "!v002![\n"
             "!v002!ç\n"
             "!v003!sem subcampo^asubcampo 3a^bsubcampo 3b\n"
             "!v004!^3subcampo 4b1^x[\n"
             "!v004!^3ç^xsubcxmpo 4x2\n"
-            "!v004!^xx &#94; y\n"
-            "!v005!x &#94; y\n"
+            "!v004!^xx \\^ y\n"
+            "!v005!x \\^ y\n"
             "!v006!ç\n"
             "!v077![\n"
         )
@@ -197,3 +197,43 @@ class TestIDFile(TestCase):
         self.idfile.write(file_path, records)
         x = fs_utils.read_file(file_path, "iso-8859-1")
         self.assertEqual(x, data)
+
+    @skipIf(python_version < 3, "only apply for python >= 3")
+    @patch("app_modules.generics.dbm.dbm_isis.fs_utils.read_file")
+    def test_read(self, mock_read_file):
+        file_path = "db.id"
+        mock_read_file.return_value = (
+            "!ID 000001\n"
+            "!v001!&#30952;\n"
+            "!v002!x \\^ y\n"
+            "!v002![\n"
+            "!v002!ç\n"
+            "!v003!sem subcampo^asubcampo 3a^bsubcampo 3b\n"
+            "!v004!^3subcampo 4b1^x[\n"
+            "!v004!^3ç^xsubcxmpo 4x2\n"
+            "!v004!^xx \\^ y\n"
+            "!v004!x \\^ y\n"
+            "!v005!x \\^ y\n"
+            "!v006!ç\n"
+            "!v077![\n"
+        )
+        expected = [
+            {
+                "1": "磨",
+                "2": ["x ^ y", "[", "ç"],
+                "3": {"_": "sem subcampo",
+                      "a": "subcampo 3a", "b": "subcampo 3b"},
+                "4": [
+                    {"3": "subcampo 4b1", "x": "["},
+                    {"3": "ç", "x": "subcxmpo 4x2"},
+                    {"x": "x ^ y"},
+                    "x ^ y",
+                ],
+                "5": "x ^ y",
+                "6": "ç",
+                "77": "[",
+            }
+        ]
+        records = self.idfile.read(file_path)
+        print(records)
+        self.assertEqual(records, expected)

@@ -107,70 +107,58 @@ class IDFile(object):
             return ""
         return '!v{}!{}\n'.format(tag.zfill(3), value)
 
+    def _get_field_data(self, field_content):
+        subfields = field_content.split("^")
+        subfields = [c.replace(PRESERVECIRC, "^") for c in subfields]
+
+        if len(subfields) == 1:
+            # sem subcampos
+            return subfields[0]
+        # com subcampos
+        d = {}
+        if subfields[0]:
+            d.update({"_": subfields[0]})
+        for subf in subfields[1:]:
+            d.update({subf[0]: subf[1:]})
+        return d
+
+    def _get_record_data(self, record):
+        record_content = record[6:].strip()
+        fields = record_content.split("!v")[1:]
+        data = {}
+        for field in fields:
+            field_tag, field_content = field.strip().split("!")
+            field_tag = str(int(field_tag))
+            field_data = self._get_field_data(field_content)
+            data[field_tag] = data.get(field_tag, [])
+            data[field_tag].append(field_data)
+
+        for tag, tag_content in data.items():
+            if len(tag_content) == 1:
+                data[tag] = tag_content[0]
+        return data
+
     def read(self, filename):
         rec_list = []
-        record = {}
-        lines = fs_utils.read_file_lines(filename, 'iso-8859-1')
-        if lines is None:
-            lines = []
-            encoding.display_message('{} sem linhas. '.format(filename))
-        for line in lines:
-            if '!ID ' in line:
-                if len(record) > 0:
-                    rec_list.append(self.simplify_record(record))
-                record = {}
-            else:
-                item = line.split('!')
-                tag = None
-                if len(item) == 3:
-                    ign, tag, content = item
-                elif len(item) > 3:
-                    tag = item[1]
-                    content = line[6:]
-                if tag is not None and content != u'':
-                    tag = str(int(tag[1:]))
-                    if tag not in record.keys():
-                        record[tag] = []
-                    content = content.replace('^', 'BREAKSUBF^')
-                    subfields = content.split('BREAKSUBF')
-                    content = {}
-                    for subf in subfields:
-                        if subf.startswith('^'):
-                            c = subf[1]
-                            v = subf[2:]
-                        else:
-                            if len(subfields) == 1:
-                                c = u''
-                                v = subf
-                            else:
-                                c = '_'
-                                v = subf
-                        if len(c) > 0:
-                            content[c] = v
-                        else:
-                            content = v
-                    record[tag].append(content)
+        iso_content = fs_utils.read_file(filename, 'iso-8859-1')
+        utf8_content = encoding.decode(iso_content)
+        utf8_content = html.unescape(utf8_content)
+        utf8_content = utf8_content.replace("\\^", PRESERVECIRC)
 
-        # last record
-        if len(record) > 0:
-            rec_list.append(self.simplify_record(record))
-
+        records = utf8_content.split('!ID ')
+        for record in records[1:]:
+            data = self._get_record_data(record)
+            rec_list.append(data)
         return rec_list
-
-    def simplify_record(self, record):
-        for tag, content in record.items():
-            if len(content) == 1:
-                record[tag] = content[0]
-        return record
 
     def write(self, filename, records):
         path = os.path.dirname(filename)
         if not os.path.isdir(path):
             os.makedirs(path)
         content = self._format_file(records)
-        content, changes = html.unescape(content)
+        content = html.unescape(content)
 
-        content = content.replace(PRESERVECIRC, '&#94;')
+        content = content.replace(PRESERVECIRC, "\\^")
 
         # converterá a entidades, os caracteres utf-8 que não tem
         # correspondencia em iso-8859-1
