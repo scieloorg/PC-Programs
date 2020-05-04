@@ -165,7 +165,11 @@ class IDFile(object):
         content = encoding.encode(content, "iso-8859-1")
         content = encoding.decode(content, "iso-8859-1")
 
-        fs_utils.write_file(filename, content, 'iso-8859-1')
+        try:
+            fs_utils.write_file(filename, content, 'iso-8859-1')
+        except (UnicodeError, IOError, OSError) as e:
+            print("Nao foi possivel escrever o arquivo {}: {}".format(
+                filename, str(e)))
 
 
 class CISIS(object):
