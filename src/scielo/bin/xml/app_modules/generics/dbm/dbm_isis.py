@@ -28,6 +28,9 @@ def format_value(content):
 
 class IDFile(object):
 
+    MAX_DIGITS_QTD = 6
+    VALID_ID_RANGE = range(1, 10**MAX_DIGITS_QTD)
+
     def __init__(self, content_formatter=None):
         self.content_formatter = content_formatter
 
@@ -43,8 +46,8 @@ class IDFile(object):
         """
         Cria o ID do registro
         """
-        if index in range(1, 999999+1):
-            return '!ID {}\n'.format(str(index).zfill(6))
+        if index in self.VALID_ID_RANGE:
+            return '!ID {}\n'.format(str(index).zfill(self.MAX_DIGITS_QTD))
         raise IndexError("IDFile._format_id: {} is out of range".format(index))
 
     def _format_record(self, record):
