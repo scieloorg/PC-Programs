@@ -63,3 +63,38 @@ class TestLoadXML(TestCase):
              "failed to load external entity \"notfoundfile.xml\""),
             errors
         )
+
+
+class TestBrokenXML(TestCase):
+
+    def test_init_xml_with_junk_is_loaded_without_errors(self):
+        text = "<doc/> lixo"
+        broken = xml_utils.BrokenXML(text)
+        self.assertEqual(broken.content, "<doc/>")
+        self.assertIsNone(broken.xml_error)
+
+    def test_init_xml_is_ok(self):
+        text = "<doc/>"
+        broken = xml_utils.BrokenXML(text)
+        self.assertEqual(broken.content, "<doc/>")
+        self.assertIsNone(broken.xml_error)
+        self.assertIsNone(broken.doctype)
+        self.assertIsNone(broken.processing_instruction)
+
+    def test_init_xml_with_no_processing_instruction(self):
+        text = "<!DOCTYPE doctype ...>\n<doc/> lixo"
+        broken = xml_utils.BrokenXML(text)
+        self.assertIsNone(broken.processing_instruction)
+        self.assertEqual(
+            broken.doctype, "<!DOCTYPE doctype ...>")
+        self.assertEqual(
+            broken.content, "<doc/>")
+
+    def test_init_xml_with_no_doctype(self):
+        text = "<?xml version...?>\n<doc/> lixo"
+        broken = xml_utils.BrokenXML(text)
+        self.assertEqual(
+            broken.processing_instruction, "<?xml version...?>")
+        self.assertIsNone(broken.doctype)
+        self.assertEqual(
+            broken.content, "<doc/>")

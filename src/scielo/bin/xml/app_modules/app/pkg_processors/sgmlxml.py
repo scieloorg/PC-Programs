@@ -231,7 +231,7 @@ class SGMLXMLContent(xml_utils.BrokenXML):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
 
-        xml_utils.BrokenXML.__init__(self, self.fix_begin_end(content))
+        xml_utils.BrokenXML.__init__(self, content)
 
     def fix(self):
         if '<' in self.content:
@@ -320,35 +320,17 @@ class SGMLXMLContent(xml_utils.BrokenXML):
             k += 1
         return ''.join(parts)
 
-    def fix_begin_end(self, content):
-        s = content
-        if '<?xml' in s:
-            s = s[s.find('>')+1:]
-
-        if '<!DOCTYPE' in s:
-            s = s[s.find('>')+1:]
-        if '<doc' in s:
-            remove = s[:s.find('<doc')]
-            if len(remove) > 0:
-                content = content.replace(remove, '')
-        if not content.endswith('</doc>') and '</doc>' in content:
-            content = content[:content.rfind('</doc>')+len('</doc>')]
-        return content
-
     def normalize(self):
         self.fix_quotes()
-        self.content = xml_utils.remove_doctype(self.content)
         self.insert_mml_namespace_reference()
         self.identify_href_values()
         self.insert_xhtml_content()
         self.replace_fontsymbols()
         self.fix_styles_names()
         self.remove_exceding_styles_tags()
-        self.content = self.fix_begin_end(self.content)
         if self.xml is None:
             self.fix()
-        self.content = self.fix_begin_end(self.content)
-
+        
     def fix_styles_names(self):
         for style in ['italic', 'bold', 'sup', 'sub']:
             s = '<' + style + '>'

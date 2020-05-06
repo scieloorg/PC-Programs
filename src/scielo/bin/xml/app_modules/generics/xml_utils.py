@@ -21,9 +21,9 @@ from . import encoding
 ENTITIES_TABLE = None
 
 namespaces = {}
-namespaces['mml'] = 'http://www.w3.org/1998/Math/MathML'
-namespaces['xlink'] = 'http://www.w3.org/1999/xlink'
 namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'
+namespaces['xlink'] = 'http://www.w3.org/1999/xlink'
+namespaces['mml'] = 'http://www.w3.org/1998/Math/MathML'
 
 for namespace_id, namespace_link in namespaces.items():
     etree.register_namespace(namespace_id, namespace_link)
@@ -67,10 +67,14 @@ class BrokenXML(object):
     - remove "junk" depois da última tag de fecha
     - conserta entidades que faltam ;
     - converte as entidades em caracteres
+    - extrai do conteudo e instancia DOCTYPE
+    - extrai do conteudo e instancia processing instruction
     """
-    def __init__(self, str_or_filepath):
-        self._content = None
+    def __init__(self, str_or_filepath, namespaces=None):
+        self.namespaces = namespaces
         self._xml = None
+        self.processing_instruction = None
+        self.doctype = None
         self.filename = None
         if str_or_filepath.endswith(".xml"):
             self.filename = str_or_filepath
@@ -79,20 +83,30 @@ class BrokenXML(object):
 
     @property
     def content(self):
-        return self._content
+        return etree.tostring(self._xml, encoding="utf-8")
 
     @property
     def xml(self):
         return self._xml
 
     @content.setter
-    def content(self, value):
-        self._content = value
-        self._xml, self.xml_error = load_xml(value)
+    def content(self, normalized):
+        if '<?xml' in normalized:
+            p = normalized.find('>')
+            self.processing_instruction = normalized[:p+1]
+            normalized = normalized[p+1:]
+
+        if '<!DOCTYPE' in normalized:
+            p = normalized.find('>')
+            self.doctype = normalized[:p+1].strip()
+            normalized = normalized[p+1:]
+
+        normalized = normalized.strip()
+
+        self._xml, self.xml_error = load_xml(normalized)
 
     def _normalize(self, content):
         # remove "junk" (texto após a última tag)
-        content = content.strip()
         if not content.endswith('>'):
             content = content[:content.rfind('>')+1]
         # completa entidades que faltam ;
@@ -100,10 +114,6 @@ class BrokenXML(object):
         # converte as entidades em caracteres
         content, replaced_named_ent = convert_entities_to_chars(content)
         return content
-
-
-def remove_doctype(content):
-    return replace_doctype(content, '')
 
 
 def replace_doctype(content, new_doctype):
