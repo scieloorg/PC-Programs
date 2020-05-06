@@ -5,14 +5,12 @@ import tempfile
 
 import xml.dom.minidom
 
+from lxml import etree
+
 try:
-    from io import StringIO
     import html.parser as html_parser
-    from lxml import etree
 except ImportError:
-    from StringIO import StringIO
     import HTMLParser as html_parser
-    import xml.etree.ElementTree as etree
 
 from ..__init__ import _
 from ..__init__ import TABLES_PATH
@@ -418,81 +416,31 @@ def handle_mml_entities(content):
     return content
 
 
-def read_xml(content):
-    if '<' not in content:
-        # is a file
-        content = fs_utils.read_file(content)
-    return content
-
-"""
-p2
-('content', <type 'unicode'>)
-('s', <type 'str'>)
-('r', <class 'xml.etree.ElementTree.Element'>)
-
-p3
-content <class 'str'>
-s <class 'str'>
-
-unicode => str
-str
-"""
-def parse_xml(content):
-    message = None
-    if content:
-        if content.startswith('<?') and '?>' in content:
-            content = content[content.find('?>')+2:].strip()
-        if '<!DOCTYPE' in content:
-            content = remove_doctype(content)
+def load_xml(str_or_filepath):
     try:
-        s = encoding.encode(content)
-        sio = StringIO(s)
-        r = etree.parse(sio)
+        xml = None
+        errors = None
+        if str_or_filepath.endswith(".xml"):
+            source = str_or_filepath
+            xml = etree.parse(str_or_filepath, etree.XMLParser())
+        elif ">" not in str_or_filepath and "<" not in str_or_filepath:
+            source = str_or_filepath
+            raise ValueError(
+                "Invalid value: it must be an XML content or XML file path")
+        else:
+            source = "str"
+            if str_or_filepath.startswith('<?') and '?>' in str_or_filepath:
+                str_or_filepath = str_or_filepath[str_or_filepath.find(
+                    '?>')+2:].strip()
+            xml = etree.fromstring(str_or_filepath)
+    except (etree.XMLSyntaxError,
+            FileNotFoundError,
+            ValueError, TypeError) as e:
+        errors = "Loading XML from '{}': {}".format(source, e)
     except Exception as e:
-        message = 'XML is not well formed\n'
-        msg = ''
-        try:
-            msg = encoding.decode(str(e))
-            if 'position ' in msg:
-                pos = msg.split('position ')
-                pos = pos[1]
-                pos = pos[0:pos.find(': ')]
-                if '-' in pos:
-                    pos = pos[0:pos.find('-')]
-                if pos.isdigit():
-                    pos = int(pos)
-                msg += '\n'
-                text = content[0:pos]
-                text = text[text.rfind('<'):]
-                msg += text + '[[['
-                msg += content[pos:pos+1]
-                text = content[pos+1:]
-                msg += ']]]' + text[0:text.find('>')+1]
-            elif 'line ' in msg:
-                line = msg[msg.find('line ')+len('line '):]
-                column = ''
-                if 'column ' in line:
-                    column = line[line.find('column ')+len('column '):].strip()
-                line = line[:line.find(',')].strip()
-                if line.isdigit():
-                    line = int(line)
-                    lines = content.split('\n') if content is not None else ['']
-                    col = len(lines[line-1])
-                    if column.isdigit():
-                        col = int(column)
-                    msg += '\n...\n' + lines[line-1][:col] + '\n\n [[[[ ' + _('ERROR here') + ' ]]]] \n\n' + lines[line-1][col:] + '\n...\n'
-        except:
-            msg += ''
-        message += msg
-
-        r = None
-    return (r, message)
-
-
-def load_xml(content):
-    content = read_xml(content)
-    xml, e = parse_xml(content)
-    return (xml, e)
+        errors = "Loading XML from '{}': {}".format(source, e)
+    finally:
+        return xml, errors
 
 
 def split_prefix(content):
