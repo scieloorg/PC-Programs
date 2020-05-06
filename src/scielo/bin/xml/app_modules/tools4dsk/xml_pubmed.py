@@ -68,11 +68,11 @@ def find_xml_files_in_alternative(filenames, main_path, found_files={}):
 def load_articles(filenames):
     files = {}
     for name, f in filenames.items():
-        xmlcontent = xml_utils.XMLContent(f)
-        if xmlcontent.xml is not None:
-            files[name] = xml_utils.tostring(xmlcontent.xml.getroot())
+        xmltree, errors = xml_utils.load_xml(f)
+        if xmltree is not None:
+            files[name] = xml_utils.tostring(xmltree.getroot())
         else:
-            print(' ERROR 1: Invalid XML {}'.format(name))
+            print(' ERROR 1: {} - {}'.format(name, errors))
     return files
 
 
