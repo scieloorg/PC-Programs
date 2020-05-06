@@ -61,36 +61,49 @@ def load_entities_table():
     return table
 
 
-class XMLContent(object):
-
-    def __init__(self, xml):
-        xml = xml.strip()
+class BrokenXML(object):
+    """
+    Faz correções, se necessárias, em quaisquer XML, por ex, gerados pelo
+    Markup que é XML em que será aplicada um XSL para que seja convertido ao
+    XML SciELO.
+    - remove "junk" depois da última tag de fecha
+    - conserta entidades que faltam ;
+    - converte as entidades em caracteres
+    - conserta a posicao de tags que fecham devido à mescla de tags de estilo
+    e tags do Markup
+    """
+    def __init__(self, str_or_filepath):
         self._content = None
+        self._xml = None
         self.filename = None
-        if '>' in xml:
-            if not xml.endswith('>'):
-                xml = xml[:xml.rfind('>')+1]
-        else:
-            self.filename = xml
-            xml = fs_utils.read_file(self.filename)
-        self.content = self._normalize(xml)
+        if str_or_filepath.endswith(".xml"):
+            self.filename = str_or_filepath
+            str_or_filepath = fs_utils.read_file(self.filename)
+        self.content = self._normalize(str_or_filepath)
 
     @property
     def content(self):
         return self._content
 
+    @property
+    def xml(self):
+        return self._xml
+
     @content.setter
     def content(self, value):
         self._content = value
-        self._load_xml()
+        self._xml, self.xml_error = load_xml(value)
 
     def _normalize(self, content):
+        # remove "junk" (texto após a última tag)
+        content = content.strip()
+        if not content.endswith('>'):
+            content = content[:content.rfind('>')+1]
+        # completa entidades que faltam ;
         content = complete_entity(content)
+        # converte as entidades em caracteres
         content, replaced_named_ent = convert_entities_to_chars(content)
         return content
-
-    def _load_xml(self):
-        self.xml, self.xml_error = load_xml(self.content)
 
     def fix(self):
         if '<' in self.content:

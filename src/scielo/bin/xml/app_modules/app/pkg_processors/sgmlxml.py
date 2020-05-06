@@ -215,13 +215,13 @@ class SGMLHTML(object):
         return r
 
 
-class SGMLXMLContent(xml_utils.XMLContent):
+class SGMLXMLContent(xml_utils.BrokenXML):
 
     def __init__(self, content, sgmlhtml, src_pkgfiles):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
 
-        xml_utils.XMLContent.__init__(self, self.fix_begin_end(content))
+        xml_utils.BrokenXML.__init__(self, self.fix_begin_end(content))
 
     def fix_begin_end(self, content):
         s = content

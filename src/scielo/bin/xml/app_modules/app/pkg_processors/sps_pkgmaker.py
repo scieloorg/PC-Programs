@@ -9,10 +9,10 @@ from ..pkg_processors import xml_versions
 messages = []
 
 
-class SPSXMLContent(xml_utils.XMLContent):
+class SPSXMLContent(xml_utils.BrokenXML):
 
     def __init__(self, content):
-        xml_utils.XMLContent.__init__(self, content)
+        xml_utils.BrokenXML.__init__(self, content)
 
     def normalize(self):
         self.insert_mml_namespace()
@@ -111,10 +111,10 @@ class SPSXMLContent(xml_utils.XMLContent):
                     self.content = self.content.replace('href="' + href.src + '"', 'href="' + new + '"')
 
 
-class SPSRefXMLContent(xml_utils.XMLContent):
+class SPSRefXMLContent(xml_utils.BrokenXML):
 
     def __init__(self, content):
-        xml_utils.XMLContent.__init__(self, content)
+        xml_utils.BrokenXML.__init__(self, content)
 
     def normalize(self):
         if self.content.startswith('<ref') and self.content.endswith('</ref>'):

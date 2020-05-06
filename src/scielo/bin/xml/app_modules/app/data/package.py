@@ -11,7 +11,7 @@ class ArticlePkg(object):
 
     def __init__(self, filename):
         self.filename = filename
-        self.xml_content = xml_utils.XMLContent(filename)
+        self.xml_content = xml_utils.BrokenXML(filename)
         self.article_files = workarea.PkgArticleFiles(filename)
         self.path = self.article_files.path
         self.basename = self.article_files.basename
