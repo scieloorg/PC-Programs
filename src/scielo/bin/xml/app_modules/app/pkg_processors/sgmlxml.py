@@ -216,12 +216,109 @@ class SGMLHTML(object):
 
 
 class SGMLXMLContent(xml_utils.BrokenXML):
+    """
+    Faz correções, se necessárias, nos XML gerados pelo
+    Markup que é XML em que será aplicada um XSL para que seja convertido ao
+    XML SciELO.
+    - remove "junk" depois da última tag de fecha
+    - conserta entidades que faltam ;
+    - converte as entidades em caracteres
+    - conserta a posicao de tags que fecham devido à mescla de tags de estilo
+    e tags do Markup
+    """
 
     def __init__(self, content, sgmlhtml, src_pkgfiles):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
 
         xml_utils.BrokenXML.__init__(self, self.fix_begin_end(content))
+
+    def fix(self):
+        if '<' in self.content:
+            self.content = self.content[self.content.find('<'):]
+        self.content = self.content.replace(' '*2, ' '*1)
+
+        if self.xml is None:
+            self._fix_open_and_close_style_tags()
+
+        if self.xml is None:
+            self._fix_open_close()
+
+    def _fix_open_close(self):
+        changes = []
+        parts = self.content.split('>')
+        for s in parts:
+            if '<' in s:
+                if '</' not in s and '<!--' not in s and '<?' not in s:
+
+                    s = s[s.find('<')+1:]
+                    if ' ' in s and '=' not in s:
+                        test = s[s.find('<')+1:]
+                        changes.append(test)
+        for change in changes:
+            self.content = self.content.replace('<' + test + '>', '[' + test + ']')
+
+    def _fix_open_and_close_style_tags(self):
+        rcontent = self.content
+        tags = ['italic', 'bold', 'sub', 'sup']
+        tag_list = []
+        for tag in tags:
+            rcontent = rcontent.replace('<' + tag.upper() + '>', '<' + tag + '>')
+            rcontent = rcontent.replace('</' + tag.upper() + '>', '</' + tag + '>')
+            tag_list.append('<' + tag + '>')
+            tag_list.append('</' + tag + '>')
+            rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
+        if self.content != rcontent:
+            parts = rcontent.split('BREAKBEGINCONSERTA')
+            self.content = self._fix_problem(tag_list, parts)
+        for tag in tags:
+            self.content = self.content.replace('</' + tag + '><' + tag + '>', '')
+
+    def _fix_problem(self, tag_list, parts):
+        expected_close_tags = []
+        ign_list = []
+        debug = False
+        k = 0
+        for part in parts:
+            if part in tag_list:
+                tag = part
+                if debug:
+                    encoding.debugging('_fix_problem()', '\ncurrent:' + tag)
+                if tag.startswith('</'):
+                    if debug:
+                        encoding.debugging('_fix_problem()', 'expected')
+                        encoding.debugging('_fix_problem()', expected_close_tags)
+                        encoding.debugging('_fix_problem()', 'ign_list')
+                        encoding.debugging('_fix_problem()', ign_list)
+                    if tag in ign_list:
+                        if debug:
+                            encoding.debugging('_fix_problem()', 'remove from ignore')
+                        ign_list.remove(tag)
+                        parts[k] = ''
+                    else:
+                        matched = False
+                        if len(expected_close_tags) > 0:
+                            matched = (expected_close_tags[-1] == tag)
+                            if not matched:
+                                if debug:
+                                    encoding.debugging('_fix_problem()', 'not matched')
+                                while not matched and len(expected_close_tags) > 0:
+                                    ign_list.append(expected_close_tags[-1])
+                                    parts[k-1] += expected_close_tags[-1]
+                                    del expected_close_tags[-1]
+                                    matched = (expected_close_tags[-1] == tag)
+                                if debug:
+                                    encoding.debugging('_fix_problem()', '...expected')
+                                    encoding.debugging('_fix_problem()', expected_close_tags)
+                                    encoding.debugging('_fix_problem()', '...ign_list')
+                                    encoding.debugging('_fix_problem()', ign_list)
+
+                            if matched:
+                                del expected_close_tags[-1]
+                else:
+                    expected_close_tags.append(tag.replace('<', '</'))
+            k += 1
+        return ''.join(parts)
 
     def fix_begin_end(self, content):
         s = content
