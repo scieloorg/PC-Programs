@@ -15,7 +15,6 @@ class SPSXMLContent(xml_utils.BrokenXML):
         xml_utils.BrokenXML.__init__(self, content)
 
     def normalize(self):
-        self.insert_mml_namespace()
         if self.xml is not None:
             if 'contrib-id-type="' in self.content:
                 for contrib_id, url in attributes.CONTRIB_ID_URLS.items():
@@ -49,16 +48,6 @@ class SPSXMLContent(xml_utils.BrokenXML):
         else:
             self.content = self.content.replace('"' + remote + '"', '"' + local + '"')
             self.content = self.content.replace('"' + remote.replace('https:', 'http:') + '"', '"' + local + '"')
-
-    def insert_mml_namespace(self):
-        if '</math>' in self.content:
-            new = []
-            for part in self.content.replace('</math>', '</math>BREAK-MATH').split('BREAK-MATH'):
-                before = part[:part.find('<math')]
-                math = part[part.find('<math'):]
-                part = before + math.replace('<', '<mml:').replace('<mml:/', '</mml:')
-                new.append(part)
-            self.content = ''.join(new)
 
     def remove_xmllang_from_element(self, element_name):
         start = '<' + element_name + ' '

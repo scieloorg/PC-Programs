@@ -98,22 +98,15 @@ class PMCPackageItemMaker(object):
         fs_utils.delete_file_or_folder(self.pmc_xml_filename + '.xml')
 
     def insert_math_id(self):
-        content = self.pmc_pkgfiles.xml_content.content
-        if 'mml:math' in content:
-            result = []
-            n = 0
-            math_id = None
-            for item in content.replace('<mml:math', '~BREAK~<mml:math').split('~BREAK~'):
-                if item.startswith('<mml:math'):
-                    n += 1
-                    elem = item[:item.find('>')]
-                    if ' id="' not in elem:
-                        math_id = 'math{}'.format(n)
-                        item = item.replace('<mml:math', '<mml:math id="{}"'.format(math_id))
-                result.append(item)
-            if math_id is not None:
-                self.pmc_pkgfiles.article_xml = content
-                fs_utils.write_file(self.pmc_xml_filename, content)
+        # PMC exige o atributo @id para math
+        xml = self.pmc_pkgfiles.xml_content.xml
+        n = 0
+        for math in xml.findall("{http://www.w3.org/1998/Math/MathML}math"):
+            if math.get("id") is None:
+                n += 1
+                math.set("id", 'math{}'.format(n))
+        if n:
+            fs_utils.write_file(self.pmc_xml_filename, xml.content)
 
     def replace_img_ext_to_tiff(self):
         missing = []

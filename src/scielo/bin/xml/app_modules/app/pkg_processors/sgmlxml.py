@@ -361,16 +361,6 @@ class SGMLXMLContent(xml_utils.BrokenXML):
                 items.append(item)
             self.content = ''.join(items)
 
-    def insert_mml_namespace_reference(self):
-        if '>' in self.content:
-            self.content = self.content[:self.content.rfind('>') + 1]
-        if 'mml:' in self.content and 'xmlns:mml="https://www.w3.org/1998/Math/MathML"' not in self.content:
-            if '</' in self.content:
-                main_tag = self.content[self.content.rfind('</') + 2:]
-                main_tag = main_tag[:main_tag.find('>')]
-                if '<' + main_tag + ' ':
-                    self.content = self.content.replace('<' + main_tag + ' ', '<' + main_tag + ' xmlns:mml="https://www.w3.org/1998/Math/MathML" ')
-
     def replace_fontsymbols(self):
         if self.content.find('<fontsymbol>') > 0:
             html_fontsymbol_items = self.sgmlhtml.get_fontsymbols()
