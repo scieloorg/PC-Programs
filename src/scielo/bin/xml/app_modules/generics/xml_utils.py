@@ -86,7 +86,7 @@ class BrokenXML(object):
         parts = [
             self.processing_instruction,
             self.doctype,
-            etree.tostring(self._xml, encoding="utf-8")
+            encoding.decode(etree.tostring(self._xml, encoding="utf-8"))
         ]
         return "\n".join([item for item in parts if item])
 

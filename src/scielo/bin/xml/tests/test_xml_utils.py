@@ -88,7 +88,7 @@ class TestBrokenXML(TestCase):
         self.assertEqual(
             broken.doctype, "<!DOCTYPE doctype ...>")
         self.assertEqual(
-            broken.content, "<doc/>")
+            broken.content, "<!DOCTYPE doctype ...>\n<doc/>")
 
     def test_init_xml_with_no_doctype(self):
         text = "<?xml version...?>\n<doc/> lixo"
@@ -97,4 +97,4 @@ class TestBrokenXML(TestCase):
             broken.processing_instruction, "<?xml version...?>")
         self.assertIsNone(broken.doctype)
         self.assertEqual(
-            broken.content, "<doc/>")
+            broken.content, "<?xml version...?>\n<doc/>")
