@@ -65,6 +65,102 @@ class TestLoadXML(TestCase):
         )
 
 
+class TestRemoveStylesTags(TestCase):
+        
+    def test_remove_styles_from_tagged_content_removes_italic(self):
+        text = "<root><source><italic>texto</italic></source></root>"
+        expected = "<source>texto</source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+    def test_remove_styles_from_tagged_content_removes_bold(self):
+        text = "<root><source><bold>texto</bold></source></root>"
+        expected = "<source>texto</source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+    def test_remove_styles_from_tagged_content_does_not_remove_bold(self):
+        text = "<root><source>texto 1 <bold>texto bold</bold> texto 2</source></root>"
+        expected = "<source>texto 1 <bold>texto bold</bold> texto 2</source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+    def test_remove_styles_from_tagged_content_does_not_remove_italic(self):
+        text = "<root><source>texto 1 <italic>texto italic</italic> texto 2</source></root>"
+        expected = "<source>texto 1 <italic>texto italic</italic> texto 2</source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+    def test_remove_styles_from_tagged_content_removes_external_and_keeps_inner(self):
+        text = "<root><source><bold>texto 1 <bold>texto bold</bold> texto 2</bold></source></root>"
+        expected = "<source>texto 1 <bold>texto bold</bold> texto 2</source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+
+class TestMergeStylesTags(TestCase):
+
+    def test_merge_siblings_style_tags_content_merges_italic(self):
+        text = "<root><source>texto 0 <italic>texto 1</italic> <italic>texto 2</italic> </source></root>"
+        expected = "<source>texto 0 <italic>texto 1 texto 2</italic> </source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.merge_siblings_style_tags_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+    def test_merge_siblings_style_tags_content_merges_bold(self):
+        text = "<root><source><bold>texto 1</bold> <bold>texto 2</bold> </source></root>"
+        expected = "<source><bold>texto 1 texto 2</bold> </source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.merge_siblings_style_tags_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+    def test_merge_siblings_style_tags_content_does_not_merge_sup(self):
+        text = "<root><source><sup>texto 1</sup> <sup>texto 2</sup> </source></root>"
+        expected = "<source><sup>texto 1</sup> <sup>texto 2</sup> </source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.merge_siblings_style_tags_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+    def test_merge_siblings_style_tags_content_does_not_merge_italic_if_there_are_elements_in_the_middle(self):
+        text = "<root><source><italic>texto 1</italic> <bold>texto</bold> <italic>texto 2</italic></source></root>"
+        expected = "<source><italic>texto 1</italic> <bold>texto</bold> <italic>texto 2</italic></source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.merge_siblings_style_tags_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+    def test_merge_siblings_style_tags_content_does_not_merge_italic_if_there_are_texts_in_the_middle(self):
+        text = "<root><source><italic>texto 1</italic> texto <italic>texto 2</italic></source></root>"
+        expected = "<source><italic>texto 1</italic> texto <italic>texto 2</italic></source>"
+        obj = xml_utils.etree.fromstring(text)
+        node = obj.find(".//source")
+        xml_utils.merge_siblings_style_tags_content(node, ('bold', 'italic'))
+        result = xml_utils.tostring(node)
+        self.assertEqual(result, expected)
+
+
 class TestBrokenXML(TestCase):
 
     def test_init_xml_with_junk_is_loaded_without_errors(self):

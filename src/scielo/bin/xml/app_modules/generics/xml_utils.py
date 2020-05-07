@@ -521,6 +521,40 @@ def remove_exceding_style_tags(content):
     return new
 
 
+def merge_siblings_style_tags_content(node, styles_tags):
+    """
+    Junta em um mesmo elemento, os elementos do mesmo estilo
+    que estão adjacentes
+    <bold>texto 1</bold> <bold>texto 2</bold>
+    <bold>texto 1 texto 2</bold>
+    """
+    for elem in node.findall(".//*"):
+        previous = elem.getprevious()
+        if (elem.tag in styles_tags and previous is not None and
+                previous.tag == elem.tag and
+                not (previous.tail or "").strip()):
+            if previous.text and elem.text:
+                sep = " "
+            elem.text = previous.text + sep + elem.text
+            parent = previous.getparent()
+            parent.remove(previous)
+
+
+def remove_styles_from_tagged_content(node, styles_tags):
+    """
+    Remove as tags de estilos se elas estão aplicadas no elemento inteiro
+    pois as tags de estilos só fazem sentido se aplicadas em partes do elemento
+    <node><bold>texto</bold></node>
+    <node>texto</node>
+    """
+    for elem in node.findall(".//*"):
+        text = " ".join(node.itertext())
+        if (elem.tag in styles_tags and
+                " ".join(elem.itertext()).strip() == text.strip()):
+            elem.tag = "REMOVE"
+            etree.strip_tags(node, "REMOVE")
+
+
 class PrettyXML(object):
 
     def __init__(self, xml):

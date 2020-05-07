@@ -67,25 +67,20 @@ class SPSXMLContent(xml_utils.BrokenXML):
             elem.attrib.pop("{http://www.w3.org/XML/1998/namespace}lang")
 
     def remove_styles_from_tagged_content(self, tag):
-        open_tag = '<' + tag + '>'
-        close_tag = '</' + tag + '>'
-        self.content = self.content.replace(open_tag + ' ', ' ' + open_tag).replace(' ' + close_tag, close_tag + ' ')
-        self.content = self.content.replace(open_tag, '~BREAK~' + open_tag).replace(close_tag, close_tag + '~BREAK~')
-        parts = []
-        for part in self.content.split('~BREAK~'):
-            if part.startswith(open_tag) and part.endswith(close_tag):
-                data = part[len(open_tag):]
-                data = data[0:-len(close_tag)]
-                data = ' '.join([w.strip() for w in data.split()])
-                part = open_tag + data + close_tag
-                remove_all = False
-                if tag == 'source' and len(parts) > 0:
-                    remove_all = 'publication-type="journal"' in parts[len(parts)-1]
-                for style in ['italic', 'bold', 'italic']:
-                    if remove_all or part.startswith(open_tag + '<' + style + '>') and part.endswith('</' + style + '>' + close_tag):
-                        part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
-            parts.append(part)
-        self.content = ''.join(parts).replace(open_tag + ' ', ' ' + open_tag).replace(' ' + close_tag, close_tag + ' ')
+        """
+        As tags de estilo não devem ser aplicadas no conteúdo inteiro de
+        certos elementos. As tags de estilo somente pode destacar partes do
+        conteúdo de um dado elemento
+        <source><italic>texto texto texto</italic></source> - não aceitável
+        <source><italic>texto</italic> texto texto</source> - aceitável
+        """
+        STYLES = ("italic", "bold")
+        nodes = []
+        for style in STYLES:
+            nodes.extend(self.xml.findall(".//{}[{}]".format(tag, style)))
+        for node in set(nodes):
+            xml_utils.merge_siblings_style_tags_content(node, STYLES)
+            xml_utils.remove_styles_from_tagged_content(node, STYLES)
 
     def normalize_references(self):
         self.content = self.content.replace('<ref', '~BREAK~<ref')
