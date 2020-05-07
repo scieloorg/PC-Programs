@@ -98,7 +98,7 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
         src.tiff2jpg()
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
-        xmlcontent.doctype(dtd_location_type)
+        xmlcontent.set_doctype(dtd_location_type)
         fs_utils.write_file(dest.filename, xmlcontent.content)
         src.copy_related_files(dest_path)
 

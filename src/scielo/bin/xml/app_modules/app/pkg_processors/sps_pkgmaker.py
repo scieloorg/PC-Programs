@@ -41,13 +41,21 @@ class SPSXMLContent(xml_utils.BrokenXML):
             self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
             self.content = xml_utils.pretty_print(self.content)
 
-    def doctype(self, dtd_location_type):
-        local, remote = xml_versions.dtd_location(self.content)
+    def set_doctype(self, dtd_location_type):
+        """
+        Altera a localização da DTD (remota ou "local")
+        Por local, significa sem o caminho completo, somente o nome do arquivo
+        Para o site, é importante estar "local" para não demorar a carregar
+        """
+        local, remote = xml_versions.dtd_location(self.doctype)
+        loc = '"{}"'.format(local)
+        rem = '"{}"'.format(remote)
         if dtd_location_type == 'remote':
-            self.content = self.content.replace('"' + local + '"', '"' + remote + '"')
+            self.doctype = self.doctype.replace(loc, rem)
         else:
-            self.content = self.content.replace('"' + remote + '"', '"' + local + '"')
-            self.content = self.content.replace('"' + remote.replace('https:', 'http:') + '"', '"' + local + '"')
+            self.doctype = self.doctype.replace(rem, loc)
+            self.doctype = self.doctype.replace(
+                rem.replace('https:', 'http:'), loc)
 
     def remove_xmllang_from_element(self, element_name):
         start = '<' + element_name + ' '

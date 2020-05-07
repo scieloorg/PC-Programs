@@ -83,7 +83,12 @@ class BrokenXML(object):
 
     @property
     def content(self):
-        return etree.tostring(self._xml, encoding="utf-8")
+        parts = [
+            self.processing_instruction,
+            self.doctype,
+            etree.tostring(self._xml, encoding="utf-8")
+        ]
+        return "\n".join([item for item in parts if item])
 
     @property
     def xml(self):
