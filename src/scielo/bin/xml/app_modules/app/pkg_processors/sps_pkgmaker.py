@@ -57,17 +57,14 @@ class SPSXMLContent(xml_utils.BrokenXML):
             self.doctype = self.doctype.replace(
                 rem.replace('https:', 'http:'), loc)
 
-    def remove_xmllang_from_element(self, element_name):
-        start = '<' + element_name + ' '
-        mark = '<' + element_name + '~BREAK~'
-        end = '</' + element_name + '>'
-        if start in self.content:
-            new = []
-            for item in self.content.replace(start, mark).split('~BREAK~'):
-                if item.strip().startswith('xml:lang') and end in item:
-                    item = item[item.find('>'):]
-                new.append(item)
-            self.content = ''.join(new)
+    def remove_xmllang_from_element(self, tag):
+        """
+        Remove @xml:lang de dado elemento
+        """
+        xpath = ".//{}[@{http://www.w3.org/XML/1998/namespace}lang]".format(
+            tag)
+        for elem in self.xml.findall(xpath):
+            elem.attrib.pop("{http://www.w3.org/XML/1998/namespace}lang")
 
     def remove_styles_from_tagged_content(self, tag):
         open_tag = '<' + tag + '>'
