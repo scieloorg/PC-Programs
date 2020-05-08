@@ -180,16 +180,21 @@ class BrokenRef(object):
         mixed_citation.text = label_text + sep + mixed_citation.text
 
     def fix_source(self):
-        if '<source' in self.content and '<mixed-citation' in self.content:
-            source = self.content[self.content.find('<source'):]
-            if '</source>' in source:
-                source = source[0:source.find('</source>')]
-                source = source[source.find('>')+1:]
-                mixed_citation = self.content[self.content.find('<mixed-citation'):]
-                if '</mixed-citation>' in mixed_citation:
-                    mixed_citation = mixed_citation[0:mixed_citation.find('</mixed-citation>')]
-                    mixed_citation = mixed_citation[mixed_citation.find('>')+1:]
-                    s = source.replace(':', ': ')
-                    if source not in mixed_citation and s in mixed_citation:
-                        self.content = self.content.replace(source, s)
+        """
+        Insere um espaço em branco após : caso não exista, dentro do elemento
+        `source`
+        <mixed-citation>Texto: texto2</mixed-citation>
+        <source>Texto:texto2</source>
 
+        Resultado:
+        <source>Texto: texto2</source>
+        """
+        source = self.tree.find(".//source")
+        if source is None:
+            return
+        if ":" in source.text and ": " not in source.text:
+            mixed_citation = self.tree.find(".//mixed-citation")
+            check = source.text.replace(":", ": ")
+            mixed_citation_text = " ".join(mixed_citation.itertext())
+            if check in mixed_citation_text:
+                source.text = check

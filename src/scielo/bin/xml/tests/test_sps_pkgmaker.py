@@ -235,3 +235,25 @@ class TestBrokenRefLinksInMixedCitation(TestCase):
             obj.tree.find(".//mixed-citation").find(".//ext-link").text,
             obj.tree.find(".//element-citation").find(".//ext-link").text
         )
+
+
+class TestBrokenRefSource(TestCase):
+
+    def test_fix_source(self):
+        text = """<ref-list>
+            <ref id="B03">
+                <label>3</label>
+                <mixed-citation>LÉVY, Pierre. As tecnologias da inteligência: o futuro do pensamento na era da informática. Edição especial. Rio de Janeiro: Editora 34. 2001. 208 p.</mixed-citation>
+                <element-citation publication-type="book">
+                <source>As tecnologias da inteligência:o futuro do pensamento na era da informática</source>
+            </element-citation>
+            </ref>
+        </ref-list>"""
+        xml = xml_utils.etree.fromstring(text)
+        obj = sps_pkgmaker.BrokenRef(xml)
+        obj.fix_source()
+        self.assertEqual((
+            "As tecnologias da inteligência: o "
+            "futuro do pensamento na era da informática"),
+            obj.tree.find(".//source").text)
+
