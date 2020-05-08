@@ -555,6 +555,12 @@ def remove_styles_from_tagged_content(node, styles_tags):
             etree.strip_tags(node, "REMOVE")
 
 
+def remove_nodes(root, xpath):
+    for node in root.findall(xpath):
+        parent = node.getparent()
+        parent.remove(node)
+
+
 class PrettyXML(object):
 
     def __init__(self, xml):

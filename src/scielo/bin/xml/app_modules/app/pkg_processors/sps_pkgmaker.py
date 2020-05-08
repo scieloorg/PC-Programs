@@ -19,29 +19,30 @@ class SPSXMLContent(xml_utils.BrokenXML):
         xml_utils.BrokenXML.__init__(self, content)
 
     def normalize(self):
-        if self.xml:
-            self.remove_uri_from_contrib_id()
-            #content = remove_xmllang_off_article_title(content)
-            self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
-            self.content = self.content.replace('<comment content-type="cited"', '<comment')
-            self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
-            self.content = self.content.replace('&amp;amp;', '&amp;')
-            self.content = self.content.replace('&amp;#', '&#')
-            self.content = self.content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
-            self.content = self.content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
-            self.content = self.content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
-            self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
-            self.content = self.content.replace(' rid=" ', ' rid="')
-            self.content = self.content.replace(' id=" ', ' id="')
-            self.remove_xmllang_from_element('article-title')
-            self.remove_xmllang_from_element('source')
-            self.content = self.content.replace('> :', '>: ')
-            self.normalize_references()
-            for tag in ['article-title', 'trans-title', 'kwd', 'source']:
-                self.remove_styles_from_tagged_content(tag)
-            self.content = self.content.replace('<institution content-type="normalized"/>', '')
-            self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
-            self.content = xml_utils.pretty_print(self.content)
+        if self.xml is None:
+            return
+        self.remove_uri_from_contrib_id()
+        xml_utils.remove_nodes(
+            self.xml, ".//institution[@content-type='normalized']")
+        #content = remove_xmllang_off_article_title(content)
+        self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
+        self.content = self.content.replace('<comment content-type="cited"', '<comment')
+        self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
+        self.content = self.content.replace('&amp;amp;', '&amp;')
+        self.content = self.content.replace('&amp;#', '&#')
+        self.content = self.content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
+        self.content = self.content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
+        self.content = self.content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
+        self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
+        self.content = self.content.replace(' rid=" ', ' rid="')
+        self.content = self.content.replace(' id=" ', ' id="')
+        self.remove_xmllang_from_element('article-title')
+        self.remove_xmllang_from_element('source')
+        self.content = self.content.replace('> :', '>: ')
+        self.normalize_references()
+        for tag in ['article-title', 'trans-title', 'kwd', 'source']:
+            self.remove_styles_from_tagged_content(tag)
+        self.content = xml_utils.pretty_print(self.content)
 
     def remove_uri_from_contrib_id(self):
         if self.xml.find(".//contrib-id") is None:
