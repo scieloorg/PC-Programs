@@ -91,14 +91,6 @@ class SPSXMLContent(xml_utils.BrokenXML):
             broken_ref = BrokenRef(ref)
             broken_ref.normalize()
 
-    def normalize_href_values(self):
-        for href in self.doc.hrefs:
-            if href.is_internal_file:
-                new = self.workarea.name_with_extension(href.src, href.src)
-                self.replacements_href_values.append((href.src, new))
-                if href.src != new:
-                    self.content = self.content.replace('href="' + href.src + '"', 'href="' + new + '"')
-
 
 class BrokenRef(object):
 
