@@ -61,7 +61,7 @@ class TestBrokenRef(TestCase):
         )
         self.assertEqual(obj.tree.find(".//label").text, "1")
 
-    def test_insert_label_text_in_mixed_citation_text_removes_first_char_off_mixed_citation_and_insert_1_and_dot(self):
+    def test_insert_label_text_in_mixed_citation_text_removes_sep_off_mixed_citation_and_insert_1_and_dot(self):
         text = (
             '<ref id="B1">'
             '<label>1.</label>'
@@ -140,3 +140,75 @@ class TestBrokenRef(TestCase):
                 "de dependência de pessoas idosas institucionalizadas. ")
         )
         self.assertEqual(obj.tree.find(".//label").text, "1")
+
+
+class TestBrokenRefFixBookData(TestCase):
+    def test_fix_book_data_does_not_convert_article_title_into_chapter_title(self):
+        text = """<ref id="B02">
+                <element-citation publication-type="book">
+                    <article-title>Inflammatory bowel disease</article-title>
+                    <chapter-title>...</chapter-title>
+                </element-citation>
+            </ref>"""
+        xml = xml_utils.etree.fromstring(text)
+        obj = sps_pkgmaker.BrokenRef(xml)
+        obj.fix_book_data()
+        self.assertEqual(
+            "Inflammatory bowel disease",
+            obj.tree.find(".//article-title").text
+        )
+        self.assertEqual(
+            "...",
+            obj.tree.find(".//chapter-title").text
+        )
+
+    def test_fix_book_data_converts_article_title_into_chapter_title(self):
+        text = """<ref id="B02">
+                <element-citation publication-type="book">
+                    <article-title>Inflammatory bowel disease</article-title>
+                    <source>...</source>
+                </element-citation>
+            </ref>"""
+        xml = xml_utils.etree.fromstring(text)
+        obj = sps_pkgmaker.BrokenRef(xml)
+        obj.fix_book_data()
+        self.assertEqual(
+            "Inflammatory bowel disease",
+            obj.tree.find(".//chapter-title").text
+        )
+        self.assertEqual(
+            "...",
+            obj.tree.find(".//source").text
+        )
+
+    def test_fix_book_data_converts_chapter_title_into_source_if_source_is_absent(self):
+        text = """<ref id="B02">
+                <element-citation publication-type="book">
+                    <chapter-title>Inflammatory bowel disease</chapter-title>
+                </element-citation>
+            </ref>"""
+        xml = xml_utils.etree.fromstring(text)
+        obj = sps_pkgmaker.BrokenRef(xml)
+        obj.fix_book_data()
+        self.assertEqual(
+            "Inflammatory bowel disease",
+            obj.tree.find(".//source").text
+        )
+        self.assertIsNone(obj.tree.find(".//chapter-title"))
+
+    def test_fix_book_data_converts_article_title_into_source_if_source_and_chapter_title_are_absent(self):
+        text = """<ref id="B02">
+                <element-citation publication-type="book">
+                    <article-title>Inflammatory bowel disease</article-title>
+                </element-citation>
+            </ref>"""
+        xml = xml_utils.etree.fromstring(text)
+        obj = sps_pkgmaker.BrokenRef(xml)
+        obj.fix_book_data()
+        self.assertEqual(
+            "Inflammatory bowel disease",
+            obj.tree.find(".//source").text
+        )
+        self.assertIsNone(obj.tree.find(".//article-title"))
+        self.assertIsNone(obj.tree.find(".//chapter-title"))
+

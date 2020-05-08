@@ -1,6 +1,5 @@
 # coding=utf-8
 
-from ...generics import encoding
 from ...generics import xml_utils
 from ..data import attributes
 from ..pkg_processors import xml_versions
@@ -114,10 +113,28 @@ class BrokenRef(object):
         self.fix_source()
 
     def fix_book_data(self):
-        if 'publication-type="book"' in self.content and '</article-title>' in self.content:
-            self.content = self.content.replace('article-title', 'chapter-title')
-        if 'publication-type="book"' in self.content and not '</source>' in self.content:
-            self.content = self.content.replace('chapter-title', 'source')
+        """
+        Renomeia as tags:
+        article-title para chapter-title, na ausência de chapter-title
+        chapter-title para source, na ausência de source
+        """
+        book = self.tree.find(".//element-citation[@publication-type='book']")
+        if book is not None:
+            chapter_title = book.find(".//chapter-title")
+            source = book.find(".//source")
+            if chapter_title is not None and source is not None:
+                return
+            article_title = book.find(".//article-title")
+            if article_title is not None and chapter_title is not None:
+                return
+            if chapter_title is None and article_title is not None:
+                article_title.tag = "chapter-title"
+                article_title = book.find(".//article-title")
+                chapter_title = book.find(".//chapter-title")
+            if source is None and chapter_title is not None:
+                chapter_title.tag = "source"
+                chapter_title = book.find(".//chapter-title")
+                source = book.find(".//source")
 
     def fix_mixed_citation_ext_link(self):
         replacements = {}
@@ -144,7 +161,6 @@ class BrokenRef(object):
     def insert_label_text_in_mixed_citation_text(self):
         """
         Insere o conteúdo de label no início de mixed-citation.
-        Insere ". " se não há separador em label nem em mixed-citation
         """
         mixed_citation = self.tree.find(".//mixed-citation")
         if mixed_citation is None:
