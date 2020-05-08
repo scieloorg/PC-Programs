@@ -109,7 +109,7 @@ class BrokenRef(object):
     def normalize(self):
         self.insert_label_text_in_mixed_citation_text()
         self.fix_book_data()
-        self.fix_mixed_citation_ext_link()
+        self.insert_ext_link_elements_in_mixed_citation()
         self.fix_source()
 
     def fix_book_data(self):
@@ -136,27 +136,28 @@ class BrokenRef(object):
                 chapter_title = book.find(".//chapter-title")
                 source = book.find(".//source")
 
-    def fix_mixed_citation_ext_link(self):
-        replacements = {}
-        if '<ext-link' in self.content and '<mixed-citation>' in self.content:
-            mixed_citation = self.content[self.content.find('<mixed-citation>'):]
-            mixed_citation = mixed_citation[:mixed_citation.find('</mixed-citation>')+len('</mixed-citation>')]
-            new_mixed_citation = mixed_citation
-            if '<ext-link' not in mixed_citation:
-                for ext_link_item in self.content.replace('<ext-link', '~BREAK~<ext-link').split('~BREAK~'):
-                    if ext_link_item.startswith('<ext-link'):
-                        if '</ext-link>' in ext_link_item:
-                            ext_link_element = ext_link_item[0:ext_link_item.find('</ext-link>')+len('</ext-link>')]
-                            ext_link_content = ext_link_element[ext_link_element.find('>')+1:]
-                            ext_link_content = ext_link_content[0:ext_link_content.find('</ext-link>')]
-                            if '://' in ext_link_content:
-                                urls = ext_link_content.split('://')
-                                if ' ' not in urls[0]:
-                                    replacements[ext_link_content] = ext_link_element
-                for ext_link_content, ext_link_element in replacements.items():
-                    new_mixed_citation = new_mixed_citation.replace(ext_link_content, ext_link_element)
-                if new_mixed_citation != mixed_citation:
-                    self.content = self.content.replace(mixed_citation, new_mixed_citation)
+    def insert_ext_link_elements_in_mixed_citation(self):
+        """
+        Se no texto de mixed-citation há links não identificados como ext-link,
+        inserir ext-link baseados nos ext-links existentes em element-citation
+        """
+        links = self.tree.findall(".//mixed-citation//ext-link")
+        if links:
+            return
+        mixed_citation = self.tree.find(".//mixed-citation")
+        if mixed_citation is None:
+            return
+        links = self.tree.findall(".//element-citation//ext-link")
+        if not links:
+            return
+        mixed_citation_text = xml_utils.tostring(mixed_citation)
+        for link in links:
+            mixed_citation_text = mixed_citation_text.replace(
+                link.text, xml_utils.tostring(link)
+            )
+        new_mixed_citation = xml_utils.etree.fromstring(mixed_citation_text)
+        parent = mixed_citation.getparent()
+        parent.replace(mixed_citation, new_mixed_citation)
 
     def insert_label_text_in_mixed_citation_text(self):
         """

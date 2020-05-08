@@ -212,3 +212,26 @@ class TestBrokenRefFixBookData(TestCase):
         self.assertIsNone(obj.tree.find(".//article-title"))
         self.assertIsNone(obj.tree.find(".//chapter-title"))
 
+
+class TestBrokenRefLinksInMixedCitation(TestCase):
+
+    def test_insert_ext_link_elements_in_mixed_citation(self):
+        text = """<ref id="B04" xmlns:xlink="{}">
+            <label>4</label>
+            <mixed-citation>COB - Comitê Olímpico Brasileiro. Desafio para o corpo. Disponível em: http://www.cob.org.br/esportes/esporte.asp?id=39. (Acesso em 10 abr 2010)</mixed-citation>
+            <element-citation publication-type="webpage">
+                <person-group person-group-type="author">
+                    <collab>COB -Comitê Olímpico Brasileiro</collab>
+                </person-group>
+                <source>Desafio para o corpo</source>
+                <comment>Disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.cob.org.br/esportes/esporte.asp?id=39">http://www.cob.org.br/esportes/esporte.asp?id=39</ext-link></comment>
+                <date-in-citation content-type="access-date">10 abr 2010</date-in-citation>
+            </element-citation>
+        </ref>""".format(xml_utils.namespaces['xlink'])
+        xml = xml_utils.etree.fromstring(text)
+        obj = sps_pkgmaker.BrokenRef(xml)
+        obj.insert_ext_link_elements_in_mixed_citation()
+        self.assertEqual(
+            obj.tree.find(".//mixed-citation").find(".//ext-link").text,
+            obj.tree.find(".//element-citation").find(".//ext-link").text
+        )
