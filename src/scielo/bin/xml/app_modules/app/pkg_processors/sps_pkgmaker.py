@@ -10,6 +10,11 @@ messages = []
 
 
 class SPSXMLContent(xml_utils.BrokenXML):
+    """
+    Aplica:
+    - ajustes por migrações de versões SPS
+    - normalizações porque os pacotes ser gerados por quaisquer ferramentas
+    """
 
     def __init__(self, content):
         xml_utils.BrokenXML.__init__(self, content)
@@ -83,13 +88,9 @@ class SPSXMLContent(xml_utils.BrokenXML):
             xml_utils.remove_styles_from_tagged_content(node, STYLES)
 
     def normalize_references(self):
-        self.content = self.content.replace('<ref', '~BREAK~<ref')
-        self.content = self.content.replace('</ref>', '</ref>~BREAK~')
-        refs = []
-        for item in [SPSRefXMLContent(item) for item in self.content.split('~BREAK~') if item is not None and item.strip()!= '']:
-            item.normalize()
-            refs.append(item.content)
-        self.content = ''.join(refs)
+        for ref in self.xml.findall(".//ref"):
+            broken_ref = BrokenRef(ref)
+            broken_ref.normalize()
 
     def normalize_href_values(self):
         for href in self.doc.hrefs:
@@ -100,17 +101,17 @@ class SPSXMLContent(xml_utils.BrokenXML):
                     self.content = self.content.replace('href="' + href.src + '"', 'href="' + new + '"')
 
 
-class SPSRefXMLContent(xml_utils.BrokenXML):
+class BrokenRef(object):
 
-    def __init__(self, content):
-        xml_utils.BrokenXML.__init__(self, content)
+    def __init__(self, tree):
+        self.tree = tree
+        self.content = xml_utils.tostring(self.tree)
 
     def normalize(self):
-        if self.content.startswith('<ref') and self.content.endswith('</ref>'):
-            self.fix_mixed_citation_label()
-            self.fix_book_data()
-            self.fix_mixed_citation_ext_link()
-            self.fix_source()
+        self.insert_label_text_in_mixed_citation_text()
+        self.fix_book_data()
+        self.fix_mixed_citation_ext_link()
+        self.fix_source()
 
     def fix_book_data(self):
         if 'publication-type="book"' in self.content and '</article-title>' in self.content:
@@ -140,32 +141,26 @@ class SPSRefXMLContent(xml_utils.BrokenXML):
                 if new_mixed_citation != mixed_citation:
                     self.content = self.content.replace(mixed_citation, new_mixed_citation)
 
-    def fix_mixed_citation_label(self):
-        if '<label>' in self.content and '<mixed-citation>' in self.content:
-            mixed_citation = self.content[self.content.find('<mixed-citation>')+len('<mixed-citation>'):self.content.find('</mixed-citation>')]
-            label = self.content[self.content.find('<label>')+len('<label>'):self.content.find('</label>')]
-            changed = mixed_citation
-            if '<label>' not in mixed_citation:
-                if not changed.startswith(label):
-                    sep = ' '
-                    if changed.startswith('.'):
-                        changed = changed[1:].strip()
-                        sep = '. '
-                    if label.endswith('.'):
-                        label = label[0:-1]
-                        sep = '. '
-                    changed = label + sep + changed
-                if mixed_citation != changed:
-                    if mixed_citation in self.content:
-                        self.content = self.content.replace('<mixed-citation>' + mixed_citation + '</mixed-citation>', '<mixed-citation>' + changed + '</mixed-citation>')
-                    else:
-                        encoding.debugging('fix_mixed_citation_label()', 'Unable to insert label to mixed_citation')
-                        encoding.debugging('fix_mixed_citation_label()', 'mixed-citation:')
-                        encoding.debugging('fix_mixed_citation_label()', mixed_citation)
-                        encoding.debugging('fix_mixed_citation_label()', 'self.content:')
-                        encoding.debugging('fix_mixed_citation_label()', self.content)
-                        encoding.debugging('fix_mixed_citation_label()', 'changes:')
-                        encoding.debugging('fix_mixed_citation_label()', changed)
+    def insert_label_text_in_mixed_citation_text(self):
+        """
+        Insere o conteúdo de label no início de mixed-citation.
+        Insere ". " se não há separador em label nem em mixed-citation
+        """
+        mixed_citation = self.tree.find(".//mixed-citation")
+        if mixed_citation is None:
+            return
+        label = self.tree.find(".//label")
+        if label is None:
+            return
+        if mixed_citation.text.startswith(label.text):
+            return
+        label_text = label.text
+        if label.text[-1] == mixed_citation.text[0]:
+            label_text = label_text[:-1]
+        sep = " "
+        if not mixed_citation.text[0].isalnum():
+            sep = ""
+        mixed_citation.text = label_text + sep + mixed_citation.text
 
     def fix_source(self):
         if '<source' in self.content and '<mixed-citation' in self.content:
