@@ -19,10 +19,8 @@ class SPSXMLContent(xml_utils.BrokenXML):
         xml_utils.BrokenXML.__init__(self, content)
 
     def normalize(self):
-        if self.xml is not None:
-            if 'contrib-id-type="' in self.content:
-                for contrib_id, url in attributes.CONTRIB_ID_URLS.items():
-                    self.content = self.content.replace(' contrib-id-type="' + contrib_id + '">' + url, ' contrib-id-type="' + contrib_id + '">')
+        if self.xml:
+            self.remove_uri_from_contrib_id()
             #content = remove_xmllang_off_article_title(content)
             self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
             self.content = self.content.replace('<comment content-type="cited"', '<comment')
@@ -44,6 +42,16 @@ class SPSXMLContent(xml_utils.BrokenXML):
             self.content = self.content.replace('<institution content-type="normalized"/>', '')
             self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
             self.content = xml_utils.pretty_print(self.content)
+
+    def remove_uri_from_contrib_id(self):
+        if self.xml.find(".//contrib-id") is None:
+            return
+        for contrib_id_type, uri in attributes.CONTRIB_ID_URLS.items():
+            xpath = ".//contrib-id[@contrib-id-type='{}']".format(
+                contrib_id_type)
+            for contrib_id in self.xml.findall(xpath):
+                if uri in contrib_id.text:
+                    contrib_id.text = contrib_id.text.replace(uri, "")
 
     def set_doctype(self, dtd_location_type):
         """

@@ -38,6 +38,31 @@ class TestSPSXMLContent(TestCase):
         obj.remove_styles_from_tagged_content("source")
         self.assertEqual(obj.content, expected)
 
+    def test_remove_uri_from_contrib_id(self):
+        text = """<contrib-group>
+        <contrib contrib-type="author">
+            <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-8528-2091</contrib-id>
+            <contrib-id contrib-id-type="scopus">https://www.scopus.com/authid/detail.uri?authorId=24771926600</contrib-id>
+            <name>
+                <surname>Einstein</surname>
+                <given-names>Albert</given-names>
+            </name>
+        </contrib>
+        <contrib contrib-type="author">
+            <contrib-id contrib-id-type="lattes">https://lattes.cnpq.br/4760273612238540</contrib-id>
+            <name>
+                <surname>Meneghini</surname>
+                <given-names>Rogerio</given-names>
+            </name>
+        </contrib></contrib-group>"""
+        obj = sps_pkgmaker.SPSXMLContent(text)
+        obj.remove_uri_from_contrib_id()
+        self.assertEqual(
+            ['0000-0001-8528-2091', '24771926600', '4760273612238540'],
+            [contrib_id.text
+             for contrib_id in obj.xml.findall(".//contrib-id")]
+        )
+
 
 class TestBrokenRef(TestCase):
 
