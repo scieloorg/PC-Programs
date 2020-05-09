@@ -17,8 +17,9 @@ class SPSXMLContent(xml_utils.BrokenXML):
 
     def __init__(self, content):
         xml_utils.BrokenXML.__init__(self, content)
+        self._normalize()
 
-    def normalize(self):
+    def _normalize(self):
         if self.xml is None:
             return
         # remove elementos
@@ -46,7 +47,6 @@ class SPSXMLContent(xml_utils.BrokenXML):
 
         self.fix_content()
         self.normalize_references()
-        self.content = xml_utils.pretty_print(self.content)
 
     def fix_content(self):
         """

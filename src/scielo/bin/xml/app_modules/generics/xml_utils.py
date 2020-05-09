@@ -81,6 +81,8 @@ class BrokenXML(object):
             self.filename = str_or_filepath
             str_or_filepath = fs_utils.read_file(self.filename)
         parsed_content = parse_content(str_or_filepath)
+        print("")
+        print(parsed_content)
         self.processing_instruction = parsed_content[0]
         self.doctype = parsed_content[1]
         self.original = parsed_content[2]
@@ -112,18 +114,21 @@ class BrokenXML(object):
         self._content = value.strip()
         self._xml, self.xml_error = load_xml(self._content)
 
-    @property
-    def content_with_processing_instruction_and_doctype(self):
+    def fixed(self, complete=True, pretty=True):
         """
         Retorna o XML completo, com processing instruction e doctype
         """
-        parts = [
-            self.processing_instruction,
-            self.doctype,
-            self.content
-        ]
-        return "\n".join([item for item in parts if item])
-
+        content = self.content
+        if pretty:
+            content = pretty_print(content)
+        if complete:
+            parts = [
+                self.processing_instruction,
+                self.doctype,
+                content
+            ]
+            content = "\n".join([item for item in parts if item])
+        return content
 
 
 def replace_doctype(content, new_doctype):

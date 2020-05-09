@@ -647,7 +647,6 @@ class SGMLXML2SPSXML(object):
 
     def normalize_xml(self):
         spsxmlcontent = sps_pkgmaker.SPSXMLContent(self.xml_content)
-        spsxmlcontent.normalize()
         self.xml_content = spsxmlcontent.content
         self.replace_mimetypes()
 

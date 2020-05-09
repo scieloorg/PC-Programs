@@ -97,11 +97,8 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
     for src, dest in zip(article_files_items, dest_article_files_items):
         src.tiff2jpg()
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
-        xmlcontent.normalize()
         xmlcontent.set_doctype(dtd_location_type)
-        fs_utils.write_file(
-            dest.filename,
-            xmlcontent.content_with_processing_instruction_and_doctype)
+        fs_utils.write_file(dest.filename, xmlcontent.fixed())
         src.copy_related_files(dest_path)
 
         outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
