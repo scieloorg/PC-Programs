@@ -5,18 +5,12 @@ import tempfile
 
 from lxml import etree
 
-try:
-    import html.parser as html_parser
-except ImportError:
-    import HTMLParser as html_parser
+import html
 
 from ..__init__ import _
-from ..__init__ import TABLES_PATH
 from . import fs_utils
 from . import encoding
 
-
-ENTITIES_TABLE = None
 
 namespaces = {}
 namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'
@@ -25,6 +19,81 @@ namespaces['mml'] = 'http://www.w3.org/1998/Math/MathML'
 
 for namespace_id, namespace_link in namespaces.items():
     etree.register_namespace(namespace_id, namespace_link)
+
+
+class Entity2Char:
+    LT = (
+        ('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&#x003C;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&#x03C;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&#x3C;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&#60;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&lt;', '<REPLACEENT>lt</REPLACEENT>'),
+    )
+    GT = (
+        ('&#x0003E;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&#x003E;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&#x03E;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&#x3E;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&#62;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&gt;', '<REPLACEENT>gt</REPLACEENT>'),
+    )
+
+    def __init__(self):
+        pass
+
+    def convert(self, content):
+        if '&' not in content:
+            return content
+        for find, replace in self.LT + self.GT:
+            content = content.replace(find, replace)
+        content = html.unescape(content)
+        content = html.unescape(content)
+        content = self._replace_incomplete_entity(content)
+        content = content.replace("&", "&amp;")
+        content = content.replace("<REPLACEENT>", "&")
+        content = content.replace("</REPLACEENT>", ";")
+        return content
+
+    def _replace_incomplete_entity(self, content):
+        result = []
+        for item in content.replace('&', '~BREAK~&').split('~BREAK~'):
+            if item.startswith('&'):
+                ent = self._looks_like_entity(item)
+                if ent:
+                    entity = ent
+                    if entity[-1] != ";":
+                        entity += ";"
+                    new = html.unescape(entity)
+                    if new != entity:
+                        item = new + item[len(ent):]
+                        print(new)
+            result.append(item)
+        return ''.join(result)
+
+    def _looks_like_entity(self, text):
+        if len(text) < 2:
+            return
+        ent = "&"
+        if text[1] == "#":
+            for c in text[2:]:
+                if c.isalnum():
+                    ent += c
+                    continue
+                if c == ";":
+                    ent += c
+                break
+        else:
+            for c in text[1:]:
+                if c.isalpha():
+                    ent += c
+                    continue
+                if c == ";":
+                    ent += c
+                break
+        return ent
+
+entity2char = Entity2Char()
 
 
 def date_element(date_node):
@@ -41,22 +110,6 @@ def date_element(date_node):
 def element_lang(node):
     if node is not None:
         return node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-
-
-def load_entities_table():
-    table = {}
-    entities_filename = TABLES_PATH + '/entities.csv'
-    if os.path.isfile(entities_filename):
-        for item in fs_utils.read_file_lines(entities_filename):
-            items = item.split('|')
-            if len(items) == 5:
-                symbol, number_ent, named_ent, descr, representation = items
-                table[named_ent] = symbol
-    else:
-        encoding.debugging('load_entities_table()', 'NOT FOUND ' + entities_filename)
-    encoding.display_message(entities_filename)
-    encoding.display_message(len(table))
-    return table
 
 
 class BrokenXML(object):
@@ -103,9 +156,6 @@ class BrokenXML(object):
         Atribui valor apenas para XML em si
         """
         value = well_formed_xml_content(value)
-
-        # converte as entidades em caracteres
-        value, replaced_named_ent = convert_entities_to_chars(value)
 
         self._content = value.strip()
         self._xml, self.xml_error = load_xml(self._content)
@@ -215,149 +265,7 @@ def tostring(node, pretty_print=False):
         return encoding.decode(etree.tostring(node, encoding='utf-8', pretty_print=pretty_print))
 
 
-def complete_entity(xml_content):
-    result = []
-    for item in xml_content.replace('&#', '~BREAK~&#').split('~BREAK~'):
-        if item.startswith('&#'):
-            words = item.split(' ')
-            if len(words) > 0:
-                ent = words[0][2:]
-                if ent.isdigit():
-                    words[0] += ';'
-            item = ' '.join(words)
-        result.append(item)
-    return ''.join(result)
 
-
-def preserve_xml_entities(content):
-    if '&' in content:
-        content = content.replace('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#x0003E;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#x00026;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&#x003C;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#x003E;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#x0026;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&#x03C;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#x03E;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#x026;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&#x3C;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#x3E;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#x26;', '<REPLACEENT>amp</REPLACEENT>')
-
-        #content = content.replace('&quot;', '<REPLACEENT>quot</REPLACEENT>')
-        #content = content.replace('&#34;', '<REPLACEENT>quot</REPLACEENT>')
-        content = content.replace('&#60;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#62;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#38;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&lt;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&gt;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&amp;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&#xA0;', u"\u00A0")
-        content = content.replace('&#160;', u"\u00A0")
-
-    return content
-
-
-def named_ent_to_char(content):
-    replaced_named_ent = []
-
-    if '&' in content:
-        text = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
-        entities = list(set([item for item in text.split('_BREAK_') if item.startswith('&') and item.endswith(';')]))
-        if len(entities) > 0:
-            global ENTITIES_TABLE
-
-            if ENTITIES_TABLE is None:
-                ENTITIES_TABLE = load_entities_table()
-            if ENTITIES_TABLE is not None:
-                for ent in entities:
-                    new = ENTITIES_TABLE.get(ent, ent)
-                    if new != ent:
-                        replaced_named_ent.append(ent + '=>' + new)
-                        content = content.replace(ent, new)
-    return (content, replaced_named_ent)
-
-
-def register_remaining_named_entities(content):
-    if '&' in content:
-        entities = []
-        if os.path.isfile('./named_entities.txt'):
-            entities = fs_utils.read_file_lines('./named_entities.txt')
-        content = content[content.find('&'):]
-        l = content.split('&')
-        for item in l:
-            if not item.startswith('#') and ';' in item:
-                ent = item[0:item.find(';')]
-                entities.append('&' + ent + ';')
-        entities = sorted(list(set(entities)))
-        if len(entities) > 0:
-            fs_utils.write_file('./named_entities.txt', '\n'.join(entities))
-
-
-def htmlent2char(content):
-    if '&' in content:
-        h = html_parser.HTMLParser()
-        try:
-            content = encoding.decode(content)
-            content = h.unescape(content)
-        except Exception as e:
-            content = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
-            parts = content.split('_BREAK_')
-            new = u''
-            for part in parts:
-                if part.startswith('&') and part.endswith(';'):
-                    try:
-                        part = h.unescape(part)
-                    except Exception as e:
-                        encoding.report_exception('htmlent2char(): h.unescape', e, part)
-                        part = '??'
-                try:
-                    new += part
-                except Exception as e:
-                    encoding.report_exception('htmlent2char() 2', e, part)
-                    new += '??'
-                    encoding.report_exception('htmlent2char() 3', e, type(content))
-                    encoding.report_exception('htmlent2char() 4', e, type(part))
-                    x
-            content = new
-    return content
-
-
-def restore_xml_entities(content):
-    if '<REPLACEENT>' in content:
-        content = content.replace('<REPLACEENT>gt</REPLACEENT>', '&gt;')
-        content = content.replace('<REPLACEENT>lt</REPLACEENT>', '&lt;')
-        content = content.replace('<REPLACEENT>amp</REPLACEENT>', '&amp;')
-        #content = content.replace('<REPLACEENT>quot</REPLACEENT>', '&#34;')
-    return content
-
-
-def convert_entities_to_chars(content, debug=False):
-    replaced_named_ent = []
-    if '&' in content:
-        content = preserve_xml_entities(content)
-        content = htmlent2char(content)
-        content = content.replace('&mldr;', u"\u2026")
-        content, replaced_named_ent = named_ent_to_char(content)
-        register_remaining_named_entities(content)
-        content = restore_xml_entities(content)
-    return content, replaced_named_ent
-
-
-def handle_mml_entities(content):
-    if '<mml:' in content:
-        temp = content.replace('<mml:math', 'BREAKBEGINCONSERTA<mml:math')
-        temp = temp.replace('</mml:math>', '</mml:math>BREAKBEGINCONSERTA')
-        replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<mml:math' in item and '&' in item]
-        for repl in replaces:
-            content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
-    if '<math' in content:
-        temp = content.replace('<math', 'BREAKBEGINCONSERTA<math')
-        temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
-        replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item and '&' in item]
-        for repl in replaces:
-            content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
-    return content
 
 
 def load_xml(str_or_filepath):
@@ -590,8 +498,8 @@ def well_formed_xml_content(xml_content):
     # remove "junk" (texto após a última tag)
     if not xml_content.endswith('>'):
         xml_content = xml_content[:xml_content.rfind('>')+1]
-    # completa entidades que faltam ;
-    xml_content = complete_entity(xml_content)
+    # converte as entidades em caracteres
+    xml_content = entity2char.convert(xml_content)
     return xml_content
 
 

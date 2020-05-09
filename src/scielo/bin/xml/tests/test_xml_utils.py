@@ -16,10 +16,73 @@ class TextUtils(TestCase):
         expected = "<?xml version...?>\n<doc><p></p>"
         self.assertEqual(expected, xml_utils.well_formed_xml_content(text))
 
-    # def test_well_formed_xml_content_restores_incomplete_entities(self):
-    #     text = "<?xml version...?>\n<doc><p>&#91</p>"
-    #     expected = "<?xml version...?>\n<doc><p>&#91;</p>"
-    #     self.assertEqual(expected, xml_utils.well_formed_xml_content(text))
+
+class TextEntity2Char(TestCase):
+    def test_convert_converts_decimal_entity(self):
+        text = "&#30952;"
+        expected = "磨"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_named_entity(self):
+        text = "&ccedil;&yuml;"
+        expected = "çÿ"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_hexadecimal_entity(self):
+        text = "&#x987;"
+        expected = "ই"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_incomplete_entity(self):
+        text = "&#30952&#x987"
+        expected = "磨ই"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_incomplete_ccedil_entity(self):
+        text = "&ccedil"
+        expected = "ç"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_incomplete_ge_entity(self):
+        text = "&ge."
+        expected = "≥."
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_amp_plus_entity(self):
+        text = "&amp;ccedil;&amp;#x987;"
+        expected = "çই"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_amp_plus_incomplete_entity(self):
+        text = "&amp;ccedil&amp;#x987"
+        expected = "çই"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_does_not_convert_amp_entity(self):
+        text = "&amp;"
+        expected = "&amp;"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_ge_entity(self):
+        text = "&ge;"
+        expected = "≥"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_does_not_convert_lt_and_gt_entity(self):
+        text = "&lt;&gt;"
+        expected = "&lt;&gt;"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
 
 
 class TestLoadXML(TestCase):
@@ -76,9 +139,9 @@ class TestLoadXML(TestCase):
             errors
         )
 
-    # def test_load_xml_return_errors_if_there_are_incomplete_entities(self):
-    #     xml, errors = xml_utils.load_xml("<root><a>&#91</a></root>")
-    #     self.assertIsNotNone(errors)
+    def test_load_xml_return_errors_if_there_are_incomplete_entities(self):
+        xml, errors = xml_utils.load_xml("<root><a>&#91</a></root>")
+        self.assertIsNotNone(errors)
 
 
 class TestRemoveStylesTags(TestCase):
