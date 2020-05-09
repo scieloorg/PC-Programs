@@ -161,6 +161,35 @@ class TestMergeStylesTags(TestCase):
         self.assertEqual(result, expected)
 
 
+class TestXMLRemoveFunctions(TestCase):
+
+    def test_remove_attribute(self):
+        text = """<root>
+        <contrib contrib-type="editor">
+            <contrib-id contrib-id-type="orcid">0000-0001-8528-2091</contrib-id>
+            <contrib-id contrib-id-type="scopus">24771926600</contrib-id>
+            <name>
+                <surname>Einstein</surname>
+                <given-names>Albert</given-names>
+            </name>
+        </contrib>
+        <contrib contrib-type="author">
+            <contrib-id contrib-id-type="lattes">4760273612238540</contrib-id>
+            <name>
+                <surname>Meneghini</surname>
+                <given-names>Rogerio</given-names>
+            </name>
+        </contrib></root>
+        """
+        root = xml_utils.etree.fromstring(text)
+        xml_utils.remove_attribute(root, ".//contrib[@contrib-type='author']", "contrib-type")
+        self.assertEqual(
+            ['editor', None],
+            [contrib.get("contrib-type")
+             for contrib in root.findall(".//contrib")]
+        )
+
+
 class TestBrokenXML(TestCase):
 
     def test_init_xml_with_junk_is_loaded_without_errors(self):

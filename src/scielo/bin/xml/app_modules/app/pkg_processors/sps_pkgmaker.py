@@ -26,7 +26,10 @@ class SPSXMLContent(xml_utils.BrokenXML):
             self.xml, ".//institution[@content-type='normalized']")
         #content = remove_xmllang_off_article_title(content)
         self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
-        self.content = self.content.replace('<comment content-type="cited"', '<comment')
+
+        xml_utils.remove_attribute(
+            self.xml, ".//comment[@content-type='cited']", 'content-type')
+
         self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
         self.content = self.content.replace('&amp;amp;', '&amp;')
         self.content = self.content.replace('&amp;#', '&#')

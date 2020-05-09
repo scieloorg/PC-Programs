@@ -561,6 +561,16 @@ def remove_nodes(root, xpath):
         parent.remove(node)
 
 
+def remove_attribute(root, xpath, attr_name):
+    """
+    Localiza nodes por xpath
+    Remove o atributo cujo nome é attr_name
+    """
+    for node in root.findall(xpath):
+        if node.get(attr_name):
+            node.attrib.pop(attr_name)
+
+
 class PrettyXML(object):
 
     def __init__(self, xml):
