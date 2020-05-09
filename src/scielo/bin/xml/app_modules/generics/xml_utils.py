@@ -571,6 +571,13 @@ def remove_attribute(root, xpath, attr_name):
             node.attrib.pop(attr_name)
 
 
+def replace_attribute_values(root, tuple_attr_name_and_value_and_new_value):
+    for attrname, value, new_value in tuple_attr_name_and_value_and_new_value:
+        xpath = ".//*[@{}='{}']".format(attrname, value)
+        for node in root.findall(xpath):
+            node.set(attrname, new_value)
+
+
 class PrettyXML(object):
 
     def __init__(self, xml):
