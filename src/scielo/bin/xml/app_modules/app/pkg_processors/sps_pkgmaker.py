@@ -21,18 +21,13 @@ class SPSXMLContent(xml_utils.BrokenXML):
     def normalize(self):
         if self.xml is None:
             return
-        self.remove_uri_off_contrib_id()
+
         xml_utils.remove_nodes(
             self.xml, ".//institution[@content-type='normalized']")
-
-        self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
+        for tag in ['article-title', 'trans-title', 'kwd', 'source']:
+            self.remove_styles_off_tagged_content(tag)
 
         self.remove_attributes()
-
-        self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
-        self.content = self.content.replace('&amp;amp;', '&amp;')
-        self.content = self.content.replace('&amp;#', '&#')
-
         xml_utils.replace_attribute_values(
             self.xml,
             (
@@ -43,13 +38,16 @@ class SPSXMLContent(xml_utils.BrokenXML):
             )
         )
 
+        self.remove_uri_off_contrib_id()
+        self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
+        self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
+        self.content = self.content.replace('&amp;amp;', '&amp;')
+        self.content = self.content.replace('&amp;#', '&#')
         self.content = self.content.replace(' rid=" ', ' rid="')
         self.content = self.content.replace(' id=" ', ' id="')
-
         self.content = self.content.replace('> :', '>: ')
+
         self.normalize_references()
-        for tag in ['article-title', 'trans-title', 'kwd', 'source']:
-            self.remove_styles_off_tagged_content(tag)
         self.content = xml_utils.pretty_print(self.content)
 
     def remove_uri_off_contrib_id(self):
