@@ -10,6 +10,18 @@ from app_modules.generics import xml_utils
 python_version = sys.version_info.major
 
 
+class TextUtils(TestCase):
+    def test_well_formed_xml_content_removes_junk_after_last_close_tag(self):
+        text = "<?xml version...?>\n<doc><p></p> lixo"
+        expected = "<?xml version...?>\n<doc><p></p>"
+        self.assertEqual(expected, xml_utils.well_formed_xml_content(text))
+
+    # def test_well_formed_xml_content_restores_incomplete_entities(self):
+    #     text = "<?xml version...?>\n<doc><p>&#91</p>"
+    #     expected = "<?xml version...?>\n<doc><p>&#91;</p>"
+    #     self.assertEqual(expected, xml_utils.well_formed_xml_content(text))
+
+
 class TestLoadXML(TestCase):
 
     def test_load_xml_successfully_from_str(self):
@@ -64,9 +76,13 @@ class TestLoadXML(TestCase):
             errors
         )
 
+    # def test_load_xml_return_errors_if_there_are_incomplete_entities(self):
+    #     xml, errors = xml_utils.load_xml("<root><a>&#91</a></root>")
+    #     self.assertIsNotNone(errors)
+
 
 class TestRemoveStylesTags(TestCase):
-        
+
     def test_remove_styles_off_tagged_content_removes_italic(self):
         text = "<root><source><italic>texto</italic></source></root>"
         expected = "<source>texto</source>"
@@ -182,7 +198,8 @@ class TestXMLRemoveFunctions(TestCase):
         </contrib></root>
         """
         root = xml_utils.etree.fromstring(text)
-        xml_utils.remove_attribute(root, ".//contrib[@contrib-type='author']", "contrib-type")
+        xml_utils.remove_attribute(
+            root, ".//contrib[@contrib-type='author']", "contrib-type")
         self.assertEqual(
             ['editor', None],
             [contrib.get("contrib-type")
@@ -195,13 +212,17 @@ class TestBrokenXML(TestCase):
     def test_init_xml_with_junk_is_loaded_without_errors(self):
         text = "<doc/> lixo"
         broken = xml_utils.BrokenXML(text)
-        self.assertEqual(broken.content, "<doc/>")
+        self.assertEqual(
+            broken.content_with_processing_instruction_and_doctype,
+            "<doc/>")
         self.assertIsNone(broken.xml_error)
 
     def test_init_xml_is_ok(self):
         text = "<doc/>"
         broken = xml_utils.BrokenXML(text)
-        self.assertEqual(broken.content, "<doc/>")
+        self.assertEqual(
+            broken.content_with_processing_instruction_and_doctype,
+            "<doc/>")
         self.assertIsNone(broken.xml_error)
         self.assertIsNone(broken.doctype)
         self.assertIsNone(broken.processing_instruction)
@@ -213,7 +234,8 @@ class TestBrokenXML(TestCase):
         self.assertEqual(
             broken.doctype, "<!DOCTYPE doctype ...>")
         self.assertEqual(
-            broken.content, "<!DOCTYPE doctype ...>\n<doc/>")
+            broken.content_with_processing_instruction_and_doctype,
+            "<!DOCTYPE doctype ...>\n<doc/>")
 
     def test_init_xml_with_no_doctype(self):
         text = "<?xml version...?>\n<doc/> lixo"
@@ -222,4 +244,13 @@ class TestBrokenXML(TestCase):
             broken.processing_instruction, "<?xml version...?>")
         self.assertIsNone(broken.doctype)
         self.assertEqual(
-            broken.content, "<?xml version...?>\n<doc/>")
+            broken.content_with_processing_instruction_and_doctype,
+            "<?xml version...?>\n<doc/>")
+
+    def test_content_returns_characteres_instead_their_entities(self):
+        text = "<?xml version...?>\n<doc><p>&#91;&ccedil;&#93;</p> lixo"
+        expected = "<?xml version...?>\n<doc><p>[ç]</p>"
+        broken = xml_utils.BrokenXML(text)
+        self.assertEqual(
+            expected,
+            broken.content_with_processing_instruction_and_doctype)

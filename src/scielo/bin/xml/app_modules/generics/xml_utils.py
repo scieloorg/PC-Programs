@@ -73,52 +73,57 @@ class BrokenXML(object):
     def __init__(self, str_or_filepath, namespaces=None):
         self.namespaces = namespaces
         self._xml = None
+        self._content = None
         self.processing_instruction = None
         self.doctype = None
         self.filename = None
         if str_or_filepath.endswith(".xml"):
             self.filename = str_or_filepath
             str_or_filepath = fs_utils.read_file(self.filename)
-        self.content = self._normalize(str_or_filepath)
-
-    @property
-    def content(self):
-        parts = [
-            self.processing_instruction,
-            self.doctype,
-            encoding.decode(etree.tostring(self._xml, encoding="utf-8"))
-        ]
-        return "\n".join([item for item in parts if item])
+        parsed_content = parse_content(str_or_filepath)
+        self.processing_instruction = parsed_content[0]
+        self.doctype = parsed_content[1]
+        self.original = parsed_content[2]
+        self.content = self.original
 
     @property
     def xml(self):
         return self._xml
 
+    @property
+    def content(self):
+        """
+        Retorna apenas o XML em si
+        """
+        if self._xml is None:
+            return self._content
+        return encoding.decode(etree.tostring(self._xml, encoding="utf-8"))
+
     @content.setter
-    def content(self, normalized):
-        if '<?xml' in normalized:
-            p = normalized.find('>')
-            self.processing_instruction = normalized[:p+1]
-            normalized = normalized[p+1:]
+    def content(self, value):
+        """
+        Atribui valor apenas para XML em si
+        """
+        value = well_formed_xml_content(value)
 
-        if '<!DOCTYPE' in normalized:
-            p = normalized.find('>')
-            self.doctype = normalized[:p+1].strip()
-            normalized = normalized[p+1:]
-
-        normalized = normalized.strip()
-
-        self._xml, self.xml_error = load_xml(normalized)
-
-    def _normalize(self, content):
-        # remove "junk" (texto após a última tag)
-        if not content.endswith('>'):
-            content = content[:content.rfind('>')+1]
-        # completa entidades que faltam ;
-        content = complete_entity(content)
         # converte as entidades em caracteres
-        content, replaced_named_ent = convert_entities_to_chars(content)
-        return content
+        value, replaced_named_ent = convert_entities_to_chars(value)
+
+        self._content = value.strip()
+        self._xml, self.xml_error = load_xml(self._content)
+
+    @property
+    def content_with_processing_instruction_and_doctype(self):
+        """
+        Retorna o XML completo, com processing instruction e doctype
+        """
+        parts = [
+            self.processing_instruction,
+            self.doctype,
+            self.content
+        ]
+        return "\n".join([item for item in parts if item])
+
 
 
 def replace_doctype(content, new_doctype):
@@ -576,6 +581,37 @@ def replace_attribute_values(root, tuple_attr_name_and_value_and_new_value):
         xpath = ".//*[@{}='{}']".format(attrname, value)
         for node in root.findall(xpath):
             node.set(attrname, new_value)
+
+
+def well_formed_xml_content(xml_content):
+    # remove "junk" (texto após a última tag)
+    if not xml_content.endswith('>'):
+        xml_content = xml_content[:xml_content.rfind('>')+1]
+    # completa entidades que faltam ;
+    xml_content = complete_entity(xml_content)
+    return xml_content
+
+
+def parse_content(xml_content):
+    """
+    Lê uma string e retorna uma tupla de
+    processing_instruction, doctype, xml content
+    """
+    processing_instruction = None
+    if '<?xml' in xml_content:
+        p = xml_content.find('>')
+        processing_instruction = xml_content[:p+1]
+        xml_content = xml_content[p+1:]
+
+    doctype = None
+    if '<!DOCTYPE' in xml_content:
+        p = xml_content.find('>')
+        doctype = xml_content[:p+1].strip()
+        xml_content = xml_content[p+1:]
+
+    xml_content = xml_content.strip()
+
+    return processing_instruction, doctype, xml_content
 
 
 class PrettyXML(object):

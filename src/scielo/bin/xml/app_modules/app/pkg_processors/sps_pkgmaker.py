@@ -64,7 +64,6 @@ class SPSXMLContent(xml_utils.BrokenXML):
         content = content.replace('> :', '>: ')
         self.content = content
 
-
     def remove_uri_off_contrib_id(self):
         if self.xml.find(".//contrib-id") is None:
             return

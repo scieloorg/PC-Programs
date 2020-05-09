@@ -99,7 +99,9 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
         xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
         xmlcontent.normalize()
         xmlcontent.set_doctype(dtd_location_type)
-        fs_utils.write_file(dest.filename, xmlcontent.content)
+        fs_utils.write_file(
+            dest.filename,
+            xmlcontent.content_with_processing_instruction_and_doctype)
         src.copy_related_files(dest_path)
 
         outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
