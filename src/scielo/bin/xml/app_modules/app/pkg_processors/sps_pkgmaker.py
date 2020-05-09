@@ -27,8 +27,7 @@ class SPSXMLContent(xml_utils.BrokenXML):
         #content = remove_xmllang_off_article_title(content)
         self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
 
-        xml_utils.remove_attribute(
-            self.xml, ".//comment[@content-type='cited']", 'content-type')
+        self.remove_attributes()
 
         self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
         self.content = self.content.replace('&amp;amp;', '&amp;')
@@ -39,8 +38,7 @@ class SPSXMLContent(xml_utils.BrokenXML):
         self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
         self.content = self.content.replace(' rid=" ', ' rid="')
         self.content = self.content.replace(' id=" ', ' id="')
-        self.remove_xmllang_from_element('article-title')
-        self.remove_xmllang_from_element('source')
+
         self.content = self.content.replace('> :', '>: ')
         self.normalize_references()
         for tag in ['article-title', 'trans-title', 'kwd', 'source']:
@@ -73,14 +71,21 @@ class SPSXMLContent(xml_utils.BrokenXML):
             self.doctype = self.doctype.replace(
                 rem.replace('https:', 'http:'), loc)
 
-    def remove_xmllang_from_element(self, tag):
+    def remove_attributes(self):
         """
-        Remove @xml:lang de dado elemento
+        Remove atributos como:
+        - @xml:lang de article-title e source
+        - @content-type de comment
         """
-        xpath = ".//{}[@{http://www.w3.org/XML/1998/namespace}lang]".format(
-            tag)
-        for elem in self.xml.findall(xpath):
-            elem.attrib.pop("{http://www.w3.org/XML/1998/namespace}lang")
+        xpath_and_attr = (
+            (".//comment[@content-type='cited']", 'content-type'),
+            (".//article-title[@{http://www.w3.org/XML/1998/namespace}lang]",
+             '{http://www.w3.org/XML/1998/namespace}lang'),
+            (".//source[@{http://www.w3.org/XML/1998/namespace}lang]",
+             '{http://www.w3.org/XML/1998/namespace}lang'),
+        )
+        for xpath, attr in xpath_and_attr:
+            xml_utils.remove_attribute(self.xml, xpath, attr)
 
     def remove_styles_from_tagged_content(self, tag):
         """
