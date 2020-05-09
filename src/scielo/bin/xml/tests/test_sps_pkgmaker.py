@@ -11,34 +11,34 @@ python_version = sys.version_info.major
 
 class TestSPSXMLContent(TestCase):
 
-    def test_remove_styles_from_tagged_content_removes_all_italics(self):
+    def test_remove_styles_off_tagged_content_removes_all_italics(self):
         text = "<root><source><italic>texto 1</italic> <italic>texto 2</italic></source></root>"
         expected = "<root><source>texto 1 texto 2</source></root>"
         obj = sps_pkgmaker.SPSXMLContent(text)
-        obj.remove_styles_from_tagged_content("source")
+        obj.remove_styles_off_tagged_content("source")
         self.assertEqual(obj.content, expected)
 
-    def test_remove_styles_from_tagged_content_removes_bold_and_italics(self):
+    def test_remove_styles_off_tagged_content_removes_bold_and_italics(self):
         text = "<root><source><bold> <italic>texto 1</italic> <italic>texto 2</italic> </bold></source></root>"
         expected = "<root><source> texto 1 texto 2 </source></root>"
         obj = sps_pkgmaker.SPSXMLContent(text)
-        obj.remove_styles_from_tagged_content("source")
+        obj.remove_styles_off_tagged_content("source")
         self.assertEqual(obj.content, expected)
 
-    def test_remove_styles_from_tagged_content_does_not_remove_bold(self):
+    def test_remove_styles_off_tagged_content_does_not_remove_bold(self):
         text = "<root><source>texto 1 <bold>texto bold</bold> texto 2</source></root>"
         obj = sps_pkgmaker.SPSXMLContent(text)
-        obj.remove_styles_from_tagged_content("source")
+        obj.remove_styles_off_tagged_content("source")
         self.assertEqual(obj.content, text)
 
-    def test_remove_styles_from_tagged_content_does_not_remove_italic(self):
+    def test_remove_styles_off_tagged_content_does_not_remove_italic(self):
         text = "<root><source><bold> <italic>texto 1</italic> sem estilo <italic>texto 2</italic> </bold></source></root>"
         expected = "<root><source> <italic>texto 1</italic> sem estilo <italic>texto 2</italic> </source></root>"
         obj = sps_pkgmaker.SPSXMLContent(text)
-        obj.remove_styles_from_tagged_content("source")
+        obj.remove_styles_off_tagged_content("source")
         self.assertEqual(obj.content, expected)
 
-    def test_remove_uri_from_contrib_id(self):
+    def test_remove_uri_off_contrib_id(self):
         text = """<contrib-group>
         <contrib contrib-type="author">
             <contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-8528-2091</contrib-id>
@@ -56,7 +56,7 @@ class TestSPSXMLContent(TestCase):
             </name>
         </contrib></contrib-group>"""
         obj = sps_pkgmaker.SPSXMLContent(text)
-        obj.remove_uri_from_contrib_id()
+        obj.remove_uri_off_contrib_id()
         self.assertEqual(
             ['0000-0001-8528-2091', '24771926600', '4760273612238540'],
             [contrib_id.text

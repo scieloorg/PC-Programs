@@ -540,7 +540,7 @@ def merge_siblings_style_tags_content(node, styles_tags):
             parent.remove(previous)
 
 
-def remove_styles_from_tagged_content(node, styles_tags):
+def remove_styles_off_tagged_content(node, styles_tags):
     """
     Remove as tags de estilos se elas estão aplicadas no elemento inteiro
     pois as tags de estilos só fazem sentido se aplicadas em partes do elemento

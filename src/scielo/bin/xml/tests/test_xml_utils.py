@@ -67,48 +67,48 @@ class TestLoadXML(TestCase):
 
 class TestRemoveStylesTags(TestCase):
         
-    def test_remove_styles_from_tagged_content_removes_italic(self):
+    def test_remove_styles_off_tagged_content_removes_italic(self):
         text = "<root><source><italic>texto</italic></source></root>"
         expected = "<source>texto</source>"
         obj = xml_utils.etree.fromstring(text)
         node = obj.find(".//source")
-        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        xml_utils.remove_styles_off_tagged_content(node, ('bold', 'italic'))
         result = xml_utils.tostring(node)
         self.assertEqual(result, expected)
 
-    def test_remove_styles_from_tagged_content_removes_bold(self):
+    def test_remove_styles_off_tagged_content_removes_bold(self):
         text = "<root><source><bold>texto</bold></source></root>"
         expected = "<source>texto</source>"
         obj = xml_utils.etree.fromstring(text)
         node = obj.find(".//source")
-        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        xml_utils.remove_styles_off_tagged_content(node, ('bold', 'italic'))
         result = xml_utils.tostring(node)
         self.assertEqual(result, expected)
 
-    def test_remove_styles_from_tagged_content_does_not_remove_bold(self):
+    def test_remove_styles_off_tagged_content_does_not_remove_bold(self):
         text = "<root><source>texto 1 <bold>texto bold</bold> texto 2</source></root>"
         expected = "<source>texto 1 <bold>texto bold</bold> texto 2</source>"
         obj = xml_utils.etree.fromstring(text)
         node = obj.find(".//source")
-        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        xml_utils.remove_styles_off_tagged_content(node, ('bold', 'italic'))
         result = xml_utils.tostring(node)
         self.assertEqual(result, expected)
 
-    def test_remove_styles_from_tagged_content_does_not_remove_italic(self):
+    def test_remove_styles_off_tagged_content_does_not_remove_italic(self):
         text = "<root><source>texto 1 <italic>texto italic</italic> texto 2</source></root>"
         expected = "<source>texto 1 <italic>texto italic</italic> texto 2</source>"
         obj = xml_utils.etree.fromstring(text)
         node = obj.find(".//source")
-        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        xml_utils.remove_styles_off_tagged_content(node, ('bold', 'italic'))
         result = xml_utils.tostring(node)
         self.assertEqual(result, expected)
 
-    def test_remove_styles_from_tagged_content_removes_external_and_keeps_inner(self):
+    def test_remove_styles_off_tagged_content_removes_external_and_keeps_inner(self):
         text = "<root><source><bold>texto 1 <bold>texto bold</bold> texto 2</bold></source></root>"
         expected = "<source>texto 1 <bold>texto bold</bold> texto 2</source>"
         obj = xml_utils.etree.fromstring(text)
         node = obj.find(".//source")
-        xml_utils.remove_styles_from_tagged_content(node, ('bold', 'italic'))
+        xml_utils.remove_styles_off_tagged_content(node, ('bold', 'italic'))
         result = xml_utils.tostring(node)
         self.assertEqual(result, expected)
 

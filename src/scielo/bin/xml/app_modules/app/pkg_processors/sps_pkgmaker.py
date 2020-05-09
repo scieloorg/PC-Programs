@@ -21,7 +21,7 @@ class SPSXMLContent(xml_utils.BrokenXML):
     def normalize(self):
         if self.xml is None:
             return
-        self.remove_uri_from_contrib_id()
+        self.remove_uri_off_contrib_id()
         xml_utils.remove_nodes(
             self.xml, ".//institution[@content-type='normalized']")
 
@@ -49,10 +49,10 @@ class SPSXMLContent(xml_utils.BrokenXML):
         self.content = self.content.replace('> :', '>: ')
         self.normalize_references()
         for tag in ['article-title', 'trans-title', 'kwd', 'source']:
-            self.remove_styles_from_tagged_content(tag)
+            self.remove_styles_off_tagged_content(tag)
         self.content = xml_utils.pretty_print(self.content)
 
-    def remove_uri_from_contrib_id(self):
+    def remove_uri_off_contrib_id(self):
         if self.xml.find(".//contrib-id") is None:
             return
         for contrib_id_type, uri in attributes.CONTRIB_ID_URLS.items():
@@ -94,7 +94,7 @@ class SPSXMLContent(xml_utils.BrokenXML):
         for xpath, attr in xpath_and_attr:
             xml_utils.remove_attribute(self.xml, xpath, attr)
 
-    def remove_styles_from_tagged_content(self, tag):
+    def remove_styles_off_tagged_content(self, tag):
         """
         As tags de estilo não devem ser aplicadas no conteúdo inteiro de
         certos elementos. As tags de estilo somente pode destacar partes do
@@ -108,7 +108,7 @@ class SPSXMLContent(xml_utils.BrokenXML):
             nodes.extend(self.xml.findall(".//{}[{}]".format(tag, style)))
         for node in set(nodes):
             xml_utils.merge_siblings_style_tags_content(node, STYLES)
-            xml_utils.remove_styles_from_tagged_content(node, STYLES)
+            xml_utils.remove_styles_off_tagged_content(node, STYLES)
 
     def normalize_references(self):
         for ref in self.xml.findall(".//ref"):
