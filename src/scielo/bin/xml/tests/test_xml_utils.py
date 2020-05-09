@@ -213,7 +213,7 @@ class TestBrokenXML(TestCase):
         text = "<doc/> lixo"
         broken = xml_utils.BrokenXML(text)
         self.assertEqual(
-            broken.fixed(pretty=False),
+            broken.fixed(),
             "<doc/>")
         self.assertIsNone(broken.xml_error)
 
@@ -221,7 +221,7 @@ class TestBrokenXML(TestCase):
         text = "<doc/>"
         broken = xml_utils.BrokenXML(text)
         self.assertEqual(
-            broken.fixed(pretty=False),
+            broken.fixed(),
             "<doc/>")
         self.assertIsNone(broken.xml_error)
         self.assertIsNone(broken.doctype)
@@ -234,7 +234,7 @@ class TestBrokenXML(TestCase):
         self.assertEqual(
             broken.doctype, "<!DOCTYPE doctype ...>")
         self.assertEqual(
-            broken.fixed(pretty=False),
+            broken.fixed(),
             "<!DOCTYPE doctype ...>\n<doc/>")
 
     def test_init_xml_with_no_doctype(self):
@@ -244,7 +244,7 @@ class TestBrokenXML(TestCase):
             broken.processing_instruction, "<?xml version...?>")
         self.assertIsNone(broken.doctype)
         self.assertEqual(
-            broken.fixed(pretty=False),
+            broken.fixed(),
             "<?xml version...?>\n<doc/>")
 
     def test_content_returns_characteres_instead_their_entities(self):
