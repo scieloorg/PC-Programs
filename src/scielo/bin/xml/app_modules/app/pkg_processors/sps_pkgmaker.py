@@ -21,13 +21,19 @@ class SPSXMLContent(xml_utils.BrokenXML):
     def normalize(self):
         if self.xml is None:
             return
-
+        # remove elementos
         xml_utils.remove_nodes(
             self.xml, ".//institution[@content-type='normalized']")
         for tag in ['article-title', 'trans-title', 'kwd', 'source']:
             self.remove_styles_off_tagged_content(tag)
 
+        # remove atributos
         self.remove_attributes()
+
+        # altera valor de elementos
+        self.remove_uri_off_contrib_id()
+
+        # altera valores de atributos
         xml_utils.replace_attribute_values(
             self.xml,
             (
@@ -38,17 +44,26 @@ class SPSXMLContent(xml_utils.BrokenXML):
             )
         )
 
-        self.remove_uri_off_contrib_id()
-        self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
-        self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
-        self.content = self.content.replace('&amp;amp;', '&amp;')
-        self.content = self.content.replace('&amp;#', '&#')
-        self.content = self.content.replace(' rid=" ', ' rid="')
-        self.content = self.content.replace(' id=" ', ' id="')
-        self.content = self.content.replace('> :', '>: ')
-
+        self.fix_content()
         self.normalize_references()
         self.content = xml_utils.pretty_print(self.content)
+
+    def fix_content(self):
+        """
+        Conserta usando funcoes de str (melhorar futuramente)
+        """
+        content = self.content
+        content = content.replace(
+            'http://creativecommons.org', 'https://creativecommons.org')
+        content = content.replace(
+            ' - </title>', '</title>').replace('<title> ', '<title>')
+        content = content.replace('&amp;amp;', '&amp;')
+        content = content.replace('&amp;#', '&#')
+        content = content.replace(' rid=" ', ' rid="')
+        content = content.replace(' id=" ', ' id="')
+        content = content.replace('> :', '>: ')
+        self.content = content
+
 
     def remove_uri_off_contrib_id(self):
         if self.xml.find(".//contrib-id") is None:
