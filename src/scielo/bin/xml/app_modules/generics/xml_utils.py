@@ -210,12 +210,6 @@ def apply_dtd(xml_filename, doctype):
     return temp_filename
 
 
-def restore_xml_file(xml_filename, temp_filename):
-    shutil.copyfile(temp_filename, xml_filename)
-    fs_utils.delete_file_or_folder(temp_filename)
-    fs_utils.delete_file_or_folder(os.path.dirname(temp_filename))
-
-
 def new_apply_dtd(xml_filename, doctype):
     fs_utils.write_file(
         xml_filename,
@@ -340,7 +334,7 @@ def remove_break_lines_off_element_content(content):
 
 def pretty_print(content):
     xml = etree.fromstring(content)
-    return tostring(xml)
+    return tostring(xml, pretty_print=True)
 
 
 def is_valid_xml_file(xml_path):
