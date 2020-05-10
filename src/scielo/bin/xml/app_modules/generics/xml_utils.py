@@ -2,14 +2,15 @@
 import os
 import shutil
 import tempfile
+import html
+from copy import deepcopy
 
 from lxml import etree
-
-import html
 
 from ..__init__ import _
 from . import fs_utils
 from . import encoding
+from ..app.pkg_processors import xml_versions
 
 
 namespaces = {}
@@ -49,6 +50,7 @@ class Entity2Char:
             content = content.replace(find, replace)
         content = html.unescape(content)
         content = html.unescape(content)
+        content = content.replace("&amp;", "'<REPLACEENT>amp</REPLACEENT>'")
         content = self._replace_incomplete_entity(content)
         content = content.replace("&", "&amp;")
         content = content.replace("<REPLACEENT>", "&")
@@ -59,6 +61,7 @@ class Entity2Char:
         result = []
         for item in content.replace('&', '~BREAK~&').split('~BREAK~'):
             if item.startswith('&'):
+                print(item)
                 ent = self._looks_like_entity(item)
                 if ent:
                     entity = ent
@@ -121,21 +124,30 @@ class BrokenXML(object):
     - extrai do conteudo e instancia DOCTYPE
     - extrai do conteudo e instancia processing instruction
     """
-    def __init__(self, str_or_filepath, namespaces=None):
-        self.namespaces = namespaces
+    def __init__(self, str_or_filepath, fixed=False):
+        self.fixed = fixed
         self._xml = None
         self._content = None
-        self.processing_instruction = None
-        self.doctype = None
         self.filename = None
         if str_or_filepath.endswith(".xml"):
             self.filename = str_or_filepath
             str_or_filepath = fs_utils.read_file(self.filename)
-        parsed_content = parse_content(str_or_filepath)
-        self.processing_instruction = parsed_content[0]
-        self.doctype = parsed_content[1]
-        self.original = parsed_content[2]
-        self.content = self.original
+        self.original = str_or_filepath
+        self.content = str_or_filepath
+
+    @property
+    def xml_declaration(self):
+        if self.original.startswith('<?xml version="1.0" encoding="utf-8"?>'):
+            return '<?xml version="1.0" encoding="utf-8"?>'
+        if self.original.startswith("<?"):
+            if self.xml is not None and self.xml.docinfo is not None:
+                return '<?xml version="{}" encoding="{}"?>'.format(
+                    self.xml.docinfo.xml_version, self.xml.docinfo.encoding)
+
+    @property
+    def doctype(self):
+        if self.xml is not None and self.xml.docinfo is not None:
+            return self.xml.docinfo.doctype
 
     @property
     def xml(self):
@@ -155,27 +167,43 @@ class BrokenXML(object):
         """
         Atribui valor apenas para XML em si
         """
-        value = well_formed_xml_content(value)
+        if not self.fixed:
+            self.fixed = True
+            value = well_formed_xml_content(value)
 
         self._content = value.strip()
         self._xml, self.xml_error = load_xml(self._content)
 
-    def fixed(self, complete=True, pretty=True):
+    def get_doctype(self, dtd_location_type=None):
         """
-        Retorna o XML completo, com processing instruction e doctype
+        Retorna doctype com system_url (remota ou "local")
+        local: somente o nome do arquivo
+        remote: url
+        Para o site, é importante ser "local" para não demorar a carregar
         """
-        if pretty and not self.xml_error:
-            content = tostring(self.xml, pretty_print=True).strip()
-        else:
-            content = self.content
-        if complete:
-            parts = [
-                self.processing_instruction,
-                self.doctype,
-                content
-            ]
-            content = "\n".join([item for item in parts if item])
-        return content
+        if self.xml is not None and self.xml.docinfo:
+            if dtd_location_type == 'local':
+                url = self.docinfo.system_url
+                basename = os.path.basename(url)
+                return self.xml.docinfo.doctype.replace(url, basename)
+            return self.xml.docinfo.doctype or None
+
+    def format(self, pretty_print=False, dtd_location_type=None):
+        doctype = self.get_doctype(dtd_location_type)
+        if self.xml is not None:
+            return etree.tostring(
+                self.xml, encoding="utf-8", method="xml",
+                xml_declaration=self.xml_declaration,
+                pretty_print=pretty_print, doctype=doctype
+                ).decode("utf-8")
+
+    def write(self, dest_file_path, pretty_print=False,
+              dtd_location_type=None):
+        doctype = self.get_doctype(dtd_location_type)
+        self.xml.write(
+            dest_file_path, encoding="utf-8", method="xml",
+            xml_declaration=self.xml_declaration,
+            pretty_print=pretty_print, doctype=doctype)
 
 
 def replace_doctype(content, new_doctype):
@@ -243,23 +271,14 @@ def node_text(node):
 
 
 def node_xml(node):
-    text = tostring(node)
-    if text:
-        # resolve caso de inline-formula que retornou text após </inline-formula>
-        text = text.strip()
-        if not text.endswith('>'):
-            text = text[:text.rfind('>') + 1]
-    if text and '&' in text:
-        text, replaced_named_ent = convert_entities_to_chars(text)
-    return text
+    copied = deepcopy(node)
+    copied.tail = None
+    return tostring(copied)
 
 
 def tostring(node, pretty_print=False):
     if node is not None:
         return encoding.decode(etree.tostring(node, encoding='utf-8', pretty_print=pretty_print))
-
-
-
 
 
 def load_xml(str_or_filepath):
@@ -278,7 +297,7 @@ def load_xml(str_or_filepath):
             if str_or_filepath.startswith('<?') and '?>' in str_or_filepath:
                 str_or_filepath = str_or_filepath[str_or_filepath.find(
                     '?>')+2:].strip()
-            xml = etree.fromstring(str_or_filepath)
+            xml = etree.fromstring(str_or_filepath).getroottree()
     except (etree.XMLSyntaxError,
             FileNotFoundError,
             ValueError, TypeError) as e:
@@ -495,28 +514,6 @@ def well_formed_xml_content(xml_content):
     # converte as entidades em caracteres
     xml_content = entity2char.convert(xml_content)
     return xml_content
-
-
-def parse_content(xml_content):
-    """
-    Lê uma string e retorna uma tupla de
-    processing_instruction, doctype, xml content
-    """
-    processing_instruction = None
-    if '<?xml' in xml_content:
-        p = xml_content.find('>')
-        processing_instruction = xml_content[:p+1]
-        xml_content = xml_content[p+1:]
-
-    doctype = None
-    if '<!DOCTYPE' in xml_content:
-        p = xml_content.find('>')
-        doctype = xml_content[:p+1].strip()
-        xml_content = xml_content[p+1:]
-
-    xml_content = xml_content.strip()
-
-    return processing_instruction, doctype, xml_content
 
 
 class XMLNode(object):

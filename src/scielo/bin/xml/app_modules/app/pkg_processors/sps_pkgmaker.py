@@ -2,7 +2,6 @@
 
 from ...generics import xml_utils
 from ..data import attributes
-from ..pkg_processors import xml_versions
 
 
 messages = []
@@ -71,22 +70,6 @@ class SPSXMLContent(xml_utils.BrokenXML):
             for contrib_id in self.xml.findall(xpath):
                 if uri in contrib_id.text:
                     contrib_id.text = contrib_id.text.replace(uri, "")
-
-    def set_doctype(self, dtd_location_type):
-        """
-        Altera a localização da DTD (remota ou "local")
-        Por local, significa sem o caminho completo, somente o nome do arquivo
-        Para o site, é importante estar "local" para não demorar a carregar
-        """
-        local, remote = xml_versions.dtd_location(self.doctype)
-        loc = '"{}"'.format(local)
-        rem = '"{}"'.format(remote)
-        if dtd_location_type == 'remote':
-            self.doctype = self.doctype.replace(loc, rem)
-        else:
-            self.doctype = self.doctype.replace(rem, loc)
-            self.doctype = self.doctype.replace(
-                rem.replace('https:', 'http:'), loc)
 
     def remove_attributes(self):
         """
