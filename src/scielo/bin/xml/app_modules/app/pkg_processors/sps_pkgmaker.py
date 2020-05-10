@@ -57,8 +57,6 @@ class SPSXMLContent(xml_utils.BrokenXML):
             'http://creativecommons.org', 'https://creativecommons.org')
         content = content.replace(
             ' - </title>', '</title>').replace('<title> ', '<title>')
-        content = content.replace('&amp;amp;', '&amp;')
-        content = content.replace('&amp;#', '&#')
         content = content.replace(' rid=" ', ' rid="')
         content = content.replace(' id=" ', ' id="')
         content = content.replace('> :', '>: ')
