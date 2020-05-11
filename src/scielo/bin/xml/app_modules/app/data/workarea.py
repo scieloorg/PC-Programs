@@ -244,6 +244,15 @@ class PackageFolder(object):
         self.INFORM_ORPHANS = len(self.pkgfiles_items) > 1
 
     @property
+    def prefix(self):
+        if len(self.pkgfiles_items) == 1:
+            return list(self.pkgfiles_items.keys())[0]
+        elif len(self.pkgfiles_items) > 1:
+            items = list(self.pkgfiles_items.keys())[:1]
+            _prefix = [a for a, b in zip(items[0], items[1]) if a == b]
+            return ''.join(_prefix)[:-1]
+
+    @property
     def xml_list(self):
         return [item.filename for item in self.pkgfiles_items.values()]
 
@@ -263,14 +272,13 @@ class PackageFolder(object):
                     items.append(f)
         return items
 
-    def zip(self, dest_path=None):
-        if dest_path is None:
-            dest_path = os.path.dirname(self.path)
+    def zip(self):
+        dest_path = os.path.dirname(self.path)
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
-        _name = os.path.basename(self.path)
-        filename = dest_path + '/' + _name + '.zip'
-        fs_utils.zip(filename, [self.path + '/' + f for f in self.package_filenames])
+        filename = os.path.join(dest_path, self.prefix + '.zip')
+        fs_utils.zip(filename, [os.path.join(self.path, f)
+                     for f in self.package_filenames])
         return filename
 
 

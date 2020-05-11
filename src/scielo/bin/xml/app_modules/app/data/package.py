@@ -125,37 +125,58 @@ class ArticlePkg(object):
         return files
 
 
+class PackageComponent(object):
+    def __init__(self, pkgfiles):
+        """
+        artfiles
+            <class 'app_modules.app.data.workarea.PkgArticleFiles'>
+        """
+        self.parsed_xml = xml_utils.BrokenXML(pkgfiles.filename, fixed=True)
+        self.article = article.Article(self.parsed_xml.xml, pkgfiles.name)
+        self.files = pkgfiles
+
+
 class Package(object):
+    """
+    Pacote contém dados (files + xml + article) de um conjunto de documentos
+    de um mesmo número
+    """
 
     def __init__(self, pkgfiles_items, outputs, workarea_path):
-        self.pkgfiles_items = pkgfiles_items
-        self.package_folder = workarea.PackageFolder(pkgfiles_items[0].path, pkgfiles_items)
+        """
+        pkgfiles_items
+            list of <class 'app_modules.app.data.workarea.PkgArticleFiles'>
+        """
+        self.package_folder = workarea.PackageFolder(
+            pkgfiles_items[0].path, pkgfiles_items)
+        self.input_zip_file_path = self.package_folder.zip()
         self.outputs = outputs
         self.wk = workarea.Workarea(workarea_path)
-        self._articles = None
-        self._articles_xml_content = None
+        self._file_paths = {item.name: item.filename
+                            for item in pkgfiles_items}
+
+        self._components = {}
+        for item in pkgfiles_items:
+            self._components[item.name] = PackageComponent(item)
+
         self.issue_data = PackageIssueData()
         self.issue_data.setup(self.articles)
 
     @property
     def file_paths(self):
-        return {item.name: item.filename for item in self.pkgfiles_items}
-
-    @property
-    def articles_xml_content(self):
-        if self._articles_xml_content is None:
-            self._articles_xml_content = {item.name: article.ArticleXMLContent(fs_utils.read_file(item.filename), item.previous_name, item.name) for item in self.pkgfiles_items}
-        return self._articles_xml_content
+        return {name: item.filename
+                for name, item in self._components.items()}
 
     @property
     def articles(self):
-        if self._articles is None:
-            self._articles = {name: item.doc for name, item in self.articles_xml_content.items()}
-        return self._articles
+        return {name: component.article
+                for name, component in self._components.items()}
 
     @property
     def is_pmc_journal(self):
-        return any([doc.journal_id_nlm_ta is not None for name, doc in self.articles.items()])
+        for doc in self.articles.values():
+            if doc.journal_id_nlm_ta:
+                return True
 
 
 class PackageIssueData(object):
