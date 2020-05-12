@@ -12,8 +12,8 @@ python_version = sys.version_info.major
 
 class TextUtils(TestCase):
     def test_well_formed_xml_content_removes_junk_after_last_close_tag(self):
-        text = "<?xml version...?>\n<doc><p></p> lixo"
-        expected = "<?xml version...?>\n<doc><p></p>"
+        text = '<?xml version="1.0" encoding="utf-8"?>\n<doc><p></p> lixo'
+        expected = '<?xml version="1.0" encoding="utf-8"?>\n<doc><p></p>'
         self.assertEqual(expected, xml_utils.well_formed_xml_content(text))
 
 
@@ -275,45 +275,51 @@ class TestBrokenXML(TestCase):
     def test_init_xml_with_junk_is_loaded_without_errors(self):
         text = "<doc/> lixo"
         broken = xml_utils.BrokenXML(text)
-        self.assertEqual(
-            broken.fixed(),
-            "<doc/>")
+        self.assertEqual(broken.format(), "<doc/>")
         self.assertIsNone(broken.xml_error)
 
     def test_init_xml_is_ok(self):
         text = "<doc/>"
         broken = xml_utils.BrokenXML(text)
-        self.assertEqual(
-            broken.fixed(),
-            "<doc/>")
+        self.assertEqual(broken.format(), "<doc/>")
         self.assertIsNone(broken.xml_error)
-        self.assertIsNone(broken.doctype)
-        self.assertIsNone(broken.processing_instruction)
+        self.assertEqual(broken.doctype, '')
+        self.assertIsNone(broken.xml_declaration)
 
-    def test_init_xml_with_no_processing_instruction(self):
-        text = "<!DOCTYPE doctype ...>\n<doc/> lixo"
+    def test_init_xml_with_no_xml_declaration(self):
+        text = ('<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
+                'Publishing DTD v1.1 20151215//EN" '
+                '"https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">'
+                '\n<article/> lixo')
         broken = xml_utils.BrokenXML(text)
-        self.assertIsNone(broken.processing_instruction)
+        self.assertIsNone(broken.xml_declaration)
         self.assertEqual(
-            broken.doctype, "<!DOCTYPE doctype ...>")
+            broken.doctype,
+            '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
+            'Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/'
+            'publishing/1.1/JATS-journalpublishing1.dtd">')
         self.assertEqual(
-            broken.fixed(),
-            "<!DOCTYPE doctype ...>\n<doc/>")
+            broken.format(),
+            '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
+            'Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/'
+            'publishing/1.1/JATS-journalpublishing1.dtd">\n<article/>')
 
     def test_init_xml_with_no_doctype(self):
-        text = "<?xml version...?>\n<doc/> lixo"
+        text = '<?xml version="1.0" encoding="utf-8"?><doc/>'
         broken = xml_utils.BrokenXML(text)
         self.assertEqual(
-            broken.processing_instruction, "<?xml version...?>")
-        self.assertIsNone(broken.doctype)
-        self.assertEqual(
-            broken.fixed(),
-            "<?xml version...?>\n<doc/>")
+            broken.xml_declaration,
+            '<?xml version="1.0" encoding="utf-8"?>')
+        self.assertEqual(broken.doctype, '')
+        # self.assertEqual(
+        #     '<?xml version="1.0" encoding="utf-8"?><doc/>',
+        #     broken.format()
+        # )
 
     def test_content_returns_characteres_instead_their_entities(self):
-        text = "<?xml version...?>\n<doc><p>&#91;&ccedil;&#93;</p> lixo"
-        expected = "<?xml version...?>\n<doc><p>[ç]</p>"
+        text = ('<doc><p>&#91;&ccedil;&#93;</p> lixo</doc>')
+        expected = ('<doc><p>[ç]</p> lixo</doc>')
         broken = xml_utils.BrokenXML(text)
         self.assertEqual(
             expected,
-            broken.fixed(pretty=False))
+            broken.format())
