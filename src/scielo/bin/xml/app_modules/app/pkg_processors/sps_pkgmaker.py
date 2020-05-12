@@ -15,7 +15,7 @@ class SPSXMLContent(xml_utils.BrokenXML):
     """
 
     def __init__(self, content):
-        xml_utils.BrokenXML.__init__(self, content)
+        xml_utils.BrokenXML.__init__(self, content, fixed=False)
         self._normalize()
 
     def _normalize(self):

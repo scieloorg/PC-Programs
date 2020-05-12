@@ -16,8 +16,8 @@ from ..pkg_processors import xml_versions
 IS_PACKTOOLS_INSTALLED = False
 try:
     import packtools
-    from packtools.catalogs import XML_CATALOG
     from packtools import exceptions
+    from packtools.catalogs import XML_CATALOG
     os.environ['XML_CATALOG_FILES'] = XML_CATALOG
     IS_PACKTOOLS_INSTALLED = True
 except Exception as e:
@@ -236,38 +236,6 @@ class XMLValidator(object):
             self.validator = self.dtd_validator
             encoding.display_message('    XMLValidator: java')
 
-    def validate_doctype(self, article_xml_versions_info):
-        errors = []
-        dtd_public_id_items = SPS_VERSIONS.get(
-            article_xml_versions_info.sps_version)
-        if article_xml_versions_info.public_id not in dtd_public_id_items:
-            errors.append(
-                _('{value} is an invalid value for {label}. ').format(
-                    value=article_xml_versions_info.public_id or '',
-                    label='DTD PUBLIC ID')
-                )
-            errors.append(
-                _('{requirer} requires {required}. ').format(
-                    requirer='SPS version {}'.format(
-                        article_xml_versions_info.sps_version),
-                    required=_(" or ").join(dtd_public_id_items)
-                ))
-            return errors
-
-        locations = self.dtd_locations.get(article_xml_versions_info.public_id)
-        _location = None
-        for location in locations:
-            if article_xml_versions_info.system_id in location:
-                _location = location
-                break
-        if not _location:
-            errors.append(
-                _('{value} is an invalid value for {label}. ').format(
-                    value=article_xml_versions_info.system_id,
-                    label='DTD SYSTEM ID')
-            )
-        return errors
-
     def validate(self, xml_filename, dtd_report_filename, style_report_filename):
         self.dtd_validator.logger = self.logger
         self.dtd_validator.setup(xml_filename)
@@ -275,8 +243,6 @@ class XMLValidator(object):
         self.validator.setup(xml_filename)
         xml, e = xml_utils.load_xml(xml_filename)
         errors = []
-        if self.dtd_files.database_name == 'scielo':
-            errors = self.validate_doctype(ArticleXMLVersionsInfo(fs_utils.read_file(xml_filename)))
 
         status = None
         if errors:
@@ -304,57 +270,6 @@ class XMLValidator(object):
         return (xml, status is None, (f, e, w))
 
 
-class ArticleXMLVersionsInfo(object):
-
-    def __init__(self, xml_content):
-        self.xml_content = xml_content
-        self._DOCTYPE = None
-        self._public_id = None
-        self._system_id = None
-        self.relative_system_id = None
-        self._sps_version = None
-
-    @property
-    def DOCTYPE(self):
-        if self._DOCTYPE is None:
-            if '<!DOCTYPE' in self.xml_content:
-                self._DOCTYPE = self.xml_content[self.xml_content.find('<!DOCTYPE'):]
-                self._DOCTYPE = self._DOCTYPE[:self._DOCTYPE.find('>')+1]
-        return self._DOCTYPE
-
-    @property
-    def public_id(self):
-        if self._public_id is None:
-            if self.DOCTYPE is not None:
-                self._public_id = self.DOCTYPE[self.DOCTYPE.find('"')+1:]
-                self._public_id = self._public_id[:self._public_id.find('"')]
-        return self._public_id
-
-    @property
-    def system_id(self):
-        if self._system_id is None:
-            if 'http' in self.DOCTYPE:
-                self._system_id = self.DOCTYPE[self.DOCTYPE.find('"http')+1:]
-                self._system_id = self._system_id[:self._system_id.find('"')]
-            if self.public_id:
-                _text = self.DOCTYPE[self.DOCTYPE.find(self.public_id)+len(self.public_id):]
-                _text = _text[_text.find('"')+1:]
-                _text = _text[_text.find('"')+1:]
-                self.relative_system_id = _text[:_text.find('"')]
-        return self._system_id
-
-    @property
-    def sps_version(self):
-        if self._sps_version is None:
-            if '<article' in self.xml_content:
-                elem = self.xml_content[self.xml_content.find('<article'):]
-                elem = elem[:elem.find('>')]
-                if 'specific-use="' in elem:
-                    self._sps_version = elem[elem.find('specific-use="')+len('specific-use="'):]
-                    self._sps_version = self._sps_version[:self._sps_version.find('"')]
-        return str(self._sps_version)
-
-
 def dtd_locations():
     locations = {}
     for name, dtd_info in xml_versions.XPM_FILES.items():
@@ -365,3 +280,90 @@ def dtd_locations():
                 dtd_info.get('remote'),
                 dtd_info.get('remote').replace('https:', 'http:')]
     return locations
+
+
+class PackToolsXMLValidator(object):
+
+    def __init__(self, file_path, tree, sps_version):
+        self.file_path = file_path
+        self.tree = tree
+        self.sps_version = sps_version
+
+        self.version = packtools.__version__
+
+        self.xml_validator = None
+
+    def validate_doctype(self):
+        sps_version = self.sps_version
+        public_id = self.tree.docinfo.public_id
+        system_id = self.tree.docinfo.system_url
+        if not sps_version:
+            return []
+        errors = []
+        dtd_public_id_items = SPS_VERSIONS.get(sps_version)
+        if public_id not in dtd_public_id_items:
+            errors.append(
+                _('{value} is an invalid value for {label}. ').format(
+                    value=public_id or '',
+                    label='DTD PUBLIC ID')
+                )
+            errors.append(
+                _('{requirer} requires {required}. ').format(
+                    requirer='SPS version {}'.format(sps_version),
+                    required=_(" or ").join(dtd_public_id_items)
+                ))
+            return errors
+
+        locations = dtd_locations().get(public_id)
+        _location = None
+        for location in locations:
+            if system_id in location:
+                _location = location
+                break
+        if not _location:
+            errors.append(
+                _('{value} is an invalid value for {label}. ').format(
+                    value=system_id,
+                    label='DTD SYSTEM ID')
+            )
+        return errors
+
+    def validate_structure(self):
+        dtd_is_valid = False
+        dtd_errors = []
+        try:
+            dtd = packtools.etree.DTD(
+                external_id=self.tree.docinfo.public_id.encode())
+            self.xml_validator = packtools.XMLValidator.parse(
+                self.tree, sps_version=self.sps_version, dtd=dtd)
+        except (packtools.etree.XMLSyntaxError, exceptions.XMLDoctypeError,
+                exceptions.XMLSPSVersionError) as e:
+            ERR_MESSAGE = (
+                "Validation error of {}: {}."
+            ).format(self.file_path, e)
+            dtd_errors = [ERR_MESSAGE]
+        except exceptions.UndefinedDTDError as e:
+            dtd_errors = [str(e)]
+        else:
+            dtd_is_valid, dtd_errors = self.xml_validator.validate()
+            dtd_errors = [
+                "Line {}: {}".format(e.line, e.message)
+                for e in dtd_errors
+            ]
+        return dtd_is_valid, dtd_errors
+
+    def validate_style(self):
+        if not self.xml_validator:
+            return False, []
+        sps_is_valid, sps_errors = self.xml_validator.validate_style()
+        return sps_is_valid, sps_errors
+
+    def annotated_errors(self):
+        if self.xml_validator:
+            content = packtools.etree.tostring(
+                self.xml_validator.annotate_errors(),
+                pretty_print=True,
+                encoding='utf-8',
+                xml_declaration=True)
+            content = encoding.decode(content)
+            return content

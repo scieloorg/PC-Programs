@@ -4,13 +4,13 @@ import os
 
 from ...__init__ import _
 from ...generics import fs_utils
+from ...generics import encoding
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
 from ..validations import sps_xml_validators
 from . import article_data_reports
 from . import article_content_validations
 from . import validations as validations_module
-from ..pkg_processors import xml_versions
 
 
 class XMLJournalDataValidator(object):
@@ -35,6 +35,7 @@ class XMLJournalDataValidator(object):
             items.append([_('print ISSN'), article.print_issn, self.journal_data.p_issn, validation_status.STATUS_FATAL_ERROR])
             items.append([_('publisher name'), article.publisher_name, self.journal_data.publisher_name, validation_status.STATUS_ERROR])
             items.append([_('license'), license_url, self.journal_data.license, validation_status.STATUS_ERROR])
+
             r = evaluate_journal_data(items)
 
         result = validations_module.ValidationsResult()
@@ -64,56 +65,123 @@ class XMLIssueDataValidator(object):
 
 
 class XMLStructureValidator(object):
+    def __init__(self, file_path, xml, sps_version):
+        self.validator = sps_xml_validators.PackToolsXMLValidator(
+            file_path, xml, sps_version)
 
-    def __init__(self, dtd_files, sps_version, preference):
-        self.xml_validator = sps_xml_validators.XMLValidator(dtd_files, sps_version, preference)
-
-    def validate(self, xml_filename, outputs):
+    def validate(self, file_path, outputs):
         separator = '\n\n\n' + '.........\n\n\n'
-        name_error = ''
-        new_name, ign = os.path.splitext(os.path.basename(xml_filename))
-        if '_' in new_name or '.' in new_name:
-            name_error = rst_title(_('Name errors')) + _('{value} has forbidden characters, which are {forbidden_characters}').format(value=new_name, forbidden_characters='_.') + separator
 
-        err_filename_content = fs_utils.read_file(outputs.mkp2xml_report_filename) or ''
+        # erro no nome do arquivo
+        name_error = self._name_error(file_path, separator)
 
-        xml, valid_dtd, valid_style = self.xml_validator.validate(xml_filename, outputs.dtd_report_filename, outputs.style_report_filename)
-        xml_f, xml_e, xml_w = valid_style
+        # erro de conversao de markup a xml, se aplicavel
+        mkp2xml_error = self._mkp2xml_error(outputs.mkp2xml_report_filename)
 
-        dtd_errors = fs_utils.read_file(outputs.dtd_report_filename) or ''
-        if len(dtd_errors) > 0:
-            dtd_errors = rst_title(_('DTD errors')) + dtd_errors
+        # cria relatorio de errors de dtd
+        valid_dtd, dtd_errors = self._dtd_error(outputs.dtd_report_filename)
 
-        report_title = ''
-        report_content = []
-        if xml is None:
-            xml_f += 1
-            report_title += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file is invalid') + '\n'
-        if not valid_dtd:
-            xml_f += 1
-            report_title += _('XML file has DTD errors') + '\n'
-        if len(name_error) > 0:
-            xml_f += 1
-            report_title += validation_status.STATUS_FATAL_ERROR + ' ' + _('XML file has name errors') + '\n'
+        # cria relatorio de erros gerais
+        fs_utils.write_file(
+            outputs.err_filename, mkp2xml_error + name_error + dtd_errors)
 
-        if len(report_title) > 0:
-            report_title = rst_title(_('Summary')) + report_title + separator
-            report_title = report_title.replace('\n', '<br/>')
+        # cria relatorio de errors de estilo
+        xml_f, xml_e, xml_w = self.style_validation_report(
+            outputs.style_report_filename)
 
-        fs_utils.write_file(outputs.err_filename, err_filename_content + name_error + dtd_errors)
-        if outputs.ctrl_filename is None:
-            if xml_f + xml_e + xml_w == 0:
-                fs_utils.delete_file_or_folder(outputs.style_report_filename)
-        else:
+        # conta e monta mensagem de erro sumarizada
+        err_messages = self._err_messages(valid_dtd, name_error)
+        xml_f += len(err_messages)
+        if err_messages:
+            err_messages = ''.join(err_messages)
+            err_messages = rst_title(_('Summary')) + err_messages + separator
+            err_messages = [err_messages.replace('\n', '<br/>')]
+
+        if outputs.ctrl_filename:
+            # aviso para o Markup de que terminou de gerar os relatorios
             fs_utils.write_file(outputs.ctrl_filename, 'Finished')
+        elif xml_f + xml_e + xml_w == 0:
+            fs_utils.delete_file_or_folder(outputs.style_report_filename)
+
+        report_content = err_messages
         for rep_file in [outputs.err_filename, outputs.style_report_filename]:
             if os.path.isfile(rep_file):
                 text = extract_report_core(fs_utils.read_file(rep_file))
                 report_content.append(text)
-
         r = validations_module.ValidationsResult()
-        r.message = report_title + ''.join(report_content)
+        r.message = ''.join(report_content)
         return r
+
+    def structure_validation_report(self, dtd_report_filename):
+        status = None
+        content = _('Validates fine')
+        errors = []
+
+        dtd_is_valid, errors = self.validator.validate_structure()
+        if errors:
+            if self.validator.xml_validator is None:
+                status = validation_status.STATUS_BLOCKING_ERROR
+            else:
+                status = validation_status.STATUS_FATAL_ERROR
+                errors += self.validator.validate_doctype()
+            content = '\n' + status + '\n'
+            content += '\n'.join(errors) + '\n' * 10
+        fs_utils.write_file(dtd_report_filename, content)
+        return len(errors) == 0
+
+    def style_validation_report(self, report_filename):
+        title = 'Packtools Style Checker (' + self.validator.version + ')'
+        style_is_valid, style_errors = self.validator.validate_style()
+        header = ''
+        if style_errors:
+            header = html_reports.tag(
+                'div',
+                'Total of errors = {}'.format(len(style_errors)), 'error')
+        html = ''
+        annoted = self.validator.annotated_errors()
+        if annoted:
+            html = html_reports.display_xml(annoted)
+            html = html.replace(
+                '&lt;!--',
+                '<div style="background-color:#DCDCDC;color: red;"><em>&lt;!--'
+                ).replace('--&gt;', '--&gt;</em></div>')
+        html_reports.save(report_filename, title, header+html)
+        f, e, w = sps_xml_validators.style_checker_statistics(header+html)
+        return (f, e, w)
+
+    def _name_error(self, xml_filename, separator):
+        name_error = ''
+        new_name, ign = os.path.splitext(os.path.basename(xml_filename))
+        if '_' in new_name or '.' in new_name:
+            name_error = (
+                rst_title(_('Name errors')) +
+                _('{} has forbidden characters, which are {}').format(
+                    new_name, '_.') + separator)
+        return name_error
+
+    def _mkp2xml_error(self, mkp2xml_report_filename):
+        return fs_utils.read_file(mkp2xml_report_filename) or ''
+
+    def _dtd_error(self, dtd_report_filename):
+        valid_dtd = self.structure_validation_report(dtd_report_filename)
+        dtd_errors = fs_utils.read_file(dtd_report_filename) or ''
+        if len(dtd_errors) > 0:
+            dtd_errors = rst_title(_('DTD errors')) + dtd_errors
+        return valid_dtd, dtd_errors
+
+    def _err_messages(self, valid_dtd, name_error):
+        errors = []
+        if self.validator.xml_validator is None:
+            err_msg = validation_status.STATUS_FATAL_ERROR
+            err_msg += ' ' + _('XML file is invalid') + '\n'
+            errors.append(err_msg)
+        if not valid_dtd:
+            errors.append(_('XML file has DTD errors') + '\n')
+        if len(name_error) > 0:
+            err_msg = validation_status.STATUS_FATAL_ERROR
+            err_msg += ' ' + _('XML file has name errors') + '\n'
+            errors.append(err_msg)
+        return errors
 
 
 class XMLContentValidator(object):
@@ -170,17 +238,38 @@ class XMLContentValidator(object):
         return r, article_display_report
 
 
-class ArticleValidator(object):
+class PackageValidator(object):
 
-    def __init__(self, xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, xml_struct_validator_pref):
-        self.xml_journal_data_validator = xml_journal_data_validator
-        self.xml_issue_data_validator = xml_issue_data_validator
-        self.xml_content_validator = xml_content_validator
-        self.xml_struct_validator_pref = xml_struct_validator_pref
+    def __init__(self, registered_issue_data, pkg, is_xml_generation,
+                 config, doi_validator, app_institutions_manager):
+        self.xml_journal_data_validator = XMLJournalDataValidator(
+            pkg.issue_data.journal_data)
+        self.xml_issue_data_validator = XMLIssueDataValidator(
+            registered_issue_data)
+        self.xml_content_validator = XMLContentValidator(
+            pkg.issue_data, registered_issue_data, is_xml_generation,
+            app_institutions_manager, doi_validator, config)
+        self.pkg = pkg
 
-    def validate(self, article, outputs, pkgfiles):
-        scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(fs_utils.read_file(pkgfiles.filename))
-        xml_structure_validator = XMLStructureValidator(scielo_dtd_files, article.sps, self.xml_struct_validator_pref)
+    def validate_package(self):
+        encoding.display_message(
+            _('Validate package ({} files)').format(
+                len(self.pkg.package_items)))
+        results = {}
+        for name in sorted(self.pkg.package_items.keys()):
+            encoding.display_message(_('Validate {name}').format(name=name))
+            results[name] = self.validate_package_item(
+                self.pkg.package_items[name], self.pkg.outputs[name])
+        return results
+
+    def validate_package_item(self, package_item, outputs):
+        # article == <class 'app_modules.app.data.article.Article'>
+        article = package_item.article
+        # pkgfiles == <class 'app_modules.app.data.workarea.PkgArticleFiles'>
+        pkgfiles = package_item.files
+
+        xml_structure_validator = XMLStructureValidator(
+            pkgfiles.filename, article.tree, article.sps)
 
         fs_utils.write_file(outputs.data_report_filename, _('Processing... '))
 
@@ -287,3 +376,4 @@ def evaluate_journal_data(items):
 
 def rst_title(title):
     return '\n\n' + title + '\n' + '-'*len(title) + '\n'
+

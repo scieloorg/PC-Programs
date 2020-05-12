@@ -61,7 +61,7 @@ def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
 def warn_unexpected_numbers(label, value, max_number=0):
     r = None
     if value is not None:
-        value = xml_utils.htmlent2char(value)
+        #value = xml_utils.htmlent2char(value)
         q_numbers = len([c for c in value if c.isdigit()])
         q_others = len(value) - q_numbers
         if q_numbers > q_others:

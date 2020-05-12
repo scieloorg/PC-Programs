@@ -96,10 +96,10 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
     dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
     for src, dest in zip(article_files_items, dest_article_files_items):
         src.tiff2jpg()
-        xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
+        xmlcontent = sps_pkgmaker.SPSXMLContent(src.filename)
         xmlcontent.write(
             dest.filename,
-            dtd_location_type=dtd_location_type)
+            dtd_location_type=dtd_location_type, pretty_print=True)
         src.copy_related_files(dest_path)
 
         outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
@@ -409,8 +409,9 @@ class PkgProcessor(object):
         return self._db_manager
 
     def normalized_package(self, xml_list):
-        dtd_location_type = 'remote'
-        if self.is_db_generation:
+        if self.is_xml_generation:
+            dtd_location_type = 'remote'
+        else:
             dtd_location_type = 'local'
         pkgfiles, outputs = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
         workarea_path = os.path.dirname(pkgfiles[0].path)
@@ -420,7 +421,6 @@ class PkgProcessor(object):
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
-
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
         mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
@@ -449,18 +449,10 @@ class PkgProcessor(object):
         return (scilista_items, conversion.xc_status, mail_info)
 
     def validate_pkg_articles(self, pkg, registered_issue_data):
-        xml_journal_data_validator = article_validations_module.XMLJournalDataValidator(pkg.issue_data.journal_data)
-        xml_issue_data_validator = article_validations_module.XMLIssueDataValidator(registered_issue_data)
-        xml_content_validator = article_validations_module.XMLContentValidator(pkg.issue_data, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator, self.config)
-        article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, self.config.xml_structure_validator_preference)
-
-        encoding.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
-        results = {}
-        for name in sorted(pkg.articles.keys()):
-            article = pkg.articles[name]
-            encoding.display_message(_('Validate {name}').format(name=name))
-            results[name] = article_validator.validate(article, pkg.outputs[name], pkg.package_folder.pkgfiles_items[name])
-        return results
+        pkg_validator = article_validations_module.PackageValidator(
+            registered_issue_data, pkg, self.is_xml_generation,
+            self.config, self.doi_validator, self.app_institutions_manager)
+        return pkg_validator.validate_package()
 
     def validate_merged_articles(self, pkg, registered_issue_data):
         if len(registered_issue_data.registered_articles) > 0:

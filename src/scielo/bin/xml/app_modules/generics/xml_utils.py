@@ -50,8 +50,8 @@ class Entity2Char:
             content = content.replace(find, replace)
         content = html.unescape(content)
         content = html.unescape(content)
-        content = content.replace("&amp;", "'<REPLACEENT>amp</REPLACEENT>'")
-        content = self._replace_incomplete_entity(content)
+        if "&" in content:
+            content = self._replace_incomplete_entity(content)
         content = content.replace("&", "&amp;")
         content = content.replace("<REPLACEENT>", "&")
         content = content.replace("</REPLACEENT>", ";")
@@ -61,16 +61,15 @@ class Entity2Char:
         result = []
         for item in content.replace('&', '~BREAK~&').split('~BREAK~'):
             if item.startswith('&'):
-                print(item)
                 ent = self._looks_like_entity(item)
-                if ent:
+                if len(ent) > 2:
                     entity = ent
                     if entity[-1] != ";":
                         entity += ";"
+                    print(entity)
                     new = html.unescape(entity)
                     if new != entity:
                         item = new + item[len(ent):]
-                        print(new)
             result.append(item)
         return ''.join(result)
 
@@ -137,7 +136,7 @@ class BrokenXML(object):
 
     @property
     def xml_declaration(self):
-        if self.original.startswith('<?xml version="1.0" encoding="utf-8"?>'):
+        if self.original.startswith('<?xml'):
             return '<?xml version="1.0" encoding="utf-8"?>'
         if self.original.startswith("<?"):
             if self.xml is not None and self.xml.docinfo is not None:
@@ -183,7 +182,7 @@ class BrokenXML(object):
         """
         if self.xml is not None and self.xml.docinfo:
             if dtd_location_type == 'local':
-                url = self.docinfo.system_url
+                url = self.xml.docinfo.system_url
                 basename = os.path.basename(url)
                 return self.xml.docinfo.doctype.replace(url, basename)
             return self.xml.docinfo.doctype or None
@@ -282,12 +281,14 @@ def tostring(node, pretty_print=False):
 
 
 def load_xml(str_or_filepath):
+    parser = etree.XMLParser(remove_blank_text=True, resolve_entities=True)
     try:
         xml = None
         errors = None
         if str_or_filepath.endswith(".xml"):
             source = str_or_filepath
-            xml = etree.parse(str_or_filepath, etree.XMLParser())
+            print("AQI")
+            xml = etree.parse(str_or_filepath, parser)
         elif ">" not in str_or_filepath and "<" not in str_or_filepath:
             source = str_or_filepath
             raise ValueError(
@@ -297,7 +298,7 @@ def load_xml(str_or_filepath):
             if str_or_filepath.startswith('<?') and '?>' in str_or_filepath:
                 str_or_filepath = str_or_filepath[str_or_filepath.find(
                     '?>')+2:].strip()
-            xml = etree.fromstring(str_or_filepath).getroottree()
+            xml = etree.XML(str_or_filepath, parser).getroottree()
     except (etree.XMLSyntaxError,
             FileNotFoundError,
             ValueError, TypeError) as e:
@@ -352,7 +353,7 @@ def remove_break_lines_off_element_content(content):
 
 
 def pretty_print(content):
-    xml = etree.fromstring(content)
+    xml, error = load_xml(content)
     return tostring(xml, pretty_print=True)
 
 
@@ -508,10 +509,15 @@ def replace_attribute_values(root, tuple_attr_name_and_value_and_new_value):
 
 
 def well_formed_xml_content(xml_content):
+    # padroniza os espaços, necessário pois há casos em que
+    # foram inseridos quebras de linha dentro de conteúdo de elementos
+    xml_content = " ".join([word for word in xml_content.split() if word])
+
     # remove "junk" (texto após a última tag)
     if not xml_content.endswith('>'):
         xml_content = xml_content[:xml_content.rfind('>')+1]
-    # converte as entidades em caracteres
+    # converte as entidades em caracteres, necesário especialmente para as
+    # entidades "nomeadas" pois invalidam o XML
     xml_content = entity2char.convert(xml_content)
     return xml_content
 

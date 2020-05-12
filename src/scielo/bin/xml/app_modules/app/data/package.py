@@ -1,7 +1,6 @@
 # coding=utf-8
 import os
 
-from ...generics import fs_utils
 from ...generics import xml_utils
 from . import article
 from . import workarea
@@ -125,20 +124,20 @@ class ArticlePkg(object):
         return files
 
 
-class PackageComponent(object):
+class PackageItem(object):
     def __init__(self, pkgfiles):
         """
         artfiles
             <class 'app_modules.app.data.workarea.PkgArticleFiles'>
         """
-        self.parsed_xml = xml_utils.BrokenXML(pkgfiles.filename, fixed=True)
-        self.article = article.Article(self.parsed_xml.xml, pkgfiles.name)
+        self.broken_xml = xml_utils.BrokenXML(pkgfiles.filename, fixed=True)
+        self.article = article.Article(self.broken_xml.xml, pkgfiles.name)
         self.files = pkgfiles
 
 
 class Package(object):
     """
-    Pacote contém dados (files + xml + article) de um conjunto de documentos
+    Contém dados (files + xml + article) de um conjunto de documentos
     de um mesmo número
     """
 
@@ -149,15 +148,15 @@ class Package(object):
         """
         self.package_folder = workarea.PackageFolder(
             pkgfiles_items[0].path, pkgfiles_items)
-        self.input_zip_file_path = self.package_folder.zip()
+        # self.input_zip_file_path = self.package_folder.zip()
         self.outputs = outputs
         self.wk = workarea.Workarea(workarea_path)
         self._file_paths = {item.name: item.filename
                             for item in pkgfiles_items}
 
-        self._components = {}
+        self.package_items = {}
         for item in pkgfiles_items:
-            self._components[item.name] = PackageComponent(item)
+            self.package_items[item.name] = PackageItem(item)
 
         self.issue_data = PackageIssueData()
         self.issue_data.setup(self.articles)
@@ -165,12 +164,12 @@ class Package(object):
     @property
     def file_paths(self):
         return {name: item.filename
-                for name, item in self._components.items()}
+                for name, item in self.package_items.items()}
 
     @property
     def articles(self):
-        return {name: component.article
-                for name, component in self._components.items()}
+        return {name: pkg_item.article
+                for name, pkg_item in self.package_items.items()}
 
     @property
     def is_pmc_journal(self):
