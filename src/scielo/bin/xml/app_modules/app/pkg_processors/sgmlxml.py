@@ -2,7 +2,6 @@
 
 import os
 import shutil
-from mimetypes import MimeTypes
 
 from ...__init__ import _
 from ...generics import fs_utils
@@ -10,7 +9,6 @@ from ...generics import java_xml_utils
 from ...generics import xml_utils
 from ...generics import img_utils
 from ...generics import encoding
-from ...generics.ws import ws_requester
 from ...generics.reports import text_report
 from ...generics.reports import html_reports
 from ...generics.reports import validation_status
@@ -18,10 +16,6 @@ from ..data import article
 from ..data import workarea
 from . import symbols
 from . import sps_pkgmaker
-
-
-
-mime = MimeTypes()
 
 
 class SGMLXMLWorkarea(workarea.Workarea):
@@ -646,9 +640,8 @@ class SGMLXML2SPSXML(object):
         fs_utils.write_file(self.src_pkgfiles.filename, self.xml_content)
 
     def normalize_xml(self):
-        spsxmlcontent = sps_pkgmaker.SPSXMLContent(self.xml_content)
+        spsxmlcontent = sps_pkgmaker.SPSXMLContent(self.src_pkgfiles.filename)
         self.xml_content = spsxmlcontent.content
-        self.replace_mimetypes()
 
     def report(self, acron):
         msg = self.invalid_xml_message
@@ -677,36 +670,6 @@ class SGMLXML2SPSXML(object):
             messages.append(validation_status.STATUS_ERROR + ': ' + _('Unable to load {xml}. ').format(xml=self.xml_pkgfiles.filename) + '\n' + _('Open it with XML Editor or Web Browser to find the errors easily. '))
             msg = '\n'.join(messages)
         return msg
-
-    def replace_mimetypes(self):
-        r = self.xml_content
-        if 'mimetype="replace' in self.xml_content:
-            self.xml_content = self.xml_content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
-            self.xml_content = self.xml_content.replace('mime-subtype="replace"', '')
-            r = []
-            for item in self.xml_content.split('_~BREAK~MIME_'):
-                if item.startswith('MIME:'):
-                    f = item[5:]
-                    f = f[0:f.find('"')]
-                    replace = 'MIME:{}"'.format(f)
-                    result = ''
-                    if os.path.isfile(self.src_pkgfiles.path + '/' + f):
-                        result = mime.guess_type(self.src_pkgfiles.path + '/' + f)
-                    else:
-                        try:
-                            url = ws_requester.urllib_request.pathname2url(f)
-                            result = mime.guess_type(url)
-                        except:
-                            pass
-                    result = result[0] or ''
-                    if '/' in result:
-                        m, ms = result.split('/')
-                        r += [item.replace(replace, 'mimetype="{}" mime-subtype="{}"'.format(m, ms))]
-                    else:
-                        r += [item.replace(replace, '')]
-                else:
-                    r += [item]
-        self.xml_content = ''.join(r)
 
 
 class ImagesOriginReport(object):

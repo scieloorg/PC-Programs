@@ -1,10 +1,14 @@
 # coding=utf-8
+import os
+from mimetypes import MimeTypes
+from urllib.request import pathname2url
 
 from ...generics import xml_utils
 from ..data import attributes
 
 
 messages = []
+mime = MimeTypes()
 
 
 class SPSXMLContent(xml_utils.SuitableXML):
@@ -14,8 +18,8 @@ class SPSXMLContent(xml_utils.SuitableXML):
     - normalizações porque os pacotes ser gerados por quaisquer ferramentas
     """
 
-    def __init__(self, content):
-        xml_utils.SuitableXML.__init__(self, content)
+    def __init__(self, file_path):
+        xml_utils.SuitableXML.__init__(self, file_path)
         self._normalize()
 
     def _normalize(self):
@@ -24,6 +28,7 @@ class SPSXMLContent(xml_utils.SuitableXML):
         # remove elementos
         xml_utils.remove_nodes(
             self.xml, ".//institution[@content-type='normalized']")
+
         for tag in ['article-title', 'trans-title', 'kwd', 'source']:
             self.remove_styles_off_tagged_content(tag)
 
@@ -43,6 +48,7 @@ class SPSXMLContent(xml_utils.SuitableXML):
                 ('publication-type', 'web', 'webpage'),
             )
         )
+        self.replace_mimetypes()
 
         self.fix_content()
         self.normalize_references()
@@ -83,6 +89,7 @@ class SPSXMLContent(xml_utils.SuitableXML):
              '{http://www.w3.org/XML/1998/namespace}lang'),
             (".//source[@{http://www.w3.org/XML/1998/namespace}lang]",
              '{http://www.w3.org/XML/1998/namespace}lang'),
+            (".//*[@mime-subtype='replace']", 'mime-subtype'),
         )
         for xpath, attr in xpath_and_attr:
             xml_utils.remove_attribute(self.xml, xpath, attr)
@@ -107,6 +114,26 @@ class SPSXMLContent(xml_utils.SuitableXML):
         for ref in self.xml.findall(".//ref"):
             broken_ref = BrokenRef(ref)
             broken_ref.normalize()
+
+    def replace_mimetypes(self):
+        pkg_path = os.path.dirname(self.filename)
+        for node in self.xml.findall(".//*[@mimetype]"):
+            asset_filename = node.get("mimetype")
+            if asset_filename.startswith('replace'):
+                asset_filename = asset_filename.replace("replace", "")
+                file_path = os.path.join(pkg_path, asset_filename)
+                if os.path.isfile(file_path):
+                    guessed_type = mime.guessed_type(file_path)
+                else:
+                    try:
+                        location = pathname2url(file_path)
+                        guessed_type = mime.guessed_type(location)
+                    except Exception:
+                        guessed_type = None
+                if guessed_type and "/" in guessed_type:
+                    m, ms = guessed_type.split("/")
+                    node.set("mimetype", m)
+                    node.set("mime-subtype", ms)
 
 
 class BrokenRef(object):
