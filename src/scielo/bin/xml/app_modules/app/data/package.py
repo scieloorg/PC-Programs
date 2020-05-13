@@ -1,21 +1,15 @@
 # coding=utf-8
-import os
 
 from ...generics import xml_utils
 from . import article
 from . import workarea
 
 
-class ArticlePkg(object):
+class PMC_DocumentPackage(workarea.DocumentPackageFiles):
 
     def __init__(self, filename):
-        self.filename = filename
+        super().__init__(self, filename)
         self.xml_content = xml_utils.SuitableXML(filename)
-        self.article_files = workarea.PkgArticleFiles(filename)
-        self.path = self.article_files.path
-        self.basename = self.article_files.basename
-        self.name = self.article_files.name
-        self.ext = self.article_files.ext
         self.article_xml = self.xml_content.content
 
     @property
@@ -25,71 +19,7 @@ class ArticlePkg(object):
     @article_xml.setter
     def article_xml(self, content):
         self.xml_content.content = content
-        self._article_xml = article.Article(self.xml_content.xml, os.path.basename(self.filename))
-
-    @property
-    def files(self):
-        return self.article_files.files
-
-    @property
-    def related_files(self):
-        return self.article_files.related_files
-
-    @property
-    def related_files_by_name(self):
-        return self.article_files.related_files_by_name
-
-    @property
-    def related_files_by_extension(self):
-        return self.article_files.related_files_by_extension
-
-    @property
-    def png_items(self):
-        return self.article_files.png_items
-
-    @property
-    def jpg_items(self):
-        return self.article_files.jpg_items
-
-    @property
-    def tiff_items(self):
-        return self.article_files.tiff_items
-
-    @property
-    def png_names(self):
-        return self.article_files.png_names
-
-    @property
-    def jpg_names(self):
-        return self.article_files.jpg_names
-
-    @property
-    def tiff_names(self):
-        return self.article_files.tiff_names
-
-    def svg2tiff(self):
-        self.article_files.svg2tiff()
-
-    def evaluate_tiff_images(self):
-        self.article_files.evaluate_tiff_images()
-
-    def zip(self, dest_path=None):
-        return self.article_files.zip(dest_path)
-
-    def copy_related_files(self, dest_path):
-        self.article_files.copy_related_files(dest_path)
-
-    def copy_xml(self, dest_path):
-        self.article_files.copy_xml(dest_path)
-
-    def clean(self):
-        self.article_files.clean()
-
-    def tiff2jpg(self):
-        self.article_files.tiff2jpg()
-
-    def delete_files(self, files):
-        self.article_files.delete_files(files)
+        self._article_xml = article.Article(self.xml_content.xml, self.basename)
 
     def get_pdf_files(self):
         expected_pdf_files = self.article_xml.expected_pdf_files.values()
@@ -136,7 +66,7 @@ class PackageItem(object):
         self.files = pkgfiles
 
 
-class Package(object):
+class MultiDocsPackage(object):
     """
     Contém dados (files + xml + article) de um conjunto de documentos
     de um mesmo número
@@ -147,7 +77,7 @@ class Package(object):
         pkgfiles_items
             list of <class 'app_modules.app.data.workarea.PkgArticleFiles'>
         """
-        self.package_folder = workarea.PackageFolder(
+        self.package_folder = workarea.MutiDocsPackageFolder(
             pkgfiles_items[0].path, pkgfiles_items)
         # self.input_zip_file_path = self.package_folder.zip()
         self.outputs = outputs
@@ -178,6 +108,49 @@ class Package(object):
             if doc.journal_id_nlm_ta:
                 return True
 
+
+# def normalize_xml_packages(xml_list, dtd_location_type, stage):
+#     article_files_items = [workarea.PkgArticleFiles(item) for item in xml_list]
+
+#     path = article_files_items[0].path + '_' + stage
+
+#     if not os.path.isdir(path):
+#         os.makedirs(path)
+
+#     wk = workarea.Workarea(path)
+#     outputs = {}
+#     dest_path = wk.scielo_package_path
+#     dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
+#     for src, dest in zip(article_files_items, dest_article_files_items):
+#         src.tiff2jpg()
+#         xmlcontent = sps_pkgmaker.SPSXMLContent(src.filename)
+#         xmlcontent.write(
+#             dest.filename,
+#             dtd_location_type=dtd_location_type, pretty_print=True)
+#         src.copy_related_files(dest_path)
+
+#         outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
+
+#     return dest_article_files_items, outputs
+
+# from packtools.utils import XMLWebOptimiser
+# from packtools.domain import XMLValidator
+
+#     def optimize(self):
+#         def read_file(f):
+#             with open(f, "rb") as fp:
+#                 return fp.read()
+
+#         xml_validator = XMLValidator(self.xml)
+#         xml_web_optimiser = XMLWebOptimiser(
+#             self.filename, xml_validator.assets,
+#             read_file, self.pkg_path, stop_if_error=False
+#         )
+#         b_file_content = xml_web_optimiser.get_xml_file()
+#         self.content = b_file_content.decode("utf-8")
+#         for 
+#         , get_optimised_assets, get_assets_thumbnail
+#         xml_web_optimiser.optimise()
 
 class PackageIssueData(object):
 

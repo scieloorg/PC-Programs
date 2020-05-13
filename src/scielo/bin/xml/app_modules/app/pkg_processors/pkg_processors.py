@@ -82,18 +82,18 @@ def xpm_version():
 
 
 def normalize_xml_packages(xml_list, dtd_location_type, stage):
-    article_files_items = [workarea.PkgArticleFiles(item) for item in xml_list]
+    docpkgfiles_items = [workarea.DocumentPackageFiles(item) for item in xml_list]
 
-    path = article_files_items[0].path + '_' + stage
+    path = docpkgfiles_items[0].path + '_' + stage
 
     if not os.path.isdir(path):
         os.makedirs(path)
 
     wk = workarea.Workarea(path)
-    outputs = {}
+    doc_outs_items = {}
     dest_path = wk.scielo_package_path
-    dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
-    for src, dest in zip(article_files_items, dest_article_files_items):
+    dest_docpkgfiles_items = [workarea.DocumentPackageFiles(dest_path + '/' + item.basename) for item in docpkgfiles_items]
+    for src, dest in zip(docpkgfiles_items, dest_docpkgfiles_items):
         src.tiff2jpg()
         xmlcontent = sps_pkgmaker.SPSXMLContent(src.filename)
         xmlcontent.write(
@@ -101,9 +101,9 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
             dtd_location_type=dtd_location_type, pretty_print=True)
         src.copy_related_files(dest_path)
 
-        outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
+        doc_outs_items[dest.name] = workarea.DocumentOutputFiles(dest.name, wk.reports_path, None)
 
-    return dest_article_files_items, outputs
+    return dest_docpkgfiles_items, doc_outs_items
 
 
 class ArticlesConversion(object):
@@ -412,9 +412,9 @@ class PkgProcessor(object):
             dtd_location_type = 'remote'
         else:
             dtd_location_type = 'local'
-        pkgfiles, outputs = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
+        pkgfiles, doc_outs_items = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
         workarea_path = os.path.dirname(pkgfiles[0].path)
-        return package.Package(pkgfiles, outputs, workarea_path)
+        return package.MultiDocsPackage(pkgfiles, doc_outs_items, workarea_path)
 
     def evaluate_package(self, pkg):
         registered_issue_data = registered.RegisteredIssue()

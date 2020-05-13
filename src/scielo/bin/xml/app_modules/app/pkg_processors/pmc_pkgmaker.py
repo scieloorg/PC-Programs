@@ -35,16 +35,16 @@ class PMCPackageMaker(object):
             item_label = str(index) + n + ': ' + xml_name
             encoding.display_message(item_label)
 
-            scielo_pkgfiles = package.ArticlePkg(self.wk.scielo_package_path + '/' + xml_name + '.xml')
+            scielo_doc_pkg = package.PMC_DocumentPackage(self.wk.scielo_package_path + '/' + xml_name + '.xml')
             pmc_filename = self.wk.pmc_package_path + '/' + xml_name + '.xml'
 
             doit = PMCPackageItemMaker(
                 self.outputs[xml_name],
-                scielo_pkgfiles,
+                scielo_doc_pkg,
                 pmc_filename).make_package()
 
         if doit:
-            workarea.PackageFolder(self.wk.pmc_package_path).zip()
+            workarea.MutiDocsPackageFolder(self.wk.pmc_package_path).zip()
 
     def make_report(self):
         for xml_name, doc in self.article_items.items():
@@ -59,20 +59,20 @@ class PMCPackageMaker(object):
 
 class PMCPackageItemMaker(object):
 
-    def __init__(self, outputs, scielo_pkgfiles, pmc_xml_filename):
+    def __init__(self, outputs, scielo_doc_pkg, pmc_xml_filename):
         self.outputs = outputs
-        self.scielo_pkgfiles = scielo_pkgfiles
-        self.pmc_pkgfiles = None
+        self.scielo_doc_pkg = scielo_doc_pkg
+        self.pmc_doc_pkg = None
         self.pmc_xml_filename = pmc_xml_filename
 
     def make_package(self):
-        scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(self.scielo_pkgfiles.xml_content.content)
+        scielo_dtd_files, pmc_dtd_files = xml_versions.identify_dtd_files(self.scielo_doc_pkg.xml_content.content)
 
-        if self.scielo_pkgfiles.article_xml.journal_id_nlm_ta is None:
+        if self.scielo_doc_pkg.article_xml.journal_id_nlm_ta is None:
             html_reports.save(self.outputs.pmc_style_report_filename, 'PMC Style Checker', _('{label} is a mandatory data, and it was not informed. ').format(label='journal-id (nlm-ta)'))
         else:
             self.make_xml(scielo_dtd_files, pmc_dtd_files)
-            self.pmc_pkgfiles = package.ArticlePkg(self.pmc_xml_filename)
+            self.pmc_doc_pkg = package.PMC_DocumentPackage(self.pmc_xml_filename)
             self.insert_math_id()
             self.replace_img_ext_to_tiff()
             self.add_files_to_pmc_package()
@@ -81,7 +81,7 @@ class PMCPackageItemMaker(object):
 
     def make_xml(self, scielo_dtd_files, pmc_dtd_files):
         java_xml_utils.xml_transform(
-            self.scielo_pkgfiles.filename,
+            self.scielo_doc_pkg.filename,
             scielo_dtd_files.xsl_output,
             self.pmc_xml_filename)
         xml_validator = sps_xml_validators.XMLValidator(pmc_dtd_files)
@@ -99,7 +99,7 @@ class PMCPackageItemMaker(object):
 
     def insert_math_id(self):
         # PMC exige o atributo @id para math
-        xml = self.pmc_pkgfiles.xml_content.xml
+        xml = self.pmc_doc_pkg.xml_content.xml
         n = 0
         for math in xml.findall("{http://www.w3.org/1998/Math/MathML}math"):
             if math.get("id") is None:
@@ -110,30 +110,30 @@ class PMCPackageItemMaker(object):
 
     def replace_img_ext_to_tiff(self):
         missing = []
-        content = self.pmc_pkgfiles.xml_content.content
-        for href in self.pmc_pkgfiles.article_xml.image_files:
-            if self.pmc_pkgfiles.related_files_by_extension.get(href.ext) is None:
+        content = self.pmc_doc_pkg.xml_content.content
+        for href in self.pmc_doc_pkg.article_xml.image_files:
+            if self.pmc_doc_pkg.related_files_by_extension.get(href.ext) is None:
                 missing.append(href.name_without_extension + '.tif')
                 content = content.replace(href.src, href.name_without_extension + '.tif')
-        self.pmc_pkgfiles.article_xml = content
+        self.pmc_doc_pkg.article_xml = content
         #print('missing', missing)
 
     def add_files_to_pmc_package(self):
-        doc = self.pmc_pkgfiles.article_xml
+        doc = self.pmc_doc_pkg.article_xml
         if doc.language == 'en':
-            self.scielo_pkgfiles.copy_related_files(self.pmc_pkgfiles.path)
-            self.pmc_pkgfiles.svg2tiff()
-            valid_files = self.pmc_pkgfiles.select_pmc_files()
-            delete_files = [f for f in self.pmc_pkgfiles.related_files if f not in valid_files]
-            self.pmc_pkgfiles.delete_files(delete_files)
+            self.scielo_doc_pkg.copy_related_files(self.pmc_doc_pkg.path)
+            self.pmc_doc_pkg.svg2tiff()
+            valid_files = self.pmc_doc_pkg.select_pmc_files()
+            delete_files = [f for f in self.pmc_doc_pkg.related_files if f not in valid_files]
+            self.pmc_doc_pkg.delete_files(delete_files)
 
     def rename_en_files(self):
-        en_files = [f for f in self.pmc_pkgfiles.related_files if '-en.' in f]
-        content = self.pmc_pkgfiles.xml_content.content
+        en_files = [f for f in self.pmc_doc_pkg.related_files if '-en.' in f]
+        content = self.pmc_doc_pkg.xml_content.content
         for f in en_files:
             new = f.replace('-en.', '.')
-            os.rename(self.pmc_pkgfiles.path + '/' + f, self.pmc_pkgfiles.path + '/' + new)
+            os.rename(self.pmc_doc_pkg.path + '/' + f, self.pmc_doc_pkg.path + '/' + new)
             content = content.replace(f, new)
         if len(en_files) > 0:
-            self.pmc_pkgfiles.article_xml = content
+            self.pmc_doc_pkg.article_xml = content
             fs_utils.write_file(self.pmc_xml_filename, content)

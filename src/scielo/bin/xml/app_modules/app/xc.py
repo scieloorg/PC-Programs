@@ -84,7 +84,7 @@ class XC_Reception(object):
     def convert_package(self, package_path):
         if package_path is None:
             return False
-        pkgfolder = workarea.PackageFolder(package_path)
+        pkgfolder = workarea.MutiDocsPackageFolder(package_path)
         encoding.display_message(package_path)
         xc_status = 'interrupted'
 

@@ -25,17 +25,17 @@ def call_make_packages(args, version):
             normalized_pkgfiles = []
             if sgm_xml is not None:
                 xml_generation = sgmlxml2xml(sgm_xml, acron)
-                outputs = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
+                doc_outs_items = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
                 normalized_pkgfiles = [xml_generation.xml_pkgfiles]
                 stage = 'xml'
             else:
-                normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
+                normalized_pkgfiles, doc_outs_items = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
     reception = XPM_Reception(stage, INTERATIVE)
     if normalized_pkgfiles is None:
         if INTERATIVE is True:
             reception.display_form()
     else:
-        reception.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
+        reception.make_package(normalized_pkgfiles, doc_outs_items, GENERATE_PMC)
 
 
 def read_inputs(args):
@@ -108,7 +108,7 @@ def evaluate_xml_path(xml_path):
 
 def sgmlxml2xml(sgm_xml_filename, acron):
     _sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xml_versions.xsl_getter)
-    sgmxml_pkgfiles = workarea.PkgArticleFiles(sgm_xml_filename)
+    sgmxml_pkgfiles = workarea.DocumentPackageFiles(sgm_xml_filename)
     pkg_generation = sgmlxml.SGMLXML2SPSXML(sgmxml_pkgfiles)
     pkg_generation.pack(acron, _sgmlxml2xml)
     return pkg_generation
@@ -127,14 +127,14 @@ class XPM_Reception(object):
         encoding.display_message(_('Making package') + '...')
         xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
         encoding.display_message('...'*2)
-        normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', self.proc.stage)
+        normalized_pkgfiles, doc_outs_items = pkg_processors.normalize_xml_packages(xml_list, 'remote', self.proc.stage)
         encoding.display_message('...'*3)
-        self.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
+        self.make_package(normalized_pkgfiles, doc_outs_items, GENERATE_PMC)
         encoding.display_message('...'*4)
         return 'done', 'blue'
 
-    def make_package(self, normalized_pkgfiles, outputs, GENERATE_PMC=False):
+    def make_package(self, normalized_pkgfiles, doc_outs_items, GENERATE_PMC=False):
         if len(normalized_pkgfiles) > 0:
             workarea_path = os.path.dirname(normalized_pkgfiles[0].path)
-            pkg = package.Package(normalized_pkgfiles, outputs, workarea_path)
+            pkg = package.MultiDocsPackage(normalized_pkgfiles, doc_outs_items, workarea_path)
             self.proc.make_package(pkg, GENERATE_PMC)

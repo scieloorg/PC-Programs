@@ -19,6 +19,8 @@ class SPSXMLContent(xml_utils.SuitableXML):
     """
 
     def __init__(self, file_path):
+        self.pkg_path = os.path.dirname(file_path)
+
         xml_utils.SuitableXML.__init__(self, file_path)
         self._normalize()
 
@@ -116,12 +118,11 @@ class SPSXMLContent(xml_utils.SuitableXML):
             broken_ref.normalize()
 
     def replace_mimetypes(self):
-        pkg_path = os.path.dirname(self.filename)
         for node in self.xml.findall(".//*[@mimetype]"):
             asset_filename = node.get("mimetype")
             if asset_filename.startswith('replace'):
                 asset_filename = asset_filename.replace("replace", "")
-                file_path = os.path.join(pkg_path, asset_filename)
+                file_path = os.path.join(self.pkg_path, asset_filename)
                 if os.path.isfile(file_path):
                     guessed_type = mime.guessed_type(file_path)
                 else:

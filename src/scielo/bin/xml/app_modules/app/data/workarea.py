@@ -45,7 +45,7 @@ class Workarea(object):
         return self.output_path+'/pmc_package'
 
 
-class PkgArticleFiles(object):
+class DocumentPackageFiles(object):
 
     def __init__(self, filename):
         self._prefixes = None
@@ -228,7 +228,7 @@ class PkgArticleFiles(object):
             shutil.copyfile(self.filename, dest_path + '/' + self.basename)
 
 
-class PackageFolder(object):
+class MutiDocsPackageFolder(object):
 
     def __init__(self, path, pkgfiles_items=None):
         self.path = path
@@ -237,7 +237,7 @@ class PackageFolder(object):
             self.pkgfiles_items = {}
             for item in os.listdir(path):
                 if item.endswith('.xml'):
-                    article_files = PkgArticleFiles(path+'/'+item)
+                    article_files = DocumentPackageFiles(path+'/'+item)
                     self.pkgfiles_items[article_files.name] = article_files
         else:
             self.pkgfiles_items = {item.name: item for item in pkgfiles_items}
@@ -282,7 +282,7 @@ class PackageFolder(object):
         return filename
 
 
-class OutputFiles(object):
+class DocumentOutputFiles(object):
 
     def __init__(self, xml_name, report_path, wrk_path):
         self.xml_name = xml_name

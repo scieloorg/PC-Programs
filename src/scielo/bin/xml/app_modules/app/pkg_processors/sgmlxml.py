@@ -521,7 +521,7 @@ class PackageNamer(object):
     def rename(self, acron, dest_path):
         self._fix_href_values(acron)
 
-        self.dest_pkgfiles = workarea.PkgArticleFiles(dest_path + '/' + self.new_name + '.xml')
+        self.dest_pkgfiles = workarea.DocumentPackageFiles(dest_path + '/' + self.new_name + '.xml')
 
         self.dest_pkgfiles.clean()
         fs_utils.write_file(self.dest_pkgfiles.filename, self.xml_content)
@@ -607,8 +607,8 @@ class SGMLXML2SPSXML(object):
         self.sgmxml_files = sgmxml_files
         self.wk = SGMLXMLWorkarea(sgmxml_files.name, sgmxml_files.path)
         self.sgmhtml = SGMLHTML(sgmxml_files.name, self.wk.html_filename)
-        self.sgmxml_outputs = workarea.OutputFiles(sgmxml_files.name, self.wk.reports_path, sgmxml_files.path)
-        self.src_pkgfiles = workarea.PkgArticleFiles(self.wk.src_path + '/' + sgmxml_files.name + '.xml')
+        self.sgmxml_outputs = workarea.DocumentOutputFiles(sgmxml_files.name, self.wk.reports_path, sgmxml_files.path)
+        self.src_pkgfiles = workarea.DocumentPackageFiles(self.wk.src_path + '/' + sgmxml_files.name + '.xml')
         shutil.copyfile(self.sgmxml_files.filename, self.src_pkgfiles.filename)
         self.xml_pkgfiles = self.src_pkgfiles
 
