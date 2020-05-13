@@ -254,20 +254,16 @@ class PackageValidator(object):
     def validate_package(self):
         encoding.display_message(
             _('Validate package ({} files)').format(
-                len(self.pkg.package_items)))
+                len(self.pkg.articles)))
         results = {}
-        for name in sorted(self.pkg.package_items.keys()):
+        for name in sorted(self.pkg.articles.keys()):
             encoding.display_message(_('Validate {name}').format(name=name))
             results[name] = self.validate_package_item(
-                self.pkg.package_items[name], self.pkg.outputs[name])
+                self.pkg.articles[name], self.pkg.files[name],
+                self.pkg.outputs[name])
         return results
 
-    def validate_package_item(self, package_item, outputs):
-        # article == <class 'app_modules.app.data.article.Article'>
-        article = package_item.article
-        # pkgfiles == <class 'app_modules.app.data.workarea.PkgArticleFiles'>
-        pkgfiles = package_item.files
-
+    def validate_package_item(self, article, pkgfiles, outputs):
         xml_structure_validator = XMLStructureValidator(
             pkgfiles.filename, article.tree, article.sps)
 

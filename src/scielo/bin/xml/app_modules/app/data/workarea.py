@@ -23,26 +23,30 @@ class File(object):
         self.name, self.ext = os.path.splitext(self.basename)
 
 
-class Workarea(object):
+class MultiDocsPackageOuputs(object):
 
     def __init__(self, output_path):
         self.output_path = output_path
-
-        for p in [self.output_path, self.reports_path, self.scielo_package_path, self.pmc_package_path]:
+        for p in [self.reports_path, self.tmp_path,
+                  self.scielo_package_path, self.pmc_package_path]:
             if not os.path.isdir(p):
                 os.makedirs(p)
 
     @property
     def reports_path(self):
-        return self.output_path + '/errors'
+        return os.path.join(self.output_path, 'errors')
+
+    @property
+    def tmp_path(self):
+        return os.path.join(self.output_path, 'tmp')
 
     @property
     def scielo_package_path(self):
-        return self.output_path + '/scielo_package'
+        return os.path.join(self.output_path, 'scielo_package')
 
     @property
     def pmc_package_path(self):
-        return self.output_path+'/pmc_package'
+        return os.path.join(self.output_path, 'pmc_package')
 
 
 class DocumentPackageFiles(object):
@@ -228,33 +232,32 @@ class DocumentPackageFiles(object):
             shutil.copyfile(self.filename, dest_path + '/' + self.basename)
 
 
-class MutiDocsPackageFolder(object):
+class MultiDocsPackageFolder(object):
 
-    def __init__(self, path, pkgfiles_items=None):
+    def __init__(self, path):
         self.path = path
         self.name = os.path.basename(path)
-        if pkgfiles_items is None:
-            self.pkgfiles_items = {}
-            for item in os.listdir(path):
-                if item.endswith('.xml'):
-                    article_files = DocumentPackageFiles(path+'/'+item)
-                    self.pkgfiles_items[article_files.name] = article_files
-        else:
-            self.pkgfiles_items = {item.name: item for item in pkgfiles_items}
+        self.pkgfiles_items = {}
+        for item in os.listdir(path):
+            if item.endswith('.xml') and '-' in item:
+                article_files = DocumentPackageFiles(path+'/'+item)
+                self.pkgfiles_items[article_files.name] = article_files
         self.INFORM_ORPHANS = len(self.pkgfiles_items) > 1
 
     @property
     def prefix(self):
-        if len(self.pkgfiles_items) == 1:
-            return list(self.pkgfiles_items.keys())[0]
-        elif len(self.pkgfiles_items) > 1:
-            items = list(self.pkgfiles_items.keys())[:1]
-            _prefix = [a for a, b in zip(items[0], items[1]) if a == b]
-            return ''.join(_prefix)[:-1]
+        if len(self.pkgfiles_items) > 0:
+            name = list(self.pkgfiles_items.keys())[0].split("-")
+            return "-".join(name[:-1])
 
     @property
     def xml_list(self):
         return [item.filename for item in self.pkgfiles_items.values()]
+
+    @property
+    def file_paths(self):
+        return {name: item.filename
+                for name, item in self.pkgfiles_items.items()}
 
     @property
     def package_filenames(self):
@@ -272,11 +275,11 @@ class MutiDocsPackageFolder(object):
                     items.append(f)
         return items
 
-    def zip(self):
-        dest_path = os.path.dirname(self.path)
+    def zip(self, dest_path, dest_name=None):
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
-        filename = os.path.join(dest_path, self.prefix + '.zip')
+        dest_name = dest_name or os.path.dirname(self.path) + '.zip'
+        filename = os.path.join(dest_path, dest_name)
         fs_utils.zip(filename, [os.path.join(self.path, f)
                      for f in self.package_filenames])
         return filename
@@ -288,13 +291,6 @@ class DocumentOutputFiles(object):
         self.xml_name = xml_name
         self.report_path = report_path
         self.wrk_path = wrk_path
-
-        #self.related_files = []
-        #self.xml_filename = xml_filename
-        #self.new_xml_filename = self.xml_filename
-        #self.xml_path = os.path.dirname(xml_filename)
-        #self.xml_name = basename.replace('.xml', '')
-        #self.new_name = self.xml_name
 
     @property
     def report_path(self):
@@ -310,7 +306,7 @@ class DocumentOutputFiles(object):
     def ctrl_filename(self):
         if self.wrk_path is not None:
             if not os.path.isdir(self.wrk_path):
-                os.path.makedirs(self.wrk_path)
+                os.makedirs(self.wrk_path)
             return self.wrk_path + '/' + self.xml_name + '.ctrl.txt'
 
     @property

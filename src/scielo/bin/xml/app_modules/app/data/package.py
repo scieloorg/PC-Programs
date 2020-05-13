@@ -1,5 +1,4 @@
 # coding=utf-8
-
 from ...generics import xml_utils
 from . import article
 from . import workarea
@@ -54,53 +53,39 @@ class PMC_DocumentPackage(workarea.DocumentPackageFiles):
         return files
 
 
-class PackageItem(object):
-    def __init__(self, pkgfiles):
-        """
-        artfiles
-            <class 'app_modules.app.data.workarea.PkgArticleFiles'>
-        """
-        self.suitable_xml = xml_utils.SuitableXML(
-            pkgfiles.filename, do_changes=False)
-        self.article = article.Article(self.suitable_xml.xml, pkgfiles.name)
-        self.files = pkgfiles
-
-
-class MultiDocsPackage(object):
+class SPPackage(object):
     """
     Contém dados (files + xml + article) de um conjunto de documentos
     de um mesmo número
     """
 
-    def __init__(self, pkgfiles_items, outputs, workarea_path):
-        """
-        pkgfiles_items
-            list of <class 'app_modules.app.data.workarea.PkgArticleFiles'>
-        """
-        self.package_folder = workarea.MutiDocsPackageFolder(
-            pkgfiles_items[0].path, pkgfiles_items)
-        # self.input_zip_file_path = self.package_folder.zip()
-        self.outputs = outputs
-        self.wk = workarea.Workarea(workarea_path)
-        self._file_paths = {item.name: item.filename
-                            for item in pkgfiles_items}
-
-        self.package_items = {}
-        for item in pkgfiles_items:
-            self.package_items[item.name] = PackageItem(item)
-
+    def __init__(self, path, output_path):
+        self.package_folder = workarea.MultiDocsPackageFolder(path)
+        self.wk = workarea.MultiDocsPackageOuputs(output_path)
+        self._articles = {}
+        for name, file_path in self.package_folder.file_paths.items():
+            xml, xml_error = xml_utils.load_xml(file_path)
+            self._articles[name] = article.Article(xml, name)
         self.issue_data = PackageIssueData()
-        self.issue_data.setup(self.articles)
+        self.issue_data.setup(self._articles)
 
     @property
     def file_paths(self):
-        return {name: item.filename
-                for name, item in self.package_items.items()}
+        return self.package_folder.file_paths
+
+    @property
+    def files(self):
+        return self.package_folder.pkgfiles_items
 
     @property
     def articles(self):
-        return {name: pkg_item.article
-                for name, pkg_item in self.package_items.items()}
+        return self._articles
+
+    @property
+    def outputs(self):
+        return {name:
+                workarea.DocumentOutputFiles(name, self.wk.reports_path, "work")
+                for name in self.package_folder.file_paths.keys()}
 
     @property
     def is_pmc_journal(self):
@@ -108,49 +93,6 @@ class MultiDocsPackage(object):
             if doc.journal_id_nlm_ta:
                 return True
 
-
-# def normalize_xml_packages(xml_list, dtd_location_type, stage):
-#     article_files_items = [workarea.PkgArticleFiles(item) for item in xml_list]
-
-#     path = article_files_items[0].path + '_' + stage
-
-#     if not os.path.isdir(path):
-#         os.makedirs(path)
-
-#     wk = workarea.Workarea(path)
-#     outputs = {}
-#     dest_path = wk.scielo_package_path
-#     dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
-#     for src, dest in zip(article_files_items, dest_article_files_items):
-#         src.tiff2jpg()
-#         xmlcontent = sps_pkgmaker.SPSXMLContent(src.filename)
-#         xmlcontent.write(
-#             dest.filename,
-#             dtd_location_type=dtd_location_type, pretty_print=True)
-#         src.copy_related_files(dest_path)
-
-#         outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
-
-#     return dest_article_files_items, outputs
-
-# from packtools.utils import XMLWebOptimiser
-# from packtools.domain import XMLValidator
-
-#     def optimize(self):
-#         def read_file(f):
-#             with open(f, "rb") as fp:
-#                 return fp.read()
-
-#         xml_validator = XMLValidator(self.xml)
-#         xml_web_optimiser = XMLWebOptimiser(
-#             self.filename, xml_validator.assets,
-#             read_file, self.pkg_path, stop_if_error=False
-#         )
-#         b_file_content = xml_web_optimiser.get_xml_file()
-#         self.content = b_file_content.decode("utf-8")
-#         for 
-#         , get_optimised_assets, get_assets_thumbnail
-#         xml_web_optimiser.optimise()
 
 class PackageIssueData(object):
 

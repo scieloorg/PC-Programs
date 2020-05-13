@@ -31,16 +31,16 @@ def call_converter(args, version='1.0'):
             messages.append('\n'.join(errors))
             encoding.display_message('\n'.join(messages))
 
-    reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)))
+    xc_reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)))
     if package_path is None and collection_acron is None:
-        reception.display_form()
+        xc_reception.display_form()
     else:
         package_paths = [package_path]
         if collection_acron is not None:
-            package_paths = reception.queued_packages()
+            package_paths = xc_reception.queued_packages()
         for package_path in package_paths:
             try:
-                reception.convert_package(package_path)
+                xc_reception.convert_package(package_path)
             except Exception as e:
                 encoding.report_exception('convert_package', e, package_path)
                 raise
@@ -70,12 +70,15 @@ class XC_Reception(object):
 
         self.mailer = mailer.Mailer(configuration)
         self.transfer = filestransfer.FilesTransfer(configuration)
-        self.proc = pkg_processors.PkgProcessor(configuration, INTERATIVE=configuration.interative_mode, stage='xc')
+        self.proc = pkg_processors.PkgProcessor(
+            configuration,
+            INTERATIVE=configuration.interative_mode, stage='xc')
 
     def display_form(self):
         if self.configuration.interative_mode is True:
             from . import interface
-            interface.display_form(self.proc.stage == 'xc', None, self.call_convert_package)
+            interface.display_form(
+                self.proc.stage == 'xc', None, self.call_convert_package)
 
     def call_convert_package(self, package_path):
         self.convert_package(package_path)
@@ -84,11 +87,11 @@ class XC_Reception(object):
     def convert_package(self, package_path):
         if package_path is None:
             return False
-        pkgfolder = workarea.MutiDocsPackageFolder(package_path)
+        pkgfolder = workarea.MultiDocsPackageFolder(package_path)
         encoding.display_message(package_path)
         xc_status = 'interrupted'
 
-        pkg = self.proc.normalized_package(pkgfolder.xml_list)
+        pkg = self.proc.receive_package(pkgfolder.xml_list)
         scilista_items = []
 
         try:

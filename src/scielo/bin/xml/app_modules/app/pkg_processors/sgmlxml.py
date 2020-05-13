@@ -18,13 +18,13 @@ from . import symbols
 from . import sps_pkgmaker
 
 
-class SGMLXMLWorkarea(workarea.Workarea):
+class SGMLXMLWorkarea(workarea.MultiDocsPackageOuputs):
 
     def __init__(self, name, sgmxml_path):
         self.input_path = sgmxml_path
         self.name = name
         output_path = os.path.dirname(os.path.dirname(sgmxml_path))
-        workarea.Workarea.__init__(self, output_path)
+        workarea.MultiDocsPackageOuputs.__init__(self, output_path)
         self.src_path = self.output_path + '/src'
 
     @property

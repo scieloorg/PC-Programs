@@ -22,7 +22,6 @@ from ..validations import article_validations as article_validations_module
 from ..validations import validations as validations_module
 from ..validations import reports_maker
 from ..validations import merged_articles_validations
-from ..data import package
 from ..data import merged
 from ..data import workarea
 from ..data import kernel_document
@@ -86,10 +85,7 @@ def normalize_xml_packages(xml_list, dtd_location_type, stage):
 
     path = docpkgfiles_items[0].path + '_' + stage
 
-    if not os.path.isdir(path):
-        os.makedirs(path)
-
-    wk = workarea.Workarea(path)
+    wk = workarea.MultiDocsPackageOuputs(path)
     doc_outs_items = {}
     dest_path = wk.scielo_package_path
     dest_docpkgfiles_items = [workarea.DocumentPackageFiles(dest_path + '/' + item.basename) for item in docpkgfiles_items]
@@ -407,14 +403,15 @@ class PkgProcessor(object):
                     self.config.serial_path)
         return self._db_manager
 
-    def normalized_package(self, xml_list):
-        if self.is_xml_generation:
-            dtd_location_type = 'remote'
-        else:
-            dtd_location_type = 'local'
-        pkgfiles, doc_outs_items = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
-        workarea_path = os.path.dirname(pkgfiles[0].path)
-        return package.MultiDocsPackage(pkgfiles, doc_outs_items, workarea_path)
+    def receive_package(self, xml_list):
+        # if self.is_xml_generation:
+        #     dtd_location_type = 'remote'
+        # else:
+        #     dtd_location_type = 'local'
+        xml_path = os.path.dirname(xml_list[0])
+        pkg_maker = sps_pkgmaker.PackageMaker(
+            xml_path, xml_path + "_" + self.stage)
+        return pkg_maker.pack(xml_list)
 
     def evaluate_package(self, pkg):
         registered_issue_data = registered.RegisteredIssue()

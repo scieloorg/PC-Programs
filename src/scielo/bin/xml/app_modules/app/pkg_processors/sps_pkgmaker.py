@@ -2,9 +2,14 @@
 import os
 from mimetypes import MimeTypes
 from urllib.request import pathname2url
+from zipfile import ZipFile
+
+from packtools.utils import SPPackage
 
 from ...generics import xml_utils
 from ..data import attributes
+from ..data import workarea
+from ..data import package
 
 
 messages = []
@@ -235,3 +240,57 @@ class BrokenRef(object):
             mixed_citation_text = " ".join(mixed_citation.itertext())
             if check in mixed_citation_text:
                 source.text = check
+
+
+class PackageMaker(object):
+    """
+    Contém dados (files + xml + article) de um conjunto de documentos
+    de um mesmo número
+    """
+
+    def __init__(self, this_path, destination_path, former_name=None):
+        self.former_name = former_name
+
+        # origem da pasta que contem pacotes de xml
+        self.source_folder = workarea.MultiDocsPackageFolder(this_path)
+
+        # pasta que contera as saídas
+        # (scielo_package, errors, pmc_package, ...)
+        self.outputs_folder = workarea.MultiDocsPackageOuputs(destination_path)
+        self._doc_outs_items = {
+            name:
+                workarea.DocumentOutputFiles(
+                    name, self.outputs_folder.reports_path, self.former_name)
+            for name in self.source_folder.pkgfiles_items.keys()}
+
+    def pack(self, xml_list=None, dtd_location_type='remote'):
+        scielo_package_path = self.outputs_folder.scielo_package_path
+        zip_file_path = scielo_package_path + ".zip"
+        if os.path.exists(zip_file_path):
+            os.unlink(zip_file_path)
+        for item in self.source_folder.pkgfiles_items.values():
+            file_path = item.filename
+            if xml_list and file_path not in xml_list:
+                continue
+            xmlcontent = SPSXMLContent(file_path)
+            xmlcontent.write(
+                os.path.join(scielo_package_path, os.path.basename(file_path)),
+                dtd_location_type=dtd_location_type, pretty_print=True)
+            item.copy_related_files(scielo_package_path)
+
+        scielo_package_folder = workarea.MultiDocsPackageFolder(
+            scielo_package_path)
+
+        tmp_zip_file_path = scielo_package_folder.zip(
+            self.outputs_folder.output_path, "tmp.zip")
+        print("temporary: ")
+        print(tmp_zip_file_path)
+        spp = SPPackage(
+            ZipFile(tmp_zip_file_path),
+            scielo_package_path)
+        spp.optimise(scielo_package_path + ".zip")
+        print("optimised: ")
+        print(scielo_package_path + ".zip")
+        return package.SPPackage(
+            scielo_package_path, self.outputs_folder.output_path)
+

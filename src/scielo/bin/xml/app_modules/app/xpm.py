@@ -5,11 +5,10 @@ import os
 from ..__init__ import _
 from . import interface
 from ..generics import encoding
+from .config import config
 from .data import workarea
-from .data import package
 from .pkg_processors import sgmlxml
 from .pkg_processors import pkg_processors
-from .config import config
 from .pkg_processors import xml_versions
 
 
@@ -19,23 +18,28 @@ def call_make_packages(args, version):
     stage = 'xpm'
     if any([xml_path, acron]):
         result = validate_inputs(script, xml_path)
-        if result is not None:
+        if result:
             sgm_xml, xml_list = result
-            stage = 'xpm'
-            normalized_pkgfiles = []
-            if sgm_xml is not None:
+            if sgm_xml:
                 xml_generation = sgmlxml2xml(sgm_xml, acron)
                 doc_outs_items = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
                 normalized_pkgfiles = [xml_generation.xml_pkgfiles]
                 stage = 'xml'
             else:
-                normalized_pkgfiles, doc_outs_items = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
-    reception = XPM_Reception(stage, INTERATIVE)
-    if normalized_pkgfiles is None:
-        if INTERATIVE is True:
-            reception.display_form()
+                stage = 'xpm'
+
+    if stage == "xpm":
+        configuration = config.Configuration()
+        processor = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
+        pkg = processor.receive_package(xml_list)
+        processor.make_package(pkg)
     else:
-        reception.make_package(normalized_pkgfiles, doc_outs_items, GENERATE_PMC)
+        xpm_reception = XPM_Reception(stage, INTERATIVE)
+        if normalized_pkgfiles is None:
+            if INTERATIVE is True:
+                xpm_reception.display_form()
+        else:
+            xpm_reception.make_package(normalized_pkgfiles, doc_outs_items, GENERATE_PMC)
 
 
 def read_inputs(args):
@@ -127,14 +131,15 @@ class XPM_Reception(object):
         encoding.display_message(_('Making package') + '...')
         xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
         encoding.display_message('...'*2)
-        normalized_pkgfiles, doc_outs_items = pkg_processors.normalize_xml_packages(xml_list, 'remote', self.proc.stage)
+
+        pkg = self.proc.receive_package(xml_list)
         encoding.display_message('...'*3)
-        self.make_package(normalized_pkgfiles, doc_outs_items, GENERATE_PMC)
+        self.proc.make_package(pkg, GENERATE_PMC)
         encoding.display_message('...'*4)
         return 'done', 'blue'
 
-    def make_package(self, normalized_pkgfiles, doc_outs_items, GENERATE_PMC=False):
+    def make_package(self, normalized_pkgfiles, outputs, GENERATE_PMC=False):
         if len(normalized_pkgfiles) > 0:
-            workarea_path = os.path.dirname(normalized_pkgfiles[0].path)
-            pkg = package.MultiDocsPackage(normalized_pkgfiles, doc_outs_items, workarea_path)
+            pkg = self.proc.receive_package(normalized_pkgfiles[0].path)
             self.proc.make_package(pkg, GENERATE_PMC)
+
