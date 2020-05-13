@@ -7,7 +7,7 @@ from ..data import attributes
 messages = []
 
 
-class SPSXMLContent(xml_utils.BrokenXML):
+class SPSXMLContent(xml_utils.SuitableXML):
     """
     Aplica:
     - ajustes por migrações de versões SPS
@@ -15,7 +15,7 @@ class SPSXMLContent(xml_utils.BrokenXML):
     """
 
     def __init__(self, content):
-        xml_utils.BrokenXML.__init__(self, content, fixed=False)
+        xml_utils.SuitableXML.__init__(self, content)
         self._normalize()
 
     def _normalize(self):

@@ -10,7 +10,6 @@ from lxml import etree
 from ..__init__ import _
 from . import fs_utils
 from . import encoding
-from ..app.pkg_processors import xml_versions
 
 
 namespaces = {}
@@ -62,7 +61,7 @@ class Entity2Char:
         for item in content.replace('&', '~BREAK~&').split('~BREAK~'):
             if item.startswith('&'):
                 ent = self._looks_like_entity(item)
-                if len(ent) > 2:
+                if ent and len(ent) > 2:
                     entity = ent
                     if entity[-1] != ";":
                         entity += ";"
@@ -114,17 +113,20 @@ def element_lang(node):
         return node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
 
-class BrokenXML(object):
+class SuitableXML(object):
     """
-    Faz correções, se necessárias, em quaisquer XML
-    - remove "junk" depois da última tag de fecha
-    - conserta entidades que faltam ;
-    - converte as entidades em caracteres
-    - extrai do conteudo e instancia DOCTYPE
-    - extrai do conteudo e instancia processing instruction
+    XML adequado / aceitável
+    - sem "junk" depois da última tag de fecha
+    - garante que os conteúdos de elementos não tenha quebra de linha ou tab
+    - garante que tenha entidades completas que terminam em ;
+    - converte as entidades em caracteres, especialmente as "nomeadas" pois
+    não são entidades aceitas no XML
+    - preserva DOCTYPE original
+    - preserva xml declaration original
     """
-    def __init__(self, str_or_filepath, fixed=False):
-        self.fixed = fixed
+    def __init__(self, str_or_filepath, do_changes=True):
+        self.do_changes = do_changes
+        self.changed = False
         self._xml = None
         self._content = None
         self.filename = None
@@ -166,12 +168,28 @@ class BrokenXML(object):
         """
         Atribui valor apenas para XML em si
         """
-        if not self.fixed:
-            self.fixed = True
-            value = well_formed_xml_content(value)
-
         self._content = value.strip()
+
+        if self.do_changes and not self.changed:
+            self.well_formed_xml_content()
+            self.changed = True
+
         self._xml, self.xml_error = load_xml(self._content)
+
+    def well_formed_xml_content(self):
+        xml_content = self._content
+        # padroniza os espaços, necessário pois há casos em que
+        # foram inseridos quebras de linha dentro de conteúdo de elementos
+        xml_content = " ".join([word for word in xml_content.split() if word])
+
+        # remove "junk" (texto após a última tag)
+        if not xml_content.endswith('>'):
+            xml_content = xml_content[:xml_content.rfind('>')+1]
+
+        # converte as entidades em caracteres, necesário especialmente para as
+        # entidades "nomeadas" pois invalidam o XML
+        xml_content = entity2char.convert(xml_content)
+        self._content = xml_content
 
     def get_doctype(self, dtd_location_type=None):
         """
@@ -506,20 +524,6 @@ def replace_attribute_values(root, tuple_attr_name_and_value_and_new_value):
         xpath = ".//*[@{}='{}']".format(attrname, value)
         for node in root.findall(xpath):
             node.set(attrname, new_value)
-
-
-def well_formed_xml_content(xml_content):
-    # padroniza os espaços, necessário pois há casos em que
-    # foram inseridos quebras de linha dentro de conteúdo de elementos
-    xml_content = " ".join([word for word in xml_content.split() if word])
-
-    # remove "junk" (texto após a última tag)
-    if not xml_content.endswith('>'):
-        xml_content = xml_content[:xml_content.rfind('>')+1]
-    # converte as entidades em caracteres, necesário especialmente para as
-    # entidades "nomeadas" pois invalidam o XML
-    xml_content = entity2char.convert(xml_content)
-    return xml_content
 
 
 class XMLNode(object):

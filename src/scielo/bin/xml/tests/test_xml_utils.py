@@ -10,13 +10,6 @@ from app_modules.generics import xml_utils
 python_version = sys.version_info.major
 
 
-class TextUtils(TestCase):
-    def test_well_formed_xml_content_removes_junk_after_last_close_tag(self):
-        text = '<?xml version="1.0" encoding="utf-8"?>\n<doc><p></p> lixo'
-        expected = '<?xml version="1.0" encoding="utf-8"?>\n<doc><p></p>'
-        self.assertEqual(expected, xml_utils.well_formed_xml_content(text))
-
-
 class TextEntity2Char(TestCase):
     def test_convert_converts_decimal_entity(self):
         text = "&#30952;"
@@ -270,56 +263,85 @@ class TestXMLRemoveFunctions(TestCase):
         )
 
 
-class TestBrokenXML(TestCase):
+class TestSuitableXML(TestCase):
 
     def test_init_xml_with_junk_is_loaded_without_errors(self):
         text = "<doc/> lixo"
-        broken = xml_utils.BrokenXML(text)
-        self.assertEqual(broken.format(), "<doc/>")
-        self.assertIsNone(broken.xml_error)
+        suitable_xml = xml_utils.SuitableXML(text)
+        self.assertEqual(suitable_xml.format(), "<doc/>")
+        self.assertIsNone(suitable_xml.xml_error)
 
     def test_init_xml_is_ok(self):
         text = "<doc/>"
-        broken = xml_utils.BrokenXML(text)
-        self.assertEqual(broken.format(), "<doc/>")
-        self.assertIsNone(broken.xml_error)
-        self.assertEqual(broken.doctype, '')
-        self.assertIsNone(broken.xml_declaration)
+        suitable_xml = xml_utils.SuitableXML(text)
+        self.assertEqual(suitable_xml.format(), "<doc/>")
+        self.assertIsNone(suitable_xml.xml_error)
+        self.assertEqual(suitable_xml.doctype, '')
+        self.assertIsNone(suitable_xml.xml_declaration)
 
     def test_init_xml_with_no_xml_declaration(self):
         text = ('<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
                 'Publishing DTD v1.1 20151215//EN" '
                 '"https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">'
                 '\n<article/> lixo')
-        broken = xml_utils.BrokenXML(text)
-        self.assertIsNone(broken.xml_declaration)
+        suitable_xml = xml_utils.SuitableXML(text)
+        self.assertIsNone(suitable_xml.xml_declaration)
         self.assertEqual(
-            broken.doctype,
+            suitable_xml.doctype,
             '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
             'Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/'
             'publishing/1.1/JATS-journalpublishing1.dtd">')
         self.assertEqual(
-            broken.format(),
+            suitable_xml.format(),
             '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
             'Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/'
             'publishing/1.1/JATS-journalpublishing1.dtd">\n<article/>')
 
     def test_init_xml_with_no_doctype(self):
         text = '<?xml version="1.0" encoding="utf-8"?><doc/>'
-        broken = xml_utils.BrokenXML(text)
+        suitable_xml = xml_utils.SuitableXML(text)
         self.assertEqual(
-            broken.xml_declaration,
+            suitable_xml.xml_declaration,
             '<?xml version="1.0" encoding="utf-8"?>')
-        self.assertEqual(broken.doctype, '')
+        self.assertEqual(suitable_xml.doctype, '')
         # self.assertEqual(
         #     '<?xml version="1.0" encoding="utf-8"?><doc/>',
-        #     broken.format()
+        #     suitable_xml.format()
         # )
 
     def test_content_returns_characteres_instead_their_entities(self):
         text = ('<doc><p>&#91;&ccedil;&#93;</p> lixo</doc>')
         expected = ('<doc><p>[ç]</p> lixo</doc>')
-        broken = xml_utils.BrokenXML(text)
+        suitable_xml = xml_utils.SuitableXML(text)
         self.assertEqual(
             expected,
-            broken.format())
+            suitable_xml.format())
+
+    def test_well_formed_xml_content_removes_junk_after_last_close_tag(self):
+        text = '<doc><p></p></doc> lixo'
+        expected = '<doc><p/></doc>'
+        suitable_xml = xml_utils.SuitableXML(text)
+        suitable_xml.well_formed_xml_content()
+        self.assertEqual(expected, suitable_xml.content)
+
+    def test_well_formed_xml_content_removes_extra_spaces(self):
+        text = """<doc><p><title>is nunc. Scelerisque in dictum non
+        consectetur
+        a erat nam. Ipsum dolor sit amet consectetur\t
+        adipiscing elit duis tristique sollicitudin. \n
+        Eu scelerisque felis imperdiet proin fermen</title></p></doc>"""
+        expected = (
+            '<doc><p><title>is nunc. Scelerisque in dictum non '
+            'consectetur a erat nam. Ipsum dolor sit amet consectetur '
+            'adipiscing elit duis tristique sollicitudin. Eu scelerisque '
+            'felis imperdiet proin fermen</title></p></doc>')
+        suitable_xml = xml_utils.SuitableXML(text)
+        suitable_xml.well_formed_xml_content()
+        self.assertEqual(expected, suitable_xml.content)
+
+    def test_well_formed_xml_content_converts_entities_to_chars(self):
+        text = '<doc><p>&#91;&ccedil;&#93;</p></doc>'
+        expected = '<doc><p>[ç]</p></doc>'
+        suitable_xml = xml_utils.SuitableXML(text)
+        suitable_xml.well_formed_xml_content()
+        self.assertEqual(expected, suitable_xml.content)

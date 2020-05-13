@@ -215,7 +215,7 @@ class SGMLHTML(object):
         return r
 
 
-class SGMLXMLContent(xml_utils.BrokenXML):
+class SGMLXMLContent(xml_utils.SuitableXML):
     """
     Faz correções, se necessárias, nos XML gerados pelo
     Markup que é XML em que será aplicada um XSL para que seja convertido ao
@@ -231,7 +231,7 @@ class SGMLXMLContent(xml_utils.BrokenXML):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
 
-        xml_utils.BrokenXML.__init__(self, content)
+        xml_utils.SuitableXML.__init__(self, content)
 
     def fix(self):
         if '<' in self.content:

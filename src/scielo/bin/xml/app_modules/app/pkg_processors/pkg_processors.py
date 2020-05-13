@@ -25,7 +25,6 @@ from ..validations import merged_articles_validations
 from ..data import package
 from ..data import merged
 from ..data import workarea
-from ..data import aff_normalization
 from ..data import kernel_document
 from ..db import registered
 from ..db import xc_models

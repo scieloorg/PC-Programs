@@ -10,7 +10,7 @@ class ArticlePkg(object):
 
     def __init__(self, filename):
         self.filename = filename
-        self.xml_content = xml_utils.BrokenXML(filename)
+        self.xml_content = xml_utils.SuitableXML(filename)
         self.article_files = workarea.PkgArticleFiles(filename)
         self.path = self.article_files.path
         self.basename = self.article_files.basename
@@ -130,8 +130,9 @@ class PackageItem(object):
         artfiles
             <class 'app_modules.app.data.workarea.PkgArticleFiles'>
         """
-        self.broken_xml = xml_utils.BrokenXML(pkgfiles.filename, fixed=True)
-        self.article = article.Article(self.broken_xml.xml, pkgfiles.name)
+        self.suitable_xml = xml_utils.SuitableXML(
+            pkgfiles.filename, do_changes=False)
+        self.article = article.Article(self.suitable_xml.xml, pkgfiles.name)
         self.files = pkgfiles
 
 
