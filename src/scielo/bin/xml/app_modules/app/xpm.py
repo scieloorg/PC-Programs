@@ -6,10 +6,8 @@ from ..__init__ import _
 from . import interface
 from ..generics import encoding
 from .config import config
-from .data import workarea
 from .pkg_processors import sgmlxml
 from .pkg_processors import pkg_processors
-from .pkg_processors import xml_versions
 
 
 def call_make_packages(args, version):
@@ -21,17 +19,16 @@ def call_make_packages(args, version):
         if result:
             sgm_xml, xml_list = result
             if sgm_xml:
-                xml_generation = sgmlxml2xml(sgm_xml, acron)
-                doc_outs_items = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
-                normalized_pkgfiles = [xml_generation.xml_pkgfiles]
+                pkg_generation = sgmlxml.SGMLXML2SPSXML(sgm_xml, acron)
+                pkg = pkg_generation.pack()
                 stage = 'xml'
             else:
                 stage = 'xpm'
 
-    if stage == "xpm":
         configuration = config.Configuration()
         processor = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
-        pkg = processor.receive_package(xml_list)
+        if stage == "xpm":
+            pkg = processor.receive_package(xml_list)
         processor.make_package(pkg)
     else:
         xpm_reception = XPM_Reception(stage, INTERATIVE)
@@ -108,14 +105,6 @@ def evaluate_xml_path(xml_path):
         else:
             errors.append(_('Missing XML location. '))
     return sgm_xml, xml_list, errors
-
-
-def sgmlxml2xml(sgm_xml_filename, acron):
-    _sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xml_versions.xsl_getter)
-    sgmxml_pkgfiles = workarea.DocumentPackageFiles(sgm_xml_filename)
-    pkg_generation = sgmlxml.SGMLXML2SPSXML(sgmxml_pkgfiles)
-    pkg_generation.pack(acron, _sgmlxml2xml)
-    return pkg_generation
 
 
 class XPM_Reception(object):

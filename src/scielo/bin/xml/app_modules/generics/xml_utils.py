@@ -4,13 +4,13 @@ import shutil
 import tempfile
 import html
 from copy import deepcopy
+from io import StringIO
 
 from lxml import etree
 
 from ..__init__ import _
 from . import fs_utils
 from . import encoding
-
 
 namespaces = {}
 namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'
@@ -299,7 +299,8 @@ def tostring(node, pretty_print=False):
 
 
 def load_xml(str_or_filepath):
-    parser = etree.XMLParser(remove_blank_text=True, resolve_entities=True)
+    parser = etree.XMLParser(
+        remove_blank_text=True, resolve_entities=True, recover=True)
     try:
         xml = None
         errors = None
@@ -316,7 +317,7 @@ def load_xml(str_or_filepath):
             if str_or_filepath.startswith('<?') and '?>' in str_or_filepath:
                 str_or_filepath = str_or_filepath[str_or_filepath.find(
                     '?>')+2:].strip()
-            xml = etree.XML(str_or_filepath, parser).getroottree()
+            xml = etree.parse(StringIO(str_or_filepath), parser)
     except (etree.XMLSyntaxError,
             FileNotFoundError,
             ValueError, TypeError) as e:

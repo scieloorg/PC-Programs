@@ -84,7 +84,7 @@ class SPPackage(object):
     @property
     def outputs(self):
         return {name:
-                workarea.DocumentOutputFiles(name, self.wk.reports_path, "work")
+                workarea.DocumentOutputFiles(name, self.wk.reports_path)
                 for name in self.package_folder.file_paths.keys()}
 
     @property

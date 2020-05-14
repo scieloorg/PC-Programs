@@ -231,6 +231,33 @@ class DocumentPackageFiles(object):
                 os.makedirs(dest_path)
             shutil.copyfile(self.filename, dest_path + '/' + self.basename)
 
+    def match_img_files_by_suffixes(self, suffixes):
+        found = []
+        for f in self.files:
+            f_name, f_ext = os.path.splitext(f)
+            if f_ext in img_utils.IMG_EXTENSIONS:
+                suffix = f_name[len(self.name):]
+                if suffix in suffixes:
+                    found.append(f)
+        return found
+
+    def match_img_files_by_id(self, elem_id):
+        found = []
+        for f in self.files:
+            f_name, f_ext = os.path.splitext(f)
+            if f_ext in img_utils.IMG_EXTENSIONS:
+                suffix = f_name[len(self.name):]
+                if suffix == elem_id:
+                    found.append(f)
+        return found
+
+    def search_files(self, number, elem_id, suffixes):
+        if number:
+            found = self.match_img_files_by_suffixes(suffixes)
+        else:
+            found = self.match_img_files_by_id(elem_id)
+        return found, self.related_files
+
 
 class MultiDocsPackageFolder(object):
 
@@ -287,7 +314,7 @@ class MultiDocsPackageFolder(object):
 
 class DocumentOutputFiles(object):
 
-    def __init__(self, xml_name, report_path, wrk_path):
+    def __init__(self, xml_name, report_path, wrk_path=None):
         self.xml_name = xml_name
         self.report_path = report_path
         self.wrk_path = wrk_path

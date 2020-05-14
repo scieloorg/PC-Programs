@@ -345,3 +345,12 @@ class TestSuitableXML(TestCase):
         suitable_xml = xml_utils.SuitableXML(text)
         suitable_xml.well_formed_xml_content()
         self.assertEqual(expected, suitable_xml.content)
+
+    def test_well_formed_xml_content_converts_quot_ent_to_chars(self):
+        text = '<doc><p><a href=&quot;bla&quot;>teste</a></p></doc>'
+        expected = '<doc><p><a href="bla">teste</a></p></doc>'
+        suitable_xml = xml_utils.SuitableXML(text)
+        suitable_xml.well_formed_xml_content()
+        print(suitable_xml.content)
+        self.assertEqual(expected, suitable_xml.content)
+
