@@ -247,7 +247,8 @@ class PackageMaker(object):
     Contém dados (files + xml + article) de um conjunto de documentos
     de um mesmo número
     """
-    def __init__(self, pkg_path, output_path):
+    def __init__(self, pkg_path, output_path, optimise=True):
+        self.optimise = optimise
         params = pkg_path, output_path
         if not all(params) or len(set(params)) != 2:
             raise ValueError(
@@ -264,9 +265,11 @@ class PackageMaker(object):
     def _enhance_doc_package(
             self, pkg_files, pkg_outs, dtd_location_type='remote'):
         xmlcontent = SPSXMLContent(pkg_files.filename)
-        enhanced_pkg_path = pkg_outs.create_dirname("enhanced")
+        enhanced_pkg_path = pkg_outs.create_dir_at_work_path("enhanced")
         enhanced_pkg_file_path = os.path.join(
             enhanced_pkg_path, pkg_files.basename)
+        print(enhanced_pkg_file_path)
+        
         xmlcontent.write(
             enhanced_pkg_file_path,
             dtd_location_type=dtd_location_type, pretty_print=True)
@@ -274,7 +277,7 @@ class PackageMaker(object):
 
         enhanced_folder = workarea.MultiDocsPackageFolder(enhanced_pkg_path)
         enhanced_zip_file_path = enhanced_pkg_path + ".zip"
-        enhanced_folder.zip(enhanced_zip_file_path)
+        enhanced_zip_file_path = enhanced_folder.zip(enhanced_zip_file_path)
         print("enhanced: " + enhanced_zip_file_path)
         return enhanced_zip_file_path
 
@@ -288,19 +291,26 @@ class PackageMaker(object):
             preserve_files=False)
 
     def pack(self, xml_list=None, dtd_location_type='remote'):
+        _xml_list = []
         for item in self.source_folder.pkgfiles_items.values():
+            print("PackageMaker.pack", item.filename, xml_list)
+
             file_path = item.filename
             if xml_list and file_path not in xml_list:
                 continue
-            doc_outs = self.workarea.get_doc_outputs(item.name)
+            _xml_list.append(
+                os.path.join(self.optimised_pkg_path, item.basename))
+            doc_outs = self.workarea.get_doc_outputs(
+                item.name, self.workarea.tmp_path)
             pkg_zipfile = self._enhance_doc_package(
                 item, doc_outs, dtd_location_type)
-            tmp_optimised_pkg_path = doc_outs.create_dirname("opt")
+
+            tmp_optimised_pkg_path = doc_outs.create_dir_at_work_path("opt")
             tmp_optimised_pkg_zipfile = tmp_optimised_pkg_path + ".zip"
             self._optimise_doc_package(
                 pkg_zipfile, tmp_optimised_pkg_zipfile, tmp_optimised_pkg_path)
             fs_utils.unzip(tmp_optimised_pkg_zipfile, self.optimised_pkg_path)
 
         pkg = package.SPPackage(
-                self.optimised_pkg_path, self.workarea.output_path, xml_list)
+                self.optimised_pkg_path, self.workarea.output_path, _xml_list)
         return pkg

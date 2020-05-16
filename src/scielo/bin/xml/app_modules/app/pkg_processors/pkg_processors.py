@@ -411,10 +411,11 @@ class PkgProcessor(object):
         xml_path = os.path.dirname(xml_list[0])
         # PackageMaker(this_path, sp_pkg_dest_path, tmp_path)
         pkg_maker = sps_pkgmaker.PackageMaker(
-            xml_path, xml_path + "_" + self.stage, "/tmp")
+            xml_path, xml_path + "_" + self.stage)
         return pkg_maker.pack(xml_list)
 
     def evaluate_package(self, pkg):
+        import pdb;pdb.set_trace()
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)

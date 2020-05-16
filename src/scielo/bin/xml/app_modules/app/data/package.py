@@ -65,11 +65,13 @@ class SPPackage(object):
         self.xml_list = xml_list
         self._articles = {}
         if xml_list:
-            for name, file_path in self.package_folder.file_paths.items():
-                if file_path not in xml_list:
+            for name, item in self.files.items():
+                if item.filename not in xml_list:
                     continue
-                xml, xml_error = xml_utils.load_xml(file_path)
+                xml, xml_error = xml_utils.load_xml(item.filename)
                 self._articles[name] = article.Article(xml, name)
+                self.wk.get_doc_outputs(name)
+
         self.issue_data = PackageIssueData()
         self.issue_data.setup(self._articles)
 
@@ -87,6 +89,7 @@ class SPPackage(object):
 
     @property
     def outputs(self):
+        print(self.wk.doc_outs)
         return self.wk.doc_outs
 
     @property

@@ -49,11 +49,11 @@ class MultiDocsPackageOuputs(object):
     def pmc_package_path(self):
         return os.path.join(self.output_path, 'pmc_package')
 
-    def get_doc_outputs(self, xml_name, sgmxml_path):
+    def get_doc_outputs(self, xml_name, sgmxml_path=None):
         obj = self.doc_outs.get(xml_name)
         if obj is None:
             self.doc_outs[xml_name] = DocumentOutputFiles(
-                xml_name, self.reports_path, sgmxml_path)
+                xml_name, self.reports_path, sgmxml_path or self.tmp_path)
             obj = self.doc_outs[xml_name]
         return obj
 
@@ -275,7 +275,8 @@ class MultiDocsPackageFolder(object):
         self.name = os.path.basename(path)
         self.pkgfiles_items = {}
         for item in os.listdir(path):
-            if item.endswith('.xml') and '-' in item:
+            if item.endswith('.xml'):
+                print((path+'/'+item))
                 article_files = DocumentPackageFiles(path+'/'+item)
                 self.pkgfiles_items[article_files.name] = article_files
         self.INFORM_ORPHANS = len(self.pkgfiles_items) > 1
@@ -311,16 +312,18 @@ class MultiDocsPackageFolder(object):
                     items.append(f)
         return items
 
-    def zip(self, dest_path):
+    def zip(self, dest_path=None):
+        dest_path = dest_path or self.path + ".zip"
         if dest_path.endswith(".zip"):
             dirname = os.path.dirname(dest_path)
             dest_name = os.path.basename(dest_path)
+            filename = dest_path
         else:
             dirname = dest_path
+            dest_name = self.name + '.zip'
+            filename = os.path.join(dirname, dest_name)
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
-        dest_name = dest_name or self.name + '.zip'
-        filename = os.path.join(dest_path, dest_name)
         if os.path.isfile(filename):
             os.unlink(filename)
         fs_utils.zip(filename,
@@ -338,7 +341,7 @@ class DocumentOutputFiles(object):
         if wrk_path and not os.path.isdir(wrk_path):
             os.makedirs(wrk_path)
 
-    def create_dir_work_path(self, dirname):
+    def create_dir_at_work_path(self, dirname):
         dirname = os.path.join(self.wrk_path, dirname)
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
@@ -361,43 +364,43 @@ class DocumentOutputFiles(object):
 
     @property
     def style_report_filename(self):
-        return self.report_path + '/' + self.xml_name + '.rep.html'
+        return os.path.join(self.report_path, self.xml_name + '.rep.html')
 
     @property
     def dtd_report_filename(self):
-        return self.report_path + '/' + self.xml_name + '.dtd.txt'
+        return os.path.join(self.report_path, self.xml_name + '.dtd.txt')
 
     @property
     def pmc_dtd_report_filename(self):
-        return self.report_path + '/' + self.xml_name + '.pmc.dtd.txt'
+        return os.path.join(self.report_path, self.xml_name + '.pmc.dtd.txt')
 
     @property
     def pmc_style_report_filename(self):
-        return self.report_path + '/' + self.xml_name + '.pmc.rep.html'
+        return os.path.join(self.report_path, self.xml_name + '.pmc.rep.html')
 
     @property
     def err_filename(self):
-        return self.report_path + '/' + self.xml_name + '.err.txt'
+        return os.path.join(self.report_path, self.xml_name + '.err.txt')
 
     @property
     def err_filename_html(self):
-        return self.report_path + '/' + self.xml_name + '.err.html'
+        return os.path.join(self.report_path, self.xml_name + '.err.html')
 
     @property
     def mkp2xml_report_filename(self):
-        return self.report_path + '/' + self.xml_name + '.mkp2xml.txt'
+        return os.path.join(self.report_path, self.xml_name + '.mkp2xml.txt')
 
     @property
     def mkp2xml_report_filename_html(self):
-        return self.report_path + '/' + self.xml_name + '.mkp2xml.html'
+        return os.path.join(self.report_path, self.xml_name + '.mkp2xml.html')
 
     @property
     def data_report_filename(self):
-        return self.report_path + '/' + self.xml_name + '.contents.html'
+        return os.path.join(self.report_path, self.xml_name + '.contents.html')
 
     @property
     def images_report_filename(self):
-        return self.report_path + '/' + self.xml_name + '.images.html'
+        return os.path.join(self.report_path, self.xml_name + '.images.html')
 
     @property
     def xml_structure_validations_filename(self):
@@ -416,7 +419,9 @@ class DocumentOutputFiles(object):
         return self.report_path + '/issue-' + self.xml_name
 
     def clean(self):
-        for f in [self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename]:
+        for f in [self.err_filename, self.dtd_report_filename,
+                  self.style_report_filename, self.pmc_dtd_report_filename,
+                  self.pmc_style_report_filename, self.ctrl_filename]:
             fs_utils.delete_file_or_folder(f)
 
 

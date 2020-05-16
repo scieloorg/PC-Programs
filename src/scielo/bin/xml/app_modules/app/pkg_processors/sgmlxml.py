@@ -15,7 +15,7 @@ from ..data import article
 from ..data import workarea
 from . import symbols
 from .sps_pkgmaker import PackageMaker
-from .pkg_processors import xml_versions
+from . import xml_versions
 
 
 class SGMLXML2SPSXMLError(Exception):
@@ -220,6 +220,8 @@ class SGMLHTML(object):
     def images(self):
         # [graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
         # src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
+        if self.suitable_html.xml_error is not None:
+            print(self.suitable_html.xml_error)
         img_src = []
         for img in self.suitable_html.xml.findall(".//img"):
             src = img.get("src")
@@ -248,14 +250,20 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
     def __init__(self, src_pkgfiles, sgmlhtml):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
-        super().__init__(self, src_pkgfiles.filename)
+        super().__init__(src_pkgfiles.filename)
+        print("_convert_font_symbols_to_entities")
+        self._convert_font_symbols_to_entities()
+        print("_set_graphic_href_values")
         self._set_graphic_href_values()
+        print("_insert_xhtml_tables_in_document")
         self._insert_xhtml_tables_in_document()
+        print("...")
 
     def well_formed_xml_content(self):
+        print("_fix_quotes")
         self._fix_quotes()
-        self._convert_font_symbols_to_entities()
-        super().well_formed_xml_content(self)
+        print("well_formed_xml_content")
+        super().well_formed_xml_content()
 
     def _fix_quotes(self):
         """
@@ -265,8 +273,8 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         content = self._content
         content = content.replace("<", "FIXQUOTESBREK<")
         content = content.replace(">", ">FIXQUOTESBREK")
-        items = content.split("FIXQUOTESBREK")
-        for item in items:
+        items = []
+        for item in content.split("FIXQUOTESBREK"):
             if "=" in item and item.startswith("<") and item.endswith(">"):
                 item = item.replace(
                     u'"“', '"').replace(
@@ -581,13 +589,14 @@ class SGMLXML2SPSXML(object):
                 SGMLHTML(self.FILES.sgmxml_fname, self.FILES.html_filename)
             )
             self.enhancer.write(self.FILES.src_pkgfiles.filename)
-            self._sgmxml2xml()
-            pkg = self._make_package()
-        except SGMLXML2SPSXMLError as e:
+            # self._sgmxml2xml()
+            # pkg = self._make_package()
+        except Exception as e:
             blocking_error = str(e)
-            print(e)
-        finally:
-            self._report(blocking_error)
+            raise e
+
+        # finally:
+            # self._report(blocking_error)
         return pkg
 
 

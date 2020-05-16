@@ -213,14 +213,24 @@ class SuitableXML(object):
                 xml_declaration=self.xml_declaration,
                 pretty_print=pretty_print, doctype=doctype
                 ).decode("utf-8")
+        return "\n".join([
+                self.xml_declaration,
+                self.doctype,
+                self.content,
+            ])
+            
 
     def write(self, dest_file_path, pretty_print=False,
               dtd_location_type=None):
         doctype = self.get_doctype(dtd_location_type)
-        self.xml.write(
-            dest_file_path, encoding="utf-8", method="xml",
-            xml_declaration=self.xml_declaration,
-            pretty_print=pretty_print, doctype=doctype)
+        if self.xml is None:
+            fs_utils.write_file(
+                dest_file_path, self.format(pretty_print, dtd_location_type))
+        else:
+            self.xml.write(
+                dest_file_path, encoding="utf-8", method="xml",
+                xml_declaration=self.xml_declaration,
+                pretty_print=pretty_print, doctype=doctype)
 
 
 def get_xml_object(file_path, xml_parser=None):

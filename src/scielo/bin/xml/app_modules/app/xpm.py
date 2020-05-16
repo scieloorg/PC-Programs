@@ -20,9 +20,9 @@ def call_make_packages(args, version):
 
     if xml_list_or_pkg is None:
         if INTERATIVE is True:
-            display_form()
+            display_form("xpm")
     else:
-        execute(INTERATIVE, stage, xml_list_or_pkg)
+        execute(INTERATIVE, stage, xml_list_or_pkg, GENERATE_PMC)
 
 
 def get_inputs(result, acron):
