@@ -223,6 +223,31 @@ class SuitableXML(object):
             pretty_print=pretty_print, doctype=doctype)
 
 
+def get_xml_object(file_path, xml_parser=None):
+    parser = xml_parser
+    if parser is None:
+        parser = etree.XMLParser(remove_blank_text=True)
+    return etree.parse(file_path, parser)
+
+
+def get_xsl_object(file_path):
+    xslt_doc = etree.parse(file_path)
+    return etree.XSLT(xslt_doc)
+
+
+def transform(xml_obj, xsl_obj):
+    return xsl_obj(xml_obj)
+
+
+def write(file_path, tree):
+    tree.write(
+        file_path,
+        encoding="utf-8",
+        xml_declaration='<?xml version="1.0" encoding="utf-8"?>',
+        inclusive_ns_prefixes=namespaces.keys(),
+    )
+
+
 def replace_doctype(content, new_doctype):
     content = content.replace('\r\n', '\n')
     if '<!DOCTYPE' in content:

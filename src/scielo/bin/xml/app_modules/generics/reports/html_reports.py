@@ -2,11 +2,6 @@
 
 import os
 import webbrowser
-try:
-    from urllib.parse import urlencode as urllib_parse_urlencode
-except ImportError:
-    from urllib import urlencode as urllib_parse_urlencode
-
 from datetime import datetime
 
 from ...__init__ import _

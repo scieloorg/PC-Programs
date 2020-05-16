@@ -12,31 +12,52 @@ from .pkg_processors import pkg_processors
 
 def call_make_packages(args, version):
     script, xml_path, acron, INTERATIVE, GENERATE_PMC = read_inputs(args)
-    normalized_pkgfiles = None
-    stage = 'xpm'
+    xml_list_or_pkg = None
     if any([xml_path, acron]):
         result = validate_inputs(script, xml_path)
         if result:
-            sgm_xml, xml_list = result
-            if sgm_xml:
-                pkg_generation = sgmlxml.SGMLXML2SPSXML(sgm_xml, acron)
-                pkg = pkg_generation.pack()
-                stage = 'xml'
-            else:
-                stage = 'xpm'
+            stage, xml_list_or_pkg = get_inputs(result, acron)
 
-        configuration = config.Configuration()
-        processor = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
-        if stage == "xpm":
-            pkg = processor.receive_package(xml_list)
-        processor.make_package(pkg)
+    if xml_list_or_pkg is None:
+        if INTERATIVE is True:
+            display_form()
     else:
-        xpm_reception = XPM_Reception(stage, INTERATIVE)
-        if normalized_pkgfiles is None:
-            if INTERATIVE is True:
-                xpm_reception.display_form()
-        else:
-            xpm_reception.make_package(normalized_pkgfiles, doc_outs_items, GENERATE_PMC)
+        execute(INTERATIVE, stage, xml_list_or_pkg)
+
+
+def get_inputs(result, acron):
+    sgm_xml, xml_list = result
+    if sgm_xml:
+        sgmxml2xml = sgmlxml.SGMLXML2SPSXML(sgm_xml, acron)
+        pkg = sgmxml2xml.pack()
+        stage = 'xml'
+    else:
+        stage = 'xpm'
+    return stage, xml_list or pkg
+
+
+def display_form(stage):
+    interface.display_form(stage == 'xc', None, call_make_package_from_form)
+
+
+def execute(INTERATIVE, stage, xml_list_or_pkg, GENERATE_PMC):
+    print(_('Making package') + '...')
+    configuration = config.Configuration()
+    proc = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
+    pkg = xml_list_or_pkg
+    if stage == "xpm":
+        pkg = proc.receive_package(xml_list_or_pkg)
+        print('...'*3)
+
+    proc.make_package(pkg, GENERATE_PMC)
+    print('...'*3)
+
+
+def call_make_package_from_form(xml_path, GENERATE_PMC=False):
+    xml_list = [os.join(xml_path, item)
+                for item in os.listdir(xml_path) if item.endswith('.xml')]
+    execute(True, "xpm", xml_list, GENERATE_PMC)
+    return 'done', 'blue'
 
 
 def read_inputs(args):
@@ -105,30 +126,3 @@ def evaluate_xml_path(xml_path):
         else:
             errors.append(_('Missing XML location. '))
     return sgm_xml, xml_list, errors
-
-
-class XPM_Reception(object):
-
-    def __init__(self, stage, INTERATIVE=True):
-        configuration = config.Configuration()
-        self.proc = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
-
-    def display_form(self):
-        interface.display_form(self.proc.stage == 'xc', None, self.call_make_package)
-
-    def call_make_package(self, xml_path, GENERATE_PMC=False):
-        encoding.display_message(_('Making package') + '...')
-        xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
-        encoding.display_message('...'*2)
-
-        pkg = self.proc.receive_package(xml_list)
-        encoding.display_message('...'*3)
-        self.proc.make_package(pkg, GENERATE_PMC)
-        encoding.display_message('...'*4)
-        return 'done', 'blue'
-
-    def make_package(self, normalized_pkgfiles, outputs, GENERATE_PMC=False):
-        if len(normalized_pkgfiles) > 0:
-            pkg = self.proc.receive_package(normalized_pkgfiles[0].path)
-            self.proc.make_package(pkg, GENERATE_PMC)
-

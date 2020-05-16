@@ -59,13 +59,17 @@ class SPPackage(object):
     de um mesmo número
     """
 
-    def __init__(self, path, output_path):
+    def __init__(self, path, output_path, xml_list):
         self.package_folder = workarea.MultiDocsPackageFolder(path)
         self.wk = workarea.MultiDocsPackageOuputs(output_path)
+        self.xml_list = xml_list
         self._articles = {}
-        for name, file_path in self.package_folder.file_paths.items():
-            xml, xml_error = xml_utils.load_xml(file_path)
-            self._articles[name] = article.Article(xml, name)
+        if xml_list:
+            for name, file_path in self.package_folder.file_paths.items():
+                if file_path not in xml_list:
+                    continue
+                xml, xml_error = xml_utils.load_xml(file_path)
+                self._articles[name] = article.Article(xml, name)
         self.issue_data = PackageIssueData()
         self.issue_data.setup(self._articles)
 
@@ -83,9 +87,7 @@ class SPPackage(object):
 
     @property
     def outputs(self):
-        return {name:
-                workarea.DocumentOutputFiles(name, self.wk.reports_path)
-                for name in self.package_folder.file_paths.keys()}
+        return self.wk.doc_outs
 
     @property
     def is_pmc_journal(self):

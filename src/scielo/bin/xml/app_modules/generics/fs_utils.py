@@ -3,8 +3,7 @@ import sys
 import os
 import shutil
 import tempfile
-import zipfile
-import csv
+from zipfile import ZipFile
 from datetime import datetime
 
 from . import files_extractor
@@ -154,7 +153,7 @@ def zip(zip_filename, files):
     if not os.path.isdir(dest_path):
         os.makedirs(dest_path)
     try:
-        zipf = zipfile.ZipFile(zip_filename, 'w')
+        zipf = ZipFile(zip_filename, 'w')
         for item in list(set(files)):
             zipf.write(item, arcname=os.path.basename(item))
         zipf.close()
@@ -171,7 +170,7 @@ def fix_path(path):
 
 def zip_report(report_filename):
     zip_path = report_filename.replace('.html', '.zip')
-    myZipFile = zipfile.ZipFile(zip_path, "w")
+    myZipFile = ZipFile(zip_path, "w")
     myZipFile.write(report_filename, os.path.basename(report_filename), zipfile.ZIP_DEFLATED)
     return zip_path
 

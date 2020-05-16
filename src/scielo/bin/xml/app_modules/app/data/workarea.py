@@ -31,6 +31,7 @@ class MultiDocsPackageOuputs(object):
                   self.scielo_package_path, self.pmc_package_path]:
             if not os.path.isdir(p):
                 os.makedirs(p)
+        self.doc_outs = {}
 
     @property
     def reports_path(self):
@@ -47,6 +48,14 @@ class MultiDocsPackageOuputs(object):
     @property
     def pmc_package_path(self):
         return os.path.join(self.output_path, 'pmc_package')
+
+    def get_doc_outputs(self, xml_name, sgmxml_path):
+        obj = self.doc_outs.get(xml_name)
+        if obj is None:
+            self.doc_outs[xml_name] = DocumentOutputFiles(
+                xml_name, self.reports_path, sgmxml_path)
+            obj = self.doc_outs[xml_name]
+        return obj
 
 
 class DocumentPackageFiles(object):
@@ -302,22 +311,38 @@ class MultiDocsPackageFolder(object):
                     items.append(f)
         return items
 
-    def zip(self, dest_path, dest_name=None):
-        if not os.path.isdir(dest_path):
-            os.makedirs(dest_path)
-        dest_name = dest_name or os.path.dirname(self.path) + '.zip'
+    def zip(self, dest_path):
+        if dest_path.endswith(".zip"):
+            dirname = os.path.dirname(dest_path)
+            dest_name = os.path.basename(dest_path)
+        else:
+            dirname = dest_path
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
+        dest_name = dest_name or self.name + '.zip'
         filename = os.path.join(dest_path, dest_name)
-        fs_utils.zip(filename, [os.path.join(self.path, f)
-                     for f in self.package_filenames])
+        if os.path.isfile(filename):
+            os.unlink(filename)
+        fs_utils.zip(filename,
+                     [os.path.join(self.path, f)
+                      for f in self.package_filenames])
         return filename
 
 
 class DocumentOutputFiles(object):
 
-    def __init__(self, xml_name, report_path, wrk_path=None):
+    def __init__(self, xml_name, report_path, wrk_path):
         self.xml_name = xml_name
         self.report_path = report_path
         self.wrk_path = wrk_path
+        if wrk_path and not os.path.isdir(wrk_path):
+            os.makedirs(wrk_path)
+
+    def create_dir_work_path(self, dirname):
+        dirname = os.path.join(self.wrk_path, dirname)
+        if not os.path.isdir(dirname):
+            os.makedirs(dirname)
+        return dirname
 
     @property
     def report_path(self):
@@ -331,9 +356,7 @@ class DocumentOutputFiles(object):
 
     @property
     def ctrl_filename(self):
-        if self.wrk_path is not None:
-            if not os.path.isdir(self.wrk_path):
-                os.makedirs(self.wrk_path)
+        if self.wrk_path:
             return self.wrk_path + '/' + self.xml_name + '.ctrl.txt'
 
     @property

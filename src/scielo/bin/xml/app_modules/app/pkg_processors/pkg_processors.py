@@ -409,8 +409,9 @@ class PkgProcessor(object):
         # else:
         #     dtd_location_type = 'local'
         xml_path = os.path.dirname(xml_list[0])
+        # PackageMaker(this_path, sp_pkg_dest_path, tmp_path)
         pkg_maker = sps_pkgmaker.PackageMaker(
-            xml_path, xml_path + "_" + self.stage)
+            xml_path, xml_path + "_" + self.stage, "/tmp")
         return pkg_maker.pack(xml_list)
 
     def evaluate_package(self, pkg):

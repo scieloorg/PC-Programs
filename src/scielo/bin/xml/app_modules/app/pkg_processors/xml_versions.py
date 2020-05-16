@@ -107,10 +107,49 @@ XPM_FILES['pmc1.1']['xsl_preview'] = [PMC_PATH + '/j1.1/xsl/jpub/citations-prep/
 XPM_FILES['pmc1.1']['xsl_output'] = PMC_PATH + '/j1.1/xsl/sgml2xml/pmc.xsl'
 
 
-def xsl_getter(sps_version):
-    if sps_version == '':
+SPS_VERSIONS = {
+    'None': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.0': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.1': [
+        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
+    ],
+    'sps-1.2': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.3': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.4': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.5': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.6': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+    ],
+    'sps-1.7': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+    'sps-1.8': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+    'sps-1.9': [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ],
+}
+
+
+def xsl_getter(sps_version_number):
+    if not sps_version_number:
         dtd_version = '3.0'
-    elif float(sps_version) < 1.7:
+    elif float(sps_version_number) < 1.7:
         dtd_version = '1.0'
     else:
         dtd_version = '1.1'

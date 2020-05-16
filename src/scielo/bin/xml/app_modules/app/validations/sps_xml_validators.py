@@ -27,45 +27,6 @@ except Exception as e:
 log_items = []
 
 
-SPS_VERSIONS = {
-    'None': [
-        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
-    ],
-    'sps-1.0': [
-        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
-    ],
-    'sps-1.1': [
-        '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
-    ],
-    'sps-1.2': [
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.3': [
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.4': [
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.5': [
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.6': [
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.7': [
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
-    ],
-    'sps-1.8': [
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
-    ],
-    'sps-1.9': [
-      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
-    ],
-}
-
-
 def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
 
@@ -300,7 +261,7 @@ class PackToolsXMLValidator(object):
         if not sps_version:
             return []
         errors = []
-        dtd_public_id_items = SPS_VERSIONS.get(sps_version)
+        dtd_public_id_items = xml_versions.SPS_VERSIONS.get(sps_version)
         if public_id not in dtd_public_id_items:
             errors.append(
                 _('{value} is an invalid value for {label}. ').format(

@@ -351,6 +351,5 @@ class TestSuitableXML(TestCase):
         expected = '<doc><p><a href="bla">teste</a></p></doc>'
         suitable_xml = xml_utils.SuitableXML(text)
         suitable_xml.well_formed_xml_content()
-        print(suitable_xml.content)
         self.assertEqual(expected, suitable_xml.content)
 
