@@ -234,7 +234,7 @@ class BrokenRef(object):
         source = self.tree.find(".//source")
         if source is None:
             return
-        if ":" in source.text and ": " not in source.text:
+        if source.text and ":" in source.text and ": " not in source.text:
             mixed_citation = self.tree.find(".//mixed-citation")
             check = source.text.replace(":", ": ")
             mixed_citation_text = " ".join(mixed_citation.itertext())
@@ -256,7 +256,7 @@ class PackageMaker(object):
         # origem da pasta que pode conter 1 ou mais XML
         self.source_folder = workarea.MultiDocsPackageFolder(pkg_path)
 
-        # intermediate
+        # outputs
         self.workarea = workarea.MultiDocsPackageOuputs(output_path)
 
         # destination
@@ -269,7 +269,7 @@ class PackageMaker(object):
         enhanced_pkg_file_path = os.path.join(
             enhanced_pkg_path, pkg_files.basename)
         print(enhanced_pkg_file_path)
-        
+
         xmlcontent.write(
             enhanced_pkg_file_path,
             dtd_location_type=dtd_location_type, pretty_print=True)
@@ -286,6 +286,8 @@ class PackageMaker(object):
         spp = SPPackage(
             package_file=fs_utils.ZipFile(pkg_zipfile),
             extracted_package=extracted_package)
+        if os.path.isfile(optimised_pkg_zipfile):
+            os.unlink(optimised_pkg_zipfile)
         spp.optimise(
             new_package_file_path=optimised_pkg_zipfile,
             preserve_files=False)
@@ -300,16 +302,25 @@ class PackageMaker(object):
                 continue
             _xml_list.append(
                 os.path.join(self.optimised_pkg_path, item.basename))
+
+            print(_xml_list)
+
             doc_outs = self.workarea.get_doc_outputs(
                 item.name, self.workarea.tmp_path)
+
             pkg_zipfile = self._enhance_doc_package(
                 item, doc_outs, dtd_location_type)
 
             tmp_optimised_pkg_path = doc_outs.create_dir_at_work_path("opt")
             tmp_optimised_pkg_zipfile = tmp_optimised_pkg_path + ".zip"
+
+            print(pkg_zipfile)
             self._optimise_doc_package(
                 pkg_zipfile, tmp_optimised_pkg_zipfile, tmp_optimised_pkg_path)
+            print(tmp_optimised_pkg_zipfile)
+            print(tmp_optimised_pkg_path)
             fs_utils.unzip(tmp_optimised_pkg_zipfile, self.optimised_pkg_path)
+            print(self.optimised_pkg_path)
 
         pkg = package.SPPackage(
                 self.optimised_pkg_path, self.workarea.output_path, _xml_list)

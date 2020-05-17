@@ -774,7 +774,8 @@ class ArticleXML(object):
     @property
     def journal_id_nlm_ta(self):
         if self.journal_meta is not None:
-            return self.journal_meta.findtext('journal-id[@journal-id-type="nlm-ta"]')
+            return self.journal_meta.findtext(
+                'journal-id[@journal-id-type="nlm-ta"]')
 
     @property
     def journal_issns(self):

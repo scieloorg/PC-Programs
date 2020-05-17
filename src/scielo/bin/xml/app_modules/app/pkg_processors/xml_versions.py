@@ -5,7 +5,6 @@ from ...__init__ import PMC_PATH
 from ...__init__ import BIN_XML_PATH
 from ...__init__ import RELATIVE_PMC_PATH
 from ...__init__ import INVALID_APP_PATH
-from ...generics import fs_utils
 
 
 JAVA_PATH = 'java'
@@ -89,7 +88,7 @@ XPM_FILES['scielo1.1']['dtd_path'] = PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathM
 XPM_FILES['scielo1.1']['relative_dtd_path'] = _PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
 XPM_FILES['scielo1.1']['css'] = XPM_FILES['scielo3.0']['css']
 XPM_FILES['scielo1.1']['xsl_prep_report'] = PMC_PATH + '/j1.1/xsl/scielo-style/stylechecker.xsl'
-XPM_FILES['scielo1.1']['xsl_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.15/style-reporter.xsl'
+XPM_FILES['scielo1.1']['xsl_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.25/style-reporter.xsl'
 XPM_FILES['scielo1.1']['xsl_preview'] = XPM_FILES['scielo3.0']['xsl_preview']
 XPM_FILES['scielo1.1']['xsl_output'] = PMC_PATH + '/j1.1/xsl/sgml2xml/xml2pmc.xsl'
 
@@ -101,58 +100,65 @@ XPM_FILES['pmc1.1']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.1/JATS-jo
 XPM_FILES['pmc1.1']['dtd_path'] = PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
 XPM_FILES['pmc1.1']['relative_dtd_path'] = _PMC_PATH + '/j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD'
 XPM_FILES['pmc1.1']['css'] = XPM_FILES['pmc3.0']['css']
-XPM_FILES['pmc1.1']['xsl_prep_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.15/nlm-stylechecker.xsl'
-XPM_FILES['pmc1.1']['xsl_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.15/style-reporter.xsl'
+XPM_FILES['pmc1.1']['xsl_prep_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.25/nlm-stylechecker.xsl'
+XPM_FILES['pmc1.1']['xsl_report'] = PMC_PATH + '/j1.1/xsl/nlm-style-5.25/style-reporter.xsl'
 XPM_FILES['pmc1.1']['xsl_preview'] = [PMC_PATH + '/j1.1/xsl/jpub/citations-prep/jpub1-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
 XPM_FILES['pmc1.1']['xsl_output'] = PMC_PATH + '/j1.1/xsl/sgml2xml/pmc.xsl'
 
 
-SPS_VERSIONS = {
-    'None': [
+_SPS_VERSIONS = (
+    ('None', [
         '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
-    ],
-    'sps-1.0': [
+    ]),
+    ('sps-1.0', [
         '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
-    ],
-    'sps-1.1': [
+    ]),
+    ('sps-1.1', [
         '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN',
-    ],
-    'sps-1.2': [
+    ]),
+    ('sps-1.2', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.3': [
+    ]),
+    ('sps-1.3', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.4': [
+    ]),
+    ('sps-1.4', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.5': [
+    ]),
+    ('sps-1.5', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.6': [
+    ]),
+    ('sps-1.6', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
-    ],
-    'sps-1.7': [
+    ]),
+    ('sps-1.7', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
-    ],
-    'sps-1.8': [
+    ]),
+    ('sps-1.8', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN',
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
-    ],
-    'sps-1.9': [
+    ]),
+    ('sps-1.9', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
-    ],
-}
+    ]),
+)
+SPS_VERSIONS = dict(_SPS_VERSIONS)
+
+
+def get_dtd_version(sps_version_number):
+    if not sps_version_number:
+        return '3.0'
+    elif float(sps_version_number) < 1.7:
+        return '1.0'
+    else:
+        return '1.1'
 
 
 def xsl_getter(sps_version_number):
     if not sps_version_number:
-        dtd_version = '3.0'
-    elif float(sps_version_number) < 1.7:
-        dtd_version = '1.0'
-    else:
-        dtd_version = '1.1'
+        return XSL_SGML2XML.get(DEFAULT_VERSION)
+    dtd_version = get_dtd_version(sps_version_number)
     return XSL_SGML2XML.get(dtd_version, XSL_SGML2XML.get(DEFAULT_VERSION))
 
 
@@ -164,18 +170,9 @@ def dtd_location(xml):
     return data.get('local'), data.get('remote')
 
 
-def identify_dtd_files(xml):
-    scielo_version = DEFAULT_VERSION
-    pmc_version = DEFAULT_VERSION
-    if '<' not in xml:
-        xml = fs_utils.read_file(xml)
-    for name, data in XPM_FILES.items():
-        if data.get('dtd id') in xml:
-            if 'scielo' in name:
-                scielo_version = name[len('scielo'):]
-            elif 'pmc' in name:
-                pmc_version = name[len('pmc'):]
-    return DTDFiles('scielo', scielo_version), DTDFiles('pmc', pmc_version)
+def dtd_files(sps_version_number, database='scielo'):
+    dtd_version = get_dtd_version(sps_version_number)
+    return DTDFiles(database, dtd_version)
 
 
 class DTDFiles(object):
@@ -190,8 +187,16 @@ class DTDFiles(object):
         return self.data['doctype'].replace('{DTD_LOCAL_PATH}', self.relative_dtd_path + '/')
 
     @property
+    def doctype_with_remote_path(self):
+        return self.data['doctype'].replace('{DTD_LOCAL_PATH}', self.remote + '/')
+
+    @property
     def doctype(self):
         return self.data['doctype'].replace('{DTD_LOCAL_PATH}', '')
+
+    @property
+    def real_dtd_path(self):
+        return os.path.join(self.data['dtd_path'], self.data['local'])
 
     @property
     def dtd_path(self):

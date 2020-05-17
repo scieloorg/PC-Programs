@@ -279,6 +279,7 @@ class MultiDocsPackageFolder(object):
                 print((path+'/'+item))
                 article_files = DocumentPackageFiles(path+'/'+item)
                 self.pkgfiles_items[article_files.name] = article_files
+
         self.INFORM_ORPHANS = len(self.pkgfiles_items) > 1
 
     @property

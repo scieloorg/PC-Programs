@@ -48,7 +48,6 @@ class SGMLXMLWorkarea(workarea.MultiDocsPackageOuputs):
     """
     def __init__(self, sgmxml_filepath):
         # sgmxml_filepath = markup_xml/work/sgmxml_name/sgmxml_name.sgm.xml
-
         # basename = sgmxml_name.sgm.xml
         basename = os.path.basename(sgmxml_filepath)
         # basename = sgmxml_name.sgm
@@ -166,7 +165,7 @@ class SGMLHTML(object):
         self.xml_name = xml_name
         self.html_filename = html_filename
         self.html_img_path = html_filename
-        self.suitable_html = xml_utils.SuitableXML(html_filename)
+        self.tree, self.errors = xml_utils.load_html(html_filename)
 
     def file(self, html_href):
         img_doc = os.path.join(self.html_img_path, html_href)
@@ -199,7 +198,7 @@ class SGMLHTML(object):
             path = self._create_new_html_img_path(html_dirname, html_name)
         if path is None:
             path = html_dirname
-        return path
+        self._html_img_path = path
 
     def _create_new_html_img_path(self, html_dirname, html_name):
         # name_image001
@@ -220,10 +219,8 @@ class SGMLHTML(object):
     def images(self):
         # [graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
         # src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
-        if self.suitable_html.xml_error is not None:
-            print(self.suitable_html.xml_error)
         img_src = []
-        for img in self.suitable_html.xml.findall(".//img"):
+        for img in self.tree.findall(".//img"):
             src = img.get("src")
             if src:
                 basename = os.path.basename(src)
@@ -330,7 +327,11 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
             if node.get("href").startswith(html_filename)
         ]
         self.images_origin = []
+        print(len(nodes))
+        print(len(self.sgmlhtml.images))
         for graphic, html_href in zip(nodes, self.sgmlhtml.images):
+            print("????")
+            print(graphic, html_href)
             no_parents_img_counter = 0
             if html_href == 'None':
                 graphic.tag = "nographic"
@@ -341,10 +342,12 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
                 parent = node.getparent()
                 if parent.get("id"):
                     break
-            if not parent.get("id"):
-                continue
-            elem_name = parent.tag
-            elem_id = parent.get("id")
+            if parent.get("id"):
+                elem_name = parent.tag
+                elem_id = parent.get("id")
+            else:
+                elem_name = ""
+                elem_id = ""
 
             img_id = elem_name + ' ' + elem_id
             img_from_src = None
@@ -368,8 +371,11 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
             # no entanto, havendo a imagem proveniente do Word/HTML, informar
             # sua existência
             if html_href:
+                print(html_href)
                 img_doc = self.sgmlhtml.file(html_href)
+                print(img_doc)
                 if os.path.isfile(img_doc):
+                    print(img_doc)
                     img_from_doc = img_doc
 
             # nao existindo a imagem na pasta src, obter a imagem de doc
@@ -377,6 +383,8 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
             if img_from_src is None and img_from_doc:
                 img_origin = 'doc'
                 new_href_value = self.sgmlhtml.xml_name + html_href
+                print(self.sgmlhtml.xml_name)
+                print(new_href_value)
                 shutil.copyfile(
                     img_from_doc,
                     os.path.join(self.src_pkgfiles.path, new_href_value))
@@ -388,6 +396,7 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
                 self.images_origin.append(
                     (img_id, new_href_value,
                         img_origin, img_from_src, img_from_doc))
+        print(self.images_origin)
 
     def _find_href_file_in_folder(self, elem_name, elem_id,
                                   no_parents_img_counter):
@@ -404,17 +413,32 @@ class PackageNamer(object):
 
     def __init__(self, src_pkgfiles, acron, dest_path):
         self.src_pkgfiles = src_pkgfiles
-        _xml, xml_error = xml_utils.load_xml(self.src_pkgfiles.filename)
-        self.doc = article.Article(_xml, self.src_pkgfiles.name)
+        self.xml = xml_utils.SuitableXML(self.src_pkgfiles.filename)
+        if self.xml.xml_error:
+            raise SGMLXML2SPSXMLError(
+                _("{}: PackageNamer: {}: {}").format(
+                    validation_status.STATUS_BLOCKING_ERROR,
+                    self.src_pkgfiles.filename,
+                    self.xml.xml_error
+                ))
+        self.doc = article.Article(self.xml.xml, self.src_pkgfiles.name)
         self.new_name = PackageName(self.doc).generate(acron)
         dest_filepath = os.path.join(dest_path, self.new_name + ".xml")
         self.dest_pkgfiles = workarea.DocumentPackageFiles(dest_filepath)
         self.dest_pkgfiles.clean()
+        shutil.copyfile(
+            self.src_pkgfiles.filename, self.dest_pkgfiles.filename)
+        print(self.src_pkgfiles.filename, self.dest_pkgfiles.filename)
 
-    def rename(self, dest_path):
+    def rename(self):
+        print("PackageNamer._fix_href_values")
         self._fix_href_values()
+        print("PackageNamer._rename_href_files")
         self._rename_href_files()
+        print("PackageNamer._rename_other_files")
         self._rename_other_files()
+        print("PackageNamer.xml.write")
+        self.xml.write(self.dest_pkgfiles.filename)
 
     def _fix_href_values(self):
 
@@ -426,33 +450,41 @@ class PackageNamer(object):
             '//inline-supplementary-material[@xlink:href]',
         ]
 
-        iterators = [self.doc.xml.iterfind(
+        iterators = [self.doc.tree.iterfind(
                         path,
                         namespaces={'xlink': 'http://www.w3.org/1999/xlink'})
                      for path in paths]
         self.href_replacements = []
-
         for element in itertools.chain(*iterators):
             value = element.attrib['{http://www.w3.org/1999/xlink}href']
             parent = element.getparent()
             new_value = self.new_href_value(parent, value)
             if value != new_value:
                 self.href_replacements.append((value, new_value))
+                print((value, new_value))
                 element.set("{http://www.w3.org/1999/xlink}href", new_value)
+        print(xml_utils.etree.tostring(self.doc.tree.find(".//graphic")))
 
     def new_href_value(self, element, value):
+        print("")
         basename, ext = os.path.splitext(value)
         elem_type = href_attach_type(element.getparent().tag, element.tag)
         elem_id = element.get("id")
+        print("name=", self.src_pkgfiles.name)
+        print(element)
+        print("value=", value)
+        print("id=", elem_id)
         if elem_id:
-            elem_id += value
+            elem_id += ext
         else:
             elem_id = value.replace(self.src_pkgfiles.name, '')
             if elem_id[0] in '-_':
                 elem_id = elem_id[1:]
-            elem_id = elem_id.replace('image', '').replace('img', '')
+        print("novo id", elem_id)
+        elem_id = elem_id.replace('image', '').replace('img', '')
         if elem_id.startswith(elem_type):
             elem_type = ''
+        print('resultado=', self.new_name + '-' + elem_type + elem_id)
         return self.new_name + '-' + elem_type + elem_id
 
     def _rename_href_files(self):
@@ -537,12 +569,19 @@ class SGMLXML2SPSXML(object):
                     xml_error
                 )))
         sps_version = xml_obj.find(".").get("sps")
+        if sps_version is None:
+            sps_version = xml_versions._SPS_VERSIONS[-1][0][4:]
+            xml_obj.find(".").set("sps", sps_version)
         xsl_filepath = xml_versions.xsl_getter(sps_version)
-        xsl_obj = xml_utils.xsl_obj(xsl_filepath)
+        xsl_obj = xml_utils.get_xsl_object(xsl_filepath)
         result = xml_utils.transform(xml_obj, xsl_obj)
-        result.docinfo.doctype = xml_versions.SPS_VERSIONS.get(
-            "sps-{}".format(sps_version))[-1]
+        #result.docinfo.doctype = xml_versions.dtd_files(
+        #    sps_version).doctype_with_remote_path
         xml_utils.write(self.FILES.src_pkgfiles.filename, result)
+
+        # print((self.FILES.src_pkgfiles.filename))
+        # result.docinfo.doctype = xml_versions.dtd_files(
+        #    sps_version).doctype_with_remote_path
 
     def _make_package(self):
         """
@@ -561,18 +600,17 @@ class SGMLXML2SPSXML(object):
                                       self.FILES.output_path)
         return self.pkg_maker.pack()
 
-    def _report(self, blocking_error):
+    def _report(self, blocking_error, pkg):
         msg = html_reports.p_message(blocking_error or "")
         if not blocking_error:
             msg = self.pkg_namer.report()
-
+            print(self.enhancer.images_origin)
             img_reports = ImagesOriginReport(
                 self.enhancer.images_origin,
-                self.pkg_namer.href_replacements, self.FILES.xml_pkgfiles.path)
+                self.pkg_namer.href_replacements, pkg.package_folder.path)
             html_reports.save(
                 self.FILES.sgmxml_outputs.images_report_filename, '',
                 img_reports.report())
-            self.xml_pkgfiles.previous_name = self.FILES.src_pkgfiles.name
         fs_utils.write_file(
             self.FILES.sgmxml_outputs.mkp2xml_report_filename, msg)
 
@@ -589,14 +627,17 @@ class SGMLXML2SPSXML(object):
                 SGMLHTML(self.FILES.sgmxml_fname, self.FILES.html_filename)
             )
             self.enhancer.write(self.FILES.src_pkgfiles.filename)
-            # self._sgmxml2xml()
-            # pkg = self._make_package()
+            print(self.enhancer.images_origin)
+            print((self.FILES.src_pkgfiles.filename))
+            self._sgmxml2xml()
+            pkg = self._make_package()
+            pkg.previous_name = self.FILES.src_pkgfiles.name
         except Exception as e:
             blocking_error = str(e)
             raise e
 
-        # finally:
-            # self._report(blocking_error)
+        finally:
+            self._report(blocking_error, pkg)
         return pkg
 
 
@@ -632,13 +673,14 @@ class ImagesOriginReport(object):
         rows.append(
             self.item_report_replacement(
                 name, self.href_replacements.get(name)))
-        rows.append(html_reports.tag('h4', image_origin))
         rows.append('<div class="compare_images">')
         rows.append(
             self.display_image(
                 os.path.join(
                     self.package_path, self.href_replacements.get(name)),
-                compare_style, image_origin))
+                compare_style, _("origin: {}").format(image_origin)))
+        rows.append('</div>')
+        rows.append('<div class="compare_images">')
         if image_src:
             rows.append(
                 self.display_image(image_src, compare_style, 'src'))
@@ -655,7 +697,8 @@ class ImagesOriginReport(object):
 
     def display_image(self, img_filename, style, title):
         rows = []
-        rows.append(html_reports.tag('h5', title or ''))
+        rows.append(
+            html_reports.tag('h5', '{} ({})'.format(img_filename, title)))
         img_filename = 'file://' + img_filename
         basename = os.path.basename(img_filename)
         name, ext = os.path.splitext(img_filename)
@@ -663,8 +706,10 @@ class ImagesOriginReport(object):
             link = basename
         else:
             link = html_reports.image(img_filename)
-        return ('<div class="{}">'.format(style) +
+        rows.append(
+                '<div class="{}">'.format(style) +
                 html_reports.link(img_filename, link) + '</div>')
+        return ''.join(rows)
 
 
 def get_mkp_href_patterns(elem_name, elem_id, no_parents_img_counter):

@@ -94,6 +94,7 @@ class SPPackage(object):
 
     @property
     def is_pmc_journal(self):
+        print(self._articles)
         for doc in self.articles.values():
             if doc.journal_id_nlm_ta:
                 return True

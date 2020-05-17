@@ -48,6 +48,8 @@ def execute(INTERATIVE, stage, xml_list_or_pkg, GENERATE_PMC):
     if stage == "xpm":
         pkg = proc.receive_package(xml_list_or_pkg)
         print('...'*3)
+    if stage == "xml":
+        GENERATE_PMC = True
 
     proc.make_package(pkg, GENERATE_PMC)
     print('...'*3)

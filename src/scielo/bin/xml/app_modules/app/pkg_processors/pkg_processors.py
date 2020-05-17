@@ -415,7 +415,6 @@ class PkgProcessor(object):
         return pkg_maker.pack(xml_list)
 
     def evaluate_package(self, pkg):
-        import pdb;pdb.set_trace()
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
@@ -477,11 +476,10 @@ class PkgProcessor(object):
 
     def make_pmc_package(self, pkg, GENERATE_PMC):
         if not self.is_db_generation:
-            pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg.wk, pkg.articles, pkg.outputs)
-            if self.is_xml_generation:
-                pmc_package_maker.make_report()
+            print("PMC", pkg.is_pmc_journal)
             if pkg.is_pmc_journal:
                 if GENERATE_PMC:
+                    pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg)
                     pmc_package_maker.make_package()
                 else:
                     encoding.display_message(_('To generate PMC package, add -pmc as parameter'))

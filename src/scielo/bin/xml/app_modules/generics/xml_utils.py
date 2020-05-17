@@ -65,7 +65,6 @@ class Entity2Char:
                     entity = ent
                     if entity[-1] != ";":
                         entity += ";"
-                    print(entity)
                     new = html.unescape(entity)
                     if new != entity:
                         item = new + item[len(ent):]
@@ -130,9 +129,13 @@ class SuitableXML(object):
         self._xml = None
         self._content = None
         self.filename = None
-        if str_or_filepath.endswith(".xml"):
+        if os.path.isfile(str_or_filepath):
             self.filename = str_or_filepath
-            str_or_filepath = fs_utils.read_file(self.filename)
+            try:
+                str_or_filepath = fs_utils.read_file(self.filename)
+            except UnicodeError:
+                str_or_filepath = fs_utils.read_file(
+                    self.filename, encode="iso-8859-1")
         self.original = str_or_filepath
         self.content = str_or_filepath
 
@@ -218,7 +221,6 @@ class SuitableXML(object):
                 self.doctype,
                 self.content,
             ])
-            
 
     def write(self, dest_file_path, pretty_print=False,
               dtd_location_type=None):
@@ -249,13 +251,34 @@ def transform(xml_obj, xsl_obj):
     return xsl_obj(xml_obj)
 
 
+def validate(xml_obj, dtd_external_id=None, dtd_file_path=None):
+    dtd_is_valid = False
+    dtd_errors = []
+    try:
+        dtd = None
+        if dtd_external_id:
+            dtd = etree.DTD(external_id=dtd_external_id.encode())
+        if not dtd and dtd_file_path:
+            dtd = etree.DTD(StringIO(fs_utils.read_file(dtd_file_path)))
+        if dtd:
+            dtd_is_valid = dtd.validate(xml_obj)
+            dtd_errors = dtd.error_log
+    except Exception as e:
+        dtd_errors = [str(e)]
+    return dtd_is_valid, dtd_errors
+
+
 def write(file_path, tree):
-    tree.write(
-        file_path,
-        encoding="utf-8",
-        xml_declaration='<?xml version="1.0" encoding="utf-8"?>',
-        inclusive_ns_prefixes=namespaces.keys(),
-    )
+    name, ext = os.path.splitext(file_path)
+    if ext == ".xml":
+        tree.write(
+            file_path,
+            encoding="utf-8",
+            xml_declaration='<?xml version="1.0" encoding="utf-8"?>',
+            inclusive_ns_prefixes=namespaces.keys(),
+        )
+        return
+    tree.write(file_path, method="html")
 
 
 def replace_doctype(content, new_doctype):
@@ -333,15 +356,14 @@ def tostring(node, pretty_print=False):
         return encoding.decode(etree.tostring(node, encoding='utf-8', pretty_print=pretty_print))
 
 
-def load_xml(str_or_filepath):
+def load_xml(str_or_filepath, validate=False):
     parser = etree.XMLParser(
-        remove_blank_text=True, resolve_entities=True, recover=True)
+        remove_blank_text=True, resolve_entities=True, recover=True, dtd_validation=validate)
     try:
         xml = None
         errors = None
         if str_or_filepath.endswith(".xml"):
             source = str_or_filepath
-            print("AQI")
             xml = etree.parse(str_or_filepath, parser)
         elif ">" not in str_or_filepath and "<" not in str_or_filepath:
             source = str_or_filepath
@@ -361,6 +383,35 @@ def load_xml(str_or_filepath):
         errors = "Loading XML from '{}': {}".format(source, e)
     finally:
         return xml, errors
+
+
+def load_html(file_path):
+    parser = etree.HTMLParser(
+        remove_blank_text=True, recover=True)
+    try:
+        html = None
+        errors = None
+        if file_path.endswith(".html") or file_path.endswith(".htm"):
+            source = file_path
+            html = etree.parse(file_path, parser)
+        elif ">" not in file_path and "<" not in file_path:
+            source = file_path
+            raise ValueError(
+                "Invalid value: it must be an HTML content or HTML file path")
+        else:
+            source = "str"
+            if file_path.startswith('<?') and '?>' in file_path:
+                file_path = file_path[file_path.find(
+                    '?>')+2:].strip()
+            html = etree.parse(StringIO(file_path), parser)
+    except (etree.XMLSyntaxError,
+            FileNotFoundError,
+            ValueError, TypeError) as e:
+        errors = "Loading HTML from '{}': {}".format(source, e)
+    except Exception as e:
+        errors = "Loading HTML from '{}': {}".format(source, e)
+    finally:
+        return html, errors
 
 
 def split_prefix(content):
