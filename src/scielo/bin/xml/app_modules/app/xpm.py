@@ -1,4 +1,6 @@
 # coding=utf-8
+import logging
+import logging.config
 
 import os
 
@@ -8,6 +10,10 @@ from ..generics import encoding
 from .config import config
 from .pkg_processors import sgmlxml
 from .pkg_processors import pkg_processors
+
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 def call_make_packages(args, version):
@@ -28,6 +34,7 @@ def call_make_packages(args, version):
 def get_inputs(result, acron):
     sgm_xml, xml_list = result
     if sgm_xml:
+        logger.info("SGML to XML")
         sgmxml2xml = sgmlxml.SGMLXML2SPSXML(sgm_xml, acron)
         pkg = sgmxml2xml.pack()
         stage = 'xml'

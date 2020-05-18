@@ -1,4 +1,6 @@
 # coding=utf-8
+import logging
+import logging.config
 import os
 from mimetypes import MimeTypes
 from urllib.request import pathname2url
@@ -14,6 +16,8 @@ from ..data import package
 
 messages = []
 mime = MimeTypes()
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 class SPSXMLContent(xml_utils.SuitableXML):
@@ -268,22 +272,31 @@ class PackageMaker(object):
         enhanced_pkg_path = pkg_outs.create_dir_at_work_path("enhanced")
         enhanced_pkg_file_path = os.path.join(
             enhanced_pkg_path, pkg_files.basename)
-        print(enhanced_pkg_file_path)
+        logger.debug(
+            "PackageMaker (%s): enhanced_pkg_file_path=%s" %
+            (self.source_folder.path, enhanced_pkg_file_path))
 
         xmlcontent.write(
             enhanced_pkg_file_path,
             dtd_location_type=dtd_location_type, pretty_print=True)
-        
+
         pkg_files.copy_related_files(enhanced_pkg_path)
 
         enhanced_folder = workarea.MultiDocsPackageFolder(enhanced_pkg_path)
         enhanced_zip_file_path = enhanced_pkg_path + ".zip"
         enhanced_zip_file_path = enhanced_folder.zip(enhanced_zip_file_path)
-        print("enhanced: " + enhanced_zip_file_path)
+        logger.debug(
+            "PackageMaker (%s): enhanced_zip_file_path=%s" %
+            (self.source_folder.path, enhanced_zip_file_path))
         return enhanced_zip_file_path
 
     def _optimise_doc_package(
             self, pkg_zipfile, optimised_pkg_zipfile, extracted_package):
+        logger.debug(
+            "PackageMaker (%s): pkg_zipfile=%s, "
+            "optimised_pkg_zipfile=%s, extracted_package=%s" %
+            (self.source_folder.path, pkg_zipfile,
+                optimised_pkg_zipfile, extracted_package))
         spp = SPPackage(
             package_file=fs_utils.ZipFile(pkg_zipfile),
             extracted_package=extracted_package)
@@ -296,16 +309,17 @@ class PackageMaker(object):
     def pack(self, xml_list=None, dtd_location_type='remote'):
         _xml_list = []
         for item in self.source_folder.pkgfiles_items.values():
-            print("PackageMaker.pack", item.filename, xml_list)
+            logger.info("PackageMaker: %s" % item.filename)
 
             file_path = item.filename
             if xml_list and file_path not in xml_list:
+                logger.info("PackageMaker: skip: %s" % item.filename)
                 continue
 
             _xml_list.append(
                 os.path.join(self.optimised_pkg_path, item.basename))
 
-            print(_xml_list)
+            logger.info("PackageMaker: pack %s", item.filename)
 
             doc_outs = self.workarea.get_doc_outputs(
                 item.name, self.workarea.tmp_path)
@@ -316,13 +330,20 @@ class PackageMaker(object):
             tmp_optimised_pkg_path = doc_outs.create_dir_at_work_path("opt")
             tmp_optimised_pkg_zipfile = tmp_optimised_pkg_path + ".zip"
 
-            print(pkg_zipfile)
+            logger.debug("PackageMaker: pkg_zipfile=%s" % pkg_zipfile)
             self._optimise_doc_package(
                 pkg_zipfile, tmp_optimised_pkg_zipfile, tmp_optimised_pkg_path)
-            print(tmp_optimised_pkg_zipfile)
-            print(tmp_optimised_pkg_path)
+            logger.debug(
+                "PackageMaker: tmp_optimised_pkg_zipfile=%s" %
+                tmp_optimised_pkg_zipfile)
+            logger.debug(
+                "PackageMaker: tmp_optimised_pkg_path=%s" %
+                tmp_optimised_pkg_path)
             fs_utils.unzip(tmp_optimised_pkg_zipfile, self.optimised_pkg_path)
-            print(self.optimised_pkg_path)
+            logger.info(
+                "PackageMaker: pack %s at %s" %
+                (item.filename, self.optimised_pkg_path))
+            logger.debug("Lista de processados: %s", _xml_list)
 
         pkg = package.SPPackage(
                 self.optimised_pkg_path, self.workarea.output_path, _xml_list)

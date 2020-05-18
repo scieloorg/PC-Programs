@@ -1,56 +1,14 @@
 # coding=utf-8
+import logging
+import logging.config
+
 from ...generics import xml_utils
 from . import article
 from . import workarea
 
 
-class PMC_DocumentPackage(workarea.DocumentPackageFiles):
-
-    def __init__(self, filename):
-        super().__init__(self, filename)
-        self.xml_content = xml_utils.SuitableXML(filename)
-        self.article_xml = self.xml_content.content
-
-    @property
-    def article_xml(self):
-        return self._article_xml
-
-    @article_xml.setter
-    def article_xml(self, content):
-        self.xml_content.content = content
-        self._article_xml = article.Article(self.xml_content.xml, self.basename)
-
-    def get_pdf_files(self):
-        expected_pdf_files = self.article_xml.expected_pdf_files.values()
-        return [f for f in expected_pdf_files if f in self.related_files]
-
-    def get_package_href_files(self):
-        files = []
-        for href_name in self.get_package_href_names():
-            extensions = self.related_files_by_name.get(href_name, [])
-            names = [href_name+ext for ext in extensions]
-            files.extend(names)
-        return files
-
-    def get_package_href_names(self):
-        href_names = []
-        for href in self.article_xml.href_files:
-            if href.name_without_extension in self.related_files_by_name.keys():
-                href_names.append(href.name_without_extension)
-        return list(set(href_names))
-
-    def select_pmc_files(self):
-        files = []
-        for item in self.get_package_href_names():
-            if item in self.tiff_names:
-                if item+'.tif' in self.tiff_items:
-                    files.append(item+'.tif')
-                elif item+'.tiff' in self.tiff_items:
-                    files.append(item+'.tiff')
-            else:
-                files.extend([item + ext for ext in self.related_files_by_name.get(item, [])])
-        files.extend(self.get_pdf_files())
-        return files
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 class SPPackage(object):
@@ -85,16 +43,15 @@ class SPPackage(object):
 
     @property
     def articles(self):
+        logger.info("package.articles: %s" % len(self._articles))
         return self._articles
 
     @property
     def outputs(self):
-        print(self.wk.doc_outs)
         return self.wk.doc_outs
 
     @property
     def is_pmc_journal(self):
-        print(self._articles)
         for doc in self.articles.values():
             if doc.journal_id_nlm_ta:
                 return True

@@ -1,10 +1,15 @@
 # coding=utf-8
-
+import logging
+import logging.config
 import os
 import shutil
 
 from ...generics import fs_utils
 from ...generics import img_utils
+
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 MARKUP_SUFFIXES = ['t', 'f', 'e', 'img', 'image']
@@ -302,10 +307,9 @@ class MultiDocsPackageFolder(object):
         self.pkgfiles_items = {}
         for item in os.listdir(path):
             if item.endswith('.xml'):
-                print((path+'/'+item))
+                logger.info("Package Item: %s" % (path+'/'+item))
                 article_files = DocumentPackageFiles(path+'/'+item)
                 self.pkgfiles_items[article_files.name] = article_files
-
         self.INFORM_ORPHANS = len(self.pkgfiles_items) > 1
 
     @property

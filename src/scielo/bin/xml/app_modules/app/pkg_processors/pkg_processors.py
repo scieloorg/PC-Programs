@@ -1,5 +1,6 @@
 # coding=utf-8
-
+import logging
+import logging.config
 import os
 import shutil
 
@@ -33,6 +34,10 @@ from ..db.pid_versions import(
 )
 from . import pmc_pkgmaker
 from . import sps_pkgmaker
+
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 EMAIL_SUBJECT_STATUS_ICON = {}
@@ -393,6 +398,7 @@ class PkgProcessor(object):
         return pkg_maker.pack(xml_list)
 
     def evaluate_package(self, pkg):
+        logger.info("Analize package")
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
@@ -403,6 +409,7 @@ class PkgProcessor(object):
         return registered_issue_data, validations_reports
 
     def make_package(self, pkg, GENERATE_PMC=False):
+
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
         self.report_result(pkg, validations_reports, conversion=None)
         self.make_pmc_package(pkg, GENERATE_PMC)
@@ -437,6 +444,7 @@ class PkgProcessor(object):
             pkg.articles, self.is_db_generation)
 
     def report_result(self, pkg, validations_reports, conversion=None):
+        logger.info("Generate reports")
         files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label)
         if conversion is not None:
             files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
@@ -453,14 +461,17 @@ class PkgProcessor(object):
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):
+
         if not self.is_db_generation:
-            print("PMC", pkg.is_pmc_journal)
+            logger.info("Is it PMC journal? %s" % pkg.is_pmc_journal)
             if pkg.is_pmc_journal:
                 if GENERATE_PMC:
+                    logger.info("Make PMC Package")
                     pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg)
                     pmc_package_maker.make_package()
                 else:
-                    encoding.display_message(_('To generate PMC package, add -pmc as parameter'))
+                    logger.info(
+                        _('To generate PMC package, add -pmc as parameter'))
 
     def zip(self, pkg):
         if not self.is_xml_generation and not self.is_db_generation:

@@ -1,5 +1,6 @@
 # coding=utf-8
-
+import logging
+import logging.config
 import os
 import shutil
 from copy import deepcopy
@@ -15,6 +16,10 @@ from ..data import workarea
 from . import symbols
 from .sps_pkgmaker import PackageMaker
 from . import xml_versions
+
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 class SGMLXML2SPSXMLError(Exception):
@@ -247,18 +252,18 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
         super().__init__(src_pkgfiles.filename)
-        print("_convert_font_symbols_to_entities")
+        logger.debug("_convert_font_symbols_to_entities")
         self._convert_font_symbols_to_entities()
-        print("_set_graphic_href_values")
+        logger.debug("_set_graphic_href_values")
         self._set_graphic_href_values()
-        print("_insert_xhtml_tables_in_document")
+        logger.debug("_insert_xhtml_tables_in_document")
         self._insert_xhtml_tables_in_document()
-        print("...")
+        logger.debug("...")
 
     def well_formed_xml_content(self):
-        print("_fix_quotes")
+        logger.debug("_fix_quotes")
         self._fix_quotes()
-        print("well_formed_xml_content")
+        logger.debug("well_formed_xml_content")
         super().well_formed_xml_content()
 
     def _fix_quotes(self):
@@ -326,11 +331,11 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
             if node.get("href").startswith(html_filename)
         ]
         self.images_origin = []
-        print(len(nodes))
-        print(len(self.sgmlhtml.images))
-        for graphic, html_href in zip(nodes, self.sgmlhtml.images):
-            print("????")
-            print(graphic, html_href)
+        html_images = self.sgmlhtml.images
+        logger.info("markup: graphic[@href]: %i" % len(nodes))
+        logger.info("html: img[@src]: %i" % len(html_images))
+        for graphic, html_href in zip(nodes, html_images):
+            logger.info("%s x %s" % (graphic.get("href"), html_href))
             no_parents_img_counter = 0
             if html_href == 'None':
                 graphic.tag = "nographic"
@@ -370,11 +375,8 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
             # no entanto, havendo a imagem proveniente do Word/HTML, informar
             # sua existência
             if html_href:
-                print(html_href)
                 img_doc = self.sgmlhtml.file(html_href)
-                print(img_doc)
                 if os.path.isfile(img_doc):
-                    print(img_doc)
                     img_from_doc = img_doc
 
             # nao existindo a imagem na pasta src, obter a imagem de doc
@@ -382,8 +384,6 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
             if img_from_src is None and img_from_doc:
                 img_origin = 'doc'
                 new_href_value = self.sgmlhtml.xml_name + html_href
-                print(self.sgmlhtml.xml_name)
-                print(new_href_value)
                 shutil.copyfile(
                     img_from_doc,
                     os.path.join(self.src_pkgfiles.path, new_href_value))
@@ -395,7 +395,6 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
                 self.images_origin.append(
                     (img_id, new_href_value,
                         img_origin, img_from_src, img_from_doc))
-        print(self.images_origin)
 
     def _find_href_file_in_folder(self, elem_name, elem_id,
                                   no_parents_img_counter):
@@ -427,16 +426,17 @@ class PackageNamer(object):
         self.dest_pkgfiles.clean()
         shutil.copyfile(
             self.src_pkgfiles.filename, self.dest_pkgfiles.filename)
-        print(self.src_pkgfiles.filename, self.dest_pkgfiles.filename)
+        logger.debug("PackageNamer: %s -> %s" %
+                     (self.src_pkgfiles.filename, self.dest_pkgfiles.filename))
 
     def rename(self):
-        print("PackageNamer._fix_href_values")
+        logger.debug("PackageNamer._fix_href_values")
         self._fix_href_values()
-        print("PackageNamer._rename_href_files")
+        logger.debug("PackageNamer._rename_href_files")
         self._rename_href_files()
-        print("PackageNamer._rename_other_files")
+        logger.debug("PackageNamer._rename_other_files")
         self._rename_other_files()
-        print("PackageNamer.xml.write")
+        logger.debug("PackageNamer.xml.write")
         self.xml.write(self.dest_pkgfiles.filename)
 
     def _fix_href_values(self):
@@ -448,28 +448,20 @@ class PackageNamer(object):
             if value != new_value:
                 self.href_replacements.append((value, new_value))
                 element.set("{http://www.w3.org/1999/xlink}href", new_value)
-        print(xml_utils.etree.tostring(self.doc.tree.find(".//graphic")))
 
     def new_href_value(self, element, value):
-        print("")
         basename, ext = os.path.splitext(value)
         elem_type = href_attach_type(element.getparent().tag, element.tag)
         elem_id = element.get("id")
-        print("name=", self.src_pkgfiles.name)
-        print(element)
-        print("value=", value)
-        print("id=", elem_id)
         if elem_id:
             elem_id += ext
         else:
             elem_id = value.replace(self.src_pkgfiles.name, '')
             if elem_id[0] in '-_':
                 elem_id = elem_id[1:]
-        print("novo id", elem_id)
         elem_id = elem_id.replace('image', '').replace('img', '')
         if elem_id.startswith(elem_type):
             elem_type = ''
-        print('resultado=', self.new_name + '-' + elem_type + elem_id)
         return self.new_name + '-' + elem_type + elem_id
 
     def _rename_href_files(self):
@@ -489,15 +481,12 @@ class PackageNamer(object):
 
             if self.dest_pkgfiles.related_files_by_name.get(new_name) is None:
                 self.missing_href_files.append(new)
-        print(self.href_files_copy)
 
     def _rename_other_files(self):
         self.related_files_copy = []
         for name, exts in self.src_pkgfiles.related_files_by_name.items():
             if name in self.href_names:
                 continue
-            print("other: {}".format(name))
-
             new_name = name.replace(self.src_pkgfiles.name, self.new_name)
             if new_name.startswith(self.new_name):
                 for ext in exts:
@@ -593,7 +582,6 @@ class SGMLXML2SPSXML(object):
         msg = html_reports.p_message(blocking_error or "")
         if not blocking_error:
             msg = self.pkg_namer.report()
-            print(self.enhancer.images_origin)
             img_reports = ImagesOriginReport(
                 self.enhancer.images_origin,
                 self.pkg_namer.href_replacements, pkg.package_folder.path)
@@ -611,21 +599,27 @@ class SGMLXML2SPSXML(object):
             faz ajustes no arquivo gerado pelo markup .sgm.xml
             antes de gerar o XML do SPS
             """
+            logger.info(
+                "Enhance SGMLXML %s" % self.FILES.src_pkgfiles.filename)
             self.enhancer = SGMLXMLContentEnhancer(
                 self.FILES.src_pkgfiles,
                 SGMLHTML(self.FILES.sgmxml_fname, self.FILES.html_filename)
             )
             self.enhancer.write(self.FILES.src_pkgfiles.filename)
-            print(self.enhancer.images_origin)
-            print((self.FILES.src_pkgfiles.filename))
+
+            logger.info("Convert sgml to xml")
             self._sgmxml2xml()
+
+            logger.info("Rename and make the package")
             pkg = self._make_package()
             pkg.previous_name = self.FILES.src_pkgfiles.name
         except Exception as e:
             blocking_error = str(e)
+            logger.exception(e)
             raise e
 
         finally:
+            logger.info("Create Images Report")
             self._report(blocking_error, pkg)
         return pkg
 

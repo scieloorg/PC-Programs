@@ -1,4 +1,6 @@
 # coding=utf-8
+import logging
+import logging.config
 import os
 import shutil
 
@@ -6,12 +8,15 @@ from ...__init__ import _
 
 from ...generics import encoding
 from ...generics import xml_utils
-from ...generics import fs_utils
 from ...generics.reports import html_reports
 from ..validations import sps_xml_validators
 from . import xml_versions
 from ..data import workarea
 from ..data import article
+
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 class PMCPackageMaker(object):
@@ -149,9 +154,8 @@ class PMCPackageItemMaker(object):
         if delete:
             xml_utils.etree.strip_tags(tree, "REMOVE")
             for node in tree.findall(".//alternatives"):
-                print(len(node.getchildren()))
                 if len(node.getchildren()) == 1:
-                    print(
+                    logger.info(
                         "Remove alternatives: {}".format(
                             xml_utils.tostring(node)))
                     node.tag = "REMOVE"
