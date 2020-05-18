@@ -18,7 +18,7 @@ from .config import config
 def call_converter(args, version='1.0'):
     script, package_path, collection_acron = read_inputs(args)
     if all([package_path, collection_acron]):
-        errors = xml_utils.is_valid_xml_path(package_path)
+        errors = xml_utils.get_errors_if_xml_not_found(package_path)
         if len(errors) > 0:
             messages = []
             messages.append('\n===== ' + _('ATTENTION') + ' =====\n')

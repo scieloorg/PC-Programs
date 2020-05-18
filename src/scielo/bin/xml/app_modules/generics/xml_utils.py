@@ -1,9 +1,6 @@
 # coding=utf-8
 import os
-import shutil
-import tempfile
 import html
-from copy import deepcopy
 from io import StringIO
 
 from lxml import etree
@@ -22,6 +19,11 @@ for namespace_id, namespace_link in namespaces.items():
 
 
 class Entity2Char:
+    """
+    Converte entidades numéricas ou nomeadas
+    Especialmente as nomeadas porque quebram o XML e não é possível
+    resolver com a biblioteca html
+    """
     LT = (
         ('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>'),
         ('&#x003C;', '<REPLACEENT>lt</REPLACEENT>'),
@@ -94,22 +96,6 @@ class Entity2Char:
         return ent
 
 entity2char = Entity2Char()
-
-
-def date_element(date_node):
-    d = None
-    if date_node is not None:
-        d = {}
-        d['season'] = node_findtext(date_node, 'season')
-        d['month'] = node_findtext(date_node, 'month')
-        d['year'] = node_findtext(date_node, 'year')
-        d['day'] = node_findtext(date_node, 'day')
-    return d
-
-
-def element_lang(node):
-    if node is not None:
-        return node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
 
 class SuitableXML(object):
@@ -236,6 +222,9 @@ class SuitableXML(object):
 
 
 def get_xml_object(file_path, xml_parser=None):
+    """
+    Modo simplificado para carregar uma árvore de XML dado um arquivo
+    """
     parser = xml_parser
     if parser is None:
         parser = etree.XMLParser(remove_blank_text=True)
@@ -243,12 +232,20 @@ def get_xml_object(file_path, xml_parser=None):
 
 
 def transform(xml_obj, xsl_file_path):
+    """
+    Aplica uma XSL dada pelo arquivo em uma árvore de XML
+    O resutado é um `lxml.etree._XSLTResultTree`
+    """
     xslt_doc = etree.parse(xsl_file_path)
     XSLT = etree.XSLT(xslt_doc)
     return XSLT(xml_obj)
 
 
 def validate(xml_obj, dtd_external_id=None, dtd_file_path=None):
+    """
+    Valida contra uma DTD informando qual pelos parâmetros:
+        dtd_external_id ou dtd_file_path
+    """
     dtd_is_valid = False
     dtd_errors = []
     try:
@@ -266,6 +263,10 @@ def validate(xml_obj, dtd_external_id=None, dtd_file_path=None):
 
 
 def write(file_path, tree):
+    """
+    Escreve em arquivo o documento carregado na árvore
+    tree pode ser de XML ou HTML
+    """
     name, ext = os.path.splitext(file_path)
     if ext == ".xml":
         tree.write(
@@ -279,83 +280,41 @@ def write(file_path, tree):
     tree.write(file_path, method="html", pretty_print=True)
 
 
-def replace_doctype(content, new_doctype):
-    content = content.replace('\r\n', '\n')
-    if '<!DOCTYPE' in content:
-        find_text = content[content.find('<!DOCTYPE'):]
-        find_text = find_text[0:find_text.find('>')+1]
-        if len(find_text) > 0:
-            if len(new_doctype) > 0:
-                content = content.replace(find_text, new_doctype)
-            else:
-                if find_text + '\n' in content:
-                    content = content.replace(find_text + '\n', new_doctype)
-    elif content.startswith('<?xml '):
-        if '?>' in content:
-            xml_proc = content[0:content.find('?>')+2]
-        xml = content[1:]
-        if '<' in xml:
-            xml = xml[xml.find('<'):]
-        if len(new_doctype) > 0:
-            content = xml_proc + '\n' + new_doctype + '\n' + xml
-        else:
-            content = xml_proc + '\n' + xml
-    return content
-
-
-def apply_dtd(xml_filename, doctype):
-    temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
-    shutil.copyfile(xml_filename, temp_filename)
-    content = replace_doctype(fs_utils.read_file(xml_filename), doctype)
-    fs_utils.write_file(xml_filename, content)
-    return temp_filename
-
-
-def new_apply_dtd(xml_filename, doctype):
-    fs_utils.write_file(
-        xml_filename,
-        replace_doctype(fs_utils.read_file(xml_filename), doctype))
-
-
-def node_findtext(node, xpath=None, multiple=False):
-    # contrib.findtext('name/given-names')
-    if node is None:
-        return
-    nodes = node
-    if xpath is not None:
-        if multiple is True:
-            nodes = node.findall(xpath)
-        else:
-            nodes = node.find(xpath)
-    if isinstance(nodes, list):
-        return [node_text(item) for item in nodes]
-    else:
-        return node_text(nodes)
-
-
-def node_text(node):
-    text = tostring(node)
-    if text is not None:
-        text = text[text.find('>')+1:]
-        if '</' in text:
-            text = text[:text.rfind('</')]
-        text = text.strip()
+def node_xml_content(node):
+    """
+    Retorna o "tostring" interno ao node. Exemplo:
+    node = "<p>texto 1 <bold> texto 2 </bold> texto 3</p>"
+    Retorna `texto 1 <bold> texto 2 </bold> texto 3`
+    """
+    text = ''
+    text += node.text or ''
+    for child in node.getchildren():
+        text += tostring(child, with_tail=True)
     return text
 
 
-def node_xml(node):
-    copied = deepcopy(node)
-    copied.tail = None
-    return tostring(copied)
-
-
-def tostring(node, pretty_print=False):
+def tostring(node, pretty_print=False, with_tail=False):
+    """
+    Retorna o "tostring" do node. Exemplo:
+    node = "<p>texto 1 <bold> texto 2 </bold> texto 3</p>"
+    Retorna `<p>texto 1 <bold> texto 2 </bold> texto 3</p>`
+    Retorna str
+    """
     if node is not None:
         return encoding.decode(
-            etree.tostring(node, encoding='utf-8', pretty_print=pretty_print))
+            etree.tostring(
+                node, encoding='utf-8',
+                pretty_print=pretty_print,
+                with_tail=with_tail
+                ))
 
 
 def load_xml(str_or_filepath, remove_blank_text=True, validate=False):
+    """
+    Retorna uma árvore de XML e erros (se ocorrer ao carregá-lo)
+    Pode receber o XML em str ou caminho de um arquivo
+    Usado na conversao do Markup para XML
+    """
     parser = etree.XMLParser(
         remove_blank_text=remove_blank_text,
         resolve_entities=True,
@@ -389,6 +348,11 @@ def load_xml(str_or_filepath, remove_blank_text=True, validate=False):
 
 
 def load_html(file_path):
+    """
+    Retorna uma árvore de HTML e erros (se ocorrer ao carregá-lo)
+    Pode receber o XML em str ou caminho de um arquivo
+    Usado na conversao do Markup para XML
+    """
     parser = etree.HTMLParser(
         remove_blank_text=True, recover=True)
     try:
@@ -417,69 +381,26 @@ def load_html(file_path):
         return html, errors
 
 
-def split_prefix(content):
-    prefix = ''
-    p = content.rfind('</')
-    if p > 0:
-        tag = content[p+2:]
-        tag = tag[0:tag.find('>')].strip()
-        if '<' + tag in content:
-            prefix = content[:content.find('<' + tag)]
-            content = content[content.find('<' + tag):].strip()
-            content = content[:content.rfind('>') + 1].strip()
-    return (prefix.replace('{PRESERVE_SPACE}', ''), content)
-
-
-def preserve_styles(content):
-    content = content.replace('> ', '>{PRESERVE_SPACE}')
-    content = content.replace(' <', '{PRESERVE_SPACE}<')
-    for tag in ['italic', 'bold', 'sup', 'sub']:
-        content = content.replace('<' + tag + '>', '[' + tag + ']')
-        content = content.replace('</' + tag + '>', '[/' + tag + ']')
-    return content
-
-
-def restore_styles(content):
-    for tag in ['italic', 'bold', 'sup', 'sub']:
-        content = content.replace('[' + tag + ']', '<' + tag + '>')
-        content = content.replace('[/' + tag + ']', '</' + tag + '>')
-    content = content.replace('{PRESERVE_SPACE}', ' ')
-    return content
-
-
-def remove_break_lines_off_element_content_item(item):
-    if not item.startswith('<') and not item.endswith('>'):
-        if item.strip() != '':
-            item = ' '.join([item.split()])
-    return item
-
-
-def remove_break_lines_off_element_content(content):
-    data = content.replace('>', '>~remove_break_lines_off_element_content~')
-    data = data.replace('<', '~remove_break_lines_off_element_content~<')
-    return ''.join([remove_break_lines_off_element_content_item(item) for item in data.split('~remove_break_lines_off_element_content~')]).strip()
-
-
 def pretty_print(content):
     xml, error = load_xml(content)
     return tostring(xml, pretty_print=True)
 
 
-def is_valid_xml_file(xml_path):
-    r = False
-    if os.path.isfile(xml_path):
-        r = xml_path.endswith('.xml')
-    return r
-
-
 def is_valid_xml_dir(xml_path):
+    """
+    Verifica se a pasta contém arquivos XML
+    Retorna True, se houver XML
+    """
     total = 0
     if os.path.isdir(xml_path):
         total = len([item for item in os.listdir(xml_path) if item.endswith('.xml')])
     return total > 0
 
 
-def is_valid_xml_path(xml_path):
+def get_errors_if_xml_not_found(xml_path):
+    """
+    Verifica se a pasta contém arquivos XML
+    """
     errors = []
     if xml_path is None:
         errors.append(_('Missing XML location. '))
@@ -493,6 +414,9 @@ def is_valid_xml_path(xml_path):
 
 
 def remove_tags(content):
+    """
+    Remove tags de content
+    """
     if content is not None:
         content = content.replace('<', '~BREAK~<')
         content = content.replace('>', '>~BREAK~')
@@ -505,58 +429,6 @@ def remove_tags(content):
                 new.append(item)
         content = ''.join(new)
     return content
-
-
-def remove_exceeding_spaces_in_tag(item):
-    if not item.startswith('<') and not item.endswith('>'):
-        #if item.strip() == '':
-        #    item = ''
-        pass
-    elif item.startswith('</') and item.endswith('>'):
-        #close
-        item = '</' + item[2:-1].strip() + '>'
-    elif item.startswith('<') and item.endswith('/>'):
-        #empty tag
-        item = '<' + ' '.join(item[1:-2].split()) + '/>'
-    elif item.startswith('<') and item.endswith('>'):
-        #open
-        item = '<' + ' '.join(item[1:-1].split()) + '>'
-    return item
-
-
-def remove_exceeding_spaces_in_all_tags(content):
-    content = content.replace('>', '>NORMALIZESPACES')
-    content = content.replace('<', 'NORMALIZESPACES<')
-    content = ''.join([remove_exceeding_spaces_in_tag(item) for item in content.split('NORMALIZESPACES')])
-    return content
-
-
-def fix_styles_spaces(content):
-    for style in ['bold', 'italic']:
-        if content.count('</' + style + '> ') == 0 and content.count('</' + style + '>') > 0:
-            content = content.replace('</' + style + '>', '</' + style + '> ')
-        if content.count(' <' + style + '>') == 0 and content.count('<' + style + '>') > 0:
-            content = content.replace('<' + style + '>', ' <' + style + '>')
-    return content
-
-
-def remove_exceding_style_tags(content):
-    doit = True
-
-    while doit is True:
-        doit = False
-        new = content
-        for style in ['sup', 'sub', 'bold', 'italic']:
-            new = new.replace('<' + style + '/>', '')
-            new = new.replace('<' + style + '> ', ' <' + style + '>')
-            new = new.replace(' </' + style + '>', '</' + style + '> ')
-            new = new.replace('</' + style + '><' + style + '>', '')
-            new = new.replace('<' + style + '></' + style + '>', '')
-            new = new.replace('<' + style + '> </' + style + '>', ' ')
-            new = new.replace('</' + style + '> <' + style + '>', ' ')
-        doit = (new != content)
-        content = new
-    return new
 
 
 def merge_siblings_style_tags_content(node, styles_tags):
@@ -594,6 +466,9 @@ def remove_styles_off_tagged_content(node, styles_tags):
 
 
 def remove_nodes(root, xpath):
+    """
+    Remove nós que combinam com o xpath dado
+    """
     for node in root.findall(xpath):
         parent = node.getparent()
         parent.remove(node)
@@ -610,34 +485,45 @@ def remove_attribute(root, xpath, attr_name):
 
 
 def replace_attribute_values(root, tuple_attr_name_and_value_and_new_value):
+    """
+    Substitui o valor de atributos que combinam com elemento e nome de atributo
+    """
     for attrname, value, new_value in tuple_attr_name_and_value_and_new_value:
         xpath = ".//*[@{}='{}']".format(attrname, value)
         for node in root.findall(xpath):
             node.set(attrname, new_value)
 
 
-class XMLNode(object):
+def find_nodes(root, xpaths):
+    """
+    Retorna os nodes que combinam com uma lista de xpaths
+    """
+    nodes = []
+    for xpath in xpaths:
+        nodes.extend(root.findall(xpath))
+    return nodes
 
-    def __init__(self, root):
-        self.root = root
 
-    @property
-    def xml(self):
-        return node_xml(self.root)
+def nodes_xml_content_and_attributes(root, node_xpaths):
+    """
+    Retorna o resultado de `tostring(node), node.attrib` dos nodes
+    que combinam com uma lista de xpaths
+    """
+    return [(tostring(node), node.attrib)
+            for node in find_nodes(root, node_xpaths)]
 
-    def nodes(self, xpaths):
-        found_items = [self.root.findall(xpath) for xpath in xpaths]
-        r = []
-        for found in found_items:
-            if found is not None:
-                r.extend(found)
-        return r
 
-    def nodes_text(self, xpaths):
-        return [node_text(node) for node in self.nodes(xpaths) if node is not None]
+def nodes_xml_content(root, node_xpaths):
+    """
+    Retorna node_xml_content(node) dos nodes
+    que combinam com uma lista de xpaths
+    """
+    return [node_xml_content(node) for node in find_nodes(root, node_xpaths)]
 
-    def nodes_xml(self, xpaths):
-        return [node_xml(node) for node in self.nodes(xpaths) if node is not None]
 
-    def nodes_data(self, xpaths):
-        return [(node_xml(node), node.attrib) for node in self.nodes(xpaths) if node is not None]
+def nodes_tostring(root, node_xpaths):
+    """
+    Retorna o resultado de tostring(node) dos nodes
+    que combinam com uma lista de xpaths
+    """
+    return [tostring(node) for node in find_nodes(root, node_xpaths)]
