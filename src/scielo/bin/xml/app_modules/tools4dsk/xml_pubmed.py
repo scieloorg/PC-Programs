@@ -4,13 +4,17 @@ import sys
 import shutil
 import Tkinter
 
+"""
+Usado pelo scielo/xml_scielo/...
+para gerar XML para o PubMed
+"""
+
 try:
     from ..__init__ import _
     from ..generics import utils
     from ..generics import encoding
     from ..generics import xml_utils
     from ..generics import fs_utils
-    from ..generics import java_xml_utils
     from ..generics.dbm import dbm_isis
     from ..app.config import config as xc_config
 except:
@@ -19,7 +23,6 @@ except:
     from app_modules.generics import encoding
     from app_modules.generics import xml_utils
     from app_modules.generics import fs_utils
-    from app_modules.generics import java_xml_utils
     from app_modules.generics import dbm_isis
     from app_modules.app.config import config as xc_config
 
@@ -342,16 +345,22 @@ class PubMedXMLMaker(object):
         # envia ftp
 
     def build_pubmed_xml(self):
-        java_xml_utils.xml_transform(self.temp_xml_filename, self.xsl_filename, self.pubmed_filename)
+        xml_obj = xml_utils.get_xml_object(self.temp_xml_filename)
+        result = xml_utils.transform(xml_obj, self.xsl_filename)
+        xml_utils.write(self.pubmed_filename, result)
 
     def validate_pubmed_xml(self):
         r = False
-        if java_xml_utils.xml_validate(self.pubmed_filename, self.pubmed_filename + '.err', None):
-            os.unlink(self.pubmed_filename + '.err')
-            r = True
-            print('Validates fine')
+        err_filepath = self.pubmed_filename + '.err'
+        if os.path.isfile(err_filepath):
+            os.unlink(err_filepath)
+        xml, error = xml_utils.load_xml(self.pubmed_filename, validate=True)
+        if error:
+            with open(err_filepath, "w") as fp:
+                fp.write(error)
+            print('Validation error: ' + err_filepath)
         else:
-            print('Validation error: ' + self.pubmed_filename + '.err')
+            print('Validates fine')
         return r
 
     def clean_temporary_files(self):

@@ -2,7 +2,6 @@
 
 import os
 
-from . import encoding
 from .reports import validation_status
 
 try:
@@ -30,11 +29,10 @@ def is_tiff(img_filename):
 
 def tiff_image(img_filename):
     if is_tiff(img_filename):
-        if os.path.isfile(img_filename):
-            try:
-                return Image.open(img_filename)
-            except:
-                return None
+        try:
+            return Image.open(img_filename)
+        except:
+            return None
 
 
 # def hdimg_to_jpg(source_image_filename, jpg_filename):

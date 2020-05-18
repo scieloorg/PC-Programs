@@ -73,7 +73,7 @@ class PMCPackageItemMaker(object):
             return True
 
     def make_xml(self, scielo_dtd_files, pmc_dtd_files):
-        
+
         sps_xml = self.article.tree
         # j1.1/xsl/sgml2xml/xml2pmc.xsl
         pmc_xml = xml_utils.transform(sps_xml, scielo_dtd_files.xsl_output)
@@ -85,8 +85,6 @@ class PMCPackageItemMaker(object):
         filenames, changed = self._get_filenames(pmc_xml.xml)
         numbers = self._insert_math_id(pmc_xml.xml)
 
-        print(numbers)
-        print(changed)
         if numbers or changed:
             pmc_xml.write(self.pmc_xml_filepath)
 
@@ -121,7 +119,6 @@ class PMCPackageItemMaker(object):
         files = []
         delete = False
         rename = False
-        any_to_tiff_replacements = self.scielo_pkg_files.created_tiff_img_files_from_other_formats()
         tiff_items = self.scielo_pkg_files.tiff_name_and_basename_items
         for node in article.nodes_which_have_xlink_href(tree):
             if node.get("specific-use") == "scielo-web":
@@ -133,7 +130,7 @@ class PMCPackageItemMaker(object):
             name, ext = os.path.splitext(href)
 
             # substitui o valor de href por ativo digital em tiffs
-            tiff = any_to_tiff_replacements.get(href) or tiff_items.get(name)
+            tiff = tiff_items.get(name)
             if tiff and href != tiff:
                 rename = True
                 node.set("{http://www.w3.org/1999/xlink}href", tiff)
