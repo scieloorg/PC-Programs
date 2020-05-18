@@ -3,7 +3,6 @@
 import os
 import shutil
 from copy import deepcopy
-import itertools
 
 from ...__init__ import _
 from ...generics import fs_utils
@@ -441,27 +440,13 @@ class PackageNamer(object):
         self.xml.write(self.dest_pkgfiles.filename)
 
     def _fix_href_values(self):
-
-        paths = [
-            '//graphic[@xlink:href]',
-            '//media[@xlink:href]',
-            '//inline-graphic[@xlink:href]',
-            '//supplementary-material[@xlink:href]',
-            '//inline-supplementary-material[@xlink:href]',
-        ]
-
-        iterators = [self.doc.tree.iterfind(
-                        path,
-                        namespaces={'xlink': 'http://www.w3.org/1999/xlink'})
-                     for path in paths]
         self.href_replacements = []
-        for element in itertools.chain(*iterators):
+        for element in article.nodes_which_have_xlink_href(self.doc.tree):
             value = element.attrib['{http://www.w3.org/1999/xlink}href']
             parent = element.getparent()
             new_value = self.new_href_value(parent, value)
             if value != new_value:
                 self.href_replacements.append((value, new_value))
-                print((value, new_value))
                 element.set("{http://www.w3.org/1999/xlink}href", new_value)
         print(xml_utils.etree.tostring(self.doc.tree.find(".//graphic")))
 
@@ -494,23 +479,28 @@ class PackageNamer(object):
         for f, new in self.href_replacements:
             name, _ = os.path.splitext(f)
             new_name, _ = os.path.splitext(new)
+
             for ext in self.src_pkgfiles.related_files_by_name.get(name) or []:
                 source = os.path.join(self.src_pkgfiles.path, name + ext)
                 dest = os.path.join(self.dest_pkgfiles.path, new_name + ext)
                 shutil.copyfile(source, dest)
                 self.href_files_copy.append((source, dest))
                 self.href_names.append(name)
+
             if self.dest_pkgfiles.related_files_by_name.get(new_name) is None:
                 self.missing_href_files.append(new)
+        print(self.href_files_copy)
 
     def _rename_other_files(self):
         self.related_files_copy = []
         for name, exts in self.src_pkgfiles.related_files_by_name.items():
             if name in self.href_names:
                 continue
-            for ext in exts:
-                new_name = name.replace(self.src_pkgfiles.name, self.new_name)
-                if new_name.startswith(self.new_name):
+            print("other: {}".format(name))
+
+            new_name = name.replace(self.src_pkgfiles.name, self.new_name)
+            if new_name.startswith(self.new_name):
+                for ext in exts:
                     source = os.path.join(self.src_pkgfiles.path, name + ext)
                     dest = os.path.join(
                         self.dest_pkgfiles.path, new_name + ext)
@@ -573,8 +563,7 @@ class SGMLXML2SPSXML(object):
             sps_version = xml_versions._SPS_VERSIONS[-1][0][4:]
             xml_obj.find(".").set("sps", sps_version)
         xsl_filepath = xml_versions.xsl_getter(sps_version)
-        xsl_obj = xml_utils.get_xsl_object(xsl_filepath)
-        result = xml_utils.transform(xml_obj, xsl_obj)
+        result = xml_utils.transform(xml_obj, xsl_filepath)
         #result.docinfo.doctype = xml_versions.dtd_files(
         #    sps_version).doctype_with_remote_path
         xml_utils.write(self.FILES.src_pkgfiles.filename, result)

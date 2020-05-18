@@ -70,7 +70,8 @@ class PMCXMLValidator(object):
         return (xml, valid, (f, e, w))
 
     def validate_structure(self, xml_filename, dtd_report_filename):
-        xml_obj, errors = xml_utils.load_xml(xml_filename, validate=True)
+        xml_obj, errors = xml_utils.load_xml(
+            xml_filename, validate=True)
         status = None
         valid = False
         if errors:
@@ -91,13 +92,11 @@ class PMCXMLValidator(object):
     def validate_style(self, xml_obj, report_filename):
         if os.path.isfile(report_filename):
             os.unlink(report_filename)
-        xsl_obj = xml_utils.get_xsl_object(self.dtd_files.xsl_prep_report)
         transformed = xml_utils.transform(
-            xml_obj, xsl_obj)
+            xml_obj, self.dtd_files.xsl_prep_report)
         if transformed:
-            xsl_obj = xml_utils.get_xsl_object(self.dtd_files.xsl_report)
             transformed = xml_utils.transform(
-                transformed, xsl_obj)
+                transformed, self.dtd_files.xsl_report)
             xml_utils.write(report_filename, transformed)
             result = fs_utils.read_file(report_filename)
         if not os.path.isfile(report_filename):

@@ -1,15 +1,17 @@
 # coding=utf-8
 import os
+import shutil
 
 from ...__init__ import _
 
 from ...generics import encoding
-from ...generics import fs_utils
 from ...generics import xml_utils
+from ...generics import fs_utils
 from ...generics.reports import html_reports
 from ..validations import sps_xml_validators
 from . import xml_versions
 from ..data import workarea
+from ..data import article
 
 
 class PMCPackageMaker(object):
@@ -71,17 +73,28 @@ class PMCPackageItemMaker(object):
             return True
 
     def make_xml(self, scielo_dtd_files, pmc_dtd_files):
-        xml_obj = self.article.tree
+        
+        sps_xml = self.article.tree
         # j1.1/xsl/sgml2xml/xml2pmc.xsl
-        xsl_obj = xml_utils.get_xsl_object(scielo_dtd_files.xsl_output)
-        result = xml_utils.transform(xml_obj, xsl_obj)
-        xml_utils.write(self.pmc_xml_filepath, result)
+        pmc_xml = xml_utils.transform(sps_xml, scielo_dtd_files.xsl_output)
+        xml_utils.write(self.pmc_xml_filepath, pmc_xml)
 
-        self.pmc_pkg_files = workarea.DocumentPackageFiles(
-            self.pmc_xml_filepath)
-        self._insert_math_id()
-        self._add_files_to_pmc_package()
-        self._rename_en_files()
+        # recarrega
+        pmc_xml = xml_utils.SuitableXML(self.pmc_xml_filepath)
+
+        filenames, changed = self._get_filenames(pmc_xml.xml)
+        numbers = self._insert_math_id(pmc_xml.xml)
+
+        print(numbers)
+        print(changed)
+        if numbers or changed:
+            pmc_xml.write(self.pmc_xml_filepath)
+
+        dirname = os.path.dirname(self.pmc_xml_filepath)
+        for old, new in filenames:
+            old = os.path.join(self.scielo_pkg_files.path, old)
+            new = os.path.join(dirname, new)
+            shutil.copyfile(old, new)
 
         # validate
         xml_validator = sps_xml_validators.PMCXMLValidator(pmc_dtd_files)
@@ -91,41 +104,48 @@ class PMCPackageItemMaker(object):
             self.outputs.pmc_style_report_filename
             )
         # j1.1/xsl/sgml2xml/pmc.xsl
-        xsl_obj = xml_utils.get_xsl_object(pmc_dtd_files.xsl_output)
-        result = xml_utils.transform(xml_obj, xsl_obj)
+        result = xml_utils.transform(pmc_xml.xml, pmc_dtd_files.xsl_output)
         xml_utils.write(self.pmc_xml_filepath, result)
 
-    def _insert_math_id(self):
+    def _insert_math_id(self, tree):
         # PMC exige o atributo @id para math
-        xml = xml_utils.SuitableXML(self.pmc_xml_filepath)
         n = 0
-        for math in xml.xml.findall(
+        for math in tree.findall(
                 "{http://www.w3.org/1998/Math/MathML}math"):
             if math.get("id") is None:
                 n += 1
                 math.set("id", 'math{}'.format(n))
-        if n:
-            xml.write_file(self.pmc_xml_filepath, pretty_print=True)
+        return n
 
-    def _add_files_to_pmc_package(self):
-        if self.article.language == 'en':
-            self.scielo_pkg_files.copy_related_files(self.pmc_pkg_files.path)
-            self.pmc_pkg_files.svg2tiff()
-            valid_files = self.pmc_pkg_files.select_pmc_files()
-            delete_files = [f
-                            for f in self.pmc_pkg_files.related_files
-                            if f not in valid_files]
-            self.pmc_pkg_files.delete_files(delete_files)
+    def _get_filenames(self, tree):
+        files = []
+        delete = False
+        rename = False
+        #TODO
+        self.scielo_pkg_files.svg2tiff()
 
-    def _rename_en_files(self):
-        en_files = [f for f in self.pmc_pkg_files.related_files if '-en.' in f]
-        xml_obj = xml_utils.SuitableXML(self.pmc_xml_filepath)
-        content = xml_obj.content
-        for f in en_files:
-            new = f.replace('-en.', '.')
-            os.rename(os.path.join(self.pmc_pkg_files.path, f),
-                      os.path.join(self.pmc_pkg_files.path, new))
-            content = content.replace(f, new)
-        if len(en_files) > 0:
-            xml_obj.content = content
-            xml_obj.write_file(self.pmc_xml_filepath, pretty_print=True)
+        for node in article.nodes_which_have_xlink_href(tree):
+            print(xml_utils.tostring(node))
+            if node.get("specific-use") == "scielo-web":
+                node.tag = "REMOVE"
+                delete = True
+                continue
+            href = node.attrib['{http://www.w3.org/1999/xlink}href']
+            name, ext = os.path.splitext(href)
+            if name.endswith("-en"):
+                new = name[:-3] + ext
+                files.append((href, new))
+                rename = True
+                node.set("{http://www.w3.org/1999/xlink}href", new)
+            else:
+                files.append((href, href))
+
+        if delete:
+            for node in tree.findall(".//alternatives"):
+                if len(node.getchildren()) == 1:
+                    print(
+                        "Remove alternatives: {}".format(
+                            xml_utils.tostring(node)))
+                    node.tag = "REMOVE"
+            xml_utils.etree.strip_tags(tree, "REMOVE")
+        return files, delete or rename

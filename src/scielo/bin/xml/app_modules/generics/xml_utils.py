@@ -222,7 +222,7 @@ class SuitableXML(object):
                 self.content,
             ])
 
-    def write(self, dest_file_path, pretty_print=False,
+    def write(self, dest_file_path, pretty_print=True,
               dtd_location_type=None):
         doctype = self.get_doctype(dtd_location_type)
         if self.xml is None:
@@ -242,13 +242,10 @@ def get_xml_object(file_path, xml_parser=None):
     return etree.parse(file_path, parser)
 
 
-def get_xsl_object(file_path):
-    xslt_doc = etree.parse(file_path)
-    return etree.XSLT(xslt_doc)
-
-
-def transform(xml_obj, xsl_obj):
-    return xsl_obj(xml_obj)
+def transform(xml_obj, xsl_file_path):
+    xslt_doc = etree.parse(xsl_file_path)
+    XSLT = etree.XSLT(xslt_doc)
+    return XSLT(xml_obj)
 
 
 def validate(xml_obj, dtd_external_id=None, dtd_file_path=None):
@@ -276,9 +273,10 @@ def write(file_path, tree):
             encoding="utf-8",
             xml_declaration='<?xml version="1.0" encoding="utf-8"?>',
             inclusive_ns_prefixes=namespaces.keys(),
+            pretty_print=True
         )
         return
-    tree.write(file_path, method="html")
+    tree.write(file_path, method="html", pretty_print=True)
 
 
 def replace_doctype(content, new_doctype):
@@ -353,12 +351,17 @@ def node_xml(node):
 
 def tostring(node, pretty_print=False):
     if node is not None:
-        return encoding.decode(etree.tostring(node, encoding='utf-8', pretty_print=pretty_print))
+        return encoding.decode(
+            etree.tostring(node, encoding='utf-8', pretty_print=pretty_print))
 
 
-def load_xml(str_or_filepath, validate=False):
+def load_xml(str_or_filepath, remove_blank_text=True, validate=False):
     parser = etree.XMLParser(
-        remove_blank_text=True, resolve_entities=True, recover=True, dtd_validation=validate)
+        remove_blank_text=remove_blank_text,
+        resolve_entities=True,
+        recover=True,
+        dtd_validation=validate
+    )
     try:
         xml = None
         errors = None

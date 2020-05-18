@@ -273,6 +273,7 @@ class PackageMaker(object):
         xmlcontent.write(
             enhanced_pkg_file_path,
             dtd_location_type=dtd_location_type, pretty_print=True)
+        
         pkg_files.copy_related_files(enhanced_pkg_path)
 
         enhanced_folder = workarea.MultiDocsPackageFolder(enhanced_pkg_path)
@@ -300,6 +301,7 @@ class PackageMaker(object):
             file_path = item.filename
             if xml_list and file_path not in xml_list:
                 continue
+
             _xml_list.append(
                 os.path.join(self.optimised_pkg_path, item.basename))
 

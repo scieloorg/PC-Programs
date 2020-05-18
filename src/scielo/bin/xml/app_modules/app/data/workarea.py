@@ -206,9 +206,10 @@ class DocumentPackageFiles(object):
 
     def svg2tiff(self):
         sgv_items = self.files_by_ext(['.svg'])
-        if len(self.tiff_items) == 0 and len(sgv_items) > 0:
-            img_utils.svg2png(self.path)
-            self._update()
+        if len(self.tiff_items) == 0:
+            if len(sgv_items) > 0:
+                img_utils.svg2png(self.path)
+                self._update()
             img_utils.png2tiff(self.path)
             self._update()
 

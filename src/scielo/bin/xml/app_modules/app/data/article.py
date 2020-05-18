@@ -1,11 +1,28 @@
 # coding=utf-8
 import os
 from datetime import datetime
+import itertools
 
 from .. import article_utils
 from ...generics import xml_utils
 from ...generics import img_utils
 from . import attributes
+
+
+def nodes_which_have_xlink_href(tree):
+    paths = [
+        '//graphic[@xlink:href]',
+        '//media[@xlink:href]',
+        '//inline-graphic[@xlink:href]',
+        '//supplementary-material[@xlink:href]',
+        '//inline-supplementary-material[@xlink:href]',
+    ]
+
+    iterators = [tree.iterfind(
+                    path,
+                    namespaces={'xlink': 'http://www.w3.org/1999/xlink'})
+                 for path in paths]
+    return itertools.chain(*iterators)
 
 
 def first_item(l):
