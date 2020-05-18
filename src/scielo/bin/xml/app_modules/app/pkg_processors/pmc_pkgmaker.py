@@ -121,16 +121,25 @@ class PMCPackageItemMaker(object):
         files = []
         delete = False
         rename = False
-        #TODO
-        self.scielo_pkg_files.svg2tiff()
-
+        any_to_tiff_replacements = self.scielo_pkg_files.created_tiff_img_files_from_other_formats()
+        tiff_items = self.scielo_pkg_files.tiff_name_and_basename_items
         for node in article.nodes_which_have_xlink_href(tree):
-            print(xml_utils.tostring(node))
             if node.get("specific-use") == "scielo-web":
                 node.tag = "REMOVE"
                 delete = True
                 continue
+
             href = node.attrib['{http://www.w3.org/1999/xlink}href']
+            name, ext = os.path.splitext(href)
+
+            # substitui o valor de href por ativo digital em tiffs
+            tiff = any_to_tiff_replacements.get(href) or tiff_items.get(name)
+            if tiff and href != tiff:
+                rename = True
+                node.set("{http://www.w3.org/1999/xlink}href", tiff)
+                href = tiff
+
+            # remove o sufixo -en dos ativos digitais da versao ingles
             name, ext = os.path.splitext(href)
             if name.endswith("-en"):
                 new = name[:-3] + ext
@@ -141,7 +150,9 @@ class PMCPackageItemMaker(object):
                 files.append((href, href))
 
         if delete:
+            xml_utils.etree.strip_tags(tree, "REMOVE")
             for node in tree.findall(".//alternatives"):
+                print(len(node.getchildren()))
                 if len(node.getchildren()) == 1:
                     print(
                         "Remove alternatives: {}".format(

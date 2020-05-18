@@ -37,34 +37,34 @@ def tiff_image(img_filename):
                 return None
 
 
-def hdimg_to_jpg(source_image_filename, jpg_filename):
-    if IMG_CONVERTER:
-        try:
-            im = Image.open(source_image_filename)
-            im.thumbnail(im.size)
-            im.save(jpg_filename, "JPEG")
-        except Exception as e:
-            encoding.report_exception('hdimg_to_jpg', e, 'Unable to generate ' + jpg_filename)
+# def hdimg_to_jpg(source_image_filename, jpg_filename):
+#     if IMG_CONVERTER:
+#         try:
+#             im = Image.open(source_image_filename)
+#             im.thumbnail(im.size)
+#             im.save(jpg_filename, "JPEG")
+#         except Exception as e:
+#             encoding.report_exception('hdimg_to_jpg', e, 'Unable to generate ' + jpg_filename)
 
 
-def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
-    if IMG_CONVERTER:
-        for item in os.listdir(source_path):
-            image_filename = source_path + '/' + item
-            if item.endswith('.tiff') or item.endswith('.eps') or item.endswith('.tif'):
-                jpg_filename = source_path + '/' + item[0:item.rfind('.')] + '.jpg'
-                doit = True if not os.path.isfile(jpg_filename) else force_update is True
+# def hdimages_to_jpeg(source_path, jpg_path, force_update=False):
+#     if IMG_CONVERTER:
+#         for item in os.listdir(source_path):
+#             image_filename = source_path + '/' + item
+#             if item.endswith('.tiff') or item.endswith('.eps') or item.endswith('.tif'):
+#                 jpg_filename = source_path + '/' + item[0:item.rfind('.')] + '.jpg'
+#                 doit = True if not os.path.isfile(jpg_filename) else force_update is True
 
-                if doit:
-                    hdimg_to_jpg(image_filename, jpg_filename)
+#                 if doit:
+#                     hdimg_to_jpg(image_filename, jpg_filename)
 
 
 def svg2png(images_path):
-    svg_conversion.svg2png(images_path)
+    return svg_conversion.svg2png(images_path)
 
 
 def png2tiff(images_path):
-    svg_conversion.png2tiff(images_path)
+    return svg_conversion.png2tiff(images_path)
 
 
 def validate_tiff_image_file(img_filename, dpi=300):

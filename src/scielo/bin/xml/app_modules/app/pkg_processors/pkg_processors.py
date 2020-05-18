@@ -80,28 +80,6 @@ def xpm_version():
     return major_version, minor_version
 
 
-def normalize_xml_packages(xml_list, dtd_location_type, stage):
-    docpkgfiles_items = [workarea.DocumentPackageFiles(item) for item in xml_list]
-
-    path = docpkgfiles_items[0].path + '_' + stage
-
-    wk = workarea.MultiDocsPackageOuputs(path)
-    doc_outs_items = {}
-    dest_path = wk.scielo_package_path
-    dest_docpkgfiles_items = [workarea.DocumentPackageFiles(dest_path + '/' + item.basename) for item in docpkgfiles_items]
-    for src, dest in zip(docpkgfiles_items, dest_docpkgfiles_items):
-        src.tiff2jpg()
-        xmlcontent = sps_pkgmaker.SPSXMLContent(src.filename)
-        xmlcontent.write(
-            dest.filename,
-            dtd_location_type=dtd_location_type, pretty_print=True)
-        src.copy_related_files(dest_path)
-
-        doc_outs_items[dest.name] = workarea.DocumentOutputFiles(dest.name, wk.reports_path, None)
-
-    return dest_docpkgfiles_items, doc_outs_items
-
-
 class ArticlesConversion(object):
 
     def __init__(self, registered_issue_data, pkg, validations_reports, create_windows_base, web_app_path, web_app_site):

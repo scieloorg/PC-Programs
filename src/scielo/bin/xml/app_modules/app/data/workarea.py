@@ -190,14 +190,14 @@ class DocumentPackageFiles(object):
             fs_utils.delete_file_or_folder(self.path + '/' + f)
         self._update()
 
-    def tiff2jpg(self):
-        for item in self.tiff_names:
-            if item not in self.jpg_names and item not in self.png_names:
-                source_fname = item + '.tif'
-                if source_fname not in self.related_files:
-                    source_fname = item + '.tiff'
-                img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
-        self._update()
+    # def tiff2jpg(self):
+    #     for item in self.tiff_names:
+    #         if item not in self.jpg_names and item not in self.png_names:
+    #             source_fname = item + '.tif'
+    #             if source_fname not in self.related_files:
+    #                 source_fname = item + '.tiff'
+    #             img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
+    #     self._update()
 
     def delete_files(self, files):
         for f in files:
@@ -205,13 +205,38 @@ class DocumentPackageFiles(object):
         self._update()
 
     def svg2tiff(self):
-        sgv_items = self.files_by_ext(['.svg'])
+        sgv2png_files = None
+        png2tiff_files = None
         if len(self.tiff_items) == 0:
-            if len(sgv_items) > 0:
-                img_utils.svg2png(self.path)
-                self._update()
-            img_utils.png2tiff(self.path)
+            sgv2png_files = img_utils.svg2png(self.path)
             self._update()
+            png2tiff_files = img_utils.png2tiff(self.path)
+            self._update()
+        return sgv2png_files, png2tiff_files
+
+    @property
+    def tiff_name_and_basename_items(self):
+        items = []
+        for item in self.tiff_items:
+            name, ext = os.path.splitext(item)
+            items.append((name, item))
+        return dict(items)
+
+    def created_tiff_img_files_from_other_formats(self):
+        svg2png_files, png2tiff_files = self.svg2tiff()
+        svg2png_files = dict(svg2png_files or {})
+        png2tiff_files = dict(png2tiff_files or {})
+        replace = {}
+        for k, k_in_png2tiff in svg2png_files.items():
+            if png2tiff_files.get(k_in_png2tiff):
+                replace[os.path.basename(k)] = os.path.basename(
+                    png2tiff_files.pop(k_in_png2tiff))
+        replace.update(
+            {os.path.basename(k): os.path.basename(v)
+             for k, v in png2tiff_files.items()
+             }
+        )
+        return replace
 
     def evaluate_tiff_images(self):
         errors = []
