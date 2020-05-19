@@ -3,7 +3,6 @@
 from ...__init__ import _
 from ...generics.reports import validation_status
 from ..data import attributes
-from ...generics import xml_utils
 
 
 def label_equal_value(label, value):
