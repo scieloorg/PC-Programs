@@ -29,6 +29,10 @@ from ..data import aff_normalization
 from ..data import kernel_document
 from ..db import registered
 from ..db import xc_models
+from ..db.pid_versions import(
+    PIDVersionsManager,
+    PIDVersionsDB,
+)
 from . import pmc_pkgmaker
 from . import sps_pkgmaker
 
@@ -117,7 +121,7 @@ class ArticlesConversion(object):
         self.error_messages = []
         self.conversion_status = {}
 
-    def convert(self, export_documents_package=None):
+    def convert(self, export_documents_package=None, scielo_pid_v3_manager=None):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
@@ -125,8 +129,9 @@ class ArticlesConversion(object):
             issn_id = self.registered_issue_data.issue_models.issue.issn_id
             v36 = self.registered_issue_data.issue_models.record.get("36")
             kernel_document.add_article_id_to_received_documents(
+                scielo_pid_v3_manager,
                 issn_id, v36,
-                self.articles_mergence.accepted_articles,
+                self.articles_mergence.articles,
                 self.articles_mergence.registered_articles,
                 self.pkg.file_paths)
 
@@ -371,7 +376,16 @@ class PkgProcessor(object):
         self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
         self.registered_issues_manager = xc_models.RegisteredIssuesManager(self.db_manager, self.journals_list)
-        
+        self._pid_manager = None
+
+    @property
+    def pid_manager(self):
+        if self._pid_manager is None and self.config.pid_manager_info:
+            self._pid_manager = PIDVersionsManager(
+                PIDVersionsDB(
+                    self.config.pid_manager_info))
+        return self._pid_manager
+
     @property
     def export_documents_package(self):
         if self.config.kernel_gate:
@@ -424,7 +438,7 @@ class PkgProcessor(object):
 
         conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
 
-        scilista_items = conversion.convert(self.export_documents_package)
+        scilista_items = conversion.convert(self.export_documents_package, self.pid_manager)
         
         reports = self.report_result(pkg, validations_reports, conversion)
         statistics_display = reports.validations.statistics_display(html_format=False)
