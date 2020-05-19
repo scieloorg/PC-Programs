@@ -1,17 +1,8 @@
 # coding=utf-8
 import os
 
-try:
-    from app_modules.app.config import app_texts
-except Exception as e:
-    print(e)
-    from .app.config import app_texts
-
-try:
-    from app_modules.generics import encoding
-except Exception as e:
-    print(e)
-    from .generics import encoding
+from app_modules.app.config import app_texts
+from app_modules.generics import encoding
 
 
 THIS_FILE_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')

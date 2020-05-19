@@ -96,8 +96,13 @@ class PMCPackageItemMaker(object):
         dirname = os.path.dirname(self.pmc_xml_filepath)
         for old, new in filenames:
             old = os.path.join(self.scielo_pkg_files.path, old)
-            new = os.path.join(dirname, new)
-            shutil.copyfile(old, new)
+            if os.path.isfile(old):
+                new = os.path.join(dirname, new)
+                shutil.copyfile(old, new)
+            else:
+                logging.info(
+                    "File not found %s to compose PMC Package %s",
+                    old, self.pmc_xml_filepath)
 
         # validate
         xml_validator = sps_xml_validators.PMCXMLValidator(pmc_dtd_files)

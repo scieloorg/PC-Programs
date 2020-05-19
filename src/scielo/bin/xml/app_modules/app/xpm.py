@@ -4,12 +4,12 @@ import logging.config
 
 import os
 
-from ..__init__ import _
-from . import interface
-from ..generics import encoding
-from .config import config
-from .pkg_processors import sgmlxml
-from .pkg_processors import pkg_processors
+from app_modules.generics import encoding
+from app_modules.__init__ import _
+from app_modules.app import interface
+from app_modules.app.config import config
+from app_modules.app.pkg_processors import sgmlxml
+from app_modules.app.pkg_processors import pkg_processors
 
 
 logging.config.fileConfig('logging.conf')

@@ -84,10 +84,30 @@ class PMCXMLValidator(object):
                 self.dtd_files.real_dtd_path)
             if errors:
                 status = validation_status.STATUS_FATAL_ERROR
-                content = fs_utils.read_file(dtd_report_filename)
+                content = self._format_msg(errors)
+                fs_utils.write_file(dtd_report_filename, content)
         content = "" if not status else status + '\n' + content + '\n' * 10
         fs_utils.write_file(dtd_report_filename, content)
         return xml_obj, valid
+
+    def _format_msg(self, errors):
+        """
+        https://lxml.de/api/lxml.etree._LogEntry-class.html
+        message: the message text
+        domain: the domain ID (see lxml.etree.ErrorDomains)
+        type: the message type ID (see lxml.etree.ErrorTypes)
+        level: the log level ID (see lxml.etree.ErrorLevels)
+        line: the line at which the message originated (if applicable)
+        column: the character column at which the message originated (if applicable)
+        filename: the name of the file in which the message originated (if applicable)
+        path: the location in which the error was found (if available)
+        """
+        rows = []
+        for e in errors:
+            rows.append("{} {}: line: {} column: {} - {}".format(
+                e.type, e.level, e.line, e.column, e.message
+                ))
+        return "\n".join(rows)
 
     def validate_style(self, xml_obj, report_filename):
         if os.path.isfile(report_filename):

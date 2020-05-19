@@ -1,6 +1,6 @@
 import sys
-from app_modules.app import xpm
 
+from app_modules.app import xpm
 from app_modules.generics import encoding
 
 
