@@ -53,7 +53,7 @@ def get_servername(url):
 def try_request(url, timeout=30, debug=False, force_error=False):
     response = None
     socket.setdefaulttimeout(timeout)
-    req = Request(encoding.encode(url))
+    req = Request(url)
     http_error_proxy_auth = None
     error_message = ''
     try:
@@ -104,7 +104,6 @@ class WebServicesRequester(object):
         #          }
         query = ''
         if parameters is not None:
-            parameters = {name: encoding.encode(value) for name, value in parameters.items()}
             query = '?' + urllib_parse_urlencode(parameters)
         return url + query
 
