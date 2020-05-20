@@ -54,11 +54,15 @@ class MultiDocsPackageOuputs(object):
     def pmc_package_path(self):
         return os.path.join(self.output_path, 'pmc_package')
 
-    def get_doc_outputs(self, xml_name, sgmxml_path=None):
+    def get_doc_outputs(self, xml_name, sgmxml_name=None):
         obj = self.doc_outs.get(xml_name)
         if obj is None:
+            if sgmxml_name:
+                work_path = os.path.join(self.output_path, "work", sgmxml_name)
+            else:
+                work_path = os.path.join(self.tmp_path, xml_name)
             self.doc_outs[xml_name] = DocumentOutputFiles(
-                xml_name, self.reports_path, sgmxml_path or self.tmp_path)
+                xml_name, self.reports_path, work_path)
             obj = self.doc_outs[xml_name]
         return obj
 
@@ -296,7 +300,7 @@ class DocumentPackageFiles(object):
             found = self.match_img_files_by_suffixes(suffixes)
         else:
             found = self.match_img_files_by_id(elem_id)
-        return found, self.related_files
+        return found
 
 
 class MultiDocsPackageFolder(object):
@@ -369,8 +373,6 @@ class DocumentOutputFiles(object):
         self.xml_name = xml_name
         self.report_path = report_path
         self.wrk_path = wrk_path
-        if wrk_path and not os.path.isdir(wrk_path):
-            os.makedirs(wrk_path)
 
     def create_dir_at_work_path(self, dirname):
         dirname = os.path.join(self.wrk_path, dirname)
@@ -390,8 +392,10 @@ class DocumentOutputFiles(object):
 
     @property
     def ctrl_filename(self):
-        if self.wrk_path:
-            return self.wrk_path + '/' + self.xml_name + '.ctrl.txt'
+        # deve existir apenas na conversao de sgml para xml
+        name = os.path.basename(self.wrk_path)
+        if name != self.xml_name:
+            return os.path.join(self.wrk_path, name + ".ctrl.txt")
 
     @property
     def style_report_filename(self):

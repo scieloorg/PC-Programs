@@ -69,7 +69,7 @@ class SGMLXMLWorkarea(workarea.MultiDocsPackageOuputs):
 
         # local e prefixo dos relatórios de erro
         self.sgmxml_outputs = self.get_doc_outputs(
-            self.sgmxml_fname, self.sgmxml_dirname)
+            self.sgmxml_fname, self.sgmxml_fname)
 
         # self.src_path = markup_xml/src
         self.src_path = os.path.join(self.output_path, 'src')
@@ -78,31 +78,12 @@ class SGMLXMLWorkarea(workarea.MultiDocsPackageOuputs):
         shutil.copyfile(sgmxml_filepath, src_file_path)
         self.src_pkgfiles = workarea.DocumentPackageFiles(src_file_path)
 
-        # self.tmp_scielo_package_path =
+        # self.tmp_doc_pkg_path =
         # markup_xml/work/sgmxml_name/scielo_package
-        self.single_doc_pkg_path = os.path.join(
+        self.tmp_doc_pkg_path = os.path.join(
             self.sgmxml_dirname, "scielo_package")
-        if not os.path.dirname(self.single_doc_pkg_path):
-            os.makedirs(self.single_doc_pkg_path)
-        self.single_doc_pkg_filepath = os.path.join(
-            self.single_doc_pkg_path, self.sgmxml_basename
-        )
-        # markup_xml/work/sgmxml_name/scielo_package_tmp
-        self.tmp_single_doc_pkg_path = os.path.join(
-            self.sgmxml_dirname, "scielo_package_tmp")
-        if not os.path.dirname(self.tmp_single_doc_pkg_path):
-            os.makedirs(self.tmp_single_doc_pkg_path)
-        self.tmp_single_doc_pkg_filepath = os.path.join(
-            self.tmp_single_doc_pkg_path, self.sgmxml_basename
-        )
-        # markup_xml/work/sgmxml_name/tmp
-        self.sgmxml_tmp_path = os.path.join(
-            self.sgmxml_dirname, "tmp")
-        if not os.path.dirname(self.sgmxml_tmp_path):
-            os.makedirs(self.sgmxml_tmp_path)
-        self.sgmxml_tmp_filepath = os.path.join(
-            self.sgmxml_tmp_path, self.sgmxml_basename
-        )
+        if not os.path.dirname(self.tmp_doc_pkg_path):
+            os.makedirs(self.tmp_doc_pkg_path)
 
     @property
     def html_filename(self):
@@ -568,15 +549,18 @@ class SGMLXML2SPSXML(object):
         markup_xml/work/sgmxml_name/scielo_package_tmp
         """
         self.pkg_namer = PackageNamer(self.FILES.src_pkgfiles, self.acron,
-                                      self.FILES.single_doc_pkg_path)
+                                      self.FILES.tmp_doc_pkg_path)
         self.pkg_namer.rename()
         """
         cria o pacote otimizado na pasta individual
         markup_xml/work/sgmxml_name/scielo_package
         """
-        self.pkg_maker = PackageMaker(self.FILES.single_doc_pkg_path,
+        self.pkg_maker = PackageMaker(self.FILES.tmp_doc_pkg_path,
                                       self.FILES.output_path)
-        return self.pkg_maker.pack()
+        pkg = self.pkg_maker.pack(
+            [self.pkg_namer.dest_pkgfiles.filename],
+            sgmxml_name=self.FILES.src_pkgfiles.name)
+        return pkg
 
     def _report(self, blocking_error, pkg):
         msg = html_reports.p_message(blocking_error or "")
@@ -612,7 +596,6 @@ class SGMLXML2SPSXML(object):
 
             logger.info("Rename and make the package")
             pkg = self._make_package()
-            pkg.previous_name = self.FILES.src_pkgfiles.name
         except Exception as e:
             blocking_error = str(e)
             logger.exception(e)
@@ -636,10 +619,21 @@ class ImagesOriginReport(object):
         if len(self.href_replacements) == 0:
             rows.append(html_reports.tag('h4', _('Article has no image')))
         else:
-            rows.append('<ol>')
-            for item in self.images_origin:
+            rows.append(
+                html_reports.tag(
+                    "div",
+                    _('The images which compose the package can come from '
+                      '"src" folder or from "doc", i.e., the markup document '
+                      '(the images embedded in the markup file). This report '
+                      'presents the origin of '
+                      'each image. Images from "src" folder have preference '
+                      'over those embedded in document. '), "note"))
+            rows.append('<div><ul>')
+            n = len(self.images_origin)
+            for i, item in enumerate(self.images_origin):
+                rows.append(html_reports.tag('h3', "{}/{}".format(i+1, n)))
                 rows.append(self.item_report(item))
-            rows.append('</ol>')
+            rows.append('</ul></div>')
         return html_reports.tag(
             'h2', _('Images Origin Report')) + ''.join(rows)
 
@@ -656,21 +650,18 @@ class ImagesOriginReport(object):
         rows.append(
             self.item_report_replacement(
                 name, self.href_replacements.get(name)))
-        rows.append('<div class="compare_images">')
-        rows.append(
-            self.display_image(
-                os.path.join(
-                    self.package_path, self.href_replacements.get(name)),
-                compare_style, _("origin: {}").format(image_origin)))
-        rows.append('</div>')
-        rows.append('<div class="compare_images">')
         if image_src:
+            rows.append('<div class="compare_images">')
             rows.append(
-                self.display_image(image_src, compare_style, 'src'))
+                self.display_image(
+                    image_src, compare_style, 'src', image_origin))
+            rows.append('</div>')
         if image_doc:
+            rows.append('<div class="compare_images">')
             rows.append(
-                self.display_image(image_doc, compare_style, 'doc'))
-        rows.append('</div>')
+                self.display_image(
+                    image_doc, compare_style, 'doc', image_origin))
+            rows.append('</div>')
         rows.append('</li>')
         return '\n'.join(rows)
 
@@ -678,10 +669,19 @@ class ImagesOriginReport(object):
         return html_reports.tag(
             'h4', renamed if name == renamed else name + ' => ' + renamed)
 
-    def display_image(self, img_filename, style, title):
+    def display_image(self, img_filename, style, origin, selected):
         rows = []
+        if origin == selected:
+            icon = "&#x2713;"
+            text = _('[selected]')
+        else:
+            icon = "&#x2717;"
+            text = _("[not selected]")
         rows.append(
-            html_reports.tag('h5', '{} ({})'.format(img_filename, title)))
+            html_reports.tag(
+                'h4', _('Image from {} {} {}').format(origin, icon, text)))
+        rows.append(
+            html_reports.tag('p', img_filename))
         img_filename = 'file://' + img_filename
         basename = os.path.basename(img_filename)
         name, ext = os.path.splitext(img_filename)
