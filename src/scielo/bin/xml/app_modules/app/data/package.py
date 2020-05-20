@@ -17,21 +17,25 @@ class SPPackage(object):
     de um mesmo número
     """
 
-    def __init__(self, path, output_path, xml_list):
+    def __init__(self, path, output_path, xml_names, sgmxml_name=None):
         self.package_folder = workarea.MultiDocsPackageFolder(path)
         self.wk = workarea.MultiDocsPackageOuputs(output_path)
-        self.xml_list = xml_list
+        self.xml_names = xml_names
         self._articles = {}
-        if xml_list:
+        if xml_names:
             for name, item in self.files.items():
-                if item.filename not in xml_list:
+                if item.basename not in xml_names:
                     continue
                 xml, xml_error = xml_utils.load_xml(item.filename)
                 self._articles[name] = article.Article(xml, name)
-                self.wk.get_doc_outputs(name)
-
+                self.wk.get_doc_outputs(name, sgmxml_name)
         self.issue_data = PackageIssueData()
         self.issue_data.setup(self._articles)
+        if len(xml_names) < len(self.package_folder.pkgfiles_items):
+            print("SPPackage have {} documents. "
+                  "{} was filtered to be processed.".format(
+                    len(self.package_folder.pkgfiles_items), len(xml_names)
+                  ))
 
     @property
     def file_paths(self):
