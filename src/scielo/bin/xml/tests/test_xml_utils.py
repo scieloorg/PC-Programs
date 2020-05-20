@@ -93,14 +93,20 @@ class TestLoadXML(TestCase):
         self.assertIsNotNone(xml)
         os.unlink("file.xml")
 
-    def test_load_xml_loads_xml_although_there_is_incomplete_tag(self):
+    def test_load_xml_return_errors_because_of_incomplete_tag(self):
         xml, errors = xml_utils.load_xml("<root")
-        self.assertEqual(xml_utils.etree.tostring(xml), b"<root/>")
+        self.assertEqual(
+            errors,
+            "Loading XML from 'str': Couldn't find end of Start Tag root "
+            "line 1, line 1, column 6 (<string>, line 1)")
 
-    def test_load_xml_loads_xml_although_there_is_tag_which_does_not_close(
+    def test_load_return_errors_because_of_tag_which_does_not_close(
             self):
         xml, errors = xml_utils.load_xml("<root>")
-        self.assertEqual(xml_utils.etree.tostring(xml), b"<root/>")
+        self.assertEqual(
+            errors,
+            "Loading XML from 'str': EndTag: '</' not found, "
+            "line 1, column 7 (<string>, line 1)")
 
     def test_load_xml_from_not_a_file_and_not_xml(self):
         xml, errors = xml_utils.load_xml("notfile_notxml")
@@ -124,7 +130,9 @@ class TestLoadXML(TestCase):
     def test_load_xml_loads_xml_but_ignore_incomplete_entities(self):
         xml, errors = xml_utils.load_xml("<root><a>&#91</a></root>")
         self.assertEqual(
-            xml_utils.etree.tostring(xml), b"<root><a/></root>")
+            errors,
+            "Loading XML from 'str': CharRef: invalid decimal value, "
+            "line 1, column 14 (<string>, line 1)")
 
 
 class TestRemoveStylesTags(TestCase):

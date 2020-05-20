@@ -104,6 +104,10 @@ class PMCPackageItemMaker(object):
                     "File not found %s to compose PMC Package %s",
                     old, self.pmc_xml_filepath)
 
+        # j1.1/xsl/sgml2xml/pmc.xsl
+        result = xml_utils.transform(pmc_xml.xml, pmc_dtd_files.xsl_output)
+        xml_utils.write(self.pmc_xml_filepath, result)
+
         # validate
         xml_validator = sps_xml_validators.PMCXMLValidator(pmc_dtd_files)
         xml_validator.validate(
@@ -111,9 +115,6 @@ class PMCPackageItemMaker(object):
             self.outputs.pmc_dtd_report_filename,
             self.outputs.pmc_style_report_filename
             )
-        # j1.1/xsl/sgml2xml/pmc.xsl
-        result = xml_utils.transform(pmc_xml.xml, pmc_dtd_files.xsl_output)
-        xml_utils.write(self.pmc_xml_filepath, result)
 
     def _insert_math_id(self, tree):
         # PMC exige o atributo @id para math

@@ -109,8 +109,9 @@ class SuitableXML(object):
     - preserva DOCTYPE original
     - preserva xml declaration original
     """
-    def __init__(self, str_or_filepath, do_changes=True):
+    def __init__(self, str_or_filepath, do_changes=True, recover=False):
         self.do_changes = do_changes
+        self.recover = recover
         self.changed = False
         self._xml = None
         self._content = None
@@ -163,7 +164,8 @@ class SuitableXML(object):
             self.well_formed_xml_content()
             self.changed = True
 
-        self._xml, self.xml_error = load_xml(self._content)
+        self._xml, self.xml_error = load_xml(
+            self._content, recover=self.recover)
 
     def well_formed_xml_content(self):
         xml_content = self._content
@@ -262,6 +264,26 @@ def validate(xml_obj, dtd_external_id=None, dtd_file_path=None):
     return dtd_is_valid, dtd_errors
 
 
+def format_validations_msg(errors):
+    """
+    https://lxml.de/api/lxml.etree._LogEntry-class.html
+    message: the message text
+    domain: the domain ID (see lxml.etree.ErrorDomains)
+    type: the message type ID (see lxml.etree.ErrorTypes)
+    level: the log level ID (see lxml.etree.ErrorLevels)
+    line: the line at which the message originated (if applicable)
+    column: the character column at which the message originated (if applicable)
+    filename: the name of the file in which the message originated (if applicable)
+    path: the location in which the error was found (if available)
+    """
+    rows = []
+    for e in errors:
+        rows.append("{} {}: line: {} column: {} - {}".format(
+            e.type, e.level, e.line, e.column, e.message
+            ))
+    return "\n".join(rows)
+
+
 def write(file_path, tree):
     """
     Escreve em arquivo o documento carregado na árvore
@@ -309,7 +331,7 @@ def tostring(node, pretty_print=False, with_tail=False):
                 ))
 
 
-def load_xml(str_or_filepath, remove_blank_text=True, validate=False):
+def load_xml(str_or_filepath, remove_blank_text=True, validate=False, recover=False):
     """
     Retorna uma árvore de XML e erros (se ocorrer ao carregá-lo)
     Pode receber o XML em str ou caminho de um arquivo
@@ -318,7 +340,7 @@ def load_xml(str_or_filepath, remove_blank_text=True, validate=False):
     parser = etree.XMLParser(
         remove_blank_text=remove_blank_text,
         resolve_entities=True,
-        recover=True,
+        recover=recover,
         dtd_validation=validate
     )
     try:

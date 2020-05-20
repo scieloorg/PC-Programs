@@ -233,6 +233,8 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
         super().__init__(src_pkgfiles.filename)
+        if self.xml_error:
+            raise Exception(self.xml_error)
         logger.debug("_convert_font_symbols_to_entities")
         self._convert_font_symbols_to_entities()
         logger.debug("_set_graphic_href_values")
@@ -244,8 +246,20 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
     def well_formed_xml_content(self):
         logger.debug("_fix_quotes")
         self._fix_quotes()
+        logger.debug("_fix_styles")
+        self._fix_styles()
         logger.debug("well_formed_xml_content")
         super().well_formed_xml_content()
+
+    def _fix_styles(self):
+        # TODO: corrigir misplaced tags
+        content = self._content
+        for style in ("BOLD", "ITALIC", "SUP", "SUB"):
+            tag_open = "<{}>".format(style)
+            tag_close = "</{}>".format(style)
+            content = content.replace(tag_open, tag_open.lower())
+            content = content.replace(tag_close, tag_close.lower())
+        self._content = content
 
     def _fix_quotes(self):
         """

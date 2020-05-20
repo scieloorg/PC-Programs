@@ -70,13 +70,10 @@ class PMCXMLValidator(object):
         return (xml, valid, (f, e, w))
 
     def validate_structure(self, xml_filename, dtd_report_filename):
-        xml_obj, errors = xml_utils.load_xml(
-            xml_filename, validate=True)
-        status = None
-        valid = False
-        if errors:
+        xml_obj = xml_utils.get_xml_object(xml_filename)
+        if not xml_obj:
             status = validation_status.STATUS_BLOCKING_ERROR
-            content = '\n'.join([errors])
+            content = "Unable to load {}".format(xml_filename)
         else:
             valid, errors = xml_utils.validate(
                 xml_obj,
@@ -84,36 +81,19 @@ class PMCXMLValidator(object):
                 self.dtd_files.real_dtd_path)
             if errors:
                 status = validation_status.STATUS_FATAL_ERROR
-                content = self._format_msg(errors)
+                content = xml_utils.format_validations_msg(errors)
                 fs_utils.write_file(dtd_report_filename, content)
         content = "" if not status else status + '\n' + content + '\n' * 10
         fs_utils.write_file(dtd_report_filename, content)
         return xml_obj, valid
 
-    def _format_msg(self, errors):
-        """
-        https://lxml.de/api/lxml.etree._LogEntry-class.html
-        message: the message text
-        domain: the domain ID (see lxml.etree.ErrorDomains)
-        type: the message type ID (see lxml.etree.ErrorTypes)
-        level: the log level ID (see lxml.etree.ErrorLevels)
-        line: the line at which the message originated (if applicable)
-        column: the character column at which the message originated (if applicable)
-        filename: the name of the file in which the message originated (if applicable)
-        path: the location in which the error was found (if available)
-        """
-        rows = []
-        for e in errors:
-            rows.append("{} {}: line: {} column: {} - {}".format(
-                e.type, e.level, e.line, e.column, e.message
-                ))
-        return "\n".join(rows)
-
     def validate_style(self, xml_obj, report_filename):
         if os.path.isfile(report_filename):
             os.unlink(report_filename)
-        transformed = xml_utils.transform(
-            xml_obj, self.dtd_files.xsl_prep_report)
+        transformed = None
+        if xml_obj:
+            transformed = xml_utils.transform(
+                xml_obj, self.dtd_files.xsl_prep_report)
         if transformed:
             transformed = xml_utils.transform(
                 transformed, self.dtd_files.xsl_report)
