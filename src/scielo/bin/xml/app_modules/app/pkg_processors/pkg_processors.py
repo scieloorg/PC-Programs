@@ -400,7 +400,8 @@ class PkgProcessor(object):
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
         self.report_result(pkg, validations_reports, conversion=None)
         self.make_pmc_package(pkg, GENERATE_PMC)
-        self.zip(pkg)
+        if not self.is_xml_generation:
+            pkg.zip()
 
     def convert_package(self, pkg):
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
@@ -458,9 +459,3 @@ class PkgProcessor(object):
                 else:
                     logger.info(
                         _('To generate PMC package, add -pmc as parameter'))
-
-    def zip(self, pkg):
-        if not self.is_xml_generation and not self.is_db_generation:
-            pkg.package_folder.zip()
-            for name, pkgfiles in pkg.package_folder.pkgfiles_items.items():
-                pkgfiles.zip(pkg.package_folder.path + '_zips')

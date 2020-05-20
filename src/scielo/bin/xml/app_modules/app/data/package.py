@@ -17,10 +17,12 @@ class SPPackage(object):
     de um mesmo número
     """
 
-    def __init__(self, path, output_path, xml_names, sgmxml_name=None):
+    def __init__(self, path, output_path, xml_names, sgmxml_name=None,
+                 optimised=False):
         self.package_folder = workarea.MultiDocsPackageFolder(path)
         self.wk = workarea.MultiDocsPackageOuputs(output_path)
         self.xml_names = xml_names
+        self.optimised = optimised
         self._articles = {}
         if xml_names:
             for name, item in self.files.items():
@@ -59,6 +61,12 @@ class SPPackage(object):
         for doc in self.articles.values():
             if doc.journal_id_nlm_ta:
                 return True
+
+    def zip(self):
+        if not self.optimised:
+            self.package_folder.zip()
+        for name, pkgfiles in self.package_folder.pkgfiles_items.items():
+            pkgfiles.zip(self.package_folder.path + '_zips')
 
 
 class PackageIssueData(object):

@@ -247,104 +247,159 @@ class BrokenRef(object):
 
 
 class PackageMaker(object):
-    """
-    Contém dados (files + xml + article) de um conjunto de documentos
-    de um mesmo número
-    """
+
     def __init__(self, pkg_path, output_path, optimise=True):
+        """
+        Reempacota os arquivos de pacote SP,
+        padronizando-os e/ou otimizando-os.
+
+        Args:
+            pkg_path (str): caminho da pasta em que há arquivos XML SP,
+                ativos digitais e manifestações de 1 ou mais documentos,
+                que serão empacotados, ou seja, são arquivos de entrada.
+
+            output_path (str): caminho da pasta onde serão geradas as saídas
+                do empacotamento, como relatórios, os arquivos temporários,
+                os arquivos do pacote etc.
+
+            optimise (bool): gera imagens otimizadas para web
+
+        """
         self.optimise = optimise
-        params = pkg_path, output_path
-        if not all(params) or len(set(params)) != 2:
-            raise ValueError(
-                "Invalid parameteres: PackageMaker({})".format(params))
+
         # origem da pasta que pode conter 1 ou mais XML
         self.source_folder = workarea.MultiDocsPackageFolder(pkg_path)
 
         # outputs
-        self.workarea = workarea.MultiDocsPackageOuputs(output_path)
+        self.output_folder = workarea.MultiDocsPackageOuputs(output_path)
 
         # destination
-        self.optimised_pkg_path = self.workarea.scielo_package_path
+        self.destination_path = self.output_folder.scielo_package_path
 
-    def _enhance_doc_package(
-            self, pkg_files, pkg_outs, dtd_location_type='remote'):
-        xmlcontent = SPSXMLContent(pkg_files.filename)
-        enhanced_pkg_path = pkg_outs.create_dir_at_work_path("enhanced")
-        enhanced_pkg_file_path = os.path.join(
-            enhanced_pkg_path, pkg_files.basename)
+    def _enhance_doc_package(self, doc_files, doc_outs,
+                             dtd_location_type='remote',
+                             optimise_individually=False):
+        """
+        Padroniza o XML de um documento.
+
+        Args:
+            doc_files (workarea.DocumentPackageFiles): dados do conjunto
+                de arquivos de um documento SP
+            doc_outs (workarea.DocumentOutputFiles): caminhos das saídas
+                de um documento SP
+            dtd_location_type (str): valores remote ou local para indicar se
+                deve eliminar https://... do caminho da DTD, necessário para
+                o site (Web) para não demorar a carregar a página.
+        """
         logger.debug(
-            "PackageMaker (%s): enhanced_pkg_file_path=%s" %
-            (self.source_folder.path, enhanced_pkg_file_path))
+            "PackageMaker._enhance_doc_package %s" %
+            doc_files.filename)
 
-        xmlcontent.write(
-            enhanced_pkg_file_path,
-            dtd_location_type=dtd_location_type, pretty_print=True)
+        xmlcontent = SPSXMLContent(doc_files.filename)
 
-        pkg_files.copy_related_files(enhanced_pkg_path)
+        if self.optimise and optimise_individually:
+            new_pkg_path = doc_outs.create_dir_at_work_path("enhanced")
+        else:
+            new_pkg_path = self.destination_path
 
-        enhanced_folder = workarea.MultiDocsPackageFolder(enhanced_pkg_path)
-        enhanced_zip_file_path = enhanced_pkg_path + ".zip"
-        enhanced_zip_file_path = enhanced_folder.zip(enhanced_zip_file_path)
+        new_pkg_filepath = os.path.join(new_pkg_path, doc_files.basename)
+        xmlcontent.write(new_pkg_filepath, dtd_location_type=dtd_location_type,
+                         pretty_print=True)
+        doc_files.copy_related_files(new_pkg_path)
         logger.debug(
-            "PackageMaker (%s): enhanced_zip_file_path=%s" %
-            (self.source_folder.path, enhanced_zip_file_path))
-        return enhanced_zip_file_path
+            "PackageMaker._enhance_doc_package (%s): %s" %
+            (doc_files.filename, new_pkg_path))
+        return new_pkg_path
 
-    def _optimise_doc_package(
-            self, pkg_zipfile, optimised_pkg_zipfile, extracted_package):
-        logger.debug(
-            "PackageMaker (%s): pkg_zipfile=%s, "
-            "optimised_pkg_zipfile=%s, extracted_package=%s" %
-            (self.source_folder.path, pkg_zipfile,
-                optimised_pkg_zipfile, extracted_package))
-        spp = SPPackage(
-            package_file=fs_utils.ZipFile(pkg_zipfile),
-            extracted_package=extracted_package)
-        if os.path.isfile(optimised_pkg_zipfile):
-            os.unlink(optimised_pkg_zipfile)
-        spp.optimise(
-            new_package_file_path=optimised_pkg_zipfile,
-            preserve_files=False)
+    def _optimise_doc_package(self, doc_pkg_path, tmp_path):
+        """
+        Otimiza as imagens e altera o XML de um documento para inserir
+        alternatives das imagens otimizadas.
 
-    def pack(self, xml_list=None, dtd_location_type='remote'):
-        _xml_list = []
+        Args:
+            doc_pkg_path (str): caminho da pasta de 1 documento a ser otimizado
+            doc_outs (workarea.DocumentOutputFiles): caminhos das saídas
+                de um documento SP
+        """
+        logger.debug("_optimise_doc_package %s" % doc_pkg_path)
+        print("Optimise: %s" % doc_pkg_path)
+        doc_pkg_folder = workarea.MultiDocsPackageFolder(doc_pkg_path)
+
+        doc_pkg_zip_filepath = doc_pkg_folder.zip()
+        logger.debug("input %s" % doc_pkg_zip_filepath)
+
+        logger.debug("tmp_dir %s" % tmp_path)
+
+        optimised_filepath = tmp_path + ".zip"
+        logger.debug("output %s" % optimised_filepath)
+        if os.path.isfile(optimised_filepath):
+            os.unlink(optimised_filepath)
+
+        # packtools
+        spp = SPPackage(package_file=fs_utils.ZipFile(doc_pkg_zip_filepath),
+                        extracted_package=tmp_path)
+        spp.optimise(new_package_file_path=optimised_filepath,
+                     preserve_files=False)
+        fs_utils.unzip(optimised_filepath, self.destination_path)
+
+        os.unlink(doc_pkg_zip_filepath)
+        if self.destination_path == doc_pkg_path:
+            os.rename(optimised_filepath, doc_pkg_zip_filepath)
+        else:
+            os.unlink(optimised_filepath)
+        print("Optimised: %s" % self.destination_path)
+
+    def pack(self, xml_list=None, dtd_location_type='remote',
+             sgmxml_name=None):
+        """
+        Se `xml_list` igual a `None`, então gera o pacote de todos os
+        documentos SP da pasta `self.source_folder.path`, senão gera apenas
+        para aqueles informados em `xml_list`.
+
+        Args:
+            xml_list (None or list): lista dos caminhos completos dos arquivos
+                XML que se deseja gerar pacotes
+
+            dtd_location_type (str): remote ou local
+
+        Returns:
+            package.SPPackage: instância com dados de um pacote com 1 ou mais
+            documentos XML SP, issue e articles
+        """
+        _xml_names = [
+            os.path.basename(item)
+            for item in xml_list or []
+        ]
+        print("Package have {} document(s)".format(
+            len(self.source_folder.pkgfiles_items)))
+        print("Selected to pack {} document(s)".format(len(_xml_names)))
+
+        percent = len(_xml_names) / len(self.source_folder.pkgfiles_items)
+        optimise_individually = (percent < 1)
+
         for item in self.source_folder.pkgfiles_items.values():
-            logger.info("PackageMaker: %s" % item.filename)
+            logger.info("PackageMaker.pack %s?" % item.filename)
 
-            file_path = item.filename
-            if xml_list and file_path not in xml_list:
-                logger.info("PackageMaker: skip: %s" % item.filename)
+            if item.basename not in _xml_names:
+                logger.info("PackageMaker: skip %s" % item.basename)
                 continue
 
-            _xml_list.append(
-                os.path.join(self.optimised_pkg_path, item.basename))
+            print("Pack %s" % item.filename)
+            doc_outs = self.output_folder.get_doc_outputs(item.name)
+            enhanced_pkg_path = self._enhance_doc_package(
+                item, doc_outs, dtd_location_type, optimise_individually)
 
-            logger.info("PackageMaker: pack %s", item.filename)
+            if self.optimise and optimise_individually:
+                tmp_path = doc_outs.create_dir_at_work_path("opt")
+                self._optimise_doc_package(enhanced_pkg_path, tmp_path)
 
-            doc_outs = self.workarea.get_doc_outputs(
-                item.name, self.workarea.tmp_path)
-
-            pkg_zipfile = self._enhance_doc_package(
-                item, doc_outs, dtd_location_type)
-
-            tmp_optimised_pkg_path = doc_outs.create_dir_at_work_path("opt")
-            tmp_optimised_pkg_zipfile = tmp_optimised_pkg_path + ".zip"
-
-            logger.debug("PackageMaker: pkg_zipfile=%s" % pkg_zipfile)
+        if self.optimise and not optimise_individually:
             self._optimise_doc_package(
-                pkg_zipfile, tmp_optimised_pkg_zipfile, tmp_optimised_pkg_path)
-            logger.debug(
-                "PackageMaker: tmp_optimised_pkg_zipfile=%s" %
-                tmp_optimised_pkg_zipfile)
-            logger.debug(
-                "PackageMaker: tmp_optimised_pkg_path=%s" %
-                tmp_optimised_pkg_path)
-            fs_utils.unzip(tmp_optimised_pkg_zipfile, self.optimised_pkg_path)
-            logger.info(
-                "PackageMaker: pack %s at %s" %
-                (item.filename, self.optimised_pkg_path))
-            logger.debug("Lista de processados: %s", _xml_list)
+                self.destination_path,
+                self.output_folder.tmp_path)
 
-        pkg = package.SPPackage(
-                self.optimised_pkg_path, self.workarea.output_path, _xml_list)
+        print("Packed: %s" % self.destination_path)
+        pkg = package.SPPackage(self.destination_path,
+                                self.output_folder.output_path, _xml_names,
+                                sgmxml_name, optimised=self.optimise)
         return pkg
