@@ -8,8 +8,9 @@ from app_modules.generics import encoding
 from app_modules.__init__ import _
 from app_modules.app import interface
 from app_modules.app.config import config
-from app_modules.app.pkg_processors import sgmlxml
+from app_modules.app.pkg_processors.sgmlxml import SGMLXML2SPSXML
 from app_modules.app.pkg_processors import pkg_processors
+from app_modules.app.pkg_processors.sps_pkgmaker import PackageMaker
 
 
 logging.config.fileConfig('logging.conf')
@@ -18,54 +19,46 @@ logger = logging.getLogger(__name__)
 
 def call_make_packages(args, version):
     script, xml_path, acron, INTERATIVE, GENERATE_PMC = read_inputs(args)
-    xml_list_or_pkg = None
+    sgmxml = None
+    xml_list = None
     if any([xml_path, acron]):
         result = validate_inputs(script, xml_path)
         if result:
-            stage, xml_list_or_pkg = get_inputs(result, acron)
+            sgmxml, xml_list = result
 
-    if xml_list_or_pkg is None:
+    if sgmxml is None and xml_list is None:
         if INTERATIVE is True:
             display_form("xpm")
     else:
-        execute(INTERATIVE, stage, xml_list_or_pkg, GENERATE_PMC)
-
-
-def get_inputs(result, acron):
-    sgm_xml, xml_list = result
-    if sgm_xml:
-        logger.info("SGML to XML")
-        sgmxml2xml = sgmlxml.SGMLXML2SPSXML(sgm_xml, acron)
-        pkg = sgmxml2xml.pack()
-        stage = 'xml'
-    else:
-        stage = 'xpm'
-    return stage, xml_list or pkg
+        execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml, acron)
 
 
 def display_form(stage):
     interface.display_form(stage == 'xc', None, call_make_package_from_form)
 
 
-def execute(INTERATIVE, stage, xml_list_or_pkg, GENERATE_PMC):
-    print(_('Making package') + '...')
+def execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml=None, acron=None):
+    if xml_list:
+        stage = 'xpm'
+        xml_path = os.path.dirname(xml_list[0])
+        pkg_maker = PackageMaker(xml_path, xml_path + "_" + stage)
+        pkg = pkg_maker.pack(xml_list)
+    elif sgmxml:
+        stage = 'xml'
+        logger.info("SGML to XML")
+        sgmxml2xml = SGMLXML2SPSXML(sgmxml, acron)
+        pkg = sgmxml2xml.pack()
+
     configuration = config.Configuration()
     proc = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
-    pkg = xml_list_or_pkg
-    if stage == "xpm":
-        pkg = proc.receive_package(xml_list_or_pkg)
-        print('...'*3)
-    if stage == "xml":
-        GENERATE_PMC = True
-
-    proc.make_package(pkg, GENERATE_PMC)
+    proc.make_package(pkg, stage == "xml" or GENERATE_PMC)
     print('...'*3)
 
 
 def call_make_package_from_form(xml_path, GENERATE_PMC=False):
     xml_list = [os.join(xml_path, item)
                 for item in os.listdir(xml_path) if item.endswith('.xml')]
-    execute(True, "xpm", xml_list, GENERATE_PMC)
+    execute(True, xml_list, GENERATE_PMC)
     return 'done', 'blue'
 
 

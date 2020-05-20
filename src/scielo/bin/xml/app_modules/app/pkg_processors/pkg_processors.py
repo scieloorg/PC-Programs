@@ -33,7 +33,6 @@ from ..db.pid_versions import(
     PIDVersionsDB,
 )
 from . import pmc_pkgmaker
-from . import sps_pkgmaker
 
 
 logging.config.fileConfig('logging.conf')
@@ -386,17 +385,6 @@ class PkgProcessor(object):
                     self.config.serial_path)
         return self._db_manager
 
-    def receive_package(self, xml_list):
-        # if self.is_xml_generation:
-        #     dtd_location_type = 'remote'
-        # else:
-        #     dtd_location_type = 'local'
-        xml_path = os.path.dirname(xml_list[0])
-        # PackageMaker(this_path, sp_pkg_dest_path, tmp_path)
-        pkg_maker = sps_pkgmaker.PackageMaker(
-            xml_path, xml_path + "_" + self.stage)
-        return pkg_maker.pack(xml_list)
-
     def evaluate_package(self, pkg):
         logger.info("Analize package")
         registered_issue_data = registered.RegisteredIssue()
@@ -409,7 +397,6 @@ class PkgProcessor(object):
         return registered_issue_data, validations_reports
 
     def make_package(self, pkg, GENERATE_PMC=False):
-
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
         self.report_result(pkg, validations_reports, conversion=None)
         self.make_pmc_package(pkg, GENERATE_PMC)
@@ -461,7 +448,6 @@ class PkgProcessor(object):
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):
-
         if not self.is_db_generation:
             logger.info("Is it PMC journal? %s" % pkg.is_pmc_journal)
             if pkg.is_pmc_journal:
@@ -478,4 +464,3 @@ class PkgProcessor(object):
             pkg.package_folder.zip()
             for name, pkgfiles in pkg.package_folder.pkgfiles_items.items():
                 pkgfiles.zip(pkg.package_folder.path + '_zips')
-
