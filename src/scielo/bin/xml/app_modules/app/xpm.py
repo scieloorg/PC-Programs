@@ -56,7 +56,7 @@ def execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml=None, acron=None):
 
 
 def call_make_package_from_form(xml_path, GENERATE_PMC=False):
-    xml_list = [os.join(xml_path, item)
+    xml_list = [os.path.join(xml_path, item)
                 for item in os.listdir(xml_path) if item.endswith('.xml')]
     execute(True, xml_list, GENERATE_PMC)
     return 'done', 'blue'
