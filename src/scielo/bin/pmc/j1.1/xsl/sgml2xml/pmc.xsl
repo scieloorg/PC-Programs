@@ -9,7 +9,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 
 	<xsl:output encoding="utf-8" method="xml" indent="yes"
-		doctype-public="-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN"
+		doctype-public="-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN"
 		doctype-system="JATS-journalpublishing1.dtd"/>
 
 

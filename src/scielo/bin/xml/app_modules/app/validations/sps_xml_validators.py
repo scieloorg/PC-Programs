@@ -82,7 +82,7 @@ class PMCXMLValidator(object):
                 self.dtd_files.real_dtd_path)
             if errors:
                 status = validation_status.STATUS_FATAL_ERROR
-                content = xml_utils.format_validations_msg(errors)
+                content = "\n".join(errors)
                 fs_utils.write_file(dtd_report_filename, content)
         content = "" if not status else status + '\n' + content + '\n' * 10
         fs_utils.write_file(dtd_report_filename, content)
@@ -181,6 +181,7 @@ class PackToolsXMLValidator(object):
             dtd_errors = [str(e)]
             print(e)
         else:
+            print("validate_all()")
             dtd_is_valid, dtd_errors = self.xml_validator.validate_all()
             dtd_errors = xml_utils.format_validations_msg(dtd_errors)
             print(dtd_is_valid, dtd_errors)

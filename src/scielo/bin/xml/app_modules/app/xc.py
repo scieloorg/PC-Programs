@@ -9,6 +9,7 @@ from ..generics import fs_utils
 from ..generics import encoding
 from ..generics import xml_utils
 from .pkg_processors import pkg_processors
+from .pkg_processors.sps_pkgmaker import PackageMaker
 from .data import workarea
 from .server import mailer
 from .server import filestransfer
@@ -91,7 +92,11 @@ class XC_Reception(object):
         encoding.display_message(package_path)
         xc_status = 'interrupted'
 
-        pkg = self.proc.receive_package(pkgfolder.xml_list)
+        stage = 'xc'
+        xml_path = package_path
+        pkg_maker = PackageMaker(xml_path, xml_path + "_" + stage)
+        pkg = pkg_maker.pack(pkgfolder.xml_list)
+
         scilista_items = []
 
         try:
