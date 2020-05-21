@@ -121,7 +121,9 @@ def evaluate_xml_path(xml_path):
             else:
                 errors.append(_('Invalid file. XML file required. '))
         elif os.path.isdir(xml_path):
-            xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
+            xml_list = [os.path.join(xml_path, item)
+                        for item in os.listdir(xml_path)
+                        if item.endswith('.xml')]
 
             if len(xml_list) == 0:
                 errors.append(_('Invalid folder. Folder must have XML files. '))

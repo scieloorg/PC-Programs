@@ -68,8 +68,8 @@ categories_messages = {
 
 def xpm_version():
     version_files = [
-        BIN_PATH + '/xpm_version.txt',
-        BIN_PATH + '/cfg/xpm_version.txt',
+        os.path.join(BIN_PATH, 'xpm_version.txt'),
+        os.path.join(BIN_PATH, 'cfg/xpm_version.txt'),
     ]
     version = '|'
     for f in version_files:
@@ -140,21 +140,36 @@ class ArticlesConversion(object):
 
     def replace_ex_aop_pdf_files(self):
         # IMPROVEME
-        encoding.debugging('replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
+        """
+        substitui o pdf do aop pelo conteúdo do pdf do issue, mantendo o
+        nome do arquivo aop
+        """
+        encoding.debugging(
+            'replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
+
+        bases_dir = os.path.join(self.local_web_app_path, "bases")
+        pdf_dir = os.path.join(bases_dir, "pdf")
+        acron, issue = self.pkg.issue_data.acron_issue_label.split(" ")
+        issue_pdf_path = os.path.join(pdf_dir, acron, issue)
+
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
 
-            aop_pdf_path = self.local_web_app_path + '/bases/pdf/' + folder
+            aop_pdf_path = os.path.join(pdf_dir, folder)
             if not os.path.isdir(aop_pdf_path):
                 os.makedirs(aop_pdf_path)
-            issue_pdf_path = self.local_web_app_path + '/bases/pdf/' + self.pkg.issue_data.acron_issue_label.replace(' ', '/')
 
-            issue_pdf_files = [f for f in os.listdir(issue_pdf_path) if f.startswith(xml_name) or f[2:].startswith('_'+xml_name)]
+            issue_pdf_files = [f
+                               for f in os.listdir(issue_pdf_path)
+                               if (
+                                f.startswith(xml_name) or
+                                f[2:].startswith('_'+xml_name))]
 
             for pdf in issue_pdf_files:
                 aop_pdf = pdf.replace(xml_name, aop_name)
-                encoding.debugging('replace_ex_aop_pdf_files()', (issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
-                shutil.copyfile(issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf)
+                src = os.path.join(issue_pdf_path, pdf)
+                dest = os.path.join(aop_pdf_path, aop_pdf)
+                shutil.copyfile(src, dest)
 
     @property
     def conversion_report(self):

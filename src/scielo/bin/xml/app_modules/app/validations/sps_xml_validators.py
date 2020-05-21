@@ -19,6 +19,7 @@ try:
     os.environ['XML_CATALOG_FILES'] = XML_CATALOG
     IS_PACKTOOLS_INSTALLED = True
 except Exception as e:
+    print(e)
     os.environ['XML_CATALOG_FILES'] = ''
 
 
@@ -167,26 +168,22 @@ class PackToolsXMLValidator(object):
         dtd_is_valid = False
         dtd_errors = []
         try:
-            dtd = None
-            if self.tree.docinfo.public_id:
-                dtd = packtools.etree.DTD(
-                    external_id=self.tree.docinfo.public_id.encode())
+            print(self.sps_version)
             self.xml_validator = packtools.XMLValidator.parse(
-                self.tree, sps_version=self.sps_version, dtd=dtd)
+                    self.tree, sps_version=self.sps_version)
         except (packtools.etree.XMLSyntaxError, exceptions.XMLDoctypeError,
                 exceptions.XMLSPSVersionError) as e:
-            ERR_MESSAGE = (
-                "Validation error of {}: {}."
-            ).format(self.file_path, e)
+            ERR_MESSAGE = ("Validation error of {}: {}.").format(
+                self.file_path, e)
             dtd_errors = [ERR_MESSAGE]
+            print(e)
         except exceptions.UndefinedDTDError as e:
             dtd_errors = [str(e)]
+            print(e)
         else:
-            dtd_is_valid, dtd_errors = self.xml_validator.validate()
-            dtd_errors = [
-                "Line {}: {}".format(e.line, e.message)
-                for e in dtd_errors
-            ]
+            dtd_is_valid, dtd_errors = self.xml_validator.validate_all()
+            dtd_errors = xml_utils.format_validations_msg(dtd_errors)
+            print(dtd_is_valid, dtd_errors)
         return dtd_is_valid, dtd_errors
 
     def validate_style(self):

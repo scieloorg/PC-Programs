@@ -323,30 +323,35 @@ class PackageMaker(object):
         """
         logger.debug("_optimise_doc_package %s" % doc_pkg_path)
         print("Optimise: %s" % doc_pkg_path)
-        doc_pkg_folder = workarea.MultiDocsPackageFolder(doc_pkg_path)
+        files = [os.path.join(doc_pkg_path, f)
+                 for f in os.listdir(doc_pkg_path)]
 
-        doc_pkg_zip_filepath = doc_pkg_folder.zip()
-        logger.debug("input %s" % doc_pkg_zip_filepath)
+        zip_regular = os.path.join(tmp_path, "regular.zip")
+        zip_optimised = os.path.join(tmp_path, "optimised.zip")
+        extracted_package = os.path.join(tmp_path, "extracted")
+        if not os.path.isdir(extracted_package):
+            os.makedirs(extracted_package)
+        if os.path.isfile(zip_regular):
+            fs_utils.delete_file_or_folder(zip_regular)
+        if os.path.isfile(zip_optimised):
+            fs_utils.delete_file_or_folder(zip_optimised)
 
-        logger.debug("tmp_dir %s" % tmp_path)
-
-        optimised_filepath = tmp_path + ".zip"
-        logger.debug("output %s" % optimised_filepath)
-        if os.path.isfile(optimised_filepath):
-            os.unlink(optimised_filepath)
+        fs_utils.zip(zip_regular, files)
 
         # packtools
-        spp = SPPackage(package_file=fs_utils.ZipFile(doc_pkg_zip_filepath),
-                        extracted_package=tmp_path)
-        spp.optimise(new_package_file_path=optimised_filepath,
+        spp = SPPackage(package_file=fs_utils.ZipFile(zip_regular),
+                        extracted_package=extracted_package)
+        spp.optimise(new_package_file_path=zip_optimised,
                      preserve_files=False)
-        fs_utils.unzip(optimised_filepath, self.destination_path)
+        fs_utils.unzip(zip_optimised, self.destination_path)
 
-        os.unlink(doc_pkg_zip_filepath)
+        doc_pkg_zip_filepath = doc_pkg_path + ".zip"
+        fs_utils.delete_file_or_folder(doc_pkg_zip_filepath)
         if self.destination_path == doc_pkg_path:
-            os.rename(optimised_filepath, doc_pkg_zip_filepath)
+            os.rename(zip_optimised, doc_pkg_zip_filepath)
         else:
-            os.unlink(optimised_filepath)
+            fs_utils.delete_file_or_folder(zip_optimised)
+        fs_utils.delete_file_or_folder(zip_regular)
         print("Optimised: %s" % self.destination_path)
 
     def pack(self, xml_list=None, dtd_location_type='remote',

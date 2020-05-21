@@ -285,7 +285,12 @@ class ArticleDisplayReport(object):
                     table_data.append(html_reports.tag('div', _table[1], 'element-table'))
                 for _graphic in t.graphics:
                     #table_data.append(html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value'))
-                    table_data.append(html_reports.display_labeled_value('table-wrap/graphic', html_reports.thumb_image('{IMG_PATH}'+_graphic[1]), 'value'))
+                    table_data.append(
+                        html_reports.display_labeled_value(
+                            'table-wrap/graphic',
+                            html_reports.thumb_image(
+                                os.path.join(
+                                    '{IMG_PATH}', _graphic[1])), 'value'))
                 r += header + html_reports.tag('div', ''.join(table_data), 'block')
         return r
 
@@ -297,7 +302,7 @@ class ArticleDisplayReport(object):
             graphics = []
             for g in tablewrap.graphics:
                 tag, f = g
-                href = '{IMG_PATH}/' + f
+                href = os.path.join('{IMG_PATH}', f)
                 link = html_reports.link(href, html_reports.thumb_image(href))
                 graphics.append('<h4>{}</h4>'.format(tag)+link)
             _codes = [u'<h4>{}</h4><div>{}</div>'.format(
@@ -324,7 +329,7 @@ class ArticleDisplayReport(object):
                 for tag, item in table.codes:
                     rows += [u'<h4>{}</h4><div>{}</div>'.format(tag, item)]
                 for tag, item in table.graphics:
-                    href = '{IMG_PATH}/' + item
+                    href = os.path.join('{IMG_PATH}', item)
                     link = html_reports.link(href, html_reports.thumb_image(href))
                     rows += [u'<h4>{}</h4><{}'.format(tag, link)]
                 r += html_reports.tag('div', '<hr/>'.join(rows))
@@ -338,7 +343,7 @@ class ArticleDisplayReport(object):
             graphics = []
             for g in formula.graphics:
                 tag, f = g
-                href = '{IMG_PATH}/' + f
+                href = os.path.join('{IMG_PATH}', f)
                 link = html_reports.link(href, html_reports.thumb_image(href))
                 graphics.append('<h4>{}</h4>'.format(tag)+link)
             _graphics = '<hr/>'.join(graphics)
@@ -581,6 +586,7 @@ class ArticleDisplayReport(object):
     def embedded_pdf_items(self, page_id='', width='400px', height='400px'):
         items = []
         for item in self.article.expected_pdf_files.values():
+            print(page_id + item)
             items.append(html_reports.tag('p', html_reports.display_embedded_object(
                 item,
                 os.path.basename(item), page_id + item, width, height)))
@@ -591,7 +597,7 @@ class ArticleDisplayReport(object):
         for item in list(self.article.expected_pdf_files.values()) + [self.article.filename]:
             location = '{PDF_PATH}' if item.endswith('.pdf') else '{XML_PATH}'
             items.append(html_reports.tag('p', html_reports.link(
-                location + item,
+                os.path.join(location, item),
                 item, window=('1000', '400'))))
         return ''.join(items)
 

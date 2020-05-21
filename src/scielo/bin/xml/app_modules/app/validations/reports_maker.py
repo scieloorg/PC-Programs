@@ -146,14 +146,19 @@ class ReportsMaker(object):
 
     @property
     def report_location(self):
-        return self.files_location.report_path + '/' + self.stage + self.report_version + '.html'
+        return os.path.join(
+            self.files_location.report_path,
+            self.stage + self.report_version + '.html')
 
     @property
     def report_link(self):
-        return self.files_location.report_link + '/' + os.path.basename(self.report_location)
+        return os.path.join(
+            self.files_location.report_link,
+            os.path.basename(self.report_location))
 
     def save_report(self, display=True):
-        html_reports.save(self.report_location, self.report_title, self.content, self.stage)
+        html_reports.save(
+            self.report_location, self.report_title, self.content, self.stage)
         if display is True:
             html_reports.display_report(self.report_location)
         msg = _('Saved report: {f}').format(f=self.report_location)
@@ -164,15 +169,21 @@ class ReportsMaker(object):
         tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, self.tab)
         content = tabbed_report.report_content
         origin = ['{IMG_PATH}', '{PDF_PATH}', '{XML_PATH}', '{RES_PATH}', '{REP_PATH}']
-        replac = [self.files_location.img_link, self.files_location.pdf_link, self.files_location.xml_link, self.files_location.result_path, self.files_location.report_path]
+        replac = [self.files_location.img_link, self.files_location.pdf_link,
+                  self.files_location.xml_link,
+                  self.files_location.result_path,
+                  self.files_location.report_path]
         for o, r in zip(origin, replac):
+            print(o, r)
             content = content.replace(o, r)
         return content + self.footnote
 
     @property
     def processing_result_location(self):
         result_path = self.files_location.result_path
-        return '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' + html_reports.link('file:///' + result_path, result_path) + '</p>'
+        return (
+            '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' +
+            html_reports.link(os.path.join('file:///', result_path), result_path) + '</p>')
 
 
 def error_msg_subtitle():

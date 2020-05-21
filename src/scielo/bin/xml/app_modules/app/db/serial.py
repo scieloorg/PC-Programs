@@ -36,11 +36,12 @@ class ArticleFiles(object):
 
     @property
     def id_filename(self):
-        return self.issue_files.id_path + '/' + self.order + '.id'
+        return os.path.join(self.issue_files.id_path, self.order + '.id')
 
     @property
     def relative_xml_filename(self):
-        return self.issue_files.relative_issue_path + '/' + self.filename
+        return os.path.join(
+            self.issue_files.relative_issue_path, self.filename)
 
 
 class IssueFiles(object):
@@ -61,7 +62,7 @@ class IssueFiles(object):
         if self._articles_files is None:
             self._articles_files = {}
             for item in os.listdir(self.id_path):
-                if os.path.isfile(self.id_path + '/' + item) and item.endswith('.id'):
+                if os.path.isfile(os.path.join(self.id_path, item)) and item.endswith('.id'):
                     order = item.replace('.id', '')
                     self._articles_files[order] = ArticlesFiles(self, order, None)
         return self._articles_files
@@ -76,8 +77,10 @@ class IssueFiles(object):
             if not os.path.isdir(self.id_path):
                 os.makedirs(self.id_path)
             for item in os.listdir(self.old_id_path):
-                if not os.path.isfile(self.id_path + '/' + item):
-                    shutil.copyfile(self.old_id_path + '/' + item, self.id_path + '/' + item)
+                id_file_path = os.path.join(self.id_path, item)
+                if not os.path.isfile(id_file_path):
+                    shutil.copyfile(
+                        os.path.join(self.old_id_path, item), id_file_path)
             try:
                 fs_utils.delete_file_or_folder(self.old_id_path)
             except:
@@ -85,63 +88,67 @@ class IssueFiles(object):
 
     @property
     def issue_path(self):
-        return self.journal_files.journal_path + '/' + self.issue_folder
+        return os.path.join(self.journal_files.journal_path, self.issue_folder)
 
     @property
     def relative_issue_path(self):
-        return self.journal_files.acron + '/' + self.issue_folder
+        return os.path.join(self.journal_files.acron, self.issue_folder)
 
     @property
     def old_id_path(self):
-        return self.issue_path + '/id'
+        return os.path.join(self.issue_path, 'id')
 
     @property
     def id_path(self):
-        return self.base_xml_path + '/id'
+        return os.path.join(self.base_xml_path, 'id')
 
     @property
     def id_filename(self):
-        return self.id_path + '/i.id'
+        return os.path.join(self.id_path, 'i.id')
 
     @property
     def base_path(self):
-        return self.issue_path + '/base'
+        return os.path.join(self.issue_path, 'base')
 
     @property
     def markup_path(self):
-        return self.issue_path + '/markup'
+        return os.path.join(self.issue_path, 'markup')
 
     @property
     def body_path(self):
-        return self.issue_path + '/body'
+        return os.path.join(self.issue_path, 'body')
 
     @property
     def windows_base_path(self):
-        return self.issue_path + '/windows'
+        return os.path.join(self.issue_path, 'windows')
 
     @property
     def base_xml_path(self):
-        return self.issue_path + '/base_xml'
+        return os.path.join(self.issue_path, 'base_xml')
 
     @property
     def base_reports_path(self):
-        return self.base_xml_path + '/base_reports'
+        return os.path.join(self.base_xml_path, 'base_reports')
 
     @property
     def base_source_path(self):
-        return self.base_xml_path + '/base_source'
+        return os.path.join(self.base_xml_path, 'base_source')
 
     @property
     def base_source_xml_files(self):
-        return [self.base_source_path + '/' + item for item in os.listdir(self.base_source_path) if item.endswith('.xml')]
+        return [os.path.join(self.base_source_path, item)
+                for item in os.listdir(self.base_source_path)
+                if item.endswith('.xml')]
 
     @property
     def xml_files(self):
-        return {item: self.base_source_path + '/' + item for item in os.listdir(self.base_source_path) if item.endswith('.xml')}
+        return {item: os.path.join(self.base_source_path, item)
+                for item in os.listdir(self.base_source_path)
+                if item.endswith('.xml')}
 
     @property
     def base(self):
-        return self.base_path + '/' + self.issue_folder
+        return os.path.join(self.base_path, self.issue_folder)
 
     @property
     def base_filename(self):
@@ -149,7 +156,7 @@ class IssueFiles(object):
 
     @property
     def windows_base(self):
-        return self.windows_base_path + '/' + self.issue_folder
+        return os.path.join(self.windows_base_path, self.issue_folder)
 
     def copy_files_to_local_web_app(self, xml_path, web_path):
         msg = ['\n']
@@ -196,7 +203,9 @@ class IssueFiles(object):
             if not os.path.isdir(self.base_reports_path):
                 os.makedirs(self.base_reports_path)
             for report_file in os.listdir(report_path):
-                shutil.copy(report_path + '/' + report_file, self.base_reports_path)
+                shutil.copy(
+                    os.path.join(report_path, report_file),
+                    self.base_reports_path)
 
     def save_source_files(self, xml_path):
         if not self.base_source_path == xml_path:
@@ -207,7 +216,8 @@ class IssueFiles(object):
                     pass
                 elif f.endswith('.xml'):
                     try:
-                        shutil.copy(xml_path + '/' + f, self.base_source_path)
+                        shutil.copy(
+                            os.path.join(xml_path, f), self.base_source_path)
                     except:
                         pass
 
@@ -248,7 +258,7 @@ class JournalFiles(object):
             serial_path = serial_path[0:-1]
         self.serial_path = serial_path
         self.acron = acron
-        self.journal_path = serial_path + '/' + acron
+        self.journal_path = os.path.join(serial_path, acron)
         if not os.path.isdir(self.journal_path):
             os.makedirs(self.journal_path)
         self.set_issues_files()
@@ -263,8 +273,11 @@ class JournalFiles(object):
     def set_issues_files(self):
         self._issues_files = {}
         for issue_id in os.listdir(self.journal_path):
-            if os.path.isdir(self.journal_path + '/' + issue_id):
-                if os.path.isfile(self.journal_path + '/' + issue_id + '/base/' + issue_id + '.mst'):
+            issue_path = os.path.join(self.journal_path, issue_id)
+            if os.path.isdir(issue_path):
+                issue_db_filepath = os.path.join(
+                    issue_path, "base", issue_id + '.mst')
+                if os.path.isfile(issue_db_filepath):
                     self.add_issues_file(issue_id)
 
     def publishes_aop(self):
@@ -300,12 +313,23 @@ class JournalFiles(object):
         if self.aop_issue_files is not None:
             aop_issue_files = self.aop_issue_files.get(db_name)
         if aop_issue_files is not None and ex_aop_issues_files is not None:
-            errors += fs_utils.move_file(aop_issue_files.markup_path + '/' + aop.filename, ex_aop_issues_files.markup_path + '/' + aop.filename)
-            errors += fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
-            errors += fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
-            errors += fs_utils.move_file(aop_issue_files.id_path + '/' + aop.order + '.id', ex_aop_issues_files.id_path + '/' + aop.order + '.id')
-            if not os.path.isfile(ex_aop_issues_files.id_filename):
-                shutil.copyfile(aop_issue_files.id_filename, ex_aop_issues_files.id_filename)
+
+            src = aop_issue_files
+            dst = ex_aop_issues_files
+
+            src_files = [src.markup_path, src.body_path, src.base_source_path]
+            dst_files = [dst.markup_path, dst.body_path, dst.base_source_path]
+            for src, dest in zip(src_files, dst_files):
+                s = os.path.join(src, aop.filename)
+                d = os.path.join(dest, aop.filename)
+                errors += fs_utils.move_file(s, d)
+
+            errors += fs_utils.move_file(
+                os.path.join(src.id_path, aop.order + '.id'),
+                os.path.join(dst.id_path, aop.order + '.id'))
+            if not os.path.isfile(dst.id_filename):
+                shutil.copyfile(src.id_filename, dst.id_filename)
         if aop_issue_files is not None:
-            done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.order + '.id'))
+            done = not os.path.isfile(
+                os.path.join(src.id_path, aop.order + '.id'))
         return (done, errors)

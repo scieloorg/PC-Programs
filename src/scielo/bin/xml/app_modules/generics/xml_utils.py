@@ -278,10 +278,10 @@ def format_validations_msg(errors):
     """
     rows = []
     for e in errors:
-        rows.append("{} {}: line: {} column: {} - {}".format(
-            e.type, e.level, e.line, e.column, e.message
+        rows.append("{}: line: {} - {}".format(
+            e.level, e.line, e.message
             ))
-    return "\n".join(rows)
+    return rows
 
 
 def write(file_path, tree):

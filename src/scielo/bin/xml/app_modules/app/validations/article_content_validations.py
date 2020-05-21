@@ -1587,7 +1587,8 @@ class HRefValidation(object):
     def validate_tiff_image(self):
         for name in [self.name+'.tif', self.name+'.tiff']:
             if name in self.pkgfiles.tiff_items:
-                return img_utils.evaluate_tiff(self.pkgfiles.path + '/' + name, self.min_height, self.max_height)
+                return img_utils.evaluate_tiff(
+                    os.path.join(self.pkgfiles.path, name), self.min_height, self.max_height)
         return []
 
     @property
@@ -1596,6 +1597,9 @@ class HRefValidation(object):
         if self.hrefitem.is_internal_file:
             location = self.hrefitem.file_location(self.pkgfiles.path)
         if self.hrefitem.is_image:
-            return html_reports.thumb_image(location.replace(self.pkgfiles.path, '{IMG_PATH}'))
+            return html_reports.thumb_image(
+                location.replace(self.pkgfiles.path, '{IMG_PATH}/'))
         else:
-            return html_reports.link(location.replace(self.pkgfiles.path, '{PDF_PATH}'), self.hrefitem.src)
+            return html_reports.link(
+                location.replace(
+                    self.pkgfiles.path, '{PDF_PATH}/'), self.hrefitem.src)
