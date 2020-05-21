@@ -111,7 +111,11 @@ class DocumentPackageFiles(object):
 
     def find_files(self):
         r = []
-        files = [item for item in self.listdir if os.path.isfile(self.path+'/'+item) and not item.endswith('incorrect.xml') and not item.endswith('.sgm.xml')]
+        files = [item
+                 for item in self.listdir
+                 if (os.path.isfile(os.path.join(self.path, item)) and
+                     not item.endswith('incorrect.xml') and
+                     not item.endswith('.sgm.xml'))]
         for item in files:
             selected = [item for prefix in self.prefixes if item.startswith(prefix)]
             r.extend(selected)
@@ -196,7 +200,7 @@ class DocumentPackageFiles(object):
 
     def clean(self):
         for f in self.related_files:
-            fs_utils.delete_file_or_folder(self.path + '/' + f)
+            fs_utils.delete_file_or_folder(os.path.join(self.path, f))
         self._update()
 
     # def tiff2jpg(self):
@@ -210,7 +214,7 @@ class DocumentPackageFiles(object):
 
     def delete_files(self, files):
         for f in files:
-            fs_utils.delete_file_or_folder(self.path + '/' + f)
+            fs_utils.delete_file_or_folder(os.path.join(self.path, f))
         self._update()
 
     def svg2tiff(self):
@@ -247,19 +251,14 @@ class DocumentPackageFiles(object):
         )
         return replace
 
-    def evaluate_tiff_images(self):
-        errors = []
-        for f in self.tiff_items:
-            errors.append(img_utils.validate_tiff_image_file(self.path+'/'+f))
-        return [e for e in errors if e is not None]
-
     def zip(self, dest_path=None):
         if dest_path is None:
             dest_path = os.path.dirname(self.path)
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
-        filename = dest_path + '/' + self.name + '.zip'
-        fs_utils.zip(filename, [self.path + '/' + f for f in self.files])
+        filename = os.path.join(dest_path, self.name + '.zip')
+        fs_utils.zip(
+            filename, [os.path.join(self.path, f) for f in self.files])
         return filename
 
     def copy_related_files(self, dest_path):
@@ -267,13 +266,15 @@ class DocumentPackageFiles(object):
             if not os.path.isdir(dest_path):
                 os.makedirs(dest_path)
             for f in self.related_files:
-                shutil.copyfile(self.path + '/' + f, dest_path + '/' + f)
+                shutil.copyfile(
+                    os.path.join(self.path, f), os.path.join(dest_path, f))
 
     def copy_xml(self, dest_path):
         if dest_path is not None:
             if not os.path.isdir(dest_path):
                 os.makedirs(dest_path)
-            shutil.copyfile(self.filename, dest_path + '/' + self.basename)
+            shutil.copyfile(
+                self.filename, os.path.join(dest_path, self.basename))
 
     def match_img_files_by_suffixes(self, suffixes):
         found = []
@@ -311,8 +312,8 @@ class MultiDocsPackageFolder(object):
         self.pkgfiles_items = {}
         for item in os.listdir(path):
             if item.endswith('.xml'):
-                logger.info("Package Item: %s" % (path+'/'+item))
-                article_files = DocumentPackageFiles(path+'/'+item)
+                logger.info("Package Item: %s" % (os.path.join(path, item)))
+                article_files = DocumentPackageFiles(os.path.join(path, item))
                 self.pkgfiles_items[article_files.name] = article_files
         self.INFORM_ORPHANS = len(self.pkgfiles_items) > 1
 
@@ -439,19 +440,19 @@ class DocumentOutputFiles(object):
 
     @property
     def xml_structure_validations_filename(self):
-        return self.report_path + '/xmlstr-' + self.xml_name
+        return os.path.join(self.report_path, 'xmlstr-' + self.xml_name)
 
     @property
     def xml_content_validations_filename(self):
-        return self.report_path + '/xmlcon-' + self.xml_name
+        return os.path.join(self.report_path, 'xmlcon-' + self.xml_name)
 
     @property
     def journal_validations_filename(self):
-        return self.report_path + '/journal-' + self.xml_name
+        return os.path.join(self.report_path, 'journal-' + self.xml_name)
 
     @property
     def issue_validations_filename(self):
-        return self.report_path + '/issue-' + self.xml_name
+        return os.path.join(self.report_path, 'issue-' + self.xml_name)
 
     def clean(self):
         for f in [self.err_filename, self.dtd_report_filename,
@@ -462,79 +463,93 @@ class DocumentOutputFiles(object):
 
 class AssetsDestinations(object):
 
-    def __init__(self, pkg_path, acron, issue_label, serial_path=None, web_app_path=None, web_url=None):
-        self.web_app_path = web_app_path
+    def __init__(self, pkg_path, acron, issue_label,
+                 serial_path=None, web_app_path=None, web_url=None):
         self.pkg_path = pkg_path
-        self.issue_path = acron + '/' + issue_label
+        self.acron = acron
+        self.issue_label = issue_label
         self.serial_path = serial_path
+        self.web_app_path = web_app_path
         self.web_url = web_url
+
+        self.issue_path = os.path.join(acron, issue_label)
+
+        self._img_revistas_subdir = os.path.join(
+            'img', 'revistas', self.issue_path)
+        self._pdf_subdir = os.path.join('pdf', self.issue_path)
+        self._xml_subdir = os.path.join('xml', self.issue_path)
+        self._reports_subdir = os.path.join('reports', self.issue_path)
+
+    @property
+    def serial_issue_path(self):
+        if self.serial_path:
+            return os.path.join(self.serial_path, self.issue_path)
 
     @property
     def result_path(self):
-        if self.serial_path is not None:
-            return self.serial_path + '/' + self.issue_path
-        else:
-            return os.path.dirname(self.pkg_path)
+        if self.serial_issue_path:
+            return self.serial_issue_path
+        return os.path.dirname(self.pkg_path)
+
+    @property
+    def web_bases_path(self):
+        if self.web_app_path:
+            return os.path.join(self.web_app_path, "bases")
 
     @property
     def img_path(self):
-        if self.web_app_path is not None:
-            return self.web_app_path + '/htdocs/img/revistas/' + self.issue_path
-        else:
-            return self.pkg_path
+        if self.web_bases_path:
+            return os.path.join(self.web_bases_path, self._img_revistas_subdir)
+        return self.pkg_path
 
     @property
     def pdf_path(self):
-        if self.web_app_path is not None:
-            return self.web_app_path + '/bases/pdf/' + self.issue_path
-        else:
-            return self.pkg_path
+        if self.web_bases_path:
+            return os.path.join(self.web_bases_path, self._pdf_subdir)
+        return self.pkg_path
 
     @property
     def xml_path(self):
-        if self.web_app_path is not None:
-            return self.web_app_path + '/bases/xml/' + self.issue_path
-        elif self.serial_path is not None:
-            return self.serial_path + '/' + self.issue_path + '/base_xml/base_source'
-        else:
-            return self.pkg_path
+        if self.web_bases_path:
+            return os.path.join(self.web_bases_path, self._xml_subdir)
+        elif self.serial_issue_path:
+            return os.path.join(
+                self.serial_issue_path, 'base_xml', 'base_source')
+        return self.pkg_path
 
     @property
     def report_path(self):
-        if self.web_app_path is not None:
-            return self.web_app_path + '/htdocs/reports/' + self.issue_path
-        else:
-            return self.result_path + '/errors'
+        if self.web_app_path:
+            return os.path.join(
+                self.web_app_path, 'htdocs', self._reports_subdir)
+        return os.path.join(self.result_path, 'errors')
 
     @property
     def report_link(self):
-        if self.web_url is not None:
-            return self.web_url + '/reports/' + self.issue_path
-        else:
-            return self.result_path + '/errors'
+        if self.web_url:
+            return os.path.join(self.web_url, self._reports_subdir)
+        return os.path.join(self.result_path, 'errors')
 
     @property
     def base_report_path(self):
-        if self.serial_path is not None:
-            return self.serial_path + '/' + self.issue_path + '/base_xml/base_reports'
+        if self.serial_path:
+            return os.path.join(
+                self.serial_issue_path, 'base_xml', 'base_reports')
 
     @property
     def img_link(self):
-        if self.web_url is not None:
-            return self.web_url + '/img/revistas/' + self.issue_path
-        else:
-            return 'file://' + self.img_path
+        if self.web_url:
+            return os.path.join(self.web_url, self._img_revistas_subdir)
+        return os.path.join('file://', self.img_path)
 
     @property
     def pdf_link(self):
-        if self.web_url is not None:
-            return self.web_url + '/pdf/' + self.issue_path + '/'
-        else:
-            return 'file://' + self.pdf_path + '/'
+        if self.web_url:
+            return os.path.join(self.web_url, self._pdf_subdir)
+        return os.path.join('file://', self.pdf_path)
 
     @property
     def xml_link(self):
-        if self.web_url is not None:
-            return self.web_url + '/xml/' + self.issue_path + '/'
-        else:
-            return 'file://' + self.xml_path + '/'
+        if self.web_url:
+            return os.path.join(self.web_url, self._xml_subdir)
+        return os.path.join('file://', self.xml_path)

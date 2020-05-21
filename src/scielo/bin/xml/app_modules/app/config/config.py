@@ -14,11 +14,12 @@ from ...__init__ import EMAIL_TEMPLATE_MESSAGES_PATH
 def get_configuration_filename(collection_acron=None):
     filename = None
     if collection_acron is None:
-        f = BIN_PATH + '/scielo_paths.ini'
+        f = os.path.join(BIN_PATH, 'scielo_paths.ini')
         if os.path.isfile(f):
             filename = f
     else:
-        filename = XC_SERVER_CONFIG_PATH + '/' + collection_acron + '.xc.ini'
+        filename = os.path.join(
+            XC_SERVER_CONFIG_PATH, collection_acron + '.xc.ini')
 
     return filename
 
@@ -38,8 +39,9 @@ class Configuration(object):
         self._data = {}
         config_items = []
         for item in ['scielo_env.ini', 'scielo_collection.ini']:
-            if os.path.isfile(BIN_PATH + '/' + item):
-                config_items += fs_utils.read_file_lines(BIN_PATH + '/' + item)
+            if os.path.isfile(os.path.join(BIN_PATH, item)):
+                config_items += fs_utils.read_file_lines(
+                    os.path.join(BIN_PATH, item))
 
         if self.filename is not None:
             coding = 'utf-8'
@@ -62,11 +64,12 @@ class Configuration(object):
 
     @property
     def cisis1030(self):
-        return self._data.get('PATH_CISIS_1030', BIN_PATH + '/cfg/')
+        return self._data.get('PATH_CISIS_1030', os.path.join(BIN_PATH, 'cfg'))
 
     @property
     def cisis1660(self):
-        return self._data.get('PATH_CISIS_1660', BIN_PATH + '/cfg/cisis1660/')
+        return self._data.get(
+            'PATH_CISIS_1660', os.path.join(BIN_PATH, 'cfg', 'cisis1660'))
 
     @property
     def local_web_app_path(self):
@@ -141,10 +144,11 @@ class Configuration(object):
             for ext in ['.mst', '.xrf']:
                 if os.path.isfile(item + ext):
                     name = os.path.basename(item)
-                    itemdirs = self.serial_path + '/' + name
+                    itemdirs = os.path.join(self.serial_path, name)
                     if not os.path.isdir(itemdirs):
                         os.makedirs(itemdirs)
-                    shutil.copyfile(item + ext, itemdirs + '/' + name + ext)
+                    shutil.copyfile(
+                        item + ext, os.path.join(itemdirs, name + ext))
                     encoding.debugging('update_title_and_issue', 'updating:')
                     encoding.debugging('update_title_and_issue', item + ext)
                     encoding.debugging('update_title_and_issue', ' ==> ' + itemdirs + '/' + name + ext)
@@ -236,7 +240,8 @@ class Configuration(object):
 
     @property
     def gerapadrao_scilista(self):
-        return self.serial_path + '/scilista.lst' if self.serial_path is not None else None
+        if self.serial_path:
+            return os.path.join(self.serial_path, 'scilista.lst')
 
     @property
     def download_path(self):
@@ -329,7 +334,7 @@ class Configuration(object):
     def email_header(self, filename):
         header = ''
         if filename is not None:
-            filename = EMAIL_TEMPLATE_MESSAGES_PATH + '/' + filename
+            filename = os.path.join(EMAIL_TEMPLATE_MESSAGES_PATH, filename)
             header = fs_utils.read_file(filename)
         return header
 
