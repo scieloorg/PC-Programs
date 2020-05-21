@@ -1,194 +1,410 @@
 # coding=utf-8
+import logging
+import logging.config
+import os
+from mimetypes import MimeTypes
+from urllib.request import pathname2url
 
-from ...generics import encoding
+from packtools.utils import SPPackage
+
+from ...generics import fs_utils
 from ...generics import xml_utils
 from ..data import attributes
-from ..pkg_processors import xml_versions
+from ..data import workarea
+from ..data import package
 
 
 messages = []
+mime = MimeTypes()
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
-class SPSXMLContent(xml_utils.XMLContent):
+class SPSXMLContent(xml_utils.SuitableXML):
+    """
+    Aplica:
+    - ajustes por migrações de versões SPS
+    - normalizações porque os pacotes ser gerados por quaisquer ferramentas
+    """
 
-    def __init__(self, content):
-        xml_utils.XMLContent.__init__(self, content)
+    def __init__(self, file_path):
+        self.pkg_path = os.path.dirname(file_path)
 
-    def normalize(self):
-        self.insert_mml_namespace()
-        if self.xml is not None:
-            if 'contrib-id-type="' in self.content:
-                for contrib_id, url in attributes.CONTRIB_ID_URLS.items():
-                    self.content = self.content.replace(' contrib-id-type="' + contrib_id + '">' + url, ' contrib-id-type="' + contrib_id + '">')
-            #content = remove_xmllang_off_article_title(content)
-            self.content = self.content.replace('http://creativecommons.org', 'https://creativecommons.org')
-            self.content = self.content.replace('<comment content-type="cited"', '<comment')
-            self.content = self.content.replace(' - </title>', '</title>').replace('<title> ', '<title>')
-            self.content = self.content.replace('&amp;amp;', '&amp;')
-            self.content = self.content.replace('&amp;#', '&#')
-            self.content = self.content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
-            self.content = self.content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
-            self.content = self.content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
-            self.content = self.content.replace('publication-type="web"', 'publication-type="webpage"')
-            self.content = self.content.replace(' rid=" ', ' rid="')
-            self.content = self.content.replace(' id=" ', ' id="')
-            self.remove_xmllang_from_element('article-title')
-            self.remove_xmllang_from_element('source')
-            self.content = self.content.replace('> :', '>: ')
-            self.normalize_references()
-            for tag in ['article-title', 'trans-title', 'kwd', 'source']:
-                self.remove_styles_from_tagged_content(tag)
-            self.content = self.content.replace('<institution content-type="normalized"/>', '')
-            self.content = self.content.replace('<institution content-type="normalized"></institution>', '')
-            self.content = xml_utils.pretty_print(self.content)
+        xml_utils.SuitableXML.__init__(self, file_path)
+        self._normalize()
 
-    def doctype(self, dtd_location_type):
-        local, remote = xml_versions.dtd_location(self.content)
-        if dtd_location_type == 'remote':
-            self.content = self.content.replace('"' + local + '"', '"' + remote + '"')
-        else:
-            self.content = self.content.replace('"' + remote + '"', '"' + local + '"')
-            self.content = self.content.replace('"' + remote.replace('https:', 'http:') + '"', '"' + local + '"')
+    def _normalize(self):
+        if self.xml is None:
+            return
+        # remove elementos
+        xml_utils.remove_nodes(
+            self.xml, ".//institution[@content-type='normalized']")
 
-    def insert_mml_namespace(self):
-        if '</math>' in self.content:
-            new = []
-            for part in self.content.replace('</math>', '</math>BREAK-MATH').split('BREAK-MATH'):
-                before = part[:part.find('<math')]
-                math = part[part.find('<math'):]
-                part = before + math.replace('<', '<mml:').replace('<mml:/', '</mml:')
-                new.append(part)
-            self.content = ''.join(new)
+        for tag in ['article-title', 'trans-title', 'kwd', 'source']:
+            self.remove_styles_off_tagged_content(tag)
 
-    def remove_xmllang_from_element(self, element_name):
-        start = '<' + element_name + ' '
-        mark = '<' + element_name + '~BREAK~'
-        end = '</' + element_name + '>'
-        if start in self.content:
-            new = []
-            for item in self.content.replace(start, mark).split('~BREAK~'):
-                if item.strip().startswith('xml:lang') and end in item:
-                    item = item[item.find('>'):]
-                new.append(item)
-            self.content = ''.join(new)
+        # remove atributos
+        self.remove_attributes()
 
-    def remove_styles_from_tagged_content(self, tag):
-        open_tag = '<' + tag + '>'
-        close_tag = '</' + tag + '>'
-        self.content = self.content.replace(open_tag + ' ', ' ' + open_tag).replace(' ' + close_tag, close_tag + ' ')
-        self.content = self.content.replace(open_tag, '~BREAK~' + open_tag).replace(close_tag, close_tag + '~BREAK~')
-        parts = []
-        for part in self.content.split('~BREAK~'):
-            if part.startswith(open_tag) and part.endswith(close_tag):
-                data = part[len(open_tag):]
-                data = data[0:-len(close_tag)]
-                data = ' '.join([w.strip() for w in data.split()])
-                part = open_tag + data + close_tag
-                remove_all = False
-                if tag == 'source' and len(parts) > 0:
-                    remove_all = 'publication-type="journal"' in parts[len(parts)-1]
-                for style in ['italic', 'bold', 'italic']:
-                    if remove_all or part.startswith(open_tag + '<' + style + '>') and part.endswith('</' + style + '>' + close_tag):
-                        part = part.replace('<' + style + '>', '').replace('</' + style + '>', '')
-            parts.append(part)
-        self.content = ''.join(parts).replace(open_tag + ' ', ' ' + open_tag).replace(' ' + close_tag, close_tag + ' ')
+        # altera valor de elementos
+        self.remove_uri_off_contrib_id()
+
+        # altera valores de atributos
+        xml_utils.replace_attribute_values(
+            self.xml,
+            (
+                ('dtd-version', '3.0', '1.0'),
+                ('publication-type', 'conf-proc', 'confproc'),
+                ('publication-type', 'legaldoc', 'legal-doc'),
+                ('publication-type', 'web', 'webpage'),
+            )
+        )
+        self.replace_mimetypes()
+
+        self.fix_content()
+        self.normalize_references()
+
+    def fix_content(self):
+        """
+        Conserta usando funcoes de str (melhorar futuramente)
+        """
+        content = self.content
+        content = content.replace(
+            'http://creativecommons.org', 'https://creativecommons.org')
+        content = content.replace(
+            ' - </title>', '</title>').replace('<title> ', '<title>')
+        content = content.replace(' rid=" ', ' rid="')
+        content = content.replace(' id=" ', ' id="')
+        content = content.replace('> :', '>: ')
+        self.content = content
+
+    def remove_uri_off_contrib_id(self):
+        if self.xml.find(".//contrib-id") is None:
+            return
+        for contrib_id_type, uri in attributes.CONTRIB_ID_URLS.items():
+            xpath = ".//contrib-id[@contrib-id-type='{}']".format(
+                contrib_id_type)
+            for contrib_id in self.xml.findall(xpath):
+                if uri in contrib_id.text:
+                    contrib_id.text = contrib_id.text.replace(uri, "")
+
+    def remove_attributes(self):
+        """
+        Remove atributos como:
+        - @xml:lang de article-title e source
+        - @content-type de comment
+        """
+        xpath_and_attr = (
+            (".//comment[@content-type='cited']", 'content-type'),
+            (".//article-title[@{http://www.w3.org/XML/1998/namespace}lang]",
+             '{http://www.w3.org/XML/1998/namespace}lang'),
+            (".//source[@{http://www.w3.org/XML/1998/namespace}lang]",
+             '{http://www.w3.org/XML/1998/namespace}lang'),
+            (".//*[@mime-subtype='replace']", 'mime-subtype'),
+        )
+        for xpath, attr in xpath_and_attr:
+            xml_utils.remove_attribute(self.xml, xpath, attr)
+
+    def remove_styles_off_tagged_content(self, tag):
+        """
+        As tags de estilo não devem ser aplicadas no conteúdo inteiro de
+        certos elementos. As tags de estilo somente pode destacar partes do
+        conteúdo de um dado elemento
+        <source><italic>texto texto texto</italic></source> - não aceitável
+        <source><italic>texto</italic> texto texto</source> - aceitável
+        """
+        STYLES = ("italic", "bold")
+        nodes = []
+        for style in STYLES:
+            nodes.extend(self.xml.findall(".//{}[{}]".format(tag, style)))
+        for node in set(nodes):
+            xml_utils.merge_siblings_style_tags_content(node, STYLES)
+            xml_utils.remove_styles_off_tagged_content(node, STYLES)
 
     def normalize_references(self):
-        self.content = self.content.replace('<ref', '~BREAK~<ref')
-        self.content = self.content.replace('</ref>', '</ref>~BREAK~')
-        refs = []
-        for item in [SPSRefXMLContent(item) for item in self.content.split('~BREAK~') if item is not None and item.strip()!= '']:
-            item.normalize()
-            refs.append(item.content)
-        self.content = ''.join(refs)
+        for ref in self.xml.findall(".//ref"):
+            broken_ref = BrokenRef(ref)
+            broken_ref.normalize()
 
-    def normalize_href_values(self):
-        for href in self.doc.hrefs:
-            if href.is_internal_file:
-                new = self.workarea.name_with_extension(href.src, href.src)
-                self.replacements_href_values.append((href.src, new))
-                if href.src != new:
-                    self.content = self.content.replace('href="' + href.src + '"', 'href="' + new + '"')
+    def replace_mimetypes(self):
+        for node in self.xml.findall(".//*[@mimetype]"):
+            asset_filename = node.get("mimetype")
+            if asset_filename.startswith('replace'):
+                asset_filename = asset_filename.replace("replace", "")
+                file_path = os.path.join(self.pkg_path, asset_filename)
+                if os.path.isfile(file_path):
+                    guessed_type = mime.guessed_type(file_path)
+                else:
+                    try:
+                        location = pathname2url(file_path)
+                        guessed_type = mime.guessed_type(location)
+                    except Exception:
+                        guessed_type = None
+                if guessed_type and "/" in guessed_type:
+                    m, ms = guessed_type.split("/")
+                    node.set("mimetype", m)
+                    node.set("mime-subtype", ms)
 
 
-class SPSRefXMLContent(xml_utils.XMLContent):
+class BrokenRef(object):
 
-    def __init__(self, content):
-        xml_utils.XMLContent.__init__(self, content)
+    def __init__(self, tree):
+        self.tree = tree
+        self.content = xml_utils.tostring(self.tree)
 
     def normalize(self):
-        if self.content.startswith('<ref') and self.content.endswith('</ref>'):
-            self.fix_mixed_citation_label()
-            self.fix_book_data()
-            self.fix_mixed_citation_ext_link()
-            self.fix_source()
+        self.insert_label_text_in_mixed_citation_text()
+        self.fix_book_data()
+        self.insert_ext_link_elements_in_mixed_citation()
+        self.fix_source()
 
     def fix_book_data(self):
-        if 'publication-type="book"' in self.content and '</article-title>' in self.content:
-            self.content = self.content.replace('article-title', 'chapter-title')
-        if 'publication-type="book"' in self.content and not '</source>' in self.content:
-            self.content = self.content.replace('chapter-title', 'source')
+        """
+        Renomeia as tags:
+        article-title para chapter-title, na ausência de chapter-title
+        chapter-title para source, na ausência de source
+        """
+        book = self.tree.find(".//element-citation[@publication-type='book']")
+        if book is not None:
+            chapter_title = book.find(".//chapter-title")
+            source = book.find(".//source")
+            if chapter_title is not None and source is not None:
+                return
+            article_title = book.find(".//article-title")
+            if article_title is not None and chapter_title is not None:
+                return
+            if chapter_title is None and article_title is not None:
+                article_title.tag = "chapter-title"
+                article_title = book.find(".//article-title")
+                chapter_title = book.find(".//chapter-title")
+            if source is None and chapter_title is not None:
+                chapter_title.tag = "source"
+                chapter_title = book.find(".//chapter-title")
+                source = book.find(".//source")
 
-    def fix_mixed_citation_ext_link(self):
-        replacements = {}
-        if '<ext-link' in self.content and '<mixed-citation>' in self.content:
-            mixed_citation = self.content[self.content.find('<mixed-citation>'):]
-            mixed_citation = mixed_citation[:mixed_citation.find('</mixed-citation>')+len('</mixed-citation>')]
-            new_mixed_citation = mixed_citation
-            if '<ext-link' not in mixed_citation:
-                for ext_link_item in self.content.replace('<ext-link', '~BREAK~<ext-link').split('~BREAK~'):
-                    if ext_link_item.startswith('<ext-link'):
-                        if '</ext-link>' in ext_link_item:
-                            ext_link_element = ext_link_item[0:ext_link_item.find('</ext-link>')+len('</ext-link>')]
-                            ext_link_content = ext_link_element[ext_link_element.find('>')+1:]
-                            ext_link_content = ext_link_content[0:ext_link_content.find('</ext-link>')]
-                            if '://' in ext_link_content:
-                                urls = ext_link_content.split('://')
-                                if ' ' not in urls[0]:
-                                    replacements[ext_link_content] = ext_link_element
-                for ext_link_content, ext_link_element in replacements.items():
-                    new_mixed_citation = new_mixed_citation.replace(ext_link_content, ext_link_element)
-                if new_mixed_citation != mixed_citation:
-                    self.content = self.content.replace(mixed_citation, new_mixed_citation)
+    def insert_ext_link_elements_in_mixed_citation(self):
+        """
+        Se no texto de mixed-citation há links não identificados como ext-link,
+        inserir ext-link baseados nos ext-links existentes em element-citation
+        """
+        links = self.tree.findall(".//mixed-citation//ext-link")
+        if links:
+            return
+        mixed_citation = self.tree.find(".//mixed-citation")
+        if mixed_citation is None:
+            return
+        links = self.tree.findall(".//element-citation//ext-link")
+        if not links:
+            return
+        mixed_citation_text = xml_utils.tostring(mixed_citation)
+        for link in links:
+            mixed_citation_text = mixed_citation_text.replace(
+                link.text, xml_utils.tostring(link)
+            )
+        new_mixed_citation = xml_utils.etree.fromstring(mixed_citation_text)
+        parent = mixed_citation.getparent()
+        parent.replace(mixed_citation, new_mixed_citation)
 
-    def fix_mixed_citation_label(self):
-        if '<label>' in self.content and '<mixed-citation>' in self.content:
-            mixed_citation = self.content[self.content.find('<mixed-citation>')+len('<mixed-citation>'):self.content.find('</mixed-citation>')]
-            label = self.content[self.content.find('<label>')+len('<label>'):self.content.find('</label>')]
-            changed = mixed_citation
-            if '<label>' not in mixed_citation:
-                if not changed.startswith(label):
-                    sep = ' '
-                    if changed.startswith('.'):
-                        changed = changed[1:].strip()
-                        sep = '. '
-                    if label.endswith('.'):
-                        label = label[0:-1]
-                        sep = '. '
-                    changed = label + sep + changed
-                if mixed_citation != changed:
-                    if mixed_citation in self.content:
-                        self.content = self.content.replace('<mixed-citation>' + mixed_citation + '</mixed-citation>', '<mixed-citation>' + changed + '</mixed-citation>')
-                    else:
-                        encoding.debugging('fix_mixed_citation_label()', 'Unable to insert label to mixed_citation')
-                        encoding.debugging('fix_mixed_citation_label()', 'mixed-citation:')
-                        encoding.debugging('fix_mixed_citation_label()', mixed_citation)
-                        encoding.debugging('fix_mixed_citation_label()', 'self.content:')
-                        encoding.debugging('fix_mixed_citation_label()', self.content)
-                        encoding.debugging('fix_mixed_citation_label()', 'changes:')
-                        encoding.debugging('fix_mixed_citation_label()', changed)
+    def insert_label_text_in_mixed_citation_text(self):
+        """
+        Insere o conteúdo de label no início de mixed-citation.
+        """
+        mixed_citation = self.tree.find(".//mixed-citation")
+        if mixed_citation is None:
+            return
+        label = self.tree.find(".//label")
+        if label is None:
+            return
+        if mixed_citation.text.startswith(label.text):
+            return
+        label_text = label.text
+        if label.text[-1] == mixed_citation.text[0]:
+            label_text = label_text[:-1]
+        sep = " "
+        if not mixed_citation.text[0].isalnum():
+            sep = ""
+        mixed_citation.text = label_text + sep + mixed_citation.text
 
     def fix_source(self):
-        if '<source' in self.content and '<mixed-citation' in self.content:
-            source = self.content[self.content.find('<source'):]
-            if '</source>' in source:
-                source = source[0:source.find('</source>')]
-                source = source[source.find('>')+1:]
-                mixed_citation = self.content[self.content.find('<mixed-citation'):]
-                if '</mixed-citation>' in mixed_citation:
-                    mixed_citation = mixed_citation[0:mixed_citation.find('</mixed-citation>')]
-                    mixed_citation = mixed_citation[mixed_citation.find('>')+1:]
-                    s = source.replace(':', ': ')
-                    if source not in mixed_citation and s in mixed_citation:
-                        self.content = self.content.replace(source, s)
+        """
+        Insere um espaço em branco após : caso não exista, dentro do elemento
+        `source`
+        <mixed-citation>Texto: texto2</mixed-citation>
+        <source>Texto:texto2</source>
 
+        Resultado:
+        <source>Texto: texto2</source>
+        """
+        source = self.tree.find(".//source")
+        if source is None:
+            return
+        if source.text and ":" in source.text and ": " not in source.text:
+            mixed_citation = self.tree.find(".//mixed-citation")
+            check = source.text.replace(":", ": ")
+            mixed_citation_text = " ".join(mixed_citation.itertext())
+            if check in mixed_citation_text:
+                source.text = check
+
+
+class PackageMaker(object):
+
+    def __init__(self, pkg_path, output_path, optimise=True):
+        """
+        Reempacota os arquivos de pacote SP,
+        padronizando-os e/ou otimizando-os.
+
+        Args:
+            pkg_path (str): caminho da pasta em que há arquivos XML SP,
+                ativos digitais e manifestações de 1 ou mais documentos,
+                que serão empacotados, ou seja, são arquivos de entrada.
+
+            output_path (str): caminho da pasta onde serão geradas as saídas
+                do empacotamento, como relatórios, os arquivos temporários,
+                os arquivos do pacote etc.
+
+            optimise (bool): gera imagens otimizadas para web
+
+        """
+        self.optimise = optimise
+
+        # origem da pasta que pode conter 1 ou mais XML
+        self.source_folder = workarea.MultiDocsPackageFolder(pkg_path)
+
+        # outputs
+        self.output_folder = workarea.MultiDocsPackageOuputs(output_path)
+
+        # destination
+        self.destination_path = self.output_folder.scielo_package_path
+
+    def _enhance_doc_package(self, doc_files, doc_outs,
+                             dtd_location_type='remote',
+                             optimise_individually=False):
+        """
+        Padroniza o XML de um documento.
+
+        Args:
+            doc_files (workarea.DocumentPackageFiles): dados do conjunto
+                de arquivos de um documento SP
+            doc_outs (workarea.DocumentOutputFiles): caminhos das saídas
+                de um documento SP
+            dtd_location_type (str): valores remote ou local para indicar se
+                deve eliminar https://... do caminho da DTD, necessário para
+                o site (Web) para não demorar a carregar a página.
+        """
+        logger.debug(
+            "PackageMaker._enhance_doc_package %s" %
+            doc_files.filename)
+
+        xmlcontent = SPSXMLContent(doc_files.filename)
+
+        if self.optimise and optimise_individually:
+            new_pkg_path = doc_outs.create_dir_at_work_path("enhanced")
+        else:
+            new_pkg_path = self.destination_path
+
+        new_pkg_filepath = os.path.join(new_pkg_path, doc_files.basename)
+        xmlcontent.write(new_pkg_filepath, dtd_location_type=dtd_location_type,
+                         pretty_print=True)
+        doc_files.copy_related_files(new_pkg_path)
+        logger.debug(
+            "PackageMaker._enhance_doc_package (%s): %s" %
+            (doc_files.filename, new_pkg_path))
+        return new_pkg_path
+
+    def _optimise_doc_package(self, doc_pkg_path, tmp_path):
+        """
+        Otimiza as imagens e altera o XML de um documento para inserir
+        alternatives das imagens otimizadas.
+
+        Args:
+            doc_pkg_path (str): caminho da pasta de 1 documento a ser otimizado
+            doc_outs (workarea.DocumentOutputFiles): caminhos das saídas
+                de um documento SP
+        """
+        logger.debug("_optimise_doc_package %s" % doc_pkg_path)
+        print("Optimise: %s" % doc_pkg_path)
+        files = [os.path.join(doc_pkg_path, f)
+                 for f in os.listdir(doc_pkg_path)]
+
+        zip_regular = os.path.join(tmp_path, "regular.zip")
+        zip_optimised = os.path.join(tmp_path, "optimised.zip")
+        extracted_package = os.path.join(tmp_path, "extracted")
+        if not os.path.isdir(extracted_package):
+            os.makedirs(extracted_package)
+        if os.path.isfile(zip_regular):
+            fs_utils.delete_file_or_folder(zip_regular)
+        if os.path.isfile(zip_optimised):
+            fs_utils.delete_file_or_folder(zip_optimised)
+
+        fs_utils.zip(zip_regular, files)
+
+        # packtools
+        spp = SPPackage(package_file=fs_utils.ZipFile(zip_regular),
+                        extracted_package=extracted_package)
+        spp.optimise(new_package_file_path=zip_optimised,
+                     preserve_files=False)
+        fs_utils.unzip(zip_optimised, self.destination_path)
+
+        doc_pkg_zip_filepath = doc_pkg_path + ".zip"
+        fs_utils.delete_file_or_folder(doc_pkg_zip_filepath)
+        if self.destination_path == doc_pkg_path:
+            os.rename(zip_optimised, doc_pkg_zip_filepath)
+        else:
+            fs_utils.delete_file_or_folder(zip_optimised)
+        fs_utils.delete_file_or_folder(zip_regular)
+        print("Optimised: %s" % self.destination_path)
+
+    def pack(self, xml_list=None, dtd_location_type='remote',
+             sgmxml_name=None):
+        """
+        Se `xml_list` igual a `None`, então gera o pacote de todos os
+        documentos SP da pasta `self.source_folder.path`, senão gera apenas
+        para aqueles informados em `xml_list`.
+
+        Args:
+            xml_list (None or list): lista dos caminhos completos dos arquivos
+                XML que se deseja gerar pacotes
+
+            dtd_location_type (str): remote ou local
+
+        Returns:
+            package.SPPackage: instância com dados de um pacote com 1 ou mais
+            documentos XML SP, issue e articles
+        """
+        _xml_names = [
+            os.path.basename(item)
+            for item in xml_list or []
+        ]
+        print("Package have {} document(s)".format(
+            len(self.source_folder.pkgfiles_items)))
+        print("Selected to pack {} document(s)".format(len(_xml_names)))
+
+        percent = len(_xml_names) / len(self.source_folder.pkgfiles_items)
+        optimise_individually = (percent < 1)
+
+        for item in self.source_folder.pkgfiles_items.values():
+            logger.info("PackageMaker.pack %s?" % item.filename)
+
+            if item.basename not in _xml_names:
+                logger.info("PackageMaker: skip %s" % item.basename)
+                continue
+
+            print("Pack %s" % item.filename)
+            doc_outs = self.output_folder.get_doc_outputs(item.name)
+            enhanced_pkg_path = self._enhance_doc_package(
+                item, doc_outs, dtd_location_type, optimise_individually)
+
+            if self.optimise and optimise_individually:
+                tmp_path = doc_outs.create_dir_at_work_path("opt")
+                self._optimise_doc_package(enhanced_pkg_path, tmp_path)
+
+        if self.optimise and not optimise_individually:
+            self._optimise_doc_package(
+                self.destination_path,
+                self.output_folder.tmp_path)
+
+        print("Packed: %s" % self.destination_path)
+        pkg = package.SPPackage(self.destination_path,
+                                self.output_folder.output_path, _xml_names,
+                                sgmxml_name, optimised=self.optimise)
+        return pkg

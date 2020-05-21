@@ -2,12 +2,8 @@
 
 import os
 
-try:
-    import tkinter as tk
-    from tkinter.filedialog import askdirectory
-except ImportError:
-    import Tkinter as tk
-    from tkFileDialog import askdirectory
+import tkinter as tk
+from tkinter.filedialog import askdirectory
 
 from ..__init__ import _
 from ..__init__ import BIN_PATH
@@ -20,7 +16,7 @@ XML_FOLDER_DEFAULT = BIN_PATH
 class XMLAppGUI(tk.Frame):
 
     def __init__(self, tk_root, default_xml_path, is_converter_enabled, function):
-        tk.Frame.__init__(self, tk_root)
+        super().__init__(tk_root)
         self.tk_root = tk_root
         self.tk_root.iconbitmap(BIN_PATH+'/cfg/Scielo.ico')
         if default_xml_path is None:
@@ -64,7 +60,7 @@ class XMLAppGUI(tk.Frame):
             self.pmc_checkbutton = tk.Checkbutton(pmc_frame, text=_('generate PMC Package'), variable=self.pmc_var)
             self.pmc_checkbutton.pack()
 
-        self.message = tk.Label(message_frame, font='System 14 bold', width=100, bd=1, bg='gray')
+        self.message = tk.Label(message_frame, width=100, bd=1, bg='gray')
         self.message.pack(side='left')
 
         close_button = tk.Button(self.buttons_frame, text=_('close'), command=self.click_close)

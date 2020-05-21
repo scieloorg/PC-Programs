@@ -1,5 +1,6 @@
 # coding=utf-8
-
+import logging
+import logging.config
 import os
 import shutil
 
@@ -22,10 +23,8 @@ from ..validations import article_validations as article_validations_module
 from ..validations import validations as validations_module
 from ..validations import reports_maker
 from ..validations import merged_articles_validations
-from ..data import package
 from ..data import merged
 from ..data import workarea
-from ..data import aff_normalization
 from ..data import kernel_document
 from ..db import registered
 from ..db import xc_models
@@ -34,7 +33,10 @@ from ..db.pid_versions import(
     PIDVersionsDB,
 )
 from . import pmc_pkgmaker
-from . import sps_pkgmaker
+
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 EMAIL_SUBJECT_STATUS_ICON = {}
@@ -66,8 +68,8 @@ categories_messages = {
 
 def xpm_version():
     version_files = [
-        BIN_PATH + '/xpm_version.txt',
-        BIN_PATH + '/cfg/xpm_version.txt',
+        os.path.join(BIN_PATH, 'xpm_version.txt'),
+        os.path.join(BIN_PATH, 'cfg/xpm_version.txt'),
     ]
     version = '|'
     for f in version_files:
@@ -80,31 +82,6 @@ def xpm_version():
     encoding.debugging('version', version)
     major_version, minor_version = version.split('|')
     return major_version, minor_version
-
-
-def normalize_xml_packages(xml_list, dtd_location_type, stage):
-    article_files_items = [workarea.PkgArticleFiles(item) for item in xml_list]
-
-    path = article_files_items[0].path + '_' + stage
-
-    if not os.path.isdir(path):
-        os.makedirs(path)
-
-    wk = workarea.Workarea(path)
-    outputs = {}
-    dest_path = wk.scielo_package_path
-    dest_article_files_items = [workarea.PkgArticleFiles(dest_path + '/' + item.basename) for item in article_files_items]
-    for src, dest in zip(article_files_items, dest_article_files_items):
-        src.tiff2jpg()
-        xmlcontent = sps_pkgmaker.SPSXMLContent(fs_utils.read_file(src.filename))
-        xmlcontent.normalize()
-        xmlcontent.doctype(dtd_location_type)
-        fs_utils.write_file(dest.filename, xmlcontent.content)
-        src.copy_related_files(dest_path)
-
-        outputs[dest.name] = workarea.OutputFiles(dest.name, wk.reports_path, None)
-
-    return dest_article_files_items, outputs
 
 
 class ArticlesConversion(object):
@@ -163,21 +140,36 @@ class ArticlesConversion(object):
 
     def replace_ex_aop_pdf_files(self):
         # IMPROVEME
-        encoding.debugging('replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
+        """
+        substitui o pdf do aop pelo conteúdo do pdf do issue, mantendo o
+        nome do arquivo aop
+        """
+        encoding.debugging(
+            'replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
+
+        bases_dir = os.path.join(self.local_web_app_path, "bases")
+        pdf_dir = os.path.join(bases_dir, "pdf")
+        acron, issue = self.pkg.issue_data.acron_issue_label.split(" ")
+        issue_pdf_path = os.path.join(pdf_dir, acron, issue)
+
         for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
             folder, aop_name = aop_location_data
 
-            aop_pdf_path = self.local_web_app_path + '/bases/pdf/' + folder
+            aop_pdf_path = os.path.join(pdf_dir, folder)
             if not os.path.isdir(aop_pdf_path):
                 os.makedirs(aop_pdf_path)
-            issue_pdf_path = self.local_web_app_path + '/bases/pdf/' + self.pkg.issue_data.acron_issue_label.replace(' ', '/')
 
-            issue_pdf_files = [f for f in os.listdir(issue_pdf_path) if f.startswith(xml_name) or f[2:].startswith('_'+xml_name)]
+            issue_pdf_files = [f
+                               for f in os.listdir(issue_pdf_path)
+                               if (
+                                f.startswith(xml_name) or
+                                f[2:].startswith('_'+xml_name))]
 
             for pdf in issue_pdf_files:
                 aop_pdf = pdf.replace(xml_name, aop_name)
-                encoding.debugging('replace_ex_aop_pdf_files()', (issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf))
-                shutil.copyfile(issue_pdf_path + '/' + pdf, aop_pdf_path + '/' + aop_pdf)
+                src = os.path.join(issue_pdf_path, pdf)
+                dest = os.path.join(aop_pdf_path, aop_pdf)
+                shutil.copyfile(src, dest)
 
     @property
     def conversion_report(self):
@@ -408,19 +400,11 @@ class PkgProcessor(object):
                     self.config.serial_path)
         return self._db_manager
 
-    def normalized_package(self, xml_list):
-        dtd_location_type = 'remote'
-        if self.is_db_generation:
-            dtd_location_type = 'local'
-        pkgfiles, outputs = normalize_xml_packages(xml_list, dtd_location_type, self.stage)
-        workarea_path = os.path.dirname(pkgfiles[0].path)
-        return package.Package(pkgfiles, outputs, workarea_path)
-
     def evaluate_package(self, pkg):
+        logger.info("Analize package")
         registered_issue_data = registered.RegisteredIssue()
         self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
-
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
         mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
@@ -431,7 +415,8 @@ class PkgProcessor(object):
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
         self.report_result(pkg, validations_reports, conversion=None)
         self.make_pmc_package(pkg, GENERATE_PMC)
-        self.zip(pkg)
+        if not self.is_xml_generation:
+            pkg.zip()
 
     def convert_package(self, pkg):
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
@@ -449,18 +434,10 @@ class PkgProcessor(object):
         return (scilista_items, conversion.xc_status, mail_info)
 
     def validate_pkg_articles(self, pkg, registered_issue_data):
-        xml_journal_data_validator = article_validations_module.XMLJournalDataValidator(pkg.issue_data.journal_data)
-        xml_issue_data_validator = article_validations_module.XMLIssueDataValidator(registered_issue_data)
-        xml_content_validator = article_validations_module.XMLContentValidator(pkg.issue_data, registered_issue_data, self.is_xml_generation, self.app_institutions_manager, self.doi_validator, self.config)
-        article_validator = article_validations_module.ArticleValidator(xml_journal_data_validator, xml_issue_data_validator, xml_content_validator, self.config.xml_structure_validator_preference)
-
-        encoding.display_message(_('Validate package ({n} files)').format(n=len(pkg.articles)))
-        results = {}
-        for name in sorted(pkg.articles.keys()):
-            article = pkg.articles[name]
-            encoding.display_message(_('Validate {name}').format(name=name))
-            results[name] = article_validator.validate(article, pkg.outputs[name], pkg.package_folder.pkgfiles_items[name])
-        return results
+        pkg_validator = article_validations_module.PackageValidator(
+            registered_issue_data, pkg, self.is_xml_generation,
+            self.config, self.doi_validator, self.app_institutions_manager)
+        return pkg_validator.validate_package()
 
     def validate_merged_articles(self, pkg, registered_issue_data):
         if len(registered_issue_data.registered_articles) > 0:
@@ -470,6 +447,7 @@ class PkgProcessor(object):
             pkg.articles, self.is_db_generation)
 
     def report_result(self, pkg, validations_reports, conversion=None):
+        logger.info("Generate reports")
         files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label)
         if conversion is not None:
             files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
@@ -487,18 +465,12 @@ class PkgProcessor(object):
 
     def make_pmc_package(self, pkg, GENERATE_PMC):
         if not self.is_db_generation:
-            pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg.wk, pkg.articles, pkg.outputs)
-            if self.is_xml_generation:
-                pmc_package_maker.make_report()
+            logger.info("Is it PMC journal? %s" % pkg.is_pmc_journal)
             if pkg.is_pmc_journal:
                 if GENERATE_PMC:
+                    logger.info("Make PMC Package")
+                    pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg)
                     pmc_package_maker.make_package()
                 else:
-                    encoding.display_message(_('To generate PMC package, add -pmc as parameter'))
-
-    def zip(self, pkg):
-        if not self.is_xml_generation and not self.is_db_generation:
-            pkg.package_folder.zip()
-            for name, pkgfiles in pkg.package_folder.pkgfiles_items.items():
-                pkgfiles.zip(pkg.package_folder.path + '_zips')
-
+                    logger.info(
+                        _('To generate PMC package, add -pmc as parameter'))

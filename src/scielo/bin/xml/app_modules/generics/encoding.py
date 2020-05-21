@@ -1,10 +1,13 @@
 # coding=utf-8
-
+import logging
+import logging.config
 import os
 import sys
 import locale
 
-from . import logger
+
+logging.config.fileConfig("logging.conf")
+logger = logging.getLogger(__name__)
 
 LOCALE_LANG, LOCALE_ENCODING = locale.getdefaultlocale()
 SYS_DEFAULT_ENCODING = sys.getfilesystemencoding()
@@ -18,13 +21,6 @@ logging.basicConfig(
 logger = logging.getLogger('App')
 logger.setLevel(logging.DEBUG)
 """
-
-try:
-    os.unlink('./app.log')
-except:
-    pass
-app_logger = logger.get_logger('./app.log', 'App')
-
 
 def decode(content, encoding='utf-8'):
     try:
@@ -49,26 +45,26 @@ def encode(content, encoding='utf-8'):
 
 
 def report_exception(function_name, e, data):
-    app_logger.exception(
+    logger.exception(
             'Exception at {}'.format(function_name))
     try:
-        app_logger.exception(
+        logger.exception(
             'Exception at {}'.format(function_name), exc_info=True)
     except:
         pass
     try:
-        app_logger.info(encode(data))
+        logger.info(encode(data))
     except:
-        app_logger.info('EXCEPTION at report_exception()')
-        app_logger.info(e)
+        logger.info('EXCEPTION at report_exception()')
+        logger.info(e)
 
 
 def debugging(function_name, data):
     try:
-        app_logger.info('DEBUG: {}'.format(function_name))
-        app_logger.info(data)
+        logger.info('DEBUG: {}'.format(function_name))
+        logger.info(data)
     except:
-        app_logger.info('EXCEPTION at debugging()')
+        logger.info('EXCEPTION at debugging()')
 
 
 def display_message(msg):

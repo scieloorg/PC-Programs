@@ -126,8 +126,8 @@ class IDFile(object):
         return d
 
     def _get_record_data(self, record):
-        record_content = record[6:].strip()
-        fields = record_content.split("!v")[1:]
+        record_content = record[6:]
+        fields = record_content.split("\n!v")[1:]
         data = {}
         for field in fields:
             field_tag, field_content = field.strip().split("!")

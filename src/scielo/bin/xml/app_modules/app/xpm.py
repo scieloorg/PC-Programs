@@ -1,41 +1,65 @@
 # coding=utf-8
+import logging
+import logging.config
 
 import os
 
-from ..__init__ import _
-from . import interface
-from ..generics import encoding
-from .data import workarea
-from .data import package
-from .pkg_processors import sgmlxml
-from .pkg_processors import pkg_processors
-from .config import config
-from .pkg_processors import xml_versions
+from app_modules.generics import encoding
+from app_modules.__init__ import _
+from app_modules.app import interface
+from app_modules.app.config import config
+from app_modules.app.pkg_processors.sgmlxml import SGMLXML2SPSXML
+from app_modules.app.pkg_processors import pkg_processors
+from app_modules.app.pkg_processors.sps_pkgmaker import PackageMaker
+
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 
 def call_make_packages(args, version):
     script, xml_path, acron, INTERATIVE, GENERATE_PMC = read_inputs(args)
-    normalized_pkgfiles = None
-    stage = 'xpm'
+    sgmxml = None
+    xml_list = None
     if any([xml_path, acron]):
         result = validate_inputs(script, xml_path)
-        if result is not None:
-            sgm_xml, xml_list = result
-            stage = 'xpm'
-            normalized_pkgfiles = []
-            if sgm_xml is not None:
-                xml_generation = sgmlxml2xml(sgm_xml, acron)
-                outputs = {xml_generation.xml_pkgfiles.name: xml_generation.sgmxml_outputs}
-                normalized_pkgfiles = [xml_generation.xml_pkgfiles]
-                stage = 'xml'
-            else:
-                normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', stage)
-    reception = XPM_Reception(stage, INTERATIVE)
-    if normalized_pkgfiles is None:
+        if result:
+            sgmxml, xml_list = result
+
+    if sgmxml is None and xml_list is None:
         if INTERATIVE is True:
-            reception.display_form()
+            display_form("xpm")
     else:
-        reception.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
+        execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml, acron)
+
+
+def display_form(stage):
+    interface.display_form(stage == 'xc', None, call_make_package_from_form)
+
+
+def execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml=None, acron=None):
+    if xml_list:
+        stage = 'xpm'
+        xml_path = os.path.dirname(xml_list[0])
+        pkg_maker = PackageMaker(xml_path, xml_path + "_" + stage)
+        pkg = pkg_maker.pack(xml_list)
+    elif sgmxml:
+        stage = 'xml'
+        logger.info("SGML to XML")
+        sgmxml2xml = SGMLXML2SPSXML(sgmxml, acron)
+        pkg = sgmxml2xml.pack()
+
+    configuration = config.Configuration()
+    proc = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
+    proc.make_package(pkg, stage == "xml" or GENERATE_PMC)
+    print('...'*3)
+
+
+def call_make_package_from_form(xml_path, GENERATE_PMC=False):
+    xml_list = [os.join(xml_path, item)
+                for item in os.listdir(xml_path) if item.endswith('.xml')]
+    execute(True, xml_list, GENERATE_PMC)
+    return 'done', 'blue'
 
 
 def read_inputs(args):
@@ -97,44 +121,12 @@ def evaluate_xml_path(xml_path):
             else:
                 errors.append(_('Invalid file. XML file required. '))
         elif os.path.isdir(xml_path):
-            xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
+            xml_list = [os.path.join(xml_path, item)
+                        for item in os.listdir(xml_path)
+                        if item.endswith('.xml')]
 
             if len(xml_list) == 0:
                 errors.append(_('Invalid folder. Folder must have XML files. '))
         else:
             errors.append(_('Missing XML location. '))
     return sgm_xml, xml_list, errors
-
-
-def sgmlxml2xml(sgm_xml_filename, acron):
-    _sgmlxml2xml = sgmlxml.SGMLXML2SPSXMLConverter(xml_versions.xsl_getter)
-    sgmxml_pkgfiles = workarea.PkgArticleFiles(sgm_xml_filename)
-    pkg_generation = sgmlxml.SGMLXML2SPSXML(sgmxml_pkgfiles)
-    pkg_generation.pack(acron, _sgmlxml2xml)
-    return pkg_generation
-
-
-class XPM_Reception(object):
-
-    def __init__(self, stage, INTERATIVE=True):
-        configuration = config.Configuration()
-        self.proc = pkg_processors.PkgProcessor(configuration, INTERATIVE, stage)
-
-    def display_form(self):
-        interface.display_form(self.proc.stage == 'xc', None, self.call_make_package)
-
-    def call_make_package(self, xml_path, GENERATE_PMC=False):
-        encoding.display_message(_('Making package') + '...')
-        xml_list = [xml_path + '/' + item for item in os.listdir(xml_path) if item.endswith('.xml')]
-        encoding.display_message('...'*2)
-        normalized_pkgfiles, outputs = pkg_processors.normalize_xml_packages(xml_list, 'remote', self.proc.stage)
-        encoding.display_message('...'*3)
-        self.make_package(normalized_pkgfiles, outputs, GENERATE_PMC)
-        encoding.display_message('...'*4)
-        return 'done', 'blue'
-
-    def make_package(self, normalized_pkgfiles, outputs, GENERATE_PMC=False):
-        if len(normalized_pkgfiles) > 0:
-            workarea_path = os.path.dirname(normalized_pkgfiles[0].path)
-            pkg = package.Package(normalized_pkgfiles, outputs, workarea_path)
-            self.proc.make_package(pkg, GENERATE_PMC)

@@ -1,562 +1,428 @@
 # coding=utf-8
 import os
-import shutil
-import tempfile
+import html
+from io import StringIO
 
-import xml.dom.minidom
-
-try:
-    from io import StringIO
-    import html.parser as html_parser
-    from lxml import etree
-except ImportError:
-    from StringIO import StringIO
-    import HTMLParser as html_parser
-    import xml.etree.ElementTree as etree
+from lxml import etree
 
 from ..__init__ import _
-from ..__init__ import TABLES_PATH
 from . import fs_utils
 from . import encoding
 
-
-ENTITIES_TABLE = None
-
 namespaces = {}
-namespaces['mml'] = 'http://www.w3.org/1998/Math/MathML'
-namespaces['xlink'] = 'http://www.w3.org/1999/xlink'
 namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'
+namespaces['xlink'] = 'http://www.w3.org/1999/xlink'
+namespaces['mml'] = 'http://www.w3.org/1998/Math/MathML'
 
 for namespace_id, namespace_link in namespaces.items():
     etree.register_namespace(namespace_id, namespace_link)
 
 
-def date_element(date_node):
-    d = None
-    if date_node is not None:
-        d = {}
-        d['season'] = node_findtext(date_node, 'season')
-        d['month'] = node_findtext(date_node, 'month')
-        d['year'] = node_findtext(date_node, 'year')
-        d['day'] = node_findtext(date_node, 'day')
-    return d
+class Entity2Char:
+    """
+    Converte entidades numéricas ou nomeadas
+    Especialmente as nomeadas porque quebram o XML e não é possível
+    resolver com a biblioteca html
+    """
+    LT = (
+        ('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&#x003C;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&#x03C;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&#x3C;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&#60;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&lt;', '<REPLACEENT>lt</REPLACEENT>'),
+    )
+    GT = (
+        ('&#x0003E;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&#x003E;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&#x03E;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&#x3E;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&#62;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&gt;', '<REPLACEENT>gt</REPLACEENT>'),
+    )
+
+    def __init__(self):
+        pass
+
+    def convert(self, content):
+        if '&' not in content:
+            return content
+        for find, replace in self.LT + self.GT:
+            content = content.replace(find, replace)
+        content = html.unescape(content)
+        content = html.unescape(content)
+        if "&" in content:
+            content = self._replace_incomplete_entity(content)
+        content = content.replace("&", "&amp;")
+        content = content.replace("<REPLACEENT>", "&")
+        content = content.replace("</REPLACEENT>", ";")
+        return content
+
+    def _replace_incomplete_entity(self, content):
+        result = []
+        for item in content.replace('&', '~BREAK~&').split('~BREAK~'):
+            if item.startswith('&'):
+                ent = self._looks_like_entity(item)
+                if ent and len(ent) > 2:
+                    entity = ent
+                    if entity[-1] != ";":
+                        entity += ";"
+                    new = html.unescape(entity)
+                    if new != entity:
+                        item = new + item[len(ent):]
+            result.append(item)
+        return ''.join(result)
+
+    def _looks_like_entity(self, text):
+        if len(text) < 2:
+            return
+        ent = "&"
+        if text[1] == "#":
+            for c in text[2:]:
+                if c.isalnum():
+                    ent += c
+                    continue
+                if c == ";":
+                    ent += c
+                break
+        else:
+            for c in text[1:]:
+                if c.isalpha():
+                    ent += c
+                    continue
+                if c == ";":
+                    ent += c
+                break
+        return ent
+
+entity2char = Entity2Char()
 
 
-def element_lang(node):
-    if node is not None:
-        return node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-
-
-def load_entities_table():
-    table = {}
-    entities_filename = TABLES_PATH + '/entities.csv'
-    if os.path.isfile(entities_filename):
-        for item in fs_utils.read_file_lines(entities_filename):
-            items = item.split('|')
-            if len(items) == 5:
-                symbol, number_ent, named_ent, descr, representation = items
-                table[named_ent] = symbol
-    else:
-        encoding.debugging('load_entities_table()', 'NOT FOUND ' + entities_filename)
-    encoding.display_message(entities_filename)
-    encoding.display_message(len(table))
-    return table
-
-
-class XMLContent(object):
-
-    def __init__(self, xml):
-        xml = xml.strip()
+class SuitableXML(object):
+    """
+    XML adequado / aceitável
+    - sem "junk" depois da última tag de fecha
+    - garante que os conteúdos de elementos não tenha quebra de linha ou tab
+    - garante que tenha entidades completas que terminam em ;
+    - converte as entidades em caracteres, especialmente as "nomeadas" pois
+    não são entidades aceitas no XML
+    - preserva DOCTYPE original
+    - preserva xml declaration original
+    """
+    def __init__(self, str_or_filepath, do_changes=True, recover=False):
+        self.do_changes = do_changes
+        self.recover = recover
+        self.changed = False
+        self._xml = None
         self._content = None
         self.filename = None
-        if '>' in xml:
-            if not xml.endswith('>'):
-                xml = xml[:xml.rfind('>')+1]
-        else:
-            self.filename = xml
-            xml = fs_utils.read_file(self.filename)
-        self.content = self._normalize(xml)
+        if os.path.isfile(str_or_filepath):
+            self.filename = str_or_filepath
+            try:
+                str_or_filepath = fs_utils.read_file(self.filename)
+            except UnicodeError:
+                str_or_filepath = fs_utils.read_file(
+                    self.filename, encode="iso-8859-1")
+        self.original = str_or_filepath
+        self.content = str_or_filepath
+
+    @property
+    def xml_declaration(self):
+        if self.original.startswith('<?xml'):
+            return '<?xml version="1.0" encoding="utf-8"?>'
+        if self.original.startswith("<?"):
+            if self.xml is not None and self.xml.docinfo is not None:
+                return '<?xml version="{}" encoding="{}"?>'.format(
+                    self.xml.docinfo.xml_version, self.xml.docinfo.encoding)
+
+    @property
+    def doctype(self):
+        if self.xml is not None and self.xml.docinfo is not None:
+            return self.xml.docinfo.doctype
+
+    @property
+    def xml(self):
+        return self._xml
 
     @property
     def content(self):
-        return self._content
+        """
+        Retorna apenas o XML em si
+        """
+        if self._xml is None:
+            return self._content
+        return tostring(self._xml)
 
     @content.setter
     def content(self, value):
-        self._content = value
-        self._load_xml()
+        """
+        Atribui valor apenas para XML em si
+        """
+        self._content = value.strip()
 
-    def _normalize(self, content):
-        content = complete_entity(content)
-        content, replaced_named_ent = convert_entities_to_chars(content)
-        return content
+        if self.do_changes and not self.changed:
+            self.well_formed_xml_content()
+            self.changed = True
 
-    def _load_xml(self):
-        self.xml, self.xml_error = load_xml(self.content)
+        self._xml, self.xml_error = load_xml(
+            self._content, recover=self.recover)
 
-    def fix(self):
-        if '<' in self.content:
-            self.content = self.content[self.content.find('<'):]
-        self.content = self.content.replace(' '*2, ' '*1)
+    def well_formed_xml_content(self):
+        xml_content = self._content
+        # padroniza os espaços, necessário pois há casos em que
+        # foram inseridos quebras de linha dentro de conteúdo de elementos
+        xml_content = " ".join([word for word in xml_content.split() if word])
 
+        # remove "junk" (texto após a última tag)
+        if not xml_content.endswith('>'):
+            xml_content = xml_content[:xml_content.rfind('>')+1]
+
+        # converte as entidades em caracteres, necesário especialmente para as
+        # entidades "nomeadas" pois invalidam o XML
+        xml_content = entity2char.convert(xml_content)
+        self._content = xml_content
+
+    def get_doctype(self, dtd_location_type=None):
+        """
+        Retorna doctype com system_url (remota ou "local")
+        local: somente o nome do arquivo
+        remote: url
+        Para o site, é importante ser "local" para não demorar a carregar
+        """
+        if self.xml is not None and self.xml.docinfo:
+            if dtd_location_type == 'local':
+                url = self.xml.docinfo.system_url
+                basename = os.path.basename(url)
+                return self.xml.docinfo.doctype.replace(url, basename)
+            return self.xml.docinfo.doctype or None
+
+    def format(self, pretty_print=False, dtd_location_type=None):
+        doctype = self.get_doctype(dtd_location_type)
+        if self.xml is not None:
+            return etree.tostring(
+                self.xml, encoding="utf-8", method="xml",
+                xml_declaration=self.xml_declaration,
+                pretty_print=pretty_print, doctype=doctype
+                ).decode("utf-8")
+        return "\n".join([
+                self.xml_declaration,
+                self.doctype,
+                self.content,
+            ])
+
+    def write(self, dest_file_path, pretty_print=True,
+              dtd_location_type=None):
+        doctype = self.get_doctype(dtd_location_type)
         if self.xml is None:
-            self._fix_open_and_close_style_tags()
-
-        if self.xml is None:
-            self._fix_open_close()
-
-    def _fix_open_close(self):
-        changes = []
-        parts = self.content.split('>')
-        for s in parts:
-            if '<' in s:
-                if '</' not in s and '<!--' not in s and '<?' not in s:
-
-                    s = s[s.find('<')+1:]
-                    if ' ' in s and '=' not in s:
-                        test = s[s.find('<')+1:]
-                        changes.append(test)
-        for change in changes:
-            self.content = self.content.replace('<' + test + '>', '[' + test + ']')
-
-    def _fix_open_and_close_style_tags(self):
-        rcontent = self.content
-        tags = ['italic', 'bold', 'sub', 'sup']
-        tag_list = []
-        for tag in tags:
-            rcontent = rcontent.replace('<' + tag.upper() + '>', '<' + tag + '>')
-            rcontent = rcontent.replace('</' + tag.upper() + '>', '</' + tag + '>')
-            tag_list.append('<' + tag + '>')
-            tag_list.append('</' + tag + '>')
-            rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
-        if self.content != rcontent:
-            parts = rcontent.split('BREAKBEGINCONSERTA')
-            self.content = self._fix_problem(tag_list, parts)
-        for tag in tags:
-            self.content = self.content.replace('</' + tag + '><' + tag + '>', '')
-
-    def _fix_problem(self, tag_list, parts):
-        expected_close_tags = []
-        ign_list = []
-        debug = False
-        k = 0
-        for part in parts:
-            if part in tag_list:
-                tag = part
-                if debug:
-                    encoding.debugging('_fix_problem()', '\ncurrent:' + tag)
-                if tag.startswith('</'):
-                    if debug:
-                        encoding.debugging('_fix_problem()', 'expected')
-                        encoding.debugging('_fix_problem()', expected_close_tags)
-                        encoding.debugging('_fix_problem()', 'ign_list')
-                        encoding.debugging('_fix_problem()', ign_list)
-                    if tag in ign_list:
-                        if debug:
-                            encoding.debugging('_fix_problem()', 'remove from ignore')
-                        ign_list.remove(tag)
-                        parts[k] = ''
-                    else:
-                        matched = False
-                        if len(expected_close_tags) > 0:
-                            matched = (expected_close_tags[-1] == tag)
-                            if not matched:
-                                if debug:
-                                    encoding.debugging('_fix_problem()', 'not matched')
-                                while not matched and len(expected_close_tags) > 0:
-                                    ign_list.append(expected_close_tags[-1])
-                                    parts[k-1] += expected_close_tags[-1]
-                                    del expected_close_tags[-1]
-                                    matched = (expected_close_tags[-1] == tag)
-                                if debug:
-                                    encoding.debugging('_fix_problem()', '...expected')
-                                    encoding.debugging('_fix_problem()', expected_close_tags)
-                                    encoding.debugging('_fix_problem()', '...ign_list')
-                                    encoding.debugging('_fix_problem()', ign_list)
-
-                            if matched:
-                                del expected_close_tags[-1]
-                else:
-                    expected_close_tags.append(tag.replace('<', '</'))
-            k += 1
-        return ''.join(parts)
-
-
-def remove_doctype(content):
-    return replace_doctype(content, '')
-
-
-def replace_doctype(content, new_doctype):
-    content = content.replace('\r\n', '\n')
-    if '<!DOCTYPE' in content:
-        find_text = content[content.find('<!DOCTYPE'):]
-        find_text = find_text[0:find_text.find('>')+1]
-        if len(find_text) > 0:
-            if len(new_doctype) > 0:
-                content = content.replace(find_text, new_doctype)
-            else:
-                if find_text + '\n' in content:
-                    content = content.replace(find_text + '\n', new_doctype)
-    elif content.startswith('<?xml '):
-        if '?>' in content:
-            xml_proc = content[0:content.find('?>')+2]
-        xml = content[1:]
-        if '<' in xml:
-            xml = xml[xml.find('<'):]
-        if len(new_doctype) > 0:
-            content = xml_proc + '\n' + new_doctype + '\n' + xml
+            fs_utils.write_file(
+                dest_file_path, self.format(pretty_print, dtd_location_type))
         else:
-            content = xml_proc + '\n' + xml
-    return content
+            self.xml.write(
+                dest_file_path, encoding="utf-8", method="xml",
+                xml_declaration=self.xml_declaration,
+                pretty_print=pretty_print, doctype=doctype)
 
 
-def apply_dtd(xml_filename, doctype):
-    temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
-    shutil.copyfile(xml_filename, temp_filename)
-    content = replace_doctype(fs_utils.read_file(xml_filename), doctype)
-    fs_utils.write_file(xml_filename, content)
-    return temp_filename
+def get_xml_object(file_path, xml_parser=None):
+    """
+    Modo simplificado para carregar uma árvore de XML dado um arquivo
+    """
+    parser = xml_parser
+    if parser is None:
+        parser = etree.XMLParser(remove_blank_text=True)
+    return etree.parse(file_path, parser)
 
 
-def restore_xml_file(xml_filename, temp_filename):
-    shutil.copyfile(temp_filename, xml_filename)
-    fs_utils.delete_file_or_folder(temp_filename)
-    fs_utils.delete_file_or_folder(os.path.dirname(temp_filename))
+def transform(xml_obj, xsl_file_path):
+    """
+    Aplica uma XSL dada pelo arquivo em uma árvore de XML
+    O resutado é um `lxml.etree._XSLTResultTree`
+    """
+    xslt_doc = etree.parse(xsl_file_path)
+    XSLT = etree.XSLT(xslt_doc)
+    return XSLT(xml_obj)
 
 
-def new_apply_dtd(xml_filename, doctype):
-    fs_utils.write_file(
-        xml_filename,
-        replace_doctype(fs_utils.read_file(xml_filename), doctype))
-
-
-def node_findtext(node, xpath=None, multiple=False):
-    # contrib.findtext('name/given-names')
-    if node is None:
-        return
-    nodes = node
-    if xpath is not None:
-        if multiple is True:
-            nodes = node.findall(xpath)
-        else:
-            nodes = node.find(xpath)
-    if isinstance(nodes, list):
-        return [node_text(item) for item in nodes]
-    else:
-        return node_text(nodes)
-
-
-def node_text(node):
-    text = tostring(node)
-    if text is not None:
-        text = text[text.find('>')+1:]
-        if '</' in text:
-            text = text[:text.rfind('</')]
-        text = text.strip()
-    return text
-
-
-def node_xml(node):
-    text = tostring(node)
-    if text:
-        # resolve caso de inline-formula que retornou text após </inline-formula>
-        text = text.strip()
-        if not text.endswith('>'):
-            text = text[:text.rfind('>') + 1]
-    if text and '&' in text:
-        text, replaced_named_ent = convert_entities_to_chars(text)
-    return text
-
-
-def tostring(node):
-    if node is not None:
-        return encoding.decode(etree.tostring(node, encoding='utf-8'))
-
-
-def complete_entity(xml_content):
-    result = []
-    for item in xml_content.replace('&#', '~BREAK~&#').split('~BREAK~'):
-        if item.startswith('&#'):
-            words = item.split(' ')
-            if len(words) > 0:
-                ent = words[0][2:]
-                if ent.isdigit():
-                    words[0] += ';'
-            item = ' '.join(words)
-        result.append(item)
-    return ''.join(result)
-
-
-def preserve_xml_entities(content):
-    if '&' in content:
-        content = content.replace('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#x0003E;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#x00026;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&#x003C;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#x003E;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#x0026;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&#x03C;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#x03E;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#x026;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&#x3C;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#x3E;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#x26;', '<REPLACEENT>amp</REPLACEENT>')
-
-        #content = content.replace('&quot;', '<REPLACEENT>quot</REPLACEENT>')
-        #content = content.replace('&#34;', '<REPLACEENT>quot</REPLACEENT>')
-        content = content.replace('&#60;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&#62;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&#38;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&lt;', '<REPLACEENT>lt</REPLACEENT>')
-        content = content.replace('&gt;', '<REPLACEENT>gt</REPLACEENT>')
-        content = content.replace('&amp;', '<REPLACEENT>amp</REPLACEENT>')
-        content = content.replace('&#xA0;', u"\u00A0")
-        content = content.replace('&#160;', u"\u00A0")
-
-    return content
-
-
-def named_ent_to_char(content):
-    replaced_named_ent = []
-
-    if '&' in content:
-        text = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
-        entities = list(set([item for item in text.split('_BREAK_') if item.startswith('&') and item.endswith(';')]))
-        if len(entities) > 0:
-            global ENTITIES_TABLE
-
-            if ENTITIES_TABLE is None:
-                ENTITIES_TABLE = load_entities_table()
-            if ENTITIES_TABLE is not None:
-                for ent in entities:
-                    new = ENTITIES_TABLE.get(ent, ent)
-                    if new != ent:
-                        replaced_named_ent.append(ent + '=>' + new)
-                        content = content.replace(ent, new)
-    return (content, replaced_named_ent)
-
-
-def register_remaining_named_entities(content):
-    if '&' in content:
-        entities = []
-        if os.path.isfile('./named_entities.txt'):
-            entities = fs_utils.read_file_lines('./named_entities.txt')
-        content = content[content.find('&'):]
-        l = content.split('&')
-        for item in l:
-            if not item.startswith('#') and ';' in item:
-                ent = item[0:item.find(';')]
-                entities.append('&' + ent + ';')
-        entities = sorted(list(set(entities)))
-        if len(entities) > 0:
-            fs_utils.write_file('./named_entities.txt', '\n'.join(entities))
-
-
-def htmlent2char(content):
-    if '&' in content:
-        h = html_parser.HTMLParser()
-        try:
-            content = encoding.decode(content)
-            content = h.unescape(content)
-        except Exception as e:
-            content = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
-            parts = content.split('_BREAK_')
-            new = u''
-            for part in parts:
-                if part.startswith('&') and part.endswith(';'):
-                    try:
-                        part = h.unescape(part)
-                    except Exception as e:
-                        encoding.report_exception('htmlent2char(): h.unescape', e, part)
-                        part = '??'
-                try:
-                    new += part
-                except Exception as e:
-                    encoding.report_exception('htmlent2char() 2', e, part)
-                    new += '??'
-                    encoding.report_exception('htmlent2char() 3', e, type(content))
-                    encoding.report_exception('htmlent2char() 4', e, type(part))
-                    x
-            content = new
-    return content
-
-
-def restore_xml_entities(content):
-    if '<REPLACEENT>' in content:
-        content = content.replace('<REPLACEENT>gt</REPLACEENT>', '&gt;')
-        content = content.replace('<REPLACEENT>lt</REPLACEENT>', '&lt;')
-        content = content.replace('<REPLACEENT>amp</REPLACEENT>', '&amp;')
-        #content = content.replace('<REPLACEENT>quot</REPLACEENT>', '&#34;')
-    return content
-
-
-def convert_entities_to_chars(content, debug=False):
-    replaced_named_ent = []
-    if '&' in content:
-        content = preserve_xml_entities(content)
-        content = htmlent2char(content)
-        content = content.replace('&mldr;', u"\u2026")
-        content, replaced_named_ent = named_ent_to_char(content)
-        register_remaining_named_entities(content)
-        content = restore_xml_entities(content)
-    return content, replaced_named_ent
-
-
-def handle_mml_entities(content):
-    if '<mml:' in content:
-        temp = content.replace('<mml:math', 'BREAKBEGINCONSERTA<mml:math')
-        temp = temp.replace('</mml:math>', '</mml:math>BREAKBEGINCONSERTA')
-        replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<mml:math' in item and '&' in item]
-        for repl in replaces:
-            content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
-    if '<math' in content:
-        temp = content.replace('<math', 'BREAKBEGINCONSERTA<math')
-        temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
-        replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item and '&' in item]
-        for repl in replaces:
-            content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
-    return content
-
-
-def read_xml(content):
-    if '<' not in content:
-        # is a file
-        content = fs_utils.read_file(content)
-    return content
-
-"""
-p2
-('content', <type 'unicode'>)
-('s', <type 'str'>)
-('r', <class 'xml.etree.ElementTree.Element'>)
-
-p3
-content <class 'str'>
-s <class 'str'>
-
-unicode => str
-str
-"""
-def parse_xml(content):
-    message = None
-    if content:
-        if content.startswith('<?') and '?>' in content:
-            content = content[content.find('?>')+2:].strip()
-        if '<!DOCTYPE' in content:
-            content = remove_doctype(content)
+def validate(xml_obj, dtd_external_id=None, dtd_file_path=None):
+    """
+    Valida contra uma DTD informando qual pelos parâmetros:
+        dtd_external_id ou dtd_file_path
+    """
+    dtd_is_valid = False
+    dtd_errors = []
     try:
-        s = encoding.encode(content)
-        sio = StringIO(s)
-        r = etree.parse(sio)
+        dtd = None
+        if dtd_external_id:
+            dtd = etree.DTD(external_id=dtd_external_id.encode())
+        if not dtd and dtd_file_path:
+            dtd = etree.DTD(StringIO(fs_utils.read_file(dtd_file_path)))
+        if dtd:
+            dtd_is_valid = dtd.validate(xml_obj)
+            dtd_errors = dtd.error_log
     except Exception as e:
-        message = 'XML is not well formed\n'
-        msg = ''
-        try:
-            msg = encoding.decode(str(e))
-            if 'position ' in msg:
-                pos = msg.split('position ')
-                pos = pos[1]
-                pos = pos[0:pos.find(': ')]
-                if '-' in pos:
-                    pos = pos[0:pos.find('-')]
-                if pos.isdigit():
-                    pos = int(pos)
-                msg += '\n'
-                text = content[0:pos]
-                text = text[text.rfind('<'):]
-                msg += text + '[[['
-                msg += content[pos:pos+1]
-                text = content[pos+1:]
-                msg += ']]]' + text[0:text.find('>')+1]
-            elif 'line ' in msg:
-                line = msg[msg.find('line ')+len('line '):]
-                column = ''
-                if 'column ' in line:
-                    column = line[line.find('column ')+len('column '):].strip()
-                line = line[:line.find(',')].strip()
-                if line.isdigit():
-                    line = int(line)
-                    lines = content.split('\n') if content is not None else ['']
-                    col = len(lines[line-1])
-                    if column.isdigit():
-                        col = int(column)
-                    msg += '\n...\n' + lines[line-1][:col] + '\n\n [[[[ ' + _('ERROR here') + ' ]]]] \n\n' + lines[line-1][col:] + '\n...\n'
-        except:
-            msg += ''
-        message += msg
-
-        r = None
-    return (r, message)
+        dtd_errors = [str(e)]
+    return dtd_is_valid, dtd_errors
 
 
-def load_xml(content):
-    content = read_xml(content)
-    xml, e = parse_xml(content)
-    return (xml, e)
+def format_validations_msg(errors):
+    """
+    https://lxml.de/api/lxml.etree._LogEntry-class.html
+    message: the message text
+    domain: the domain ID (see lxml.etree.ErrorDomains)
+    type: the message type ID (see lxml.etree.ErrorTypes)
+    level: the log level ID (see lxml.etree.ErrorLevels)
+    line: the line at which the message originated (if applicable)
+    column: the character column at which the message originated (if applicable)
+    filename: the name of the file in which the message originated (if applicable)
+    path: the location in which the error was found (if available)
+    """
+    rows = []
+    for e in errors:
+        rows.append("{}: line: {} - {}".format(
+            e.level, e.line, e.message
+            ))
+    return rows
 
 
-def split_prefix(content):
-    prefix = ''
-    p = content.rfind('</')
-    if p > 0:
-        tag = content[p+2:]
-        tag = tag[0:tag.find('>')].strip()
-        if '<' + tag in content:
-            prefix = content[:content.find('<' + tag)]
-            content = content[content.find('<' + tag):].strip()
-            content = content[:content.rfind('>') + 1].strip()
-    return (prefix.replace('{PRESERVE_SPACE}', ''), content)
+def write(file_path, tree):
+    """
+    Escreve em arquivo o documento carregado na árvore
+    tree pode ser de XML ou HTML
+    """
+    name, ext = os.path.splitext(file_path)
+    if ext == ".xml":
+        tree.write(
+            file_path,
+            encoding="utf-8",
+            xml_declaration='<?xml version="1.0" encoding="utf-8"?>',
+            inclusive_ns_prefixes=namespaces.keys(),
+            pretty_print=True
+        )
+        return
+    tree.write(file_path, method="html", pretty_print=True)
 
 
-def preserve_styles(content):
-    content = content.replace('> ', '>{PRESERVE_SPACE}')
-    content = content.replace(' <', '{PRESERVE_SPACE}<')
-    for tag in ['italic', 'bold', 'sup', 'sub']:
-        content = content.replace('<' + tag + '>', '[' + tag + ']')
-        content = content.replace('</' + tag + '>', '[/' + tag + ']')
-    return content
+def node_xml_content(node):
+    """
+    Retorna o "tostring" interno ao node. Exemplo:
+    node = "<p>texto 1 <bold> texto 2 </bold> texto 3</p>"
+    Retorna `texto 1 <bold> texto 2 </bold> texto 3`
+    """
+    text = ''
+    text += node.text or ''
+    for child in node.getchildren():
+        text += tostring(child, with_tail=True)
+    return text
 
 
-def restore_styles(content):
-    for tag in ['italic', 'bold', 'sup', 'sub']:
-        content = content.replace('[' + tag + ']', '<' + tag + '>')
-        content = content.replace('[/' + tag + ']', '</' + tag + '>')
-    content = content.replace('{PRESERVE_SPACE}', ' ')
-    return content
+def tostring(node, pretty_print=False, with_tail=False):
+    """
+    Retorna o "tostring" do node. Exemplo:
+    node = "<p>texto 1 <bold> texto 2 </bold> texto 3</p>"
+    Retorna `<p>texto 1 <bold> texto 2 </bold> texto 3</p>`
+    Retorna str
+    """
+    if node is not None:
+        return encoding.decode(
+            etree.tostring(
+                node, encoding='utf-8',
+                pretty_print=pretty_print,
+                with_tail=with_tail
+                ))
 
 
-def remove_break_lines_off_element_content_item(item):
-    if not item.startswith('<') and not item.endswith('>'):
-        if item.strip() != '':
-            item = ' '.join([item.split()])
-    return item
+def load_xml(str_or_filepath, remove_blank_text=True, validate=False, recover=False):
+    """
+    Retorna uma árvore de XML e erros (se ocorrer ao carregá-lo)
+    Pode receber o XML em str ou caminho de um arquivo
+    Usado na conversao do Markup para XML
+    """
+    parser = etree.XMLParser(
+        remove_blank_text=remove_blank_text,
+        resolve_entities=True,
+        recover=recover,
+        dtd_validation=validate
+    )
+    try:
+        xml = None
+        errors = None
+        if str_or_filepath.endswith(".xml"):
+            source = str_or_filepath
+            xml = etree.parse(str_or_filepath, parser)
+        elif ">" not in str_or_filepath and "<" not in str_or_filepath:
+            source = str_or_filepath
+            raise ValueError(
+                "Invalid value: it must be an XML content or XML file path")
+        else:
+            source = "str"
+            if str_or_filepath.startswith('<?') and '?>' in str_or_filepath:
+                str_or_filepath = str_or_filepath[str_or_filepath.find(
+                    '?>')+2:].strip()
+            xml = etree.parse(StringIO(str_or_filepath), parser)
+    except (etree.XMLSyntaxError,
+            FileNotFoundError,
+            ValueError, TypeError) as e:
+        errors = "Loading XML from '{}': {}".format(source, e)
+    except Exception as e:
+        errors = "Loading XML from '{}': {}".format(source, e)
+    finally:
+        return xml, errors
 
 
-def remove_break_lines_off_element_content(content):
-    data = content.replace('>', '>~remove_break_lines_off_element_content~')
-    data = data.replace('<', '~remove_break_lines_off_element_content~<')
-    return ''.join([remove_break_lines_off_element_content_item(item) for item in data.split('~remove_break_lines_off_element_content~')]).strip()
+def load_html(file_path):
+    """
+    Retorna uma árvore de HTML e erros (se ocorrer ao carregá-lo)
+    Pode receber o XML em str ou caminho de um arquivo
+    Usado na conversao do Markup para XML
+    """
+    parser = etree.HTMLParser(
+        remove_blank_text=True, recover=True)
+    try:
+        html = None
+        errors = None
+        if file_path.endswith(".html") or file_path.endswith(".htm"):
+            source = file_path
+            html = etree.parse(file_path, parser)
+        elif ">" not in file_path and "<" not in file_path:
+            source = file_path
+            raise ValueError(
+                "Invalid value: it must be an HTML content or HTML file path")
+        else:
+            source = "str"
+            if file_path.startswith('<?') and '?>' in file_path:
+                file_path = file_path[file_path.find(
+                    '?>')+2:].strip()
+            html = etree.parse(StringIO(file_path), parser)
+    except (etree.XMLSyntaxError,
+            FileNotFoundError,
+            ValueError, TypeError) as e:
+        errors = "Loading HTML from '{}': {}".format(source, e)
+    except Exception as e:
+        errors = "Loading HTML from '{}': {}".format(source, e)
+    finally:
+        return html, errors
 
 
 def pretty_print(content):
-    return PrettyXML(content).xml
-
-
-def is_valid_xml_file(xml_path):
-    r = False
-    if os.path.isfile(xml_path):
-        r = xml_path.endswith('.xml')
-    return r
+    xml, error = load_xml(content)
+    return tostring(xml, pretty_print=True)
 
 
 def is_valid_xml_dir(xml_path):
+    """
+    Verifica se a pasta contém arquivos XML
+    Retorna True, se houver XML
+    """
     total = 0
     if os.path.isdir(xml_path):
         total = len([item for item in os.listdir(xml_path) if item.endswith('.xml')])
     return total > 0
 
 
-def is_valid_xml_path(xml_path):
+def get_errors_if_xml_not_found(xml_path):
+    """
+    Verifica se a pasta contém arquivos XML
+    """
     errors = []
     if xml_path is None:
         errors.append(_('Missing XML location. '))
@@ -570,6 +436,9 @@ def is_valid_xml_path(xml_path):
 
 
 def remove_tags(content):
+    """
+    Remove tags de content
+    """
     if content is not None:
         content = content.replace('<', '~BREAK~<')
         content = content.replace('>', '>~BREAK~')
@@ -584,182 +453,99 @@ def remove_tags(content):
     return content
 
 
-def remove_exceeding_spaces_in_tag(item):
-    if not item.startswith('<') and not item.endswith('>'):
-        #if item.strip() == '':
-        #    item = ''
-        pass
-    elif item.startswith('</') and item.endswith('>'):
-        #close
-        item = '</' + item[2:-1].strip() + '>'
-    elif item.startswith('<') and item.endswith('/>'):
-        #empty tag
-        item = '<' + ' '.join(item[1:-2].split()) + '/>'
-    elif item.startswith('<') and item.endswith('>'):
-        #open
-        item = '<' + ' '.join(item[1:-1].split()) + '>'
-    return item
+def merge_siblings_style_tags_content(node, styles_tags):
+    """
+    Junta em um mesmo elemento, os elementos do mesmo estilo
+    que estão adjacentes
+    <bold>texto 1</bold> <bold>texto 2</bold>
+    <bold>texto 1 texto 2</bold>
+    """
+    for elem in node.findall(".//*"):
+        previous = elem.getprevious()
+        if (elem.tag in styles_tags and previous is not None and
+                previous.tag == elem.tag and
+                not (previous.tail or "").strip()):
+            if previous.text and elem.text:
+                sep = " "
+            elem.text = previous.text + sep + elem.text
+            parent = previous.getparent()
+            parent.remove(previous)
 
 
-def remove_exceeding_spaces_in_all_tags(content):
-    content = content.replace('>', '>NORMALIZESPACES')
-    content = content.replace('<', 'NORMALIZESPACES<')
-    content = ''.join([remove_exceeding_spaces_in_tag(item) for item in content.split('NORMALIZESPACES')])
-    return content
+def remove_styles_off_tagged_content(node, styles_tags):
+    """
+    Remove as tags de estilos se elas estão aplicadas no elemento inteiro
+    pois as tags de estilos só fazem sentido se aplicadas em partes do elemento
+    <node><bold>texto</bold></node>
+    <node>texto</node>
+    """
+    for elem in node.findall(".//*"):
+        text = " ".join(node.itertext())
+        if (elem.tag in styles_tags and
+                " ".join(elem.itertext()).strip() == text.strip()):
+            elem.tag = "REMOVE"
+            etree.strip_tags(node, "REMOVE")
 
 
-def fix_styles_spaces(content):
-    for style in ['bold', 'italic']:
-        if content.count('</' + style + '> ') == 0 and content.count('</' + style + '>') > 0:
-            content = content.replace('</' + style + '>', '</' + style + '> ')
-        if content.count(' <' + style + '>') == 0 and content.count('<' + style + '>') > 0:
-            content = content.replace('<' + style + '>', ' <' + style + '>')
-    return content
+def remove_nodes(root, xpath):
+    """
+    Remove nós que combinam com o xpath dado
+    """
+    for node in root.findall(xpath):
+        parent = node.getparent()
+        parent.remove(node)
 
 
-def remove_exceding_style_tags(content):
-    doit = True
-
-    while doit is True:
-        doit = False
-        new = content
-        for style in ['sup', 'sub', 'bold', 'italic']:
-            new = new.replace('<' + style + '/>', '')
-            new = new.replace('<' + style + '> ', ' <' + style + '>')
-            new = new.replace(' </' + style + '>', '</' + style + '> ')
-            new = new.replace('</' + style + '><' + style + '>', '')
-            new = new.replace('<' + style + '></' + style + '>', '')
-            new = new.replace('<' + style + '> </' + style + '>', ' ')
-            new = new.replace('</' + style + '> <' + style + '>', ' ')
-        doit = (new != content)
-        content = new
-    return new
+def remove_attribute(root, xpath, attr_name):
+    """
+    Localiza nodes por xpath
+    Remove o atributo cujo nome é attr_name
+    """
+    for node in root.findall(xpath):
+        if node.get(attr_name):
+            node.attrib.pop(attr_name)
 
 
-class PrettyXML(object):
-
-    def __init__(self, xml):
-        self._xml = xml.replace('\r', '')
-
-    def split_prefix(self):
-        prefix = ''
-        p = self._xml.rfind('</')
-        p2 = self._xml.rfind('>')
-        if p > 0 and p2 > 0:
-            self._xml = self._xml[:p2 + 1]
-            tag = self._xml[p + 2:p2]
-            if '<' + tag in self._xml:
-                prefix = self._xml[:self._xml.find('<' + tag)]
-                self._xml = self._xml[self._xml.find('<' + tag):]
-        self._xml = self._xml.strip()
-        return prefix
-
-    def minidom_pretty_print(self):
-        try:
-            doc = xml.dom.minidom.parseString(encoding.encode(self._xml))
-            self._xml = encoding.decode(doc.toprettyxml().strip())
-            ign = self.split_prefix()
-        except Exception as e:
-            encoding.report_exception('minidom_pretty_print()', e, self._xml)
-
-    @property
-    def xml(self):
-        node, e = load_xml(self._xml)
-        if node is not None:
-            prefix = self.split_prefix()
-            self.remove_exceding_style_tags()
-            self.mark_valid_spaces()
-            self.preserve_styles()
-            self.minidom_pretty_print()
-            self.restore_valid_spaces()
-            self.restore_styles()
-            self.remove_exceding_style_tags()
-            return prefix + self._xml
-        return self._xml
-
-    def preserve_styles(self):
-        for tag in ['italic', 'bold', 'sup', 'sub']:
-            self._xml = self._xml.replace('<' + tag + '>', '[' + tag + ']')
-            self._xml = self._xml.replace('</' + tag + '>', '[/' + tag + ']')
-
-    def restore_styles(self):
-        for tag in ['italic', 'bold', 'sup', 'sub']:
-            self._xml = self._xml.replace('[' + tag + ']', '<' + tag + '>')
-            self._xml = self._xml.replace('[/' + tag + ']', '</' + tag + '>')
-
-    def restore_valid_spaces(self):
-        self._xml = '\n'.join([item for item in self._xml.split('\n') if item.strip() != ''])
-        self._xml = self._xml.replace('>', '>NORMALIZESPACES')
-        self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        self._xml = ''.join([item if item.strip() == '' else item.strip() for item in self._xml.split('NORMALIZESPACES')])
-        self._xml = self._xml.replace('PRESERVESPACES', ' ')
-
-    def mark_valid_spaces(self):
-        self._xml = self._xml.replace('>', '>NORMALIZESPACES')
-        self._xml = self._xml.replace('<', 'NORMALIZESPACES<')
-        self._xml = ''.join([self.insert_preserve_spaces_mark(item) for item in self._xml.split('NORMALIZESPACES')])
-
-    def remove_exceding_style_tags(self):
-        doit = True
-        while doit is True:
-            doit = False
-            curr_value = self._xml
-
-            for style in ['sup', 'sub', 'bold', 'italic']:
-                tclose = '</' + style + '>'
-                topen = '<' + style + '>'
-                x = self._xml
-                self._xml = self._xml.replace('<' + style + '/>', '')
-                self._xml = self._xml.replace('<' + style + '> ', ' <' + style + '>')
-                self._xml = self._xml.replace(' </' + style + '>', '</' + style + '> ')
-                self._xml = self._xml.replace('</' + style + '> <' + style + '>', ' ')
-                self._xml = self._xml.replace(tclose + topen, '')
-                self._xml = self._xml.replace(topen + tclose, '')
-                """
-                if self._xml != x:
-                    from datetime import datetime
-                    it = datetime.now().isoformat()
-                    print('changed', style)
-                    fs_utils.write_file(style + '{}_antes.txt'.format(it), x)
-                    fs_utils.write_file(style + '{}_depois.txt'.format(it), self._xml)
-                """
-            doit = (curr_value != self._xml)
-        while ' '*2 in self._xml:
-            self._xml = self._xml.replace(' '*2, ' ')
-
-    def insert_preserve_spaces_mark(self, text):
-        if text.startswith('<') and text.endswith('>'):
-            text = '<' + ' '.join(text[1:-1].split()) + '>'
-        elif text.strip() != '':
-            text = text.replace(' ', 'PRESERVESPACES').replace('\n', 'PRESERVESPACES')
-            text = ' '.join(text.split())
-            while 'PRESERVESPACESPRESERVESPACES' in text:
-                text = text.replace('PRESERVESPACESPRESERVESPACES', 'PRESERVESPACES')
-        return text
+def replace_attribute_values(root, tuple_attr_name_and_value_and_new_value):
+    """
+    Substitui o valor de atributos que combinam com elemento e nome de atributo
+    """
+    for attrname, value, new_value in tuple_attr_name_and_value_and_new_value:
+        xpath = ".//*[@{}='{}']".format(attrname, value)
+        for node in root.findall(xpath):
+            node.set(attrname, new_value)
 
 
-class XMLNode(object):
+def find_nodes(root, xpaths):
+    """
+    Retorna os nodes que combinam com uma lista de xpaths
+    """
+    nodes = []
+    for xpath in xpaths:
+        nodes.extend(root.findall(xpath))
+    return nodes
 
-    def __init__(self, root):
-        self.root = root
 
-    @property
-    def xml(self):
-        return node_xml(self.root)
+def nodes_xml_content_and_attributes(root, node_xpaths):
+    """
+    Retorna o resultado de `tostring(node), node.attrib` dos nodes
+    que combinam com uma lista de xpaths
+    """
+    return [(tostring(node), node.attrib)
+            for node in find_nodes(root, node_xpaths)]
 
-    def nodes(self, xpaths):
-        found_items = [self.root.findall(xpath) for xpath in xpaths]
-        r = []
-        for found in found_items:
-            if found is not None:
-                r.extend(found)
-        return r
 
-    def nodes_text(self, xpaths):
-        return [node_text(node) for node in self.nodes(xpaths) if node is not None]
+def nodes_xml_content(root, node_xpaths):
+    """
+    Retorna node_xml_content(node) dos nodes
+    que combinam com uma lista de xpaths
+    """
+    return [node_xml_content(node) for node in find_nodes(root, node_xpaths)]
 
-    def nodes_xml(self, xpaths):
-        return [node_xml(node) for node in self.nodes(xpaths) if node is not None]
 
-    def nodes_data(self, xpaths):
-        return [(node_xml(node), node.attrib) for node in self.nodes(xpaths) if node is not None]
+def nodes_tostring(root, node_xpaths):
+    """
+    Retorna o resultado de tostring(node) dos nodes
+    que combinam com uma lista de xpaths
+    """
+    return [tostring(node) for node in find_nodes(root, node_xpaths)]
