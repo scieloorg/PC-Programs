@@ -4,7 +4,7 @@ import sys
 from unittest import TestCase
 
 
-from app_modules.generics import xml_utils
+from prodtools.utils import xml_utils
 
 
 python_version = sys.version_info.major

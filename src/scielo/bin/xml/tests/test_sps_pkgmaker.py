@@ -2,8 +2,8 @@
 import sys
 from unittest import TestCase
 
-from app_modules.generics import xml_utils
-from app_modules.app.pkg_processors import sps_pkgmaker
+from prodtools.utils import xml_utils
+from prodtools.processing import sps_pkgmaker
 
 
 python_version = sys.version_info.major

@@ -3,7 +3,7 @@ import tempfile
 import unittest
 import sqlite3
 
-from app_modules.app.db.pid_versions import PIDVersionsManager, PIDVersionsDB
+from prodtools.db.pid_versions import PIDVersionsManager, PIDVersionsDB
 
 
 class TestPIDVersionsManager(unittest.TestCase):

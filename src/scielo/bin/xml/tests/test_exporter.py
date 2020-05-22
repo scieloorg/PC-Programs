@@ -6,7 +6,7 @@ import os
 import shutil
 
 
-from app_modules.generics.exporter import Exporter
+from prodtools.utils.exporter import Exporter
 
 
 class TestExporter(unittest.TestCase):
