@@ -7,11 +7,11 @@ from urllib.request import pathname2url
 
 from packtools.utils import SPPackage
 
-from ...generics import fs_utils
-from ...generics import xml_utils
-from ..data import attributes
-from ..data import workarea
-from ..data import package
+from prodtools.utils import fs_utils
+from prodtools.utils import xml_utils
+from prodtools.data import attributes
+from prodtools.data import workarea
+from prodtools.data import package
 
 
 messages = []
