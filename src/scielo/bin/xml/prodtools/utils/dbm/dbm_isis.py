@@ -5,9 +5,9 @@ import html
 
 from tempfile import mkdtemp, NamedTemporaryFile
 
-from ...generics import fs_utils
-from ...generics import encoding
-from ...generics import system
+from prodtoos.utils import fs_utils
+from prodtoos.utils import encoding
+from prodtoos.utils import system
 
 
 PRESERVECIRC = '[PRESERVECIRC]'
