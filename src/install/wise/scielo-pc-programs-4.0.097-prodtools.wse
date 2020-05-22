@@ -1825,6 +1825,7 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\__init__.py
   Destination=%PROGDIR%\bin\xml\prodtools\__init__.py
+
   Flags=0000000010000010
 end
 item: Install File
@@ -1982,7 +1983,6 @@ item: Install File
   Destination=%PROGDIR%\bin\xml\download_markup_journals.py
   Flags=0000000010000010
 end
-item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\xml_converter.py
   Destination=%PROGDIR%\bin\xml\xml_converter.py
   Flags=0000000010000010
