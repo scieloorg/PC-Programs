@@ -51,6 +51,7 @@ def call_make_package_from_form(xml_path, GENERATE_PMC=False):
     return 'done', 'blue'
 
 
+
 def evaluate_xml_path(xml_path):
     errors = []
     sgm_xml = None
