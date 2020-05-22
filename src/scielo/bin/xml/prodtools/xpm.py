@@ -13,6 +13,16 @@ from prodtools.processing import pkg_processors
 from prodtools.processing.sps_pkgmaker import PackageMaker
 from prodtools.utils.logging_config import LOGGING_CONFIG
 
+<<<<<<< HEAD
+=======
+from prodtools.utils import encoding
+from prodtools import _
+from prodtools import form
+from prodtools.config import config
+from prodtools.processing.sgmlxml import SGMLXML2SPSXML
+from prodtools.processing import pkg_processors
+from prodtools.processing.sps_pkgmaker import PackageMaker
+>>>>>>> 3ba78c4b... Corrige os imports e versiona scielo-pc-programs-4.0.097-spf.wse
 
 dictConfig(LOGGING_CONFIG)
 
