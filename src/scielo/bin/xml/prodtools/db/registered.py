@@ -1,8 +1,8 @@
 # coding=utf-8
 
-from ...__init__ import _
+from prodtools import _
 
-from ..validations import article_data_reports
+from prodtools.validations import article_data_reports
 
 
 class RegisteredIssue(object):

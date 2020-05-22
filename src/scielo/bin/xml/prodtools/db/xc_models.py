@@ -3,20 +3,20 @@
 import os
 import shutil
 
-from ...__init__ import _
+from prodtools import _
 
-from ...generics import utils
-from ...generics import xml_utils
-from ...generics import fs_utils
-from ...generics import encoding
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
-from ..data.article import Issue, Article, Journal
-from ..data.article import PersonAuthor, CorpAuthor, AnonymousAuthor
-from ..data import attributes
-from ..db import serial
-from ..validations import article_data_reports
-from .. import article_utils
+from prodtools.utils import utils
+from prodtools.utils import xml_utils
+from prodtools.utils import fs_utils
+from prodtools.utils import encoding
+from prodtools.utils import article_utils
+from prodtools.utils.reports import html_reports
+from prodtools.utils.reports import validation_status
+from prodtools.data.article import Issue, Article, Journal
+from prodtools.data.article import PersonAuthor, CorpAuthor, AnonymousAuthor
+from prodtools.data import attributes
+from prodtools.db import serial
+from prodtools.validations import article_data_reports
 
 
 ISSN_TYPE_CONVERSION = {
