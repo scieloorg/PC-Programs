@@ -13,10 +13,10 @@ from prodtools.utils import fs_utils
 from prodtools.utils import doi_validations
 from prodtools.utils.dbm import dbm_isis
 from prodtools.utils.exporter import Exporter
-from prodtools.utils.reports import html_reports
-from prodtools.utils.reports import validation_status
 from prodtools.utils.ws import institutions_manager
 from prodtools.utils.ws import ws_journals
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
 from produtils.validations import article_data_reports
 from produtils.validations import pkg_articles_validations
 from produtils.validations import article_validations as article_validations_module

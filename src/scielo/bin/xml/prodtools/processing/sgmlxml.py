@@ -8,9 +8,9 @@ from copy import deepcopy
 from prodtools import _
 from prodtools.utils import fs_utils
 from prodtools.utils import xml_utils
-from prodtools.utils.reports import text_report
-from prodtools.utils.reports import html_reports
-from prodtools.utils.reports import validation_status
+from prodtools.reports import text_report
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
 from prodtools.data import article
 from prodtools.data import workarea
 from prodtools.processing import symbols

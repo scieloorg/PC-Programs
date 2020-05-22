@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from prodtools.db.registered import RegisteredArticles
-from prodtools.utils.reports import validation_status
+from prodtools.reports import validation_status
 from prodtools.validations import article_data_reports
 
 
