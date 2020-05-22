@@ -2,7 +2,6 @@
 import os
 import logging
 import logging.config
-
 from datetime import datetime
 
 from prodtools.utils import fs_utils
