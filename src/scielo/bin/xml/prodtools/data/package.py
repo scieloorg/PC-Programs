@@ -2,9 +2,9 @@
 import logging
 import logging.config
 
-from ...generics import xml_utils
-from . import article
-from . import workarea
+from prodtools.utils import xml_utils
+from prodtools.data import article
+from prodtools.data import workarea
 
 
 logging.config.fileConfig('logging.conf')

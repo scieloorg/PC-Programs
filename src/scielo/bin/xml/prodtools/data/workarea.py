@@ -4,8 +4,8 @@ import logging.config
 import os
 import shutil
 
-from ...generics import fs_utils
-from ...generics import img_utils
+from prodtools.utils import fs_utils
+from prodtools.utils import img_utils
 
 
 logging.config.fileConfig('logging.conf')

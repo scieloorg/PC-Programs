@@ -3,8 +3,8 @@ import os
 from datetime import datetime
 import itertools
 
-from .. import article_utils
-from ...generics.xml_utils import (
+from prodtools.utils import article_utils
+from prodtools.utils.xml_utils import (
     tostring,
     nodes_tostring,
     nodes_xml_content,
@@ -12,8 +12,8 @@ from ...generics.xml_utils import (
     find_nodes,
     node_xml_content,
 )
-from ...generics import img_utils
-from . import attributes
+from prodtools.utils import img_utils
+from prodtools.data import attributes
 
 
 def date_element(date_node):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from ...generics import fs_utils
-from . import scielo_id_gen
-
 import xml.etree.ElementTree as ET
+
+from prodtools.utils import fs_utils
+from . import scielo_id_gen
 
 
 def add_article_id_to_received_documents(
