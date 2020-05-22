@@ -3,7 +3,6 @@ import os
 from datetime import datetime
 import itertools
 
-from prodtools.utils import article_utils
 from prodtools.utils.xml_utils import (
     tostring,
     nodes_tostring,
@@ -11,8 +10,9 @@ from prodtools.utils.xml_utils import (
     nodes_xml_content_and_attributes,
     find_nodes,
     node_xml_content,
+    img_utils
 )
-from prodtools.utils import img_utils
+from prodtools.data import article_utils
 from prodtools.data import attributes
 
 
