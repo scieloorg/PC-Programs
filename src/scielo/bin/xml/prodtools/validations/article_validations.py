@@ -2,12 +2,12 @@
 
 import os
 
-from ...__init__ import _
-from ...generics import fs_utils
-from ...generics import encoding
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
-from ..validations import sps_xml_validators
+from prodtools import _
+from prodtools.utils import fs_utils
+from prodtools.utils import encoding
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
+from prodtools.validations import sps_xml_validators
 from . import article_data_reports
 from . import article_content_validations
 from . import validations as validations_module

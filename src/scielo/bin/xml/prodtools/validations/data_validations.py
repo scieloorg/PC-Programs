@@ -1,8 +1,8 @@
 # coding=utf-8
 
-from ...__init__ import _
-from ...generics.reports import validation_status
-from ..data import attributes
+from prodtools import _
+from prodtools.reports import validation_status
+from prodtools.data import attributes
 
 
 def label_equal_value(label, value):

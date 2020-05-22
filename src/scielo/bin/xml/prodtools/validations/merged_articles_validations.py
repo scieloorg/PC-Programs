@@ -1,11 +1,11 @@
 # coding=utf-8
 
-from ...__init__ import _
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
+from prodtools import _
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
 from . import article_data_reports
 from . import validations as validations_module
-from ..data import merged
+from prodtools.data import merged
 
 
 class IssueArticlesValidationsReports(object):

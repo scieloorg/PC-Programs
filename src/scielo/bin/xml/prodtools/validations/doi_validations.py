@@ -2,10 +2,10 @@
 
 from ..__init__ import _
 
-from . import xml_utils
-from . import utils
-from .ws import ws_doi
-from .reports import validation_status
+from prodtools.utils import xml_utils
+from prodtools.utils import utils
+from prodtools.utils.ws import ws_doi
+from prodtools.reports import validation_status
 
 
 LETTERS = 'abcdefghijklmnopqrstuvwxyz'
