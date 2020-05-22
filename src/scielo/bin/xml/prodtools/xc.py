@@ -4,16 +4,17 @@ import os
 import shutil
 from datetime import datetime
 
-from ..__init__ import _
-from ..generics import fs_utils
-from ..generics import encoding
-from ..generics import xml_utils
-from .pkg_processors import pkg_processors
-from .pkg_processors.sps_pkgmaker import PackageMaker
-from .data import workarea
-from .server import mailer
-from .server import filestransfer
-from .config import config
+from prodtools import _
+from prodtools import form
+from prodtools.utils import fs_utils
+from prodtools.utils import encoding
+from prodtools.utils import xml_utils
+from prodtools.processing import pkg_processors
+from prodtools.processing.sps_pkgmaker import PackageMaker
+from prodtools.data import workarea
+from prodtools.server import mailer
+from prodtools.server import filestransfer
+from prodtools.config import config
 
 
 def call_converter(args, version='1.0'):
@@ -77,8 +78,7 @@ class XC_Reception(object):
 
     def display_form(self):
         if self.configuration.interative_mode is True:
-            from . import interface
-            interface.display_form(
+            form.display_form(
                 self.proc.stage == 'xc', None, self.call_convert_package)
 
     def call_convert_package(self, package_path):

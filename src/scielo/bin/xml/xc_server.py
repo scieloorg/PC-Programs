@@ -2,11 +2,11 @@
 import os
 import sys
 
-from app_modules.generics import encoding
-from app_modules.generics import ftp_service
-from app_modules.app.config import config
-from app_modules.app.server import mailer
-from app_modules.app.server import xc_gerapadrao
+from prodtools.utils import encoding
+from prodtools.utils import ftp_service
+from prodtools.config import config
+from prodtools.server import mailer
+from prodtools.server import xc_gerapadrao
 
 
 def download_packages(configuration):

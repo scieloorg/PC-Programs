@@ -1,8 +1,8 @@
 # coding=utf-8
 import os
 
-from app_modules.app.config import app_texts
-from app_modules.generics import encoding
+from prodtools.config import app_texts
+from prodtools.utils import encoding
 
 
 THIS_FILE_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -20,18 +20,12 @@ PMC_PATH = BIN_PATH + '/pmc'
 RELATIVE_PMC_PATH = './../pmc'
 BIN_MARKUP_PATH = BIN_PATH + '/markup'
 XC_SERVER_CONFIG_PATH = BIN_PATH + '/config'
-TABLES_PATH = BIN_XML_PATH + '/app_modules/settings/tables'
-LOCALE_PATH = BIN_XML_PATH + '/app_modules/settings/locale'
-FST_PATH = BIN_XML_PATH + '/app_modules/settings/fst'
-EMAIL_TEMPLATE_MESSAGES_PATH = BIN_XML_PATH + '/app_modules/settings/email'
-REQUIREMENTS_FILE = BIN_XML_PATH + '/app_modules/settings/requirements.txt'
-REQUIREMENTS_CHECKER = BIN_XML_PATH + '/app_modules/tools/requirements_checker.py'
-HTML_REPORTS_PATH = BIN_XML_PATH + '/app_modules/generics/reports/'
-
-
-VENV_PATH = BIN_XML_PATH + '/app_data/venv/scielo-programs'
-if INVALID_APP_PATH:
-    VENV_PATH = '/scielo-virtualenv/venv'
+TABLES_PATH = BIN_XML_PATH + '/prodtools/settings/tables'
+LOCALE_PATH = BIN_XML_PATH + '/prodtools/locale'
+FST_PATH = BIN_XML_PATH + '/prodtools/settings/fst'
+EMAIL_TEMPLATE_MESSAGES_PATH = BIN_XML_PATH + '/prodtools/settings/email'
+REQUIREMENTS_FILE = BIN_XML_PATH + 'prodtools/settings/requirements.txt'
+HTML_REPORTS_PATH = BIN_XML_PATH + '/prodtools/reports/'
 
 if not os.path.isdir(TMP_DIR):
     os.makedirs(TMP_DIR)

@@ -4,13 +4,13 @@ import logging.config
 
 import os
 
-from app_modules.generics import encoding
-from app_modules.__init__ import _
-from app_modules.app import interface
-from app_modules.app.config import config
-from app_modules.app.pkg_processors.sgmlxml import SGMLXML2SPSXML
-from app_modules.app.pkg_processors import pkg_processors
-from app_modules.app.pkg_processors.sps_pkgmaker import PackageMaker
+from prodtools.utils import encoding
+from prodtools import _
+from prodtools import form
+from prodtools.config import config
+from prodtools.processing.sgmlxml import SGMLXML2SPSXML
+from prodtools.processing import pkg_processors
+from prodtools.processing.sps_pkgmaker import PackageMaker
 
 
 logging.config.fileConfig('logging.conf')
@@ -34,7 +34,7 @@ def call_make_packages(args, version):
 
 
 def display_form(stage):
-    interface.display_form(stage == 'xc', None, call_make_package_from_form)
+    form.display_form(stage == 'xc', None, call_make_package_from_form)
 
 
 def execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml=None, acron=None):
@@ -56,7 +56,7 @@ def execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml=None, acron=None):
 
 
 def call_make_package_from_form(xml_path, GENERATE_PMC=False):
-    xml_list = [os.join(xml_path, item)
+    xml_list = [os.path.join(xml_path, item)
                 for item in os.listdir(xml_path) if item.endswith('.xml')]
     execute(True, xml_list, GENERATE_PMC)
     return 'done', 'blue'

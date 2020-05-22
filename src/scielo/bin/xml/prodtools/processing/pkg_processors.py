@@ -17,22 +17,22 @@ from prodtools.db import ws_journals
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
 from prodtools.validations import doi_validations
-from produtils.validations import article_data_reports
-from produtils.validations import pkg_articles_validations
-from produtils.validations import article_validations as article_validations_module
-from produtils.validations import validations as validations_module
-from produtils.validations import reports_maker
-from produtils.validations import merged_articles_validations
-from produtils.data import merged
-from produtils.data import workarea
-from produtils.data import kernel_document
-from produtils.db import registered
-from produtils.db import xc_models
-from produtils.db.pid_versions import(
+from prodtools.validations import article_data_reports
+from prodtools.validations import pkg_articles_validations
+from prodtools.validations import article_validations as article_validations_module
+from prodtools.validations import validations as validations_module
+from prodtools.validations import reports_maker
+from prodtools.validations import merged_articles_validations
+from prodtools.data import merged
+from prodtools.data import workarea
+from prodtools.data import kernel_document
+from prodtools.db import registered
+from prodtools.db import xc_models
+from prodtools.db.pid_versions import(
     PIDVersionsManager,
     PIDVersionsDB,
 )
-from produtils.processing import pmc_pkgmaker
+from prodtools.processing import pmc_pkgmaker
 
 
 logging.config.fileConfig('logging.conf')

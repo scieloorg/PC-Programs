@@ -11,10 +11,10 @@ except ImportError:
     import Tkinter as tk
 
 
-from app_modules.app.ws import ws_journals
-from app_modules.app.config import config
-from app_modules.__init__ import BIN_MARKUP_PATH
-from app_modules.__init__ import BIN_PATH
+from prodtools.db import ws_journals
+from prodtools.config import config
+from prodtools import BIN_MARKUP_PATH
+from prodtools import BIN_PATH
 
 
 class MkpDownloadJournalListGUI(tk.Frame):
@@ -179,17 +179,25 @@ def generate_input_for_markup(journals, filename):
     codecs.open(filename, mode='w+').write('\n\r'.join(new_items))
 
 
-configuration = config.Configuration()
-markup_journals_filename = BIN_MARKUP_PATH + '/markup_journals.csv'
-temp_markup_journals_filename = BIN_MARKUP_PATH + '/temp_markup_journals.csv'
+def main():
+    configuration = config.Configuration()
+    markup_journals_filename = BIN_MARKUP_PATH + '/markup_journals.csv'
+    tmp_mkp_journal_filepath = BIN_MARKUP_PATH + '/temp_markup_journals.csv'
 
-for filename in [markup_journals_filename, temp_markup_journals_filename]:
-    temp_path = os.path.dirname(filename)
-    if not os.path.isdir(temp_path):
-        os.makedirs(temp_path)
+    for filename in [markup_journals_filename, tmp_mkp_journal_filepath]:
+        temp_path = os.path.dirname(filename)
+        if not os.path.isdir(temp_path):
+            os.makedirs(temp_path)
 
-_ws_journals = ws_journals.Journals(configuration.app_ws_requester)
-_ws_journals.update_journals_file()
+    _ws_journals = ws_journals.Journals(configuration.app_ws_requester)
+    _ws_journals.update_journals_file()
 
-journals_collections = journals_by_collection(_ws_journals.downloaded_journals_filename)
-open_main_window(journals_collections, markup_journals_filename, temp_markup_journals_filename, True)
+    journals_collections = journals_by_collection(
+        _ws_journals.downloaded_journals_filename)
+    open_main_window(
+        journals_collections, markup_journals_filename,
+        tmp_mkp_journal_filepath, True)
+
+
+if __name__ == "__main__":
+    main()

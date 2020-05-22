@@ -2,7 +2,7 @@
 from ftplib import FTP
 import os
 
-from . import encoding
+from prodtools.utils import encoding
 
 
 actions = []
