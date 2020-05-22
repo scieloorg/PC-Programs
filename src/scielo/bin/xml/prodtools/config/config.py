@@ -2,13 +2,13 @@
 import os
 import shutil
 
-from ...generics import fs_utils
-from ...generics import encoding
-from ...generics.ws import ws_requester
+from prodtools.utils import fs_utils
+from prodtools.utils import encoding
+from prodtools.utils.ws import ws_requester
 
-from ...__init__ import XC_SERVER_CONFIG_PATH
-from ...__init__ import BIN_PATH
-from ...__init__ import EMAIL_TEMPLATE_MESSAGES_PATH
+from prodtools import XC_SERVER_CONFIG_PATH
+from prodtools import BIN_PATH
+from prodtools import EMAIL_TEMPLATE_MESSAGES_PATH
 
 
 def get_configuration_filename(collection_acron=None):
