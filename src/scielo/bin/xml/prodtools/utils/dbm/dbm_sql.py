@@ -2,8 +2,8 @@
 
 import sqlite3
 
-from .. import fs_utils
-from .. import encoding
+from prodtoos.utils import fs_utils
+from prodtoos.utils import encoding
 
 
 class SQL(object):
