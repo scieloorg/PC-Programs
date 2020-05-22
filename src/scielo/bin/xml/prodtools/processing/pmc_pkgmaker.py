@@ -7,7 +7,7 @@ import shutil
 from prodtools import _
 from prodtools.utils import encoding
 from prodtools.utils import xml_utils
-from prodtools.utils.reports import html_reports
+from prodtools.reports import html_reports
 from prodtools.validations import sps_xml_validators
 from prodtools.processing import xml_versions
 from prodtools.data import workarea

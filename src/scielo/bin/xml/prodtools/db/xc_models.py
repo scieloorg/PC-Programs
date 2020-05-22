@@ -10,8 +10,8 @@ from prodtools.utils import xml_utils
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
 from prodtools.utils import article_utils
-from prodtools.utils.reports import html_reports
-from prodtools.utils.reports import validation_status
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
 from prodtools.data.article import Issue, Article, Journal
 from prodtools.data.article import PersonAuthor, CorpAuthor, AnonymousAuthor
 from prodtools.data import attributes
