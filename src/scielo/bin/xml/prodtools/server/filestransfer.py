@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from ...generics import remote_server
+from prodtools.utils import remote_server
 
 
 class FilesTransfer(object):
