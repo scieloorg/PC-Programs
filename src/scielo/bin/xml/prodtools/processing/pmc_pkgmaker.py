@@ -4,15 +4,14 @@ import logging.config
 import os
 import shutil
 
-from ...__init__ import _
-
-from ...generics import encoding
-from ...generics import xml_utils
-from ...generics.reports import html_reports
-from ..validations import sps_xml_validators
-from . import xml_versions
-from ..data import workarea
-from ..data import article
+from prodtools import _
+from prodtools.utils import encoding
+from prodtools.utils import xml_utils
+from prodtools.utils.reports import html_reports
+from prodtools.validations import sps_xml_validators
+from prodtools.processing import xml_versions
+from prodtools.data import workarea
+from prodtools.data import article
 
 
 logging.config.fileConfig('logging.conf')

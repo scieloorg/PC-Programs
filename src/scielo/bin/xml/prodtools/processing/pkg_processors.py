@@ -4,35 +4,35 @@ import logging.config
 import os
 import shutil
 
-from ...__init__ import _
-from ...__init__ import BIN_PATH
-from ...__init__ import FST_PATH
+from prodtools import _
+from prodtools import BIN_PATH
+from prodtools import FST_PATH
 
-from ...generics.dbm import dbm_isis
-from ...generics import encoding
-from ...generics import fs_utils
-from ...generics.exporter import Exporter
-from ...generics import doi_validations
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
-from ..ws import institutions_manager
-from ..ws import ws_journals
-from ..validations import article_data_reports
-from ..validations import pkg_articles_validations
-from ..validations import article_validations as article_validations_module
-from ..validations import validations as validations_module
-from ..validations import reports_maker
-from ..validations import merged_articles_validations
-from ..data import merged
-from ..data import workarea
-from ..data import kernel_document
-from ..db import registered
-from ..db import xc_models
-from ..db.pid_versions import(
+from prodtools.utils import encoding
+from prodtools.utils import fs_utils
+from prodtools.utils import doi_validations
+from prodtools.utils.dbm import dbm_isis
+from prodtools.utils.exporter import Exporter
+from prodtools.utils.reports import html_reports
+from prodtools.utils.reports import validation_status
+from prodtools.utils.ws import institutions_manager
+from prodtools.utils.ws import ws_journals
+from produtils.validations import article_data_reports
+from produtils.validations import pkg_articles_validations
+from produtils.validations import article_validations as article_validations_module
+from produtils.validations import validations as validations_module
+from produtils.validations import reports_maker
+from produtils.validations import merged_articles_validations
+from produtils.data import merged
+from produtils.data import workarea
+from produtils.data import kernel_document
+from produtils.db import registered
+from produtils.db import xc_models
+from produtils.db.pid_versions import(
     PIDVersionsManager,
     PIDVersionsDB,
 )
-from . import pmc_pkgmaker
+from produtils.processing import pmc_pkgmaker
 
 
 logging.config.fileConfig('logging.conf')

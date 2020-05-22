@@ -2,8 +2,8 @@
 
 import os
 
-from ...generics import fs_utils
-from ...__init__ import TABLES_PATH
+from prodtools.utils import fs_utils
+from prodtools import TABLES_PATH
 
 
 SYMBOLS_CSV = TABLES_PATH + '/symbols.csv'

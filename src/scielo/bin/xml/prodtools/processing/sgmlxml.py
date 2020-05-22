@@ -5,17 +5,17 @@ import os
 import shutil
 from copy import deepcopy
 
-from ...__init__ import _
-from ...generics import fs_utils
-from ...generics import xml_utils
-from ...generics.reports import text_report
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
-from ..data import article
-from ..data import workarea
-from . import symbols
-from .sps_pkgmaker import PackageMaker
-from . import xml_versions
+from prodtools import _
+from prodtools.utils import fs_utils
+from prodtools.utils import xml_utils
+from prodtools.utils.reports import text_report
+from prodtools.utils.reports import html_reports
+from prodtools.utils.reports import validation_status
+from prodtools.data import article
+from prodtools.data import workarea
+from prodtools.processing import symbols
+from prodtools.processing import xml_versions
+from prodtools.processing.sps_pkgmaker import PackageMaker
 
 
 logging.config.fileConfig('logging.conf')

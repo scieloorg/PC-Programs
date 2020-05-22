@@ -1,10 +1,10 @@
 # coding=utf-8
 import os
 
-from ...__init__ import PMC_PATH
-from ...__init__ import BIN_XML_PATH
-from ...__init__ import RELATIVE_PMC_PATH
-from ...__init__ import INVALID_APP_PATH
+from prodtools import PMC_PATH
+from prodtools import BIN_XML_PATH
+from prodtools import RELATIVE_PMC_PATH
+from prodtools import INVALID_APP_PATH
 
 
 JAVA_PATH = 'java'
