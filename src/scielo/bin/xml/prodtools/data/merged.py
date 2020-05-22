@@ -1,8 +1,8 @@
 # coding=utf-8
 
-from ..db import registered
-from ...generics.reports import validation_status
-from ..validations import article_data_reports
+from prodtools.db.registered import RegisteredArticles
+from prodtools.utils.reports import validation_status
+from prodtools.validations import article_data_reports
 
 
 ACTION_DELETE = 'delete'
@@ -119,7 +119,7 @@ class ArticlesMergence(object):
 
     def __init__(self, registered_articles, articles, is_db_generation):
         self.is_db_generation = is_db_generation
-        self.registered_articles = registered.RegisteredArticles(registered_articles)
+        self.registered_articles = RegisteredArticles(registered_articles)
         self.articles = articles
         self.titaut_conflicts = None
         self.name_order_conflicts = None

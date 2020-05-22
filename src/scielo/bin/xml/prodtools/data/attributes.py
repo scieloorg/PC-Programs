@@ -2,13 +2,12 @@
 
 from datetime import datetime
 
-from ...__init__ import _
-from ...__init__ import TABLES_PATH
-
-from .. import article_utils
-from ...generics.fs_utils import read_file
-from ...generics.reports import validation_status
-from ...generics.reports import html_reports
+from prodtools import _
+from prodtools import TABLES_PATH
+from prodtools.utils import article_utils
+from prodtools.utils.fs_utils import read_file
+from prodtools.utils.reports import validation_status
+from prodtools.utils.reports import html_reports
 
 
 SPS_expiration_dates = [
