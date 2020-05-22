@@ -28,7 +28,7 @@ def format_value(content):
 
 class IDFile(object):
 
-    MAX_DIGITS_QTD = 6
+    MAX_DIGITS_QTD = 7
     VALID_ID_RANGE = range(1, 10**MAX_DIGITS_QTD)
 
     def __init__(self, content_formatter=None):
@@ -126,8 +126,7 @@ class IDFile(object):
         return d
 
     def _get_record_data(self, record):
-        record_content = record[6:]
-        fields = record_content.split("\n!v")[1:]
+        fields = record.split("\n!v")[1:]
         data = {}
         for field in fields:
             field_tag = str(int(field[:3]))
@@ -496,4 +495,3 @@ class IsisDB(object):
             IDFile(content_formatter).write(id_filename, records)
         else:
             self.idfile.write(id_filename, records)
-
