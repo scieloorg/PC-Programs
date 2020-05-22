@@ -130,8 +130,8 @@ class IDFile(object):
         fields = record_content.split("\n!v")[1:]
         data = {}
         for field in fields:
-            field_tag, field_content = field.strip().split("!")
-            field_tag = str(int(field_tag))
+            field_tag = str(int(field[:3]))
+            field_content = field[4:].strip()
             field_data = self._get_field_data(field_content)
             data[field_tag] = data.get(field_tag, [])
             data[field_tag].append(field_data)
