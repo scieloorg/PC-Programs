@@ -9,12 +9,12 @@ from prodtools.utils import utils
 from prodtools.utils import xml_utils
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
-from prodtools.utils import article_utils
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
 from prodtools.data.article import Issue, Article, Journal
 from prodtools.data.article import PersonAuthor, CorpAuthor, AnonymousAuthor
 from prodtools.data import attributes
+from prodtools.data import article_utils
 from prodtools.db import serial
 from prodtools.validations import article_data_reports
 

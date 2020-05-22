@@ -4,7 +4,7 @@ from datetime import datetime
 
 from prodtools import _
 from prodtools import TABLES_PATH
-from prodtools.utils import article_utils
+from prodtools.data import article_utils
 from prodtools.utils.fs_utils import read_file
 from prodtools.reports import validation_status
 from prodtools.reports import html_reports

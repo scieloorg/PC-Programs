@@ -3,10 +3,10 @@
 
 from datetime import datetime
 
-from ..__init__ import _
+from prodtools import _
 
-from ..generics import img_utils
-from ..generics.reports import validation_status
+from prodtools.utils import img_utils
+from prodtools.reports import validation_status
 
 
 URL_CHECKED = []
