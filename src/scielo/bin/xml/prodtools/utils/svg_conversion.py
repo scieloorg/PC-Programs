@@ -5,8 +5,8 @@ try:
     from PIL import Image
 except:
     Image = None
-from . import system
-from . import encoding
+from prodtools.utils import system
+from prodtools.utils import encoding
 
 
 #inkscape PATH/teste.svg --export-background=COLOR --export-area-drawing --export-area-snap --export-dpi=300 --export-png=PATH/leave2.png

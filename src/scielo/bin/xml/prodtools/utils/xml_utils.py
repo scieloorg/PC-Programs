@@ -5,9 +5,9 @@ from io import StringIO
 
 from lxml import etree
 
-from ..__init__ import _
-from . import fs_utils
-from . import encoding
+from prodtools import _
+from prodtools.utils import fs_utils
+from prodtools.utils import encoding
 
 namespaces = {}
 namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'

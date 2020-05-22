@@ -12,8 +12,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.header import Header
 
-from . import fs_utils
-from . import encoding
+from prodtool.utils import fs_utils
+from prodtool.utils import encoding
 
 
 def strtolist(s):

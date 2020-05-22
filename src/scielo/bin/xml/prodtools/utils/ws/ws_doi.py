@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from .. import encoding
+from prodtools.utils import encoding
 
 
 class DOIWebServicesRequester(object):

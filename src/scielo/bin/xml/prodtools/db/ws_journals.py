@@ -2,8 +2,8 @@
 
 import os
 
-from ...generics import fs_utils
-from ...__init__ import BIN_MARKUP_PATH
+from prodtools.utils import fs_utils
+from prodtools import BIN_MARKUP_PATH
 
 
 JOURNALS_CSV_URL = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'

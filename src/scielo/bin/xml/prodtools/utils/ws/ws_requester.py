@@ -2,31 +2,12 @@
 
 import json
 import socket
+from urllib.parse import urlencode as urllib_parse_urlencode
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError, URLError
 
-try:
-    import urllib.request as urllib_request
-    from urllib.parse import urlencode as urllib_parse_urlencode
-    from urllib.parse import urlparse, urlencode
-    from urllib.request import urlopen, Request
-    from urllib.error import HTTPError, URLError
-except ImportError:
-    import urllib as urllib_request
-    from urllib import urlencode as urllib_parse_urlencode
-
-    from urlparse import urlparse
-    from urllib import urlencode
-    from urllib2 import urlopen, Request, HTTPError, URLError
-
-try:
-    import tkinter as tk
-except ImportError:
-    try:
-        import Tkinter as tk
-    except:
-        print('no Tkinter')
-
-from .. import encoding
-from . import ws_proxy
+from prodtools.utils import encoding
+from prodtools.utils.ws import ws_proxy
 
 
 # JOURNALS_CSV_URL = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'

@@ -3,18 +3,18 @@
 import os
 from datetime import datetime
 
-from ...__init__ import _
-from ...generics import img_utils
-from ...generics import utils
-from ...generics import encoding
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
-from ..data import attributes
-from .. import article_utils
+from prodtools import _
+from prodtools.utils import img_utils
+from prodtools.utils import utils
+from prodtools.utils import encoding
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
+from prodtools.data import attributes
+from prodtools.utils import article_utils
 from . import ref_validations
 from . import data_validations
 from . import orcid
-from ..pkg_processors import xml_versions
+from prodtools.pkg_processors import xml_versions
 from . import article_disp_formula
 from . import article_tablewrap
 

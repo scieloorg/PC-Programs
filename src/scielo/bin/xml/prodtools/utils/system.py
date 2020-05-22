@@ -5,7 +5,7 @@ import sys
 import getpass
 
 
-from . import encoding
+from prodtools.utils import encoding
 
 
 def format_param(param):

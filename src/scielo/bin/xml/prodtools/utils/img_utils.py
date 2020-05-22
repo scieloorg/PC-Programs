@@ -2,7 +2,7 @@
 
 import os
 
-from .reports import validation_status
+from prodtools.reports import validation_status
 
 try:
     from PIL import Image
@@ -10,9 +10,9 @@ try:
 except Exception as e:
     IMG_CONVERTER = False
 
-from . import svg_conversion
+from prodtools.utils import svg_conversion
 
-from ..__init__ import _
+from prodtools import _
 
 
 IMDEBUGGING = False

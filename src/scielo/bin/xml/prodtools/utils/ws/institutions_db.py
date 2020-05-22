@@ -2,11 +2,11 @@
 
 import os
 
-from ...generics import encoding
-from ...generics import fs_utils
-from ...generics.dbm import dbm_sql
+from prodtools.utils import encoding
+from prodtools.utils import fs_utils
+from prodtools.utils.dbm import dbm_sql
 
-from ...__init__ import TABLES_PATH
+from prodtools import TABLES_PATH
 
 
 def normalize_term(term):

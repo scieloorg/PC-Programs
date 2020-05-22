@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from ...generics import encoding
+from prodtools.utils import encoding
 
 
 wos_country_list = None
