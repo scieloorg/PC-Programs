@@ -1,14 +1,19 @@
 # coding=utf-8
 
 import os
+import logging
+import logging.config
 
 from datetime import datetime
 
 from ...generics import fs_utils
-from ...generics import logger
 from ...generics import system
 from . import filestransfer
 from ...__init__ import LOG_PATH
+
+
+logging.config.fileConfig("logging.conf")
+logger = logging.getLogger(__name__)
 
 
 def is_finished(permission_file):
@@ -46,7 +51,7 @@ def gerapadrao(collection_acron, config, mailer):
     if is_finished(config.gerapadrao_permission_file):
         start_time = datetime.now().isoformat()[11:11+5].replace(':', '')
         log_filename = LOG_PATH + '/gerapadrao_'+collection_acron+'-'+start_time+'.log'
-        gerapadrao_logger = logger.get_logger(log_filename, 'gerapadrao')
+        logging.basicConfig(filename=log_filename, level=logging.DEBUG)
 
         config.update_title_and_issue()
         scilista_content = consume_collection_scilista(
