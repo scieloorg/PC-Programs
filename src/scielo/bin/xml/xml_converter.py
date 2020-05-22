@@ -1,7 +1,7 @@
 import sys
-from app_modules.app import xc
 
-from app_modules.generics import encoding
+from prodtools import xc
+from prodtools.utils import encoding
 
 
 def requirements_checker():

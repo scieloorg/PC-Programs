@@ -5,9 +5,9 @@ import os
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 
-from ..__init__ import _
-from ..__init__ import BIN_PATH
-from ..generics import encoding
+from prodtools import _
+from prodtools import BIN_PATH
+from prodtools.utils import encoding
 
 
 XML_FOLDER_DEFAULT = BIN_PATH

@@ -9,7 +9,7 @@ from prodtools import HTML_REPORTS_PATH
 from prodtools.utils import fs_utils
 from prodtools.utils import xml_utils
 from prodtools.utils import encoding
-from prodtools.validations import validation_status
+from prodtools.reports import validation_status
 
 
 ENABLE_COMMENTS = False

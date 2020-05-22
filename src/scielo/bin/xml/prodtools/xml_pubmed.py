@@ -2,37 +2,28 @@
 import os
 import sys
 import shutil
-import Tkinter
+import tkinter as tk
 
 """
 Usado pelo scielo/xml_scielo/...
 para gerar XML para o PubMed
 """
-
-try:
-    from ..__init__ import _
-    from ..generics import utils
-    from ..generics import encoding
-    from ..generics import xml_utils
-    from ..generics import fs_utils
-    from ..generics.dbm import dbm_isis
-    from ..app.config import config as xc_config
-except:
-    from app_modules.__init__ import _
-    from app_modules.generics import utils
-    from app_modules.generics import encoding
-    from app_modules.generics import xml_utils
-    from app_modules.generics import fs_utils
-    from app_modules.generics import dbm_isis
-    from app_modules.app.config import config as xc_config
+from prodtools import _
+from prodtools import PMC_PATH
+from prodtools.utils import utils
+from prodtools.utils import encoding
+from prodtools.utils import xml_utils
+from prodtools.utils import fs_utils
+from prodtools.utils import dbm_isis
+from prodtools.config import config as xc_config
 
 
 global ucisis
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-FST_ARTICLE = CURRENT_PATH + '/../settings/fst/articles.fst'
-XSL = CURRENT_PATH + '/../../../pmc/v3.0/xsl/xml2pubmed/xml2pubmed.xsl'
+FST_ARTICLE = CURRENT_PATH + '/settings/fst/articles.fst'
+XSL = PMC_PATH + '/v3.0/xsl/xml2pubmed/xml2pubmed.xsl'
 
 
 def find_xml_files_folders(path, folders=[]):
@@ -96,41 +87,41 @@ class InputForm(object):
         if default_path is None:
             self.default_path = CURRENT_PATH
 
-        self.tkFrame.label_frame_xml_folder = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.label_frame_xml_folder = tk.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.label_frame_xml_folder.pack(fill="both", expand="yes")
 
-        self.tkFrame.label_frame_issue_folder = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.label_frame_issue_folder = tk.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.label_frame_issue_folder.pack(fill="both", expand="yes")
 
-        self.tkFrame.label_frame_message = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.label_frame_message = tk.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.label_frame_message.pack(fill="both", expand="yes")
 
-        self.tkFrame.label_frame_from_date = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.label_frame_from_date = tk.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.label_frame_from_date.pack(fill="both", expand="yes")
 
-        self.tkFrame.label_frame_buttons = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
+        self.tkFrame.label_frame_buttons = tk.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.label_frame_buttons.pack(fill="both", expand="yes")
 
         #
-        self.tkFrame.label_issue_folder = Tkinter.Label(self.tkFrame.label_frame_issue_folder, text=_('issue folder (located in serial folder):'), font="Verdana 12 bold")
+        self.tkFrame.label_issue_folder = tk.Label(self.tkFrame.label_frame_issue_folder, text=_('issue folder (located in serial folder):'), font="Verdana 12 bold")
         self.tkFrame.label_issue_folder.pack(side='left')
-        self.tkFrame.input_issue_folder = Tkinter.Label(self.tkFrame.label_frame_issue_folder, width=50, bd=1, bg='gray')
+        self.tkFrame.input_issue_folder = tk.Label(self.tkFrame.label_frame_issue_folder, width=50, bd=1, bg='gray')
         self.tkFrame.input_issue_folder.pack(side='left')
-        self.tkFrame.button_choose_issue_folder = Tkinter.Button(self.tkFrame.label_frame_issue_folder, text=_('choose folder'), command=self.select_issue_folder)
+        self.tkFrame.button_choose_issue_folder = tk.Button(self.tkFrame.label_frame_issue_folder, text=_('choose folder'), command=self.select_issue_folder)
         self.tkFrame.button_choose_issue_folder.pack()
 
-        self.tkFrame.label_from_date = Tkinter.Label(self.tkFrame.label_frame_from_date, text=_('from date'))
+        self.tkFrame.label_from_date = tk.Label(self.tkFrame.label_frame_from_date, text=_('from date'))
         self.tkFrame.label_from_date.pack(side='left')
-        self.tkFrame.input_from_date = Tkinter.Entry(self.tkFrame.label_frame_from_date, bd=5)
+        self.tkFrame.input_from_date = tk.Entry(self.tkFrame.label_frame_from_date, bd=5)
         self.tkFrame.input_from_date.pack(side='right')
 
-        self.tkFrame.label_message = Tkinter.Label(self.tkFrame.label_frame_message)
+        self.tkFrame.label_message = tk.Label(self.tkFrame.label_frame_message)
         self.tkFrame.label_message.pack()
 
-        self.tkFrame.button_ok = Tkinter.Button(self.tkFrame.label_frame_buttons, text=_('ok'), command=self.ok)
+        self.tkFrame.button_ok = tk.Button(self.tkFrame.label_frame_buttons, text=_('ok'), command=self.ok)
         self.tkFrame.button_ok.pack(side='right')
 
-        self.tkFrame.button_cancel = Tkinter.Button(self.tkFrame.label_frame_buttons, text=_('cancel'), command=self.cancel)
+        self.tkFrame.button_cancel = tk.Button(self.tkFrame.label_frame_buttons, text=_('cancel'), command=self.cancel)
         self.tkFrame.button_cancel.pack(side='right')
 
         #self.collection_name = None
@@ -429,10 +420,10 @@ def read_inputs(args):
 
 
 def read_form_inputs(default_path=None):
-    tk_root = Tkinter.Tk()
+    tk_root = tk.Tk()
     tk_root.title('XML 2 PubMed')
 
-    tkFrame = Tkinter.Frame(tk_root)
+    tkFrame = tk.Frame(tk_root)
 
     form = InputForm(tkFrame, default_path)
     form.tkFrame.pack(side="top", fill="both", expand=True)

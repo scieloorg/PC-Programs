@@ -11,11 +11,11 @@ parameters:
 import sys
 import os
 
-from ..generics.xml_utils import (
+from prodtools.utils.xml_utils import (
     transform,
     get_xml_object,
 )
-from ..generics import encoding
+from prodtools.utils import encoding
 
 
 try:
