@@ -3,7 +3,7 @@ import sys
 import unittest
 
 
-from app_modules.generics import fs_utils
+from prodtools.utils import fs_utils
 
 
 python_version = sys.version_info.major

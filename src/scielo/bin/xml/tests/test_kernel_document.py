@@ -4,7 +4,7 @@ import os
 
 from xml.etree import ElementTree as etree
 from copy import deepcopy
-from app_modules.app.data import kernel_document
+from prodtools.data import kernel_document
 
 
 class Article:
