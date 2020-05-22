@@ -29,7 +29,6 @@ class MkpDownloadJournalListGUI(tk.Frame):
     def __init__(self, master, collections, filename, temp_filename):
         super().__init__(master)
         self.master = master
-
         self.collections = collections
         self.filename = filename
         self.temp_filename = temp_filename
