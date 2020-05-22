@@ -2,7 +2,7 @@
 
 import json
 
-from ...generics import encoding
+from prodtools.utils import encoding
 
 
 class Wayta(object):

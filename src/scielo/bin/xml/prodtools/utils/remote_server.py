@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from . import system
+from prodtools.utils import system
 
 
 class RemoteServer(object):

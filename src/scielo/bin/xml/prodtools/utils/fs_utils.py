@@ -6,8 +6,8 @@ import tempfile
 from zipfile import ZipFile
 from datetime import datetime
 
-from . import files_extractor
-from . import encoding
+from prodtool.utils import files_extractor
+from prodtool.utils import encoding
 
 
 try:

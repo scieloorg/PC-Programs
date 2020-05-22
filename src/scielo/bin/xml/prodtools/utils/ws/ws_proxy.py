@@ -1,25 +1,7 @@
 # code: utf-8
 
-import json
-import socket
 
-try:
-    import urllib.request as urllib_request
-    from urllib.parse import urlencode as urllib_parse_urlencode
-    from urllib.parse import urlparse, urlencode
-    from urllib.request import urlopen, Request
-    from urllib.request import ProxyHandler, build_opener, install_opener
-    from urllib.error import HTTPError, URLError
-except ImportError:
-    import urllib as urllib_request
-    from urllib import urlencode as urllib_parse_urlencode
-    from urlparse import urlparse
-    from urllib import urlencode
-    from urllib2 import urlopen, Request, HTTPError, URLError
-    from urllib2 import ProxyHandler, build_opener, install_opener
-
-
-from .. import encoding
+from urllib.request import ProxyHandler, build_opener, install_opener
 
 
 def fix_ip(ip):

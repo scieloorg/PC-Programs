@@ -2,8 +2,6 @@
 import difflib
 from datetime import datetime
 
-from . import encoding
-
 
 IMDEBUGGING = False
 

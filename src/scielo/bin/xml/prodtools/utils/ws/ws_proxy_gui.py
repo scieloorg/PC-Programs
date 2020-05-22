@@ -6,6 +6,8 @@ except ImportError:
     except:
         print('no Tkinter')
 
+from prodtools.utils import encoding
+
 
 class ProxyGUI(tk.Frame):
 
@@ -94,4 +96,3 @@ def display_proxy_form(registered_ip, registered_port, debug=False):
         encoding.debugging('display_proxy_form()', r)
     tk_root.destroy()
     return r
-
