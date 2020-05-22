@@ -2,11 +2,11 @@
 import os
 from datetime import datetime
 
-from ...__init__ import _
-from ...generics import utils
-from ...generics import encoding
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
+from prodtools import _
+from prodtools.utils import utils
+from prodtools.utils import encoding
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
 from . import article_data_reports
 from . import pkg_articles_validations
 from . import validations as validations_module

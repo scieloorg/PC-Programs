@@ -1,12 +1,12 @@
 # coding=utf-8
 import re
 
-from ...__init__ import _
-from ...generics.reports import validation_status
-from ..data import attributes
+from prodtools import _
+from prodtools.reports import validation_status
+from prodtools.data import attributes
 from . import data_validations
-from ...generics import xml_utils
-from ...generics import utils
+from prodtools.utils import xml_utils
+from prodtools.utils import utils
 
 
 def validate_publication_type(publication_type):

@@ -7,16 +7,16 @@ from prodtools import _
 from prodtools.utils import img_utils
 from prodtools.utils import utils
 from prodtools.utils import encoding
+from prodtools.data import article_utils
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
 from prodtools.data import attributes
-from prodtools.utils import article_utils
-from . import ref_validations
-from . import data_validations
-from . import orcid
-from prodtools.pkg_processors import xml_versions
-from . import article_disp_formula
-from . import article_tablewrap
+from prodtools.validations import ref_validations
+from prodtools.validations import data_validations
+from prodtools.validations import orcid
+from prodtools.validations import article_disp_formula
+from prodtools.validations import article_tablewrap
+from prodtools.processing import xml_versions
 
 
 def join_not_None_items(items, sep=', '):

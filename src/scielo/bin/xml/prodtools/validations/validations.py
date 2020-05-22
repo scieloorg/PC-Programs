@@ -2,10 +2,10 @@
 
 import os
 
-from ...__init__ import _
-from ...generics import fs_utils
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
+from prodtools import _
+from prodtools.utils import fs_utils
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
 
 
 class ValidationsResultItems(dict):

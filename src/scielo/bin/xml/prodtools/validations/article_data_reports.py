@@ -2,14 +2,14 @@
 import os
 from datetime import datetime
 
-from ...__init__ import _
-from ...generics import utils
-from ...generics import xml_utils
-from ...generics.reports import html_reports
-from ...generics.reports import validation_status
-from .. import article_utils
-from ..data import attributes
-from ..data.article import PersonAuthor, CorpAuthor
+from prodtools import _
+from prodtools.utils import utils
+from prodtools.utils import xml_utils
+from prodtools.reports import html_reports
+from prodtools.reports import validation_status
+from prodtools.data import article_utils
+from prodtools.data import attributes
+from prodtools.data.article import PersonAuthor, CorpAuthor
 
 
 log_items = []

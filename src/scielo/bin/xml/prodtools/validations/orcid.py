@@ -1,7 +1,7 @@
 # coding = utf-8
-from ... import _
-from ...generics.reports import validation_status
-from ...generics.reports import html_reports
+from prodtools import _
+from prodtools.reports import validation_status
+from prodtools.reports import html_reports
 
 
 class ORCIDValidator:

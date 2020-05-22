@@ -2,13 +2,12 @@
 import os
 from datetime import datetime
 
-from ...__init__ import _
-from ...generics import encoding
-from ...generics import fs_utils
-from ...generics import xml_utils
-
-from ...generics.reports import validation_status
-from ..pkg_processors import xml_versions
+from prodtools import _
+from prodtools.utils import encoding
+from prodtools.utils import fs_utils
+from prodtools.utils import xml_utils
+from prodtools.reports import validation_status
+from prodtools.processing import xml_versions
 
 
 IS_PACKTOOLS_INSTALLED = False

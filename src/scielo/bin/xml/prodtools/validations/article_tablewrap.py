@@ -1,7 +1,7 @@
 # coding=utf-8
 
-from ...__init__ import _
-from ...generics.reports import validation_status
+from prodtools import _
+from prodtools.reports import validation_status
 
 
 class ArticleTableWrapValidator(object):
