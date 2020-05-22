@@ -1,14 +1,18 @@
 # coding=utf-8
-
+import logging
+import logging.config
 import os
 
 from datetime import datetime
 
-from ...generics import fs_utils
-from ...generics import logger
-from ...generics import system
-from . import filestransfer
-from ...__init__ import LOG_PATH
+from prodtools.utils import fs_utils
+from prodtools.utils import system
+from prodtools.server import filestransfer
+from prodtools import LOG_PATH
+
+
+logging.config.fileConfig("logging.conf")
+logger = logging.getLogger(__name__)
 
 
 def is_finished(permission_file):

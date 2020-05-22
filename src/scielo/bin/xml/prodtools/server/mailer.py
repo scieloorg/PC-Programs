@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from ...generics import email_service
+from prodtools.utils import email_service
 
 
 class Mailer(object):
