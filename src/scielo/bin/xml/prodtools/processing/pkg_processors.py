@@ -7,7 +7,6 @@ import shutil
 from prodtools import _
 from prodtools import XPM_VERSION_FILE_PATH
 from prodtools import FST_PATH
-
 from prodtools.utils import encoding
 from prodtools.utils import fs_utils
 from prodtools.utils.dbm import dbm_isis
