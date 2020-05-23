@@ -1,6 +1,9 @@
 # coding=utf-8
-import os
+import logging
+import logging.config
 import sys
+import os
+import argparse
 import shutil
 import tkinter as tk
 
@@ -11,15 +14,17 @@ para gerar XML para o PubMed
 from prodtools import _
 from prodtools import PMC_PATH
 from prodtools.utils import utils
-from prodtools.utils import encoding
 from prodtools.utils import xml_utils
 from prodtools.utils import fs_utils
-from prodtools.utils import dbm_isis
+from prodtools.utils.dbm import dbm_isis
 from prodtools.config import config as xc_config
 
 
 global ucisis
 
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 FST_ARTICLE = CURRENT_PATH + '/settings/fst/articles.fst'
@@ -360,32 +365,48 @@ class PubMedXMLMaker(object):
                 os.unlink(self.issue_stuff.temp_path + '/' + item)
 
 
-def call_execute_pubmed_procedures(args):
+def main():
 
-    script, issue_path, from_date, final_date, debug = read_inputs(args)
-    issue_path = issue_path.replace('\\', '/').replace('//', '/')
+    parser = argparse.ArgumentParser(description='XML PubMed cli utility')
+    parser.add_argument(
+        "issue_path", nargs="?", default='',
+        help="filesystem path or URL to the issue directory")
+    parser.add_argument(
+        "from_date", nargs="?", default='',
+        help="date iso YYYYMMDD, filter to get selected documents"
+    )
+    parser.add_argument(
+        "final_date", nargs="?", default='',
+        help="date iso YYYYMMDD, filter to name file"
+    )
+    parser.add_argument('--debug', action='store_true',
+                        help='to register log')
+    parser.add_argument('--loglevel', default='WARNING')
 
-    if issue_path is None:
-        # GUI
+    args = parser.parse_args()
+
+    logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
+
+    issue_path = args.issue_path
+    from_date = args.from_date
+    final_date = args.final_date
+    debug = args.debug
+
+    if not issue_path:
         issue_path, from_date = read_form_inputs()
-        script = 'exit'
+        if issue_path is None:
+            sys.exit("No issue path was informed. Unable to continue. ")
         final_date = utils.now()[0]
         debug = False
 
     errors = []
-    if issue_path is None and script != 'exit':
-        errors.append('ERROR: ' + _('Incorrect parameters'))
-        errors.append('\n' + _('Usage') + ':')
-        errors.append('python ' + script + ' <issue_path>')
-        errors.append(_('where') + ':')
-        errors.append('  <issue_path> = ' + _('issue folder in serial folder'))
-
     if not os.path.isdir(issue_path):
         errors.append(_('issue path is not a folder'))
 
     if len(errors) == 0:
         config = xc_config.Configuration()
-        ucisis = dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660))
+        ucisis = dbm_isis.UCISIS(
+            dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660))
 
         if ucisis.is_available:
             issue_stuff = IssueStuff(ucisis, issue_path, from_date, final_date)
@@ -397,26 +418,7 @@ def call_execute_pubmed_procedures(args):
             errors.append(_('cisis expected'))
 
     if len(errors) > 0:
-        utils.display_message('\n'.join(errors))
-
-
-def read_inputs(args):
-    args = encoding.fix_args(args)
-    script = None
-    issue_path = None
-    from_date = None
-    final_date = None
-    debug = False
-    if '--debug' in args:
-        debug = True
-        args = [item for item in args if item != '--debug']
-    if len(args) == 2:
-        script, issue_path = args
-    elif len(args) == 3:
-        script, issue_path, from_date = args
-    elif len(args) == 4:
-        script, issue_path, from_date, final_date = args
-    return (script, issue_path, from_date, final_date, debug)
+        print('\n'.join(errors))
 
 
 def read_form_inputs(default_path=None):
@@ -441,4 +443,5 @@ def format_pids(pids):
     )
 
 
-call_execute_pubmed_procedures(sys.argv)
+if __name__ == "__main__":
+    main()
