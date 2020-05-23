@@ -96,6 +96,7 @@ def main():
                         help='generates also PMC package')
 
     parser.add_argument('--loglevel', default='WARNING')
+
     args = parser.parse_args()
 
     logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
