@@ -108,8 +108,8 @@ echo Generating XML
 call temp\generateXML4scilista.bat
 
 if not "%1"=="PUBMED" goto END
-if not exist ..\..\..\bin\xml\app_modules\tools4dsk\xml_pubmed.py goto END
-%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'cd ..\..\..\bin\xml'/,'python xml_pubmed.py %Serial_Directory%\',v1,'\',v2,' ',v4,' ',v5/ fi" now> temp\xml_pubmed.bat
+if not exist ..\..\..\bin\xml\prodtools\xml_pubmed.py goto END
+%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'cd ..\..\..\bin\xml'/,'scielo2pubmed %Serial_Directory%\',v1,'\',v2,' ',v4,' ',v5/ fi" now> temp\xml_pubmed.bat
 call temp\xml_pubmed.bat
 goto END
 
