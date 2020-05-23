@@ -87,6 +87,9 @@ class MkpDownloadJournalListGUI(tk.Frame):
         label3 = ttk.Label(self, text=_("Finished"))
         label3.grid(column=0, row=ROW_FINISHED)
 
+        label3 = ttk.Label(self, text=_("Finished"))
+        label3.grid(column=0, row=ROW_FINISHED)
+
 
 def open_main_window(
         collections, destination_filename, temp_filename):
