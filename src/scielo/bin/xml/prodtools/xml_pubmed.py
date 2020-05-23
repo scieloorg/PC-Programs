@@ -26,6 +26,9 @@ logger = logging.getLogger(__name__)
 
 global ucisis
 
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
+
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 FST_ARTICLE = CURRENT_PATH + '/settings/fst/articles.fst'
 XSL = DTD_AND_XSL_PATH + '/v3.0/xsl/xml2pubmed/xml2pubmed.xsl'
