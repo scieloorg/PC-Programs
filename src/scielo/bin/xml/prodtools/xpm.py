@@ -4,7 +4,6 @@ import argparse
 import logging
 import logging.config
 import os
-import sys
 
 from prodtools import _
 from prodtools import form

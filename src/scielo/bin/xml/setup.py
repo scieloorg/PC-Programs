@@ -78,7 +78,7 @@ setup(
             # "scieloxc=prodtools.xc:main",
             # "scielojournals=prodtools.download_markup_journals:main",
             # "scielomkprefid=prodtools.markup_ref_id:main",
-            # "xml_transform=prodtools.xml_transform:main",
+            "xml_transform=prodtools.xml_transform:main",
             # "scielo2pubmed=prodtools.xml_pubmed:main",
         ]
     }
