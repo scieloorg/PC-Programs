@@ -4,6 +4,7 @@ import argparse
 import logging
 import logging.config
 import os
+import sys
 
 from prodtools import _
 from prodtools import form
@@ -76,22 +77,7 @@ def evaluate_xml_path(xml_path):
     return sgm_xml, xml_list, errors
 
 
-def requirements_checker():
-    required = []
-    try:
-        from PIL import Image
-    except ImportError:
-        required.append('pillow')
-    try:
-        import packtools
-    except ImportError:
-        required.append('packtools')
-    return required
-
-
 def main():
-
-    # xpm_version = pkg_resources.get_distribution('xpm').version
 
     parser = argparse.ArgumentParser(
         description='XML Package Maker cli utility')
@@ -109,36 +95,30 @@ def main():
                         help='generates also PMC package')
 
     parser.add_argument('--loglevel', default='WARNING')
+
     args = parser.parse_args()
 
     logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
 
-    reqs = requirements_checker()
-    if reqs:
-        print('\n'.join(['not found: {}'.format(req) for req in reqs]))
+    xml_path = args.xml_path
+    acron = args.acron
+    INTERATIVE = not args.auto
+    GENERATE_PMC = args.pmc
 
+    if not xml_path and INTERATIVE:
+        display_form("xpm")
     else:
-        args = parser.parse_args()
+        sgmxml, xml_list, errors = evaluate_xml_path(xml_path)
 
-        xml_path = args.xml_path
-        acron = args.acron
-        INTERATIVE = not args.auto
-        GENERATE_PMC = args.pmc
+        if sgmxml and not acron:
+            errors.append(_('Inform the acron'))
 
-        if not xml_path and INTERATIVE:
-            display_form("xpm")
+        if errors:
+            print("\n".join(errors))
+            parser.print_usage()
+            parser.print_help()
         else:
-            sgmxml, xml_list, errors = evaluate_xml_path(xml_path)
-
-            if sgmxml and not acron:
-                errors.append(_('Inform the acron'))
-
-            if errors:
-                print("\n".join(errors))
-                parser.print_usage()
-                parser.print_help()
-            else:
-                execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml, acron)
+            execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml, acron)
 
 
 if __name__ == '__main__':
