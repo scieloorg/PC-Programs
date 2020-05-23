@@ -17,7 +17,7 @@ class TestExporter(unittest.TestCase):
             with open(os.path.join(self.files_path, item), "w") as fp:
                 fp.write(item)
 
-    @patch('app_modules.generics.exporter.FTP')
+    @patch('prodtools.utils.exporter.FTP')
     def test_export(self, MockFTP):
         data = dict(
             (
