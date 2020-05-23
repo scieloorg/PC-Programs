@@ -18,21 +18,18 @@ class Mailer(object):
         if self.config.is_enabled_email_service:
             self.send_message(self.config.email_to, self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
 
-    def mail_step1_failure(self, package_folder, e):
+    def mail_failure(self, subject, package_folder, e):
         if self.config.is_enabled_email_service:
+            subject = ("{}: {}").format(
+                    self.config.email_subject_invalid_packages.replace(
+                        "Invalid packages", subject),
+                    package_folder)
             self.send_message(
-                self.config.email_to_adm,
-                '[Step 1]' + self.config.email_subject_invalid_packages,
-                self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
+                self.config.email_to,
+                subject,
+                '\n' + package_folder + '\n' + str(e))
 
     def mail_results(self, package_folder, results, report_location):
         if self.config.is_enabled_email_service:
             self.send_message(self.config.email_to, self.config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
 
-    def mail_step2_failure(self, package_folder, e):
-        if self.config.is_enabled_email_service:
-            self.send_message(self.config.email_to_adm, '[Step 2]' + self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))
-
-    def mail_step3_failure(self, package_folder, e):
-        if self.config.is_enabled_email_service:
-            self.send_message(self.config.email_to_adm, '[Step 3]' + self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n' + package_folder + '\n' + str(e))

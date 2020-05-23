@@ -3,7 +3,7 @@
 from prodtools.utils import remote_server
 
 
-class FilesTransfer(object):
+class SciELOWebFilesTransfer(object):
 
     def __init__(self, config, _logger=None):
         self.config = config

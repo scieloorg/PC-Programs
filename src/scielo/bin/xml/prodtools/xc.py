@@ -1,5 +1,7 @@
 # coding=utf-8
-
+import logging
+import logging.config
+import argparse
 import os
 import shutil
 from datetime import datetime
@@ -8,78 +10,104 @@ from prodtools import _
 from prodtools import form
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
-from prodtools.utils import xml_utils
 from prodtools.processing import pkg_processors
 from prodtools.processing.sps_pkgmaker import PackageMaker
-from prodtools.data import workarea
 from prodtools.server import mailer
 from prodtools.server import filestransfer
+from prodtools.server import xc_gerapadrao
 from prodtools.config import config
+from prodtools.utils import ftp_service
 
 
-def call_converter(args, version='1.0'):
-    script, package_path, collection_acron = read_inputs(args)
-    if all([package_path, collection_acron]):
-        errors = xml_utils.get_errors_if_xml_not_found(package_path)
-        if len(errors) > 0:
-            messages = []
-            messages.append('\n===== ' + _('ATTENTION') + ' =====\n')
-            messages.append('ERROR: ' + _('Incorrect parameters'))
-            messages.append('\n' + _('Usage') + ':')
-            messages.append('python xml_converter.py <xml_folder> | <collection_acron>')
-            messages.append(_('where') + ':')
-            messages.append('  <xml_folder> = ' + _('path of folder which contains'))
-            messages.append('  <collection_acron> = ' + _('collection acron'))
-            messages.append('\n'.join(errors))
-            encoding.display_message('\n'.join(messages))
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger(__name__)
 
-    xc_reception = XC_Reception(config.Configuration(config.get_configuration_filename(collection_acron)))
-    if package_path is None and collection_acron is None:
-        xc_reception.display_form()
-    else:
-        package_paths = [package_path]
-        if collection_acron is not None:
-            package_paths = xc_reception.queued_packages()
-        for package_path in package_paths:
+
+class ForbiddenOperationError(Exception):
+    pass
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='XML Converter for Desktop cli utility')
+    parser.add_argument(
+        "package_path", nargs='?',
+        help="filesystem path to the XML package folder")
+    parser.add_argument('--loglevel', default='WARNING')
+
+    args = parser.parse_args()
+
+    logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
+
+    package_path = args.package_path
+
+    reception = Reception()
+    reception.receive_package(package_path)
+
+
+class Reception(object):
+
+    def __init__(self, collection_acron=None):
+        self.collection_acron = collection_acron
+        self.config = config.Configuration(
+            config.get_configuration_filename(collection_acron))
+        self.proc = pkg_processors.PkgProcessor(
+            self.config, INTERATIVE=self.config.interative_mode, stage='xc')
+        self.mailer = mailer.Mailer(self.config)
+        self.transfer = filestransfer.SciELOWebFilesTransfer(self.config)
+
+    def download_packages(self):
+        configuration = self.config
+        try:
+            ftp = ftp_service.FTPService(
+                configuration.ftp_server,
+                configuration.ftp_user,
+                configuration.ftp_pswd)
+            if not os.path.isdir(configuration.download_path):
+                os.makedirs(configuration.download_path)
+            files = ftp.download_files(
+                configuration.download_path, configuration.ftp_dir)
+
+            if len(files) > 0 and configuration.mailer:
+                configuration.mailer.send_message(
+                    configuration.email_to,
+                    configuration.email_subject_packages_receipt,
+                    configuration.email_text_packages_receipt +
+                    '\n' + ftp.registered_actions)
+        except Exception as e:
+            self.inform_failure(
+                "", str(e),
+                subject=_('Something went wrong as downloading packages'))
+
+    def receive_package(self, package_path=None):
+        if self.collection_acron:
+            return self._receive_package_for_server()
+        else:
+            return self._receive_package_for_desktop(package_path)
+
+    def _receive_package_for_desktop(self, package_path=None):
+        if self.collection_acron:
+            raise ForbiddenOperationError(
+                "Not allowed to call receive_package_for_desktop")
+        if package_path is None and self.config.interative_mode:
+            self.display_form()
+        elif package_path:
             try:
-                xc_reception.convert_package(package_path)
+                self.convert_package(package_path)
             except Exception as e:
                 encoding.report_exception('convert_package', e, package_path)
                 raise
 
-
-def read_inputs(args):
-    # python xml_converter.py <xml_src>
-    # python xml_converter.py <collection_acron>
-    args = encoding.fix_args(args)
-    package_path = None
-    script = None
-    collection_acron = None
-    if len(args) == 2:
-        script, param = args
-        if os.path.isfile(param) or os.path.isdir(param):
-            package_path = param
-        else:
-            collection_acron = param
-
-    return (script, package_path, collection_acron)
-
-
-class XC_Reception(object):
-
-    def __init__(self, configuration):
-        self.configuration = configuration
-
-        self.mailer = mailer.Mailer(configuration)
-        self.transfer = filestransfer.FilesTransfer(configuration)
-        self.proc = pkg_processors.PkgProcessor(
-            configuration,
-            INTERATIVE=configuration.interative_mode, stage='xc')
+    def _receive_package_for_server(self):
+        if not self.collection_acron:
+            raise ForbiddenOperationError(
+                "Not allowed to call _receive_package_for_server")
+        for package_path in self._queued_packages():
+            self.convert_package(package_path)
 
     def display_form(self):
-        if self.configuration.interative_mode is True:
-            form.display_form(
-                self.proc.stage == 'xc', None, self.call_convert_package)
+        form.display_form(
+            self.proc.stage == 'xc', None, self.call_convert_package)
 
     def call_convert_package(self, package_path):
         self.convert_package(package_path)
@@ -88,49 +116,80 @@ class XC_Reception(object):
     def convert_package(self, package_path):
         if package_path is None:
             return False
-        pkgfolder = workarea.MultiDocsPackageFolder(package_path)
-        encoding.display_message(package_path)
-        xc_status = 'interrupted'
 
-        stage = 'xc'
+        encoding.display_message(package_path)
         xml_path = package_path
-        pkg_maker = PackageMaker(xml_path, xml_path + "_" + stage)
-        pkg = pkg_maker.pack(pkgfolder.xml_list)
 
         scilista_items = []
+        xc_status = 'interrupted'
+        mail_info = "subject", "message"
+        result = scilista_items, xc_status, mail_info
 
+        # FIXME
+        output_path = xml_path + "_" + self.proc.stage
+
+        pkg_maker = PackageMaker(xml_path, output_path)
+        pkg = pkg_maker.pack()
+        pkg_name = pkg.package_folder.name
         try:
             if len(pkg.articles) > 0:
-                scilista_items, xc_status, mail_info = self.proc.convert_package(pkg)
-                encoding.display_message(scilista_items)
+                result = self.proc.convert_package(pkg)
+                scilista_items, xc_status, mail_info = result
         except Exception as e:
-
-            if self.configuration.queue_path is not None:
+            if self.config.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
-            self.mailer.mail_step1_failure(pkgfolder.name, e)
-            encoding.report_exception('convert_package', e, pkgfolder.name)
-            raise
-        if len(scilista_items) > 0:
-            acron, issue_id = scilista_items[0].split(' ')
-            try:
+            self.inform_failure(pkg_name, e)
+        else:
+            if len(scilista_items) > 0:
+                acron, issue_id = scilista_items[0].split(' ')
                 if xc_status in ['accepted', 'approved']:
-                    if self.configuration.collection_scilista is not None:
-                        fs_utils.append_file(self.configuration.collection_scilista, '\n'.join(scilista_items) + '\n')
-                    self.transfer.transfer_website_files(acron, issue_id)
-            except Exception as e:
-                self.mailer.mail_step2_failure(pkgfolder.name, e)
-                raise
-            try:
-                if mail_info is not None and self.configuration.email_subject_package_evaluation is not None:
-                    mail_subject, mail_content = mail_info
-                    self.mailer.mail_results(pkgfolder.name, mail_subject, mail_content)
-                self.transfer.transfer_report_files(acron, issue_id)
+                    self._update_scilista(pkg_name, scilista_items)
+                    self._update_website_files(pkg_name, acron, issue_id)
+                self._mail_results(pkg_name, mail_info)
+                self._update_report_files(pkg_name, acron, issue_id)
 
-            except Exception as e:
-                self.mailer.mail_step3_failure(pkgfolder.name, e)
-                if len(package_path) == 1:
-                    encoding.report_exception('convert_package()', e, 'exception as step 3')
         encoding.display_message(_('finished'))
+
+    def inform_failure(self, package_name, msg, subject=None):
+        if self.mailer:
+            subject = subject or _("Failure during or after conversion")
+            self.mailer.mail_failure(subject, package_name, msg)
+
+    def _update_scilista(self, package_name, scilista_items):
+        if self.config.collection_scilista:
+            try:
+                content = '\n'.join(scilista_items) + '\n'
+                fs_utils.append_file(
+                    self.config.collection_scilista,
+                    content)
+            except Exception as e:
+                msg = _("Unable to update scilista {} with {}: {}"
+                        ).format(self.config.collection_scilista, content, e)
+                self.inform_failure(package_name, msg)
+
+    def _mail_results(self, pkg_name, mail_info):
+        if self.mailer:
+            if mail_info and self.config.email_subject_package_evaluation:
+                mail_subject, mail_content = mail_info
+                self.mailer.mail_results(pkg_name, mail_subject, mail_content)
+
+    def _update_website_files(self, package_name, acron, issue_id):
+        if self.transfer:
+            try:
+                self.transfer.transfer_website_files(acron, issue_id)
+            except Exception as e:
+                msg = _("Unable to transfer xml, pdf, images files"
+                        " of {} {}: {}").format(acron, issue_id, e)
+                self.inform_failure(package_name, msg)
+
+    def _update_report_files(self, package_name, acron, issue_id):
+        if self.transfer:
+            try:
+                self.transfer.transfer_report_files(acron, issue_id)
+            except Exception as e:
+                msg = _("Unable to transfer report files"
+                        " of {} {}: {}").format(acron, issue_id, e)
+                self.inform_failure(package_name, msg)
 
     def queued_packages(self):
         pkg_paths, invalid_pkg_files = self.queue_packages()
@@ -188,3 +247,10 @@ class XC_Reception(object):
         fs_utils.delete_file_or_folder(temp_path)
 
         return (pkg_paths, invalid_pkg_files)
+
+    def gerapadrao(self):
+        xc_gerapadrao.gerapadrao(
+            self.collection_acron, self.config, self.mailer)
+
+if __name__ == "__main__":
+    main()
