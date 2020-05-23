@@ -4,99 +4,106 @@ import csv
 import codecs
 import shutil
 
-
-try:
-    import tkinter as tk
-except ImportError:
-    import Tkinter as tk
-
+import tkinter as tk
+from tkinter import ttk
 
 from prodtools.db import ws_journals
 from prodtools.config import config
 from prodtools import BIN_MARKUP_PATH
 from prodtools import BIN_PATH
+from prodtools import _
+
+
+ROW_MSG = 9
+ROW_SELECT_A_COLLECTION = 9
+ROW_COMBOBOX = 10
+ROW_SELECTED = 11
+ROW_DOWNLOADING = 12
+ROW_DOWNLOADED = 13
+ROW_FINISHED = 14
+ROW_DOWNLOAD_BUTTON = 21
+ROW_CLOSE_BUTTON = 22
 
 
 class MkpDownloadJournalListGUI(tk.Frame):
+    def __init__(self, master, collections, filename, temp_filename):
+        super().__init__(master)
+        self.master = master
 
-    def __init__(self, tk_root, collections, filename, temp_filename, updated):
-        tk.Frame.__init__(self, tk_root)
-        self.tk_root = tk_root
         self.collections = collections
         self.filename = filename
         self.temp_filename = temp_filename
 
-        collection_frame = tk.Frame(self)
-        collection_frame.pack(padx=10, pady=5)
+    def configure(self):
+        self.master.minsize(400, 200)
+        self.master.title(_('Download journals data'))
+        self.master.wm_iconbitmap(BIN_PATH + '/cfg/Scielo.ico')
+        self.pack()
 
-        buttons_frame = tk.Frame(self)
-        buttons_frame.pack(padx=10, pady=5)
-
-        message_frame = tk.Frame(self)
-        message_frame.pack(padx=10, pady=5)
-
-        collection_label = tk.Label(collection_frame, text='Select a collection: ', font="Verdana 12 bold")
-        collection_label.pack(side='left')
-
-        execute_button = tk.Button(collection_frame, text='download', command=self.download)
-        execute_button.pack(side='right')
+        label = ttk.Label(self, text=_('Select a collection:'))
+        label.grid(column=0, row=ROW_SELECT_A_COLLECTION)
 
         options = ['All']
-        options.extend(sorted(collections.keys()))
-
+        options.extend(sorted(self.collections.keys()))
         self.choice = tk.StringVar(self)
         self.choice.set(options[0])
-        #options_menu = tk.OptionMenu(collection_frame, self.choice, *options, command=self.download)
-        #options_menu.pack()
+        combobox = ttk.Combobox(
+            self, width=30, textvariable=self.choice)
+        combobox['values'] = tuple(options)
+        combobox.grid(column=0, row=ROW_COMBOBOX)
 
-        menu_options = apply(tk.OptionMenu, (collection_frame, self.choice) + tuple(options))
-        menu_options.pack()
+        execute_button = ttk.Button(
+            self, text=_('download'), command=self.download)
+        execute_button.grid(column=0, row=ROW_DOWNLOAD_BUTTON)
 
-        close_button = tk.Button(buttons_frame, text='close', command=lambda: self.tk_root.destroy())
-        close_button.pack(side='right')
-
-        self.message = tk.Message(message_frame)
-        self.message.pack(padx=10, pady=5)
-
+        close_button = ttk.Button(
+            self, text=_('close'),
+            command=lambda: self.master.destroy())
+        close_button.grid(column=0, row=ROW_CLOSE_BUTTON)
+        self.mainloop()
 
     def download(self):
         choice = self.choice.get()
-        self.message.config(text=choice, bg='white')
+
+        msg = ttk.Label(self,
+                        text=_("Select one collection to use its journals "
+                               "data for the Markup Program"))
+        msg.grid(column=0, row=ROW_MSG)
+
+        label1 = ttk.Label(
+            self, text=_("Selecionado: {}".format(choice)))
+        label1.grid(column=0, row=ROW_SELECTED)
+
         if choice == 'All':
             choice = None
+        label2 = ttk.Label(self, text=_("Downloading.."))
+        label2.grid(column=0, row=ROW_DOWNLOADING)
         journals = get_journals_list(self.collections, choice)
-        if os.path.isfile(self.temp_filename):
-            os.unlink(self.temp_filename)
-        generate_input_for_markup(journals, self.temp_filename)
-        while not os.path.isfile(self.temp_filename):
-            pass
+        generate_input_for_markup(journals, self.temp_filename, self.filename)
 
-        if os.path.isfile(self.temp_filename):
-            shutil.copyfile(self.temp_filename, self.filename)
+        label4 = ttk.Label(
+            self, text=_("Downloaded: {} journals").format(len(journals)))
+        label4.grid(column=0, row=ROW_DOWNLOADED)
 
-        self.message.config(text='done!', bg='white')
-        #self.message.update_idletasks()
+        label3 = ttk.Label(self, text=_("Finished"))
+        label3.grid(column=0, row=ROW_FINISHED)
 
 
-def open_main_window(collections, destination_filename, temp_filename, updated):
-    tk_root = tk.Tk()
-    tk_root.iconbitmap(BIN_PATH + '/cfg/Scielo.ico')
-
-    tk_root.title('Download journals data')
-
-    app = MkpDownloadJournalListGUI(tk_root, collections, destination_filename, temp_filename, updated)
-    app.pack(side="top", fill="both", expand=True)
-    app.focus_set()
-    app.mainloop()
+def open_main_window(
+        collections, destination_filename, temp_filename):
+    root = tk.Tk()
+    app = MkpDownloadJournalListGUI(
+        root, collections, destination_filename, temp_filename)
+    app.configure()
+    #app.mainloop()
 
 
 def journals_by_collection(filename):
     collections = {}
-    with open(filename, 'rb') as csvfile:
+    with open(filename, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter='\t')
         for item in spamreader:
             if len(item) >= 10:
-                item = [e.decode('utf-8') for e in item]
                 if item[1] != 'ISSN':
                     j = {}
                     j['collection'] = item[0]
@@ -114,7 +121,7 @@ def journals_by_collection(filename):
                     _col = j.get('collection-name')
                     if _col == '':
                         _col = j.get('collection')
-                    if not _col in collections.keys():
+                    if _col not in collections.keys():
                         collections[_col] = []
                     collections[_col].append(j)
         if 'Symbol' in collections.keys():
@@ -127,13 +134,13 @@ def journals_by_collection(filename):
 
 def get_journals_list(collections, collection_name=None):
     journals = {}
-    if collection_name is not None:
+
+    if collection_name:
         journals = get_collection_journals_list(collections, collection_name)
-        if len(journals) == 0:
-            _k = collections.keys()[0]
-            journals = get_collection_journals_list(collections, _k)
+
     if len(journals) == 0:
         journals = get_all_journals_list(collections)
+
     c = []
     for k in sorted(journals.keys()):
         c.append(journals[k])
@@ -170,13 +177,22 @@ def get_all_journals_list(collections):
     return journals
 
 
-def generate_input_for_markup(journals, filename):
-    new_items = []
-    for item in journals:
-        if not isinstance(item, unicode):
-            item = item.decode('utf-8')
-        new_items.append(item.encode('cp1252'))
-    codecs.open(filename, mode='w+').write('\n\r'.join(new_items))
+def generate_input_for_markup(journals, tmp_filepath, journals_filepath):
+    if os.path.isfile(tmp_filepath):
+        os.unlink(tmp_filepath)
+
+    content = "\r\n".join(journals)
+    with codecs.open(tmp_filepath.replace(".csv", ".utf8.csv"),
+                     mode='w+', encoding="utf-8") as fp:
+        fp.write(content)
+
+    content = content.encode("cp1252")
+    content = content.decode("cp1252")
+    with codecs.open(tmp_filepath, mode='w+', encoding="cp1252") as fp:
+        fp.write(content)
+
+    if os.path.isfile(tmp_filepath):
+        shutil.copyfile(tmp_filepath, journals_filepath)
 
 
 def main():
@@ -196,7 +212,7 @@ def main():
         _ws_journals.downloaded_journals_filename)
     open_main_window(
         journals_collections, markup_journals_filename,
-        tmp_mkp_journal_filepath, True)
+        tmp_mkp_journal_filepath)
 
 
 if __name__ == "__main__":

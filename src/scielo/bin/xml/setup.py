@@ -73,13 +73,14 @@ setup(
     entry_points={
         "console_scripts":[
             "scieloxpm=prodtools.xpm:main",
+            "scielojournals=prodtools.download_markup_journals:main",
+            # "scieloxc=prodtools.xc:main",
+            # "scielo2pubmed=prodtools.xml_pubmed:main",
+            # "scielomkprefid=prodtools.markup_ref_id:main",
             "xml_package_maker=prodtools.xpm:main",
             "xml_package_maker.bat=prodtools.xpm:main",
-            # "scieloxc=prodtools.xc:main",
-            # "scielojournals=prodtools.download_markup_journals:main",
-            # "scielomkprefid=prodtools.markup_ref_id:main",
+            "download_markup_journals=prodtools.download_markup_journals:main",
             "xml_transform=prodtools.xml_transform:main",
-            # "scielo2pubmed=prodtools.xml_pubmed:main",
         ]
     }
 )
