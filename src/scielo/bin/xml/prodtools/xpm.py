@@ -1,10 +1,10 @@
 # coding=utf-8
+from __future__ import print_function, unicode_literals
+import argparse
 import logging
 import logging.config
-
 import os
 
-from prodtools.utils import encoding
 from prodtools import _
 from prodtools import form
 from prodtools.config import config
@@ -15,22 +15,6 @@ from prodtools.processing.sps_pkgmaker import PackageMaker
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
-
-
-def call_make_packages(args, version):
-    script, xml_path, acron, INTERATIVE, GENERATE_PMC = read_inputs(args)
-    sgmxml = None
-    xml_list = None
-    if any([xml_path, acron]):
-        result = validate_inputs(script, xml_path)
-        if result:
-            sgmxml, xml_list = result
-
-    if sgmxml is None and xml_list is None:
-        if INTERATIVE is True:
-            display_form("xpm")
-    else:
-        execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml, acron)
 
 
 def display_form(stage):
@@ -58,51 +42,11 @@ def execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml=None, acron=None):
 def call_make_package_from_form(xml_path, GENERATE_PMC=False):
     xml_list = [os.path.join(xml_path, item)
                 for item in os.listdir(xml_path) if item.endswith('.xml')]
-    execute(True, xml_list, GENERATE_PMC)
-    return 'done', 'blue'
-
-
-def read_inputs(args):
-    INTERATIVE = True
-    GENERATE_PMC = False
-    args = encoding.fix_args(args)
-    script = args[0]
-    path = None
-    acron = None
-
-    items = []
-    for item in args:
-        if item == '-auto':
-            INTERATIVE = False
-        elif item == '-pmc':
-            GENERATE_PMC = True
-        else:
-            items.append(item)
-
-    if len(items) == 3:
-        script, path, acron = items
-    elif len(items) == 2:
-        script, path = items
-    if path is not None:
-        path = path.replace('\\', '/')
-    return (script, path, acron, INTERATIVE, GENERATE_PMC)
-
-
-def validate_inputs(script, xml_path):
-    sgm_xml, xml_list, errors = evaluate_xml_path(xml_path)
-    if len(errors) > 0:
-        messages = []
-        messages.append('\n===== ATTENTION =====\n')
-        messages.append('ERROR: ' + _('Incorrect parameters'))
-        messages.append('\n' + _('Usage') + ':')
-        messages.append('python ' + script + ' <xml_src> [-auto]')
-        messages.append(_('where') + ':')
-        messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
-        messages.append('  [-auto]' + _('optional parameter to omit report'))
-        messages.append('\n'.join(errors))
-        encoding.display_message('\n'.join(messages))
+    if xml_list:
+        execute(True, xml_list, GENERATE_PMC)
     else:
-        return sgm_xml, xml_list
+        display_form("xpm")
+    return 'done', 'blue'
 
 
 def evaluate_xml_path(xml_path):
@@ -130,3 +74,72 @@ def evaluate_xml_path(xml_path):
         else:
             errors.append(_('Missing XML location. '))
     return sgm_xml, xml_list, errors
+
+
+def requirements_checker():
+    required = []
+    try:
+        from PIL import Image
+    except ImportError:
+        required.append('pillow')
+    try:
+        import packtools
+    except ImportError:
+        required.append('packtools')
+    return required
+
+
+def main():
+
+    # xpm_version = pkg_resources.get_distribution('xpm').version
+
+    parser = argparse.ArgumentParser(
+        description='XML Package Maker cli utility')
+    parser.add_argument(
+        "xml_path", nargs="?", default='',
+        help="filesystem path or URL to the XML")
+    parser.add_argument(
+        "acron", nargs="?", default='',
+        help="journal acronym, required only for the conversion of SGML to XML"
+    )
+    parser.add_argument('--auto', action='store_true',
+                        help='no user interface')
+
+    parser.add_argument('--pmc', action='store_true',
+                        help='generates also PMC package')
+
+    parser.add_argument('--loglevel', default='WARNING')
+    args = parser.parse_args()
+
+    logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
+
+    reqs = requirements_checker()
+    if reqs:
+        print('\n'.join(['not found: {}'.format(req) for req in reqs]))
+
+    else:
+        args = parser.parse_args()
+
+        xml_path = args.xml_path
+        acron = args.acron
+        INTERATIVE = not args.auto
+        GENERATE_PMC = args.pmc
+
+        if not xml_path and INTERATIVE:
+            display_form("xpm")
+        else:
+            sgmxml, xml_list, errors = evaluate_xml_path(xml_path)
+
+            if sgmxml and not acron:
+                errors.append(_('Inform the acron'))
+
+            if errors:
+                print("\n".join(errors))
+                parser.print_usage()
+                parser.print_help()
+            else:
+                execute(INTERATIVE, xml_list, GENERATE_PMC, sgmxml, acron)
+
+
+if __name__ == '__main__':
+    main()
