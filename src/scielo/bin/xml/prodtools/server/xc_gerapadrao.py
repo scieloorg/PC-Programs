@@ -84,10 +84,13 @@ class GeraPadrao:
         self.status_manager = GeraPadraoStatusManager(
             self.config.gerapadrao_permission_file)
         self.col_scilista = Scilista(self.config.collection_scilista)
-        self.start_time = datetime.now().isoformat()[11:11+5].replace(':', '')
         log_filename = (LOG_PATH + '/gerapadrao_' +
-                        collection_acron+'-'+self.start_time+'.log')
+                        collection_acron+'-'+self.now+'.log')
         logging.basicConfig(filename=log_filename, filemode='w')
+
+    @property
+    def now(self):
+        return datetime.now().isoformat()[11:11+5].replace(':', '')
 
     @property
     def command(self):
@@ -117,29 +120,29 @@ class GeraPadrao:
                 self.config.email_to,
                 self.config.email_subject_gerapadrao.replace(
                     'Gerapadrao',
-                    'Gerapadrao {}'.format(self.start_time)),
+                    'Gerapadrao {}'.format(self.now)),
                 self.config.email_text_gerapadrao + scilista_content)
 
         command = self.command
-        logger.info(self.start_time + ' - inicio gerapadrao')
+        logger.info(self.now + ' - inicio gerapadrao')
         logger.info(command)
         logger.info(scilista_content)
         os.system(command)
-        logger.info(self.start_time + ' - fim gerapadrao')
+        logger.info(self.now + ' - fim gerapadrao')
 
     def _update_web_site(self, scilista_content):
         if self.config.is_enabled_transference:
-            logger.info(self.start_time + ' - inicio transf bases')
+            logger.info(self.now + ' - inicio transf bases')
             transfer = filestransfer.SciELOWebFilesTransfer(self.config)
             transfer.transfer_website_bases()
-            logger.info(self.start_time + ' - fim transf bases')
+            logger.info(self.now + ' - fim transf bases')
 
         if self.mailer is not None:
             self.mailer.send_message(
                 self.config.email_to,
                 self.config.email_subject_website_update.replace(
                     'Gerapadrao',
-                    'Gerapadrao ' + self.start_time + ' '),
+                    'Gerapadrao ' + self.now + ' '),
                 self.config.email_text_website_update + scilista_content)
 
     def mail_gerapadrao_is_busy(self):
