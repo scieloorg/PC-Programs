@@ -114,6 +114,7 @@ class GeraPadrao:
             else:
                 self.status_manager.free()
         else:
+
             self.mail_gerapadrao_is_busy()
 
     def _gerapadrao(self, scilista_content):
