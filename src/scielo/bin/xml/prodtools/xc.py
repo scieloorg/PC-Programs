@@ -249,8 +249,10 @@ class Reception(object):
         return (pkg_paths, invalid_pkg_files)
 
     def gerapadrao(self):
-        xc_gerapadrao.gerapadrao(
+        _gerapadrao = xc_gerapadrao.GeraPadrao(
             self.collection_acron, self.config, self.mailer)
+        _gerapadrao.run()
+
 
 if __name__ == "__main__":
     main()

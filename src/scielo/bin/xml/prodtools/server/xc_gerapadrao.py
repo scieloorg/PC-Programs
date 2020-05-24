@@ -6,7 +6,6 @@ import os
 from datetime import datetime
 
 from prodtools.utils import fs_utils
-from prodtools.utils import system
 from prodtools.server import filestransfer
 from prodtools import LOG_PATH
 
@@ -15,117 +14,149 @@ logging.config.fileConfig("logging.conf")
 logger = logging.getLogger(__name__)
 
 
-def is_finished(permission_file):
-    ret = False
-    if permission_file is not None:
-        if os.path.isfile(permission_file):
-            status = open(permission_file, 'r').read()
+class GeraPadraoStatusManager:
+
+    def __init__(self, permission_file, proc_path):
+        self.permission_file = permission_file
+        self.proc_path = proc_path
+        self._status = None
+
+    @property
+    def status(self):
+        _status = None
+        try:
+            with open(self.permission_file, 'r') as fp:
+                _status = fp.read()
+        except (IOError, OSError, ValueError, TypeError):
+            _status = 'FINISHED'
+        return _status
+
+    @status.setter
+    def status(self, value):
+        with open(self.permission_file, 'w') as fp:
+            fp.write(value)
+
+    def block(self):
+        self.status = "running"
+
+    def free(self):
+        self.status = "FINISHED"
+
+    @property
+    def is_free(self):
+        return self.status == 'FINISHED' or self.status != 'running'
+
+
+class Scilista:
+
+    def __init__(self, scilista_file):
+        self.scilista_file = scilista_file
+
+    def consume_collection_scilista(self):
+        try:
+            content = fs_utils.read_file(self.scilista_file)
+        except (IOError, OSError, ValueError, TypeError):
+            content = ''
         else:
-            status = 'FINISHED'
-        if status != 'running':
-            ret = True
-    return ret
-
-
-def block_gerapadrao(permission_file):
-    open(permission_file, 'w').write('running')
-
-
-def consume_collection_scilista(scilista_file):
-    content = None
-    if scilista_file is not None:
-        if os.path.isfile(scilista_file):
-            content = fs_utils.read_file(scilista_file)
-            fs_utils.delete_file_or_folder(scilista_file)
-    return content
+            fs_utils.delete_file_or_folder(self.scilista_file)
+        return content
 
 
 def sort_scilista(scilista_content):
-    scilista_items = list(set([item.strip() for item in scilista_content.split('\n') if len(item) if ' ' in item]))
-    scilista_items = [item for item in scilista_items if item.endswith('pr')] + [item for item in scilista_items if not item.endswith('pr')]
+    scilista_items = list(set([item.strip()
+                               for item in scilista_content.split('\n')
+                               if len(item) if ' ' in item]))
+    scilista_items = ([item
+                       for item in scilista_items
+                       if item.endswith('pr')] +
+                      [item
+                       for item in scilista_items
+                       if not item.endswith('pr')])
     return '\n'.join(scilista_items) + '\n'
 
 
-def gerapadrao(collection_acron, config, mailer):
-    if is_finished(config.gerapadrao_permission_file):
-        start_time = datetime.now().isoformat()[11:11+5].replace(':', '')
-        log_filename = LOG_PATH + '/gerapadrao_'+collection_acron+'-'+start_time+'.log'
-        gerapadrao_logger = logger.get_logger(log_filename, 'gerapadrao')
+class GeraPadrao:
 
-        config.update_title_and_issue()
-        scilista_content = consume_collection_scilista(
-            config.collection_scilista)
+    def __init__(self, collection_acron, config, mailer):
+        self.collection_acron = collection_acron
+        self.config = config
+        self.mailer = mailer
+        self.status_manager = GeraPadraoStatusManager(
+            self.config.gerapadrao_permission_file)
+        self.col_scilista = Scilista(self.config.collection_scilista)
+        self.start_time = datetime.now().isoformat()[11:11+5].replace(':', '')
+        log_filename = (LOG_PATH + '/gerapadrao_' +
+                        collection_acron+'-'+self.start_time+'.log')
+        logging.basicConfig(filename=log_filename, filemode='w')
 
-        if scilista_content is None:
-            print(config.collection_scilista + ' is empty')
+    @property
+    def command(self):
+        return 'cd {};./GeraPadrao.bat;echo FINISHED>{}'.format(
+                self.config.gerapadrao_proc_path,
+                self.config.gerapadrao_permission_file)
+
+    def run(self):
+        if self.status_manager.is_free:
+            self.status_manager.block()
+            scilista_content = self.col_scilista.consume_collection_scilista()
+            if scilista_content:
+                self.config.update_title_and_issue()
+                scilista_content = sort_scilista(scilista_content)
+                fs_utils.write_file(
+                    self.config.gerapadrao_scilista, scilista_content)
+                self._gerapadrao(scilista_content)
+                self._update_web_site(scilista_content)
+            else:
+                self.status_manager.free()
         else:
-            block_gerapadrao(config.gerapadrao_permission_file)
+            self.mail_gerapadrao_is_busy()
 
-            scilista_content = sort_scilista(scilista_content)
-            fs_utils.write_file(config.gerapadrao_scilista, scilista_content)
+    def _gerapadrao(self, scilista_content):
+        if self.mailer is not None:
+            self.mailer.send_message(
+                self.config.email_to,
+                self.config.email_subject_gerapadrao.replace(
+                    'Gerapadrao',
+                    'Gerapadrao {}'.format(self.start_time)),
+                self.config.email_text_gerapadrao + scilista_content)
 
-            scilista_items = scilista_content.split('\n')
+        command = self.command
+        logger.info(self.start_time + ' - inicio gerapadrao')
+        logger.info(command)
+        logger.info(scilista_content)
+        os.system(command)
+        logger.info(self.start_time + ' - fim gerapadrao')
 
-            gerapadrao_cmd = gerapadrao_command(
-                config.gerapadrao_proc_path,
-                config.gerapadrao_permission_file)
+    def _update_web_site(self, scilista_content):
+        if self.config.is_enabled_transference:
+            logger.info(self.start_time + ' - inicio transf bases')
+            transfer = filestransfer.SciELOWebFilesTransfer(self.config)
+            transfer.transfer_website_bases()
+            logger.info(self.start_time + ' - fim transf bases')
 
-            if mailer is not None:
-                mailer.send_message(
-                    config.email_to,
-                    config.email_subject_gerapadrao.replace(
-                        'Gerapadrao',
-                        'Gerapadrao ' + start_time + ' '),
-                    config.email_text_gerapadrao + scilista_content)
+        if self.mailer is not None:
+            self.mailer.send_message(
+                self.config.email_to,
+                self.config.email_subject_website_update.replace(
+                    'Gerapadrao',
+                    'Gerapadrao ' + self.start_time + ' '),
+                self.config.email_text_website_update + scilista_content)
 
-            gerapadrao_logger.info(start_time + ' - inicio gerapadrao')
-            gerapadrao_logger.info(gerapadrao_cmd)
-            gerapadrao_logger.info(scilista_content)
-            system.run_command(gerapadrao_cmd)
-            gerapadrao_logger.info(start_time + ' - fim gerapadrao')
-
-            if config.is_enabled_transference:
-                transfer = filestransfer.FilesTransfer(config)
-
-                gerapadrao_logger.info(start_time + ' - inicio transf bases')
-                transfer.transfer_website_bases()
-                gerapadrao_logger.info(start_time + ' - fim transf bases')
-
-                gerapadrao_logger.info(start_time + ' - inicio transf files')
-                for scilista_item in scilista_items:
-                    gerapadrao_logger.info(start_time + ' ' + scilista_item)
-                    items = scilista_item.split()
-                    if len(items) == 2:
-                        acron, issue_id = items
-                        transfer.transfer_website_files(acron, issue_id)
-                gerapadrao_logger.info(start_time + ' - fim transf files')
-
-            if mailer is not None:
-                mailer.send_message(
-                    config.email_to,
-                    config.email_subject_website_update.replace(
-                        'Gerapadrao',
-                        'Gerapadrao ' + start_time + ' '),
-                    config.email_text_website_update + scilista_content)
-    else:
+    def mail_gerapadrao_is_busy(self):
         print('gerapadrao is running. Wait ...')
-        if mailer is not None:
+        if self.mailer:
             msg = []
-            if os.path.isfile(config.gerapadrao_scilista):
+            if os.path.isfile(self.config.gerapadrao_scilista):
                 msg.append(
                     'Running:\n' + fs_utils.read_file(
-                        config.gerapadrao_scilista)+'\n\n')
-            if os.path.isfile(config.collection_scilista):
+                        self.config.gerapadrao_scilista)+'\n\n')
+            if os.path.isfile(self.config.collection_scilista):
                 msg.append(
                     'Waiting:\n' + sort_scilista(
-                        fs_utils.read_file(config.collection_scilista)))
+                        fs_utils.read_file(self.config.collection_scilista)))
 
             if len(msg) > 0:
-                mailer.send_message(
-                    config.email_to_adm,
+                self.mailer.send_message(
+                    self.config.email_to_adm,
                     'gerapadrao is busy',
                     ''.join(msg))
-
-
-def gerapadrao_command(proc_path, gerapadrao_status_filename):
-    return 'cd ' + proc_path + ';./GeraPadrao.bat;echo FINISHED>' + gerapadrao_status_filename
