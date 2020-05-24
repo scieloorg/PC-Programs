@@ -12,9 +12,10 @@ from prodtools.validations import sps_xml_validators
 from prodtools.processing import xml_versions
 from prodtools.data import workarea
 from prodtools.data import article
+from prodtools.utils.logging import LOGGING_CONFIG
 
 
-logging.config.fileConfig('logging.conf')
+logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
 

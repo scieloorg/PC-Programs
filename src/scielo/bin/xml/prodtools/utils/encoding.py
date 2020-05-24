@@ -3,9 +3,10 @@ import logging
 import logging.config
 import sys
 import locale
+from prodtools.utils.logging import LOGGING_CONFIG
 
 
-logging.config.fileConfig("logging.conf")
+logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
 LOCALE_LANG, LOCALE_ENCODING = locale.getdefaultlocale()

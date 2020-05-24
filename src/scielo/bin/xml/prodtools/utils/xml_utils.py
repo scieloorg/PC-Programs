@@ -258,7 +258,7 @@ def validate(xml_obj, dtd_external_id=None, dtd_file_path=None):
             dtd = etree.DTD(StringIO(fs_utils.read_file(dtd_file_path)))
         if dtd:
             dtd_is_valid = dtd.validate(xml_obj)
-            dtd_errors = dtd.error_log
+            dtd_errors = format_validations_msg(dtd.error_log)
     except Exception as e:
         dtd_errors = [str(e)]
     return dtd_is_valid, dtd_errors

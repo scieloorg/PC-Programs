@@ -5,9 +5,10 @@ import logging.config
 from prodtools.utils import xml_utils
 from prodtools.data import article
 from prodtools.data import workarea
+from prodtools.utils.logging import LOGGING_CONFIG
 
 
-logging.config.fileConfig('logging.conf')
+logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
 

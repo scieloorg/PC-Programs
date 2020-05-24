@@ -1,9 +1,9 @@
 # coding=utf-8
 from __future__ import print_function, unicode_literals
 import argparse
-import logging
-import logging.config
 import os
+import logging
+from logging.config import dictConfig
 
 from prodtools import _
 from prodtools import form
@@ -11,9 +11,11 @@ from prodtools.config import config
 from prodtools.processing.sgmlxml import SGMLXML2SPSXML
 from prodtools.processing import pkg_processors
 from prodtools.processing.sps_pkgmaker import PackageMaker
+from prodtools.utils.logging import LOGGING_CONFIG
 
 
-logging.config.fileConfig('logging.conf')
+dictConfig(LOGGING_CONFIG)
+
 logger = logging.getLogger(__name__)
 
 

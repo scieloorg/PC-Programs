@@ -6,9 +6,11 @@ import shutil
 
 from prodtools.utils import fs_utils
 from prodtools.utils import img_utils
+from prodtools.utils.logging import LOGGING_CONFIG
 
 
-logging.config.fileConfig('logging.conf')
+logging.config.dictConfig(LOGGING_CONFIG)
+
 logger = logging.getLogger(__name__)
 
 
