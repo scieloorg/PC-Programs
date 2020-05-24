@@ -12,11 +12,13 @@ from prodtools.utils import xml_utils
 from prodtools.data import attributes
 from prodtools.data import workarea
 from prodtools.data import package
+from prodtools.utils.logging import LOGGING_CONFIG
 
 
 messages = []
 mime = MimeTypes()
-logging.config.fileConfig('logging.conf')
+
+logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
 

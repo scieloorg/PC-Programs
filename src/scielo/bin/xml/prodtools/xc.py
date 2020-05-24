@@ -17,9 +17,10 @@ from prodtools.server import filestransfer
 from prodtools.server import xc_gerapadrao
 from prodtools.config import config
 from prodtools.utils import ftp_service
+from prodtools.utils.logging import LOGGING_CONFIG
 
 
-logging.config.fileConfig('logging.conf')
+logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
 

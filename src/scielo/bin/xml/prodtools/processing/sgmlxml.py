@@ -16,9 +16,10 @@ from prodtools.data import workarea
 from prodtools.processing import symbols
 from prodtools.processing import xml_versions
 from prodtools.processing.sps_pkgmaker import PackageMaker
+from prodtools.utils.logging import LOGGING_CONFIG
 
 
-logging.config.fileConfig('logging.conf')
+logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
 

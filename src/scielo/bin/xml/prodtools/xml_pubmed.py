@@ -18,13 +18,13 @@ from prodtools.utils import xml_utils
 from prodtools.utils import fs_utils
 from prodtools.utils.dbm import dbm_isis
 from prodtools.config import config as xc_config
+from prodtools.utils.logging import LOGGING_CONFIG
 
+
+logging.config.dictConfig(LOGGING_CONFIG)
+logger = logging.getLogger(__name__)
 
 global ucisis
-
-
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger(__name__)
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 FST_ARTICLE = CURRENT_PATH + '/settings/fst/articles.fst'

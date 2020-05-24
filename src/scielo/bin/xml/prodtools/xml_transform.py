@@ -12,14 +12,18 @@ from __future__ import print_function, unicode_literals
 import argparse
 import os
 import logging
-import logging.config
+from logging.config import dictConfig
 
 from prodtools.utils.xml_utils import (
     transform,
     get_xml_object,
 )
 
-logging.config.fileConfig('logging.conf')
+from prodtools.utils.logging import LOGGING_CONFIG
+
+
+dictConfig(LOGGING_CONFIG)
+
 logger = logging.getLogger(__name__)
 
 
