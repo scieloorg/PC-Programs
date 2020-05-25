@@ -12,7 +12,7 @@ Usado pelo scielo/xml_scielo/...
 para gerar XML para o PubMed
 """
 from prodtools import _
-from prodtools import PMC_PATH
+from prodtools import DTD_AND_XSL_PATH
 from prodtools.utils import utils
 from prodtools.utils import xml_utils
 from prodtools.utils import fs_utils
@@ -28,7 +28,7 @@ global ucisis
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 FST_ARTICLE = CURRENT_PATH + '/settings/fst/articles.fst'
-XSL = PMC_PATH + '/v3.0/xsl/xml2pubmed/xml2pubmed.xsl'
+XSL = DTD_AND_XSL_PATH + '/v3.0/xsl/xml2pubmed/xml2pubmed.xsl'
 
 
 def find_xml_files_folders(path, folders=[]):
