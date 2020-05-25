@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from ..__init__ import _
+from prodtools import _
 
 from prodtools.utils import xml_utils
 from prodtools.utils import utils
