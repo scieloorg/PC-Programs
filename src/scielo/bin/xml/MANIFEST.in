@@ -1,0 +1,8 @@
+# Include the data files
+# FIXME deve-se remover esta dependência
+recursive-include prodtools/settings *.sql
+
+# Include the data files
+recursive-include prodtools/settings/dtd_and_xsl *
+recursive-include prodtools/reports *.css
+recursive-include prodtools/reports *.js

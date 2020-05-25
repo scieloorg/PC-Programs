@@ -57,11 +57,13 @@ setup(
                  "modules.*", "modules.*.*",
                  ]
     ),
-    package_data={'prodtools': ['locale/*/LC_MESSAGES/*.mo',
-                                'settings/*/*.txt',
-                                'settings/*/*.csv',
-                                'settings/*/*.fst',
-                                ]},
+    package_data={
+        'prodtools': ['locale/*/LC_MESSAGES/*.mo',
+                      'settings/*/*.txt',
+                      'settings/*/*.csv',
+                      'settings/*/*.fst',
+                      ],
+    },
     include_package_data=True,
     classifiers=[
         "Development Status :: 4 - Beta",

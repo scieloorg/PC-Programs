@@ -5,7 +5,7 @@ import os
 import shutil
 
 from prodtools import _
-from prodtools import BIN_PATH
+from prodtools import XPM_VERSION_FILE_PATH
 from prodtools import FST_PATH
 
 from prodtools.utils import encoding
@@ -68,12 +68,8 @@ categories_messages = {
 
 
 def xpm_version():
-    version_files = [
-        os.path.join(BIN_PATH, 'xpm_version.txt'),
-        os.path.join(BIN_PATH, 'cfg/xpm_version.txt'),
-    ]
     version = '|'
-    for f in version_files:
+    for f in [XPM_VERSION_FILE_PATH]:
         encoding.debugging('xpm_version', f)
         if os.path.isfile(f):
             version = fs_utils.read_file_lines(f)[0]
