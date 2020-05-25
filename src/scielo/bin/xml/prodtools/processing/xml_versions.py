@@ -2,19 +2,9 @@
 import os
 
 from prodtools import PMC_PATH
-from prodtools import BIN_XML_PATH
-from prodtools import RELATIVE_PMC_PATH
-from prodtools import INVALID_APP_PATH
 
 
 JAVA_PATH = 'java'
-_PMC_PATH = PMC_PATH
-
-if INVALID_APP_PATH:
-    if not os.path.isdir(RELATIVE_PMC_PATH):
-        os.chdir(BIN_XML_PATH)
-        if os.path.isdir(RELATIVE_PMC_PATH):
-            _PMC_PATH = RELATIVE_PMC_PATH
 
 
 DEFAULT_VERSION = '1.1'

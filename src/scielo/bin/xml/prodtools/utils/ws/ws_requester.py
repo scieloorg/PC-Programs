@@ -18,7 +18,7 @@ def local_gettext(text):
 
 
 try:
-    from ...__init__ import _
+    from prodtools import _
 except:
     _ = local_gettext
 

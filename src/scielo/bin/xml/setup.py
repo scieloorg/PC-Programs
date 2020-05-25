@@ -53,8 +53,15 @@ setup(
     url="http://docs.scielo.org",
     packages=setuptools.find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests", "docs",
-                 "app_data", "modules"]
+                 "app_data", "modules",
+                 "modules.*", "modules.*.*",
+                 ]
     ),
+    package_data={'prodtools': ['locale/*/LC_MESSAGES/*.mo',
+                                'settings/*/*.txt',
+                                'settings/*/*.csv',
+                                'settings/*/*.fst',
+                                ]},
     include_package_data=True,
     classifiers=[
         "Development Status :: 4 - Beta",
