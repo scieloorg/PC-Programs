@@ -4,7 +4,7 @@ import logging.config
 import argparse
 
 from prodtools import xc
-from prodtools.utils.logging import LOGGING_CONFIG
+from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
@@ -27,8 +27,8 @@ def main():
     logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
 
     collection_acron = args.collection_acron
-    call_download = args.call_download
-    call_gerapadrao = args.call_gerapadrao
+    call_download = args.download
+    call_gerapadrao = args.gerapadrao
 
     reception = xc.Reception(collection_acron)
 

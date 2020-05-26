@@ -84,12 +84,8 @@ setup(
             "scielojournals=prodtools.download_markup_journals:main",
             "scielo2pubmed=prodtools.xml_pubmed:main",
             "scieloxc=prodtools.xc:main",
-            "xc_server=prodtools.xc_server:main",
+            "scieloxcserver=prodtools.xc_server:main",
             "xml_transform=prodtools.xml_transform:main",
-            "xml_package_maker=prodtools.xpm:main",
-            "xml_package_maker.bat=prodtools.xpm:main",
-            "xml_pubmed=prodtools.xml_pubmed:main",
-            "download_markup_journals=prodtools.download_markup_journals:main",
         ]
     }
 )

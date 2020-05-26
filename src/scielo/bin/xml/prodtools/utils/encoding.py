@@ -3,7 +3,7 @@ import logging
 import logging.config
 import sys
 import locale
-from prodtools.utils.logging import LOGGING_CONFIG
+from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
@@ -12,15 +12,6 @@ logger = logging.getLogger(__name__)
 LOCALE_LANG, LOCALE_ENCODING = locale.getdefaultlocale()
 SYS_DEFAULT_ENCODING = sys.getfilesystemencoding()
 
-
-"""
-
-logging.basicConfig(
-    filename='./app.log',
-    format=u'%(asctime)s %(message)s')
-logger = logging.getLogger('App')
-logger.setLevel(logging.DEBUG)
-"""
 
 def decode(content, encoding='utf-8'):
     try:

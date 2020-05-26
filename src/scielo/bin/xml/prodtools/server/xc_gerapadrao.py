@@ -12,7 +12,7 @@ from prodtools.server import filestransfer
 from prodtools import LOG_PATH
 
 
-from prodtools.utils.logging import LOGGING_CONFIG
+from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 logging.config.dictConfig(LOGGING_CONFIG)

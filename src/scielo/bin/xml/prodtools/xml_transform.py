@@ -19,7 +19,7 @@ from prodtools.utils.xml_utils import (
     get_xml_object,
 )
 
-from prodtools.utils.logging import LOGGING_CONFIG
+from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 dictConfig(LOGGING_CONFIG)

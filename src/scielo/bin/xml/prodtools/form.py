@@ -6,11 +6,8 @@ import tkinter as tk
 from tkinter.filedialog import askdirectory
 
 from prodtools import _
-from prodtools import BIN_PATH
+from prodtools import ICON
 from prodtools.utils import encoding
-
-
-XML_FOLDER_DEFAULT = BIN_PATH
 
 
 class XMLAppGUI(tk.Frame):
@@ -18,11 +15,8 @@ class XMLAppGUI(tk.Frame):
     def __init__(self, tk_root, default_xml_path, is_converter_enabled, function):
         super().__init__(tk_root)
         self.tk_root = tk_root
-        self.tk_root.iconbitmap(BIN_PATH+'/cfg/Scielo.ico')
-        if default_xml_path is None:
-            self.default_xml_path = XML_FOLDER_DEFAULT
-        else:
-            self.default_xml_path = default_xml_path
+        self.tk_root.iconbitmap(ICON)
+        self.default_xml_path = default_xml_path or os.getcwd()
 
         self.is_converter_enabled = is_converter_enabled
         self.generate_pmc_package = False

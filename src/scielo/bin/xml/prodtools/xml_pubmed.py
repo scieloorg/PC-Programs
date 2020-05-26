@@ -18,7 +18,7 @@ from prodtools.utils import xml_utils
 from prodtools.utils import fs_utils
 from prodtools.utils.dbm import dbm_isis
 from prodtools.config import config as xc_config
-from prodtools.utils.logging import LOGGING_CONFIG
+from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
