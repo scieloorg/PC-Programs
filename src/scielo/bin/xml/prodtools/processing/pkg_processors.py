@@ -33,7 +33,7 @@ from prodtools.db.pid_versions import(
     PIDVersionsDB,
 )
 from prodtools.processing import pmc_pkgmaker
-from prodtools.utils.logging import LOGGING_CONFIG
+from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 logging.config.dictConfig(LOGGING_CONFIG)

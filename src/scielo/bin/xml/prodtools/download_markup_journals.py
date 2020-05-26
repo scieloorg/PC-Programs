@@ -10,7 +10,7 @@ from tkinter import ttk
 from prodtools.db import ws_journals
 from prodtools.config import config
 from prodtools import BIN_MARKUP_PATH
-from prodtools import BIN_PATH
+from prodtools import ICON
 from prodtools import _
 
 
@@ -37,7 +37,7 @@ class MkpDownloadJournalListGUI(tk.Frame):
     def configure(self):
         self.master.minsize(400, 200)
         self.master.title(_('Download journals data'))
-        self.master.wm_iconbitmap(BIN_PATH + '/cfg/Scielo.ico')
+        self.master.wm_iconbitmap(ICON)
         self.pack()
 
         label = ttk.Label(self, text=_('Select a collection:'))
@@ -100,7 +100,7 @@ def open_main_window(
 
 def journals_by_collection(filename):
     collections = {}
-    with open(filename, 'r') as csvfile:
+    with open(filename, 'r', encoding="utf-8") as csvfile:
         spamreader = csv.reader(csvfile, delimiter='\t')
         for item in spamreader:
             if len(item) >= 10:

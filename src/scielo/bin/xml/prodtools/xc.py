@@ -7,7 +7,13 @@ import shutil
 from datetime import datetime
 
 from prodtools import _
-from prodtools import form
+
+try:
+    from prodtools import form
+except ImportError as e:
+    print(e)
+    print("It is ok if running on a server without GUI")
+
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
 from prodtools.processing import pkg_processors
@@ -17,7 +23,7 @@ from prodtools.server import filestransfer
 from prodtools.server import xc_gerapadrao
 from prodtools.config import config
 from prodtools.utils import ftp_service
-from prodtools.utils.logging import LOGGING_CONFIG
+from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
@@ -192,19 +198,19 @@ class Reception(object):
                         " of {} {}: {}").format(acron, issue_id, e)
                 self.inform_failure(package_name, msg)
 
-    def queued_packages(self):
-        pkg_paths, invalid_pkg_files = self.queue_packages()
+    def _queued_packages(self):
+        pkg_paths, invalid_pkg_files = self._queue_packages()
         if pkg_paths is None:
             pkg_paths = []
         if len(invalid_pkg_files) > 0:
             self.mailer.mail_invalid_packages(invalid_pkg_files)
         return pkg_paths
 
-    def queue_packages(self):
-        download_path = self.configuration.download_path
-        temp_path = self.configuration.temp_path
-        queue_path = self.configuration.queue_path
-        archive_path = self.configuration.archive_path
+    def _queue_packages(self):
+        download_path = self.config.download_path
+        temp_path = self.config.temp_path
+        queue_path = self.config.queue_path
+        archive_path = self.config.archive_path
 
         invalid_pkg_files = []
         proc_id = datetime.now().isoformat()[11:16].replace(':', '')
