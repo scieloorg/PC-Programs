@@ -235,9 +235,10 @@ Para alterar este nível, editar o arquivo correspondente a **c:\\scielo\\bin\\s
 
   CODED_FORMULA_REQUIRED=off
   CODED_TABLE_REQUIRED=off
+  BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA=off
 
 
-**off** é para que o XML Converter não exija os elementos codificados
+**off** é para que o XML Converter não exija os elementos codificados ou não bloqueie a publicação devido a discordâncias com os critérios.
 
 
 Menu de aplicação
