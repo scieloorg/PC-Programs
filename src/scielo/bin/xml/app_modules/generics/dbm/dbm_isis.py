@@ -28,7 +28,7 @@ def format_value(content):
 
 class IDFile(object):
 
-    MAX_DIGITS_QTD = 7
+    MAX_DIGITS_QTD = 6
     VALID_ID_RANGE = range(1, 10**MAX_DIGITS_QTD)
 
     def __init__(self, content_formatter=None):
