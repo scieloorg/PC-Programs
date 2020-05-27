@@ -1,6 +1,6 @@
 
 # coding=utf-8
-
+import os
 from datetime import datetime
 
 from prodtools import _
@@ -250,7 +250,7 @@ def four_digits_year(year):
 def image_heights(path, href_list):
     items = []
     for href in href_list:
-        img = img_utils.tiff_image(path + '/' + href.src)
+        img = img_utils.tiff_image(os.path.join(path, href.src))
         if img is not None:
             items.append(img.size[1])
     return sorted(items)

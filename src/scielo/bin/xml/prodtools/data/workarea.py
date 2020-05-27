@@ -205,15 +205,6 @@ class DocumentPackageFiles(object):
             fs_utils.delete_file_or_folder(os.path.join(self.path, f))
         self._update()
 
-    # def tiff2jpg(self):
-    #     for item in self.tiff_names:
-    #         if item not in self.jpg_names and item not in self.png_names:
-    #             source_fname = item + '.tif'
-    #             if source_fname not in self.related_files:
-    #                 source_fname = item + '.tiff'
-    #             img_utils.hdimg_to_jpg(self.path + '/' + source_fname, self.path + '/' + item + '.jpg')
-    #     self._update()
-
     def delete_files(self, files):
         for f in files:
             fs_utils.delete_file_or_folder(os.path.join(self.path, f))
