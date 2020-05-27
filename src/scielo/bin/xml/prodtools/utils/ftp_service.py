@@ -89,9 +89,10 @@ class FTPService(object):
         downloaded_file = ''
         r = self.ftp.retrbinary('RETR ' + file, open(file, 'wb').write)
         register_action(r)
-        if os.path.exists(local_path + '/' + file):
+        file_path = os.path.join(local_path, file)
+        if os.path.exists(file_path):
 
-            statinfo = os.stat(local_path + '/' + file)
+            statinfo = os.stat(file_path)
             register_action(str(statinfo.st_size))
 
             downloaded_file = file
