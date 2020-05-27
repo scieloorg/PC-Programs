@@ -1,10 +1,12 @@
 import zipfile
 import os
+import re
 import shutil
 import logging
 import tempfile
 import threading
 from ftplib import FTP, all_errors
+from datetime import datetime
 
 
 logging.basicConfig(
@@ -46,6 +48,27 @@ class Exporter(object):
         else:
             return destination_path
 
+    def _preppend_time_to_destination_filename(
+        self, destination_dir:str, file_path: str
+    ) -> str:
+        """Adds the current datetime to a filename.
+
+        Example of use:
+        Exporter().preppend_time_to_destination_filename("/tmp/", "/home/user/file.txt")
+        "/tmp/2020-05-22-10-00-34-480190_file.txt"
+
+        Params:
+            destination_dir (str): A system path to the directory where a file will be put
+            file_path (str): The origin file path/name that should be preppend with time
+
+        Returns:
+            completed_destination_path (str): The full destionation path
+        """
+
+        data = re.sub(r"[\W\s]", "-", str(datetime.now()))
+        _, file_name = os.path.split(file_path)
+        return os.path.join(destination_dir, "%s_%s" % (data, file_name))
+
     def export(self, files_path, zip_filename):
         destination_path = self.copy_configuration
         ftp_configuration = self.ftp_configuration
@@ -62,28 +85,14 @@ class Exporter(object):
                 if ftp_configuration:
                     shutil.copy(zip_file_path, destination_path)
                 else:
-                    import random
-                    from datetime import datetime
-                    data = str(datetime.now()).replace(" ", "-").replace(":", "-").replace(".", "-")
-                    random_str = str(random.randint(0, 9999))
-                    _, file_name = os.path.split(zip_file_path)
-                    file_name = "%s_%s" % (data, file_name)
-                    destination_path = os.path.join(destination_path, file_name)
-                    shutil.move(zip_file_path, destination_path)
-                    # try:
-                    #     shutil.move(zip_file_path, destination_path)
-                    # except shutil.Error:
-                    #     import random
-                    #     random_str = str(random.randint(0, 9999))
-                    #     _, file_name = os.path.split(zip_file_path)
-                    #     file_name = "%s_%s" % (random_str, file_name)
-                    #     destination_path = os.path.join(destination_path, file_name)
-                    #     shutil.move(zip_file_path, destination_path)
+                    final_file_path = self._preppend_time_to_destination_filename(
+                        destination_path, zip_file_path
+                    )
+                    shutil.move(zip_file_path, final_file_path)
 
             if ftp_configuration:
                 server, user, password, remote_path = ftp_configuration
-                self.export_by_ftp(
-                    zip_file_path, server, user, password, remote_path)
+                self.export_by_ftp(zip_file_path, server, user, password, remote_path)
 
     def zip(self, files_path, zip_filename):
         try:
