@@ -1,6 +1,6 @@
 # coding=utf-8
 
-import os
+import subprocess
 import sys
 import getpass
 
@@ -24,9 +24,10 @@ def format_command(command, params=None):
 def run_command(command, display=False):
     if display:
         encoding.display_message(u'Running:\n {}'.format(command))
-    os.system(command)
+    output = subprocess.getoutput(command)
     if display:
         encoding.display_message('...done')
+    return output
 
 
 def input_password():
