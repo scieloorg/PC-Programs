@@ -549,13 +549,7 @@ class SGMLXML2SPSXML(object):
             xml_obj.find(".").set("sps", sps_version)
         xsl_filepath = xml_versions.xsl_getter(sps_version)
         result = xml_utils.transform(xml_obj, xsl_filepath)
-        #result.docinfo.doctype = xml_versions.dtd_files(
-        #    sps_version).doctype_with_remote_path
         xml_utils.write(self.FILES.src_pkgfiles.filename, result)
-
-        # print((self.FILES.src_pkgfiles.filename))
-        # result.docinfo.doctype = xml_versions.dtd_files(
-        #    sps_version).doctype_with_remote_path
 
     def _make_package(self):
         """

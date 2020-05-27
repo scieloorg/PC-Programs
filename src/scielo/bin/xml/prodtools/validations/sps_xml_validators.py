@@ -105,18 +105,6 @@ class PMCXMLValidator(object):
         return style_checker_statistics(result)
 
 
-def dtd_locations():
-    locations = {}
-    for name, dtd_info in xml_versions.XPM_FILES.items():
-        dtd_id = dtd_info.get('dtd id')
-        if dtd_id not in locations.keys():
-            locations[dtd_id] = {}
-            locations[dtd_id] = [
-                dtd_info.get('remote'),
-                dtd_info.get('remote').replace('https:', 'http:')]
-    return locations
-
-
 class PackToolsXMLValidator(object):
 
     def __init__(self, file_path, tree, sps_version):
@@ -149,7 +137,7 @@ class PackToolsXMLValidator(object):
                 ))
             return errors
 
-        locations = dtd_locations().get(public_id)
+        locations = xml_versions.dtd_locations().get(public_id)
         _location = None
         for location in locations:
             if system_id in location:
