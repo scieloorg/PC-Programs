@@ -385,8 +385,7 @@ class PkgProcessor(object):
             cisis1030 = dbm_isis.CISIS(self.config.cisis1030)
             if cisis1030.cisis_path is not None:
                 cisis1660 = dbm_isis.CISIS(self.config.cisis1660)
-                ucisis = dbm_isis.UCISIS(cisis1030, cisis1660)
-                db_isis = dbm_isis.IsisDAO(ucisis)
+                db_isis = dbm_isis.UCISIS(cisis1030, cisis1660)
                 titles = [self.config.title_db, self.config.title_db_copy, FST_PATH + '/title.fst']
                 issues = [self.config.issue_db, self.config.issue_db_copy, FST_PATH + '/issue.fst']
                 self._db_manager = xc_models.DBManager(

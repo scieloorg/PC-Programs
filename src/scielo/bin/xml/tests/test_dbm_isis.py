@@ -4,9 +4,9 @@ from unittest import TestCase, skipIf
 from unittest.mock import patch, mock_open
 import sys
 
-from prodtools.utils.dbm.dbm_isis import IDFile
+from prodtools.utils.dbm.dbm_isis import IDFile, CISIS
 from prodtools.utils import fs_utils
-
+from prodtools.utils.dbm import dbm_isis
 
 python_version = sys.version_info.major
 
@@ -237,3 +237,84 @@ class TestIDFile(TestCase):
         records = self.idfile.read(file_path)
         print(records)
         self.assertEqual(records, expected)
+
+
+class TestCISIS(TestCase):
+    @patch("prodtools.utils.dbm.dbm_isis.os.path.exists", return_value=True)
+    def setUp(self, mock_exists):
+        self.cisis = CISIS("cisis")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_run_cmd(self, mock_getoutput):
+        mock_getoutput.return_value = "any"
+        self.cisis.run_cmd(
+            "meucomando", "parametro1", "parametro2=valor", 'x y')
+        mock_getoutput.assert_called_once_with(
+            "cisis/meucomando parametro1 parametro2=valor x y")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_is_available(self, mock_getoutput):
+        self.cisis.is_available
+        mock_getoutput.assert_called_once_with("cisis/mx what")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_crunchmf(self, mock_getoutput):
+        self.cisis.crunchmf("baselinux", "basewindows")
+        mock_getoutput.assert_called_once_with(
+            "cisis/crunchmf baselinux basewindows")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_id2i(self, mock_getoutput):
+        self.cisis.id2i("base.id", "base")
+        mock_getoutput.assert_called_once_with(
+            "cisis/id2i base.id create=base")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_append(self, mock_getoutput):
+        self.cisis.append("base", "base_resultante")
+        mock_getoutput.assert_called_once_with(
+            "cisis/mx base append=base_resultante now -all")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_create(self, mock_getoutput):
+        self.cisis.create("base", "base_resultante")
+        mock_getoutput.assert_called_once_with(
+            "cisis/mx base create=base_resultante now -all")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_i2id(self, mock_getoutput):
+        self.cisis.i2id("base", "basex.id")
+        mock_getoutput.assert_called_once_with(
+            "cisis/i2id base > basex.id")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_mst2iso(self, mock_getoutput):
+        self.cisis.mst2iso("base", "basex.iso")
+        mock_getoutput.assert_called_once_with(
+            "cisis/mx base iso=basex.iso now -all")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_iso2mst(self, mock_getoutput):
+        self.cisis.iso2mst("base.iso", "basex")
+        mock_getoutput.assert_called_once_with(
+            "cisis/mx iso=base.iso create=basex now -all")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_search(self, mock_getoutput):
+        self.cisis.search("base", "procura", "base_resultado")
+        mock_getoutput.assert_called_once_with(
+            "cisis/mx btell=0 base \"bool=procura\" lw=999 "
+            "append=base_resultado now -all")
+
+    @patch("prodtools.utils.system.subprocess.getoutput")
+    def test_generate_indexes(self, mock_getoutput):
+        self.cisis.generate_indexes("base", "base.fst", "base_invertida")
+        mock_getoutput.assert_called_once_with(
+            "cisis/mx base fst=@base.fst fullinv=base_invertida")
+
+    @patch("prodtools.utils.dbm.dbm_isis.system.run_command")
+    @patch("prodtools.utils.dbm.dbm_isis.os.path.isfile", return_value=True)
+    def test_is_readable(self, mock_isfile, mock_run_command):
+        mock_run_command.return_value = "nxtmfn"
+        self.cisis.is_readable("base")
+        mock_run_command.assert_called_once_with("cisis/mx base +control now")

@@ -1009,12 +1009,13 @@ class BaseManager(object):
 
     def create_db(self):
         if os.path.isfile(self.issue_files.id_filename):
-            self.db_isis.save_id_records(self.issue_files.id_filename, self.issue_files.base)
+            self.db_isis.id_file_to_db(
+                self.issue_files.id_filename, self.issue_files.base)
             for f in os.listdir(self.issue_files.id_path):
                 if f == '00000.id':
                     fs_utils.delete_file_or_folder(self.issue_files.id_path + '/' + f)
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                    self.db_isis.append_id_records(self.issue_files.id_path + '/' + f, self.issue_files.base)
+                    self.db_isis.append_id_file_to_db(self.issue_files.id_path + '/' + f, self.issue_files.base)
         #self.reset_registered_records()
 
     def article_records(self, i_record, article, article_files):
@@ -1024,7 +1025,7 @@ class BaseManager(object):
         return _article_records
 
     def create_issue_id_file(self, i_record):
-        self.db_isis.save_id(self.issue_files.id_filename, [i_record])
+        self.db_isis.create_id_file(self.issue_files.id_filename, [i_record])
 
     def create_article_id_file(self, article_records, article_files):
         saved = False

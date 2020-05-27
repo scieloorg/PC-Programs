@@ -185,3 +185,17 @@ class ProcessLogger(object):
 def is_compressed_file(path):
     name, ext = os.path.splitext(path)
     return ext in ('.zip', '.gz', '.tgz', '.bz2', '.tbz')
+
+
+def splitpath(path):
+    basenames = []
+    if path:
+        dirname = path
+        while True:
+            dirname, basename = os.path.split(dirname)
+            if not basename:
+                break
+            basenames.insert(0, basename)
+    return basenames
+
+
