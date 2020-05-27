@@ -214,9 +214,10 @@ class ArticlesDB(object):
     def __init__(self, ucisis, db_filename):
 
         self.isis_db = None
+        self.db_filename = db_filename
         if os.path.isfile(db_filename + '.mst'):
-            self.isis_db = dbm_isis.IsisDB(ucisis, db_filename, FST_ARTICLE)
-            self.isis_db.update_indexes()
+            self.isis_db = ucisis
+            self.isis_db.update_indexes(db_filename, FST_ARTICLE, db_filename)
         else:
             print('Not found: ' + db_filename)
 
@@ -232,7 +233,8 @@ class ArticlesDB(object):
             if final_date != '':
                 int_final_date = int(final_date)
         if self.isis_db is not None:
-            h_records = self.isis_db.get_records('tp=i or tp=h')
+            h_records = self.isis_db.get_records(
+                self.db_filename, 'tp=i or tp=h')
             #h_records = [record for record in h_records if record.get('706') in 'ih']
 
             issn_id = h_records[0].get('35')
