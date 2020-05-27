@@ -62,6 +62,7 @@ setup(
                       'settings/*/*.txt',
                       'settings/*/*.csv',
                       'settings/*/*.fst',
+                      'settings/*/*.ini',
                       ],
     },
     include_package_data=True,
