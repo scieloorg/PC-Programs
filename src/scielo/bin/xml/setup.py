@@ -3,8 +3,6 @@
 
 from setuptools import setup, find_packages
 
-long_description = open('README.rst', 'r').read()
-
 with open('VERSION') as version_file:
     version = version_file.read()
     version = version.strip()
@@ -20,7 +18,6 @@ dependency_links = [
 setup(
     name='xpm e xc',
     version=version,
-    long_description=long_description,
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
