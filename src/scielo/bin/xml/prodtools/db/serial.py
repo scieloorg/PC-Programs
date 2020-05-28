@@ -186,9 +186,10 @@ class IssueFiles(object):
         if len(delete_id_items) > 0:
             if self.backup_id_folder():
                 for item in delete_id_items:
-                    if os.path.isfile(self.id_path + '/' + item + '.id'):
-                        fs_utils.delete_file_or_folder(self.id_path + '/' + item + '.id')
-                    if os.path.isfile(self.id_path + '/' + item + '.id'):
+                    item_path = os.path.join(self.id_path, item + '.id')
+                    if os.path.isfile(item_path):
+                        fs_utils.delete_file_or_folder(item_path)
+                    if os.path.isfile(item_path):
                         errors.append(item + '.id')
         return errors
 
@@ -196,26 +197,26 @@ class IssueFiles(object):
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
         for fname in os.listdir(dest_path):
-            fs_utils.delete_file_or_folder(dest_path + '/' + fname)
+            fs_utils.delete_file_or_folder(os.path.join(dest_path, fname))
         for fname in os.listdir(src_path):
-            shutil.copyfile(src_path + '/' + fname, dest_path + '/' + fname)
+            shutil.copy(os.path.join(src_path, fname), dest_path)
         return (len(os.listdir(src_path)) == len(os.listdir(dest_path)))
 
     def backup_id_folder(self, backup_name='.bkp'):
         return self.backup_folder(self.id_path, self.id_path + backup_name)
 
     def restore_backup_id_folder(self, backup_name='.bkp'):
-        r = self.backup_folder(self.id_path + backup_name, self.id_path)
-        for fname in os.listdir(self.id_path + backup_name):
-            fs_utils.delete_file_or_folder(self.id_path + backup_name + '/' + fname)
+        path = self.id_path + backup_name
+        r = self.backup_folder(path, self.id_path)
+        for fname in os.listdir(path):
+            fs_utils.delete_file_or_folder(os.path.join(path, fname))
         return r
 
 
 class JournalFiles(object):
 
     def __init__(self, serial_path, acron):
-        if serial_path.endswith('/'):
-            serial_path = serial_path[0:-1]
+        serial_path = os.path.normpath(serial_path)
         self.serial_path = serial_path
         self.acron = acron
         self.journal_path = os.path.join(serial_path, acron)

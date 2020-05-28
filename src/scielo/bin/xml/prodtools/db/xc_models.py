@@ -154,12 +154,9 @@ class RegisteredArticle(object):
 
     @property
     def xml_name(self):
-        names = self.filename
-        if names.endswith('.xml'):
-            names = names[0:-4]
-        names = names.split('/')
-        if len(names) > 0:
-            return names[-1]
+        basename = os.path.basename(self.filename)
+        name, ext = os.path.splitext(basename)
+        return name
 
     @property
     def filename(self):
@@ -840,7 +837,11 @@ class ArticlesManager(object):
             if valid_aop is not None:
                 excluded_aop, aop_issue_folder_name = self.exclude_aop(valid_aop)
                 if aop_issue_folder_name is not None:
-                    self.aop_pdf_replacements[xml_name] = (self.issue_files.journal_files.acron + '/' + aop_issue_folder_name, valid_aop.xml_name)
+                    self.aop_pdf_replacements[xml_name] = (
+                        os.path.join(
+                            self.issue_files.journal_files.acron,
+                            aop_issue_folder_name),
+                        valid_aop.xml_name)
 
                 article_converted = excluded_aop
         else:
@@ -938,15 +939,10 @@ class BaseManager(object):
         self.registered_i_record, self.registered_articles_records = IssueArticlesRecords(records).articles()
 
     def registered_xml_file(self, xml_name):
-        f = self.issue_files.base_source_path + '/' + xml_name + '.xml'
+        f = os.path.join(self.issue_files.base_source_path, xml_name + '.xml')
         if not os.path.isfile(f):
-            folders = []
-            for folder in f.split('/'):
-                if 'ahead' in folder:
-                    folder = 'ex-' + folder
-                folders.append(folder)
-            f = '/'.join(folders)
-        return f
+            if os.path.isfile(f.replace("ahead", "ex-ahead")):
+                return f
 
     @property
     def registered_articles(self):
@@ -954,7 +950,7 @@ class BaseManager(object):
         _registered_articles = {}
         for xml_name, registered_article in self.registered_articles_records.items():
             f = self.registered_xml_file(xml_name)
-            if os.path.isfile(f):
+            if f:
                 xml, e = xml_utils.load_xml(f)
             else:
                 xml = None
@@ -1012,11 +1008,11 @@ class BaseManager(object):
             self.db_isis.id_file_to_db(
                 self.issue_files.id_filename, self.issue_files.base)
             for f in os.listdir(self.issue_files.id_path):
+                file_path = os.path.join(self.issue_files.id_path, f)
                 if f == '00000.id':
-                    fs_utils.delete_file_or_folder(self.issue_files.id_path + '/' + f)
+                    fs_utils.delete_file_or_folder(file_path)
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                    self.db_isis.append_id_file_to_db(self.issue_files.id_path + '/' + f, self.issue_files.base)
-        #self.reset_registered_records()
+                    self.db_isis.append_id_file_to_db(file_path)
 
     def article_records(self, i_record, article, article_files):
         _article_records = None
