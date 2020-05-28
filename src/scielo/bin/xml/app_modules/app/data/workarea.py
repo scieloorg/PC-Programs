@@ -319,7 +319,7 @@ class MultiDocsPackageFolder(object):
 
     @property
     def prefix(self):
-        if len(self.pkgfiles_items) > 0:
+        if self.pkgfiles_items and len(self.pkgfiles_items) > 0:
             name = list(self.pkgfiles_items.keys())[0].split("-")
             return "-".join(name[:-1])
 

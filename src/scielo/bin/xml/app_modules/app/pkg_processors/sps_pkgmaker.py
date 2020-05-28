@@ -24,7 +24,7 @@ class SPSXMLContent(xml_utils.SuitableXML):
     """
     Aplica:
     - ajustes por migrações de versões SPS
-    - normalizações porque os pacotes ser gerados por quaisquer ferramentas
+    - Normalizações para pacotes que foram gerados por quaisquer ferramentas
     """
 
     def __init__(self, file_path):
