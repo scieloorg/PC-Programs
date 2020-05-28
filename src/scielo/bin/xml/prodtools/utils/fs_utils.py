@@ -149,13 +149,6 @@ def zip(zip_filename, files):
         pass
 
 
-def fix_path(path):
-    path = path.replace('\\', '/')
-    if path.endswith('/'):
-        path = path[0:-1]
-    return path
-
-
 def zip_report(report_filename):
     zip_path = report_filename.replace('.html', '.zip')
     myZipFile = ZipFile(zip_path, "w")
