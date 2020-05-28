@@ -12,7 +12,6 @@ from prodtools.utils.xml_utils import (
     node_xml_content,
 )
 
-from prodtools.utils import img_utils
 from prodtools.data import article_utils
 from prodtools.data import attributes
 
@@ -285,20 +284,8 @@ class HRef(object):
         return self.parent.tag == 'disp-formula'
 
     def file_location(self, path):
-        location = None
-        if self.src is not None and self.src != '':
-            if self.is_internal_file:
-                location = path + '/' + self.src
-
-                if self.is_image:
-                    if location.endswith('.tiff'):
-                        location = location.replace('.tiff', '.jpg')
-                    elif location.endswith('.tif'):
-                        location = location.replace('.tif', '.jpg')
-                    else:
-                        if location[-5:-4] != '.' and location[-4:-3] != '.':
-                            location += '.jpg'
-        return location
+        if self.src and self.is_internal_file:
+            return os.path.join(path, self.src)
 
     @property
     def href_attach_type(self):
