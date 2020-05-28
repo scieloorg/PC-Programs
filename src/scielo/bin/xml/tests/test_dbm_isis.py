@@ -4,8 +4,8 @@ from unittest import TestCase, skipIf
 from unittest.mock import patch, mock_open
 import sys
 
-from app_modules.generics.dbm.dbm_isis import IDFile
-from app_modules.generics import fs_utils
+from prodtools.utils.dbm.dbm_isis import IDFile
+from prodtools.utils import fs_utils
 
 
 python_version = sys.version_info.major
@@ -94,7 +94,7 @@ class TestIDFile(TestCase):
         )
 
     @skipIf(python_version < 3, "only apply for python >= 3")
-    @patch("app_modules.generics.dbm.dbm_isis.fs_utils.write_file")
+    @patch("prodtools.utils.dbm.dbm_isis.fs_utils.write_file")
     def test_write_calls_write_file_with_expected_parameters(self, mock_write):
         file_path = "/tmp/isso_eh_teste.id"
         record = {
@@ -199,7 +199,7 @@ class TestIDFile(TestCase):
         self.assertEqual(x, data)
 
     @skipIf(python_version < 3, "only apply for python >= 3")
-    @patch("app_modules.generics.dbm.dbm_isis.fs_utils.read_file")
+    @patch("prodtools.utils.dbm.dbm_isis.fs_utils.read_file")
     def test_read(self, mock_read_file):
         file_path = "db.id"
         mock_read_file.return_value = (

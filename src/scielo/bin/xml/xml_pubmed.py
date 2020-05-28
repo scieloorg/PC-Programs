@@ -1,2 +1,4 @@
+from prodtools import xml_pubmed
 
-from app_modules.tools4dsk import xml_pubmed
+
+xml_pubmed.main()

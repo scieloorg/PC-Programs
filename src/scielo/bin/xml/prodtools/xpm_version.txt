@@ -1,0 +1,909 @@
+4.0.097 2020
+============
+
+4.0.096 22/04/2019
+==================
+- XPM
+  - (bug) [3108] Fix bugs generated in 20190411
+  - (bug) [3106] Fix formulas renderization
+
+4.0.096 11/04/2019
+==================
+- XPM
+  - (enhancement) [3101] Display a clearer message about PUBLIC ID validation
+  - (bug) [3100] Display error message if accepted or received dates are forward dates related to real publication date
+  - (bug) [3099] Display error message there are more than one pub-date of same type
+  - (bug) [3096] Fix DOI validation: Publisher Prefix x DOI Prefix. Consider FapUnifesp (SciELO) and SciELO is the same.
+- Markup
+  - (bug) [3098] Fix error as generating "Data report" because of DOI validation
+
+4.0.096 05/04/2019
+==================
+- XPM
+  - (bug) [3086] Fix validation. SPS 1.8 requires only pub-date[@pub-type=epub] for aop
+  - (bug) [3091] Fix validation: "SPS 1.9 is an invalid version". 
+- Markup
+  - (bug) [3090] Fix error as generating "Data report" because of changes on ArticleTableWrap.codes return
+- XC 
+  - (bug) [3085] Save epub date (v223)
+
+4.0.096 02/04/2019
+==================
+- XPM
+  - (bug) The message: "@pub-type is required" must be shown only if there is no @pub-type.
+
+- Markup
+  - (bug) Generate pub-date[@pub-type=collection] for SPS 1.8 documents, except for AOP.
+  - (bug) Fix error as generating "Data report" because of a missing caption attribute
+     ("AttributeError: 'ArticleTableWrap' object has no attribute 'caption'")
+
+4.0.096 29/03/2019
+==================
+- XPM
+  - (new) [3035] Visual abstracts
+  - (new) [3040] New doctopic value (data-article) and new reference type (data)
+  - (new) [3038] SPS 1.9
+  - (new) [3034] Presentation of warning message for missing contrib-id
+  - (new) [3007] ORCID validations
+  - (new) [3033] [DOIMultilingue] DOI validations and creation of a new field for languages and DOI
+  - (new) [3023] Remove validation of required reference and xref for Editorials
+  - (enhancement) [3047] Enhancement on the alternatives elements report presentation
+  - (enhancement) [3029] Error message for electronic document with page-count
+  - (bug) [3020] Fix validation of allowed characteres of DOI
+  - (bug) [3017] Fix DOI prefix validation, checking publisher
+
+4.0.095 29/03/2018
+==================
+- Installation with proxy
+
+- PMC
+  - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
+  - (bug) [2822] Remove extra files from PMC package
+  - (bug) [2837] Fix error as converting svg2png 
+  - (bug) [2836] Fix missing supplement files in PMC package 
+
+- XPM
+  - (bug) [2757] Remover as mensagens sobre order e article-id (other) 
+  - (bug) [2749] Remover as validações de datas das referências 
+  - (bug) [2744] Considerar pelo menos um <table> em <table-wrap-group> 
+  - (enhancement) [2768] Validate DOCTYPE check combination of PUBLIC ID + SYSTEM ID are correct and also sps version
+  - (enhancement) [2771] Improve the reports: fix columns width and present DOI
+  - (bug) [2772] Remove incorrect validations about order conflicts which is valid only for XC reports
+  - (bug) [2778] Fix PMC generation
+  - (bug) [2786] Fix DOI Validation
+  - (bug) [2789] Consider the value for XML_STRUCTURE_VALIDATOR_PREFERENCE_ORDER in scielo_env.ini
+  - (bug) [2795] Generate <fn-group> wrapping <fn> and display error if there is no fn-group (packtools)
+  - (bug) [2798] DTD Validation must be made by JAVA not by packtools
+  - (bug) [2796] Validate page-count existence to print documents and absence to electronic-only works
+  - (bug) [2823] Validate journal-title in XML is according to the cvs file
+  - (new) [2831] @article-type=correction must not have contrib
+  - (bug) [2852] Display the error message of compatibility of JATS versions and SPS versions (1.0)
+  - (bug) [2856] Fix previous author validation
+  - (bug) [2877] Fix bugs related to proxy
+  - (bug) [2876] Do not generate the reports in htdocs 
+  - (bug) [2871] Fix validation that says sps-1.7 do not accept JATS 1.0 
+  - (new) [2887, 2922] Remove any error messages for normalized orgname  
+  - (new) [2905] Inform that document is not according to the Collection criteria
+  - () [2927] Fix message about @article-type vs subject consistence
+  - () [2924] Relax validation on authors and references for correction and retraction articles
+  - (bug) [2957] Validate season must not be number
+  - (bug) [2921] SPS-1.8 não está sendo aceita
+
+- PMC
+  - (bug) [2756] Remove MathML namespace xmlns:mml="https://www.w3.org/1998/Math/MathML"
+  - (bug) [2822] Remove extra files from PMC package
+  - (bug) [2837] Fix error as converting svg2png 
+  - (bug) [2836] Fix missing supplement files in PMC package 
+
+
+4.0.094 Release 29/09/2017 | R 03/10/2017
+==========================================
+- XPM
+  - (bug) [] wayta
+
+4.0.094 Release 29/09/2017 
+==========================
+- General
+  - (new) [] Requirements installation automation
+  - [2686] http to https
+- XPM
+  - (new) [1256] Python3
+  - (new) [2596] JATS 1.1 Validation
+  - (new) [2578] Configuration of Web access status and proxy
+  - (new) [2615, 2630, 2715] ORCID Validation
+  - (new) [1270] Add XML Validations with packtools
+  - (new) [2705] Require coded formulas and tables
+  - (bug) [2599, 2623] Fix missing xref (bibr) validation
+  - (bug) [2567] Fix aff validation
+  - (bug) [2620] Present error for more than one source in reference 
+  - (bug) [2528] Reinsert the feature of zip file generation for pmc and scielo packages
+  - (bug) [2597] Consider that previous author can be anonymous
+  - (enhancement) [2610] Indicate articles must have fpage/@seq if they have same fpage value
+  - (enhancement) [2709] Fix the message about invalid citation data
+  - (enhancement) [2707] Fix the message about required PDF
+
+4.0.093 - Release 5 - 31/08/2017
+================================
+- XPM
+  - (improvement) [2615] ORCID Validation
+
+4.0.093 - Release 4 - 27/06/2017
+================================
+- XPM
+  - (bug) [2579] Fix the validation of history date 
+  - (improvement) [2569] Convert svg to tiff for the PMC package generation
+
+4.0.093 - Release 3 - 25/05/2017
+==================================
+- XPM
+  - (bug) [2579] Fix the validation of history date 
+
+4.0.093 - Release 2 - 19/04/2017
+================================
+- XPM
+  - (bug) PMC Validation: Fix indication to use Style Checker 5.13
+
+4.0.093 - Release 1 - 17/04/2017
+================================
+- XPM
+  - (improvement) [2497] Inform if there are embedded jpg or similar images inside of the SVG
+  - (improvement) [2511] References validations
+  - (improvement) [2486] Remove the warnings about copyright of digital assets
+  - (improvement) [2559] Remove mml:math/@id absence error message because it is not required by SciELO, and automatically insert mml:math/@id for PMC. 
+  - (bug) [2503] Fix the identification of bibr xref ranges
+  - (bug) [2472] Generate zip of the package
+  - (bug) [2477] Fix the generation of reports about absence of person-group as previous author
+  - (bug) [2556] Remove incorrect message about doi prefix
+  - (bug) [2522] Allow more values for CC licenses
+  - (bug) [2530] Consider alternatives as one of the child of disp-formula
+  - (new) [2542] Inform the files which are not part of package because of unmatching names
+  - (new) [] SPS 1.6
+  - (new) [] Style Checker 5.13
+
+4.0.092 - 16/12/2016 Release 09/01/2017
+=======================================
+- XPM
+  - (bug) Fix DOI validation: format was checked only after registration checking. Format checking must be done independent on DOI is registered or not.
+  - (bug) Fix URL validation: Do not interrupt the program if the data is not a URL or bad URL format
+  - (bug) Fix xref validation: do not interrupt the program if any xref is incomplete, such as missing @rid or content.
+  - (bug) Fix Pretty Print: do not interrupt the program if the data is not a well formated XML
+  - (bug) Display link to XML file
+  - (improvement) Report: only insert MathJax on demand
+
+
+4.0.092 - 16/12/2016
+====================
+- XPM
+  - (new) [#2463] Accept/include SVG files in the package 
+
+
+4.0.092 - 21/11/2016 Release 12/12/2016
+=======================================
+- XPM
+  - (bug) [#2451, #2440, #2436] Fix images report
+  - (bug) [#2454] Fix missing preview of equation
+  - (bug) [#2302] Invalid error about missing xref (aff) em sub-article
+
+
+4.0.092 - 21/11/2016
+====================
+- General:
+  - (new) [#2287] Solve HTTP Error Proxy Authentication Required
+  - (new) [#2325, #2356]: article-id (publisher-id) instead of DOI, if DOI does not exist
+  - (improvement): Reestructure the reports generator
+- XPM:
+  - (improvement) [#2303]: Remodel the reports in order to have better usability
+  - (improvement) [#2344]: Check if disp-formula is complete
+  - (improvement) [#2242]: Generate PMC Package by demand (-pmc parameter)
+  - (bug) [#2350]: DOI value is not case sensitive
+  - (bug) [#2354]: Fix contrib-id error message 
+  - (bug) [#2353]: Fix subdoc/aff error message 
+  - (bug) [#2127]: Display the error line number of XML invalid
+  - (bug) [#2302]: Fix subdoc/contrib/@rid error message
+  - (bug) [#2219]: Fix validation of figures count (subdoc)
+  - (bug) [#2301]: Fix clinical trial element generation
+  - (bug) [#2220]: Fix source error message (e-Cadernos)
+  - (bug) [#2336]: Fix license error message
+  - (bug) [#2290]: Fix url validation, when it has not protocol informed
+  - (bug) [#2264] Fix problem as identifying the xref ranges existing in different levels of XML tree.
+  - (bug) Fix unexpected error because of article-title that has @xml:lang and xref. 
+  - (bug) [#2272] Fix ext-link in mixed-citation
+
+4.0.091 - 28/06/2016 (beta)
+===========================
+- General:
+  - (new) [#2287] Solve HTTP Error Proxy Authentication Required 
+- XPM:
+  - (bug) [#2264] Fix problem as identifying the xref ranges existing in different levels of XML tree.
+  - (bug) Fix unexpected error because of article-title that has @xml:lang and xref. 
+  - (bug) [#2272] Fix ext-link in mixed-citation
+
+
+4.0.091 - 11/04/2016
+====================
+15/04/2016
+----------
+- XPM
+  - (bug) Fix problems with XML files located in a path which has diacritics.
+
+4.0.091 - 11/04/2016
+====================
+- XPM
+  - (bug) Fix message of missing image which href value has no extension
+  - (bug) Fix issues related to PDF as supplementary-material if it is in translation
+  - (bug) Use images from src folder instead of images gotten from Word
+  - (improvement) generate PMC XML only with article (en) or sub-article (en), but preserving the metadata in other languages.
+  - (improvement) improve message of required normalized aff
+  - (new) inform dpi, height and width of images
+  - (new) include DTD URL in DOCTYPE
+  - (new) check if there is the PDF file corresponding to sub-article (translation)
+  - (new) insert ext-link in mixed-citation and inform error if it is missing 
+  - (new) related-article indication
+  - (new) height inline-graphics/proportion validations
+  - (new) orgdiv validation
+  - (new) form to justify invalid messages
+  - (new) warn different licenses in an issue
+  - (new) validate values for sec/@sec-type
+  - (new) considere Jr. as suffix
+  - (new) inform error if any paragraph starts with dot (.)
+  - (new) inform error if there is nlm-ta for not NLM journal
+  - (new) DOI prefix validation
+  - (new) inform error if aff/country is empty
+  - (new) New element: alternatives
+  - (new) -auto parameter to skip report display
+  - (new) New element: sub-article(not translation)//aff
+  - (new) New elements: copyright, copyright-year, copyright-holder, permissions
+  - (new) Validations of copyright, copyright-year, copyright-holder, permissions
+  - (new) New country: Kosovo (KV)
+  - (new) Insert new SPS version: 1.4
+  - (new) Validate if source and year are present in mixed-citation
+  
+4.0.091 trial - 04/02/2016
+==========================
+- XPM 
+  - (bug) Require journal-id (publisher-id) only from sps 1.3
+  - (bug) Fix generation of xref (aff) for PMC
+  - (bug) Fix validation of @contrib-type, allowing translator and compiler
+  - (bug) Fix absence of a message about a missing image which had no extension
+  - (improvement) Display link to "contents validations report" although there is no error
+
+4.0.091 trial - 08/01/2016
+==========================
+- XPM
+  - (bug) Require journal-id (publisher-id) only from sps 1.3
+  - (improvement) Display link to "contents validations report" although there is no error
+  - (bug) Fix generation of xref (aff) for PMC
+  - (bug) Fix validation of journal-id (publisher-id)
+  - (bug) Fix validation of @contrib-type, allowing translator and compiler
+
+4.0.091 trial - 18/12/2015
+==========================
+  - (improvement) Present the "translation" of code languages
+  - (improvement) Improve identification of normalized institutions
+  - (improvement) Do not consider missing bibr/fig/table-wrap xref if it is in a xref range. Ex.: 2, 3, 4 are in (1-5), so they are not missing
+  - (improvement) Do not require acronym
+  - (improvement) Validation of article/@specific-use
+  - (improvement) Better presentation of XML in the reports (textarea to code)
+  - (improvement) Improve pretty print
+  - (improvement) Improve validation of @article-type
+  - (improvement) Display the more details on overview reports (duplicity of source/aff/etc)
+  - (new) Validation of fig-group/@ref-type and table-wrap-group/@ref-type
+  - (new) Presentation of table
+  - (new) Normalize mixed-citation, including label
+  - (new) Fix &amp;amp; e &amp;#
+  - (new) Fix validations according to SPS 1.3
+  - (new) Generate one zip for each document
+  - (new) Validate journal-meta using titles-tab-v2-utf-8.csv
+  - (new) Remove styles from source, if necessary
+  - (new) Validation of fpage + lpage + seq + elocation-id as unique
+  - (new) Tool to compare updates of normalized institutions
+  - (new) Identify duplication of trans-title/article-title, abstract/trans-abstract, kwd
+  - (new) Validation of ISO Country Code
+  - (new) Add to scielo_package ther files which are in XML in spite of their names are not according to the rules. E.g.: a01.xml and a02-gf01.png. But error messages must be displayed.
+  - (new) Validate journal-id (publisher-id)
+  - (bug) Fix history validation: received and accepted
+  - (bug) Remove inconvenient styles (bold/italic) within article-title, trans-title, kwd, source
+  - (bug) Fix position of fn-group of translation
+  - (bug) Validate suffixes which are in capital letters (ex.: JUNIOR)
+  - (bug) Remove funding-group off PMC package
+  - (bug) Fix validations of affiliations using Wayta
+
+4.0.090 - 16/09/2015
+====================
+- Markup
+  - (bug) Fix identification of xref (bibr) which is numeric an which pattern is (1,2-3)
+- XC
+  - (bug) Solve saving record problem because it is very large
+- XPM
+  - (bug) Solve encoding problem which occurres in some computers as reading the DTD report
+  - (bug) Fix the article title to check doi
+  - (bug) Fix message of missing tiff (the correct is missing jpg generated from tiff)
+  - (improvement) Ignore city/state to have a perfect match as normalizing the institution name 
+
+4.0.090 trial - 08/09/2015
+==========================
+- Markup
+  - (new) Identify xmlbody which starts with p and subsec
+  - (bug) Chinese abbreviation must be zh, instead of ch
+- XC
+  - (bug) Fix name of PDF (0104-530X-gp-0104-530X1387-14 was renamed to 14_0104-530X-gp-0104-530X1387)
+  - (new) Reorganize Converter messages
+- XPM
+  - (improvement) Present the fpage and lpage values in the messages of Paginations report
+  - (bug) Fix some institution names
+
+4.0.090 trial - 31/08/2015
+==========================
+- XPM
+  - (bug) Fix the absence of DOCTYPE in scielo_package
+  - (bug) Accept use of paths with diacritics in their names
+  - (new) Paginations report
+  - (bug) Presentation of not well-formed .sgm.xml 
+
+4.0.090 trial - 24/08/2015
+==========================
+- XML for PubMed
+  - filter registers by article data for rolling pass as it is done for aop
+  - force day=01 if absent for received and accepted dates
+- Markup
+  - (bug) fix cint(4.0) problem which happened to SciELO Portugal
+- Markup XML - doc DTD
+  - (new) download de markup journals list
+  - (new) institution names normalizer
+  - (new) requires .doc files at markup_xml/scielo_markup
+  - (new) prefix for Chart (ch1)
+  - New elements/attributes:
+    - (new) versgrp, versline
+    - (new) attrib
+    - (new) ref/series
+    - (new) alttext, alttitle
+    - (new) country/@country
+    - (new) product
+    - (new) author/role
+    - (new) sectitle in key words, abstracts, etc
+    - (new) boxedtxt
+    - (new) appgrp
+    - (new) afftrans
+    - (new) equation/label
+  - Modified elements/attributes:
+    - (new) city, state, country by publoc
+    - (bug) related/@reltp, related/@pid-doi
+  - Automations:
+    - (new) front according to a new template
+    - (new) *kwdgrp, considering sectitle
+    - (new) body/sec
+    - refs:
+      - (new) Vancouver (Automata 2)
+      - (new) *authors, et-al
+      - (new) publoc-pubname, pubname-publoc
+      - (bug) fix identification of previous author
+    - (bug) fix bibr xref: (20,21) (20-24) (20,22-25)
+    - (bug) fix fig or table xref which @rid has more than 1 digit (Figure 10)
+
+- XML generation
+  - always generate article-id although there is no DOI
+  - (bug) font symbols
+  - (new) sigblock -> contrib-group
+  - (new) appgrp -> app-group
+  - (new) afftrans -> sub-article/aff
+  - (new) equation/label -> disp-formula/label
+  - New elements/attributes:
+    - (new) alternatives: graphic, mml:math, texmath
+    - (new) title in key words, abstracts, etc
+    - (new) boxed-text
+  - Modified elements/attributes:
+    - (bug) sub-article (translation): aff and contrib-group
+  - Removed elements/attributes:
+    - (bug) institution/named-content
+    
+- XPM / XC
+  - (new) GUI
+  - (new) reports in Portuguese
+  - (new) element-citation/@publication-type validations
+  - (new) @article-type vs subject validation
+  - (new) improving contents validations
+
+- XPM
+  - (new) generate scielo_package_zips, pmc_package_zips
+  - (bug) file names of special number or volume and inline-graphic
+  - (bug) fix extraction of embedded images
+
+- XC
+  - (bug) fix some data in the database
+  - (new) v240 for normalized aff
+  - (bug) fix encoding
+  - (new) validate new files against registered articles
+
+- Markup SGML (article/text):
+  - (bug) contaje de citas
+  - (bug) a01 a02
+  - (bug) text/aff
+  - (bug) toccode
+  - (bug) doctopic = editorial
+
+- SGML Parser
+  - complete doc4_0.dtd with the new/missing elements/attributes
+
+- Title Manager
+  - license code only
+  - new licenses
+
+4.0.089 - 28/10/2014
+====================
+- XML Package Maker 
+  - (bug) fix the file name of ahead of print articles
+  - (bug) fix generation of XML for ex-ahead and ahead of print articles
+  - (bug) fix the reports presentation
+- Markup SGML
+  - (bug) add report in bibcom and bbibcom
+- Markup XML - article and doc DTD
+  - (new) fix @id according to SPS Guidelines 1.1
+  - (new) article/@specific-use
+  - (new) identification of clinical trial
+  - (new) refactoring of the tag related (less attributes)
+  - (new) country in aff must be mandatory
+  - (new) improvement on the identification of bibliographic references in 
+  - (new) automatic identification of mimetype and mime-subtype for supplementary-material, media and inline-supplementary material 
+  - (new) month in references must be number
+  - (new) remove <sup> from <edition>
+  - (new) fngrp has a new element: label
+  - (new) create label of fngrp automatically
+  - (bug) fix generation of <suffix> 
+  - (bug) fix the data inside front of article which has sub-article 
+  - (bug) remove @xml:lang from abstract and article-title
+  - (bug) fix generation of funding-group
+  - (bug) remove from ref the duplicated label
+  - (bug) fix generation of <comment content-type='cited'/>
+  - (bug) fix generation of elements of thesis and conferences in the references
+  - (bug) remove the puntuaction between tags in element-citation
+  - (bug) do not show error message for (sub | sup ) in institution
+  - (bug) remove institution[@content-type='aff-pmc']
+- Markup XML - doc DTD
+  - (new) testing the Creative Commons Licenses URL
+the text (author date)
+  - (new) remove some tag which are in ref
+  - (bug) fix automatic identification of "review" article
+  - (bug) as pressing on *kwdgrp do not display kwd
+- XML Converter
+  - (bug) fix the reports
+  - (bug) fix the ahead/ex-ahead management
+
+4.0.088 - 10/10/2014
+====================
+- Milestone 4.0.088
+  - Refactoring of Validations reports
+  - Refactoring of XML Package Maker
+    - Use of packtools, considering if it is already installed
+  - XML Converter 
+  - new list of @article-type / doctopic
+
+4.0.087 - 27/08/2014
+====================
+- Milestone 4.0.087
+  - Markup 
+    - article and doc DTD/doc template
+      - (new) identify automatically sections/subsections according to the template
+      - (new) identify automatically (number) superscript as xref[@ref-type='bibr'] according to the template
+      - (new) new attributes for supplmat (@mimetype, @mime-subtype, @id)
+      - (bug) replace smat prefix by suppl
+      - (bug) fix problem as marking *pauthor
+      - (bug) fix problem as identifying source, sertitle, author in text-ref
+      - ()
+    - doc DTD/doc template
+      - (new) new form for doc tag
+      - (new) identify automatically doi (front) according to the template
+      - (new) identify automatically toctitle (front) according to the template
+      - (new) identify automatically doctitle (front) according to the template
+      - (new) identify automatically authors (front) according to the template
+      - (new) identify automatically normaff (front) according to the template
+      - (new) remove the dependence on Markup and Title Manager files
+      - (new) replace doctit by arttitle and chptitle
+      - (new) remove the elements vancouv, iso690, apa, abnt6023, other
+      - (new) semi-automatic identification of ref/@ref-type (element-citation/@publication-type)
+      - (new) fundig tag only for doc DTD and report tag only for article DTD
+      - (bug) do not generate pub-date/@pub-type='ppub' for aop articles
+      - (bug) fix the generation of funding-group structure 
+      - (bug) remove some of the ref/@ref-type values
+  - Markup/XML generation
+    - (new) create all the counts elements: page-count, ref-count, eq-count, fig-count, tab-count 
+    - (new) generate pub-date only with @pub-type attribute
+    - (bug) new table footnote id format (TFN01), instead of t01TFN01
+
+4.0.086 - 14/07/2014
+====================
+  - Milestone 4.0.086
+    - SGMLPars
+      - (bug) fix DTD elements and attributes
+    - Markup
+      - general
+        - (bug) fix identification of list which was identified as quote
+        - (bug) fix checking of ID (allows app01)
+        - (bug) fix position of the next selection
+        - (bug) fix generation of graphic and table
+        - (bug) fix the tags font styles
+        - (bug) dateiso attribute must be completed only with numbers
+        - (bug) fix the rules to insert a tag (is well formed), considering only parent tag
+        - (bug) fix identification of irregular tables
+        - (bug) fix automatic identification of et-al
+        - (bug) fix identification of *sertitle (*source and *stitle) considering the lower/upper cases 
+        - (bug) fix the name of the images (there was duplication of the last character)
+        - (new) do not generate xml:lang which value is unknown
+        - (bug) fix missing text of footnote reference
+        - (bug) fix [/figgrp] position in the case of figure has no label/caption
+        - (bug) do not create <back/>
+      - doc DTD
+        - (new) include dot as separator for key words
+        - (new) *kwdgrp to identify all the key words at once instead of kwdgrp
+        - (new) remove zipcode from normaff
+        - (bug) trans-title
+        - (new) text-ref for references which have previous authors
+        - (bug) fix bookmark for previous author
+        - (bug) fix the list of normalized institutions (normaff)
+        - (bug) include normaff for subdoc
+      - article/text DTD
+        - (new) aff tag can not be floating, must be inside of front
+        - (new) remove ID of keyword and remove subkey
+        - (new) generate source or article-title or chapter-title according to the presence of doctit or source 
+        - (bug) include app for article
+
+4.0.085 - 30/06/2014
+=======
+ - Milestone 4.0.085
+   - Markup XML (doc DTD)
+     - (bug) fix pauthor upper case
+     - (new) automatic identification of ref for abnt
+     - (new) remove descript attribute from moreinfo tag
+     - (bug) improve xref (bibr) identification
+     - (new) remove ftype attribute from figgrp type
+     - (bug) fix automatic identification of label and caption of table and figure
+     - (new) inform message of missing affiliation, if it was identified with aff instead of normaff
+     - (bug) remove xml:lang attribute of article-title
+     - (new) display buttons of doc DTD sorted by name 
+     - (bug) fix normaff form
+     - (new) include normalized affilitions
+     - (bug) display the part of screen where the cursor is located
+     - (bug) display xref (fn) text
+     - (bug) remove text between element-citation tags
+     - (bug) fix automatic complete for dateiso attribute in attributes form
+     - (bug) fix XML generation for subdoc which contains fngrp
+     - (bug) include id, type and language for subdoc and docresp
+     - (new) automatic identification of label for normaff
+
+4.0.084 - 23/06/2014
+=======
+ - Milestone 4.0.084
+   - Markup XML (doc DTD)
+     - (new) identify et-al automatically
+     - (new) normaff tag to identify normalized affiliation
+     - (bug) surname and fname were unable for pauthor
+     - (bug) pauthor was maked as PAUTHOR
+     - (bug) misplaced [/subdoc] (before [/xmlbody])
+   - Markup XML (article DTD)
+     - (bug) fix apa for automata 3
+   - Package Maker
+     - (bug) fix renaming filenames
+     - (bug) remove message indicating missing original institution
+   - SGML Parser
+     - (bug) missing definition of pagcount attribute for text DTD
+
+4.0.083 - 13/06/2014
+=======
+ - Milestone 4.0.083
+   - Markup XML
+     - (bug) fix cc tag of doc DTD
+     - (bug) fix renaming images
+     - (bug) fix th identification, which was identified as td after first cell
+     - (bug) force a font name to tags, in order to tag not get the content styles (uppercase, invalid characters, etc)
+     - (bug) fix the table identification, when the user has selected the end of the table in the table range
+     - (bug) missing the XML generation of funding-group and license from doc
+     - (new) removed sciname tag
+     - (new) allow edition of the attributes of th and td tags
+     - (new) new DTD: doc, which has less levels and it is only to generate XML
+     - (new) the reports are now created in errors folder, instead of work folder
+     - (new) new tags to identify references
+     - (new)
+   - XML Package Maker
+     - (new) do not warn if there is no @lang to references
+
+4.0.082 - 03/06/2014
+=======
+ - Milestone 4.0.082
+   - Markup XML
+     - (new) do not consider abbrev-journal-title as required
+     - (new) new DTD: doc, which has less levels and it is only to generate XML
+
+4.0.081 - 30/05/2014
+=======
+ - Milestone 4.0.081
+   - Markup
+     - (bug) fix dateiso identification for day/month/year format
+   - Markup (SGML)
+     - (bug) allow to open a document located any place
+   - Markup XML
+     - (bug) ignore italic and bold inside of citat elements
+     - (new) automation for lists
+
+4.0.080 - 27/05/2014
+=======
+ - Milestone 4.0.080
+   - Markup XML
+     - (new) redefinition of the folders structure
+     - (new) presentation of the tables in the report
+     - (new) presentation of the images in the report
+     - (new) checking the value of count elements and the elements they count (page-count, table-count, etc)
+     - (new) adjustment in the ack warning in the style check report 
+     - (new) fix characters such as inconditional hyphen
+     - (new) markup of clinical trial
+     - (bug) fix incompatibility to Office 2013
+     - (bug) fix automatic markup of tables (colspan, rowspan, thead)
+     - (bug) accept .docx 
+
+4.0.079 - 16/05/2014
+=======
+ - Milestone 4.0.079
+   - Markup XML
+     - (new) automation of stitle/sertitle
+     - (new) automation of author/oauthor
+     - (new) automation of surname-fname
+     - (new) removed author+
+     - (bug) fix incompatibility to Office 2013
+     - (bug) fix value for rid of footnote
+     - (bug) fix naming of embedded images
+     - (bug) fix volume/issue of ahead 
+     - (bug) remove commentaries (XML)
+     - (bug) remove punctuation marked as italic or bold in element-citation
+   - Converter
+      - (bug) fix missing funding data in database
+   - XML Exporter (PubMed)
+      - (bug) Language for multilanguage articles (XML)
+
+4.0.078.r5 - 12/05/2014
+=======
+ - Milestone 4.0.078.r5
+   - xml package maker
+      - (new) new rule for naming aop articles
+      - (bug) xml package maker finishes unexpectable if there is any not well formed XML.
+   - Markup XML
+      - (bug) fix generation of RID of reference in body. (It happened when there are less than 10 references)
+      - (bug) some graphics were not being identified
+      - (bug) article-id (other) was inserted always. It had to be generated only in special cases, such as, fpage is literal, or has @seq, etc
+      - (bug) removed label from inside of institution (original/aff-pmc)
+      - (bug) fix position of [/xmlbody] inside of [/subart]
+
+4.0.078.r4 - 05/05/2014
+=======
+ - Milestone 4.0.078.r4
+   - markup xml
+      - (new) identify quote, by indentation
+      - (new) extract embedded files from .doc
+      - (bug) incorrect identification of label and caption, where there is none. (#459)
+      - (bug) fix label position (#465)
+      - (bug) do not identify blank footnotes (#473)
+      - (bug) problem as identifying xmlbody, at the moment of identifying xref of citations. (#458) 
+
+4.0.078.r3 - 29/04/2014
+=======
+ - Milestone 4.0.078
+   - markup xml
+      - (update) nlm style checker 5.4
+      - (new) attribute article/@artdate for article date (rolling in pass)
+      - (new) create pub-date/@date-type=collection for online issues
+      - (new) automatic identification of label and caption of figure
+      - (bug) missing href as attribute of uri
+      - (bug) fix the name of the files
+      - (bug) problem to mark xmlbody when there are texts formated as AllCaps=True
+      - (bug) wrong location of xml_package and pmc_package
+      - (bug) adjustments in DTD because of the absence of the definition of some elements and attributes
+      - (bug) fix generation of ID of reference, when quantity is lower than 10
+      - (improvement) change to no the default value for author's attributes: corresp, eqcontrib, deceased
+   - export database
+      - (bug) could not export issue and section records
+   - IGO license
+
+4.0.077 - 07/04/2014
+=======
+ - Milestone 4.0.077
+ - markup xml:
+   - article/@order generates article-id (other)
+   - do not generate @xml:lang for article-title which gets it from article or sub-article
+   - (bug) generation of sub-article/front-stub
+   - inclusion of the role tag inside aff, which generates the tag role in contrib.
+ - XML Exporter for PubMed
+   - Affiliation tag had repeated information
+ - (new) XML Converter to generate the base folder
+
+4.0.076 - 26/02/2014
+=======
+ - Milestone 4.0.076
+ - markup:
+   - (bug) generation of glossary
+   - (bug) fix problem as identifying automatically the table which has no footnote
+   - (bug) problem as loading the bars in Spanish
+   - (bug) too much col created when identifying table 
+   - (bug) adjustments in funding-group 
+   - (bug) adjustments in funding-statement
+   - (bug) values for article-type of sub-article
+   - (bug) urls were not automatically identified
+   - (bug) problem as deleting vancouv tag
+   - (bug) ref/@id were created with one digit
+   - deflist as floating
+   - list as floating
+   - .docx as a valid format
+   - new attribute in article: pagcount, in order, to generate page-count for roman numerals
+ - xml package maker:
+   - (bug) display the all the identified pub-dates
+   - warning for surname with more than one word
+   - validate supplement in XML
+   - validations for sub-article (@id and @href)
+ - export
+   - bug when selecting the records using acronym which was not UPPER CASE
+
+4.0.075 - 28/01/2014
+=======
+ - Mileston 4.0.075
+ - markup:
+   - automatic markup of tables
+   - fixes automatic markup of bookmarks
+   - insertion of xml:lang to chapter-title
+   - automatic markup of internal hyperlinks in the text
+   - fixes missing publisher-name in journal-meta
+   - adjustments of interface
+   - refactored automatic markup of ack 
+   
+4.0.074 - 17/01/2014
+=======
+ - Mileston 4.0.074
+ - markup:
+   - dateiso with space in the beginning
+   - failure as inserting bookmarks
+   - @specyear for special year (2000a, c1990)
+   - automatic idenfication of hyperlinks to references
+ - xml package maker:
+   - license present, but report indicated it was missing
+   - unexpected errors when fpage was absent or literal
+   - keep extension in XML for graphics (.tif, etc) 
+   - email inside institution[@content-type='original']
+ 
+ 4.0.073 - 13/01/2014
+=======
+ - response and sub-article
+ - glossary, def-list, app
+
+4.0.072 - 17/12/2013
+=======
+ - Title Manager and Markup XML: print issn e e-issn (#54)
+ - Title Manager - subjects categories, mandatory
+ - Markup XML: identification for relationship between articles, documents, and objects (#168, #171, #172)
+ - Automata 3: use same method as automata 1, but the file is related to a standard: abnt, apa, vancouver (#169)
+ - Markup XML: For SciELO, new tags: <institution content-type="original"> and <institution content-type="aff-pmc"> (#145)
+ - Markup XML: product (#28)
+ - Markup: some small automations: unnecessary select all the element name to delete and edit, and the references to identify them. It is enough to put the cursor over the word. 
+ - Markup: reorganization of the place of the program files
+
+4.0.071 - 29/11/2013
+=======
+- reports of XML files' contents (package maker and Markup)
+- markup xml: fixes bug of absence of aff/country
+- markup xml: new elements inline-graphic, inline-supplementary-material, supplementary-material, inline-formula
+- DTD: fixes APA
+- automata_samples: journal PAB
+
+4.0.070 (not released yet)
+=======
+- fixes generation of xml package for ahead (in standalone version)
+- registration of normal.dot path in markup log file
+- BY-NC-SA
+- alteração na identificação de ref-type, quando o link é formado por nome do autor
+
+4.0.069
+=======
+11/Sep/2013
+this version fixes some issues of previous versions (milestone 4.0.069 https://github.com/scieloorg/PC-Programs/issues?milestone=3&page=1&state=closed)
+- title manager: displays in issue form the current creative commons license used by the journal
+- pubmed: fix the search expression for the journal (journal.xml)
+- xml packages maker: fix problems found in v4.0.068
+- markup xml: fix xref of affiliation (4.0.067)
+- journal-id for journals which are not NLM title
+
+4.0.068
+=======
+9/2013
+ - xml package maker refactored to work with different DTD versions
+ - markup XML - disabled preview of html files
+
+4.0.067
+=======
+31/7/2013
+ - changing the name of element/attribute for ORCID: contrib-id and @contrib-id-type to ctrbid and @ctrbidtp because of SGML DTD limitation of namelen(8)
+ - bug in generation of XML for PubMed only if the source is a XML file
+ - in citations when there is month in pub-date, use of literal instead of number
+
+4.0.066
+=======
+24/6/2013
+ - problem in loading code databases in title manager (history), because installer has not the updated code database
+
+4.0.065
+=======
+21/6/2003
+ - xml packages maker handle entities and convert them to their corresponding characters
+
+4.0.064
+=======
+14/6/2013
+ - adjustments in id/rid de aff
+ - @id for corresp
+ - contrib-id (ORCID)
+ - JATS 1.0
+
+4.0.063
+=======
+04/Jun/2013
+Milestone10
+
+4.0.062
+=======
+06/May/2013
+Milestone9
+
+4.0.061
+=======
+Milestone8
+
+
+4.0.057
+=======
+
+Markup
+- [NEW] Validation of the XML for SciELO and Previewer of its HTML
+- [FIXED] APA
+- [FIXED] Replacement of some .bat by .py
+
+4.0.055
+=======
+Milestone7
+
+4.0.054
+=======
+- [FIXED] Markup PMC. Fix bug related to generation of .sgm.xml which contained unexpected characters after </article>.
+- [NEW] Title Manager: new fields related to Web of Knowledge 
+
+
+4.0.053
+=======
+- [NEW|FIXED] Markup PMC (milestone6)
+
+4.0.052
+=======
+- [FIXED] Title Manager: an expected error, as saving data of journal form (4.0.050 - creative commons)
+- [FIXED] Markup: As completing attributes, set the value using the last entry
+
+- [NEW] Markup PMC/Parser: tickets milestone5
+- [NEW] Title Manager: generation of files for Markup PMC program
+- [NEW] Code Manager and code database: generation of files for Markup PMC program
+- [NEW] PMCXMLTools: python programs used by Markup PMC
+
+4.0.051
+=======
+- [FIXED] Markup: Automata 2. Not allow to insert tag. Problem at checking hierarchy.
+
+4.0.050
+=======
+- Title Manager
+    - [FIXED]: journal issues list
+    - [FIXED]: display sections
+    - [NEW]: field for creative commons is editable
+- [NEW|FIXED] Markup PMC
+
+4.0.049
+=======
+- [NEW|FIXED] Markup PMC
+
+
+
+
+
+
+
+
+

@@ -6,7 +6,7 @@ import os
 import shutil
 
 
-from app_modules.generics.exporter import Exporter
+from prodtools.utils.exporter import Exporter
 
 
 class TestExporter(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestExporter(unittest.TestCase):
             with open(os.path.join(self.files_path, item), "w") as fp:
                 fp.write(item)
 
-    @patch('app_modules.generics.exporter.AsyncFTP')
+    @patch('prodtools.utils.exporter.AsyncFTP')
     def test_export(self, MockAsyncFTP):
         data = dict(
             (
@@ -35,7 +35,7 @@ class TestExporter(unittest.TestCase):
             ANY, "server", "user", "password", "remote_path"
         )
 
-    @patch('app_modules.generics.exporter.logger')
+    @patch('prodtools.utils.exporter.exp_logger')
     def test_export_raises_configuration_error(self, mk_logger):
         data = dict(
             (
@@ -46,7 +46,7 @@ class TestExporter(unittest.TestCase):
         )
         exporter = Exporter(data)
         exporter.ftp_configuration
-        mk_logger.error.assert_called_once_with("Exporter: Missing FTP Configuration")
+        mk_logger.info.assert_called_once_with("Exporter: Missing FTP Configuration")
 
     def tearDown(self):
         shutil.rmtree(self.files_path)

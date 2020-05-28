@@ -3,7 +3,7 @@
 from unittest import TestCase, skipIf
 
 import sys
-from app_modules.generics import encoding
+from prodtools.utils import encoding
 
 
 python_version = sys.version_info.major
