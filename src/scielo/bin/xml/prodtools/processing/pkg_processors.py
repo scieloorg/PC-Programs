@@ -27,6 +27,7 @@ from prodtools.data import workarea
 from prodtools.data import kernel_document
 from prodtools.db import registered
 from prodtools.db import xc_models
+from prodtools.db.serial import WebsiteFiles
 from prodtools.db.pid_versions import(
     PIDVersionsManager,
     PIDVersionsDB,
@@ -118,8 +119,12 @@ class ArticlesConversion(object):
 
             if len(_scilista_items) > 0:
                 # IMPROVEME
-
-                self.registered_issue_data.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.local_web_app_path)
+                if self.local_web_app_path:
+                    website_files = WebsiteFiles(
+                        self.local_web_app_path,
+                        self.pkg.issue_data.acron,
+                        self.pkg.issue_data.issue_label)
+                    website_files.get_files(self.pkg.package_folder.path)
                 self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
                 if export_documents_package:
                     zip_filename = scilista_items[0].replace(" ", "_") + ".zip"

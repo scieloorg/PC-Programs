@@ -158,46 +158,6 @@ class IssueFiles(object):
     def windows_base(self):
         return os.path.join(self.windows_base_path, self.issue_folder)
 
-    def copy_files_to_local_web_app(self, xml_path, web_path):
-        msg = ['\n']
-        msg.append('copying files from ' + xml_path)
-
-        path = {}
-        path['pdf'] = web_path + '/bases/pdf/' + self.relative_issue_path
-        path['xml'] = web_path + '/bases/xml/' + self.relative_issue_path
-        path['html'] = web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
-        path['img'] = web_path + '/htdocs/img/revistas/' + self.relative_issue_path
-        xml_files = [f for f in os.listdir(xml_path) if f.endswith('.xml') and not f.endswith('.rep.xml')]
-        xml_content = ''.join([fs_utils.read_file(xml_path + '/' + xml_filename) for xml_filename in os.listdir(xml_path) if xml_filename.endswith('.xml')])
-
-        for p in path.values():
-            if not os.path.isdir(p):
-                os.makedirs(p)
-        for f in os.listdir(xml_path):
-            if f.endswith('.xml.bkp') or f.endswith('.xml.replaced.txt') or f.endswith('.rep.xml'):
-                pass
-            elif os.path.isfile(xml_path + '/' + f):
-                ext = f[f.rfind('.')+1:]
-
-                if path.get(ext) is None:
-                    if not f.endswith('.tif') and not f.endswith('.tiff'):
-                        shutil.copy(xml_path + '/' + f, path['img'])
-                        msg.append('  ' + f + ' => ' + path['img'])
-                elif ext == 'pdf':
-                    pdf_filenames = [f]
-                    new_pdf_filename = new_name_for_pdf_filename(f)
-                    if new_pdf_filename is not None:
-                        pdf_filenames.append(new_pdf_filename)
-                    for pdf_filename in pdf_filenames:
-                        if os.path.isfile(path[ext] + '/' + pdf_filename):
-                            fs_utils.delete_file_or_folder(path[ext] + '/' + pdf_filename)
-                        shutil.copyfile(xml_path + '/' + f, path[ext] + '/' + pdf_filename)
-                        msg.append('  ' + f + ' => ' + path[ext] + '/' + pdf_filename)
-                else:
-                    shutil.copy(xml_path + '/' + f, path[ext])
-                    msg.append('  ' + f + ' => ' + path[ext])
-        return '\n'.join(['<p>' + item + '</p>' for item in msg])
-
     def save_reports(self, report_path):
         if not self.base_reports_path == report_path:
             if not os.path.isdir(self.base_reports_path):
@@ -333,3 +293,54 @@ class JournalFiles(object):
             done = not os.path.isfile(
                 os.path.join(src.id_path, aop.order + '.id'))
         return (done, errors)
+
+
+class WebsiteFiles(object):
+
+    def __init__(self, web_path, acron, issue):
+        self.web_path = web_path
+        self.web_bases_pdf = os.path.join(
+            web_path, 'bases', 'pdf', acron, issue)
+        self.web_bases_xml = os.path.join(
+            web_path, 'bases', 'xml', acron, issue)
+        self.web_htdocs_img = os.path.join(
+            web_path, 'htdocs', 'img', 'revistas', acron, issue)
+        self.web_htdocs_img_html = os.path.join(
+            web_path, 'htdocs', 'img', 'revistas', acron, issue, 'html')
+
+    def get_files(self, package_files_path):
+        msg = ['\n']
+        msg.append('copying files from ' + package_files_path)
+
+        path = {}
+        path['.pdf'] = self.web_bases_pdf
+        path['.xml'] = self.web_bases_xml
+        path['.html'] = self.web_htdocs_img_html
+        path['.img'] = self.web_htdocs_img
+
+        for p in path.values():
+            if not os.path.isdir(p):
+                os.makedirs(p)
+        for f in os.listdir(package_files_path):
+            file_path = os.path.join(package_files_path, f)
+            if not os.path.isfile(file_path):
+                continue
+            name, ext = os.path.splitext(file_path)
+            destination_path = path.get(ext)
+            if destination_path is None:
+                if not ext.startswith(".tif"):
+                    shutil.copy(file_path, path['.img'])
+                    msg.append('  {} => {}'.format(f, path['.img']))
+            elif ext == '.pdf':
+                pdf_filenames = [f]
+                new_pdf_filename = new_name_for_pdf_filename(f)
+                if new_pdf_filename:
+                    pdf_filenames.append(new_pdf_filename)
+                for pdf_filename in pdf_filenames:
+                    shutil.copy(file_path, destination_path)
+                    msg.append('  {} => {}'.format(
+                        f, os.path.join(destination_path, pdf_filename)))
+            else:
+                shutil.copy(file_path, destination_path)
+                msg.append('  {} => {}'.format(f, path[ext]))
+        return '\n'.join(['<p>{}</p>'.format(item) for item in msg])
