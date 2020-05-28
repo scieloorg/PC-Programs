@@ -39,3 +39,7 @@ def main():
 
     if call_gerapadrao:
         reception.gerapadrao()
+
+
+if __name__ == "__main__":
+    main()
