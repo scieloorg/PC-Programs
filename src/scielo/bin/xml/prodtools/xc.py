@@ -87,6 +87,7 @@ class Reception(object):
             self.inform_failure(
                 "", str(e),
                 subject=_('Something went wrong as downloading packages'))
+            raise e
 
     def receive_package(self, package_path=None):
         if self.collection_acron:
@@ -104,7 +105,8 @@ class Reception(object):
             try:
                 self.convert_package(package_path)
             except Exception as e:
-                encoding.report_exception('convert_package', e, package_path)
+                self.inform_failure(
+                    package_path, str(e), "receive_package_for_desktop")
                 raise
 
     def _receive_package_for_server(self):
@@ -141,13 +143,13 @@ class Reception(object):
         pkg = pkg_maker.pack()
         pkg_name = pkg.package_folder.name
         try:
-            if len(pkg.articles) > 0:
-                result = self.proc.convert_package(pkg)
-                scilista_items, xc_status, mail_info = result
+            result = self.proc.convert_package(pkg)
+            scilista_items, xc_status, mail_info = result
         except Exception as e:
             if self.config.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
             self.inform_failure(pkg_name, e)
+            raise e
         else:
             if len(scilista_items) > 0:
                 acron, issue_id = scilista_items[0].split(' ')
@@ -160,7 +162,7 @@ class Reception(object):
         encoding.display_message(_('finished'))
 
     def inform_failure(self, package_name, msg, subject=None):
-        if self.mailer:
+        if self.mailer.mailer:
             subject = subject or _("Failure during or after conversion")
             self.mailer.mail_failure(subject, package_name, msg)
         else:
@@ -177,9 +179,10 @@ class Reception(object):
                 msg = _("Unable to update scilista {} with {}: {}"
                         ).format(self.config.collection_scilista, content, e)
                 self.inform_failure(package_name, msg)
+                raise e
 
     def _mail_results(self, pkg_name, mail_info):
-        if self.mailer:
+        if self.mailer.mailer:
             if mail_info and self.config.email_subject_package_evaluation:
                 mail_subject, mail_content = mail_info
                 self.mailer.mail_results(pkg_name, mail_subject, mail_content)
@@ -194,6 +197,7 @@ class Reception(object):
                 msg = _("Unable to transfer xml, pdf, images files"
                         " of {} {}: {}").format(acron, issue_id, e)
                 self.inform_failure(package_name, msg)
+                raise e
 
     def _update_report_files(self, package_name, acron, issue_id):
         if self.transfer:
@@ -203,6 +207,7 @@ class Reception(object):
                 msg = _("Unable to transfer report files"
                         " of {} {}: {}").format(acron, issue_id, e)
                 self.inform_failure(package_name, msg)
+                raise e
 
     def _queued_packages(self):
         pkg_paths, invalid_pkg_files = self._queue_packages()
