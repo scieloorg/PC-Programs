@@ -230,7 +230,7 @@ class ArticlesDB(object):
         self.db_filename = db_filename
         if os.path.isfile(db_filename + '.mst'):
             self.isis_db = ucisis
-            self.isis_db.update_indexes(db_filename, FST_ARTICLE, db_filename)
+            self.isis_db.update_indexes(db_filename, FST_ARTICLE)
         else:
             print('Not found: ' + db_filename)
 
@@ -299,7 +299,11 @@ class ArticlesFiles(object):
     @property
     def standard_xml_folder_paths(self):
         xml_path_list = []
-        for path in [self.base_source_path, self.scielo_package_path]:
+        base_source_path = os.path.join(
+            self.issue_path, 'base_xml', 'base_source')
+        scielo_package_path = os.path.join(
+            self.issue_path, 'markup_xml', 'scielo_package')
+        for path in [base_source_path, scielo_package_path]:
             if os.path.isdir(path):
                 if len([item for item in os.listdir(path) if item.endswith('.xml')]) > 0:
                     xml_path_list.append(path)
