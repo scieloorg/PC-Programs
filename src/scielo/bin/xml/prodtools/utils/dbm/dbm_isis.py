@@ -344,7 +344,8 @@ class UCISIS(object):
             self.i2id(base, id_filename)
             r = self.idfile.read(id_filename)
 
-        fs_utils.delete_file_or_folder(temp_dir)
+        if temp_dir:
+            fs_utils.delete_file_or_folder(temp_dir)
         fs_utils.delete_file_or_folder(id_filename)
         return r
 
