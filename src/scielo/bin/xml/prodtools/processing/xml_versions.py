@@ -75,12 +75,13 @@ def xsl_getter(sps_version_number):
 
 def dtd_locations():
     locations = {}
-    for version, dtd_info in XPM_FILES.items():
-        dtd_id = dtd_info.get('dtd_id')
+    for version in XPM_FILES.sections():
+        dtd_info = XPM_FILES[version]
+        dtd_id = dtd_info['dtd_id']
         if dtd_id not in locations.keys():
             locations[dtd_id] = [
-                dtd_info.get('remote'),
-                dtd_info.get('remote').replace('https:', 'http:')]
+                dtd_info['remote'],
+                dtd_info['remote'].replace('https:', 'http:')]
     return locations
 
 
