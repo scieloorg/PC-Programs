@@ -26,14 +26,15 @@ logger = logging.getLogger(__name__)
 
 global ucisis
 
-CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
-FST_ARTICLE = CURRENT_PATH + '/settings/fst/articles.fst'
-XSL = DTD_AND_XSL_PATH + '/v3.0/xsl/xml2pubmed/xml2pubmed.xsl'
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
+FST_ARTICLE = os.path.join(CURRENT_PATH, 'settings', 'fst', 'articles.fst')
+XSL = os.path.join(
+    DTD_AND_XSL_PATH, 'v3.0', 'xsl', 'xml2pubmed', 'xml2pubmed.xsl')
 
 
 def find_xml_files_folders(path, folders=[]):
     for item in os.listdir(path):
-        folder = path + '/' + item
+        folder = os.path.join(path, item)
         if os.path.isdir(folder):
             xml_files = [f for f in os.listdir(folder) if f.endswith('.xml')]
             if len(xml_files) > 0:
@@ -54,13 +55,15 @@ def find_xml_files(filenames, folders):
 
 def find_xml_files_in_alternative(filenames, main_path, found_files={}):
     for item in os.listdir(main_path):
-        if os.path.isfile(main_path + '/' + item):
+        item_path = os.path.join(main_path, item)
+        if os.path.isfile(item_path):
             if item in filenames:
-                if not item in found_files.keys():
-                    found_files[item] = main_path + '/' + item
+                if item not in found_files.keys():
+                    found_files[item] = item_path
 
-        elif os.path.isdir(main_path + '/' + item):
-            found_files = find_xml_files_in_alternative(filenames, main_path + '/' + item, found_files)
+        elif os.path.isdir(item_path):
+            found_files = find_xml_files_in_alternative(
+                filenames, item_path, found_files)
     return found_files
 
 
@@ -148,13 +151,11 @@ class InputForm(object):
             self.tkFrame.label_message.update_idletasks()
 
     def validate_issue_folder(self):
-        if self.selected_issue_folder != '':
+        if self.selected_issue_folder:
             if os.path.isdir(self.selected_issue_folder):
-                if '/serial/' in self.selected_issue_folder.lower():
-                    path = self.selected_issue_folder[self.selected_issue_folder.find('/serial/') + len('/serial/'):]
-                    folders = path.split('/')
-                    if len(folders) == 2:
-                        self.issue_path = self.selected_issue_folder
+                basenames = fs_utils.splitpath(self.select_issue_folder)
+                if basenames[-3].lower() == "serial":
+                    self.issue_path = self.selected_issue_folder
 
     def ok(self):
         self.validate_issue_folder()
@@ -172,28 +173,40 @@ class InputForm(object):
 class IssueStuff(object):
 
     def __init__(self, ucisis, issue_path, from_date, final_date):
-        self.ucisis = ucisis
-        self.issue_path = issue_path
-        self.serial_path = os.path.dirname(os.path.dirname(issue_path))
-        folders = issue_path.split('/')
-        self.acron = folders[-2]
-        self.issueid = folders[-1]
-        self.pubmed_path = issue_path + '/PubMed'
-        if not os.path.isdir(self.pubmed_path):
-            os.makedirs(self.pubmed_path)
-        self.temp_path = issue_path + '/TMP'
-        if not os.path.isdir(self.temp_path):
-            os.makedirs(self.temp_path)
-        self.articles_db_filename = issue_path + '/base/' + self.issueid
         self.from_date = from_date
         self.final_date = final_date
-        self.tmp_db_filename = self.temp_path + '/pubmed_tmp_' + self.issueid
-        self.pubmed_folder_in_serial = self.serial_path + '/PubMed'
-        self.pubmed_folder_in_acron = self.serial_path + '/' + self.acron + '/PubMed'
-        shutil.copyfile(self.articles_db_filename + '.mst', self.tmp_db_filename + '.mst')
-        shutil.copyfile(self.articles_db_filename + '.xrf', self.tmp_db_filename + '.xrf')
+        self.ucisis = ucisis
         self._articles_meta = None
         self._articles_files = None
+
+        self.issue_path = issue_path
+
+        basenames = fs_utils.splitpath(issue_path)
+        self.issueid = basenames[-1]
+        self.acron = basenames[-2]
+
+        self.serial_path = os.path.dirname(os.path.dirname(issue_path))
+
+        self.pubmed_path = os.path.join(issue_path, 'PubMed')
+        if not os.path.isdir(self.pubmed_path):
+            os.makedirs(self.pubmed_path)
+
+        self.temp_path = os.path.join(issue_path,  'TMP')
+        if not os.path.isdir(self.temp_path):
+            os.makedirs(self.temp_path)
+
+        self.articles_db_filename = os.path.join(
+            issue_path, 'base', self.issueid)
+
+        self.tmp_db_filename = os.path.join(
+            self.temp_path, 'pubmed_tmp_' + self.issueid)
+        self.pubmed_folder_in_serial = os.path.join(self.serial_path, 'PubMed')
+        self.pubmed_folder_in_acron = os.path.join(
+            self.serial_path, self.acron, 'PubMed')
+
+        for ext in ('.mst', '.xrf'):
+            shutil.copyfile(
+                self.articles_db_filename + ext, self.tmp_db_filename + ext)
 
     @property
     def articles_metadata(self):
@@ -214,9 +227,10 @@ class ArticlesDB(object):
     def __init__(self, ucisis, db_filename):
 
         self.isis_db = None
+        self.db_filename = db_filename
         if os.path.isfile(db_filename + '.mst'):
-            self.isis_db = dbm_isis.IsisDB(ucisis, db_filename, FST_ARTICLE)
-            self.isis_db.update_indexes()
+            self.isis_db = ucisis
+            self.isis_db.update_indexes(db_filename, FST_ARTICLE)
         else:
             print('Not found: ' + db_filename)
 
@@ -232,7 +246,8 @@ class ArticlesDB(object):
             if final_date != '':
                 int_final_date = int(final_date)
         if self.isis_db is not None:
-            h_records = self.isis_db.get_records('tp=i or tp=h')
+            h_records = self.isis_db.get_records(
+                self.db_filename, 'tp=i or tp=h')
             #h_records = [record for record in h_records if record.get('706') in 'ih']
 
             issn_id = h_records[0].get('35')
@@ -284,7 +299,11 @@ class ArticlesFiles(object):
     @property
     def standard_xml_folder_paths(self):
         xml_path_list = []
-        for path in [self.issue_path + '/base_xml/base_source', self.issue_path + '/markup_xml/scielo_package']:
+        base_source_path = os.path.join(
+            self.issue_path, 'base_xml', 'base_source')
+        scielo_package_path = os.path.join(
+            self.issue_path, 'markup_xml', 'scielo_package')
+        for path in [base_source_path, scielo_package_path]:
             if os.path.isdir(path):
                 if len([item for item in os.listdir(path) if item.endswith('.xml')]) > 0:
                     xml_path_list.append(path)
@@ -305,7 +324,9 @@ class PubMedXMLMaker(object):
 
     @property
     def temp_xml_filename(self):
-        temp_filename = self.issue_stuff.temp_path + '/pubmed_tmp_' + os.path.basename(self.pubmed_filename)
+        temp_filename = os.path.join(
+            self.issue_stuff.temp_path,
+            'pubmed_tmp_' + os.path.basename(self.pubmed_filename))
         xml_content = '<?xml version="1.0" encoding="utf-8"?>\n'
         xml_content += '<root>'
         xml_content += self.articles_filenames_xml_content
@@ -325,15 +346,14 @@ class PubMedXMLMaker(object):
     def execute_procedures(self):
         self.build_pubmed_xml()
 
-        #if os.path.isfile(self.pubmed_filename):
-        #    import webbrowser
-        #    webbrowser.open('file:///' + self.pubmed_filename.replace('\\', '/'), new=2)
-        #    print(self.pubmed_filename)
-
         valid = self.validate_pubmed_xml()
         if valid:
-            shutil.copyfile(self.pubmed_filename, self.issue_stuff.pubmed_folder_in_acron + '/' + os.path.basename(self.pubmed_filename))
-            shutil.copyfile(self.pubmed_filename, self.issue_stuff.pubmed_folder_in_serial + '/' + os.path.basename(self.pubmed_filename))
+            shutil.copy(
+                self.pubmed_filename,
+                self.issue_stuff.pubmed_folder_in_acron)
+            shutil.copy(
+                self.pubmed_filename,
+                self.issue_stuff.pubmed_folder_in_serial)
 
         if self.debug is False and valid:
             self.clean_temporary_files()
@@ -362,7 +382,8 @@ class PubMedXMLMaker(object):
     def clean_temporary_files(self):
         for item in os.listdir(self.issue_stuff.temp_path):
             if item.startswith('pubmed_'):
-                os.unlink(self.issue_stuff.temp_path + '/' + item)
+                os.unlink(
+                    os.path.join(self.issue_stuff.temp_path, item))
 
 
 def main():

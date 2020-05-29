@@ -29,6 +29,8 @@ from prodtools.utils.logging_config import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
 
+os_path_join = os.path.join
+
 
 class ForbiddenOperationError(Exception):
     pass
@@ -85,6 +87,7 @@ class Reception(object):
             self.inform_failure(
                 "", str(e),
                 subject=_('Something went wrong as downloading packages'))
+            raise e
 
     def receive_package(self, package_path=None):
         if self.collection_acron:
@@ -102,7 +105,8 @@ class Reception(object):
             try:
                 self.convert_package(package_path)
             except Exception as e:
-                encoding.report_exception('convert_package', e, package_path)
+                self.inform_failure(
+                    package_path, str(e), "receive_package_for_desktop")
                 raise
 
     def _receive_package_for_server(self):
@@ -139,13 +143,13 @@ class Reception(object):
         pkg = pkg_maker.pack()
         pkg_name = pkg.package_folder.name
         try:
-            if len(pkg.articles) > 0:
-                result = self.proc.convert_package(pkg)
-                scilista_items, xc_status, mail_info = result
+            result = self.proc.convert_package(pkg)
+            scilista_items, xc_status, mail_info = result
         except Exception as e:
             if self.config.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
             self.inform_failure(pkg_name, e)
+            raise e
         else:
             if len(scilista_items) > 0:
                 acron, issue_id = scilista_items[0].split(' ')
@@ -158,9 +162,11 @@ class Reception(object):
         encoding.display_message(_('finished'))
 
     def inform_failure(self, package_name, msg, subject=None):
-        if self.mailer:
+        if self.mailer.mailer:
             subject = subject or _("Failure during or after conversion")
             self.mailer.mail_failure(subject, package_name, msg)
+        else:
+            print(msg)
 
     def _update_scilista(self, package_name, scilista_items):
         if self.config.collection_scilista:
@@ -173,12 +179,15 @@ class Reception(object):
                 msg = _("Unable to update scilista {} with {}: {}"
                         ).format(self.config.collection_scilista, content, e)
                 self.inform_failure(package_name, msg)
+                raise e
 
     def _mail_results(self, pkg_name, mail_info):
-        if self.mailer:
+        if self.mailer.mailer:
             if mail_info and self.config.email_subject_package_evaluation:
                 mail_subject, mail_content = mail_info
                 self.mailer.mail_results(pkg_name, mail_subject, mail_content)
+            else:
+                print(mail_content)
 
     def _update_website_files(self, package_name, acron, issue_id):
         if self.transfer:
@@ -188,6 +197,7 @@ class Reception(object):
                 msg = _("Unable to transfer xml, pdf, images files"
                         " of {} {}: {}").format(acron, issue_id, e)
                 self.inform_failure(package_name, msg)
+                raise e
 
     def _update_report_files(self, package_name, acron, issue_id):
         if self.transfer:
@@ -197,6 +207,7 @@ class Reception(object):
                 msg = _("Unable to transfer report files"
                         " of {} {}: {}").format(acron, issue_id, e)
                 self.inform_failure(package_name, msg)
+                raise e
 
     def _queued_packages(self):
         pkg_paths, invalid_pkg_files = self._queue_packages()
@@ -214,43 +225,40 @@ class Reception(object):
 
         invalid_pkg_files = []
         proc_id = datetime.now().isoformat()[11:16].replace(':', '')
-        temp_path = temp_path + '/' + proc_id
-        queue_path = queue_path + '/' + proc_id
+        temp_path = os_path_join(temp_path, proc_id)
+        queue_path = os_path_join(queue_path, proc_id)
         pkg_paths = []
 
-        if os.path.isdir(temp_path):
-            fs_utils.delete_file_or_folder(temp_path)
-        if os.path.isdir(queue_path):
-            fs_utils.delete_file_or_folder(queue_path)
+        for path in (temp_path, queue_path):
+            if os.path.isdir(path):
+                fs_utils.delete_file_or_folder(path)
 
-        if archive_path is not None:
-            if not os.path.isdir(archive_path):
-                os.makedirs(archive_path)
-
-        if not os.path.isdir(temp_path):
-            os.makedirs(temp_path)
+        for path in (temp_path, archive_path):
+            if path and not os.path.isdir(path):
+                os.makedirs(path)
 
         for pkg_name in os.listdir(download_path):
-            if fs_utils.is_compressed_file(download_path + '/' + pkg_name):
-                shutil.copyfile(download_path + '/' + pkg_name, temp_path + '/' + pkg_name)
+            downloaded_pkg_file_path = os_path_join(download_path, pkg_name)
+            if os.path.isfile(downloaded_pkg_file_path):
+                shutil.move(downloaded_pkg_file_path, temp_path)
             else:
-                pkg_paths.append(pkg_name)
-            fs_utils.delete_file_or_folder(download_path + '/' + pkg_name)
+                invalid_pkg_files.append(pkg_name)
+                fs_utils.delete_file_or_folder(downloaded_pkg_file_path)
 
         for pkg_name in os.listdir(temp_path):
-            queued_pkg_path = queue_path + '/' + pkg_name
+            tmp_pkg_path = os_path_join(temp_path, pkg_name)
+
+            queued_pkg_path = os_path_join(queue_path, pkg_name)
             if not os.path.isdir(queued_pkg_path):
                 os.makedirs(queued_pkg_path)
 
-            if fs_utils.extract_package(temp_path + '/' + pkg_name, queued_pkg_path):
-                if archive_path is not None:
-                    if os.path.isdir(archive_path):
-                        shutil.copyfile(temp_path + '/' + pkg_name, archive_path + '/' + pkg_name)
+            if fs_utils.extract_package(tmp_pkg_path, queued_pkg_path):
+                if archive_path and os.path.isdir(archive_path):
+                    shutil.copy(tmp_pkg_path, archive_path)
                 pkg_paths.append(queued_pkg_path)
             else:
                 invalid_pkg_files.append(pkg_name)
                 fs_utils.delete_file_or_folder(queued_pkg_path)
-            fs_utils.delete_file_or_folder(temp_path + '/' + pkg_name)
         fs_utils.delete_file_or_folder(temp_path)
 
         return (pkg_paths, invalid_pkg_files)

@@ -16,6 +16,7 @@ except NameError:
     FileNotFoundError = IOError
 
 
+os_path_join = os.path.join
 python_version = sys.version_info.major
 
 
@@ -61,7 +62,7 @@ def append_file(filename, content, encode='utf-8'):
 def delete_file_or_folder(path):
     if os.path.isdir(path):
         for item in os.listdir(path):
-            delete_file_or_folder(path + '/' + item)
+            delete_file_or_folder(os.path.join(path, item))
         try:
             shutil.rmtree(path)
         except:
@@ -96,39 +97,26 @@ def move_file(src, dest):
     return errors
 
 
-def extract_package(pkg_file, pkg_work_path):
-    """
-    Extract files to pkg_work_path from compressed files that are in compressed_path
-    """
-    r = False
-
-    if os.path.isfile(pkg_file):
-        if files_extractor.is_compressed_file(pkg_file):
-            if os.path.exists(pkg_work_path):
-                delete_file_or_folder(pkg_work_path)
-
-            os.makedirs(pkg_work_path)
-            # delete content of destination path
-            # create tempdir
-            temp_dir = tempfile.mkdtemp().replace('\\', '/')
-
-            # extract in tempdir
-            if files_extractor.extract_file(pkg_file, temp_dir):
-                # eliminate folders
-                for item in os.listdir(temp_dir):
-                    _file = temp_dir + '/' + item
-                    if os.path.isfile(_file):
-                        shutil.copyfile(_file, pkg_work_path + '/' + item)
-                        delete_file_or_folder(_file)
-                    elif os.path.isdir(_file):
-                        for f in os.listdir(_file):
-                            if os.path.isfile(_file + '/' + f):
-                                shutil.copyfile(_file + '/' + f, pkg_work_path + '/' + f)
-                                delete_file_or_folder(_file + '/' + f)
-                        shutil.rmtree(_file)
-                shutil.rmtree(temp_dir)
-                r = True
-    return r
+def extract_package(compressed_file, dest_path):
+    temp_dir = tempfile.mkdtemp()
+    if files_extractor.extract_file(compressed_file, temp_dir):
+        if os.path.exists(dest_path):
+            delete_file_or_folder(dest_path)
+        os.makedirs(dest_path)
+        # eliminate folders
+        for item in os.listdir(temp_dir):
+            item_path = os_path_join(temp_dir, item)
+            if os.path.isfile(item_path):
+                shutil.move(item_path, dest_path)
+            elif os.path.isdir(item_path):
+                for f in os.listdir(item_path):
+                    file_path = os_path_join(item_path, f)
+                    if os.path.isfile(file_path):
+                        shutil.move(file_path, dest_path)
+                shutil.rmtree(item_path)
+        shutil.rmtree(temp_dir)
+        return True
+    return False
 
 
 def unzip(compressed_filename, destination_path):
@@ -161,13 +149,6 @@ def zip(zip_filename, files):
         pass
 
 
-def fix_path(path):
-    path = path.replace('\\', '/')
-    if path.endswith('/'):
-        path = path[0:-1]
-    return path
-
-
 def zip_report(report_filename):
     zip_path = report_filename.replace('.html', '.zip')
     myZipFile = ZipFile(zip_path, "w")
@@ -195,11 +176,19 @@ class ProcessLogger(object):
 
 
 def is_compressed_file(path):
-    r = False
-    if path.endswith('.zip'):
-        r = True
-    elif path.endswith('.tar.gz') or path.endswith('.tgz'):
-        r = True
-    elif path.endswith('.tar.bz2') or path.endswith('.tbz'):
-        r = True
-    return r
+    name, ext = os.path.splitext(path)
+    return ext in ('.zip', '.gz', '.tgz', '.bz2', '.tbz')
+
+
+def splitpath(path):
+    basenames = []
+    if path:
+        dirname = path
+        while True:
+            dirname, basename = os.path.split(dirname)
+            if not basename:
+                break
+            basenames.insert(0, basename)
+    return basenames
+
+

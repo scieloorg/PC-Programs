@@ -1593,13 +1593,15 @@ class HRefValidation(object):
 
     @property
     def display(self):
-        location = self.hrefitem.src
-        if self.hrefitem.is_internal_file:
-            location = self.hrefitem.file_location(self.pkgfiles.path)
-        if self.hrefitem.is_image:
+        # FIXME PATHS melhorar "trocar location (relatorio local / servidor)"
+        location = self.hrefitem.file_location(self.pkgfiles.path)
+        if location:
+            name, ext = os.path.splitext(location)
+            if ext.startswith(".pdf"):
+                link = location.replace(self.pkgfiles.path, '{PDF_PATH}')
+                return html_reports.link(self.hrefitem.src, link)
+            if ext.startswith(".tif"):
+                link = location.replace(self.pkgfiles.path, '{IMG_PATH}')
+                return html_reports.link(self.hrefitem.src, link)
             return html_reports.thumb_image(
-                location.replace(self.pkgfiles.path, '{IMG_PATH}/'))
-        else:
-            return html_reports.link(
-                location.replace(
-                    self.pkgfiles.path, '{PDF_PATH}/'), self.hrefitem.src)
+                    location.replace(self.pkgfiles.path, '{IMG_PATH}'))

@@ -3,98 +3,15 @@ import os
 
 from prodtools import DTD_AND_XSL_PATH
 
+import configparser
 
-JAVA_PATH = 'java'
+XPM_FILES = configparser.ConfigParser()
+XPM_FILES.read(os.path.join(DTD_AND_XSL_PATH, 'versions.ini'))
 
 
-DEFAULT_VERSION = '1.1'
+DEFAULT_VERSION = XPM_FILES.sections()[0]
 
 valid_dtd_items = ['3.0', '1.0', 'j1.0', 'j1.1']
-
-XSL_SGML2XML = {}
-XSL_SGML2XML['3.0'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/sgml2xml/sgml2xml.xsl')
-XSL_SGML2XML['1.0'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/xsl/sgml2xml/sgml2xml.xsl')
-XSL_SGML2XML['1.1'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/xsl/sgml2xml/sgml2xml.xsl')
-
-XPM_FILES = {}
-XPM_FILES['scielo3.0'] = {}
-XPM_FILES['scielo3.0']['dtd id'] = '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN'
-XPM_FILES['scielo3.0']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['scielo3.0']['dtd id'] + '" "{DTD_LOCAL_PATH}/journalpublishing3.dtd">'
-XPM_FILES['scielo3.0']['local'] = 'journalpublishing3.dtd'
-XPM_FILES['scielo3.0']['remote'] = 'https://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd'
-XPM_FILES['scielo3.0']['dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/dtd')
-XPM_FILES['scielo3.0']['relative_dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/dtd')
-XPM_FILES['scielo3.0']['css'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/web/plus')
-XPM_FILES['scielo3.0']['xsl_prep_report'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/scielo-style/stylechecker.xsl')
-XPM_FILES['scielo3.0']['xsl_report'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl')
-XPM_FILES['scielo3.0']['xsl_preview'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/previewers/scielo-html-novo.xsl')
-XPM_FILES['scielo3.0']['xsl_output'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/sgml2xml/xml2pmc.xsl')
-
-XPM_FILES['pmc3.0'] = {}
-XPM_FILES['pmc3.0']['dtd id'] = '-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN'
-XPM_FILES['pmc3.0']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['pmc3.0']['dtd id'] + '" "{DTD_LOCAL_PATH}/journalpublishing3.dtd">'
-XPM_FILES['pmc3.0']['local'] = 'journalpublishing3.dtd'
-XPM_FILES['pmc3.0']['remote'] = 'https://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd'
-XPM_FILES['pmc3.0']['dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/dtd')
-XPM_FILES['pmc3.0']['relative_dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/dtd')
-XPM_FILES['pmc3.0']['css'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/jpub/jpub-preview.css')
-XPM_FILES['pmc3.0']['xsl_prep_report'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl')
-XPM_FILES['pmc3.0']['xsl_report'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl')
-XPM_FILES['pmc3.0']['xsl_preview'] = [os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl'), os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/previewers/jpub-main-jpub3-html.xsl'), ]
-XPM_FILES['pmc3.0']['xsl_output'] = os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/sgml2xml/pmc.xsl')
-
-XPM_FILES['scielo1.0'] = {}
-XPM_FILES['scielo1.0']['dtd id'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
-XPM_FILES['scielo1.0']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['scielo1.0']['dtd id'] + '" "{DTD_LOCAL_PATH}/JATS-journalpublishing1.dtd">'
-XPM_FILES['scielo1.0']['local'] = 'JATS-journalpublishing1.dtd'
-XPM_FILES['scielo1.0']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.0/JATS-journalpublishing1.dtd'
-XPM_FILES['scielo1.0']['dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/dtd/jats1.0')
-XPM_FILES['scielo1.0']['relative_dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/dtd/jats1.0')
-XPM_FILES['scielo1.0']['css'] = XPM_FILES['scielo3.0']['css']
-XPM_FILES['scielo1.0']['xsl_prep_report'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/xsl/scielo-style/stylechecker.xsl')
-XPM_FILES['scielo1.0']['xsl_report'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/xsl/nlm-style-5.13/style-reporter.xsl')
-XPM_FILES['scielo1.0']['xsl_preview'] = XPM_FILES['scielo3.0']['xsl_preview']
-XPM_FILES['scielo1.0']['xsl_output'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/xsl/sgml2xml/xml2pmc.xsl')
-
-XPM_FILES['pmc1.0'] = {}
-XPM_FILES['pmc1.0']['dtd id'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN'
-XPM_FILES['pmc1.0']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['pmc1.0']['dtd id'] + '" "{DTD_LOCAL_PATH}/JATS-journalpublishing1.dtd">'
-XPM_FILES['pmc1.0']['local'] = 'JATS-journalpublishing1.dtd'
-XPM_FILES['pmc1.0']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.0/JATS-journalpublishing1.dtd'
-XPM_FILES['pmc1.0']['dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/dtd/jats1.0')
-XPM_FILES['pmc1.0']['relative_dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/dtd/jats1.0')
-XPM_FILES['pmc1.0']['css'] = XPM_FILES['pmc3.0']['css']
-XPM_FILES['pmc1.0']['xsl_prep_report'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/xsl/nlm-style-5.13/nlm-stylechecker.xsl')
-XPM_FILES['pmc1.0']['xsl_report'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/xsl/nlm-style-5.13/style-reporter.xsl')
-XPM_FILES['pmc1.0']['xsl_preview'] = [os.path.join(DTD_AND_XSL_PATH, 'j1.0/xsl/jpub/citations-prep/jpub1-PMCcit.xsl'), os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/previewers/jpub-main-jpub3-html.xsl'), ]
-XPM_FILES['pmc1.0']['xsl_output'] = os.path.join(DTD_AND_XSL_PATH, 'j1.0/xsl/sgml2xml/pmc.xsl')
-
-XPM_FILES['scielo1.1'] = {}
-XPM_FILES['scielo1.1']['dtd id'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN'
-XPM_FILES['scielo1.1']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['scielo1.1']['dtd id'] + '" "{DTD_LOCAL_PATH}/JATS-journalpublishing1.dtd">'
-XPM_FILES['scielo1.1']['local'] = 'JATS-journalpublishing1.dtd'
-XPM_FILES['scielo1.1']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd'
-XPM_FILES['scielo1.1']['dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD')
-XPM_FILES['scielo1.1']['relative_dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD')
-XPM_FILES['scielo1.1']['css'] = XPM_FILES['scielo3.0']['css']
-XPM_FILES['scielo1.1']['xsl_prep_report'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/xsl/scielo-style/stylechecker.xsl')
-XPM_FILES['scielo1.1']['xsl_report'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/xsl/nlm-style-5.25/style-reporter.xsl')
-XPM_FILES['scielo1.1']['xsl_preview'] = XPM_FILES['scielo3.0']['xsl_preview']
-XPM_FILES['scielo1.1']['xsl_output'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/xsl/sgml2xml/xml2pmc.xsl')
-
-XPM_FILES['pmc1.1'] = {}
-XPM_FILES['pmc1.1']['dtd id'] = '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN'
-XPM_FILES['pmc1.1']['doctype'] = '<!DOCTYPE article PUBLIC "' + XPM_FILES['pmc1.1']['dtd id'] + '" "{DTD_LOCAL_PATH}/JATS-journalpublishing1.dtd">'
-XPM_FILES['pmc1.1']['local'] = 'JATS-journalpublishing1.dtd'
-XPM_FILES['pmc1.1']['remote'] = 'https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd'
-XPM_FILES['pmc1.1']['dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD')
-XPM_FILES['pmc1.1']['relative_dtd_path'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/JATS-Publishing-1-1-MathML2-DTD/JATS-Publishing-1-1-MathML2-DTD')
-XPM_FILES['pmc1.1']['css'] = XPM_FILES['pmc3.0']['css']
-XPM_FILES['pmc1.1']['xsl_prep_report'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/xsl/nlm-style-5.25/nlm-stylechecker.xsl')
-XPM_FILES['pmc1.1']['xsl_report'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/xsl/nlm-style-5.25/style-reporter.xsl')
-XPM_FILES['pmc1.1']['xsl_preview'] = [os.path.join(DTD_AND_XSL_PATH, 'j1.1/xsl/jpub/citations-prep/jpub1-PMCcit.xsl'), os.path.join(DTD_AND_XSL_PATH, 'v3.0/xsl/previewers/jpub-main-jpub3-html.xsl'), ]
-XPM_FILES['pmc1.1']['xsl_output'] = os.path.join(DTD_AND_XSL_PATH, 'j1.1/xsl/sgml2xml/pmc.xsl')
-
 
 _SPS_VERSIONS = (
     ('None', [
@@ -132,6 +49,9 @@ _SPS_VERSIONS = (
     ('sps-1.9', [
       '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
     ]),
+    ('sps-1.10', [
+      '-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN',
+    ]),
 )
 SPS_VERSIONS = dict(_SPS_VERSIONS)
 
@@ -146,18 +66,23 @@ def get_dtd_version(sps_version_number):
 
 
 def xsl_getter(sps_version_number):
-    if not sps_version_number:
-        return XSL_SGML2XML.get(DEFAULT_VERSION)
     dtd_version = get_dtd_version(sps_version_number)
-    return XSL_SGML2XML.get(dtd_version, XSL_SGML2XML.get(DEFAULT_VERSION))
+    return os.path.join(
+        DTD_AND_XSL_PATH, XPM_FILES[dtd_version]["folder"],
+        'xsl', 'sgml2xml', 'sgml2xml.xsl'
+    )
 
 
-def dtd_location(xml):
-    for name, data in XPM_FILES.items():
-        if data.get('dtd id') in xml:
-            return data.get('local'), data.get('remote')
-    data = XPM_FILES['scielo'+DEFAULT_VERSION]
-    return data.get('local'), data.get('remote')
+def dtd_locations():
+    locations = {}
+    for version in XPM_FILES.sections():
+        dtd_info = XPM_FILES[version]
+        dtd_id = dtd_info['dtd_id']
+        if dtd_id not in locations.keys():
+            locations[dtd_id] = [
+                dtd_info['remote'],
+                dtd_info['remote'].replace('https:', 'http:')]
+    return locations
 
 
 def dtd_files(sps_version_number, database='scielo'):
@@ -170,48 +95,26 @@ class DTDFiles(object):
     def __init__(self, database_name, version):
         self.database_name = database_name
         self.version = version
-        self.data = XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION))
-
-    @property
-    def doctype_with_local_path(self):
-        return self.data['doctype'].replace('{DTD_LOCAL_PATH}', self.relative_dtd_path)
-
-    @property
-    def doctype_with_remote_path(self):
-        return self.data['doctype'].replace('{DTD_LOCAL_PATH}', self.remote)
-
-    @property
-    def doctype(self):
-        return self.data['doctype'].replace('{DTD_LOCAL_PATH}', '')
+        if version in XPM_FILES:
+            self.data = XPM_FILES[version]
+        else:
+            self.data = XPM_FILES[DEFAULT_VERSION]
 
     @property
     def real_dtd_path(self):
-        return os.path.join(self.data['dtd_path'], self.data['local'])
-
-    @property
-    def dtd_path(self):
-        return self.data['dtd_path']
-
-    @property
-    def relative_dtd_path(self):
-        return self.data['relative_dtd_path']
+        return os.path.join(
+            DTD_AND_XSL_PATH, self.data['dtd_path'], self.data['local'])
 
     @property
     def xsl_prep_report(self):
-        return self.data['xsl_prep_report']
+        return os.path.join(DTD_AND_XSL_PATH, self.data['xsl_prep_report'])
 
     @property
     def xsl_report(self):
-        return self.data['xsl_report']
+        return os.path.join(DTD_AND_XSL_PATH, self.data['xsl_report'])
 
     @property
     def xsl_output(self):
-        return self.data['xsl_output']
-
-    @property
-    def local(self):
-        return self.data['local']
-
-    @property
-    def remote(self):
-        return self.data['remote']
+        return os.path.join(
+                DTD_AND_XSL_PATH,
+                self.data['xsl_output_{}'.format(self.database_name)])

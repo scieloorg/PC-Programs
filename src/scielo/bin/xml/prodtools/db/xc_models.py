@@ -154,12 +154,9 @@ class RegisteredArticle(object):
 
     @property
     def xml_name(self):
-        names = self.filename
-        if names.endswith('.xml'):
-            names = names[0:-4]
-        names = names.split('/')
-        if len(names) > 0:
-            return names[-1]
+        basename = os.path.basename(self.filename)
+        name, ext = os.path.splitext(basename)
+        return name
 
     @property
     def filename(self):
@@ -840,7 +837,11 @@ class ArticlesManager(object):
             if valid_aop is not None:
                 excluded_aop, aop_issue_folder_name = self.exclude_aop(valid_aop)
                 if aop_issue_folder_name is not None:
-                    self.aop_pdf_replacements[xml_name] = (self.issue_files.journal_files.acron + '/' + aop_issue_folder_name, valid_aop.xml_name)
+                    self.aop_pdf_replacements[xml_name] = (
+                        os.path.join(
+                            self.issue_files.journal_files.acron,
+                            aop_issue_folder_name),
+                        valid_aop.xml_name)
 
                 article_converted = excluded_aop
         else:
@@ -929,7 +930,7 @@ class BaseManager(object):
         for name, registered_article in self.registered_articles.items():
             article_files = serial.ArticleFiles(self.issue_files, registered_article.order, registered_article.xml_name)
             if not os.path.isfile(article_files.id_filename):
-                self.db_isis.save_id(article_files.id_filename, registered_article.article_records)
+                self.db_isis.create_id_file(article_files.id_filename, registered_article.article_records)
 
     def registered_records(self):
         if not os.path.isfile(self.issue_files.base_filename):
@@ -938,15 +939,12 @@ class BaseManager(object):
         self.registered_i_record, self.registered_articles_records = IssueArticlesRecords(records).articles()
 
     def registered_xml_file(self, xml_name):
-        f = self.issue_files.base_source_path + '/' + xml_name + '.xml'
-        if not os.path.isfile(f):
-            folders = []
-            for folder in f.split('/'):
-                if 'ahead' in folder:
-                    folder = 'ex-' + folder
-                folders.append(folder)
-            f = '/'.join(folders)
-        return f
+        f = os.path.join(self.issue_files.base_source_path, xml_name + '.xml')
+        if os.path.isfile(f):
+            return f
+        f = f.replace("ahead", "ex-ahead")
+        if os.path.isfile(f):
+            return f
 
     @property
     def registered_articles(self):
@@ -954,7 +952,7 @@ class BaseManager(object):
         _registered_articles = {}
         for xml_name, registered_article in self.registered_articles_records.items():
             f = self.registered_xml_file(xml_name)
-            if os.path.isfile(f):
+            if f:
                 xml, e = xml_utils.load_xml(f)
             else:
                 xml = None
@@ -1009,13 +1007,15 @@ class BaseManager(object):
 
     def create_db(self):
         if os.path.isfile(self.issue_files.id_filename):
-            self.db_isis.save_id_records(self.issue_files.id_filename, self.issue_files.base)
+            self.db_isis.id_file_to_db(
+                self.issue_files.id_filename, self.issue_files.base)
             for f in os.listdir(self.issue_files.id_path):
+                file_path = os.path.join(self.issue_files.id_path, f)
                 if f == '00000.id':
-                    fs_utils.delete_file_or_folder(self.issue_files.id_path + '/' + f)
+                    fs_utils.delete_file_or_folder(file_path)
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                    self.db_isis.append_id_records(self.issue_files.id_path + '/' + f, self.issue_files.base)
-        #self.reset_registered_records()
+                    self.db_isis.append_id_file_to_db(
+                        file_path, self.issue_files.base)
 
     def article_records(self, i_record, article, article_files):
         _article_records = None
@@ -1024,7 +1024,7 @@ class BaseManager(object):
         return _article_records
 
     def create_issue_id_file(self, i_record):
-        self.db_isis.save_id(self.issue_files.id_filename, [i_record])
+        self.db_isis.create_id_file(self.issue_files.id_filename, [i_record])
 
     def create_article_id_file(self, article_records, article_files):
         saved = False
@@ -1042,7 +1042,7 @@ class BaseManager(object):
                     encoding.display_message(_('Unable to exclude {item}. ').format(item=article_files.id_filename))
             previous = os.path.isfile(article_files.id_filename)
 
-            self.db_isis.save_id(article_files.id_filename, article_records.records, self.content_formatter)
+            self.db_isis.create_id_file(article_files.id_filename, article_records.records, self.content_formatter)
             saved = os.path.isfile(article_files.id_filename)
         return saved and not previous
 
@@ -1069,8 +1069,8 @@ class BaseManager(object):
     def generate_windows_version(self):
         if not os.path.isdir(self.issue_files.windows_base_path):
             os.makedirs(self.issue_files.windows_base_path)
-        self.db_isis.cisis.mst2iso(self.issue_files.base, self.issue_files.windows_base + '.iso')
-        self.db_isis.cisis.crunchmf(self.issue_files.base, self.issue_files.windows_base)
+        self.db_isis.mst2iso(self.issue_files.base, self.issue_files.windows_base + '.iso')
+        self.db_isis.crunchmf(self.issue_files.base, self.issue_files.windows_base)
 
 
 class AopManager(object):

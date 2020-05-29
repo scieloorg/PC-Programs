@@ -181,28 +181,26 @@ class CISIS(object):
         if os.path.exists(cisis_path):
             self.cisis_path = cisis_path
 
+    def run_cmd(self, cmd_name, *args):
+        cmd = os.path.join(self.cisis_path, cmd_name) + " " + " ".join(args)
+        return system.run_command(cmd)
+
     @property
     def is_available(self):
-        cmd = self.cisis_path + '/mx what > ./status'
-        system.run_command(cmd)
-        content = fs_utils.read_file('./status')
-        return None if content is None else content.startswith('CISIS')
+        output = self.run_cmd("mx", "what")
+        return output and output.startswith('CISIS')
 
     def crunchmf(self, mst_filename, wmst_filename):
-        cmd = self.cisis_path + '/crunchmf ' + mst_filename + ' ' + wmst_filename
-        system.run_command(cmd)
+        self.run_cmd('crunchmf', mst_filename, wmst_filename)
 
     def id2i(self, id_filename, mst_filename):
-        cmd = self.cisis_path + '/id2i ' + id_filename + ' create=' + mst_filename
-        system.run_command(cmd)
+        self.run_cmd('id2i', id_filename, "create=" + mst_filename)
 
     def append(self, src, dest):
-        cmd = self.cisis_path + '/mx ' + src + '  append=' + dest + ' now -all'
-        system.run_command(cmd)
+        self.run_cmd("mx", src, "append={}".format(dest), "now -all")
 
     def create(self, src, dest):
-        cmd = self.cisis_path + '/mx ' + src + ' create=' + dest + ' now -all'
-        system.run_command(cmd)
+        self.run_cmd("mx", src, "create={}".format(dest), 'now -all')
 
     def append_id_to_master(self, id_filename, mst_filename, reset):
         if reset:
@@ -211,72 +209,51 @@ class CISIS(object):
             temp = id_filename.replace('.id', u'')
             self.id2i(id_filename, temp)
             self.append(temp, mst_filename)
-            try:
-                fs_utils.delete_file_or_folder(temp + '.mst')
-                fs_utils.delete_file_or_folder(temp + '.xrf')
-            except:
-                pass
+            self.delete(temp)
+
+    def delete(self, db_file_path):
+        fs_utils.delete_file_or_folder(db_file_path + '.mst')
+        fs_utils.delete_file_or_folder(db_file_path + '.xrf')
 
     def i2id(self, mst_filename, id_filename):
-        cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename
-        system.run_command(cmd)
+        self.run_cmd("i2id", mst_filename, ">", id_filename)
 
     def mst2iso(self, mst_filename, iso_filename):
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' iso=' + iso_filename + ' now -all'
-        system.run_command(cmd)
+        self.run_cmd(
+            "mx", mst_filename, "iso={}".format(iso_filename), 'now -all')
 
     def iso2mst(self, iso_filename, mst_filename):
-        cmd = self.cisis_path + '/mx iso=' + iso_filename + ' create=' + mst_filename + ' now -all'
-        system.run_command(cmd)
-
-    def copy_record(self, src_mst_filename, mfn, dest_mst_filename):
-        cmd = self.cisis_path + '/mx ' + src_mst_filename + ' from=' + mfn + ' count=1 ' + ' append=' + dest_mst_filename + ' now -all'
-        system.run_command(cmd)
-
-    def modify_records(self, mst_filename, proc):
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' "proc=' + proc + '" copy=' + mst_filename + ' now -all'
-        system.run_command(cmd)
-
-    def find_record(self, mst_filename, expression):
-        r = mst_filename + expression
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 "pft=mfn/" now > ' + r
-        system.run_command(cmd)
-        return fs_utils.read_file_lines(r, 'iso-8859-1')
+        self.run_cmd(
+            "mx", "iso={}".format(iso_filename),
+            "create={}".format(mst_filename), 'now -all')
 
     def new(self, mst_filename):
-        cmd = self.cisis_path + '/mx null count=0 create="' + mst_filename + '" now -all'
-        system.run_command(cmd)
+        self.run_cmd(
+            "mx", 'null count=0', 'create={}'.format(mst_filename), 'now -all')
 
     def search(self, mst_filename, expression, result_filename):
-        fs_utils.delete_file_or_folder(result_filename + '.mst')
-        fs_utils.delete_file_or_folder(result_filename + '.xrf')
-        cmd = self.cisis_path + '/mx btell=0 ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
-        system.run_command(cmd)
+        self.delete(result_filename)
+        return self.run_cmd(
+                    "mx", "btell=0", mst_filename,
+                    '"bool={}"'.format(expression), 'lw=999',
+                    'append={}'.format(result_filename), 'now -all')
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + ' fullinv=' + inverted_filename
-        system.run_command(cmd)
+        self.run_cmd(
+            "mx", mst_filename, 'fst=@{}'.format(fst_filename),
+            "fullinv={}".format(inverted_filename))
 
     def is_readable(self, mst_filename):
-        s = u''
         if os.path.isfile(mst_filename + '.mst'):
-            temp_file = NamedTemporaryFile(delete=False)
-            temp_file.close()
-
-            cmd = self.cisis_path + '/mx ' + mst_filename + ' +control now > ' + temp_file.name.replace('\\', '/')
-            system.run_command(cmd)
-            if os.path.isfile(temp_file.name):
-                s = fs_utils.read_file(temp_file.name)
-                try:
-                    fs_utils.delete_file_or_folder(temp_file.name)
-                except:
-                    encoding.debugging('dbm_isis.is_readable()', os.path.isfile(temp_file.name))
-        return len(s) > 0
+            result = self.run_cmd("mx", mst_filename, "+control now")
+            return "dbxopen" not in result or "nxtmfn" in result
+        return False
 
 
 class UCISIS(object):
 
     def __init__(self, cisis1030, cisis1660):
+        self.idfile = IDFile()
         self.cisis1030 = cisis1030
         self.cisis1660 = cisis1660
 
@@ -331,15 +308,6 @@ class UCISIS(object):
     def iso2mst(self, iso_filename, mst_filename):
         self.cisis(mst_filename).iso2mst(iso_filename, mst_filename)
 
-    def copy_record(self, src_mst_filename, mfn, dest_mst_filename):
-        self.cisis(src_mst_filename).copy_record(src_mst_filename, mfn, dest_mst_filename)
-
-    def modify_records(self, mst_filename, proc):
-        self.cisis(mst_filename).modify_records(mst_filename, proc)
-
-    def find_record(self, mst_filename, expression):
-        return self.cisis(mst_filename).find_record(mst_filename, expression)
-
     def new(self, mst_filename):
         self.cisis1030.new(mst_filename)
 
@@ -349,42 +317,16 @@ class UCISIS(object):
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
         self.cisis(mst_filename).generate_indexes(mst_filename, fst_filename, inverted_filename)
 
-
-class IsisDAO(object):
-
-    def __init__(self, cisis):
-        self.cisis = cisis
-        self.idfile = IDFile()
-
-    def save_records(self, records, db_filename, fst_filename=None):
-        temp_file = NamedTemporaryFile(delete=False)
-        temp_file.close()
-        self.idfile.write(temp_file.name, records)
-        self.cisis.id2i(temp_file.name, db_filename)
-        fs_utils.delete_file_or_folder(temp_file.name)
-        self.update_indexes(db_filename, fst_filename)
-
     def update_indexes(self, db_filename, fst_filename):
         if fst_filename is not None:
-            self.cisis.generate_indexes(db_filename, fst_filename, db_filename)
+            self.generate_indexes(db_filename, fst_filename, db_filename)
 
-    def append_records(self, records, db_filename, fst_filename=None):
-        path = os.path.dirname(db_filename)
-        if not os.path.isdir(path):
-            os.makedirs(path)
-        temp_file = NamedTemporaryFile(delete=False)
-        temp_file.close()
-        self.idfile.write(temp_file.name, records)
-        self.cisis.append_id_to_master(temp_file.name, db_filename, False)
-        fs_utils.delete_file_or_folder(temp_file.name)
+    def id_file_to_db(self, id_filename, db_filename, fst_filename=None):
+        self.id2i(id_filename, db_filename)
         self.update_indexes(db_filename, fst_filename)
 
-    def save_id_records(self, id_filename, db_filename, fst_filename=None):
-        self.cisis.id2i(id_filename, db_filename)
-        self.update_indexes(db_filename, fst_filename)
-
-    def append_id_records(self, id_filename, db_filename, fst_filename=None):
-        self.cisis.append_id_to_master(id_filename, db_filename, False)
+    def append_id_file_to_db(self, id_filename, db_filename, fst_filename=None):
+        self.append_id_to_master(id_filename, db_filename, False)
         self.update_indexes(db_filename, fst_filename)
 
     def get_records(self, db_filename, expr=None):
@@ -392,105 +334,22 @@ class IsisDAO(object):
         if expr is None:
             base = db_filename
         else:
-            temp_dir = mkdtemp().replace('\\', '/')
-            base = temp_dir + '/' + os.path.basename(db_filename)
-            self.cisis.search(db_filename, expr, base)
+            temp_dir = mkdtemp()
+            base = os.path.join(temp_dir, os.path.basename(db_filename))
+            self.search(db_filename, expr, base)
 
         r = []
         id_filename = base + '.id'
         if os.path.isfile(base + '.mst'):
-            self.cisis.i2id(base, id_filename)
+            self.i2id(base, id_filename)
             r = self.idfile.read(id_filename)
 
-        if temp_dir is not None:
-            try:
-                fs_utils.delete_file_or_folder(temp_dir)
-            except:
-                pass
-        try:
-            fs_utils.delete_file_or_folder(id_filename)
-        except:
-            pass
+        if temp_dir:
+            fs_utils.delete_file_or_folder(temp_dir)
+        fs_utils.delete_file_or_folder(id_filename)
         return r
 
-    def get_id_records(self, id_filename):
-        return self.idfile.read(id_filename)
-
-    def save_id(self, id_filename, records, content_formatter=None):
-        if content_formatter:
-            IDFile(content_formatter).write(id_filename, records)
-        else:
-            self.idfile.write(id_filename, records)
-
-
-class IsisDB(object):
-
-    def __init__(self, cisis, db_filename, fst_filename):
-        self.cisis = cisis
-        self.db_filename = db_filename
-        self.fst_filename = fst_filename
-        self.idfile = IDFile()
-
-    def save_records(self, records):
-        temp_file = NamedTemporaryFile(delete=False)
-        temp_file.close()
-        self.idfile.write(temp_file.name, records)
-        self.cisis.id2i(temp_file.name, self.db_filename)
-        fs_utils.delete_file_or_folder(temp_file.name)
-        self.update_indexes()
-
-    def update_indexes(self):
-        if self.fst_filename is not None:
-            self.cisis.generate_indexes(self.db_filename, self.fst_filename, self.db_filename)
-
-    def append_records(self, records):
-        path = os.path.dirname(self.db_filename)
-        if not os.path.isdir(path):
-            os.makedirs(path)
-        temp_file = NamedTemporaryFile(delete=False)
-        temp_file.close()
-        self.idfile.write(temp_file.name, records)
-        self.cisis.append_id_to_master(temp_file.name, self.db_filename, False)
-        fs_utils.delete_file_or_folder(temp_file.name)
-        self.update_indexes()
-
-    def save_id_records(self, id_filename):
-        self.cisis.id2i(id_filename, self.db_filename)
-        self.update_indexes()
-
-    def append_id_records(self, id_filename):
-        self.cisis.append_id_to_master(id_filename, self.db_filename, False)
-        self.update_indexes()
-
-    def get_records(self, expr=None):
-        temp_dir = None
-        if expr is None:
-            base = self.db_filename
-        else:
-            temp_dir = mkdtemp().replace('\\', '/')
-            base = temp_dir + '/' + os.path.basename(self.db_filename)
-            self.cisis.search(self.db_filename, expr, base)
-
-        r = []
-        id_filename = base + '.id'
-        if os.path.isfile(base + '.mst'):
-            self.cisis.i2id(base, id_filename)
-            r = self.idfile.read(id_filename)
-
-        if temp_dir is not None:
-            try:
-                fs_utils.delete_file_or_folder(temp_dir)
-            except:
-                pass
-        if os.path.isfile(id_filename):
-            fs_utils.delete_file_or_folder(id_filename)
-
-        return r
-
-    def get_id_records(self, id_filename):
-        return self.idfile.read(id_filename)
-
-    def save_id(self, id_filename, records, content_formatter=None):
+    def create_id_file(self, id_filename, records, content_formatter=None):
         if content_formatter:
             IDFile(content_formatter).write(id_filename, records)
         else:

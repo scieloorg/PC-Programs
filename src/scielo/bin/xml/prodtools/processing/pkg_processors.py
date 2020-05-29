@@ -7,7 +7,6 @@ import shutil
 from prodtools import _
 from prodtools import XPM_VERSION_FILE_PATH
 from prodtools import FST_PATH
-
 from prodtools.utils import encoding
 from prodtools.utils import fs_utils
 from prodtools.utils.dbm import dbm_isis
@@ -28,6 +27,7 @@ from prodtools.data import workarea
 from prodtools.data import kernel_document
 from prodtools.db import registered
 from prodtools.db import xc_models
+from prodtools.db.serial import WebsiteFiles
 from prodtools.db.pid_versions import(
     PIDVersionsManager,
     PIDVersionsDB,
@@ -119,8 +119,12 @@ class ArticlesConversion(object):
 
             if len(_scilista_items) > 0:
                 # IMPROVEME
-
-                self.registered_issue_data.issue_files.copy_files_to_local_web_app(self.pkg.package_folder.path, self.local_web_app_path)
+                if self.local_web_app_path:
+                    website_files = WebsiteFiles(
+                        self.local_web_app_path,
+                        self.pkg.issue_data.acron,
+                        self.pkg.issue_data.issue_label)
+                    website_files.get_files(self.pkg.package_folder.path)
                 self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
                 if export_documents_package:
                     zip_filename = scilista_items[0].replace(" ", "_") + ".zip"
@@ -386,8 +390,7 @@ class PkgProcessor(object):
             cisis1030 = dbm_isis.CISIS(self.config.cisis1030)
             if cisis1030.cisis_path is not None:
                 cisis1660 = dbm_isis.CISIS(self.config.cisis1660)
-                ucisis = dbm_isis.UCISIS(cisis1030, cisis1660)
-                db_isis = dbm_isis.IsisDAO(ucisis)
+                db_isis = dbm_isis.UCISIS(cisis1030, cisis1660)
                 titles = [self.config.title_db, self.config.title_db_copy, FST_PATH + '/title.fst']
                 issues = [self.config.issue_db, self.config.issue_db_copy, FST_PATH + '/issue.fst']
                 self._db_manager = xc_models.DBManager(
