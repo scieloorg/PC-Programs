@@ -78,7 +78,6 @@ def dtd_locations():
     for version, dtd_info in XPM_FILES.items():
         dtd_id = dtd_info.get('dtd_id')
         if dtd_id not in locations.keys():
-            locations[dtd_id] = {}
             locations[dtd_id] = [
                 dtd_info.get('remote'),
                 dtd_info.get('remote').replace('https:', 'http:')]

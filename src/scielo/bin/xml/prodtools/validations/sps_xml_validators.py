@@ -115,6 +115,7 @@ class PackToolsXMLValidator(object):
         self.version = packtools.__version__
 
         self.xml_validator = None
+        self.locations = xml_versions.dtd_locations()
 
     def validate_doctype(self):
         sps_version = self.sps_version
@@ -137,9 +138,8 @@ class PackToolsXMLValidator(object):
                 ))
             return errors
 
-        locations = xml_versions.dtd_locations().get(public_id)
         _location = None
-        for location in locations:
+        for location in self.locations.get(public_id):
             if system_id in location:
                 _location = location
                 break
