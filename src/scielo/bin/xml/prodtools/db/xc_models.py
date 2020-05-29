@@ -1069,8 +1069,8 @@ class BaseManager(object):
     def generate_windows_version(self):
         if not os.path.isdir(self.issue_files.windows_base_path):
             os.makedirs(self.issue_files.windows_base_path)
-        self.db_isis.cisis.mst2iso(self.issue_files.base, self.issue_files.windows_base + '.iso')
-        self.db_isis.cisis.crunchmf(self.issue_files.base, self.issue_files.windows_base)
+        self.db_isis.mst2iso(self.issue_files.base, self.issue_files.windows_base + '.iso')
+        self.db_isis.crunchmf(self.issue_files.base, self.issue_files.windows_base)
 
 
 class AopManager(object):
