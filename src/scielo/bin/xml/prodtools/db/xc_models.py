@@ -940,9 +940,11 @@ class BaseManager(object):
 
     def registered_xml_file(self, xml_name):
         f = os.path.join(self.issue_files.base_source_path, xml_name + '.xml')
-        if not os.path.isfile(f):
-            if os.path.isfile(f.replace("ahead", "ex-ahead")):
-                return f
+        if os.path.isfile(f):
+            return f
+        f = f.replace("ahead", "ex-ahead")
+        if os.path.isfile(f):
+            return f
 
     @property
     def registered_articles(self):
