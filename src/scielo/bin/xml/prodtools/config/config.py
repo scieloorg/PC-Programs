@@ -37,24 +37,22 @@ class Configuration(object):
 
     def load(self):
         self._data = {}
-        config_items = []
+        content_files = ''
         for item in ['scielo_env.ini', 'scielo_collection.ini']:
             if os.path.isfile(os.path.join(BIN_PATH, item)):
-                config_items += fs_utils.read_file_lines(
+                content_files += "\n" + fs_utils.read_file(
                     os.path.join(BIN_PATH, item))
 
         if self.filename is not None:
             coding = 'utf-8'
             if self.filename.endswith('scielo_paths.ini'):
                 coding = 'iso-8859-1'
-            config_items.extend(
-                fs_utils.read_file_lines(self.filename, coding))
-        for item in config_items:
+            content_files += fs_utils.read_file(self.filename, coding)
+        for item in content_files.splitlines():
             if '=' in item:
                 if ',' in item and '@' not in item:
                     item = item[0:item.rfind(',')]
                 key, value = item.split('=')
-                value = value.replace('\\', '/').strip()
                 if value == '':
                     self._data[key] = None
                 else:
@@ -75,9 +73,7 @@ class Configuration(object):
     def local_web_app_path(self):
         path = self._data.get('SCI_LISTA_SITE')
         if path is not None:
-            path = path.replace('\\', '/')
-            if '/proc/' in path:
-                path = path[0:path.find('/proc/')]
+            path = os.path.dirname(os.path.dirname(path))
         if path is None:
             path = self._data.get('LOCAL_WEB_APP_PATH')
         return path
@@ -111,8 +107,10 @@ class Configuration(object):
     def issue_db_copy(self):
         copy = self._data.get('Issue Database')
         if copy is not None:
-            copy = copy.lower().replace('\\', '/')
-            copy = copy.replace('/issue/', '/issue.tmp/')
+            dirname = os.path.dirname(copy)
+            basename = os.path.basename(copy)
+            dirname = os.path.dirname(dirname)
+            copy = os.path.join(dirname, "issue_xc", basename)
         return self._data.get('ISSUE_DB_COPY', copy)
 
     @property
@@ -123,8 +121,10 @@ class Configuration(object):
     def title_db_copy(self):
         copy = self._data.get('Title Database')
         if copy is not None:
-            copy = copy.lower().replace('\\', '/')
-            copy = copy.replace('/title/', '/title.tmp/')
+            dirname = os.path.dirname(copy)
+            basename = os.path.basename(copy)
+            dirname = os.path.dirname(dirname)
+            copy = os.path.join(dirname, "title_xc", basename)
         return self._data.get('TITLE_DB_COPY', copy)
 
     @property
