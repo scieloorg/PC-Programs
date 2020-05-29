@@ -12,6 +12,7 @@ from prodtools.utils.xml_utils import (
     node_xml_content,
 )
 
+from prodtools.utils import img_utils
 from prodtools.data import article_utils
 from prodtools.data import attributes
 
