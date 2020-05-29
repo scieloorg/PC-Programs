@@ -1012,7 +1012,8 @@ class BaseManager(object):
                 if f == '00000.id':
                     fs_utils.delete_file_or_folder(file_path)
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                    self.db_isis.append_id_file_to_db(file_path)
+                    self.db_isis.append_id_file_to_db(
+                        file_path, self.issue_files.base)
 
     def article_records(self, i_record, article, article_files):
         _article_records = None
