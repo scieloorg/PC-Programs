@@ -163,6 +163,8 @@ class Reception(object):
         if self.mailer:
             subject = subject or _("Failure during or after conversion")
             self.mailer.mail_failure(subject, package_name, msg)
+        else:
+            print(msg)
 
     def _update_scilista(self, package_name, scilista_items):
         if self.config.collection_scilista:
@@ -181,6 +183,8 @@ class Reception(object):
             if mail_info and self.config.email_subject_package_evaluation:
                 mail_subject, mail_content = mail_info
                 self.mailer.mail_results(pkg_name, mail_subject, mail_content)
+            else:
+                print(mail_content)
 
     def _update_website_files(self, package_name, acron, issue_id):
         if self.transfer:
