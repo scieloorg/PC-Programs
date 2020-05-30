@@ -17,6 +17,7 @@
 	-->
 	<xsl:template match="insert-main-tag"/>
 	<xsl:template match="ref-list">
+		<root>
 		<xsl:variable name="count" select="count(.//ref) + count(.//unknown)"/>
 		<xsl:if test="$count &gt;0">
 		<xsl:if test="insert-main-tag">[refs]</xsl:if>
@@ -25,6 +26,7 @@
 		</xsl:if>
 		<xsl:text>
 		</xsl:text>
+		</root>
 	</xsl:template>
 	
 	<!--

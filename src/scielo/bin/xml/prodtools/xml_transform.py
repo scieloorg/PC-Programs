@@ -82,7 +82,7 @@ def main():
 
 def finish(ctrl_filepath, err_filepath, result_filepath, err_msg):
     with open(err_filepath, "w") as fp:
-        fp.write("err_msg")
+        fp.write(err_msg)
     with open(result_filepath, "w") as fp:
         fp.write("")
     with open(ctrl_filepath, "w") as fp:
