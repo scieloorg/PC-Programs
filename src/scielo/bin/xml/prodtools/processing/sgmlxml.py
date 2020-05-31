@@ -568,7 +568,7 @@ class SGMLXML2SPSXML(object):
         markup_xml/work/sgmxml_name/scielo_package
         """
         self.pkg_maker = PackageMaker(self.FILES.tmp_doc_pkg_path,
-                                      self.FILES.output_path)
+                                      self.FILES.output_path, optimise=False)
         pkg = self.pkg_maker.pack(
             [self.pkg_namer.dest_pkgfiles.filename],
             sgmxml_name=self.FILES.src_pkgfiles.name)
