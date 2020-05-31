@@ -367,7 +367,8 @@ class DocumentOutputFiles(object):
     @property
     def wrk_path(self):
         if self.sgmxml_name:
-            return os.path.join(self.output_path, "work", self.sgmxml_name)
+            path = os.path.dirname(self.report_path)
+            return os.path.join(path, "work", self.sgmxml_name)
         return os.path.join(self.tmp_path, self.xml_name)
 
     def create_dir_at_work_path(self, dirname):
