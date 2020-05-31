@@ -60,6 +60,8 @@ def append_file(filename, content, encode='utf-8'):
 
 
 def delete_file_or_folder(path):
+    if not path:
+        return
     if os.path.isdir(path):
         for item in os.listdir(path):
             delete_file_or_folder(os.path.join(path, item))
