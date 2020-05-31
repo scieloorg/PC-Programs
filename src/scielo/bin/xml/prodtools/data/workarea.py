@@ -64,7 +64,7 @@ class MultiDocsPackageOuputs(object):
             obj = self.doc_outs[xml_name]
         return obj
 
-            
+
 class DocumentPackageFiles(object):
 
     def __init__(self, filename):
@@ -366,10 +366,10 @@ class DocumentOutputFiles(object):
 
     @property
     def wrk_path(self):
+        path = os.path.dirname(self.report_path)
         if self.sgmxml_name:
-            path = os.path.dirname(self.report_path)
             return os.path.join(path, "work", self.sgmxml_name)
-        return os.path.join(self.tmp_path, self.xml_name)
+        return os.path.join(path, "tmp", self.xml_name)
 
     def create_dir_at_work_path(self, dirname):
         dirname = os.path.join(self.wrk_path, dirname)
