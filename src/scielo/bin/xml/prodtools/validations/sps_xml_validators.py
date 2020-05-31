@@ -77,7 +77,7 @@ class PMCXMLValidator(object):
         else:
             valid, errors = xml_utils.validate(
                 xml_obj,
-                self.dtd_files.data['dtd id'],
+                self.dtd_files.data['dtd_id'],
                 self.dtd_files.real_dtd_path)
             if errors:
                 status = validation_status.STATUS_FATAL_ERROR
