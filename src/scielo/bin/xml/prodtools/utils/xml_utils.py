@@ -9,6 +9,13 @@ from prodtools import _
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
 
+
+NAMESPACES = (
+    'xmlns:xml="http://www.w3.org/XML/1998/namespace"',
+    'xmlns:xlink="http://www.w3.org/1999/xlink"',
+    'xmlns:mml="http://www.w3.org/1998/Math/MathML"',
+)
+
 namespaces = {}
 namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace'
 namespaces['xlink'] = 'http://www.w3.org/1999/xlink'
@@ -295,11 +302,21 @@ def write(file_path, tree):
             file_path,
             encoding="utf-8",
             xml_declaration='<?xml version="1.0" encoding="utf-8"?>',
-            inclusive_ns_prefixes=namespaces.keys(),
+            inclusive_ns_prefixes=list(namespaces.keys()),
             pretty_print=True
         )
         return
     tree.write(file_path, method="html", pretty_print=True)
+
+
+def insert_namespaces_in_root(root_elem_name, content):
+    root_start = "<" + root_elem_name
+    p_root = content.find(root_start)
+    ns = " ".join([ns for ns in NAMESPACES if ns not in content])
+    content = "".join([
+        content[:p_root], root_start, " ", ns, " ",
+        content[p_root+len(root_start):]])
+    return content
 
 
 def node_xml_content(node):
