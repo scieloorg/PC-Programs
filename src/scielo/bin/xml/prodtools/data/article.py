@@ -1757,7 +1757,6 @@ class Article(ArticleXML):
         self.article_records = None
         self.is_ex_aop = False
         self.section_code = None
-        self.institutions_query_results = {}
         self.xml = None if self.tree is None else tostring(self.tree.find('.'))
 
     def count_words(self, word):
