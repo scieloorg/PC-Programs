@@ -64,7 +64,7 @@ class MultiDocsPackageOuputs(object):
             else:
                 work_path = os.path.join(self.tmp_path, xml_name)
             self.doc_outs[xml_name] = DocumentOutputFiles(
-                xml_name, self.reports_path, work_path)
+                sgmxml_name or xml_name, self.reports_path, work_path)
             obj = self.doc_outs[xml_name]
         return obj
 
@@ -388,7 +388,7 @@ class DocumentOutputFiles(object):
     def ctrl_filename(self):
         # deve existir apenas na conversao de sgml para xml
         name = os.path.basename(self.wrk_path)
-        if name != self.xml_name:
+        if name == self.xml_name:
             return os.path.join(self.wrk_path, name + ".ctrl.txt")
 
     @property
