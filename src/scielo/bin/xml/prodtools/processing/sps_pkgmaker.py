@@ -2,10 +2,13 @@
 import logging
 import logging.config
 import os
+import shutil
 from mimetypes import MimeTypes
 from urllib.request import pathname2url
 
 from packtools.utils import SPPackage
+from packtools.exceptions import SPPackageError
+from PIL.Image import DecompressionBombError
 
 from prodtools.utils import fs_utils
 from prodtools.utils import xml_utils
@@ -20,6 +23,10 @@ mime = MimeTypes()
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
+
+
+class PackageMakerOptimiserPreReqError(Exception):
+    pass
 
 
 class SPSXMLContent(xml_utils.SuitableXML):
@@ -324,37 +331,56 @@ class PackageMaker(object):
                 de um documento SP
         """
         logger.debug("_optimise_doc_package %s" % doc_pkg_path)
+
         print("Optimise: %s" % doc_pkg_path)
         files = [os.path.join(doc_pkg_path, f)
                  for f in os.listdir(doc_pkg_path)]
+        if not files:
+            return
 
-        zip_regular = os.path.join(tmp_path, "regular.zip")
-        zip_optimised = os.path.join(tmp_path, "optimised.zip")
-        extracted_package = os.path.join(tmp_path, "extracted")
-        if not os.path.isdir(extracted_package):
-            os.makedirs(extracted_package)
-        if os.path.isfile(zip_regular):
-            fs_utils.delete_file_or_folder(zip_regular)
-        if os.path.isfile(zip_optimised):
-            fs_utils.delete_file_or_folder(zip_optimised)
+        try:
+            zip_regular = os.path.join(tmp_path, "regular.zip")
+            zip_optimised = os.path.join(tmp_path, "optimised.zip")
+            extracted_package = os.path.join(tmp_path, "extracted")
+            for item in [zip_regular, zip_optimised, extracted_package]:
+                fs_utils.delete_file_or_folder(item)
+            if not os.path.isdir(extracted_package):
+                os.makedirs(extracted_package)
 
-        fs_utils.zip(zip_regular, files)
+            if os.path.isfile(zip_regular):
+                raise PackageMakerOptimiserPreReqError(
+                    "{} must not be a existing file")
+            if os.path.isfile(zip_optimised):
+                raise PackageMakerOptimiserPreReqError(
+                    "{} must not be a existing file")
+            if os.listdir(extracted_package):
+                raise PackageMakerOptimiserPreReqError(
+                    "{} must not be a empty directory")
 
-        # packtools
-        spp = SPPackage(package_file=fs_utils.ZipFile(zip_regular),
-                        extracted_package=extracted_package)
-        spp.optimise(new_package_file_path=zip_optimised,
-                     preserve_files=False)
-        fs_utils.unzip(zip_optimised, self.destination_path)
+            fs_utils.zip(zip_regular, files)
+            if not os.path.isfile(zip_regular):
+                raise PackageMakerOptimiserPreReqError(
+                    "{} was not created")
 
-        doc_pkg_zip_filepath = doc_pkg_path + ".zip"
-        fs_utils.delete_file_or_folder(doc_pkg_zip_filepath)
-        if self.destination_path == doc_pkg_path:
-            os.rename(zip_optimised, doc_pkg_zip_filepath)
+            # packtools
+            spp = SPPackage(package_file=fs_utils.ZipFile(zip_regular),
+                            extracted_package=extracted_package)
+            spp.optimise(new_package_file_path=zip_optimised,
+                         preserve_files=False)
+
+            fs_utils.unzip(zip_optimised, self.destination_path)
+            print("Optimised: %s" % self.destination_path)
+        except (PackageMakerOptimiserPreReqError, SPPackageError,
+                OSError, DecompressionBombError):
+            if self.destination_path != doc_pkg_path:
+                for f in files:
+                    shutil.copy(f, self.destination_path)
+            print("Not optimised: %s" % self.destination_path)
         else:
+            # clean
             fs_utils.delete_file_or_folder(zip_optimised)
-        fs_utils.delete_file_or_folder(zip_regular)
-        print("Optimised: %s" % self.destination_path)
+            fs_utils.delete_file_or_folder(zip_regular)
+            fs_utils.delete_file_or_folder(extracted_package)
 
     def pack(self, xml_list=None, dtd_location_type='remote',
              sgmxml_name=None):
