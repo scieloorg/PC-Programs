@@ -43,12 +43,10 @@ def confirm_missing_xref_items(missing_xref_items, any_xref_ranges_items):
 
 class AffValidator(object):
 
-    def __init__(self, aff_xml, institutions_query_results, xref_items):
+    def __init__(self, aff_xml, xref_items):
         self.aff_xml = aff_xml
         self.aff = aff_xml.aff
         self.xref_items = xref_items
-        self.institutions_query_results = institutions_query_results
-        self.norm_aff = None
         self._validations = None
 
     @property
@@ -97,47 +95,16 @@ class AffValidator(object):
         return r
 
     @property
-    def normalized(self):
-        return []
-        r = []
-        status_error = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERIA
-        status_fatal_error = validation_status.STATUS_DISAGREED_WITH_COLLECTION_CRITERIA
-        if self.aff.norgname is None:
-            return r
-        if self.institutions_query_results is not None:
-            norm_aff, found_institutions = self.institutions_query_results
-            if norm_aff is None:
-                msg = _('Unable to confirm/find the normalized institution name for ') + join_not_None_items(list(set([self.aff.orgname, self.aff.norgname])), ' or ')
-                if found_institutions is None or len(found_institutions) == 0:
-                    r.append(('aff/institution/[@content-type="normalized"]', validation_status.STATUS_WARNING, msg))
-                else:
-                    msg += _('. Check if any option of the list is the normalized name: ') + '<OPTIONS/>' + '|'.join([join_not_None_items(list(item)) for item in found_institutions])
-                    r.append((_('Suggestions:'), status_error, msg))
-            else:
-                status = status_fatal_error
-                if self.aff.norgname is not None:
-                    if self.aff.norgname == norm_aff.norgname:
-                        status = validation_status.STATUS_VALID
-                if status == validation_status.STATUS_VALID:
-                    message = _('Valid: ') + join_not_None_items([norm_aff.norgname, norm_aff.city, norm_aff.state, norm_aff.i_country, norm_aff.country])
-                else:
-                    message = _('Use {right} instead of {wrong}. ').format(right=norm_aff.norgname, wrong=self.aff.norgname)
-                r.append(('aff/institution/[@content-type="normalized"]', status, message))
-            self.norm_aff = norm_aff
-        return r
-
-    @property
     def occurrences(self):
         labels = []
         labels.append('institution[@content-type="original"]')
-        labels.append('institution[@content-type="normalized"]')
         labels.append('institution[@content-type="orgname"]')
         labels.append('institution[@content-type="orgdiv1"]')
         labels.append('institution[@content-type="orgdiv2"]')
         labels.append('addr-line/named-content[@content-type="city"]')
         labels.append('addr-line/named-content[@content-type="state"]')
         labels.append('country')
-        items = [self.aff_xml.original, self.aff_xml.norgname, self.aff_xml.orgname, self.aff_xml.orgdiv1, self.aff_xml.orgdiv2, self.aff_xml.city, self.aff_xml.state, self.aff_xml.country]
+        items = [self.aff_xml.original, self.aff_xml.orgname, self.aff_xml.orgdiv1, self.aff_xml.orgdiv2, self.aff_xml.city, self.aff_xml.state, self.aff_xml.country]
 
         r = []
         for label, item in zip(labels, items):
@@ -162,7 +129,6 @@ class AffValidator(object):
             r.extend(self.country)
             r.extend(self.orgname)
             r.append(self.orgdiv3)
-            r.append(self.normalized)
             r.append(self.occurrences)
             r.append(self.xref)
             self._validations = [item for item in r if item is not None]
@@ -171,9 +137,9 @@ class AffValidator(object):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url, app_institutions_manager, doi_validator, config):
+    def __init__(self, journal, _article, pkgfiles, is_db_generation, check_url, doi_validator, config):
         self.doi_validator = doi_validator
-        self.app_institutions_manager = app_institutions_manager
+        self.ws_requester = config.app_ws_requester
         self.journal = journal
         self.article = _article
         self.is_db_generation = is_db_generation
@@ -766,10 +732,7 @@ class ArticleContentValidation(object):
         for item in self.article.contrib_names:
             xref_items.extend(item.xref)
         for aff_xml in self.article.affiliations:
-            normalized = None
-            if self.article.institutions_query_results is not None:
-                normalized = self.article.institutions_query_results.get(aff_xml.id)
-            aff_validator = AffValidator(aff_xml, normalized, xref_items)
+            aff_validator = AffValidator(aff_xml, xref_items)
             r.extend(aff_validator.validations)
         return r
 
@@ -1472,7 +1435,7 @@ class ArticleContentValidation(object):
         href_items = {}
         min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
         for hrefitem in self.article.hrefs:
-            href_validations = HRefValidation(self.app_institutions_manager.ws.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
+            href_validations = HRefValidation(self.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
             href_items[hrefitem.src] = {
                 'display': href_validations.display,
                 'elem': hrefitem,
@@ -1484,7 +1447,7 @@ class ArticleContentValidation(object):
         href_items = {}
         min_disp, max_disp, min_inline, max_inline = self.graphics_min_and_max_height
         for hrefitem in self.article.href_files:
-            href_validations = HRefValidation(self.app_institutions_manager.ws.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
+            href_validations = HRefValidation(self.ws_requester, hrefitem, self.check_url, self.pkgfiles, min_disp, max_disp, min_inline, max_inline)
             href_items[hrefitem.src] = {
                 'display': href_validations.display,
                 'elem': hrefitem,

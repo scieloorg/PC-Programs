@@ -11,7 +11,6 @@ from prodtools.utils import encoding
 from prodtools.utils import fs_utils
 from prodtools.utils.dbm import dbm_isis
 from prodtools.utils.exporter import Exporter
-from prodtools.utils.ws import institutions_manager
 from prodtools.db import ws_journals
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
@@ -366,7 +365,6 @@ class PkgProcessor(object):
         self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
         self.ws_journals.update_journals_file()
         self.journals_list = xc_models.JournalsList(self.ws_journals.downloaded_journals_filename)
-        self.app_institutions_manager = institutions_manager.InstitutionsManager(self.config.app_ws_requester)
         self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
         self.registered_issues_manager = xc_models.RegisteredIssuesManager(self.db_manager, self.journals_list)
         self._pid_manager = None
@@ -436,7 +434,7 @@ class PkgProcessor(object):
     def validate_pkg_articles(self, pkg, registered_issue_data):
         pkg_validator = article_validations_module.PackageValidator(
             registered_issue_data, pkg, self.is_xml_generation,
-            self.config, self.doi_validator, self.app_institutions_manager)
+            self.config, self.doi_validator)
         return pkg_validator.validate_package()
 
     def validate_merged_articles(self, pkg, registered_issue_data):

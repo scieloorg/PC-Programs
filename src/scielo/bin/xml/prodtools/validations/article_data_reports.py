@@ -533,13 +533,12 @@ class ArticleDisplayReport(object):
         return (t_header, r)
 
     def affiliations_sheet_data(self):
-        t_header = ['aff id', 'aff orgname', 'aff norgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', ]
+        t_header = ['aff id', 'aff orgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', ]
         r = []
         for aff_xml in self.article.affiliations:
             a = aff_xml.aff
             row = {}
             row['aff id'] = a.id
-            row['aff norgname'] = a.norgname
             row['aff orgname'] = a.orgname
             row['aff orgdiv1'] = a.orgdiv1
             row['aff orgdiv2'] = a.orgdiv2

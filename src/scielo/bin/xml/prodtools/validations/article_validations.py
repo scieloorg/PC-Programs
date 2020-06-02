@@ -186,12 +186,11 @@ class XMLStructureValidator(object):
 
 class XMLContentValidator(object):
 
-    def __init__(self, pkgissuedata, registered_issue_data, is_xml_generation, app_institutions_manager, doi_validator, config):
+    def __init__(self, pkgissuedata, registered_issue_data, is_xml_generation, doi_validator, config):
         self.registered_issue_data = registered_issue_data
         self.pkgissuedata = pkgissuedata
         self.is_xml_generation = is_xml_generation
         self.doi_validator = doi_validator
-        self.app_institutions_manager = app_institutions_manager
         self.config = config
 
     def validate(self, article, outputs, pkgfiles):
@@ -201,7 +200,7 @@ class XMLContentValidator(object):
         if article.tree is None:
             content = validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to get data from {item}. ').format(item=article.new_prefix)
         else:
-            content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, pkgfiles, (self.registered_issue_data.articles_db_manager is not None), False, self.app_institutions_manager, self.doi_validator, self.config)
+            content_validation = article_content_validations.ArticleContentValidation(self.pkgissuedata.journal, article, pkgfiles, (self.registered_issue_data.articles_db_manager is not None), False, self.doi_validator, self.config)
             article_display_report = article_data_reports.ArticleDisplayReport(content_validation)
             article_validation_report = article_data_reports.ArticleValidationReport(content_validation)
 
@@ -241,14 +240,14 @@ class XMLContentValidator(object):
 class PackageValidator(object):
 
     def __init__(self, registered_issue_data, pkg, is_xml_generation,
-                 config, doi_validator, app_institutions_manager):
+                 config, doi_validator):
         self.xml_journal_data_validator = XMLJournalDataValidator(
             pkg.issue_data.journal_data)
         self.xml_issue_data_validator = XMLIssueDataValidator(
             registered_issue_data)
         self.xml_content_validator = XMLContentValidator(
             pkg.issue_data, registered_issue_data, is_xml_generation,
-            app_institutions_manager, doi_validator, config)
+            doi_validator, config)
         self.pkg = pkg
 
     def validate_package(self):
