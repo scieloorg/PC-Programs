@@ -2064,7 +2064,7 @@ class ReferenceXML(object):
             self._ref.trans_title_language = self.trans_title_language
             self._ref.contrib_xml_items = self.contrib_xml_items
             self._ref.person_group_xml_items = self.person_group_xml_items
-            self._ref.page_range = self.page_range
+            self._ref.page_range = first_item(self.page_range)
             self._ref.doi = self.doi
             self._ref.pmid = self.pmid
             self._ref.pmcid = self.pmcid
