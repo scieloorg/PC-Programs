@@ -71,8 +71,9 @@ class PMCPackageItemMaker(object):
         if self.article.journal_id_nlm_ta is None:
             html_reports.save(
                 self.outputs.pmc_style_report_filename, 'PMC Style Checker',
-                _('{label} is a mandatory data, and it was not informed. '
-                  ).format(label='journal-id (nlm-ta)'))
+                _('This report was not generated because'
+                  ' there is no "journal-id (nlm-ta)" in the XML file. ')
+                  )
         else:
             self.make_xml(scielo_dtd_files, pmc_dtd_files)
             return True

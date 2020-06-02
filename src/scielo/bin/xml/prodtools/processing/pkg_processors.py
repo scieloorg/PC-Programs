@@ -464,13 +464,10 @@ class PkgProcessor(object):
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):
-        if not self.is_db_generation:
-            logger.info("Is it PMC journal? %s" % pkg.is_pmc_journal)
-            if pkg.is_pmc_journal:
-                if GENERATE_PMC:
-                    logger.info("Make PMC Package")
-                    pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg)
-                    pmc_package_maker.make_package()
-                else:
-                    logger.info(
-                        _('To generate PMC package, add -pmc as parameter'))
+        if GENERATE_PMC:
+            logger.info("Make PMC Package")
+            pmc_package_maker = pmc_pkgmaker.PMCPackageMaker(pkg)
+            pmc_package_maker.make_package()
+        else:
+            logger.info(
+                _('To generate PMC package, add -pmc as parameter'))

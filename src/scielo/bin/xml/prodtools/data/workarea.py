@@ -59,12 +59,8 @@ class MultiDocsPackageOuputs(object):
     def get_doc_outputs(self, xml_name, sgmxml_name=None):
         obj = self.doc_outs.get(xml_name)
         if obj is None:
-            if sgmxml_name:
-                work_path = os.path.join(self.output_path, "work", sgmxml_name)
-            else:
-                work_path = os.path.join(self.tmp_path, xml_name)
             self.doc_outs[xml_name] = DocumentOutputFiles(
-                xml_name, self.reports_path, work_path)
+                xml_name, self.reports_path, sgmxml_name)
             obj = self.doc_outs[xml_name]
         return obj
 
@@ -363,10 +359,17 @@ class MultiDocsPackageFolder(object):
 
 class DocumentOutputFiles(object):
 
-    def __init__(self, xml_name, report_path, wrk_path):
-        self.xml_name = xml_name
+    def __init__(self, xml_name, report_path, sgmxml_name=None):
+        self.xml_name = sgmxml_name or xml_name
         self.report_path = report_path
-        self.wrk_path = wrk_path
+        self.sgmxml_name = sgmxml_name
+
+    @property
+    def wrk_path(self):
+        path = os.path.dirname(self.report_path)
+        if self.sgmxml_name:
+            return os.path.join(path, "work", self.sgmxml_name)
+        return os.path.join(path, "tmp", self.xml_name)
 
     def create_dir_at_work_path(self, dirname):
         dirname = os.path.join(self.wrk_path, dirname)
@@ -387,9 +390,8 @@ class DocumentOutputFiles(object):
     @property
     def ctrl_filename(self):
         # deve existir apenas na conversao de sgml para xml
-        name = os.path.basename(self.wrk_path)
-        if name != self.xml_name:
-            return os.path.join(self.wrk_path, name + ".ctrl.txt")
+        if self.sgmxml_name:
+            return os.path.join(self.wrk_path, self.sgmxml_name + ".ctrl.txt")
 
     @property
     def style_report_filename(self):
