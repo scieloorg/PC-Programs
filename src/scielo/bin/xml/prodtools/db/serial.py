@@ -280,9 +280,9 @@ class JournalFiles(object):
 
             src_files = [src.markup_path, src.body_path, src.base_source_path]
             dst_files = [dst.markup_path, dst.body_path, dst.base_source_path]
-            for src, dest in zip(src_files, dst_files):
-                s = os.path.join(src, aop.filename)
-                d = os.path.join(dest, aop.filename)
+            for _src, _dest in zip(src_files, dst_files):
+                s = os.path.join(_src, aop.filename)
+                d = os.path.join(_dest, aop.filename)
                 errors += fs_utils.move_file(s, d)
 
             errors += fs_utils.move_file(
