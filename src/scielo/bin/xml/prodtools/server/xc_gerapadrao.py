@@ -19,9 +19,8 @@ logger = logging.getLogger(__name__)
 
 class GeraPadraoStatusManager:
 
-    def __init__(self, permission_file, proc_path):
+    def __init__(self, permission_file):
         self.permission_file = permission_file
-        self.proc_path = proc_path
         self._status = None
 
     @property

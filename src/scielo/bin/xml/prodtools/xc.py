@@ -77,8 +77,8 @@ class Reception(object):
             files = ftp.download_files(
                 configuration.download_path, configuration.ftp_dir)
 
-            if len(files) > 0 and configuration.mailer:
-                configuration.mailer.send_message(
+            if len(files) > 0 and self.mailer:
+                self.mailer.send_message(
                     configuration.email_to,
                     configuration.email_subject_packages_receipt,
                     configuration.email_text_packages_receipt +
@@ -171,7 +171,7 @@ class Reception(object):
     def _update_scilista(self, package_name, scilista_items):
         if self.config.collection_scilista:
             try:
-                content = '\n'.join(scilista_items) + '\n'
+                content = '\n'.join(list(set(scilista_items))) + '\n'
                 fs_utils.append_file(
                     self.config.collection_scilista,
                     content)
