@@ -41,6 +41,24 @@ O diretório `<raíz>` se refere à versão do _XC_, por exemplo, `xc_2020`.
 **Nota:** Uma mesma instalação (instância) pode servir para mais de uma coleção.
 Não é necessária criar diferentes instâncias para cada coleção. Basta criar um arquivo de configuração para cada coleção.
 
+
+Obtenha o arquivo `SciELO_Production_Tools-4.0.97-py3-none-any.whl` do ftp.scielo.br, usuário produtos-scielo.
+
+Crie um ambiente virtual:
+
+	python3 -m venv .venv
+
+
+Ative o ambiente virtual
+
+	source .venv/bin/activate
+
+
+Execute a instalação
+
+	pip install -U SciELO_Production_Tools-4.0.97-py3-none-any.whl
+
+
 ## Configuração
 
 O arquivo de configuração deve ficar em `<raíz>/config`.
@@ -48,6 +66,16 @@ O seu nome deve ser seguir o seguinte padrão: `<collection_acron>.xc.ini`.
 
 
 ### Configurações obrigatórias
+
+Indique o **caminho da base de dados `pid_manager.db`** 
+
+Exemplo:
+
+```
+PID_MANAGER=/bases/xml.000/xc/pid_manager_database.db
+```
+**IMPORTANTE**: Deve-se ter **backup** desta base de dados.
+
 
 Indique o **caminho dos utilitários CISIS**, ou seja, a pasta cisis que contém os utilitários CISIS que são usados no _GeraPadrao_. No caso, da versão _XC server_ usar o mesmo caminho para ambas variáveis.
 
