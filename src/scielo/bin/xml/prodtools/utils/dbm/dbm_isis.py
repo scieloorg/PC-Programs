@@ -25,10 +25,7 @@ def format_value(content):
     try:
         content += ""
     except TypeError:
-        try:
-            content = ", ".join(content)
-        except TypeError:
-            raise
+        content = ", ".join(content)
     return remove_break_lines_characters(
         content).strip().replace('^', PRESERVECIRC)
 
