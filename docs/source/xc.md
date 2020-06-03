@@ -79,6 +79,8 @@ PID_MANAGER=/bases/xml.000/xc/pid_manager_database.db
 
 Indique o **caminho dos utilitários CISIS**, ou seja, a pasta cisis que contém os utilitários CISIS que são usados no _GeraPadrao_. No caso, da versão _XC server_ usar o mesmo caminho para ambas variáveis.
 
+No Windows, normalmente há as duas versões CISIS 1030 (usado nas bases serial: title, issue e revistas) e CISIS 16160 (sítio web local). Para o Linux, não faz diferença pois somente há o sítio web.
+
 Exemplo:
 
 ```
