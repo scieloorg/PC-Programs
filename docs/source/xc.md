@@ -42,7 +42,7 @@ O diretório `<raíz>` se refere à versão do _XC_, por exemplo, `xc_2020`.
 Não é necessária criar diferentes instâncias para cada coleção. Basta criar um arquivo de configuração para cada coleção.
 
 
-Obtenha o arquivo `SciELO_Production_Tools-4.0.97-py3-none-any.whl` do ftp.scielo.br, usuário produtos-scielo.
+Obtenha o arquivo `SciELO_Production_Tools-4.0.97-py3-none-any.whl` (local a definir).
 
 Crie um ambiente virtual:
 
@@ -88,6 +88,8 @@ PATH_CISIS_1660=/bases/xml.000/proc/cisis
 
 Indique respectivamente as **bases de dados _ISIS_ de _issue_ e _title_ que são enviadas continuamente** pelo utilitário _EnviaBasesXML.bat_ instalado no servidor local Windows. Estas bases serão copiadas todas as vezes que iniciar um processo do _XC_.
 
+**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada, use a mesma configuração.
+
 Exemplo:
 
 ```
@@ -104,9 +106,9 @@ ISSUE_DB_COPY=/bases/xml.000/collections/scl/xmldata/issue/issue
 TITLE_DB_COPY=/bases/xml.000/collections/scl/xmldata/title/title
 ```
 
-Indique onde está instalado a estrutura da aplicação _Web_ (sítio web da metodologia Clássica) onde correrá _GeraPadrao_ para o sítio web de _Controle de Qualidade_.
+Indique onde está instalado a estrutura da aplicação _Web_ (sítio web da metodologia Clássica) onde corre _GeraPadrao_ para o sítio web de _Controle de Qualidade_.
 
-**Nota**: Caso exista mais de uma instância de _XC_ executando concorrentemente, pode-se compartilhar a mesma instância
+**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada, use a mesma configuração.
 
 Exemplo:
 
@@ -116,7 +118,7 @@ LOCAL_WEB_APP_PATH=/bases/xml.000/collections/scl/scl.000
 
 Indique onde está instalado a **estrutura da pasta _serial_** que tem duas funções principais: armazenamento das bases de dados para o _GeraPadrao_ do sítio web de _Controle de Qualidade_ e também para que a cada entrada de pacotes o _XC_ possa validar os novos pacotes com os dados anteriormente registrados.
 
-**Nota**: Caso exista mais de uma instância de _XC_ executando concorrentemente, pode-se compartilhar a mesma instância
+**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada, use a mesma configuração.
 
 Exemplo:
 
@@ -124,27 +126,30 @@ Exemplo:
 PROC_SERIAL_PATH=/bases/xml.000/collections/scl/scl.000/serial
 ```
 
-Indique os caminhos dos diretórios usados pelo _XC_ como **área de trabalho**.
+Indique os caminhos dos diretórios usados pelo _XC_ como **área de trabalho**. 
 
-Pasta para criar arquivos temporários
+**IMPORTANTE:** Estas pastas **devem ser exclusivas** por instalação de _XC_ e por coleção. 
+**NÃO USE A MESMA CONFIGURAÇÃO** de outra instância/versão de _XC_.
+
+Pasta para criar arquivos **temporários**
 
 ```
 TEMP_PATH=
 ```
 
-Pasta para as filas dos pacotes a serem processados pelo _XC_.
+Pasta para as **filas** dos pacotes a serem processados pelo _XC_.
 
 ```
 QUEUE_PATH=
 ```
 
-Pasta para receber os pacotes via FTP ou mesmo manualmente. O _XC_ lê esta pasta e **move** para `QUEUE_PATH`.
+Pasta para **receber** os pacotes via FTP ou mesmo manualmente. O _XC_ lê esta pasta e **move** para `QUEUE_PATH`.
 
 ```
 DOWNLOAD_PATH=
 ```
 
-Pasta para arquivar os pacotes, caso seja desejável mantê-los, caso contrário, deixar em branco. Mas pode ocupar espaço considerável.
+Pasta para **arquivar** os pacotes, caso seja desejável mantê-los, caso contrário, deixar em branco. Mas pode ocupar espaço considerável.
 
 ```
 ARCHIVE_PATH=
@@ -153,9 +158,11 @@ ARCHIVE_PATH=
 ### Configurações Desejáveis
 
 O _XC_ no servidor se comunica com o usuário pelas mensagens na tela mas também por email.
-Funciona sem esta configuração, no entanto, a comunicação fica um pouco comprometida.
+Funciona sem esta configuração, no entanto, a comunicação fica comprometida.
 
-Indique se **a funcionalidade de envio de email**  deve ou não ocorrer. Valores possíveis: **on** ou **off**
+**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada, use a mesma configuração com exceção de: `[XC_VERSION]`
+
+Indique se a funcionalidade de **envio de email** está ou não ativa. Valores possíveis: **on** ou **off**
 
 Exemplo:
 
@@ -213,6 +220,9 @@ Preencher somente se as operações opcionais serão executadas
 
 Preencher somente o _XC_ baixará os pacotes por FTP.
 
+**IMPORTANTE:** Esta configuração **deve ser exclusiva** por instalação de _XC_ e por coleção. 
+Use um valor diferente para `FTP_DIR`.
+
 Indique os dados do **local de onde os pacotes serão baixados**.
 
 ```
@@ -225,8 +235,8 @@ FTP_DIR=
 #### Execução do GeraPadrao
 
 Caso seja desejável que o _XC_ acione a execução do _GeraPadrao_, todas as variáveis abaixo devem ser configuradas.
-**Nota**: Caso exista mais de uma instância de _XC_ executando concorrentemente, **escolher apenas 1** delas para acionar a execução do _GeraPadrao_
 
+**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada, **escolher apenas 1** delas para acionar a execução do _GeraPadrao_.
 
 Indique onde está instalado **proc** do _GeraPadrao_.
 
@@ -236,7 +246,7 @@ Exemplo:
 PROC_PATH=/bases/xml.000/collections/scl/scl.000/proc
 ```
 
-Indique **o caminho do arquivo temporário scilista** que contém ítens processados com sucesso pelo _XC_. Neste arquivo ficam acumulados todos os ítens validados pelo _XC_ até que o _GeraPadrao_ o consuma.
+Indique **o caminho do arquivo temporário scilista da coleção** que contém ítens processados com sucesso pelo _XC_. Neste arquivo ficam acumulados todos os ítens validados pelo _XC_ até que o _GeraPadrao_ o consuma.
 
 Exemplo:
 
@@ -244,7 +254,7 @@ Exemplo:
 COL_SCILISTA=/bases/xml.000/collections/scl/xmldata/minha_scilista.txt
 ```
 
-Indique **o caminho do arquivo que controla a execução do _GeraPadrao_** que contém os valores **FINISHED** ou **running**. Serve como um "semáforo" impedindo que mais de um processo de _GeraPadrao_ rode concorrentemente para a mesma coleção.
+Indique **o caminho do arquivo que controla a execução do _GeraPadrao_** que contém os valores **FINISHED** ou **running**. Serve como um semáforo impedindo que mais de um processo de _GeraPadrao_ rode concorrentemente para a mesma coleção.
 
 Exemplo:
 
@@ -254,7 +264,7 @@ GERAPADRAO_PERMISSION=/bases/xml.000/collections/scl/xmldata/gerapadrao.controle
 
 #### Publicação do sítio web de controle de qualidade
 
-Preencher somente se o resultado será visualizado em um sítio web de controle de qualidade
+Preencher somente se o resultado será visualizado em um **sítio web de controle de qualidade**
 
 Exemplo:
 
@@ -262,11 +272,13 @@ Exemplo:
 WEB_APP_SITE=homolog.xml.scielo.br
 ```
 
-#### Disponibilização de arquivos para o sítio web de controle de qualidade se é remoto
+#### Disponibilização de arquivos para o **sítio web de controle de qualidade** se é **remoto**
 
 Preencher somente se o sítio web de controle de qualidade é remoto.
 
-Indique **a transferência deve ou não ocorrer**. Valores possíveis: **on** ou **off**
+**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada, use a mesma configuração.
+
+Indique **a transferência** está ou não ativa. Valores possíveis: **on** ou **off**
 
 Exemplo:
 
@@ -336,7 +348,7 @@ e menor frequência:
 
 
 Pode-se deixar agendado a execução de _XC_ a cada 5 minutos, dentro de um período, por exemplo, de 7h às 19h.
-No entanto, o horário não deve coincidir com outras versões de _XC_ que podem rodar concorrentemente.
+No entanto, o horário não deve coincidir com outras instâncias/versões de _XC_ que podem rodar concorrentemente.
 O motivo é que todas as instâncias de _XC_ fazem modificações na mesma pasta `serial`.
 
 Caso exista **mais de uma** instância de _XC_ executando concorrentemente, **escolher apenas 1** delas para acionar a execução do _GeraPadrao_.
