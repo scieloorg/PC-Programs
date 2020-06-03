@@ -22,6 +22,10 @@ def format_value(content):
     """
     Formata o valor de um subcampo ou campo sem subcampo
     """
+    try:
+        content += ""
+    except TypeError:
+        content = ", ".join(content)
     return remove_break_lines_characters(
         content).strip().replace('^', PRESERVECIRC)
 

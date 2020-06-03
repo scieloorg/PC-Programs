@@ -61,8 +61,9 @@ setup(
                       'settings/*/*.txt',
                       'settings/*/*.csv',
                       'settings/*/*.fst',
-                      'settings/*.ini',
+                      'settings/*/*.ini',
                       ],
+        '': ['*.xsl', '*.dtd', '.ent', '*.ini', '*.xml', '*.mod', '*.txt'],
     },
     include_package_data=True,
     classifiers=[
