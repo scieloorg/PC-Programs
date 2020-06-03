@@ -9,7 +9,8 @@ class Mailer(object):
         self.config = config
         self.mailer = None
         if config.is_enabled_email_service:
-            self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email)
+            self.mailer = email_service.EmailService(config.email_sender_name, config.email_sender_email,
+                config.email_server)
 
     def send_message(self, to, subject, text, attaches=[]):
         self.mailer.send_message(to, subject, text, attaches)
