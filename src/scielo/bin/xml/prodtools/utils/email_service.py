@@ -97,6 +97,7 @@ class EmailService(object):
                     msg['BCC'] = ', '.join(bcc)
                     msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
                     smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-                    smtp.quit()
                 except Exception as e:
                     logging.exception("Tried again. \nError: %s. \n\nSubject: %s. \nText: %s." % (e, subject, text))
+                finally:
+                    smtp.quit()
