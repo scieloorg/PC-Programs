@@ -2,7 +2,7 @@
 name: Nova documentação
 about: Sentiu falta de algum tema
 title: ''
-labels: feature-request
+labels: docs
 assignees: ''
 
 ---
