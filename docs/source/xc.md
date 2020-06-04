@@ -1,13 +1,15 @@
 
 # XML Converter
 
-_XML Converter_, ou simplesmente _XC_, é uma das ferramentas que fazem parte do _SciELO PC Programs_, para **usuários gestores de coleção SciELO**.
+_XML Converter_, ou simplesmente _XC_, é uma das ferramentas que fazem parte do _SciELO PC Programs_, e é para **usuários gestores de coleção SciELO**.
 
-Sua principal função é a geração de bases de dados _ISIS_ nas pastas que seguem o padrão: `serial/<acron>/<volnum>/base/<volnum>` para uso do _GeraPadrao_ e também organizar os arquivos do pacote na estrutura do sítio web de _Controle de Qualidade_ nas pastas `xml`, `pdf`, `img/revistas`.
+Sua principal função é fornecer dados para a geração do sítio web clássico:
+- geração de bases de dados _ISIS_ nas pastas que seguem o padrão: `serial/<acron>/<volnum>/base/<volnum>` usadas pelo _GeraPadrao_
+- organização dos arquivos do pacote nas pastas `xml`, `pdf`, `img/revistas` do sítio web de _Controle de Qualidade_.
 
 _XML Converter_ executa as mesmas validações feitas pelo _XML Package Maker_, mas também valida os dados dos pacotes contra os dados registrados nas bases _title_ e _issue_. Somente se os pacotes forem válidos, sua base de dados correspondente será criada.
 
-A partir da versão 4.0.097, pode-se configurar a disponibilização dos pacotes para a nova plataforma de publicação _SciELO Publishing Framework_, mais especificamente para consumo do _KERNEL_.
+A partir da versão 4.0.097, pode-se configurar a disponibilização dos pacotes para a nova plataforma de publicação _SciELO Publishing Framework_ (com a condição de que a coleção esteja em operação com a nova plataforma).
 
 
 # XML Converter for server
@@ -33,13 +35,13 @@ Criar a seguinte estrutura de pasta:
 
  - `<raíz>`
    - `xml` (pasta com os programas)
-   - `config` (arquivos de configurações)
+   - `config` (arquivos de configuração)
 
 Os nomes `xml` e `config` são fixos.
 O diretório `<raíz>` se refere à versão do _XC_, por exemplo, `xc_2020`.
 
 **Nota:** Uma mesma instalação (instância) pode servir para mais de uma coleção.
-Não é necessária criar diferentes instâncias para cada coleção. Basta criar um arquivo de configuração para cada coleção.
+Não é necessário criar diferentes instâncias para cada coleção. Basta criar um arquivo de configuração para cada coleção.
 
 
 Obtenha o arquivo `SciELO_Production_Tools-4.0.97-py3-none-any.whl` (local a definir).
@@ -67,19 +69,9 @@ O seu nome deve ser seguir o seguinte padrão: `<collection_acron>.xc.ini`.
 
 ### Configurações obrigatórias
 
-Indique o **caminho da base de dados `pid_manager.db`** 
-
-Exemplo:
-
-```
-PID_MANAGER=/bases/xml.000/xc/pid_manager_database.db
-```
-**IMPORTANTE**: Deve-se ter **backup** desta base de dados.
-
-
 Indique o **caminho dos utilitários CISIS**, ou seja, a pasta cisis que contém os utilitários CISIS que são usados no _GeraPadrao_. No caso, da versão _XC server_ usar o mesmo caminho para ambas variáveis.
 
-No Windows, normalmente há as duas versões CISIS 1030 (usado nas bases serial: title, issue e revistas) e CISIS 16160 (sítio web local). Para o Linux, não faz diferença pois somente há o sítio web.
+No Windows, normalmente há as duas versões CISIS 1030 (usado nas bases serial: title, issue e revistas) e CISIS 1660 (sítio web local). Para o Linux, não faz diferença pois somente há o sítio web.
 
 Exemplo:
 
@@ -118,9 +110,11 @@ Exemplo:
 LOCAL_WEB_APP_PATH=/bases/xml.000/collections/scl/scl.000
 ```
 
-Indique onde está instalado a **estrutura da pasta _serial_** que tem duas funções principais: armazenamento das bases de dados para o _GeraPadrao_ do sítio web de _Controle de Qualidade_ e também para que a cada entrada de pacotes o _XC_ possa validar os novos pacotes com os dados anteriormente registrados.
+Indique onde está localizada a **estrutura da pasta _serial_** que tem duas funções principais: armazenamento das bases de dados para o _GeraPadrao_ do sítio web de _Controle de Qualidade_ e também para que a cada entrada de pacotes o _XC_ possa validar os novos pacotes com os dados anteriormente registrados.
 
 **Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada, use a mesma configuração.
+
+**IMPORTANTE:** Esta pasta tem o mesmo papel da pasta _serial_ do servidor Windows e deve-se ter _backup_.
 
 Exemplo:
 
@@ -155,6 +149,48 @@ Pasta para **arquivar** os pacotes, caso seja desejável mantê-los, caso contr�
 
 ```
 ARCHIVE_PATH=
+```
+
+### Configurações para a nova plataforma _SciELO Publishing Schema_ 
+
+Configurar **somente se** a coleção opera com a nova plataforma _SciELO Publishing Schema_ 
+
+A variável de configuração PID_MANAGER é responsável por indicar o endereço para uma base de dados que associa versões de PIDs dos artigos SciELO. É fundamental que esta base seja persistida e mantida de forma segura.
+
+Indique o **endereço do banco de dados `pid_manager.db`**
+
+Exemplos:
+
+```
+PID_MANAGER=/bases/xml.000/xc/pid_manager_database.db
+PID_MANAGER=sqlite:////bases/xml.000/xc/pid_manager_database.db
+```
+**IMPORTANTE**:
+- Deve ser persistente
+- Deve ser mantida mesmo que novas versões de _XC_ sejam instaladas
+- Deve haver 1 base de dados por coleção.
+- Deve-se ter **backup** desta base de dados.
+
+
+#### Disponibilização de pacotes para o Airflow
+
+Airflow é um componente da nova Plataforma _SciELO Publishing Framework_.
+
+**Por FTP**
+
+Preencher apenas o necessário para executar a transferência. Dependendo da infraestrutura, pode ser o suficiente apenas o endereço do servidor remoto e o caminho do destino.
+
+```
+KG_server=
+KG_user=
+KG_password=
+KG_remote_path=
+```
+
+**Por cópia**
+
+```
+KG_destination_path=
 ```
 
 ### Configurações Desejáveis
@@ -213,17 +249,11 @@ EMAIL_SUBJECT_INVALID_PACKAGES=[XC_VERSION] [COLLECTION_NAME] Invalid packages
 EMAIL_TEXT_INVALID_PACKAGES=email_invalid_packages.txt
 ```
 
-### Configurações Opcionais
-
-Preencher somente se as operações opcionais serão executadas
-
-
 #### Recepção de pacotes por FTP
 
 Preencher somente o _XC_ baixará os pacotes por FTP.
 
-**IMPORTANTE:** Esta configuração **deve ser exclusiva** por instalação de _XC_ e por coleção. 
-Use um valor diferente para `FTP_DIR`.
+**IMPORTANTE:** Esta configuração **deve ser exclusiva** por instalação de _XC_ e por coleção. Caso já exista uma instância ou versão de _XC_ anteriormente instalada, pode ser usada a mesma configuração **com exceção de: `FTP_DIR`**. 
 
 Indique os dados do **local de onde os pacotes serão baixados**.
 
@@ -266,7 +296,9 @@ GERAPADRAO_PERMISSION=/bases/xml.000/collections/scl/xmldata/gerapadrao.controle
 
 #### Publicação do sítio web de controle de qualidade
 
-Preencher somente se o resultado será visualizado em um **sítio web de controle de qualidade**
+Preencher somente se o resultado será visualizado em um **sítio web de controle de qualidade**.
+
+**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada e o sítio web de controle de qualidade continua sendo o mesmo, pode ser usada a mesma configuração.
 
 Exemplo:
 
@@ -274,11 +306,13 @@ Exemplo:
 WEB_APP_SITE=homolog.xml.scielo.br
 ```
 
+### Configurações opcionais
+
 #### Disponibilização de arquivos para o **sítio web de controle de qualidade** se é **remoto**
 
 Preencher somente se o sítio web de controle de qualidade é remoto.
 
-**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada, use a mesma configuração.
+**Nota**: Caso já exista uma instância ou versão de _XC_ anteriormente instalada e o sítio web de controle de qualidade continua sendo o mesmo, use a mesma configuração.
 
 Indique **a transferência** está ou não ativa. Valores possíveis: **on** ou **off**
 
@@ -296,24 +330,18 @@ TRANSFER_SERVER=
 REMOTE_WEB_APP_PATH=
 ```
 
-#### Disponibilização de pacotes para o Kernel
+#### NÍVEL DE VALIDAÇÕES DOS PACOTES
 
-**Por FTP**
+Preencher somente se a coleção tem grau de exigência menor quanto a:
+- critérios de ingresso
+- fórmulas codificadas
+- tabelas codificadas
 
-Preencher apenas o necessário para executar a transferência. Dependendo da infraestrutura, pode ser o suficiente apenas o endereço do servidor remoto e o caminho do destino.
 
-```
-KG_server=
-KG_user=
-KG_password=
-KG_remote_path=
-```
+BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA=OFF
+CODED_FORMULA_REQUIRED=OFF
+CODED_TABLE_REQUIRED=OFF
 
-**Por cópia**
-
-```
-KG_destination_path=
-```
 
 ## Execução
 
