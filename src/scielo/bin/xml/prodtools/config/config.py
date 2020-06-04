@@ -268,6 +268,10 @@ class Configuration(object):
         return self._data.get('SENDER_EMAIL')
 
     @property
+    def email_server(self):
+        return self._data.get('EMAIL_SERVER')
+
+    @property
     def email_to_adm(self):
         return self._data.get('EMAIL_TO_ADM')
 

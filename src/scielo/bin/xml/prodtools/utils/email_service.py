@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import smtplib
+import logging
 
 ##mail_from email.Utils import COMMASPACE, formatdate
 from email import encoders
@@ -55,7 +56,7 @@ class EmailService(object):
 
     def __init__(self, label_from, mail_from, server="localhost"):
         self.mail_from = mail_from
-        self.server = server
+        self.server = server or "localhost"
         self.label_from = label_from
 
     def send_message(self, to, subject, text, attaches=[], cc=[], bcc=[]):
@@ -81,13 +82,14 @@ class EmailService(object):
                 part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(f))
                 msg.attach(part)
 
-            smtp = smtplib.SMTP(self.server)
             try:
+                smtp = smtplib.SMTP(self.server)
                 smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
+                smtp.quit()
+            except ConnectionRefusedError as e:
+                logging.exception("Error: %s. \n\nSubject: %s. \nText: %s." % (e, subject, text))
             except Exception as e:
-
                 try:
-
                     msg = MIMEMultipart()
                     msg['From'] = self.mail_from
                     msg['To'] = ', '.join(to)
@@ -95,21 +97,7 @@ class EmailService(object):
                     msg['BCC'] = ', '.join(bcc)
                     msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
                     smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-
                 except Exception as e:
-                    encoding.report_exception('email_service.send_message()', e)
-            #except Exception as inst:
-            #    msg = MIMEMultipart()
-            #    msg['From'] = self.mail_from
-            #    msg['To'] = ', '.join(to)
-            #    msg['Subject'] = Header(subject, 'utf-8')
-            #    msg['BCC'] = ', '.join(bcc)
-            #    msg.attach( MIMEText('Problem in mail service ' +  subject, 'plain', 'utf-8') )
-            #    smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-            smtp.close()
-
-
-#if __name__ == '__main__':
-#    s = EmailService('Nome do remetente',  'sender@email.com')
-#    to = ['dest@email.com']
-#    s.send(to, 'teste', 'isso eh um teste', [])
+                    logging.exception("Tried again. \nError: %s. \n\nSubject: %s. \nText: %s." % (e, subject, text))
+                finally:
+                    smtp.quit()
