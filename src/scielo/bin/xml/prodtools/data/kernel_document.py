@@ -2,18 +2,19 @@
 import xml.etree.ElementTree as ET
 
 from prodtools.utils import fs_utils
+from prodtools.db.pid_versions import PIDVersionsManager
 from . import scielo_id_gen
 
 
 def add_article_id_to_received_documents(
-    pid_manager,
-    issn_id,
-    year_and_order,
-    received_docs,
-    documents_in_isis,
-    file_paths,
-    update_article_with_aop_status,
-):
+    pid_manager: PIDVersionsManager,
+    issn_id: str,
+    year_and_order: str,
+    received_docs: dict,
+    documents_in_isis: dict,
+    file_paths: dict,
+    update_article_with_aop_status: callable,
+) -> None:
     """Atualiza article-id (scielo-v2 e scielo-v3) dos documentos recebidos.
 
     Params:
