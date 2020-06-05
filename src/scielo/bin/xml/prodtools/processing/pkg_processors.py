@@ -429,8 +429,10 @@ class PkgProcessor(object):
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
 
         conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
+        if self.pid_manager is not None:
+            conversion.register_pids_and_update_xmls(self.pid_manager)
         scilista_items = conversion.convert(self.export_documents_package)
-        
+
         reports = self.report_result(pkg, validations_reports, conversion)
         statistics_display = reports.validations.statistics_display(html_format=False)
 
