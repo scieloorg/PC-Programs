@@ -4,8 +4,9 @@ import logging
 CREATE_PID_TABLE_QUERY = """
     CREATE TABLE IF NOT EXISTS pid_versions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        v2 VARCHAR(23) UNIQUE,
-        v3 VARCHAR(255) UNIQUE
+        v2 VARCHAR(23),
+        v3 VARCHAR(255),
+        UNIQUE(v2, v3)
     );
 """
 
