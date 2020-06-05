@@ -4,6 +4,7 @@ import logging.config
 import argparse
 import os
 import shutil
+from tempfile import mkdtemp
 from datetime import datetime
 
 from prodtools import _
@@ -115,6 +116,7 @@ class Reception(object):
                 "Not allowed to call _receive_package_for_server")
         for package_path in self._queued_packages():
             self.convert_package(package_path)
+            fs_utils.delete_file_or_folder(package_path)
 
     def display_form(self):
         form.display_form(
@@ -136,8 +138,7 @@ class Reception(object):
         mail_info = "subject", "message"
         result = scilista_items, xc_status, mail_info
 
-        # FIXME
-        output_path = xml_path + "_" + self.proc.stage
+        output_path = mkdtemp()
 
         pkg_maker = PackageMaker(xml_path, output_path)
         pkg = pkg_maker.pack()
@@ -158,6 +159,8 @@ class Reception(object):
                     self._update_website_files(pkg_name, acron, issue_id)
                 self._mail_results(pkg_name, mail_info)
                 self._update_report_files(pkg_name, acron, issue_id)
+        finally:
+            fs_utils.delete_file_or_folder(output_path)
 
         encoding.display_message(_('finished'))
 
