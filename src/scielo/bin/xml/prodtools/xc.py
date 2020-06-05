@@ -115,6 +115,7 @@ class Reception(object):
                 "Not allowed to call _receive_package_for_server")
         for package_path in self._queued_packages():
             self.convert_package(package_path)
+            fs_utils.delete_file_or_folder(package_path)
 
     def display_form(self):
         form.display_form(
