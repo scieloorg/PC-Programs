@@ -18,6 +18,9 @@ from prodtools.data import article_utils
 from prodtools.db import serial
 from prodtools.db import registered
 from prodtools.validations import article_data_reports
+from prodtools import FST_PATH
+from prodtools.utils.dbm import dbm_isis
+from prodtools.db import ws_journals
 
 
 ISSN_TYPE_CONVERSION = {
@@ -1543,13 +1546,35 @@ def update_list(l, value):
 
 class RegisteredIssuesManager(object):
 
-    def __init__(self, db_manager, journals_list):
-        self.db_manager = db_manager
-        self.journals_list = journals_list
+    def __init__(self, config, is_db_generation):
+        self.config = config
+        self.is_db_generation = is_db_generation
+        self._db_manager = None
+        wsj = ws_journals.Journals(self.config.app_ws_requester)
+        wsj.update_journals_file()
+        self.journals_list = JournalsList(wsj.downloaded_journals_filename)
+
+    @property
+    def db_manager(self):
+        if self._db_manager is None and self.is_db_generation:
+            cisis1030 = dbm_isis.CISIS(self.config.cisis1030)
+            if cisis1030.cisis_path is not None:
+                cisis1660 = dbm_isis.CISIS(self.config.cisis1660)
+                db_isis = dbm_isis.UCISIS(cisis1030, cisis1660)
+                titles = [self.config.title_db, self.config.title_db_copy,
+                          os.path.join(FST_PATH, 'title.fst')]
+                issues = [self.config.issue_db, self.config.issue_db_copy,
+                          os.path.join(FST_PATH, 'issue.fst')]
+                self._db_manager = DBManager(
+                    db_isis,
+                    titles,
+                    issues,
+                    self.config.serial_path)
+        return self._db_manager
 
     def get_registered_issue_data(self, pkgissuedata):
         registered_issue = registered.RegisteredIssue()
-        if self.db_manager is None:
+        if not self.is_db_generation:
             pkgissuedata.journal = self.journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
             pkgissuedata.journal_data = self.journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
         else:

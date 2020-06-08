@@ -379,12 +379,10 @@ class PkgProcessor(object):
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
         self.xpm_version = xpm_version() if stage == 'xpm' else None
-        self._db_manager = None
-        self.ws_journals = ws_journals.Journals(self.config.app_ws_requester)
-        self.ws_journals.update_journals_file()
-        self.journals_list = xc_models.JournalsList(self.ws_journals.downloaded_journals_filename)
-        self.doi_validator = doi_validations.DOIValidator(self.config.app_ws_requester)
-        self.registered_issues_manager = xc_models.RegisteredIssuesManager(self.db_manager, self.journals_list)
+        self.doi_validator = doi_validations.DOIValidator(
+            self.config.app_ws_requester)
+        self.registered_issues_manager = xc_models.RegisteredIssuesManager(
+            self.config, self.is_db_generation)
         self._pid_manager = None
 
     @property
@@ -400,28 +398,12 @@ class PkgProcessor(object):
         if self.config.kernel_gate:
             return Exporter(self.config.kernel_gate).export
 
-    @property
-    def db_manager(self):
-        if self._db_manager is None and self.is_db_generation:
-            cisis1030 = dbm_isis.CISIS(self.config.cisis1030)
-            if cisis1030.cisis_path is not None:
-                cisis1660 = dbm_isis.CISIS(self.config.cisis1660)
-                db_isis = dbm_isis.UCISIS(cisis1030, cisis1660)
-                titles = [self.config.title_db, self.config.title_db_copy, FST_PATH + '/title.fst']
-                issues = [self.config.issue_db, self.config.issue_db_copy, FST_PATH + '/issue.fst']
-                self._db_manager = xc_models.DBManager(
-                    db_isis,
-                    titles,
-                    issues,
-                    self.config.serial_path)
-        return self._db_manager
-
     def evaluate_package(self, pkg):
         logger.info("Analize package")
         registered_issue_data = self.registered_issues_manager.get_registered_issue_data(pkg.issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
-        pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
+        pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, self.is_db_generation)
         mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, mergence_reports, self.is_xml_generation)
         return registered_issue_data, validations_reports
