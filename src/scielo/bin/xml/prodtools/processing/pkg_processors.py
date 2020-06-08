@@ -5,18 +5,13 @@ import shutil
 
 from prodtools import _
 from prodtools import XPM_VERSION_FILE_PATH
-from prodtools import FST_PATH
 from prodtools.utils import encoding
 from prodtools.utils import fs_utils
-from prodtools.utils.dbm import dbm_isis
 from prodtools.utils.exporter import Exporter
-from prodtools.db import ws_journals
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
-from prodtools.validations import doi_validations
 from prodtools.validations import article_data_reports
 from prodtools.validations import pkg_articles_validations
-from prodtools.validations import article_validations as article_validations_module
 from prodtools.validations import validations as validations_module
 from prodtools.validations import reports_maker
 from prodtools.validations import merged_articles_validations
