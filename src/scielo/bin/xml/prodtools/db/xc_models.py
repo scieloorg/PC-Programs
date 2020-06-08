@@ -1574,13 +1574,13 @@ class RegisteredIssuesManager(object):
 
     def get_registered_issue_data(self, pkgissuedata):
         registered_issue = registered.RegisteredIssue()
-        if not self.is_db_generation:
-            pkgissuedata.journal = self.journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
-            pkgissuedata.journal_data = self.journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
-        else:
+        if self.is_db_generation:
             registered_issue.acron_issue_label, registered_issue.issue_models, registered_issue.issue_error_msg, pkgissuedata.journal, pkgissuedata.journal_data = self.db_manager.get_registered_data(pkgissuedata.pkg_journal_title, pkgissuedata.pkg_issue_label, pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn)
             ign, pkgissuedata._issue_label = registered_issue.acron_issue_label.split(' ')
             if registered_issue.issue_error_msg is None:
                 registered_issue.issue_files = self.db_manager.get_issue_files(registered_issue.issue_models)
                 registered_issue.articles_db_manager = ArticlesManager(self.db_manager.db_isis, registered_issue.issue_files)
+        else:
+            pkgissuedata.journal = self.journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
+            pkgissuedata.journal_data = self.journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
         return registered_issue
