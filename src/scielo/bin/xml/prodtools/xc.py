@@ -28,7 +28,7 @@ from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 os_path_join = os.path.join
 
@@ -47,7 +47,7 @@ def main():
 
     args = parser.parse_args()
 
-    logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
+    logger.setLevel(args.loglevel.upper())
 
     package_path = args.package_path
 
@@ -169,7 +169,7 @@ class Reception(object):
             subject = subject or _("Failure during or after conversion")
             self.mailer.mail_failure(subject, package_name, msg)
         else:
-            print(msg)
+            logger.error(msg)
 
     def _update_scilista(self, package_name, scilista_items):
         if self.config.collection_scilista:
@@ -190,7 +190,7 @@ class Reception(object):
                 mail_subject, mail_content = mail_info
                 self.mailer.mail_results(pkg_name, mail_subject, mail_content)
             else:
-                print(mail_content)
+                logger.debug(mail_content)
 
     def _update_website_files(self, package_name, acron, issue_id):
         if self.transfer:

@@ -16,7 +16,7 @@ from prodtools.utils.logging_config import LOGGING_CONFIG
 
 dictConfig(LOGGING_CONFIG)
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 def display_form(stage):
@@ -99,7 +99,7 @@ def main():
 
     args = parser.parse_args()
 
-    logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
+    logger.setLevel(args.loglevel.upper())
 
     xml_path = args.xml_path
     acron = args.acron

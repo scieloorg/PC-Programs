@@ -8,7 +8,7 @@ from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 def main():
@@ -24,7 +24,7 @@ def main():
     parser.add_argument('--loglevel', default='WARNING')
     args = parser.parse_args()
 
-    logging.basicConfig(level=getattr(logging, args.loglevel.upper()))
+    logger.setLevel(args.loglevel.upper())
 
     collection_acron = args.collection_acron
     call_download = args.download
