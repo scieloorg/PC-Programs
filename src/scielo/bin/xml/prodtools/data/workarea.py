@@ -1,17 +1,13 @@
 # coding=utf-8
 import logging
-import logging.config
 import os
 import shutil
 
 from prodtools.utils import fs_utils
 from prodtools.utils import img_utils
-from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
-logging.config.dictConfig(LOGGING_CONFIG)
-
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 MARKUP_SUFFIXES = ['t', 'f', 'e', 'img', 'image']
