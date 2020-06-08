@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import logging
 from datetime import datetime
 
 from prodtools import _
@@ -10,6 +11,9 @@ from prodtools.reports import validation_status
 from prodtools.data import article_utils
 from prodtools.data import attributes
 from prodtools.data.article import PersonAuthor, CorpAuthor
+
+
+logger = logging.getLogger()
 
 
 log_items = []
@@ -585,7 +589,7 @@ class ArticleDisplayReport(object):
     def embedded_pdf_items(self, page_id='', width='400px', height='400px'):
         items = []
         for item in self.article.expected_pdf_files.values():
-            print(page_id + item)
+            logger.debug(page_id + item)
             items.append(html_reports.tag('p', html_reports.display_embedded_object(
                 item,
                 os.path.basename(item), page_id + item, width, height)))
@@ -666,7 +670,7 @@ def validations_table(results):
                 label, status, msg, xml = result
                 rows.append({'label': attributes.sps_help(label), 'status': status, 'message': msg, 'xml': xml, _('why it is not a valid message?'): ' '})
             else:
-                print('validations_table: ', result)
+                logger.debug('validations_table: ', result)
         r = html_reports.tag('div', html_reports.sheet(['label', 'status', 'message', 'xml', _('why it is not a valid message?')], rows, table_style='validation_sheet'))
     return r
 
