@@ -13,6 +13,7 @@ class Article:
         self.scielo_id = scielo_id
         self.scielo_pid = scielo_pid
         self.registered_scielo_id = None
+        self.registered_aop_pid = None
         self.order = "12345"
 
     def get_scielo_pid(self, name):
@@ -21,7 +22,6 @@ class Article:
         return self.scielo_pid
 
 
-@unittest.skip("deixou de passar após PR 3171")
 class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
     def setUp(self):
         self.files = ["file" + str(i) + ".xml" for i in range(1, 6)]
@@ -35,6 +35,12 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
                 os.unlink(f)
             except IOError:
                 pass
+
+    def _return_scielo_pid_v3_if_aop_pid_match(self, pid):
+        """Representa a busca pelo PID v3 a partir do PID v2"""
+        if pid == "AOPPID":
+            return "pid-v3-registrado-anteriormente-para-documento-aop"
+        return "brzWFrVFdpYMXdpvq7dDJBQ"
 
     def test_add_article_id_to_received_documents(self):
         registered = {}
@@ -53,10 +59,12 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
         year_and_order = "20173"
 
         mock_pid_manager = Mock()
+        mock_pid_manager.get_pid_v3.return_value = None
+
         kernel_document.scielo_id_gen.generate_scielo_pid = Mock(return_value="xxxxxx")
         kernel_document.add_article_id_to_received_documents(
             mock_pid_manager, issn_id, year_and_order, received,
-            registered, file_paths
+            registered, file_paths, lambda x:x
         )
 
         for name, item in received.items():
@@ -74,6 +82,48 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
                     self.assertIn('specific-use="scielo-v3"', content)
                     self.assertIn('specific-use="scielo-v2"', content)
                     self.assertIn(expected_scielo_id, content)
+
+    @patch("prodtools.data.kernel_document.add_article_id_to_xml")
+    def test_pid_manager_should_use_aop_pid_to_search_pid_v3_from_database(self, _):
+        def _update_article_with_aop_pid(article: Article):
+            article.registered_aop_pid = "AOPPID"
+
+        mock_pid_manager = Mock()
+        mock_pid_manager.get_pid_v3 = self._return_scielo_pid_v3_if_aop_pid_match
+
+        kernel_document.add_article_id_to_received_documents(
+            pid_manager=mock_pid_manager,
+            issn_id="9876-3456",
+            year_and_order="20173",
+            received_docs={"file1": Article(None, None)},
+            documents_in_isis={},
+            file_paths={},
+            update_article_with_aop_status=_update_article_with_aop_pid,
+        )
+
+        mock_pid_manager.register.assert_called_with(
+            "S9876-34562017000312345",
+            "pid-v3-registrado-anteriormente-para-documento-aop",
+        )
+
+    @patch("prodtools.data.kernel_document.add_article_id_to_xml")
+    def test_pid_manager_does_not_register_pids_if_pid_v3_already_exists_in_xml(
+        self, mock
+    ):
+
+        mock_pid_manager = Mock()
+
+        kernel_document.add_article_id_to_received_documents(
+            pid_manager=mock_pid_manager,
+            issn_id="9876-3456",
+            year_and_order="20173",
+            received_docs={"file1": Article("brzWFrVFdpYMXdpvq7dDJBQ", None)},
+            documents_in_isis={},
+            file_paths={},
+            update_article_with_aop_status=lambda _: _,
+        )
+
+        mock_pid_manager.register.assert_not_called()
 
 
 class TestKernelDocument(unittest.TestCase):

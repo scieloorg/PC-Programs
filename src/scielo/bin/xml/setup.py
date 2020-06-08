@@ -7,8 +7,8 @@ import codecs
 import sys
 
 
-if sys.version_info[0:2] < (3, 4):
-    raise RuntimeError('Requires Python 3.4 or newer')
+if sys.version_info[0:2] < (3, 5):
+    raise RuntimeError('Requires Python 3.5 or newer')
 
 with codecs.open('README.md', mode='r', encoding='utf-8') as fp:
     README = fp.read()
@@ -30,10 +30,10 @@ TESTS_REQUIRE = [
 
 if int(setuptools.__version__.split('.', 1)[0]) < 18:
     assert "bdist_wheel" not in sys.argv, "setuptools 18 required for wheels."
-    if sys.version_info[0:2] < (3, 4):
+    if sys.version_info[0:2] < (3, 5):
         INSTALL_REQUIRES.append('pathlib>=1.0.1')
 else:
-    EXTRAS_REQUIRE[':python_version<"3.4"'] = ['pathlib>=1.0.1']
+    EXTRAS_REQUIRE[':python_version<"3.5"'] = ['pathlib>=1.0.1']
 
 if sys.version_info[0:2] == (2, 7):
     TESTS_REQUIRE.append('mock')
@@ -69,7 +69,6 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: XML Producers and SciELO Collection Managers",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",

@@ -33,6 +33,7 @@ from prodtools.db.pid_versions import(
 )
 from prodtools.processing import pmc_pkgmaker
 from prodtools.utils.logging_config import LOGGING_CONFIG
+from prodtools.db.pid_versions import PIDVersionsManager
 
 
 logging.config.dictConfig(LOGGING_CONFIG)
@@ -94,19 +95,11 @@ class ArticlesConversion(object):
         self.error_messages = []
         self.conversion_status = {}
 
-    def convert(self, export_documents_package=None, scielo_pid_v3_manager=None):
+    def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
-            issn_id = self.registered_issue_data.issue_models.issue.issn_id
-            v36 = self.registered_issue_data.issue_models.record.get("36")
-            kernel_document.add_article_id_to_received_documents(
-                scielo_pid_v3_manager,
-                issn_id, v36,
-                self.articles_mergence.articles,
-                self.articles_mergence.registered_articles,
-                self.pkg.file_paths)
 
             _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
@@ -125,12 +118,41 @@ class ArticlesConversion(object):
                         self.pkg.issue_data.issue_label)
                     website_files.get_files(self.pkg.package_folder.path)
                 self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
-                if export_documents_package:
-                    zip_filename = scilista_items[0].replace(" ", "_") + ".zip"
-                    export_documents_package(self.pkg.package_folder.path, zip_filename)
                 self.replace_ex_aop_pdf_files()
 
         return scilista_items
+
+    def register_pids_and_update_xmls(self, pid_manager: PIDVersionsManager) -> None:
+        """Invoca o registro de PIDs em um banco de dados e logo após registra
+        os PIDs nos documentos XMLs presentes no pacote."""
+        issue_models = self.registered_issue_data.issue_models
+
+        kernel_document.add_article_id_to_received_documents(
+            pid_manager=pid_manager,
+            issn_id=issue_models.issue.issn_id,
+            year_and_order=issue_models.record.get("36"),
+            received_docs=self.articles_mergence.articles,
+            documents_in_isis=self.articles_mergence.registered_articles,
+            file_paths=self.pkg.file_paths,
+            update_article_with_aop_status=self.db.get_valid_aop,
+        )
+        logger.debug("Articles that compose this package were updated with SciELO Pids (v2, and v3)")
+
+    def export_package_to_spf_directory(self, exporter: callable, package_name: str):
+        """Exporta o pacote SPS de acordo com a estratégia utilizada"""
+        if exporter is None:
+            logger.debug(
+                "Could not export this package because the none exporter was used."
+            )
+            return None
+        elif package_name is None or len(package_name) == 0:
+            logger.debug(
+                "Could not export this package because the name of package is blank."
+            )
+            return None
+
+        package_zip_name = "{}.zip".format(package_name.replace(" ", "_"))
+        exporter(self.pkg.package_folder.path, package_zip_name)
 
     @property
     def aop_status(self):
@@ -420,9 +442,19 @@ class PkgProcessor(object):
         registered_issue_data, validations_reports = self.evaluate_package(pkg)
 
         conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
+        if self.pid_manager is not None:
+            conversion.register_pids_and_update_xmls(self.pid_manager)
 
-        scilista_items = conversion.convert(self.export_documents_package, self.pid_manager)
-        
+        scilista_items = conversion.convert()
+
+        # A scilista sempre terá um item mas o pacote só será
+        # exportado se a scilista tiver mais de um item, isso
+        # indica que o pacote está válido
+        if scilista_items is not None and len(scilista_items) > 1:
+            conversion.export_package_to_spf_directory(
+                self.export_documents_package, package_name=scilista_items[0]
+            )
+
         reports = self.report_result(pkg, validations_reports, conversion)
         statistics_display = reports.validations.statistics_display(html_format=False)
 
