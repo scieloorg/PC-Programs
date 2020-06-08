@@ -379,8 +379,6 @@ class PkgProcessor(object):
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
         self.xpm_version = xpm_version() if stage == 'xpm' else None
-        self.doi_validator = doi_validations.DOIValidator(
-            self.config.app_ws_requester)
         self.registered_issues_manager = xc_models.RegisteredIssuesManager(
             self.config, self.is_db_generation)
         self._pid_manager = None
@@ -442,8 +440,7 @@ class PkgProcessor(object):
 
     def validate_pkg_articles(self, pkg, registered_issue_data):
         pkg_validator = article_validations_module.PackageValidator(
-            registered_issue_data, pkg, self.is_xml_generation,
-            self.config, self.doi_validator)
+            registered_issue_data, pkg, self.is_xml_generation, self.config)
         return pkg_validator.validate_package()
 
     def validate_merged_articles(self, pkg, registered_issue_data):

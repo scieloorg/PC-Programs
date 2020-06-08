@@ -11,6 +11,7 @@ from prodtools.validations import sps_xml_validators
 from . import article_data_reports
 from . import article_content_validations
 from . import validations as validations_module
+from prodtools.validations import doi_validations
 
 
 class XMLJournalDataValidator(object):
@@ -186,11 +187,12 @@ class XMLStructureValidator(object):
 
 class XMLContentValidator(object):
 
-    def __init__(self, pkgissuedata, registered_issue_data, is_xml_generation, doi_validator, config):
+    def __init__(self, pkgissuedata, registered_issue_data, is_xml_generation, config):
         self.registered_issue_data = registered_issue_data
         self.pkgissuedata = pkgissuedata
         self.is_xml_generation = is_xml_generation
-        self.doi_validator = doi_validator
+        self.doi_validator = doi_validations.DOIValidator(
+            config.app_ws_requester)
         self.config = config
 
     def validate(self, article, outputs, pkgfiles):
@@ -239,15 +241,13 @@ class XMLContentValidator(object):
 
 class PackageValidator(object):
 
-    def __init__(self, registered_issue_data, pkg, is_xml_generation,
-                 config, doi_validator):
+    def __init__(self, registered_issue_data, pkg, is_xml_generation, config):
         self.xml_journal_data_validator = XMLJournalDataValidator(
             pkg.issue_data.journal_data)
         self.xml_issue_data_validator = XMLIssueDataValidator(
             registered_issue_data)
         self.xml_content_validator = XMLContentValidator(
-            pkg.issue_data, registered_issue_data, is_xml_generation,
-            doi_validator, config)
+            pkg.issue_data, registered_issue_data, is_xml_generation, config)
         self.pkg = pkg
 
     def validate_package(self):
