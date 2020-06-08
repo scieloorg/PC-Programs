@@ -9,18 +9,7 @@ from ftplib import FTP, all_errors
 from datetime import datetime
 
 
-logging.basicConfig(
-    filename='./exporter.log',
-    format=u'%(asctime)s %(message)s')
-logger = logging.getLogger('Exporter')
-logger.setLevel(logging.DEBUG)
-
-
-try:
-    os.unlink('./exporter.log')
-except:
-    pass
-exp_logger = logger
+exp_logger = logging.getLogger(__name__)
 
 
 class Exporter(object):

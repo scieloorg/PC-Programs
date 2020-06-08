@@ -1,7 +1,6 @@
 
 LOGGING_CONFIG = {
     'version': 1,
-    'disable_existing_loggers': True,
     'formatters': {
         'standard': {
             'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
@@ -33,11 +32,23 @@ LOGGING_CONFIG = {
             'maxBytes': 10240,
             'backupCount': 3,
         },
+        'exporter': {
+            'level': 'DEBUG',
+            'formatter': 'standard',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'exporter.log',
+            'maxBytes': 10240,
+            'backupCount': 3,
+        },
     },
     'loggers': {
         '': {  # root logger
             'handlers': ['default', 'file', 'file2', ],
             'level': 'DEBUG',
+            'propagate': True,
+        },
+        'prodtools.utils.exporter': {  # exporter logger
+            'handlers': ['exporter'],
             'propagate': True,
         },
     }
