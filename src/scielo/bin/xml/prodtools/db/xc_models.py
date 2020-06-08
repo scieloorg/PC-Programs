@@ -16,6 +16,7 @@ from prodtools.data.article import PersonAuthor, CorpAuthor, AnonymousAuthor
 from prodtools.data import attributes
 from prodtools.data import article_utils
 from prodtools.db import serial
+from prodtools.db import registered
 from prodtools.validations import article_data_reports
 
 
@@ -1546,9 +1547,9 @@ class RegisteredIssuesManager(object):
         self.db_manager = db_manager
         self.journals_list = journals_list
 
-    def get_registered_issue_data(self, pkgissuedata, registered_issue):
+    def get_registered_issue_data(self, pkgissuedata):
+        registered_issue = registered.RegisteredIssue()
         if self.db_manager is None:
-            journals_list = self.journals_list
             pkgissuedata.journal = self.journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
             pkgissuedata.journal_data = self.journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
         else:
@@ -1557,4 +1558,4 @@ class RegisteredIssuesManager(object):
             if registered_issue.issue_error_msg is None:
                 registered_issue.issue_files = self.db_manager.get_issue_files(registered_issue.issue_models)
                 registered_issue.articles_db_manager = ArticlesManager(self.db_manager.db_isis, registered_issue.issue_files)
-        return pkgissuedata
+        return registered_issue

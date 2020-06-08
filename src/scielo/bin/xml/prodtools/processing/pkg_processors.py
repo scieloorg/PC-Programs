@@ -23,7 +23,6 @@ from prodtools.validations import merged_articles_validations
 from prodtools.data import merged
 from prodtools.data import workarea
 from prodtools.data import kernel_document
-from prodtools.db import registered
 from prodtools.db import xc_models
 from prodtools.db.serial import WebsiteFiles
 from prodtools.db.pid_versions import(
@@ -419,8 +418,7 @@ class PkgProcessor(object):
 
     def evaluate_package(self, pkg):
         logger.info("Analize package")
-        registered_issue_data = registered.RegisteredIssue()
-        self.registered_issues_manager.get_registered_issue_data(pkg.issue_data, registered_issue_data)
+        registered_issue_data = self.registered_issues_manager.get_registered_issue_data(pkg.issue_data)
         pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, registered_issue_data.articles_db_manager is not None)
