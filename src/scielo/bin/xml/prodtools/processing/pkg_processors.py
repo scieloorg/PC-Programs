@@ -394,9 +394,10 @@ class PkgProcessor(object):
     def evaluate_package(self, pkg):
         logger.info("Analize package")
         registered_issue_data = self.registered_issues_manager.get_registered_issue_data(pkg.issue_data)
-        pkg_validations = self.validate_pkg_articles(pkg, registered_issue_data)
         articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
-        pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(pkg_validations, self.is_db_generation)
+        pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(
+            pkg, registered_issue_data, self.is_db_generation,
+            self.is_xml_generation, self.config)
         mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, mergence_reports, self.is_xml_generation)
         return registered_issue_data, validations_reports
@@ -432,11 +433,6 @@ class PkgProcessor(object):
         mail_content = '<html><body>' + html_reports.link(reports.report_link, reports.report_link) + '</body></html>'
         mail_info = subject, mail_content
         return (scilista_items, conversion.xc_status, mail_info)
-
-    def validate_pkg_articles(self, pkg, registered_issue_data):
-        pkg_validator = article_validations_module.PackageValidator(
-            registered_issue_data, pkg, self.is_xml_generation, self.config)
-        return pkg_validator.validate_package()
 
     def validate_merged_articles(self, pkg, registered_issue_data):
         if len(registered_issue_data.registered_articles) > 0:
