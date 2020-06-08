@@ -1,4 +1,5 @@
 # coding=utf-8
+import logging
 
 from prodtools import _
 from prodtools.reports import html_reports
@@ -30,8 +31,15 @@ class IssueArticlesValidationsReports(object):
 
 class MergedArticlesReports(object):
 
-    def __init__(self, articles_mergence, registered_issue_data):
-        self.merged_articles_data = merged.MergedArticlesData(articles_mergence.merged_articles, registered_issue_data.articles_db_manager is not None)
+    def __init__(self, pkg, registered_issue_data, is_db_generation):
+        if len(registered_issue_data.registered_articles) > 0:
+            logging.info(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
+
+        articles_mergence = merged.ArticlesMergence(
+            registered_issue_data.registered_articles,
+            pkg.articles, is_db_generation)
+
+        self.merged_articles_data = merged.MergedArticlesData(articles_mergence.merged_articles, is_db_generation)
         self.articles_mergence = articles_mergence
         self.registered_issue_data = registered_issue_data
 

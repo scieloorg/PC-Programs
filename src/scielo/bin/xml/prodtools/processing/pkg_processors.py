@@ -394,11 +394,10 @@ class PkgProcessor(object):
     def evaluate_package(self, pkg):
         logger.info("Analize package")
         registered_issue_data = self.registered_issues_manager.get_registered_issue_data(pkg.issue_data)
-        articles_mergence = self.validate_merged_articles(pkg, registered_issue_data)
         pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(
             pkg, registered_issue_data, self.is_db_generation,
             self.is_xml_generation, self.config)
-        mergence_reports = merged_articles_validations.MergedArticlesReports(articles_mergence, registered_issue_data)
+        mergence_reports = merged_articles_validations.MergedArticlesReports(pkg, registered_issue_data, self.is_db_generation)
         validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, mergence_reports, self.is_xml_generation)
         return registered_issue_data, validations_reports
 
@@ -433,13 +432,6 @@ class PkgProcessor(object):
         mail_content = '<html><body>' + html_reports.link(reports.report_link, reports.report_link) + '</body></html>'
         mail_info = subject, mail_content
         return (scilista_items, conversion.xc_status, mail_info)
-
-    def validate_merged_articles(self, pkg, registered_issue_data):
-        if len(registered_issue_data.registered_articles) > 0:
-            encoding.display_message(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
-        return merged.ArticlesMergence(
-            registered_issue_data.registered_articles,
-            pkg.articles, self.is_db_generation)
 
     def report_result(self, pkg, validations_reports, conversion=None):
         logger.info("Generate reports")
