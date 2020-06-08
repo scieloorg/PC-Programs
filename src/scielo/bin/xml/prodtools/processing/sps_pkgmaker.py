@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-import logging.config
 import os
 import shutil
 from mimetypes import MimeTypes
@@ -15,14 +14,12 @@ from prodtools.utils import xml_utils
 from prodtools.data import attributes
 from prodtools.data import workarea
 from prodtools.data import package
-from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
 messages = []
 mime = MimeTypes()
 
-logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class PackageMakerOptimiserPreReqError(Exception):
@@ -300,9 +297,7 @@ class PackageMaker(object):
                 deve eliminar https://... do caminho da DTD, necessário para
                 o site (Web) para não demorar a carregar a página.
         """
-        logger.debug(
-            "PackageMaker._enhance_doc_package %s" %
-            doc_files.filename)
+        logger.debug("PackageMaker._enhance_doc_package %s", doc_files.filename)
 
         xmlcontent = SPSXMLContent(doc_files.filename)
 
@@ -316,8 +311,10 @@ class PackageMaker(object):
                          pretty_print=True)
         doc_files.copy_related_files(new_pkg_path)
         logger.debug(
-            "PackageMaker._enhance_doc_package (%s): %s" %
-            (doc_files.filename, new_pkg_path))
+            "PackageMaker._enhance_doc_package (%s): %s",
+            doc_files.filename,
+            new_pkg_path
+        )
         return new_pkg_path
 
     def _optimise_doc_package(self, doc_pkg_path, tmp_path):
@@ -330,9 +327,8 @@ class PackageMaker(object):
             doc_outs (workarea.DocumentOutputFiles): caminhos das saídas
                 de um documento SP
         """
-        logger.debug("_optimise_doc_package %s" % doc_pkg_path)
+        logger.debug("_optimise_doc_package %s", doc_pkg_path)
 
-        print("Optimise: %s" % doc_pkg_path)
         files = [os.path.join(doc_pkg_path, f)
                  for f in os.listdir(doc_pkg_path)]
         if not files:
@@ -369,13 +365,13 @@ class PackageMaker(object):
                          preserve_files=False)
 
             fs_utils.unzip(zip_optimised, self.destination_path)
-            print("Optimised: %s" % self.destination_path)
+            logger.debug("Optimised: %s", self.destination_path)
         except (PackageMakerOptimiserPreReqError, SPPackageError,
                 OSError, DecompressionBombError):
             if self.destination_path != doc_pkg_path:
                 for f in files:
                     shutil.copy(f, self.destination_path)
-            print("Not optimised: %s" % self.destination_path)
+            logger.debug("Not optimised: %s", self.destination_path)
         else:
             # clean
             fs_utils.delete_file_or_folder(zip_optimised)
@@ -404,21 +400,23 @@ class PackageMaker(object):
             os.path.basename(item)
             for item in xml_list or []
         ]
-        print("Package have {} document(s)".format(
-            len(self.source_folder.pkgfiles_items)))
-        print("Selected to pack {} document(s)".format(len(_xml_names)))
+        logger.info(
+            "Package have %d document(s)", len(self.source_folder.pkgfiles_items)
+        )
+        logger.info("Selected to pack %d document(s)", len(_xml_names))
 
         percent = len(_xml_names) / len(self.source_folder.pkgfiles_items)
         optimise_individually = (percent < 1)
 
         for item in self.source_folder.pkgfiles_items.values():
-            logger.info("PackageMaker.pack %s?" % item.filename)
+            logger.info("PackageMaker.pack %s?", item.filename)
 
             if item.basename not in _xml_names:
-                logger.info("PackageMaker: skip %s" % item.basename)
+                logger.info("PackageMaker: skip %s", item.basename)
                 continue
 
-            print("Pack %s" % item.filename)
+            logger.debug("Pack %s", item.filename)
+            print("Pack", item.filename)
             doc_outs = self.output_folder.get_doc_outputs(item.name)
             enhanced_pkg_path = self._enhance_doc_package(
                 item, doc_outs, dtd_location_type, optimise_individually)
@@ -432,7 +430,8 @@ class PackageMaker(object):
                 self.destination_path,
                 self.output_folder.tmp_path)
 
-        print("Packed: %s" % self.destination_path)
+        logger.debug("Packed: %s", self.destination_path)
+        print("Packed:", self.destination_path)
         pkg = package.SPPackage(self.destination_path,
                                 self.output_folder.output_path, _xml_names,
                                 sgmxml_name, optimised=self.optimise)
