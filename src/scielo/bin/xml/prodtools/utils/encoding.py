@@ -1,13 +1,10 @@
 # coding=utf-8
 import logging
-import logging.config
 import sys
 import locale
-from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
-logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 LOCALE_LANG, LOCALE_ENCODING = locale.getdefaultlocale()
 SYS_DEFAULT_ENCODING = sys.getfilesystemencoding()
@@ -52,8 +49,8 @@ def report_exception(function_name, e, data):
 
 def debugging(function_name, data):
     try:
-        logger.info('DEBUG: {}'.format(function_name))
-        logger.info(data)
+        logger.debug('DEBUG: {}'.format(function_name))
+        logger.debug(data)
     except:
         logger.info('EXCEPTION at debugging()')
 
