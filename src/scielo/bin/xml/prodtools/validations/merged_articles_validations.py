@@ -22,12 +22,12 @@ class IssueArticlesValidationsReports(object):
         self.registered_issue_data = registered_issue_data
         self.is_xml_generation = is_xml_generation
 
-        self.conflicts_reports = ConflictsReports(
+        conflicts_reports = ConflictsReports(
             pkg, registered_issue_data, is_db_generation)
-        self.articles_mergence = self.conflicts_reports.articles_mergence
+        self.articles_mergence = conflicts_reports.articles_mergence
 
         self.merged_articles_data_reports = MergedArticlesDataReports(
-            self.conflicts_reports.merged_articles, is_db_generation)
+            conflicts_reports.merged_articles, is_db_generation)
 
         self.pkg_validations_reports = PkgArticlesValidationsReports(
             pkg, registered_issue_data, is_db_generation,
@@ -37,8 +37,8 @@ class IssueArticlesValidationsReports(object):
             [self.validations.blocking_errors,
              self.pkg_validations_reports.blocking_errors])
         self.issue_error_msg = registered_issue_data.issue_error_msg or ''
-        self.report_articles_data_conflicts = self.conflicts_reports.report_articles_data_conflicts
-        self.report_articles_data_changes = self.conflicts_reports.report_articles_data_changes
+        self.report_articles_data_conflicts = conflicts_reports.report_articles_data_conflicts
+        self.report_articles_data_changes = conflicts_reports.report_articles_data_changes
 
     @property
     def journal_and_issue_report(self):
@@ -73,8 +73,8 @@ class IssueArticlesValidationsReports(object):
         if not hasattr(self, '_content'):
             r = []
             r.append(self.issue_validations)
-            r.append(self.conflicts_reports.report_articles_data_conflicts)
-            r.append(self.conflicts_reports.report_articles_data_changes)
+            r.append(self.report_articles_data_conflicts)
+            r.append(self.report_articles_data_changes)
             self._content = ''.join(r)
         return self._content
 
