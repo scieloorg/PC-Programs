@@ -82,7 +82,7 @@ class ArticlesConversion(object):
         self.web_app_site = web_app_site
         self.pkg = pkg
         self.validations_reports = validations_reports
-        self.articles_mergence = validations_reports.merged_articles_reports.articles_mergence
+        self.articles_mergence = validations_reports.articles_mergence
         self.error_messages = []
         self.conversion_status = {}
 

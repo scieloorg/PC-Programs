@@ -89,8 +89,7 @@ class ReportsMaker(object):
         if not self.articles_validations_reports.is_xml_generation:
             r += self.articles_validations_reports.journal_and_issue_report
         if self.conversion is not None:
-            if self.articles_validations_reports.merged_articles_reports.registered_issue_data.issue_error_msg is not None:
-                r += self.articles_validations_reports.merged_articles_reports.registered_issue_data.issue_error_msg
+            r += self.articles_validations_reports.issue_error_msg
         return r
 
     @property
@@ -124,8 +123,8 @@ class ReportsMaker(object):
 
         r.append(html_reports.tag('h3', _('Conversion Result')))
         r.append(self.conversion.conclusion_message)
-        r.append(self.articles_validations_reports.merged_articles_reports.report_articles_data_conflicts)
-        r.append(self.articles_validations_reports.merged_articles_reports.report_articles_data_changes)
+        r.append(self.articles_validations_reports.report_articles_data_conflicts)
+        r.append(self.articles_validations_reports.report_articles_data_changes)
         r.append(self.conversion.aop_status_report)
         r.append(self.conversion.articles_conversion_validations.report())
         r.append(self.conversion.conversion_report)

@@ -25,6 +25,10 @@ class IssueArticlesValidationsReports(object):
         self.blocking_errors = sum(
             [self.merged_articles_reports.validations.blocking_errors,
              self.pkg_validations_reports.blocking_errors])
+        self.issue_error_msg = registered_issue_data.issue_error_msg or ''
+        self.articles_mergence = self.merged_articles_reports.articles_mergence
+        self.report_articles_data_conflicts = self.merged_articles_reports.conflicts_reports.report_articles_data_conflicts
+        self.report_articles_data_changes = self.merged_articles_reports.conflicts_reports.report_articles_data_changes
 
     @property
     def journal_and_issue_report(self):
@@ -48,6 +52,7 @@ class MergedArticlesReports(object):
 
         self.conflicts_reports = ConflictsReports(
             pkg, registered_issue_data, is_db_generation)
+        self.articles_mergence = self.conflicts_reports.articles_mergence
 
         self.merged_articles_data_reports = MergedArticlesDataReports(
             self.conflicts_reports.merged_articles, is_db_generation)
