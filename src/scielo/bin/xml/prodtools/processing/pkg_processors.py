@@ -11,11 +11,11 @@ from prodtools.utils.exporter import Exporter
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
 from prodtools.validations import article_data_reports
-from prodtools.validations import pkg_articles_validations
 from prodtools.validations import validations as validations_module
 from prodtools.validations import reports_maker
-from prodtools.validations import merged_articles_validations
-from prodtools.data import merged
+from prodtools.validations.merged_articles_validations import (
+    IssueArticlesValidationsReports,
+)
 from prodtools.data import workarea
 from prodtools.data import kernel_document
 from prodtools.db import xc_models
@@ -394,11 +394,10 @@ class PkgProcessor(object):
     def evaluate_package(self, pkg):
         logger.info("Analize package")
         registered_issue_data = self.registered_issues_manager.get_registered_issue_data(pkg.issue_data)
-        pkg_reports = pkg_articles_validations.PkgArticlesValidationsReports(
+        validations_reports = IssueArticlesValidationsReports(
             pkg, registered_issue_data, self.is_db_generation,
-            self.is_xml_generation, self.config)
-        mergence_reports = merged_articles_validations.MergedArticlesReports(pkg, registered_issue_data, self.is_db_generation)
-        validations_reports = merged_articles_validations.IssueArticlesValidationsReports(pkg_reports, mergence_reports, self.is_xml_generation)
+            self.is_xml_generation, self.config
+        )
         return registered_issue_data, validations_reports
 
     def make_package(self, pkg, GENERATE_PMC=False):

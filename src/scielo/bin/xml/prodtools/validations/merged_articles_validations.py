@@ -6,17 +6,25 @@ from prodtools.reports import html_reports
 from prodtools.reports import validation_status
 from . import article_data_reports
 from . import validations as validations_module
+from prodtools.validations.pkg_articles_validations import (
+    PkgArticlesValidationsReports,
+)
 from prodtools.data import merged
 
 
 class IssueArticlesValidationsReports(object):
 
-    def __init__(self, pkg_validations_reports, merged_articles_reports, is_xml_generation=False):
-        self.pkg_validations_reports = pkg_validations_reports
-        self.merged_articles_reports = merged_articles_reports
+    def __init__(self, pkg, registered_issue_data, is_db_generation,
+                 is_xml_generation, config):
         self.is_xml_generation = is_xml_generation
-        self.blocking_errors = sum([self.merged_articles_reports.validations.blocking_errors,
-            self.pkg_validations_reports.blocking_errors])
+        self.pkg_validations_reports = PkgArticlesValidationsReports(
+            pkg, registered_issue_data, is_db_generation,
+            is_xml_generation, config)
+        self.merged_articles_reports = MergedArticlesReports(
+            pkg, registered_issue_data, is_db_generation)
+        self.blocking_errors = sum(
+            [self.merged_articles_reports.validations.blocking_errors,
+             self.pkg_validations_reports.blocking_errors])
 
     @property
     def journal_and_issue_report(self):
