@@ -16,39 +16,11 @@ class IssueArticlesValidationsReports(object):
 
     def __init__(self, pkg, registered_issue_data, is_db_generation,
                  is_xml_generation, config):
-        self.is_xml_generation = is_xml_generation
-        self.pkg_validations_reports = PkgArticlesValidationsReports(
-            pkg, registered_issue_data, is_db_generation,
-            is_xml_generation, config)
-        self.merged_articles_reports = MergedArticlesReports(
-            pkg, registered_issue_data, is_db_generation)
-        self.blocking_errors = sum(
-            [self.merged_articles_reports.validations.blocking_errors,
-             self.pkg_validations_reports.blocking_errors])
-        self.issue_error_msg = registered_issue_data.issue_error_msg or ''
-        self.articles_mergence = self.merged_articles_reports.articles_mergence
-        self.report_articles_data_conflicts = self.merged_articles_reports.conflicts_reports.report_articles_data_conflicts
-        self.report_articles_data_changes = self.merged_articles_reports.conflicts_reports.report_articles_data_changes
-
-    @property
-    def journal_and_issue_report(self):
-        report = []
-        report.append(self.merged_articles_reports.journal_issue_header_report)
-        errors_only = not self.is_xml_generation
-        report.append(self.pkg_validations_reports.pkg_journal_validations.report(errors_only))
-        report.append(self.pkg_validations_reports.pkg_issue_validations.report(errors_only))
-        report.append(self.merged_articles_reports.content)
-        return ''.join(report)
-
-
-class MergedArticlesReports(object):
-
-    def __init__(self, pkg, registered_issue_data, is_db_generation):
         if len(registered_issue_data.registered_articles) > 0:
             logging.info(_('Previously registered: ({n} files)').format(
                 n=len(registered_issue_data.registered_articles)))
-
         self.registered_issue_data = registered_issue_data
+        self.is_xml_generation = is_xml_generation
 
         self.conflicts_reports = ConflictsReports(
             pkg, registered_issue_data, is_db_generation)
@@ -57,9 +29,26 @@ class MergedArticlesReports(object):
         self.merged_articles_data_reports = MergedArticlesDataReports(
             self.conflicts_reports.merged_articles, is_db_generation)
 
+        self.pkg_validations_reports = PkgArticlesValidationsReports(
+            pkg, registered_issue_data, is_db_generation,
+            is_xml_generation, config)
+
+        self.blocking_errors = sum(
+            [self.validations.blocking_errors,
+             self.pkg_validations_reports.blocking_errors])
+        self.issue_error_msg = registered_issue_data.issue_error_msg or ''
+        self.report_articles_data_conflicts = self.conflicts_reports.report_articles_data_conflicts
+        self.report_articles_data_changes = self.conflicts_reports.report_articles_data_changes
+
     @property
-    def journal_issue_header_report(self):
-        return self.merged_articles_data_reports.journal_issue_header_report
+    def journal_and_issue_report(self):
+        report = []
+        report.append(self.merged_articles_data_reports.journal_issue_header_report)
+        errors_only = not self.is_xml_generation
+        report.append(self.pkg_validations_reports.pkg_journal_validations.report(errors_only))
+        report.append(self.pkg_validations_reports.pkg_issue_validations.report(errors_only))
+        report.append(self.content)
+        return ''.join(report)
 
     @property
     def issue_validations(self):
