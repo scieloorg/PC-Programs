@@ -151,9 +151,9 @@ Pasta para **arquivar** os pacotes, caso seja desejável mantê-los, caso contr�
 ARCHIVE_PATH=
 ```
 
-### Configurações para a nova plataforma _SciELO Publishing Schema_ 
+### Configurações para a nova plataforma _SciELO Publishing Framework_ 
 
-Configurar **somente se** a coleção opera com a nova plataforma _SciELO Publishing Schema_ 
+Configurar **somente se** a coleção opera com a nova plataforma _SciELO Publishing Framework_ 
 
 A variável de configuração PID_MANAGER é responsável por indicar o endereço para uma base de dados que associa versões de PIDs dos artigos SciELO. É fundamental que esta base seja persistida e mantida de forma segura.
 
