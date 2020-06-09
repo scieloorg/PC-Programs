@@ -1,8 +1,7 @@
 # coding=utf-8
 
-from prodtools.db.registered import RegisteredArticles
 from prodtools.reports import validation_status
-from prodtools.validations import article_data_reports
+from prodtools.validations.article_data_reports import ArticlesComparison
 
 
 ACTION_DELETE = 'delete'
@@ -119,7 +118,7 @@ class ArticlesMergence(object):
 
     def __init__(self, registered_articles, articles, is_db_generation):
         self.is_db_generation = is_db_generation
-        self.registered_articles = RegisteredArticles(registered_articles)
+        self.registered_articles = registered_articles
         self.articles = articles
         self.titaut_conflicts = None
         self.name_order_conflicts = None
@@ -128,6 +127,14 @@ class ArticlesMergence(object):
         self.excluded_orders = None
         self._merged_articles = None
         self._accepted_articles = {}
+
+    def registered_titles_and_authors(self, article):
+        similar_items = {}
+        for name, registered in self.registered_articles.items():
+            comparison = ArticlesComparison(registered, article)
+            if comparison.are_similar:
+                similar_items.update({name: registered})
+        return similar_items
 
     @property
     def pkg_articles_by_order_and_name(self):
@@ -236,7 +243,7 @@ class ArticlesMergence(object):
         for k, a_name in self.pkg_articles_by_order_and_name.items():
             registered_name = self.registered_articles_by_order_and_name.get(k)
             if registered_name is not None:
-                article_comparison = article_data_reports.ArticlesComparison(
+                article_comparison = ArticlesComparison(
                     self.registered_articles.get(a_name),
                     self.articles.get(a_name))
                 if not article_comparison.are_similar:
@@ -257,7 +264,7 @@ class ArticlesMergence(object):
         self.titaut_conflicts = {}
         if names is not None:
             for name in names:
-                similars = self.registered_articles.registered_titles_and_authors(self.articles.get(name))
+                similars = self.registered_titles_and_authors(self.articles.get(name))
                 if len(similars) == 0:
                     solved.append(name)
                 elif len(similars) == 1 and name in similars.keys():
@@ -321,7 +328,7 @@ class ArticlesMergence(object):
         return solved
 
     def are_similar(self, registered_name, pkg_name, ign_name, ign_order):
-        article_comparison = article_data_reports.ArticlesComparison(
+        article_comparison = ArticlesComparison(
                 self.registered_articles.get(registered_name),
                 self.articles.get(pkg_name),
                 ign_name,
