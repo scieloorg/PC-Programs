@@ -33,27 +33,20 @@ class MergedArticlesReports(object):
 
     def __init__(self, pkg, registered_issue_data, is_db_generation):
         if len(registered_issue_data.registered_articles) > 0:
-            logging.info(_('Previously registered: ({n} files)').format(n=len(registered_issue_data.registered_articles)))
+            logging.info(_('Previously registered: ({n} files)').format(
+                n=len(registered_issue_data.registered_articles)))
 
-        articles_mergence = merged.ArticlesMergence(
-            registered_issue_data.registered_articles,
-            pkg.articles, is_db_generation)
-
-        self.merged_articles_data = merged.MergedArticlesData(articles_mergence.merged_articles, is_db_generation)
-        self.articles_mergence = articles_mergence
         self.registered_issue_data = registered_issue_data
+
+        self.conflicts_reports = ConflictsReports(
+            pkg, registered_issue_data, is_db_generation)
+
+        self.merged_articles_data_reports = MergedArticlesDataReports(
+            self.conflicts_reports.merged_articles, is_db_generation)
 
     @property
     def journal_issue_header_report(self):
-        if not hasattr(self, '_journal_issue_header_report'):
-            common_data = ''
-            for label, values in self.merged_articles_data.common_data.items():
-                if len(values.keys()) == 1:
-                    common_data += html_reports.tag('p', html_reports.display_label_value(label, list(values.keys())[0]))
-                else:
-                    common_data += html_reports.format_list(label + ':', 'ol', values.keys())
-            self._journal_issue_header_report = html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')
-        return self._journal_issue_header_report
+        return self.merged_articles_data_reports.journal_issue_header_report
 
     @property
     def issue_validations(self):
@@ -63,96 +56,41 @@ class MergedArticlesReports(object):
             if self.registered_issue_data.issue_error_msg is not None:
                 text = self.registered_issue_data.issue_error_msg
             reports = []
-            reports += self.report_missing_required_issue_data
-            reports += self.report_issue_data_conflicting_values
-            reports += self.report_issue_data_duplicated_values
+            reports += self.merged_articles_data_reports.report_missing_required_issue_data
+            reports += self.merged_articles_data_reports.report_issue_data_conflicting_values
+            reports += self.merged_articles_data_reports.report_issue_data_duplicated_values
 
             text += html_reports.tag('h2', _('Checking issue data consistency'))
             text += html_reports.tag('div', ''.join(reports), 'issue-messages')
-            text += self.report_issue_page_values
+            text += self.merged_articles_data_reports.report_issue_page_values
             self._issue_validations = text
         return self._issue_validations
 
     @property
-    def report_missing_required_issue_data(self):
-        if not hasattr(self, '_report_missing_required_issue_data'):
-            r = ''
-            for label, items in self.merged_articles_data.missing_required_data.items():
-                r += html_reports.tag('div', html_reports.p_message(_('{status}: missing {label} in: ').format(status=validation_status.STATUS_BLOCKING_ERROR, label=label)))
-                r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
-            self._report_missing_required_issue_data = r
-        return self._report_missing_required_issue_data
+    def content(self):
+        if not hasattr(self, '_content'):
+            r = []
+            r.append(self.issue_validations)
+            r.append(self.conflicts_reports.report_articles_data_conflicts)
+            r.append(self.conflicts_reports.report_articles_data_changes)
+            self._content = ''.join(r)
+        return self._content
 
     @property
-    def report_issue_data_conflicting_values(self):
-        if not hasattr(self, '_report_issue_data_conflicting_values'):
-            parts = []
-            for label, values in self.merged_articles_data.conflicting_values.items():
-                _status = validation_status.STATUS_BLOCKING_ERROR
-                if self.merged_articles_data.is_rolling_pass or self.merged_articles_data.is_aop_issue:
-                    _status = validation_status.STATUS_WARNING
-                elif label == 'license':
-                    _status = validation_status.STATUS_WARNING
-                _m = _('{status}: same value for {label} is required for all the documents in the package. ').format(status=_status, label=label)
-                parts.append(html_reports.p_message(_m))
-                parts.append(html_reports.tag('div', html_reports.format_html_data(values), 'issue-problem'))
-            self._report_issue_data_conflicting_values = ''.join(parts)
-        return self._report_issue_data_conflicting_values
+    def validations(self):
+        if not hasattr(self, '_validations'):
+            self._validations = validations_module.ValidationsResult()
+            self._validations.message = self.content
+        return self._validations
 
-    @property
-    def report_issue_data_duplicated_values(self):
-        if not hasattr(self, '_report_issue_data_duplicated_values'):
-            parts = []
-            for label, values in self.merged_articles_data.duplicated_values.items():
-                status = self.merged_articles_data.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
-                _m = _('Unique value for {label} is required for all the documents in the package').format(label=label)
-                parts.append(html_reports.p_message(status + ': ' + _m))
-                for value, xml_files in values.items():
-                    parts.append(html_reports.format_list(_('found {label}="{value}" in:').format(label=label, value=value), 'ul', xml_files, 'issue-problem'))
-            self._report_issue_data_duplicated_values = ''.join(parts)
-        return self._report_issue_data_duplicated_values
 
-    @property
-    def report_issue_page_values(self):
-        # FIXME separar validacao e relatório
-        if not hasattr(self, '_report_issue_page_values'):
-            results = []
-            previous = None
+class ConflictsReports(object):
 
-            error_level = validation_status.STATUS_BLOCKING_ERROR
-            fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.merged_articles_data.articles]
-            if all(fpage_and_article_id_other_status):
-                error_level = validation_status.STATUS_ERROR
-
-            for xml_name, article in self.merged_articles_data.articles:
-                msg = []
-                status = ''
-                if article.pages == '':
-                    msg.append(_('no pagination was found. '))
-                    if not article.is_ahead:
-                        status = validation_status.STATUS_ERROR
-                if all([article.fpage_number, article.lpage_number]):
-                    if previous is not None:
-                        if previous.lpage_number > article.fpage_number:
-                            status = error_level if not article.is_rolling_pass else validation_status.STATUS_WARNING
-                            msg.append(_('Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.lpage, fpage=article.fpage))
-                        elif previous.lpage_number + 1 < article.fpage_number:
-                            status = validation_status.STATUS_WARNING
-                            msg.append(_('There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.lpage, fpage=article.fpage))
-                        if previous.fpage_number == article.fpage_number:
-                            if all([previous.fpage_seq, article.fpage_seq]) is False:
-                                msg.append(_('Same value for fpage={fpage} ({previous_article} and {xml_name}) requires @seq for both fpage. ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.fpage, fpage=article.fpage))
-                            elif previous.fpage_seq > article.fpage_seq:
-                                msg.append(_('fpage/@seq must be a and b: {a} ({previous_article}) and {b} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, a=previous.fpage_seq, b=article.fpage_seq))
-                    if article.fpage_number > article.lpage_number:
-                        status = error_level
-                        msg.append(_('Invalid page range: {fpage} (fpage) > {lpage} (lpage). '.format(fpage=article.fpage_number, lpage=article.lpage_number)))
-                    previous = article
-
-                msg = '\n'.join(msg)
-                results.append({'label': xml_name, 'status': status, 'pages': article.pages, 'message': msg, _('why it is not a valid message?'): ''})
-            self._report_issue_page_values = html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'pages', 'message', _('why it is not a valid message?')], results, table_style='validation_sheet', widths={'label': '10', 'status': '10', 'pages': '5', 'message': '75'}))
-        return self._report_issue_page_values
+    def __init__(self, pkg, registered_issue_data, is_db_generation):
+        self.articles_mergence = merged.ArticlesMergence(
+            registered_issue_data.registered_articles,
+            pkg.articles, is_db_generation)
+        self.merged_articles = self.articles_mergence.merged_articles
 
     def report_articles_merging_conflicts(self):
         if not hasattr(self, '_report_articles_merging_conflicts'):
@@ -241,19 +179,102 @@ class MergedArticlesReports(object):
                 self._report_articles_data_conflicts = html_reports.tag('h2', _('Data Conflicts Report')) + r
         return self._report_articles_data_conflicts
 
-    @property
-    def content(self):
-        if not hasattr(self, '_content'):
-            r = []
-            r.append(self.issue_validations)
-            r.append(self.report_articles_data_conflicts)
-            r.append(self.report_articles_data_changes)
-            self._content = ''.join(r)
-        return self._content
+
+class MergedArticlesDataReports(object):
+
+    def __init__(self, merged_articles, is_db_generation):
+        self.merged_articles_data = merged.MergedArticlesData(merged_articles, is_db_generation)
 
     @property
-    def validations(self):
-        if not hasattr(self, '_validations'):
-            self._validations = validations_module.ValidationsResult()
-            self._validations.message = self.content
-        return self._validations
+    def journal_issue_header_report(self):
+        if not hasattr(self, '_journal_issue_header_report'):
+            common_data = ''
+            for label, values in self.merged_articles_data.common_data.items():
+                if len(values.keys()) == 1:
+                    common_data += html_reports.tag('p', html_reports.display_label_value(label, list(values.keys())[0]))
+                else:
+                    common_data += html_reports.format_list(label + ':', 'ol', values.keys())
+            self._journal_issue_header_report = html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')
+        return self._journal_issue_header_report
+
+    @property
+    def report_missing_required_issue_data(self):
+        if not hasattr(self, '_report_missing_required_issue_data'):
+            r = ''
+            for label, items in self.merged_articles_data.missing_required_data.items():
+                r += html_reports.tag('div', html_reports.p_message(_('{status}: missing {label} in: ').format(status=validation_status.STATUS_BLOCKING_ERROR, label=label)))
+                r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
+            self._report_missing_required_issue_data = r
+        return self._report_missing_required_issue_data
+
+    @property
+    def report_issue_data_conflicting_values(self):
+        if not hasattr(self, '_report_issue_data_conflicting_values'):
+            parts = []
+            for label, values in self.merged_articles_data.conflicting_values.items():
+                _status = validation_status.STATUS_BLOCKING_ERROR
+                if self.merged_articles_data.is_rolling_pass or self.merged_articles_data.is_aop_issue:
+                    _status = validation_status.STATUS_WARNING
+                elif label == 'license':
+                    _status = validation_status.STATUS_WARNING
+                _m = _('{status}: same value for {label} is required for all the documents in the package. ').format(status=_status, label=label)
+                parts.append(html_reports.p_message(_m))
+                parts.append(html_reports.tag('div', html_reports.format_html_data(values), 'issue-problem'))
+            self._report_issue_data_conflicting_values = ''.join(parts)
+        return self._report_issue_data_conflicting_values
+
+    @property
+    def report_issue_data_duplicated_values(self):
+        if not hasattr(self, '_report_issue_data_duplicated_values'):
+            parts = []
+            for label, values in self.merged_articles_data.duplicated_values.items():
+                status = self.merged_articles_data.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
+                _m = _('Unique value for {label} is required for all the documents in the package').format(label=label)
+                parts.append(html_reports.p_message(status + ': ' + _m))
+                for value, xml_files in values.items():
+                    parts.append(html_reports.format_list(_('found {label}="{value}" in:').format(label=label, value=value), 'ul', xml_files, 'issue-problem'))
+            self._report_issue_data_duplicated_values = ''.join(parts)
+        return self._report_issue_data_duplicated_values
+
+    @property
+    def report_issue_page_values(self):
+        # FIXME separar validacao e relatório
+        if not hasattr(self, '_report_issue_page_values'):
+            results = []
+            previous = None
+
+            error_level = validation_status.STATUS_BLOCKING_ERROR
+            fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.merged_articles_data.articles]
+            if all(fpage_and_article_id_other_status):
+                error_level = validation_status.STATUS_ERROR
+
+            for xml_name, article in self.merged_articles_data.articles:
+                msg = []
+                status = ''
+                if article.pages == '':
+                    msg.append(_('no pagination was found. '))
+                    if not article.is_ahead:
+                        status = validation_status.STATUS_ERROR
+                if all([article.fpage_number, article.lpage_number]):
+                    if previous is not None:
+                        if previous.lpage_number > article.fpage_number:
+                            status = error_level if not article.is_rolling_pass else validation_status.STATUS_WARNING
+                            msg.append(_('Invalid value for fpage and lpage. Check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.lpage, fpage=article.fpage))
+                        elif previous.lpage_number + 1 < article.fpage_number:
+                            status = validation_status.STATUS_WARNING
+                            msg.append(_('There is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.lpage, fpage=article.fpage))
+                        if previous.fpage_number == article.fpage_number:
+                            if all([previous.fpage_seq, article.fpage_seq]) is False:
+                                msg.append(_('Same value for fpage={fpage} ({previous_article} and {xml_name}) requires @seq for both fpage. ').format(previous_article=previous.prefix, xml_name=xml_name, lpage=previous.fpage, fpage=article.fpage))
+                            elif previous.fpage_seq > article.fpage_seq:
+                                msg.append(_('fpage/@seq must be a and b: {a} ({previous_article}) and {b} ({xml_name}). ').format(previous_article=previous.prefix, xml_name=xml_name, a=previous.fpage_seq, b=article.fpage_seq))
+                    if article.fpage_number > article.lpage_number:
+                        status = error_level
+                        msg.append(_('Invalid page range: {fpage} (fpage) > {lpage} (lpage). '.format(fpage=article.fpage_number, lpage=article.lpage_number)))
+                    previous = article
+
+                msg = '\n'.join(msg)
+                results.append({'label': xml_name, 'status': status, 'pages': article.pages, 'message': msg, _('why it is not a valid message?'): ''})
+            self._report_issue_page_values = html_reports.tag('h2', _('Pages Report')) + html_reports.tag('div', html_reports.sheet(['label', 'status', 'pages', 'message', _('why it is not a valid message?')], results, table_style='validation_sheet', widths={'label': '10', 'status': '10', 'pages': '5', 'message': '75'}))
+        return self._report_issue_page_values
+
