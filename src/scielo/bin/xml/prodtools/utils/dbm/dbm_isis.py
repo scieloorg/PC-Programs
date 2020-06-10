@@ -178,7 +178,7 @@ class IDFile(object):
         try:
             fs_utils.write_file(filename, content, 'iso-8859-1')
         except (UnicodeError, IOError, OSError) as e:
-            logger.error("Nao foi possivel escrever o arquivo %s: %s", filename, str(e))
+            logger.error("Nao foi possivel escrever o arquivo %s: %s", filename, e)
 
 
 class CISIS(object):

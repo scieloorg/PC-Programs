@@ -121,7 +121,7 @@ class GeraPadrao:
         logger.info(command)
         logger.info(scilista_content)
         os.system(command)
-        logger.info('fim gerapadrao acron: %s', , self.collection_acron)
+        logger.info('fim gerapadrao acron: %s', self.collection_acron)
 
     def _update_web_site(self, scilista_content):
         if self.config.is_enabled_transference:
