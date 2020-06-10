@@ -246,13 +246,14 @@ class ArticlesMergence(object):
         tasks = {}
         for k, a_name in self.pkg_articles_by_order_and_name.items():
             registered_name = self.registered_articles_by_order_and_name.get(k)
-            if registered_name is not None:
+            if registered_name:
+                registered_doc = self.registered_articles[registered_name]
+                package_doc = self.articles[registered_name]
                 article_comparison = ArticlesComparison(
-                    self.registered_articles.get(a_name),
-                    self.articles.get(a_name))
+                    registered_doc, package_doc)
                 if not article_comparison.are_similar:
                     status = ACTION_SOLVE_TITAUT_CONFLICTS
-                elif self.articles[a_name].marked_to_delete:
+                elif package_doc.marked_to_delete:
                     status = ACTION_DELETE
                 else:
                     status = ACTION_UPDATE
