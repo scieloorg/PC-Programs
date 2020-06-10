@@ -123,8 +123,7 @@ class ReportsMaker(object):
 
         r.append(html_reports.tag('h3', _('Conversion Result')))
         r.append(self.conversion.conclusion_message)
-        r.append(self.articles_validations_reports.report_articles_data_conflicts)
-        r.append(self.articles_validations_reports.report_articles_data_changes)
+        r.append(self.articles_validations_reports.merging_result_reports)
         r.append(self.conversion.aop_status_report)
         r.append(self.conversion.articles_conversion_validations.report())
         r.append(self.conversion.conversion_report)

@@ -19,10 +19,8 @@ class IssueArticlesValidationsReports(object):
 
         merging_reports = DocsMergingReports(
             pkg, registered_issue_data, is_db_generation)
-        self.report_articles_data_conflicts = merging_reports.report_articles_data_conflicts
-        self.report_articles_data_changes = merging_reports.report_articles_data_changes
 
-        # usado em pkg_processor.ArticleConversion
+        self.merging_result_reports = merging_reports.errors_reports
         self.merging_result = merging_reports.docs_merger
 
         self.group_integrity_reports = GroupCoherenceReports(
@@ -59,8 +57,7 @@ class IssueArticlesValidationsReports(object):
         if not hasattr(self, '_errors_reports'):
             r = []
             r.append(self.issue_validations)
-            r.append(self.report_articles_data_conflicts)
-            r.append(self.report_articles_data_changes)
+            r.append(self.self.merging_result_reports)
             self._errors_reports = ''.join(r)
         return self._errors_reports
 
@@ -180,10 +177,20 @@ class DocsMergingReports(object):
     def report_articles_data_conflicts(self):
         if not hasattr(self, '_report_articles_data_conflicts'):
             self._report_articles_data_conflicts = ''
-            r = ''.join([self.report_articles_order_conflicts() + self.report_articles_merging_conflicts()])
+            r = self.report_articles_order_conflicts() + self.report_articles_merging_conflicts()
             if len(r) > 0:
                 self._report_articles_data_conflicts = html_reports.tag('h2', _('Data Conflicts Report')) + r
-        return self._report_articles_data_conflicts + self.report_rejected_articles
+        return self._report_articles_data_conflicts
+
+    @property
+    def errors_reports(self):
+        if not hasattr(self, '_errors_reports'):
+            self._errors_reports = ''.join((
+                self.report_rejected_articles,
+                self.report_articles_data_conflicts,
+                self.report_articles_data_changes,
+            ))
+        return self._errors_reports
 
 
 class GroupCoherenceReports(object):
