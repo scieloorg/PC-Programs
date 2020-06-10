@@ -253,19 +253,20 @@ class ArticlesMergence(object):
         return tasks
 
     def _get_task_id(self, registered_name):
-        if registered_name:
-            registered_doc = self.registered_articles[registered_name]
-            package_doc = self.articles[registered_name]
-            article_comparison = ArticlesComparison(
-                registered_doc, package_doc)
-            if not article_comparison.are_similar:
-                task_id = ACTION_SOLVE_TITAUT_CONFLICTS
-            elif package_doc.marked_to_delete:
-                task_id = ACTION_DELETE
-            else:
-                task_id = ACTION_UPDATE
+        if not registered_name:
+            return ACTION_CHECK_ORDER_AND_NAME
+
+        registered_doc = self.registered_articles[registered_name]
+        package_doc = self.articles[registered_name]
+
+        article_comparison = ArticlesComparison(
+            registered_doc, package_doc)
+        if not article_comparison.are_similar:
+            task_id = ACTION_SOLVE_TITAUT_CONFLICTS
+        elif package_doc.marked_to_delete:
+            task_id = ACTION_DELETE
         else:
-            task_id = ACTION_CHECK_ORDER_AND_NAME
+            task_id = ACTION_UPDATE
         return task_id
 
     def _resolve_title_and_authors_conflicts(self, names):
