@@ -171,27 +171,31 @@ class ArticlesMergence(object):
                 self.history_items[name] = []
             self.history_items[name].append(status)
 
+    def _delete_articles(self, names):
+        for name in names or []:
+            del self.merged_articles[name]
+            self.history_items[name].append(HISTORY_DELETED)
+
+    def _update_articles(self, names):
+        for name in names or []:
+            self.history_items[name].append(HISTORY_ACCEPTED)
+            self.accepted_articles[name] = self.articles.get(name)
+            self.merged_articles[name] = self.articles.get(name)
+
     def merge_articles(self):
         # registered
         self._update_history(
             self.registered_articles.keys(), HISTORY_REGISTERED)
         # package
         self._update_history(self.articles.keys(), HISTORY_PACKAGE)
-
         # analyze package
         tasks = self._analyze_what_to_do_with_the_package_articles()
+        #
         self.merged_articles = self.registered_articles.copy()
-
         # delete
-        for name in tasks.get(ACTION_DELETE, []):
-            del self.merged_articles[name]
-            self.history_items[name].append(HISTORY_DELETED)
-
+        self._delete_articles(tasks.get(ACTION_DELETE))
         # update
-        self.merged_articles.update({name: self.articles.get(name) for name in tasks.get(ACTION_UPDATE, [])})
-        for name in tasks.get(ACTION_UPDATE, []):
-            self.history_items[name].append(HISTORY_ACCEPTED)
-            self.accepted_articles[name] = self.articles.get(name)
+        self._update_articles(tasks.get(ACTION_UPDATE))
 
         # found titaut conflicts
         for name in tasks.get(ACTION_SOLVE_TITAUT_CONFLICTS, []):
