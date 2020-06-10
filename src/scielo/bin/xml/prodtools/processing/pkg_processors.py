@@ -33,7 +33,7 @@ logger = logging.getLogger()
 
 EMAIL_SUBJECT_STATUS_ICON = {}
 EMAIL_SUBJECT_STATUS_ICON['rejected'] = [u"\u274C", _(' REJECTED ')]
-EMAIL_SUBJECT_STATUS_ICON['ignored'] = ['', _('IGNORED')]
+EMAIL_SUBJECT_STATUS_ICON['ignored'] = [u"\u274C", _('IGNORED')]
 EMAIL_SUBJECT_STATUS_ICON['accepted'] = [u"\u2713" + ' ' + u"\u270D", _(' ACCEPTED but corrections required ')]
 EMAIL_SUBJECT_STATUS_ICON['approved'] = [u"\u2705", _(' APPROVED ')]
 EMAIL_SUBJECT_STATUS_ICON['not processed'] = ['', _(' NOT PROCESSED ')]
@@ -347,7 +347,8 @@ class ArticlesConversion(object):
                 reason = _('because there are blocking errors in the package. ')
         elif self.xc_status == 'ignored':
             update = False
-            reason = _('because no document has changed. ')
+            reason = _('because there is no document allowed to convert. ')
+            status = validation_status.STATUS_BLOCKING_ERROR
         elif self.xc_status == 'accepted':
             status = validation_status.STATUS_WARNING
             reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services. ')
