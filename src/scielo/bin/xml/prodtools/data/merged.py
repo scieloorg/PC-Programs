@@ -194,6 +194,33 @@ class ArticlesMergence(object):
                 self.accepted_articles[name] = self.articles.get(name)
                 self.merged_articles[name] = self.articles.get(name)
 
+    def _resolve_order_and_name_issues(
+            self, names_to_check_name_and_order, names_to_delete):
+        names_to_check_name_and_order = names_to_check_name_and_order or []
+        names_to_delete = names_to_delete or []
+
+        # need to check name/order
+        for name in names_to_check_name_and_order:
+            self.history_items[name].append(HISTORY_CHECK_ORDER_AND_NAME)
+
+        # solve name/order
+        solved = self._evaluate_check_order_and_name(
+            names_to_check_name_and_order, names_to_delete)
+        for name in solved:
+            self.merged_articles[name] = self.articles[name]
+            self.history_items[name].append(HISTORY_SOLVED)
+            self.accepted_articles[name] = self.articles.get(name)
+
+        # delete name changed
+        for name in self.name_changes.values():
+            del self.merged_articles[name]
+
+        for name in names_to_delete:
+            self.excluded_items[name] = self.articles[name].order
+            self.excluded_orders.append(self.articles[name].order)
+        self.excluded_orders.extend(
+            [previous for previous, current in self.order_changes.values()])
+
     def merge_articles(self):
         # registered
         self._update_history(
@@ -212,29 +239,8 @@ class ArticlesMergence(object):
         self._reject_or_resolve_title_and_authors_conflicts(
             tasks.get(ACTION_SOLVE_TITAUT_CONFLICTS))
 
-        # need to check name/order
-        for name in tasks.get(ACTION_CHECK_ORDER_AND_NAME, []):
-            self.history_items[name].append(HISTORY_CHECK_ORDER_AND_NAME)
-
-        # solve name/order
-        solved = self.evaluate_check_order_and_name(
-            tasks.get(ACTION_CHECK_ORDER_AND_NAME, []),
-            tasks.get(ACTION_DELETE, [])
-            )
-        for name in solved:
-            self.merged_articles[name] = self.articles[name]
-            #self.history_items[name].remove(HISTORY_REJECTED)
-            self.history_items[name].pop()
-            self.history_items[name].append(HISTORY_SOLVED)
-            self.accepted_articles[name] = self.articles.get(name)
-
-        # delete name changed
-        for name in self.name_changes.values():
-            del self.merged_articles[name]
-
-        self.excluded_items = {name: self.articles[name].order for name in tasks.get(ACTION_DELETE, [])}
-        self.excluded_orders = [self.articles[name].order for name in tasks.get(ACTION_DELETE, [])]
-        self.excluded_orders.extend([previous for previous, current in self.order_changes.values()])
+        self._resolve_order_and_name_issues(
+            tasks.get(ACTION_CHECK_ORDER_AND_NAME), tasks.get(ACTION_DELETE))
 
     def _analyze_what_to_do_with_the_package_articles(self):
         tasks = {}
@@ -275,7 +281,7 @@ class ArticlesMergence(object):
                 conflicts[name] = similars
         return conflicts
 
-    def evaluate_check_order_and_name(self, names, deleted):
+    def _evaluate_check_order_and_name(self, names, deleted):
         solved = []
         self.name_order_conflicts = {}
         self.order_changes = {}
