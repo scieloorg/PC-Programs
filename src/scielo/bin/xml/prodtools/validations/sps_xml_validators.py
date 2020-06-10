@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import logging
 from datetime import datetime
 
 from prodtools import _
@@ -20,6 +21,9 @@ try:
 except Exception as e:
     print(e)
     os.environ['XML_CATALOG_FILES'] = ''
+
+
+logger = logging.getLogger()
 
 
 log_items = []
@@ -155,7 +159,7 @@ class PackToolsXMLValidator(object):
         dtd_is_valid = False
         dtd_errors = []
         try:
-            print(self.sps_version)
+            logger.info(self.sps_version)
             self.xml_validator = packtools.XMLValidator.parse(
                     self.tree, sps_version=self.sps_version)
         except (packtools.etree.XMLSyntaxError, exceptions.XMLDoctypeError,
@@ -163,15 +167,15 @@ class PackToolsXMLValidator(object):
             ERR_MESSAGE = ("Validation error of {}: {}.").format(
                 self.file_path, e)
             dtd_errors = [ERR_MESSAGE]
-            print(e)
+            logger.error(e)
         except exceptions.UndefinedDTDError as e:
             dtd_errors = [str(e)]
-            print(e)
+            logger.error(e)
         else:
-            print("validate_all()")
+            logger.debug("validate_all()")
             dtd_is_valid, dtd_errors = self.xml_validator.validate_all()
             dtd_errors = xml_utils.format_validations_msg(dtd_errors)
-            print(dtd_is_valid, dtd_errors)
+            logger.debug("dtd_is_valid: %s, dtd_errors: %s", dtd_is_valid, dtd_errors)
         return dtd_is_valid, dtd_errors
 
     def validate_style(self):
