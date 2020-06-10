@@ -182,6 +182,18 @@ class ArticlesMergence(object):
             self.accepted_articles[name] = self.articles.get(name)
             self.merged_articles[name] = self.articles.get(name)
 
+    def _reject_or_resolve_title_and_authors_conflicts(self, names):
+        conflicts = self._resolve_title_and_authors_conflicts(names)
+        for name in names or []:
+            self.history_items[name].append(HISTORY_TITAUT_CONFLICTS)
+            if conflicts[name]:
+                self.titaut_conflicts[name] = conflicts[name]
+                self.history_items[name].append(HISTORY_REJECTED)
+            else:
+                self.history_items[name].append(HISTORY_SOLVED)
+                self.accepted_articles[name] = self.articles.get(name)
+                self.merged_articles[name] = self.articles.get(name)
+
     def merge_articles(self):
         # registered
         self._update_history(
@@ -196,21 +208,9 @@ class ArticlesMergence(object):
         self._delete_articles(tasks.get(ACTION_DELETE))
         # update
         self._update_articles(tasks.get(ACTION_UPDATE))
-
-        # found titaut conflicts
-        for name in tasks.get(ACTION_SOLVE_TITAUT_CONFLICTS, []):
-            self.history_items[name].append(HISTORY_TITAUT_CONFLICTS)
-            self.history_items[name].append(HISTORY_REJECTED)
-
-        # solve titaut conflicts
-        solved = self.evaluate_titaut_conflicts(
-            tasks.get(ACTION_SOLVE_TITAUT_CONFLICTS, []))
-        for name in solved:
-            self.merged_articles[name] = self.articles[name]
-            #self.history_items[name].remove(HISTORY_REJECTED)
-            self.history_items[name].pop()
-            self.history_items[name].append(HISTORY_SOLVED)
-            self.accepted_articles[name] = self.articles.get(name)
+        # reject or try to solve conflicts
+        self._reject_or_resolve_title_and_authors_conflicts(
+            tasks.get(ACTION_SOLVE_TITAUT_CONFLICTS))
 
         # need to check name/order
         for name in tasks.get(ACTION_CHECK_ORDER_AND_NAME, []):
@@ -257,19 +257,23 @@ class ArticlesMergence(object):
             tasks[status].append(a_name)
         return tasks
 
-    def evaluate_titaut_conflicts(self, names):
-        solved = []
-        self.titaut_conflicts = {}
-        if names is not None:
-            for name in names:
-                similars = self.get_similar_registered_docs(self.articles.get(name))
-                if len(similars) == 0:
-                    solved.append(name)
-                elif len(similars) == 1 and name in similars.keys():
-                    solved.append(name)
-                else:
-                    self.titaut_conflicts[name] = similars
-        return solved
+    def _resolve_title_and_authors_conflicts(self, names):
+        """
+        Compara cada documento da lista de `names` como todos os documentos
+        registrados
+        """
+        conflicts = {}
+        for name in names or []:
+            similars = self.get_similar_registered_docs(
+                self.articles.get(name))
+            if len(similars) == 0:
+                # nenhum registrado na base é similar ao documento do pacote
+                conflicts[name] = None
+            elif len(similars) == 1 and name in similars.keys():
+                conflicts[name] = None
+            else:
+                conflicts[name] = similars
+        return conflicts
 
     def evaluate_check_order_and_name(self, names, deleted):
         solved = []
