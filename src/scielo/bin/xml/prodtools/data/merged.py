@@ -127,7 +127,8 @@ class ArticlesMergence(object):
         self.excluded_orders = []
         self.accepted_articles = {}
         self.history_items = {}
-        self.merged_articles = self.merge_articles()
+        self.merged_articles = {}
+        self.merge_articles()
 
     def get_similar_registered_docs(self, article):
         similar_items = {}
@@ -179,15 +180,15 @@ class ArticlesMergence(object):
 
         # analyze package
         tasks = self._analyze_what_to_do_with_the_package_articles()
-        merged = self.registered_articles.copy()
+        self.merged_articles = self.registered_articles.copy()
 
         # delete
         for name in tasks.get(ACTION_DELETE, []):
-            del merged[name]
+            del self.merged_articles[name]
             self.history_items[name].append(HISTORY_DELETED)
 
         # update
-        merged.update({name: self.articles.get(name) for name in tasks.get(ACTION_UPDATE, [])})
+        self.merged_articles.update({name: self.articles.get(name) for name in tasks.get(ACTION_UPDATE, [])})
         for name in tasks.get(ACTION_UPDATE, []):
             self.history_items[name].append(HISTORY_ACCEPTED)
             self.accepted_articles[name] = self.articles.get(name)
@@ -201,7 +202,7 @@ class ArticlesMergence(object):
         solved = self.evaluate_titaut_conflicts(
             tasks.get(ACTION_SOLVE_TITAUT_CONFLICTS, []))
         for name in solved:
-            merged[name] = self.articles[name]
+            self.merged_articles[name] = self.articles[name]
             #self.history_items[name].remove(HISTORY_REJECTED)
             self.history_items[name].pop()
             self.history_items[name].append(HISTORY_SOLVED)
@@ -217,7 +218,7 @@ class ArticlesMergence(object):
             tasks.get(ACTION_DELETE, [])
             )
         for name in solved:
-            merged[name] = self.articles[name]
+            self.merged_articles[name] = self.articles[name]
             #self.history_items[name].remove(HISTORY_REJECTED)
             self.history_items[name].pop()
             self.history_items[name].append(HISTORY_SOLVED)
@@ -225,12 +226,11 @@ class ArticlesMergence(object):
 
         # delete name changed
         for name in self.name_changes.values():
-            del merged[name]
+            del self.merged_articles[name]
 
         self.excluded_items = {name: self.articles[name].order for name in tasks.get(ACTION_DELETE, [])}
         self.excluded_orders = [self.articles[name].order for name in tasks.get(ACTION_DELETE, [])]
         self.excluded_orders.extend([previous for previous, current in self.order_changes.values()])
-        return merged
 
     def _analyze_what_to_do_with_the_package_articles(self):
         tasks = {}
