@@ -47,31 +47,31 @@ class IssueArticlesValidationsReports(object):
         errors_only = not self.is_xml_generation
         report.append(self.pkg_validations_reports.pkg_journal_validations.report(errors_only))
         report.append(self.pkg_validations_reports.pkg_issue_validations.report(errors_only))
-        report.append(self.content)
+        report.append(self.errors_reports)
         return ''.join(report)
 
     @property
     def issue_validations(self):
         return (
             self.registered_issue_data.issue_error_msg or '' +
-            self.group_integrity_reports.content
+            self.group_integrity_reports.errors_reports
         )
 
     @property
-    def content(self):
-        if not hasattr(self, '_content'):
+    def errors_reports(self):
+        if not hasattr(self, '_errors_reports'):
             r = []
             r.append(self.issue_validations)
             r.append(self.report_articles_data_conflicts)
             r.append(self.report_articles_data_changes)
-            self._content = ''.join(r)
-        return self._content
+            self._errors_reports = ''.join(r)
+        return self._errors_reports
 
     @property
     def validations(self):
         if not hasattr(self, '_validations'):
             self._validations = validations_module.ValidationsResult()
-            self._validations.message = self.content
+            self._validations.message = self.errors_reports
         return self._validations
 
 
@@ -213,7 +213,7 @@ class GroupCoherenceReports(object):
         return self._journal_issue_header_report
 
     @property
-    def content(self):
+    def errors_reports(self):
         reports = (
             self.report_missing_required_issue_data,
             self.report_issue_data_conflicting_values,
