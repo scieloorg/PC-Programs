@@ -53,18 +53,8 @@ class IssueArticlesValidationsReports(object):
     @property
     def issue_validations(self):
         if not hasattr(self, '_issue_validations'):
-            self._issue_validations = ''
-            text = ''
-            if self.registered_issue_data.issue_error_msg is not None:
-                text = self.registered_issue_data.issue_error_msg
-            reports = []
-            reports += self.group_integrity_reports.report_missing_required_issue_data
-            reports += self.group_integrity_reports.report_issue_data_conflicting_values
-            reports += self.group_integrity_reports.report_issue_data_duplicated_values
-
-            text += html_reports.tag('h2', _('Checking issue data consistency'))
-            text += html_reports.tag('div', ''.join(reports), 'issue-messages')
-            text += self.group_integrity_reports.report_issue_page_values
+            text = self.registered_issue_data.issue_error_msg or ''
+            text += self.group_integrity_reports.content
             self._issue_validations = text
         return self._issue_validations
 
@@ -222,6 +212,18 @@ class GroupCoherenceReports(object):
                     common_data += html_reports.format_list(label + ':', 'ol', values.keys())
             self._journal_issue_header_report = html_reports.tag('h2', _('Data in the XML Files')) + html_reports.tag('div', common_data, 'issue-data')
         return self._journal_issue_header_report
+
+    @property
+    def content(self):
+        reports = (
+            self.report_missing_required_issue_data,
+            self.report_issue_data_conflicting_values,
+            self.report_issue_data_duplicated_values,
+            self.report_issue_page_values,
+        )
+        return (
+            html_reports.tag('h2', _('Checking issue data consistency')) +
+            html_reports.tag('div', ''.join(reports), 'issue-messages'))
 
     @property
     def report_missing_required_issue_data(self):
