@@ -164,15 +164,18 @@ class ArticlesMergence(object):
             return {order: names for order, names in pkg_orders.items() if len(names) > 1}
         return {}
 
-    def merge_articles(self):
-        # registered
-        self.history_items = {name: [HISTORY_REGISTERED] for name in self.registered_articles.keys()}
-
-        # package
-        for name, a in self.articles.items():
+    def _update_history(self, names, status):
+        for name in names:
             if name not in self.history_items.keys():
                 self.history_items[name] = []
-            self.history_items[name].append(HISTORY_PACKAGE)
+            self.history_items[name].append(status)
+
+    def merge_articles(self):
+        # registered
+        self._update_history(
+            self.registered_articles.keys(), HISTORY_REGISTERED)
+        # package
+        self._update_history(self.articles.keys(), HISTORY_PACKAGE)
 
         # analyze package
         tasks = self._analyze_what_to_do_with_the_package_articles()
