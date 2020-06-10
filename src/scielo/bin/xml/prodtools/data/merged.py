@@ -29,10 +29,10 @@ HISTORY_NAME_CHANGED = 'name changed'
 HISTORY_REPLACED_BY = 'replaced by'
 
 
-class MergedArticlesData(object):
+class GroupedDocuments(object):
 
-    def __init__(self, merged_articles, is_db_generation):
-        self.merged_articles = merged_articles
+    def __init__(self, grouped_docs, is_db_generation):
+        self.grouped_docs = grouped_docs
         self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_BLOCKING_ERROR, 'doi': validation_status.STATUS_BLOCKING_ERROR, 'elocation id': validation_status.STATUS_BLOCKING_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
         if not is_db_generation:
             self.ERROR_LEVEL_FOR_UNIQUE_VALUES['order'] = validation_status.STATUS_WARNING
@@ -43,24 +43,24 @@ class MergedArticlesData(object):
 
     @property
     def articles(self):
-        l = sorted([(article.order, xml_name) for xml_name, article in self.merged_articles.items()])
-        l = [(xml_name, self.merged_articles[xml_name]) for order, xml_name in l]
+        l = sorted([(article.order, xml_name) for xml_name, article in self.grouped_docs.items()])
+        l = [(xml_name, self.grouped_docs[xml_name]) for order, xml_name in l]
         return l
 
     @property
     def is_aop_issue(self):
-        return any([a.is_ahead for a in self.merged_articles.values()])
+        return any([a.is_ahead for a in self.grouped_docs.values()])
 
     @property
     def is_rolling_pass(self):
-        return all([a for a in self.merged_articles.values() if a.is_rolling_pass])
+        return all([a for a in self.grouped_docs.values() if a.is_rolling_pass])
 
     @property
     def common_data(self):
         data = {}
         for label in self.EXPECTED_COMMON_VALUES_LABELS:
             values = {}
-            for xml_name, article in self.merged_articles.items():
+            for xml_name, article in self.grouped_docs.items():
                 value = article.summary[label]
                 if label in self.IGNORE_NONE and value is None:
                     pass
@@ -104,7 +104,7 @@ class MergedArticlesData(object):
         data = {}
         for label in self.EXPECTED_UNIQUE_VALUE_LABELS:
             values = {}
-            for xml_name, article in self.merged_articles.items():
+            for xml_name, article in self.grouped_docs.items():
                 value = article.summary[label]
                 if value is not None:
                     if value not in values:

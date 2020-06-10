@@ -28,7 +28,7 @@ class IssueArticlesValidationsReports(object):
         self.report_articles_data_changes = conflicts_reports.report_articles_data_changes
         self.articles_mergence = conflicts_reports.articles_mergence
 
-        self.merged_articles_data_reports = MergedArticlesDataReports(
+        self.group_integrity_reports = GroupCoherenceReports(
             conflicts_reports.merged_articles, is_db_generation)
 
         self.pkg_validations_reports = PkgArticlesValidationsReports(
@@ -43,7 +43,7 @@ class IssueArticlesValidationsReports(object):
     @property
     def journal_and_issue_report(self):
         report = []
-        report.append(self.merged_articles_data_reports.journal_issue_header_report)
+        report.append(self.group_integrity_reports.journal_issue_header_report)
         errors_only = not self.is_xml_generation
         report.append(self.pkg_validations_reports.pkg_journal_validations.report(errors_only))
         report.append(self.pkg_validations_reports.pkg_issue_validations.report(errors_only))
@@ -58,13 +58,13 @@ class IssueArticlesValidationsReports(object):
             if self.registered_issue_data.issue_error_msg is not None:
                 text = self.registered_issue_data.issue_error_msg
             reports = []
-            reports += self.merged_articles_data_reports.report_missing_required_issue_data
-            reports += self.merged_articles_data_reports.report_issue_data_conflicting_values
-            reports += self.merged_articles_data_reports.report_issue_data_duplicated_values
+            reports += self.group_integrity_reports.report_missing_required_issue_data
+            reports += self.group_integrity_reports.report_issue_data_conflicting_values
+            reports += self.group_integrity_reports.report_issue_data_duplicated_values
 
             text += html_reports.tag('h2', _('Checking issue data consistency'))
             text += html_reports.tag('div', ''.join(reports), 'issue-messages')
-            text += self.merged_articles_data_reports.report_issue_page_values
+            text += self.group_integrity_reports.report_issue_page_values
             self._issue_validations = text
         return self._issue_validations
 
@@ -200,16 +200,22 @@ class ConflictsReports(object):
         return self._report_articles_data_conflicts + self.report_rejected_articles
 
 
-class MergedArticlesDataReports(object):
+class GroupCoherenceReports(object):
+    """
+    Avalia os dados do conjunto de documentos
+    Verifica se os dados em comum estão idênticos entre todos os documentos
+    Verifica os dados que devem ser únicos se o são entre todos os documentos
+    etc
+    """
 
-    def __init__(self, merged_articles, is_db_generation):
-        self.merged_articles_data = merged.MergedArticlesData(merged_articles, is_db_generation)
+    def __init__(self, group, is_db_generation):
+        self.group = merged.GroupedDocuments(group, is_db_generation)
 
     @property
     def journal_issue_header_report(self):
         if not hasattr(self, '_journal_issue_header_report'):
             common_data = ''
-            for label, values in self.merged_articles_data.common_data.items():
+            for label, values in self.group.common_data.items():
                 if len(values.keys()) == 1:
                     common_data += html_reports.tag('p', html_reports.display_label_value(label, list(values.keys())[0]))
                 else:
@@ -221,7 +227,7 @@ class MergedArticlesDataReports(object):
     def report_missing_required_issue_data(self):
         if not hasattr(self, '_report_missing_required_issue_data'):
             r = ''
-            for label, items in self.merged_articles_data.missing_required_data.items():
+            for label, items in self.group.missing_required_data.items():
                 r += html_reports.tag('div', html_reports.p_message(_('{status}: missing {label} in: ').format(status=validation_status.STATUS_BLOCKING_ERROR, label=label)))
                 r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
             self._report_missing_required_issue_data = r
@@ -231,9 +237,9 @@ class MergedArticlesDataReports(object):
     def report_issue_data_conflicting_values(self):
         if not hasattr(self, '_report_issue_data_conflicting_values'):
             parts = []
-            for label, values in self.merged_articles_data.conflicting_values.items():
+            for label, values in self.group.conflicting_values.items():
                 _status = validation_status.STATUS_BLOCKING_ERROR
-                if self.merged_articles_data.is_rolling_pass or self.merged_articles_data.is_aop_issue:
+                if self.group.is_rolling_pass or self.group.is_aop_issue:
                     _status = validation_status.STATUS_WARNING
                 elif label == 'license':
                     _status = validation_status.STATUS_WARNING
@@ -247,8 +253,8 @@ class MergedArticlesDataReports(object):
     def report_issue_data_duplicated_values(self):
         if not hasattr(self, '_report_issue_data_duplicated_values'):
             parts = []
-            for label, values in self.merged_articles_data.duplicated_values.items():
-                status = self.merged_articles_data.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
+            for label, values in self.group.duplicated_values.items():
+                status = self.group.ERROR_LEVEL_FOR_UNIQUE_VALUES[label]
                 _m = _('Unique value for {label} is required for all the documents in the package').format(label=label)
                 parts.append(html_reports.p_message(status + ': ' + _m))
                 for value, xml_files in values.items():
@@ -264,11 +270,11 @@ class MergedArticlesDataReports(object):
             previous = None
 
             error_level = validation_status.STATUS_BLOCKING_ERROR
-            fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.merged_articles_data.articles]
+            fpage_and_article_id_other_status = [all([a.fpage, a.lpage, a.article_id_other]) for xml_name, a in self.group.articles]
             if all(fpage_and_article_id_other_status):
                 error_level = validation_status.STATUS_ERROR
 
-            for xml_name, article in self.merged_articles_data.articles:
+            for xml_name, article in self.group.articles:
                 msg = []
                 status = ''
                 if article.pages == '':
