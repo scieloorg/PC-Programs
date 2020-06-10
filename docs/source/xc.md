@@ -337,11 +337,11 @@ Preencher somente se a coleção tem grau de exigência menor quanto a:
 - fórmulas codificadas
 - tabelas codificadas
 
-
+```
 BLOCK_DISAGREEMENT_WITH_COLLECTION_CRITERIA=OFF
 CODED_FORMULA_REQUIRED=OFF
 CODED_TABLE_REQUIRED=OFF
-
+```
 
 ## Execução
 
