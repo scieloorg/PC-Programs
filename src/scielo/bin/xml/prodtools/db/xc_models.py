@@ -787,7 +787,7 @@ class ArticlesManager(object):
         self.articles_aop_exclusion_status = {}
         self.articles_conversion_messages = {}
         self.aop_pdf_replacements = {}
-
+        self.xc_messages = []
         if self.issue_files.is_aop:
             self.ex_aop_manager = BaseManager(db_isis, serial.IssueFiles(issue_files.journal_files, 'ex-' + issue_files.issue_folder))
 

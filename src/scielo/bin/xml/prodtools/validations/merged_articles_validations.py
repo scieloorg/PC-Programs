@@ -52,11 +52,10 @@ class IssueArticlesValidationsReports(object):
 
     @property
     def issue_validations(self):
-        if not hasattr(self, '_issue_validations'):
-            text = self.registered_issue_data.issue_error_msg or ''
-            text += self.group_integrity_reports.content
-            self._issue_validations = text
-        return self._issue_validations
+        return (
+            self.registered_issue_data.issue_error_msg or '' +
+            self.group_integrity_reports.content
+        )
 
     @property
     def content(self):
