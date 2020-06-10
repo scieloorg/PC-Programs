@@ -395,6 +395,11 @@ class PkgProcessor(object):
     def evaluate_package(self, pkg):
         logger.info("Analize package")
         registered_issue_data = self.registered_issues_manager.get_registered_issue_data(pkg.issue_data)
+
+        if len(registered_issue_data.registered_articles) > 0:
+            logging.info(_('Previously registered: ({n} files)').format(
+                n=len(registered_issue_data.registered_articles)))
+
         validations_reports = IssueArticlesValidationsReports(
             pkg, registered_issue_data, self.is_db_generation,
             self.is_xml_generation, self.config

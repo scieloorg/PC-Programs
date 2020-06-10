@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 from prodtools import _
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
@@ -16,9 +14,6 @@ class IssueArticlesValidationsReports(object):
 
     def __init__(self, pkg, registered_issue_data, is_db_generation,
                  is_xml_generation, config):
-        if len(registered_issue_data.registered_articles) > 0:
-            logging.info(_('Previously registered: ({n} files)').format(
-                n=len(registered_issue_data.registered_articles)))
         self.registered_issue_data = registered_issue_data
         self.is_xml_generation = is_xml_generation
 
