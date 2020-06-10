@@ -82,17 +82,17 @@ class ArticlesConversion(object):
         self.web_app_site = web_app_site
         self.pkg = pkg
         self.validations_reports = validations_reports
-        self.articles_mergence = validations_reports.articles_mergence
+        self.merging_result = validations_reports.merging_result
         self.error_messages = []
         self.conversion_status = {}
 
     def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
-        if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.articles_mergence.excluded_orders) > 0):
-            self.error_messages = self.db.exclude_articles(self.articles_mergence.excluded_orders)
+        if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.merging_result.excluded_orders) > 0):
+            self.error_messages = self.db.exclude_articles(self.merging_result.excluded_orders)
 
-            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.articles_mergence.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
+            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.merging_result.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
@@ -122,8 +122,8 @@ class ArticlesConversion(object):
             pid_manager=pid_manager,
             issn_id=issue_models.issue.issn_id,
             year_and_order=issue_models.record.get("36"),
-            received_docs=self.articles_mergence.articles,
-            documents_in_isis=self.articles_mergence.registered_articles,
+            received_docs=self.merging_result.articles,
+            documents_in_isis=self.merging_result.registered_articles,
             file_paths=self.pkg.file_paths,
             update_article_with_aop_status=self.db.get_valid_aop,
         )
@@ -194,16 +194,16 @@ class ArticlesConversion(object):
             for status_data in status_items:
                 if status != 'aop':
                     name = status_data
-                    self.articles_mergence.history_items[name].append(status)
+                    self.merging_result.history_items[name].append(status)
         for status, names in self.conversion_status.items():
             for name in names:
-                self.articles_mergence.history_items[name].append(status)
+                self.merging_result.history_items[name].append(status)
 
         items = []
         db_articles = self.registered_articles or {}
-        for xml_name in sorted(self.articles_mergence.history_items.keys()):
-            pkg = self.articles_mergence.articles.get(xml_name)
-            registered = self.articles_mergence.registered_articles.get(xml_name)
+        for xml_name in sorted(self.merging_result.history_items.keys()):
+            pkg = self.merging_result.articles.get(xml_name)
+            registered = self.merging_result.registered_articles.get(xml_name)
             merged = db_articles.get(xml_name)
 
             diff = ''
@@ -216,7 +216,7 @@ class ArticlesConversion(object):
             values = []
             values.append(article_data_reports.display_article_data_to_compare(registered) if registered is not None else '')
             values.append(article_data_reports.display_article_data_to_compare(pkg) if pkg is not None else '')
-            values.append(article_data_reports.article_history(self.articles_mergence.history_items[xml_name]))
+            values.append(article_data_reports.article_history(self.merging_result.history_items[xml_name]))
             values.append(diff + article_data_reports.display_article_data_to_compare(merged) if merged is not None else '')
 
             items.append(html_reports.label_values(labels, values))
@@ -233,7 +233,7 @@ class ArticlesConversion(object):
 
     @property
     def accepted_articles(self):
-        return len(self.articles_mergence.accepted_articles)
+        return len(self.merging_result.accepted_articles)
 
     @property
     def total_converted(self):
@@ -249,7 +249,7 @@ class ArticlesConversion(object):
             result = 'rejected'
         elif self.articles_conversion_validations.blocking_errors > 0:
             result = 'rejected'
-        elif self.accepted_articles == 0 and len(self.articles_mergence.excluded_orders) == 0:
+        elif self.accepted_articles == 0 and len(self.merging_result.excluded_orders) == 0:
             result = 'ignored'
         elif self.articles_conversion_validations.fatal_errors > 0:
             result = 'accepted'
@@ -314,7 +314,7 @@ class ArticlesConversion(object):
                     issueid, name, article = item
                 else:
                     name = item
-                    article = self.articles_mergence.merged_articles.get(name)
+                    article = self.merging_result.merged_articles.get(name)
                 if article is not None:
                     if not article.is_ex_aop:
                         values = []

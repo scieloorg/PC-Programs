@@ -22,14 +22,16 @@ class IssueArticlesValidationsReports(object):
         self.registered_issue_data = registered_issue_data
         self.is_xml_generation = is_xml_generation
 
-        conflicts_reports = ConflictsReports(
+        merging_reports = DocsMergingReports(
             pkg, registered_issue_data, is_db_generation)
-        self.report_articles_data_conflicts = conflicts_reports.report_articles_data_conflicts
-        self.report_articles_data_changes = conflicts_reports.report_articles_data_changes
-        self.articles_mergence = conflicts_reports.articles_mergence
+        self.report_articles_data_conflicts = merging_reports.report_articles_data_conflicts
+        self.report_articles_data_changes = merging_reports.report_articles_data_changes
+
+        # usado em pkg_processor.ArticleConversion
+        self.merging_result = merging_reports.docs_merger
 
         self.group_integrity_reports = GroupCoherenceReports(
-            conflicts_reports.merged_articles, is_db_generation)
+            merging_reports.merged_articles, is_db_generation)
 
         self.pkg_validations_reports = PkgArticlesValidationsReports(
             pkg, registered_issue_data, is_db_generation,
@@ -75,37 +77,37 @@ class IssueArticlesValidationsReports(object):
         return self._validations
 
 
-class ConflictsReports(object):
+class DocsMergingReports(object):
 
     def __init__(self, pkg, registered_issue_data, is_db_generation):
-        self.articles_mergence = merged.ArticlesMergence(
+        self.docs_merger = merged.DocumentsMerger(
             registered_issue_data.registered_articles,
             pkg.articles, is_db_generation)
-        self.merged_articles = self.articles_mergence.merged_articles
+        self.merged_articles = self.docs_merger.merged_articles
 
     def report_articles_merging_conflicts(self):
         if not hasattr(self, '_report_articles_merging_conflicts'):
             merging_errors = []
-            if len(self.articles_mergence.titaut_conflicts) + len(self.articles_mergence.name_order_conflicts) > 0:
+            if len(self.docs_merger.titaut_conflicts) + len(self.docs_merger.name_order_conflicts) > 0:
 
-                keys = list(self.articles_mergence.titaut_conflicts.keys()) + list(self.articles_mergence.name_order_conflicts.keys())
+                keys = list(self.docs_merger.titaut_conflicts.keys()) + list(self.docs_merger.name_order_conflicts.keys())
                 keys = sorted(list(set(keys)))
 
                 merging_errors = [html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + _('Unable to update because the registered article data and the package article data do not match. '))]
 
-                articles = self.articles_mergence.articles
-                registered_articles = self.articles_mergence.registered_articles
+                articles = self.docs_merger.articles
+                registered_articles = self.docs_merger.registered_articles
                 for name in keys:
                     labels = [name, _('title/author conflicts'), _('name/order conflicts')]
                     values = [article_data_reports.display_article_data_to_compare(articles.get(name))]
 
                     articles_in_conflict = []
-                    for reg_name, art in self.articles_mergence.titaut_conflicts.get(name, {}).items():
+                    for reg_name, art in self.docs_merger.titaut_conflicts.get(name, {}).items():
                         articles_in_conflict.append(article_data_reports.display_article_data_to_compare(art))
                     values.append(''.join(articles_in_conflict))
 
                     articles_in_conflict = []
-                    for pkg_name, art in self.articles_mergence.name_order_conflicts.get(name, {}).items():
+                    for pkg_name, art in self.docs_merger.name_order_conflicts.get(name, {}).items():
                         articles_in_conflict.append(article_data_reports.display_article_data_to_compare(art))
                     values.append(''.join(articles_in_conflict))
 
@@ -116,9 +118,9 @@ class ConflictsReports(object):
     def report_articles_order_conflicts(self):
         if not hasattr(self, '_report_articles_order_conflicts'):
             r = []
-            if len(self.articles_mergence.pkg_order_conflicts) > 0:
+            if len(self.docs_merger.pkg_order_conflicts) > 0:
                 html_reports.tag('h2', _('Order conflicts'))
-                for order, names in self.articles_mergence.pkg_order_conflicts.items():
+                for order, names in self.docs_merger.pkg_order_conflicts.items():
                     r.append(html_reports.tag('h3', order))
                     r.append(html_reports.format_html_data(names))
             self._report_articles_order_conflicts = ''.join(r)
@@ -128,9 +130,9 @@ class ConflictsReports(object):
     def report_articles_changed_names(self):
         if not hasattr(self, '_report_articles_changed_names'):
             r = []
-            if len(self.articles_mergence.name_changes) > 0:
+            if len(self.docs_merger.name_changes) > 0:
                 r.append(html_reports.tag('h3', _('Names changes')))
-                for old, new in self.articles_mergence.name_changes.items():
+                for old, new in self.docs_merger.name_changes.items():
                     r.append(html_reports.tag('p', '{old} => {new}'.format(old=old, new=new), 'info'))
             self._report_articles_changed_names = ''.join(r)
         return self._report_articles_changed_names
@@ -139,20 +141,20 @@ class ConflictsReports(object):
     def report_articles_changed_orders(self):
         if not hasattr(self, '_report_articles_changed_orders'):
             r = []
-            if len(self.articles_mergence.order_changes) > 0:
+            if len(self.docs_merger.order_changes) > 0:
                 r.append(html_reports.tag('h3', _('Orders changes')))
-                for name, changes in self.articles_mergence.order_changes.items():
+                for name, changes in self.docs_merger.order_changes.items():
                     r.append(html_reports.tag('p', '{name}: {old} => {new}'.format(name=name, old=changes[0], new=changes[1]), 'info'))
-            if len(self.articles_mergence.excluded_orders) > 0:
+            if len(self.docs_merger.excluded_orders) > 0:
                 r.append(html_reports.tag('h3', _('Orders exclusions')))
-                for name, order in self.articles_mergence.excluded_items.items():
+                for name, order in self.docs_merger.excluded_items.items():
                     r.append(html_reports.tag('p', '{order} ({name})'.format(name=name, order=order), 'info'))
             self._report_articles_changed_orders = ''.join(r)
         return self._report_articles_changed_orders
 
     @property
     def report_rejected_articles(self):
-        if self.articles_mergence.rejected_articles:
+        if self.docs_merger.rejected_articles:
             r = [html_reports.tag('h3', _('Rejected documents'))]
             r.append(
                 html_reports.tag(
@@ -163,7 +165,7 @@ class ConflictsReports(object):
                       'so they are not allowed to be reinserted as '
                       '"ahead of print".'),
                     'blockingerror'))
-            for name in self.articles_mergence.rejected_articles:
+            for name in self.docs_merger.rejected_articles:
                 r.append(html_reports.tag('p', name))
             return ''.join(r)
         return ''

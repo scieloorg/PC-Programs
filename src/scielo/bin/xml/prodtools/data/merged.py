@@ -115,8 +115,11 @@ class GroupedDocuments(object):
         return data
 
 
-class ArticlesMergence(object):
-
+class DocumentsMerger(object):
+    """
+    Avalia cada documento do pacote se pode ou não ser incluído no sistema.
+    Mescla os documentos registrados com os documentos do pacote, se permitido.
+    """
     def __init__(self, registered_articles, articles, is_db_generation):
         self.is_db_generation = is_db_generation
         self.registered_articles = registered_articles
