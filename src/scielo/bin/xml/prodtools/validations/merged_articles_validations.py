@@ -23,7 +23,7 @@ class IssueArticlesValidationsReports(object):
         self.merging_result_reports = merging_reports.errors_reports
         self.merging_result = merging_reports.docs_merger
 
-        self.group_integrity_reports = GroupCoherenceReports(
+        self.group_coherence_reports = GroupCoherenceReports(
             merging_reports.merged_articles, is_db_generation)
 
         self.pkg_validations_reports = PkgArticlesValidationsReports(
@@ -38,7 +38,7 @@ class IssueArticlesValidationsReports(object):
     @property
     def journal_and_issue_report(self):
         report = []
-        report.append(self.group_integrity_reports.journal_issue_header_report)
+        report.append(self.group_coherence_reports.journal_issue_header_report)
         errors_only = not self.is_xml_generation
         report.append(self.pkg_validations_reports.pkg_journal_validations.report(errors_only))
         report.append(self.pkg_validations_reports.pkg_issue_validations.report(errors_only))
@@ -46,19 +46,13 @@ class IssueArticlesValidationsReports(object):
         return ''.join(report)
 
     @property
-    def issue_validations(self):
-        return (
-            self.registered_issue_data.issue_error_msg or '' +
-            self.group_integrity_reports.errors_reports
-        )
-
-    @property
     def errors_reports(self):
         if not hasattr(self, '_errors_reports'):
-            r = []
-            r.append(self.issue_validations)
-            r.append(self.self.merging_result_reports)
-            self._errors_reports = ''.join(r)
+            self._errors_reports = ''.join((
+                self.registered_issue_data.issue_error_msg or '',
+                self.group_coherence_reports.errors_reports,
+                self.merging_result_reports,
+            ))
         return self._errors_reports
 
     @property
@@ -218,15 +212,17 @@ class GroupCoherenceReports(object):
 
     @property
     def errors_reports(self):
-        reports = (
-            self.report_missing_required_issue_data,
-            self.report_issue_data_conflicting_values,
-            self.report_issue_data_duplicated_values,
-            self.report_issue_page_values,
-        )
-        return (
-            html_reports.tag('h2', _('Checking issue data consistency')) +
-            html_reports.tag('div', ''.join(reports), 'issue-messages'))
+        if not hasattr(self, '_errors_reports'):
+            reports = (
+                self.report_missing_required_issue_data,
+                self.report_issue_data_conflicting_values,
+                self.report_issue_data_duplicated_values,
+                self.report_issue_page_values,
+            )
+            self._errors_reports = (
+                html_reports.tag('h2', _('Checking issue data consistency')) +
+                html_reports.tag('div', ''.join(reports), 'issue-messages'))
+        return self._errors_reports
 
     @property
     def report_missing_required_issue_data(self):
