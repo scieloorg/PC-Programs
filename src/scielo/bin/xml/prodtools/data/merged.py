@@ -120,13 +120,14 @@ class ArticlesMergence(object):
         self.is_db_generation = is_db_generation
         self.registered_articles = registered_articles
         self.articles = articles
-        self.titaut_conflicts = None
-        self.name_order_conflicts = None
-        self.name_changes = None
-        self.order_changes = None
-        self.excluded_orders = None
-        self._merged_articles = None
-        self._accepted_articles = {}
+        self.titaut_conflicts = {}
+        self.name_order_conflicts = {}
+        self.name_changes = {}
+        self.order_changes = {}
+        self.excluded_orders = []
+        self.accepted_articles = {}
+        self.history_items = {}
+        self.merged_articles = self.merge_articles()
 
     def registered_titles_and_authors(self, article):
         similar_items = {}
@@ -153,10 +154,6 @@ class ArticlesMergence(object):
         return {}
 
     @property
-    def accepted_articles(self):
-        return self._accepted_articles
-
-    @property
     def pkg_order_conflicts(self):
         # pkg order conflicts
         if self.is_db_generation:
@@ -166,12 +163,6 @@ class ArticlesMergence(object):
                     pkg_orders[a.order].append(name)
             return {order: names for order, names in pkg_orders.items() if len(names) > 1}
         return {}
-
-    @property
-    def merged_articles(self):
-        if self._merged_articles is None:
-            self._merged_articles = self.merge_articles()
-        return self._merged_articles
 
     def merge_articles(self):
         # registered
