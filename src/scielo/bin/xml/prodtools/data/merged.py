@@ -5,6 +5,7 @@ from prodtools.validations.article_data_reports import ArticlesComparison
 
 
 ACTION_DELETE = 'delete'
+ACTION_REJECT = 'reject'
 ACTION_SOLVE_TITAUT_CONFLICTS = 'TITAUT_CONFLICTS'
 ACTION_UPDATE = 'update'
 ACTION_CHECK_ORDER_AND_NAME = 'CHECK_ORDER_AND_NAME'
@@ -166,7 +167,7 @@ class ArticlesMergence(object):
         return {}
 
     def _update_history(self, names, status):
-        for name in names:
+        for name in names or []:
             if name not in self.history_items.keys():
                 self.history_items[name] = []
             self.history_items[name].append(status)
@@ -231,6 +232,8 @@ class ArticlesMergence(object):
         tasks = self._analyze_what_to_do_with_the_package_articles()
         #
         self.merged_articles = self.registered_articles.copy()
+        # reject
+        self._update_history(tasks.get(ACTION_REJECT), HISTORY_REJECTED)
         # delete
         self._delete_articles(tasks.get(ACTION_DELETE))
         # update
@@ -258,6 +261,14 @@ class ArticlesMergence(object):
 
         registered_doc = self.registered_articles[registered_name]
         package_doc = self.articles[registered_name]
+
+        # nao funciona usar:
+        # if package_doc.is_ahead and not registered_doc.is_ahead
+        # `is_ahead` é um atributo computado baseado no volume e número
+        # enquanto `is_ex_aop` é retornado se o registro foi encontrado
+        # na base `ex-*nahead`
+        if package_doc.is_ahead and registered_doc.is_ex_aop:
+            return ACTION_REJECT
 
         article_comparison = ArticlesComparison(
             registered_doc, package_doc)
