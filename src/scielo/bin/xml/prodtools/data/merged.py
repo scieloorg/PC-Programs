@@ -246,23 +246,27 @@ class ArticlesMergence(object):
         tasks = {}
         for k, a_name in self.pkg_articles_by_order_and_name.items():
             registered_name = self.registered_articles_by_order_and_name.get(k)
-            if registered_name:
-                registered_doc = self.registered_articles[registered_name]
-                package_doc = self.articles[registered_name]
-                article_comparison = ArticlesComparison(
-                    registered_doc, package_doc)
-                if not article_comparison.are_similar:
-                    status = ACTION_SOLVE_TITAUT_CONFLICTS
-                elif package_doc.marked_to_delete:
-                    status = ACTION_DELETE
-                else:
-                    status = ACTION_UPDATE
-            else:
-                status = ACTION_CHECK_ORDER_AND_NAME
-            if status not in tasks.keys():
-                tasks[status] = []
-            tasks[status].append(a_name)
+            task_id = self._get_task_id(registered_name)
+            if task_id not in tasks.keys():
+                tasks[task_id] = []
+            tasks[task_id].append(a_name)
         return tasks
+
+    def _get_task_id(self, registered_name):
+        if registered_name:
+            registered_doc = self.registered_articles[registered_name]
+            package_doc = self.articles[registered_name]
+            article_comparison = ArticlesComparison(
+                registered_doc, package_doc)
+            if not article_comparison.are_similar:
+                task_id = ACTION_SOLVE_TITAUT_CONFLICTS
+            elif package_doc.marked_to_delete:
+                task_id = ACTION_DELETE
+            else:
+                task_id = ACTION_UPDATE
+        else:
+            task_id = ACTION_CHECK_ORDER_AND_NAME
+        return task_id
 
     def _resolve_title_and_authors_conflicts(self, names):
         """
