@@ -129,7 +129,7 @@ class ArticlesMergence(object):
         self.history_items = {}
         self.merged_articles = self.merge_articles()
 
-    def registered_titles_and_authors(self, article):
+    def get_similar_registered_docs(self, article):
         similar_items = {}
         for name, registered in self.registered_articles.items():
             comparison = ArticlesComparison(registered, article)
@@ -175,62 +175,62 @@ class ArticlesMergence(object):
             self.history_items[name].append(HISTORY_PACKAGE)
 
         # analyze package
-        results = self.analyze_pkg_articles()
+        tasks = self._analyze_what_to_do_with_the_package_articles()
         merged = self.registered_articles.copy()
 
         # delete
-        for name in results.get(ACTION_DELETE, []):
+        for name in tasks.get(ACTION_DELETE, []):
             del merged[name]
             self.history_items[name].append(HISTORY_DELETED)
 
         # update
-        merged.update({name: self.articles.get(name) for name in results.get(ACTION_UPDATE, [])})
-        for name in results.get(ACTION_UPDATE, []):
+        merged.update({name: self.articles.get(name) for name in tasks.get(ACTION_UPDATE, [])})
+        for name in tasks.get(ACTION_UPDATE, []):
             self.history_items[name].append(HISTORY_ACCEPTED)
-            self._accepted_articles[name] = self.articles.get(name)
+            self.accepted_articles[name] = self.articles.get(name)
 
         # found titaut conflicts
-        for name in results.get(ACTION_SOLVE_TITAUT_CONFLICTS, []):
+        for name in tasks.get(ACTION_SOLVE_TITAUT_CONFLICTS, []):
             self.history_items[name].append(HISTORY_TITAUT_CONFLICTS)
             self.history_items[name].append(HISTORY_REJECTED)
 
         # solve titaut conflicts
         solved = self.evaluate_titaut_conflicts(
-            results.get(ACTION_SOLVE_TITAUT_CONFLICTS, []))
+            tasks.get(ACTION_SOLVE_TITAUT_CONFLICTS, []))
         for name in solved:
             merged[name] = self.articles[name]
             #self.history_items[name].remove(HISTORY_REJECTED)
             self.history_items[name].pop()
             self.history_items[name].append(HISTORY_SOLVED)
-            self._accepted_articles[name] = self.articles.get(name)
+            self.accepted_articles[name] = self.articles.get(name)
 
         # need to check name/order
-        for name in results.get(ACTION_CHECK_ORDER_AND_NAME, []):
+        for name in tasks.get(ACTION_CHECK_ORDER_AND_NAME, []):
             self.history_items[name].append(HISTORY_CHECK_ORDER_AND_NAME)
 
         # solve name/order
         solved = self.evaluate_check_order_and_name(
-            results.get(ACTION_CHECK_ORDER_AND_NAME, []),
-            results.get(ACTION_DELETE, [])
+            tasks.get(ACTION_CHECK_ORDER_AND_NAME, []),
+            tasks.get(ACTION_DELETE, [])
             )
         for name in solved:
             merged[name] = self.articles[name]
             #self.history_items[name].remove(HISTORY_REJECTED)
             self.history_items[name].pop()
             self.history_items[name].append(HISTORY_SOLVED)
-            self._accepted_articles[name] = self.articles.get(name)
+            self.accepted_articles[name] = self.articles.get(name)
 
         # delete name changed
         for name in self.name_changes.values():
             del merged[name]
 
-        self.excluded_items = {name: self.articles[name].order for name in results.get(ACTION_DELETE, [])}
-        self.excluded_orders = [self.articles[name].order for name in results.get(ACTION_DELETE, [])]
+        self.excluded_items = {name: self.articles[name].order for name in tasks.get(ACTION_DELETE, [])}
+        self.excluded_orders = [self.articles[name].order for name in tasks.get(ACTION_DELETE, [])]
         self.excluded_orders.extend([previous for previous, current in self.order_changes.values()])
         return merged
 
-    def analyze_pkg_articles(self):
-        results = {}
+    def _analyze_what_to_do_with_the_package_articles(self):
+        tasks = {}
         for k, a_name in self.pkg_articles_by_order_and_name.items():
             registered_name = self.registered_articles_by_order_and_name.get(k)
             if registered_name is not None:
@@ -245,17 +245,17 @@ class ArticlesMergence(object):
                     status = ACTION_UPDATE
             else:
                 status = ACTION_CHECK_ORDER_AND_NAME
-            if status not in results.keys():
-                results[status] = []
-            results[status].append(a_name)
-        return results
+            if status not in tasks.keys():
+                tasks[status] = []
+            tasks[status].append(a_name)
+        return tasks
 
     def evaluate_titaut_conflicts(self, names):
         solved = []
         self.titaut_conflicts = {}
         if names is not None:
             for name in names:
-                similars = self.registered_titles_and_authors(self.articles.get(name))
+                similars = self.get_similar_registered_docs(self.articles.get(name))
                 if len(similars) == 0:
                     solved.append(name)
                 elif len(similars) == 1 and name in similars.keys():
