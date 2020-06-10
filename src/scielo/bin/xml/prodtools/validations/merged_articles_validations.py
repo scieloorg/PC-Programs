@@ -162,6 +162,24 @@ class ConflictsReports(object):
         return self._report_articles_changed_orders
 
     @property
+    def report_rejected_articles(self):
+        if self.articles_mergence.rejected_articles:
+            r = [html_reports.tag('h3', _('Rejected documents'))]
+            r.append(
+                html_reports.tag(
+                    'p',
+                    _('These documents were rejected because they are not '
+                      '"ahead of print" anymore, they were published in a '
+                      'regular issue, '
+                      'so they are not allowed to be reinserted as '
+                      '"ahead of print".'),
+                    'blockingerror'))
+            for name in self.articles_mergence.rejected_articles:
+                r.append(html_reports.tag('p', name))
+            return ''.join(r)
+        return ''
+
+    @property
     def report_articles_data_changes(self):
         if not hasattr(self, '_report_articles_data_changes'):
             r = ''
@@ -179,7 +197,7 @@ class ConflictsReports(object):
             r = ''.join([self.report_articles_order_conflicts() + self.report_articles_merging_conflicts()])
             if len(r) > 0:
                 self._report_articles_data_conflicts = html_reports.tag('h2', _('Data Conflicts Report')) + r
-        return self._report_articles_data_conflicts
+        return self._report_articles_data_conflicts + self.report_rejected_articles
 
 
 class MergedArticlesDataReports(object):

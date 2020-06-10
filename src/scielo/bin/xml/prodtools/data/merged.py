@@ -127,6 +127,7 @@ class ArticlesMergence(object):
         self.order_changes = {}
         self.excluded_orders = []
         self.accepted_articles = {}
+        self.rejected_articles = []
         self.history_items = {}
         self.merged_articles = {}
         self.merge_articles()
@@ -233,6 +234,7 @@ class ArticlesMergence(object):
         #
         self.merged_articles = self.registered_articles.copy()
         # reject
+        self.rejected_articles = tasks.get(ACTION_REJECT)
         self._update_history(tasks.get(ACTION_REJECT), HISTORY_REJECTED)
         # delete
         self._delete_articles(tasks.get(ACTION_DELETE))
