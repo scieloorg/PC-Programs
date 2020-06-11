@@ -86,10 +86,7 @@ class ReportsMaker(object):
     @property
     def group_validations_report(self):
         r = self.pkg_reports.orphan_files_report + self.pkg_articles_data_report.invalid_xml_report
-        if not self.articles_validations_reports.is_xml_generation:
-            r += self.articles_validations_reports.journal_and_issue_report
-        if self.conversion is not None:
-            r += self.articles_validations_reports.issue_error_msg
+        r += self.articles_validations_reports.group_validations_report
         return r
 
     @property

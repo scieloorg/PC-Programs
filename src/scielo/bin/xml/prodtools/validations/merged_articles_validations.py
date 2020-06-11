@@ -16,11 +16,13 @@ class IssueArticlesValidationsReports(object):
                  is_xml_generation, config):
         self.registered_issue_data = registered_issue_data
         self.is_xml_generation = is_xml_generation
+        self.is_db_generation = is_db_generation
 
         merging_reports = DocsMergingReports(
             pkg, registered_issue_data, is_db_generation)
 
         self.merging_result_reports = merging_reports.errors_reports
+
         self.merging_result = merging_reports.docs_merger
 
         self.group_coherence_reports = GroupCoherenceReports(
@@ -33,7 +35,6 @@ class IssueArticlesValidationsReports(object):
         self.blocking_errors = sum(
             [self.validations.blocking_errors,
              self.pkg_validations_reports.blocking_errors])
-        self.issue_error_msg = registered_issue_data.issue_error_msg or ''
 
     @property
     def journal_and_issue_report(self):
@@ -61,6 +62,15 @@ class IssueArticlesValidationsReports(object):
             self._validations = validations_module.ValidationsResult()
             self._validations.message = self.errors_reports
         return self._validations
+
+    @property
+    def group_validations_report(self):
+        r = ''
+        if not self.is_xml_generation:
+            r += self.journal_and_issue_report
+        if self.is_db_generation:
+            r += self.registered_issue_data.issue_error_msg
+        return r
 
 
 class DocsMergingReports(object):
