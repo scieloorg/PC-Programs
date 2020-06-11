@@ -14,7 +14,7 @@ from prodtools.validations import article_data_reports
 from prodtools.validations import validations as validations_module
 from prodtools.validations import reports_maker
 from prodtools.validations.merged_articles_validations import (
-    IssueArticlesValidationsReports,
+    PackageEvaluator,
 )
 from prodtools.data import workarea
 from prodtools.data import kernel_document
@@ -74,25 +74,24 @@ def xpm_version():
 
 class ArticlesConversion(object):
 
-    def __init__(self, registered_issue_data, pkg, validations_reports, create_windows_base, web_app_path, web_app_site):
+    def __init__(self, registered_issue_data, pkg, pkg_eval_result, create_windows_base, web_app_path, web_app_site):
         self.create_windows_base = create_windows_base
         self.registered_issue_data = registered_issue_data
         self.db = self.registered_issue_data.articles_db_manager
         self.local_web_app_path = web_app_path
         self.web_app_site = web_app_site
         self.pkg = pkg
-        self.validations_reports = validations_reports
-        self.merging_result = validations_reports.merging_result
+        self.pkg_eval_result = pkg_eval_result
         self.error_messages = []
         self.conversion_status = {}
 
     def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
-        if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.merging_result.excluded_orders) > 0):
-            self.error_messages = self.db.exclude_articles(self.merging_result.excluded_orders)
+        if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.pkg_eval_result.excluded_orders) > 0):
+            self.error_messages = self.db.exclude_articles(self.pkg_eval_result.excluded_orders)
 
-            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.merging_result.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
+            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.pkg_eval_result.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
             scilista_items.extend(_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
@@ -194,14 +193,14 @@ class ArticlesConversion(object):
             for status_data in status_items:
                 if status != 'aop':
                     name = status_data
-                    self.merging_result.history_items[name].append(status)
+                    self.pkg_eval_result.history_items[name].append(status)
         for status, names in self.conversion_status.items():
             for name in names:
-                self.merging_result.history_items[name].append(status)
+                self.pkg_eval_result.history_items[name].append(status)
 
         items = []
         db_articles = self.registered_articles or {}
-        for xml_name in sorted(self.merging_result.history_items.keys()):
+        for xml_name in sorted(self.pkg_eval_result.history_items.keys()):
             pkg = self.pkg.articles.get(xml_name)
             registered = self.registered_issue_data.registered_articles.get(xml_name)
             merged = db_articles.get(xml_name)
@@ -216,7 +215,7 @@ class ArticlesConversion(object):
             values = []
             values.append(article_data_reports.display_article_data_to_compare(registered) if registered is not None else '')
             values.append(article_data_reports.display_article_data_to_compare(pkg) if pkg is not None else '')
-            values.append(article_data_reports.article_history(self.merging_result.history_items[xml_name]))
+            values.append(article_data_reports.article_history(self.pkg_eval_result.history_items[xml_name]))
             values.append(diff + article_data_reports.display_article_data_to_compare(merged) if merged is not None else '')
 
             items.append(html_reports.label_values(labels, values))
@@ -233,7 +232,7 @@ class ArticlesConversion(object):
 
     @property
     def accepted_articles(self):
-        return len(self.merging_result.accepted_articles)
+        return len(self.pkg_eval_result.accepted_articles)
 
     @property
     def total_converted(self):
@@ -249,7 +248,7 @@ class ArticlesConversion(object):
             result = 'rejected'
         elif self.articles_conversion_validations.blocking_errors > 0:
             result = 'rejected'
-        elif self.accepted_articles == 0 and len(self.merging_result.excluded_orders) == 0:
+        elif self.accepted_articles == 0 and len(self.pkg_eval_result.excluded_orders) == 0:
             result = 'ignored'
         elif self.articles_conversion_validations.fatal_errors > 0:
             result = 'accepted'
@@ -314,7 +313,7 @@ class ArticlesConversion(object):
                     issueid, name, article = item
                 else:
                     name = item
-                    article = self.merging_result.merged_articles.get(name)
+                    article = self.pkg_eval_result.merged_articles.get(name)
                 if article is not None:
                     if not article.is_ex_aop:
                         values = []
@@ -400,23 +399,24 @@ class PkgProcessor(object):
             logging.info(_('Previously registered: ({n} files)').format(
                 n=len(registered_issue_data.registered_articles)))
 
-        validations_reports = IssueArticlesValidationsReports(
+        evaluator = PackageEvaluator(
             pkg, registered_issue_data, self.is_db_generation,
             self.is_xml_generation, self.config
         )
-        return registered_issue_data, validations_reports
+        pkg_eval_result = evaluator.evaluate()
+        return registered_issue_data, pkg_eval_result
 
     def make_package(self, pkg, GENERATE_PMC=False):
-        registered_issue_data, validations_reports = self.evaluate_package(pkg)
-        self.report_result(pkg, validations_reports, conversion=None)
+        registered_issue_data, pkg_eval_result = self.evaluate_package(pkg)
+        self.report_result(pkg, pkg_eval_result, conversion=None)
         self.make_pmc_package(pkg, GENERATE_PMC)
         if not self.is_xml_generation:
             pkg.zip()
 
     def convert_package(self, pkg):
-        registered_issue_data, validations_reports = self.evaluate_package(pkg)
+        registered_issue_data, pkg_eval_result = self.evaluate_package(pkg)
 
-        conversion = ArticlesConversion(registered_issue_data, pkg, validations_reports, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
+        conversion = ArticlesConversion(registered_issue_data, pkg, pkg_eval_result, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
         if self.pid_manager is not None:
             conversion.register_pids_and_update_xmls(self.pid_manager)
 
@@ -430,7 +430,7 @@ class PkgProcessor(object):
                 self.export_documents_package, package_name=scilista_items[0]
             )
 
-        reports = self.report_result(pkg, validations_reports, conversion)
+        reports = self.report_result(pkg, pkg_eval_result, conversion)
         statistics_display = reports.validations.statistics_display(html_format=False)
 
         subject = ' '.join(EMAIL_SUBJECT_STATUS_ICON.get(conversion.xc_status, [])) + ' ' + statistics_display
@@ -438,12 +438,12 @@ class PkgProcessor(object):
         mail_info = subject, mail_content
         return (scilista_items, conversion.xc_status, mail_info)
 
-    def report_result(self, pkg, validations_reports, conversion=None):
+    def report_result(self, pkg, pkg_eval_result, conversion=None):
         logger.info("Generate reports")
         files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label)
         if conversion is not None:
             files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
-        reports = reports_maker.ReportsMaker(pkg, validations_reports, files_location, self.stage, self.xpm_version, conversion)
+        reports = reports_maker.ReportsMaker(pkg, pkg_eval_result, files_location, self.stage, self.xpm_version, conversion)
         if not self.is_xml_generation:
             reports.save_report(self.INTERATIVE)
         if conversion is not None:

@@ -10,7 +10,7 @@ from prodtools.validations.pkg_articles_validations import (
 from prodtools.data import merged
 
 
-class IssueArticlesValidationsReports(object):
+class PackageEvaluator(object):
 
     def __init__(self, pkg, registered_issue_data, is_db_generation,
                  is_xml_generation, config):
@@ -18,15 +18,11 @@ class IssueArticlesValidationsReports(object):
         self.is_xml_generation = is_xml_generation
         self.is_db_generation = is_db_generation
 
-        merging_reports = DocsMergingReports(
+        self.merging_reports = DocsMergingReports(
             pkg, registered_issue_data, is_db_generation)
 
-        self.merging_result_reports = merging_reports.errors_reports
-
-        self.merging_result = merging_reports.docs_merger
-
         self.group_coherence_reports = GroupCoherenceReports(
-            merging_reports.merged_articles, is_db_generation)
+            self.merging_reports.docs_merger.merged_articles, is_db_generation)
 
         self.pkg_validations_reports = PkgArticlesValidationsReports(
             pkg, registered_issue_data, is_db_generation,
@@ -38,12 +34,13 @@ class IssueArticlesValidationsReports(object):
 
     @property
     def journal_and_issue_report(self):
-        report = []
-        report.append(self.group_coherence_reports.journal_issue_header_report)
         errors_only = not self.is_xml_generation
-        report.append(self.pkg_validations_reports.pkg_journal_validations.report(errors_only))
-        report.append(self.pkg_validations_reports.pkg_issue_validations.report(errors_only))
-        report.append(self.errors_reports)
+        report = (
+            self.group_coherence_reports.journal_issue_header_report,
+            self.pkg_validations_reports.pkg_journal_validations.report(errors_only),
+            self.pkg_validations_reports.pkg_issue_validations.report(errors_only),
+            self.errors_reports,
+        )
         return ''.join(report)
 
     @property
@@ -52,7 +49,7 @@ class IssueArticlesValidationsReports(object):
             self._errors_reports = ''.join((
                 self.registered_issue_data.issue_error_msg or '',
                 self.group_coherence_reports.errors_reports,
-                self.merging_result_reports,
+                self.merging_reports.errors_reports,
             ))
         return self._errors_reports
 
@@ -72,9 +69,29 @@ class IssueArticlesValidationsReports(object):
             r += self.registered_issue_data.issue_error_msg
         return r
 
-    @property
-    def individual_validations_report(self):
-        return self.pkg_validations_reports.detailed_report
+    def evaluate(self):
+        return PackageEvaluationResult(
+            group_validations_report=self.group_validations_report,
+            individual_validations_report=self.pkg_validations_reports.detailed_report,
+            blockingerror=self.blockingerror,
+            merging_result_reports=self.merging_reports.errors_reports,
+            docs_merger=self.merging_reports.docs_merger
+        )
+
+
+class PackageEvaluationResult(object):
+
+    def __init__(self, group_validations_report, individual_validations_report,
+                 blockingerror, merging_result_reports, doc_merger
+                 ):
+        self.group_validations_report = group_validations_report
+        self.individual_validations_report = individual_validations_report
+        self.blockingerror = blockingerror
+        self.merging_result_reports = merging_result_reports
+        self.excluded_orders = doc_merger.excluded_orders
+        self.accepted_articles = doc_merger.accepted_articles
+        self.history_items = doc_merger.history_items
+        self.merged_articles = doc_merger.merged_articles
 
 
 class DocsMergingReports(object):
@@ -83,7 +100,6 @@ class DocsMergingReports(object):
         self.docs_merger = merged.DocumentsMerger(
             registered_issue_data.registered_articles,
             pkg.articles, is_db_generation)
-        self.merged_articles = self.docs_merger.merged_articles
 
     def report_articles_merging_conflicts(self):
         if not hasattr(self, '_report_articles_merging_conflicts'):
