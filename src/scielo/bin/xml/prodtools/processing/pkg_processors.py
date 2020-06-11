@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-import logging.config
 import os
 import shutil
 
@@ -32,12 +31,10 @@ from prodtools.db.pid_versions import(
     PIDVersionsDB,
 )
 from prodtools.processing import pmc_pkgmaker
-from prodtools.utils.logging_config import LOGGING_CONFIG
 from prodtools.db.pid_versions import PIDVersionsManager
 
 
-logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 EMAIL_SUBJECT_STATUS_ICON = {}

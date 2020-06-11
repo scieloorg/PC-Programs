@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-import logging.config
 import os
 import shutil
 
@@ -12,11 +11,9 @@ from prodtools.validations import sps_xml_validators
 from prodtools.processing import xml_versions
 from prodtools.data import workarea
 from prodtools.data import article
-from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
-logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class PMCPackageMaker(object):

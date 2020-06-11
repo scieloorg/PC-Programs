@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-import logging.config
 import os
 import shutil
 from copy import deepcopy
@@ -16,11 +15,9 @@ from prodtools.data import workarea
 from prodtools.processing import symbols
 from prodtools.processing import xml_versions
 from prodtools.processing.sps_pkgmaker import PackageMaker
-from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
-logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class SGMLXML2SPSXMLError(Exception):

@@ -3,6 +3,10 @@
 import os
 import tarfile
 import zipfile
+import logging
+
+
+logger = logging.getLogger()
 
 
 def is_compressed_file(path):
@@ -37,7 +41,7 @@ def extract_file(path, to_directory='.'):
             file.close()
         r = True
     except IOError:
-        print('extract_file: Invalid file ' + path)
+        logger.error('extract_file: Invalid file ' + path)
         r = False
     finally:
         os.chdir(cwd)

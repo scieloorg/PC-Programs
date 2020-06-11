@@ -1,15 +1,12 @@
 # coding=utf-8
 import logging
-import logging.config
 
 from prodtools.utils import xml_utils
 from prodtools.data import article
 from prodtools.data import workarea
-from prodtools.utils.logging_config import LOGGING_CONFIG
 
 
-logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class SPPackage(object):

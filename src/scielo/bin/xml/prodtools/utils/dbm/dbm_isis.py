@@ -2,12 +2,16 @@
 
 import os
 import html
+import logging
 
 from tempfile import mkdtemp, NamedTemporaryFile
 
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
 from prodtools.utils import system
+
+
+logger = logging.getLogger()
 
 
 PRESERVECIRC = '[PRESERVECIRC]'
@@ -174,8 +178,7 @@ class IDFile(object):
         try:
             fs_utils.write_file(filename, content, 'iso-8859-1')
         except (UnicodeError, IOError, OSError) as e:
-            print("Nao foi possivel escrever o arquivo {}: {}".format(
-                filename, str(e)))
+            logger.error("Nao foi possivel escrever o arquivo %s: %s", filename, e)
 
 
 class CISIS(object):

@@ -1,20 +1,14 @@
 # coding=utf-8
 import os
 import logging
-import logging.config
 
 from datetime import datetime
 
 from prodtools.utils import fs_utils
 from prodtools.server import filestransfer
-from prodtools import LOG_PATH
 
 
-from prodtools.utils.logging_config import LOGGING_CONFIG
-
-
-logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class GeraPadraoStatusManager:
@@ -86,9 +80,6 @@ class GeraPadrao:
         self.status_manager = GeraPadraoStatusManager(
             self.config.gerapadrao_permission_file)
         self.col_scilista = Scilista(self.config.collection_scilista)
-        log_filename = (LOG_PATH + '/gerapadrao_' +
-                        collection_acron+'-'+self.now+'.log')
-        logging.basicConfig(filename=log_filename, filemode='w')
 
     @property
     def now(self):
@@ -126,18 +117,16 @@ class GeraPadrao:
                 self.config.email_text_gerapadrao + scilista_content)
 
         command = self.command
-        logger.info(self.now + ' - inicio gerapadrao')
+        logger.info('inicio gerapadrao acron: %s', self.collection_acron)
         logger.info(command)
         logger.info(scilista_content)
         os.system(command)
-        logger.info(self.now + ' - fim gerapadrao')
+        logger.info('fim gerapadrao acron: %s', self.collection_acron)
 
     def _update_web_site(self, scilista_content):
         if self.config.is_enabled_transference:
-            logger.info(self.now + ' - inicio transf bases')
             transfer = filestransfer.SciELOWebFilesTransfer(self.config)
             transfer.transfer_website_bases()
-            logger.info(self.now + ' - fim transf bases')
 
         if self.mailer is not None:
             self.mailer.send_message(

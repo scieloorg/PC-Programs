@@ -1,7 +1,7 @@
 
 LOGGING_CONFIG = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'standard': {
             'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
@@ -12,7 +12,7 @@ LOGGING_CONFIG = {
     },
     'handlers': {
         'default': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'formatter': 'brief',
             'class': 'logging.StreamHandler',
             'stream': 'ext://sys.stdout',  # Default is stderr
@@ -25,18 +25,10 @@ LOGGING_CONFIG = {
             'maxBytes': 10240,
             'backupCount': 3,
         },
-        'file2': {
-            'level': 'ERROR',
-            'formatter': 'standard',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'prodtools.err',
-            'maxBytes': 10240,
-            'backupCount': 3,
-        },
     },
     'loggers': {
         '': {  # root logger
-            'handlers': ['default', 'file', 'file2', ],
+            'handlers': ['default', 'file', ],
             'level': 'DEBUG',
             'propagate': True,
         },
