@@ -9,6 +9,8 @@ SciELO PC Programs
 .. toctree::
     :maxdepth: 1
 
+    `Nova versão </new_index/>`_
+
     index_pt.rst
     index_es.rst
     index_en.rst
