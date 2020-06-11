@@ -30,8 +30,20 @@ HISTORY_REPLACED_BY = 'replaced by'
 
 
 class GroupedDocuments(object):
-
-    def __init__(self, grouped_docs, is_db_generation):
+    """
+    Representa o grupo de documentos após a junção dos documentos registrados +
+    documentos do pacote.
+    Tem como propósito computar os dados para serem gerados os relatórios de
+    coerência entre os documentos (GroupCoherenceReports), ou seja, verificar
+    se os dados esperados como únicos, como IDs, são únicos, se os dados em
+    comum como título do periódicos são iguais entre todos os documentos entre
+    outras verificações no contexto do grupo.
+    """
+    def __init__(self, grouped_docs: dict, is_db_generation: bool):
+        """
+        grouped_docs.keys: nome base dos arquivos sem extensão
+        grouped_docs.values: article.Article
+        """
         self.grouped_docs = grouped_docs
         self.ERROR_LEVEL_FOR_UNIQUE_VALUES = {'order': validation_status.STATUS_BLOCKING_ERROR, 'doi': validation_status.STATUS_BLOCKING_ERROR, 'elocation id': validation_status.STATUS_BLOCKING_ERROR, 'fpage-lpage-seq-elocation-id': validation_status.STATUS_ERROR}
         if not is_db_generation:

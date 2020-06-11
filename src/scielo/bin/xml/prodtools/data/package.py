@@ -68,7 +68,9 @@ class SPPackage(object):
 
 
 class PackageIssueData(object):
-
+    """
+    Identifica os dados do fascículo dado um dicionário de `Article`
+    """
     def __init__(self):
         self.pkg_journal_title = None
         self.pkg_p_issn = None

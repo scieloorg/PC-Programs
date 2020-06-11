@@ -16,7 +16,6 @@ from prodtools.data.article import PersonAuthor, CorpAuthor, AnonymousAuthor
 from prodtools.data import attributes
 from prodtools.data import article_utils
 from prodtools.db import serial
-from prodtools.db import registered
 from prodtools.validations import article_data_reports
 from prodtools import FST_PATH
 from prodtools.utils.dbm import dbm_isis
@@ -1545,7 +1544,15 @@ def update_list(l, value):
 
 
 class RegisteredIssue(object):
-
+    """
+    Seu propósito é, fornecidos os dados de fascículo de um pacote SP
+    (package.PackageIssueData),
+    identificar e tornar facilmente acessíveis os dados de periódico e
+    de fascículo e, se for no contexto da conversão (carga na base), também
+    tornar acessíveis os documentos registrados. Uma instância desta classe
+    é criada e retornada por
+    `RegisteredIssuesManager.get_registered_issue_data`
+    """
     def __init__(self):
         self.articles_db_manager = None
         self.issue_error_msg = None
@@ -1560,11 +1567,23 @@ class RegisteredIssue(object):
 
 
 class RegisteredIssuesManager(object):
-
+    """
+    Seu propósito é, fornecidos os dados de fascículo de um pacote SP
+    (package.PackageIssueData),
+    identificar e tornar facilmente acessíveis os dados de periódico e
+    de fascículo e, se for no contexto da conversão (carga na base), tornar
+    acessíveis também oos documentos registrados. Estes dados ficam acessíveis
+    por uma instância da classe `RegisteredIssue` retornado por
+    `self.get_registered_issue_data`
+    # FIXME: refatorar
+    """
     def __init__(self, config, is_db_generation):
         self.config = config
         self.is_db_generation = is_db_generation
         self._db_manager = None
+        # quando as bases não estão disponíveis (fora do contexto do XC),
+        # é possível ter alguns dados de periódico usando um arquivo CSV
+        # disponível em http://static.scielo.org/sps/titles-tab-v2-utf-8.csv
         wsj = ws_journals.Journals(self.config.app_ws_requester)
         wsj.update_journals_file()
         self.journals_list = JournalsList(wsj.downloaded_journals_filename)
@@ -1588,14 +1607,16 @@ class RegisteredIssuesManager(object):
         return self._db_manager
 
     def get_registered_issue_data(self, pkgissuedata):
-        registered_issue = registered.RegisteredIssue()
+        registered_issue = RegisteredIssue()
         if self.is_db_generation:
+            # obter os dados das bases title e issue
             registered_issue.acron_issue_label, registered_issue.issue_models, registered_issue.issue_error_msg, pkgissuedata.journal, pkgissuedata.journal_data = self.db_manager.get_registered_data(pkgissuedata.pkg_journal_title, pkgissuedata.pkg_issue_label, pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn)
             ign, pkgissuedata._issue_label = registered_issue.acron_issue_label.split(' ')
             if registered_issue.issue_error_msg is None:
                 registered_issue.issue_files = self.db_manager.get_issue_files(registered_issue.issue_models)
                 registered_issue.articles_db_manager = ArticlesManager(self.db_manager.db_isis, registered_issue.issue_files)
         else:
+            # obter os dados do CSV
             pkgissuedata.journal = self.journals_list.get_journal(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
             pkgissuedata.journal_data = self.journals_list.get_journal_data(pkgissuedata.pkg_p_issn, pkgissuedata.pkg_e_issn, pkgissuedata.pkg_journal_title)
         return registered_issue
