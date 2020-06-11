@@ -122,8 +122,8 @@ class ArticlesConversion(object):
             pid_manager=pid_manager,
             issn_id=issue_models.issue.issn_id,
             year_and_order=issue_models.record.get("36"),
-            received_docs=self.merging_result.articles,
-            documents_in_isis=self.merging_result.registered_articles,
+            received_docs=self.pkg.articles,
+            documents_in_isis=self.registered_issue_data.registered_articles,
             file_paths=self.pkg.file_paths,
             update_article_with_aop_status=self.db.get_valid_aop,
         )
@@ -202,8 +202,8 @@ class ArticlesConversion(object):
         items = []
         db_articles = self.registered_articles or {}
         for xml_name in sorted(self.merging_result.history_items.keys()):
-            pkg = self.merging_result.articles.get(xml_name)
-            registered = self.merging_result.registered_articles.get(xml_name)
+            pkg = self.pkg.articles.get(xml_name)
+            registered = self.registered_issue_data.registered_articles.get(xml_name)
             merged = db_articles.get(xml_name)
 
             diff = ''
