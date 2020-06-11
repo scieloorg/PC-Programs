@@ -72,6 +72,10 @@ class IssueArticlesValidationsReports(object):
             r += self.registered_issue_data.issue_error_msg
         return r
 
+    @property
+    def individual_validations_report(self):
+        return self.pkg_validations_reports.detailed_report
+
 
 class DocsMergingReports(object):
 

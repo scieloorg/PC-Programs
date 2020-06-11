@@ -91,7 +91,7 @@ class ReportsMaker(object):
 
     @property
     def individual_validations_report(self):
-        return self.articles_validations_reports.pkg_validations_reports.detailed_report
+        return self.articles_validations_reports.individual_validations_report
 
     @property
     def aff_report(self):
