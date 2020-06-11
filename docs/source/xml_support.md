@@ -24,4 +24,3 @@ Lembre-se de dar o máximo de informação possível já no primeiro contato:
 - Informe se já funcionava antes e deixou de funcionar ou se é a primeira instalação
 - Mande arquivos para que simulemos os erros
 - Versão de Windows, Word e de PC Programs
-
