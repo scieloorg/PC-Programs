@@ -13,7 +13,7 @@ from prodtools.reports import validation_status
 from prodtools.validations import article_data_reports
 from prodtools.validations import validations as validations_module
 from prodtools.validations import reports_maker
-from prodtools.validations.merged_articles_validations import (
+from prodtools.validations.pkg_evaluation import (
     PackageEvaluator,
 )
 from prodtools.data import workarea
