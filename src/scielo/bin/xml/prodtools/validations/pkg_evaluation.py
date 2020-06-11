@@ -66,14 +66,14 @@ class PackageEvaluator(object):
         if not self.is_xml_generation:
             r += self.journal_and_issue_report
         if self.is_db_generation:
-            r += self.registered_issue_data.issue_error_msg
+            r += self.registered_issue_data.issue_error_msg or ''
         return r
 
     def evaluate(self):
         return PackageEvaluationResult(
             group_validations_report=self.group_validations_report,
             individual_validations_report=self.pkg_validations_reports.detailed_report,
-            blockingerror=self.blockingerror,
+            blocking_errors=self.blocking_errors,
             merging_result_reports=self.merging_reports.errors_reports,
             docs_merger=self.merging_reports.docs_merger
         )
@@ -82,16 +82,16 @@ class PackageEvaluator(object):
 class PackageEvaluationResult(object):
 
     def __init__(self, group_validations_report, individual_validations_report,
-                 blockingerror, merging_result_reports, doc_merger
+                 blocking_errors, merging_result_reports, docs_merger
                  ):
         self.group_validations_report = group_validations_report
         self.individual_validations_report = individual_validations_report
-        self.blockingerror = blockingerror
+        self.blocking_errors = blocking_errors
         self.merging_result_reports = merging_result_reports
-        self.excluded_orders = doc_merger.excluded_orders
-        self.accepted_articles = doc_merger.accepted_articles
-        self.history_items = doc_merger.history_items
-        self.merged_articles = doc_merger.merged_articles
+        self.excluded_orders = docs_merger.excluded_orders
+        self.accepted_articles = docs_merger.accepted_articles
+        self.history_items = docs_merger.history_items
+        self.merged_articles = docs_merger.merged_articles
 
 
 class DocsMergingReports(object):

@@ -88,7 +88,7 @@ class ArticlesConversion(object):
     def convert(self):
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
-        if self.validations_reports.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.pkg_eval_result.excluded_orders) > 0):
+        if self.pkg_eval_result.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.pkg_eval_result.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.pkg_eval_result.excluded_orders)
 
             _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.pkg_eval_result.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
@@ -244,7 +244,7 @@ class ArticlesConversion(object):
 
     @property
     def xc_status(self):
-        if self.validations_reports.blocking_errors > 0:
+        if self.pkg_eval_result.blocking_errors > 0:
             result = 'rejected'
         elif self.articles_conversion_validations.blocking_errors > 0:
             result = 'rejected'
