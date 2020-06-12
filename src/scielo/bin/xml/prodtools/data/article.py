@@ -551,9 +551,15 @@ class ArticleXML(object):
     def article_type_and_contrib_items(self):
         r = []
         for subart in self.translations:
-            r.append((subart.attrib.get('article-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
+            r.append(
+                (subart.attrib.get('article-type'),
+                    subart.findall('.//contrib/collab') +
+                    subart.findall('.//contrib/name')))
         for subart in self.responses:
-            r.append((subart.attrib.get('response-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
+            r.append(
+                (subart.attrib.get('response-type'),
+                    subart.findall('.//contrib/collab') +
+                    subart.findall('.//contrib/name')))
         return r
 
     def fn_list(self, node, scope):
