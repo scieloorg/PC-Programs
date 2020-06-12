@@ -506,16 +506,10 @@ class ArticleContentValidation(object):
     @property
     def contrib(self):
         r = []
-        messages = []
         for article_type, contribs in self.article.doctype_and_contribs_items:
-            if (article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC and
-                    len(contribs) == 0):
-                messages.append(
-                    _('{requirer} requires {required}. ').format(
-                      requirer=article_type,
-                      required=_('contrib names or collabs')))
-        for msg in messages:
-            r.append(('contrib', validation_status.STATUS_FATAL_ERROR, msg))
+            msg = self.validate_contrib_item(article_type, contribs)
+            if msg:
+                r.append(('contrib', validation_status.STATUS_FATAL_ERROR, msg))
         return r
 
     @property
@@ -527,26 +521,19 @@ class ArticleContentValidation(object):
                 ref_validations.PersonValidation(item, aff_ids).validate())
         return r
 
-    def validate_contrib_item(self):
-        sum_contrib_names_and_contrib_collabs = (
-            len(self.article.contrib_names) +
-            len(self.article.contrib_collabs)
-        )
-        messages = []
-        article_type = self.article.article_type
+    def validate_contrib_item(self, article_type, contribs):
         if article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
-            if sum_contrib_names_and_contrib_collabs == 0:
-                messages.append(
+            if len(contribs) == 0:
+                return (
                     _('{requirer} requires {required}. ').format(
                         requirer=article_type,
                         required=_('contrib names or collabs')))
-        elif article_type in attributes.AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC:
-            if sum_contrib_names_and_contrib_collabs > 0:
-                messages.append(
+        if article_type in attributes.AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC:
+            if len(contribs) > 0:
+                return (
                     _('{} must not have {}. ').format(
                       article_type,
                       _('contrib names or collabs')))
-        return messages
 
     @property
     def contrib_collabs(self):
