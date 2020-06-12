@@ -491,8 +491,7 @@ class ArticleXML(object):
             self.back = self.tree.find('.//back')
             self.translations = self.tree.findall('./sub-article[@article-type="translation"]')
             for s in self.tree.findall('./sub-article'):
-                if s.attrib.get('article-type') != 'translation':
-                    self.sub_articles.append(s)
+                self.sub_articles.append(s)
             self.responses = self.tree.findall('./response')
 
     @property
@@ -880,7 +879,7 @@ class ArticleXML(object):
         return k
 
     @property
-    def subarticle_keywords(self):
+    def translations_keywords(self):
         k = []
         for subart in self.translations:
             for node in subart.findall('.//kwd-group'):
@@ -891,7 +890,7 @@ class ArticleXML(object):
 
     @property
     def keywords(self):
-        return self.article_keywords + self.subarticle_keywords
+        return self.article_keywords + self.translations_keywords
 
     @property
     def contrib_names(self):
@@ -925,7 +924,6 @@ class ArticleXML(object):
             doc_and_contribs.append(
                 (self.tree.find(".").get("article-type"),
                  self.article_meta.findall('.//contrib')))
-
         if self.sub_articles is not None:
             for subart in self.sub_articles:
                 doc_and_contribs.append(
