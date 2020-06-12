@@ -520,9 +520,12 @@ class ArticleContentValidation(object):
     @property
     def contrib_names(self):
         r = []
-        aff_ids = [aff.id for aff in self.article.affiliations if aff.id is not None]
+        aff_ids = [aff.id
+                   for aff in self.article.affiliations
+                   if aff.id is not None]
         for item in self.article.contrib_names:
-            r.extend(ref_validations.PersonValidation(item, aff_ids).validate())
+            r.extend(
+                ref_validations.PersonValidation(item, aff_ids).validate())
         return r
 
     @property

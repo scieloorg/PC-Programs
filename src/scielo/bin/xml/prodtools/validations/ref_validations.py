@@ -106,12 +106,16 @@ class PersonValidation(object):
     def name_validation_result(self):
         r = []
         label = 'given-names'
-        result = data_validations.is_required_data(label, self.contrib.fname, validation_status.STATUS_WARNING)
+        result = data_validations.is_required_data(
+            label, self.contrib.fname, validation_status.STATUS_WARNING)
         label, status, msg = result
         if status == validation_status.STATUS_OK:
-            result = data_validations.invalid_terms_in_value(label, self.contrib.fname, ['_'], validation_status.STATUS_ERROR)
+            result = data_validations.invalid_terms_in_value(
+                label, self.contrib.fname,
+                ['_'], validation_status.STATUS_ERROR)
         r.append(result)
-        _test_number = data_validations.warn_unexpected_numbers(label, self.contrib.fname)
+        _test_number = data_validations.warn_unexpected_numbers(
+            label, self.contrib.fname)
         if _test_number is not None:
             r.append(_test_number)
         return r
@@ -120,16 +124,24 @@ class PersonValidation(object):
     def surname_validation_result(self):
         r = []
         label = 'surname'
-        label, status, msg = data_validations.is_required_data(label, self.contrib.surname)
+        label, status, msg = data_validations.is_required_data(
+            label, self.contrib.surname)
         if status == validation_status.STATUS_OK:
             msg = self.contrib.surname
             parts = self.contrib.surname.split(' ')
             if parts[-1] in attributes.identified_suffixes():
-                msg = _('{label} contains invalid {invalid_items_name}: {invalid_items}. ').format(label=u'<surname>{v}</surname>'.format(v=self.contrib.surname), invalid_items_name=_('terms'), invalid_items=parts[-1])
-                msg += _(u'{value} should be identified as {label}, if {term} is the surname, ignore this message. ').format(value=parts[-1], label=u' <suffix>' + parts[-1] + '</suffix>', term=parts[-1])
+                msg = _('{label} contains invalid {invalid_items_name}: {invalid_items}. ').format(
+                    label=u'<surname>{v}</surname>'.format(
+                        v=self.contrib.surname),
+                    invalid_items_name=_('terms'), invalid_items=parts[-1])
+                msg += _(u'{value} should be identified as {label}, if {term} is the surname, ignore this message. ').format(
+                    value=parts[-1],
+                    label=u' <suffix>' + parts[-1] + '</suffix>',
+                    term=parts[-1])
                 status = validation_status.STATUS_ERROR
                 r.append((label, status, msg))
-        _test_number = data_validations.warn_unexpected_numbers(label, self.contrib.surname)
+        _test_number = data_validations.warn_unexpected_numbers(
+            label, self.contrib.surname)
         if _test_number is not None:
             r.append(_test_number)
         return r
