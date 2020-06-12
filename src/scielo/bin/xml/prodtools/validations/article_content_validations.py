@@ -507,16 +507,18 @@ class ArticleContentValidation(object):
     def contrib(self):
         r = []
         messages = []
+        sum_contrib_names_and_contrib_collabs = (
+            len(self.article.contrib_names) +
+            len(self.article.contrib_collabs)
+        )
         if self.article.article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
-            if (len(self.article.contrib_names) == 0 and
-                    len(self.article.contrib_collabs) == 0):
+            if sum_contrib_names_and_contrib_collabs == 0:
                 messages.append(
                     _('{requirer} requires {required}. ').format(
                         requirer=self.article.article_type,
                         required=_('contrib names or collabs')))
         elif self.article.article_type in attributes.AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC:
-            if (len(self.article.contrib_names) +
-                    len(self.article.contrib_collabs)) > 0:
+            if sum_contrib_names_and_contrib_collabs > 0:
                 messages.append(
                     _('{} must not have {}. ').format(
                       self.article.article_type,
