@@ -523,12 +523,12 @@ class ArticleContentValidation(object):
                     _('{} must not have {}. ').format(
                       self.article.article_type,
                       _('contrib names or collabs')))
-        for item in self.article.article_type_and_contrib_items:
-            if (item[0] in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC and
-                    len(item[1]) == 0):
+        for article_type, contribs in self.article.doctype_and_contribs_items:
+            if (article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC and
+                    len(contribs) == 0):
                 messages.append(
                     _('{requirer} requires {required}. ').format(
-                      requirer=item[0],
+                      requirer=article_type,
                       required=_('contrib names or collabs')))
         for msg in messages:
             r.append(('contrib', validation_status.STATUS_FATAL_ERROR, msg))
