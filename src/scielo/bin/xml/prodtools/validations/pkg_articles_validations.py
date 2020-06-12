@@ -5,16 +5,20 @@ from prodtools.utils import utils
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
 from . import validations as validations_module
+from prodtools.validations.article_validations import PackageValidator
 from prodtools.data import attributes
 
 
 class PkgArticlesValidationsReports(object):
 
-    def __init__(self, pkg_articles_validations, is_db_generation=False):
+    def __init__(self, pkg, registered_issue_data, is_db_generation,
+                 is_xml_generation, config):
         self.consistency_validations = None
-        self.pkg_articles_validations = pkg_articles_validations
         self.is_db_generation = is_db_generation
         self.merged_articles_reports = None
+        pkg_validator = PackageValidator(
+            registered_issue_data, pkg, is_xml_generation, config)
+        self.pkg_articles_validations = pkg_validator.validate_package()
 
     @property
     def pkg_journal_validations(self):

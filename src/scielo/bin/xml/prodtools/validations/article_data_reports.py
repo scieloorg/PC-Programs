@@ -734,7 +734,7 @@ def article_history(history):
     r = []
 
     h = [_(status) for status in history]
-    r.append(html_reports.tag('div', html_reports.format_html_data_list(h), 'hist-' + history[0]))
+    r.append(html_reports.tag('div', html_reports.format_html_data_list(h), 'hist-' + history[-1]))
     return ''.join(r)
 
 

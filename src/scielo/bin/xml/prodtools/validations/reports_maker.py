@@ -14,8 +14,8 @@ from . import validations as validations_module
 
 class ReportsMaker(object):
 
-    def __init__(self, pkg, articles_validations_reports, files_location, stage, xpm_version=None, conversion=None):
-        self.articles_validations_reports = articles_validations_reports
+    def __init__(self, pkg, pkg_eval_result, files_location, stage, xpm_version=None, conversion=None):
+        self.pkg_eval_result = pkg_eval_result
         self.conversion = conversion
         self.xpm_version = xpm_version
         self.stage = stage
@@ -86,16 +86,12 @@ class ReportsMaker(object):
     @property
     def group_validations_report(self):
         r = self.pkg_reports.orphan_files_report + self.pkg_articles_data_report.invalid_xml_report
-        if not self.articles_validations_reports.is_xml_generation:
-            r += self.articles_validations_reports.journal_and_issue_report
-        if self.conversion is not None:
-            if self.articles_validations_reports.merged_articles_reports.registered_issue_data.issue_error_msg is not None:
-                r += self.articles_validations_reports.merged_articles_reports.registered_issue_data.issue_error_msg
+        r += self.pkg_eval_result.group_validations_report
         return r
 
     @property
     def individual_validations_report(self):
-        return self.articles_validations_reports.pkg_validations_reports.detailed_report
+        return self.pkg_eval_result.individual_validations_report
 
     @property
     def aff_report(self):
@@ -124,8 +120,7 @@ class ReportsMaker(object):
 
         r.append(html_reports.tag('h3', _('Conversion Result')))
         r.append(self.conversion.conclusion_message)
-        r.append(self.articles_validations_reports.merged_articles_reports.report_articles_data_conflicts)
-        r.append(self.articles_validations_reports.merged_articles_reports.report_articles_data_changes)
+        r.append(self.pkg_eval_result.merging_result_reports)
         r.append(self.conversion.aop_status_report)
         r.append(self.conversion.articles_conversion_validations.report())
         r.append(self.conversion.conversion_report)
