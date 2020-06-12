@@ -150,7 +150,7 @@ class PkgArticlesDataReports(object):
             evaluation[k] = []
 
         for xml_name, doc in self.pkg_articles.items():
-            aff_ids = [aff.id for aff in doc.affiliations]
+            aff_ids = doc.affiliations_ids
             for contrib in doc.contrib_names:
                 if len(contrib.xref) == 0:
                     evaluation[_('authors without aff')].append(xml_name)

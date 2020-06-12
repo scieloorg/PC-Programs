@@ -944,11 +944,15 @@ class ArticleXML(object):
         return contribs
 
     @property
+    def affiliations_ids(self):
+        return [aff.id for aff in self.affiliations if aff.id]
+
+    @property
     def authors_aff_xref_stats(self):
         with_aff = []
         no_aff = []
         mismatched_aff_id = []
-        aff_ids = [aff.id for aff in self.affiliations if aff.id is not None]
+        aff_ids = self.affiliations_ids
         for contrib in self.contrib_names:
             if len(contrib.xref) == 0:
                 no_aff.append(contrib)
