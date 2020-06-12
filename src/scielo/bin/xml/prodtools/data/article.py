@@ -547,21 +547,6 @@ class ArticleXML(object):
                 r.append({'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]': self.sections(item.find('.//body'))})
         return r
 
-    @property
-    def article_type_and_contrib_items(self):
-        r = []
-        for subart in self.translations:
-            r.append(
-                (subart.attrib.get('article-type'),
-                    subart.findall('.//contrib/collab') +
-                    subart.findall('.//contrib/name')))
-        for subart in self.responses:
-            r.append(
-                (subart.attrib.get('response-type'),
-                    subart.findall('.//contrib/collab') +
-                    subart.findall('.//contrib/name')))
-        return r
-
     def fn_list(self, node, scope):
         r = []
         if node is not None:
@@ -931,7 +916,8 @@ class ArticleXML(object):
     def doctype_and_contribs_items(self):
         """
         Retorna uma lista de tuplas, cujo conteúdo é:
-        (`article/@article-type` ou `sub-article/@article-type`,
+        (`article/@article-type` ou `sub-article/@article-type`
+         ou `response/@response-type`,
          lista de `contrib`)
         """
         doc_and_contribs = []
@@ -939,10 +925,17 @@ class ArticleXML(object):
             doc_and_contribs.append(
                 (self.tree.find(".").get("article-type"),
                  self.article_meta.findall('.//contrib')))
+
         if self.sub_articles is not None:
             for subart in self.sub_articles:
                 doc_and_contribs.append(
                     (subart.get("article-type"), subart.findall('.//contrib')))
+
+        for subart in self.responses:
+            doc_and_contribs.append(
+                (subart.attrib.get('response-type'),
+                    subart.findall('.//contrib')))
+
         return doc_and_contribs
 
     @property
