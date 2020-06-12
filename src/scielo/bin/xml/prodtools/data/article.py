@@ -922,6 +922,24 @@ class ArticleXML(object):
         return k
 
     @property
+    def doctype_and_contribs_items(self):
+        """
+        Retorna uma lista de tuplas, cujo conteúdo é:
+        (`article/@article-type` ou `sub-article/@article-type`,
+         lista de `contrib`)
+        """
+        doc_and_contribs = []
+        if self.article_meta is not None:
+            doc_and_contribs.append(
+                (self.tree.find(".").get("article-type"),
+                 self.article_meta.findall('.//contrib')))
+        if self.sub_articles is not None:
+            for subart in self.sub_articles:
+                doc_and_contribs.append(
+                    (subart.get("article-type"), subart.findall('.//contrib')))
+        return doc_and_contribs
+
+    @property
     def article_contrib_items(self):
         k = []
         if self.article_meta is not None:
