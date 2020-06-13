@@ -74,6 +74,22 @@ DOCTOPIC = {
 
 DOCTOPIC_IN_USE = DOCTOPIC.keys()
 
+PEER_REVIEW_DOCTOPICS = [
+    'aggregated-review-documents',
+    'referee-report',
+    'editor-report',
+    'author-comment',
+    'community-comment',
+    'recommendation',
+]
+
+PEER_REVIEW_CONTRIB_ROLES_FOR_ANON = [
+    'reviewer',
+    'reader',
+    'author',
+    'editor',
+]
+
 # para todos INDEXABLE validar aff, contrib, xref, ref
 INDEXABLE = [
     'research-article',
@@ -109,7 +125,6 @@ INDEXABLE_BUT_EXCEPTION = [
     'retraction',
     'partial-retraction',
 ]
-
 
 INDEXABLE_MINUS_EXCEPTIONS = list(set(INDEXABLE)-set(INDEXABLE_BUT_EXCEPTION))
 

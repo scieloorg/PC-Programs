@@ -507,9 +507,10 @@ class ArticleContentValidation(object):
     def contrib(self):
         r = []
         for article_type, contribs in self.article.doctype_and_contribs_items:
-            msg = self.validate_contrib_item(article_type, contribs)
-            if msg:
-                r.append(('contrib', validation_status.STATUS_FATAL_ERROR, msg))
+            msgs = self.validate_contrib_item(article_type, contribs)
+            for msg in msgs or []:
+                r.append(
+                    ('contrib', validation_status.STATUS_FATAL_ERROR, msg))
         return r
 
     @property
@@ -524,16 +525,39 @@ class ArticleContentValidation(object):
     def validate_contrib_item(self, article_type, contribs):
         if article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
             if len(contribs) == 0:
-                return (
+                return [
                     _('{requirer} requires {required}. ').format(
                         requirer=article_type,
-                        required=_('contrib names or collabs')))
+                        required=_('contrib names or collabs'))]
         if article_type in attributes.AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC:
             if len(contribs) > 0:
-                return (
+                return [
                     _('{} must not have {}. ').format(
                       article_type,
-                      _('contrib names or collabs')))
+                      _('contrib names or collabs'))]
+        if article_type in attributes.PEER_REVIEW_DOCTOPICS:
+            msgs = []
+            for i, contrib in enumerate(contribs):
+                if contrib.find("anonymous") is not None:
+                    msgs += self.validate_peer_review_contrib_anon(
+                        article_type, i, contrib)
+            return msgs
+
+    def validate_peer_review_contrib_anon(self, article_type, i, contrib):
+        msgs = []
+        expected_values = ", ".join(attributes.PEER_REVIEW_CONTRIB_ROLES_FOR_ANON)
+        role = contrib.find("role")
+        if role is None:
+            msgs.append(_('contrib[{}] in {} must have "role"'.format(
+                i, article_type
+            )))
+            return msgs
+        if role.get("specific-use") not in attributes.PEER_REVIEW_CONTRIB_ROLES_FOR_ANON:
+            msgs.append(
+                _('contrib[{}] in {} must have "role/@specific-use". '
+                    'Expected values: {}. '.format(
+                        i, article_type, expected_values)))
+            return msgs
 
     @property
     def contrib_collabs(self):
