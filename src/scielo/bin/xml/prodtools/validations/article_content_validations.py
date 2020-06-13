@@ -166,68 +166,67 @@ class ArticleContentValidation(object):
     def validations(self):
         if self._validations is None:
             performance = []
-            #encoding.debugging(datetime.now().isoformat() + ' validations 1')
-            items = []
-            items.append(self.sps)
-            items.append(self.expiration_sps)
-            items.append(self.language)
-            items.append(self.languages)
-            items.append(self.article_type)
+            items = [
+                self.sps,
+                self.expiration_sps,
+                self.language,
+                self.languages,
+                self.article_type,
+            ]
 
             if self.article.article_meta is None:
                 items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='journal-meta')))
-            else:
-                items.append(self.journal_title)
-                items.append(self.publisher_name)
-                items.append(self.journal_id_publisher_id)
-                items.append(self.journal_id_nlm_ta)
-                items.append(self.journal_issns)
-
-            if self.article.article_meta is None:
                 items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='article-meta')))
             else:
-                items.append(self.months_seasons)
-                items.append(self.issue_label)
-                items.append(self.article_date_types)
-                items.append(self.toc_section)
-                items.append(self.doi)
-                items.append(self.doi_and_lang)
-                items.append(self.article_id)
-                items.append(self.pagination)
+                items.extend([
+                    self.journal_title,
+                    self.publisher_name,
+                    self.journal_id_publisher_id,
+                    self.journal_id_nlm_ta,
+                    self.journal_issns,
+                    self.months_seasons,
+                    self.issue_label,
+                    self.article_date_types,
+                    self.toc_section,
+                    self.doi,
+                    self.doi_and_lang,
+                    self.article_id,
+                    self.pagination,
+                ])
                 if self.is_db_generation:
                     items.append(self.article_id_other)
                     items.append(self.order)
-                items.append(self.total_of_pages)
-                items.append(self.total_of_equations)
-                items.append(self.total_of_tables)
-                items.append(self.total_of_figures)
-                items.append(self.total_of_references)
-                items.append(self.ref_display_only_stats)
-                items.append(self.contrib)
-                items.append(self.contrib_id)
-                items.append(self.contrib_names)
-                items.append(self.contrib_collabs)
-                items.append(self.affiliations)
-                items.append(self.funding)
-                items.append(self.article_permissions)
-                items.append(self.history)
-                items.append(self.titles_abstracts_keywords)
+                items.extend([
+                    self.total_of_pages,
+                    self.total_of_equations,
+                    self.total_of_tables,
+                    self.total_of_figures,
+                    self.total_of_references,
+                    self.ref_display_only_stats,
+                    self.contrib,
+                    self.contrib_id,
+                    self.contrib_names,
+                    self.contrib_collabs,
+                    self.affiliations,
+                    self.funding,
+                    self.article_permissions,
+                    self.history,
+                    self.titles_abstracts_keywords,
+                    self.related_articles,
+                ])
 
-                items.append(self.related_articles)
-
-            items.append(self.sections)
-            items.append(self.paragraphs)
-            items.append(self.disp_formulas_validator.validate(self.article))
-            items.append(self.tablewrap_validator.validate(self.article))
-            items.append(self.validate_xref_reftype)
-            items.append(self.missing_xref_list)
-            #items.append(self.innerbody_elements_permissions)
-
-            items.append(self.refstats)
-            items.append(self.refs_sources)
-
+            items.extend([
+                self.sections,
+                self.paragraphs,
+                self.disp_formulas_validator.validate(self.article),
+                self.tablewrap_validator.validate(self.article),
+                self.validate_xref_reftype,
+                self.missing_xref_list,
+                self.refstats,
+                self.refs_sources,
+            ])
             r = self.normalize_validations(items)
-            encoding.debugging('fim normalize_validations', '')
+
             self._validations = (r, performance)
         return self._validations
 
