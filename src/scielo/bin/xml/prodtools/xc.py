@@ -8,6 +8,7 @@ from tempfile import mkdtemp
 from datetime import datetime
 
 from prodtools import _
+from packtools.utils import SPPackage
 
 try:
     from prodtools import form
@@ -132,6 +133,16 @@ class Reception(object):
         self.convert_package(package_path)
         return 'done', 'blue'
 
+    def _create_package_instance(self, source: str, output: str) -> SPPackage:
+        """Cria instância da classe SPPackage para o pacote de entrada"""
+
+        try:
+            package_maker = PackageMaker(source, output)
+            package = package_maker.pack()
+        except Exception as exc:
+            raise ScieloPackageError(exc) from None
+        return package
+
     def convert_package(self, package_path):
         if package_path is None:
             return False
@@ -146,9 +157,9 @@ class Reception(object):
 
         output_path = mkdtemp()
 
-        pkg_maker = PackageMaker(xml_path, output_path)
-        pkg = pkg_maker.pack()
+        pkg = self._create_package_instance(source=xml_path, output=output_path)
         pkg_name = pkg.package_folder.name
+
         try:
             result = self.proc.convert_package(pkg)
             scilista_items, xc_status, mail_info = result
