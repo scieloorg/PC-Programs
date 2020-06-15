@@ -1,30 +1,11 @@
 # coding=utf-8
 
-from datetime import datetime
-
 from prodtools import _
 from prodtools import TABLES_PATH
-from prodtools.data import article_utils
 from prodtools.utils.fs_utils import read_file
 from prodtools.reports import validation_status
 from prodtools.reports import html_reports
 
-
-SPS_expiration_dates = [
-    ('sps-1.9', ['20190301', '20210401']),
-    ('sps-1.8', ['20180301', '20200401']),
-    ('sps-1.7', ['20171001', '20181001']),
-    ('sps-1.6', ['20170401', '20180401']),
-    ('sps-1.5', ['20161001', '20171001']),
-    ('sps-1.4', ['20160401', '20170401']),
-    ('sps-1.3', ['20150901', '20160901']),
-    ('sps-1.2', ['20150301', '20160301']),
-    ('sps-1.1', ['20140901', '20150901']),
-    ('sps-1.0', ['20140301', '20150301']),
-    ('None', ['00000000', '20140901']),
-]
-
-dict_SPS_expiration_dates = dict(SPS_expiration_dates)
 
 REFTYPE_AND_TAG_ITEMS = {'aff': ['aff'], 'app': ['app'], 'author-notes': ['fn'], 'bibr': ['ref'], 'boxed-text': ['boxed-text'], 'contrib': ['fn'], 'corresp': ['corresp'], 'disp-formula': ['disp-formula'], 
             'fig': ['fig', 'fig-group'], 
@@ -572,33 +553,6 @@ def check_lang(lang):
         return (True, LANGUAGES.get(lang))
     else:
         return (False, _('{value} is an invalid value for {label}. ').format(value=lang, label='@xml:lang') + _('Expected values: {expected}. ').format(expected=', '.join(sorted(LANGUAGES.keys())) + '. ' + ' | '.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()]))))
-
-
-def expected_sps_versions(article_dateiso):
-    if article_dateiso <= SPS_expiration_dates[-1][1][0]:
-        # qualquer versao
-        return [item[0] for item in SPS_expiration_dates]
-
-    valid_versions = []
-    for version, dates in SPS_expiration_dates:
-        if dates[0] <= article_dateiso <= dates[1]:
-            valid_versions.append(version)
-    return valid_versions
-
-
-def sps_current_versions():
-    return [item[0] for item in SPS_expiration_dates[:2]]
-
-
-def sps_version_expiration_days(sps_version):
-    days = None
-    sps_dates = dict_SPS_expiration_dates.get(sps_version)
-    if sps_dates is not None:
-        sps_dates = article_utils.dateiso2datetime(sps_dates[1])
-        now = datetime.now()
-        diff = sps_dates - now
-        days = diff.days
-    return days
 
 
 def validate_article_type_and_section(article_type, article_section, has_abstract):

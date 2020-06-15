@@ -309,35 +309,14 @@ class ArticleContentValidation(object):
         status = validation_status.STATUS_INFO
         msg = version
 
-        if version in attributes.sps_current_versions():
+        if version in xml_versions.SPS_VERSIONS.keys():
             return [(label, status, msg)]
 
-        pub_dateiso = self.article.real_pubdate or self.article.expected_pubdate
-        if pub_dateiso is None:
-            return [(label, validation_status.STATUS_ERROR, _('Unable to validate sps version because article has no publication date. '))]
-        pub_dateiso = article_utils.format_dateiso(pub_dateiso)
-
-        expected_versions = list(set(attributes.expected_sps_versions(pub_dateiso) + attributes.sps_current_versions()))
-        expected_versions.sort()
-
-        if version in expected_versions:
-            status = validation_status.STATUS_INFO
-            msg = _('For articles published on {pubdate}, {sps_version} is valid. ').format(pubdate=utils.display_datetime(pub_dateiso, None), sps_version=version)
-        else:
-            status = validation_status.STATUS_ERROR
-            msg = _('For articles published on {pubdate}, {sps_version} is not valid. ').format(pubdate=utils.display_datetime(pub_dateiso, None), sps_version=version) + _('Expected SPS versions for this article: {sps_versions}. ').format(sps_versions=_(' or ').join(expected_versions))
+        status = validation_status.STATUS_BLOCKING_ERROR
+        msg = _("{}. Expected values: {}").format(
+            version,
+            ", ".join(list(xml_versions.SPS_VERSIONS.keys())))
         return [(label, status, msg)]
-
-    @property
-    def expiration_sps(self):
-        version = str(self.article.sps)
-        days = attributes.sps_version_expiration_days(version)
-        if days is None:
-            return [(_('sps expiration date'), validation_status.STATUS_WARNING, _('Unable to identify expiration date of SPS version={version}. ').format(version=version))]
-        if days < 0:
-            return [(_('sps expiration date'), validation_status.STATUS_INFO, _('{version} has expired {days} days ago. ').format(version=version, days=-1 * days))]
-        if days > 0:
-            return [(_('sps expiration date'), validation_status.STATUS_INFO, _('{version} expires in {days} days. ').format(version=version, days=days))]
 
     @property
     def language(self):
