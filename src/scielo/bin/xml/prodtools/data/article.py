@@ -724,11 +724,8 @@ class ArticleXML(object):
         if version_number is not None:
             if 'sps-' in version_number:
                 version_number = version_number[4:]
-            if version_number.replace('.', '').isdigit():
-                parts = version_number.split('.')
-                if len(parts) == 2:
-                    return float(version_number)
-                return float(parts[0]+'.'+''.join(parts[1:]))
+            numbers = [int(n) for n in version_number.split(".")]
+            return tuple(numbers)
 
     @property
     def article_type(self):
