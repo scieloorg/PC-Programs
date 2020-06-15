@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 
 from prodtools import _
+from prodtools.utils import xml_utils
 from prodtools.utils import img_utils
 from prodtools.utils import utils
 from prodtools.utils import encoding
@@ -166,68 +167,67 @@ class ArticleContentValidation(object):
     def validations(self):
         if self._validations is None:
             performance = []
-            #encoding.debugging(datetime.now().isoformat() + ' validations 1')
-            items = []
-            items.append(self.sps)
-            items.append(self.expiration_sps)
-            items.append(self.language)
-            items.append(self.languages)
-            items.append(self.article_type)
+            items = [
+                self.sps,
+                self.expiration_sps,
+                self.language,
+                self.languages,
+                self.article_type,
+            ]
 
             if self.article.article_meta is None:
                 items.append(('journal-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='journal-meta')))
-            else:
-                items.append(self.journal_title)
-                items.append(self.publisher_name)
-                items.append(self.journal_id_publisher_id)
-                items.append(self.journal_id_nlm_ta)
-                items.append(self.journal_issns)
-
-            if self.article.article_meta is None:
                 items.append(('article-meta', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='article-meta')))
             else:
-                items.append(self.months_seasons)
-                items.append(self.issue_label)
-                items.append(self.article_date_types)
-                items.append(self.toc_section)
-                items.append(self.doi)
-                items.append(self.doi_and_lang)
-                items.append(self.article_id)
-                items.append(self.pagination)
+                items.extend([
+                    self.journal_title,
+                    self.publisher_name,
+                    self.journal_id_publisher_id,
+                    self.journal_id_nlm_ta,
+                    self.journal_issns,
+                    self.months_seasons,
+                    self.issue_label,
+                    self.article_date_types,
+                    self.toc_section,
+                    self.doi,
+                    self.doi_and_lang,
+                    self.article_id,
+                    self.pagination,
+                ])
                 if self.is_db_generation:
                     items.append(self.article_id_other)
                     items.append(self.order)
-                items.append(self.total_of_pages)
-                items.append(self.total_of_equations)
-                items.append(self.total_of_tables)
-                items.append(self.total_of_figures)
-                items.append(self.total_of_references)
-                items.append(self.ref_display_only_stats)
-                items.append(self.contrib)
-                items.append(self.contrib_id)
-                items.append(self.contrib_names)
-                items.append(self.contrib_collabs)
-                items.append(self.affiliations)
-                items.append(self.funding)
-                items.append(self.article_permissions)
-                items.append(self.history)
-                items.append(self.titles_abstracts_keywords)
+                items.extend([
+                    self.total_of_pages,
+                    self.total_of_equations,
+                    self.total_of_tables,
+                    self.total_of_figures,
+                    self.total_of_references,
+                    self.ref_display_only_stats,
+                    self.contrib,
+                    self.contrib_id,
+                    self.contrib_names,
+                    self.contrib_collabs,
+                    self.affiliations,
+                    self.funding,
+                    self.article_permissions,
+                    self.history,
+                    self.titles_abstracts_keywords,
+                    self.related_articles,
+                ])
 
-                items.append(self.related_articles)
-
-            items.append(self.sections)
-            items.append(self.paragraphs)
-            items.append(self.disp_formulas_validator.validate(self.article))
-            items.append(self.tablewrap_validator.validate(self.article))
-            items.append(self.validate_xref_reftype)
-            items.append(self.missing_xref_list)
-            #items.append(self.innerbody_elements_permissions)
-
-            items.append(self.refstats)
-            items.append(self.refs_sources)
-
+            items.extend([
+                self.sections,
+                self.paragraphs,
+                self.disp_formulas_validator.validate(self.article),
+                self.tablewrap_validator.validate(self.article),
+                self.validate_xref_reftype,
+                self.missing_xref_list,
+                self.refstats,
+                self.refs_sources,
+            ])
             r = self.normalize_validations(items)
-            encoding.debugging('fim normalize_validations', '')
+
             self._validations = (r, performance)
         return self._validations
 
@@ -506,24 +506,65 @@ class ArticleContentValidation(object):
     @property
     def contrib(self):
         r = []
-        if self.article.article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
-            if len(self.article.contrib_names) == 0 and len(self.article.contrib_collabs) == 0:
-                r.append(('contrib', validation_status.STATUS_FATAL_ERROR,  _('{requirer} requires {required}. ').format(requirer=self.article.article_type, required=_('contrib names or collabs'))))
-        elif self.article.article_type in attributes.AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC:
-            if len(self.article.contrib_names) + len(self.article.contrib_collabs) > 0:
-                r.append(('contrib', validation_status.STATUS_FATAL_ERROR,  _('{} must not have {}. ').format(self.article.article_type, _('contrib names or collabs'))))
-        for item in self.article.article_type_and_contrib_items:
-            if item[0] in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC and len(item[1]) == 0:
-                r.append(('contrib', validation_status.STATUS_FATAL_ERROR, _('{requirer} requires {required}. ').format(requirer=item[0], required=_('contrib names or collabs'))))
+        for doc, contribs in self.article.doc_and_contribs_items:
+            msgs = self.validate_contrib_item(doc, contribs)
+            for msg in msgs or []:
+                r.append(
+                    ('contrib', validation_status.STATUS_FATAL_ERROR, msg,
+                        xml_utils.tostring(contribs[0].getparent())))
         return r
 
     @property
     def contrib_names(self):
         r = []
-        aff_ids = [aff.id for aff in self.article.affiliations if aff.id is not None]
+        aff_ids = self.article.affiliations_ids
         for item in self.article.contrib_names:
-            r.extend(ref_validations.PersonValidation(item, aff_ids).validate())
+            r.extend(
+                ref_validations.PersonValidation(item, aff_ids).validate())
         return r
+
+    def validate_contrib_item(self, doc, contribs):
+        if doc.get("id"):
+            article_info = doc.tag + "({})".format(doc.get("id"))
+        else:
+            article_info = "article"
+        article_type = doc.get("article-type") or doc.get("response-type")
+        if article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
+            if len(contribs) == 0:
+                return [
+                    _('{requirer} requires {required}. ').format(
+                        requirer=article_info,
+                        required=_('contrib names or collabs'))]
+        if article_type in attributes.AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC:
+            if len(contribs) > 0:
+                return [
+                    _('{} must not have {}. ').format(
+                      article_info,
+                      _('contrib names or collabs'))]
+        if article_type in attributes.PEER_REVIEW_DOCTOPICS:
+            msgs = []
+            for i, contrib in enumerate(contribs):
+                if contrib.find("anonymous") is not None:
+                    msgs += self.validate_peer_review_contrib_anon(
+                        article_info, i, contrib)
+            return msgs
+
+    def validate_peer_review_contrib_anon(self, article_info, i, contrib):
+        msgs = []
+        role = contrib.find("role")
+        if role is None:
+            msgs.append(_('contrib[{}] in {} must have "role"'.format(
+                i, article_info
+            )))
+            return msgs
+        if role.get("specific-use") not in attributes.PEER_REVIEW_CONTRIB_ROLES_FOR_ANON:
+            expected_values = ", ".join(
+                attributes.PEER_REVIEW_CONTRIB_ROLES_FOR_ANON)
+            msgs.append(
+                _('contrib[{}] in {} must have "role/@specific-use". '
+                    'Expected values: {}. '.format(
+                        i, article_info, expected_values)))
+        return msgs
 
     @property
     def contrib_collabs(self):

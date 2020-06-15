@@ -491,8 +491,7 @@ class ArticleXML(object):
             self.back = self.tree.find('.//back')
             self.translations = self.tree.findall('./sub-article[@article-type="translation"]')
             for s in self.tree.findall('./sub-article'):
-                if s.attrib.get('article-type') != 'translation':
-                    self.sub_articles.append(s)
+                self.sub_articles.append(s)
             self.responses = self.tree.findall('./response')
 
     @property
@@ -545,15 +544,6 @@ class ArticleXML(object):
         if self.translations is not None:
             for item in self.translations:
                 r.append({'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]': self.sections(item.find('.//body'))})
-        return r
-
-    @property
-    def article_type_and_contrib_items(self):
-        r = []
-        for subart in self.translations:
-            r.append((subart.attrib.get('article-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
-        for subart in self.responses:
-            r.append((subart.attrib.get('response-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
         return r
 
     def fn_list(self, node, scope):
@@ -889,7 +879,7 @@ class ArticleXML(object):
         return k
 
     @property
-    def subarticle_keywords(self):
+    def translations_keywords(self):
         k = []
         for subart in self.translations:
             for node in subart.findall('.//kwd-group'):
@@ -900,7 +890,7 @@ class ArticleXML(object):
 
     @property
     def keywords(self):
-        return self.article_keywords + self.subarticle_keywords
+        return self.article_keywords + self.translations_keywords
 
     @property
     def contrib_names(self):
@@ -920,6 +910,31 @@ class ArticleXML(object):
                 k.append(ContribXML(contrib).contrib())
             return [item for item in k if item is not None]
         return k
+
+    @property
+    def doc_and_contribs_items(self):
+        """
+        Retorna uma lista de tuplas, cujo conteúdo é:
+        (`article/@article-type` ou `sub-article/@article-type`
+         ou `response/@response-type`,
+         lista de `contrib`)
+        """
+        doc_and_contribs = []
+        if self.article_meta is not None:
+            doc_and_contribs.append(
+                (self.tree.find("."),
+                 self.article_meta.findall('.//contrib')))
+        if self.sub_articles is not None:
+            for subart in self.sub_articles:
+                doc_and_contribs.append(
+                    (subart, subart.findall('.//contrib')))
+
+        for response in self.responses:
+            doc_and_contribs.append(
+                (response.attrib.get('response-type'),
+                    response.findall('.//contrib')))
+
+        return doc_and_contribs
 
     @property
     def article_contrib_items(self):
@@ -944,11 +959,15 @@ class ArticleXML(object):
         return contribs
 
     @property
+    def affiliations_ids(self):
+        return [aff.id for aff in self.affiliations if aff.id]
+
+    @property
     def authors_aff_xref_stats(self):
         with_aff = []
         no_aff = []
         mismatched_aff_id = []
-        aff_ids = [aff.id for aff in self.affiliations if aff.id is not None]
+        aff_ids = self.affiliations_ids
         for contrib in self.contrib_names:
             if len(contrib.xref) == 0:
                 no_aff.append(contrib)
