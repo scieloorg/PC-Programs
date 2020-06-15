@@ -157,25 +157,36 @@ class Reception(object):
 
         output_path = mkdtemp()
 
-        pkg = self._create_package_instance(source=xml_path, output=output_path)
-        pkg_name = pkg.package_folder.name
-
         try:
-            result = self.proc.convert_package(pkg)
-            scilista_items, xc_status, mail_info = result
-        except Exception as e:
+            package = self._create_package_instance(source=xml_path, output=output_path)
+            scilista_items, xc_status, mail_info = self.proc.convert_package(package)
+        except ScieloPackageError:
+            self.inform_failure(
+                package_path,
+                "Could not create package from source path '%s'." % package_path,
+            )
             if self.config.queue_path is not None:
                 fs_utils.delete_file_or_folder(package_path)
-            self.inform_failure(pkg_name, e)
-            raise e
+        except Exception:
+            self.inform_failure(
+                package_path, "Could not convert package '%s'." % package_path
+            )
+            if self.config.queue_path is not None:
+                fs_utils.delete_file_or_folder(package_path)
         else:
-            if len(scilista_items) > 0:
-                acron, issue_id = scilista_items[0].split(' ')
-                if xc_status in ['accepted', 'approved']:
-                    self._update_scilista(pkg_name, scilista_items)
-                    self._update_website_files(pkg_name, acron, issue_id)
-                self._mail_results(pkg_name, mail_info)
-                self._update_report_files(pkg_name, acron, issue_id)
+            if scilista_items is None or len(scilista_items) == 0:
+                logger.debug("The scilista is empty. Skipping website update, report step and email sending.")
+                return None
+
+            package_name = package.package_folder.name
+            acron, issue_id = scilista_items[0].split(" ")
+
+            if xc_status in ["accepted", "approved"]:
+                self._update_scilista(package_name, scilista_items)
+                self._update_website_files(package_name, acron, issue_id)
+
+            self._mail_results(package_name, mail_info)
+            self._update_report_files(package_name, acron, issue_id)
         finally:
             fs_utils.delete_file_or_folder(output_path)
 
