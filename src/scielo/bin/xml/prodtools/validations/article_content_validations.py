@@ -252,9 +252,9 @@ class ArticleContentValidation(object):
         errors = []
         warnings = []
         if self.article.article_type in attributes.INDEXABLE:
-            if self.article.article_type not in attributes.INDEXABLE_BUT_EXCEPTION \
+            if self.article.article_type not in attributes.INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF \
                     and not self.article.is_provisional:
-                check = attributes.INDEXABLE_EXCEPTIONS.get(
+                check = attributes.INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS.get(
                     self.article.article_type,
                     ['contrib', 'aff', 'xref (bibr)', 'ref']
                 )

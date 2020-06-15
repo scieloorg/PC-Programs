@@ -71,7 +71,7 @@ PEER_REVIEW_CONTRIB_ROLES_FOR_ANON = [
     'editor',
 ]
 
-# para todos INDEXABLE validar aff, contrib, xref, ref
+# para todos INDEXABLE exigir aff, contrib, xref, ref
 INDEXABLE = [
     'research-article',
     'article-commentary',
@@ -94,30 +94,29 @@ INDEXABLE = [
     'obituary',
     'reply',
     'data-article',
+    'aggregated-review-documents',
 ]
 
-INDEXABLE_EXCEPTIONS = {
+# para todos INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS exigir aff?, contrib?, xref?, ref?
+INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS = {
     'editorial': ['aff', 'contrib'],
-    'other': [],
 }
 
-INDEXABLE_BUT_EXCEPTION = [
+INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF = [
     'correction',
     'retraction',
     'partial-retraction',
+    'other',
 ]
-
-INDEXABLE_MINUS_EXCEPTIONS = list(set(INDEXABLE)-set(INDEXABLE_BUT_EXCEPTION))
-
 
 HISTORY_REQUIRED_FOR_DOCTOPIC = [
     'case-report', 
     'research-article',    
 ]
 
-AUTHORS_REQUIRED_FOR_DOCTOPIC = INDEXABLE_MINUS_EXCEPTIONS
+AUTHORS_REQUIRED_FOR_DOCTOPIC = list(set(INDEXABLE)-set(INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF))
 
-AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC = INDEXABLE_BUT_EXCEPTION
+AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC = INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF
 
 ABSTRACT_REQUIRED_FOR_DOCTOPIC = [
     'brief-report', 
@@ -133,7 +132,10 @@ ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
     'other', 
     ]
 
-REFS_REQUIRED_FOR_DOCTOPIC = list(set(INDEXABLE_MINUS_EXCEPTIONS) - {'editorial'})
+REFS_REQUIRED_FOR_DOCTOPIC = list(
+    set(INDEXABLE) -
+    set(INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF) -
+    {'editorial'})
 
 TOC_SECTIONS = { 
     u'carta': u'letter', 
