@@ -4,7 +4,8 @@ import logging.config
 import argparse
 import os
 import shutil
-from tempfile import mkdtemp
+
+from tempfile import TemporaryDirectory
 from datetime import datetime
 
 from prodtools import _
@@ -155,40 +156,33 @@ class Reception(object):
         mail_info = "subject", "message"
         result = scilista_items, xc_status, mail_info
 
-        output_path = mkdtemp()
+        with TemporaryDirectory() as output_path:
+            try:
+                package = self._create_package_instance(source=xml_path, output=output_path)
+                scilista_items, xc_status, mail_info = self.proc.convert_package(package)
+            except ScieloPackageError:
+                self.inform_failure(
+                    package_path,
+                    "Could not create package from source path '%s'." % package_path,
+                )
+            except Exception:
+                self.inform_failure(
+                    package_path, "Could not convert package '%s'." % package_path
+                )
+            else:
+                if scilista_items is None or len(scilista_items) == 0:
+                    logger.debug("The scilista is empty. Skipping website update, report step and email sending.")
+                    return None
 
-        try:
-            package = self._create_package_instance(source=xml_path, output=output_path)
-            scilista_items, xc_status, mail_info = self.proc.convert_package(package)
-        except ScieloPackageError:
-            self.inform_failure(
-                package_path,
-                "Could not create package from source path '%s'." % package_path,
-            )
-            if self.config.queue_path is not None:
-                fs_utils.delete_file_or_folder(package_path)
-        except Exception:
-            self.inform_failure(
-                package_path, "Could not convert package '%s'." % package_path
-            )
-            if self.config.queue_path is not None:
-                fs_utils.delete_file_or_folder(package_path)
-        else:
-            if scilista_items is None or len(scilista_items) == 0:
-                logger.debug("The scilista is empty. Skipping website update, report step and email sending.")
-                return None
+                package_name = package.package_folder.name
+                acron, issue_id = scilista_items[0].split(" ")
 
-            package_name = package.package_folder.name
-            acron, issue_id = scilista_items[0].split(" ")
+                if xc_status in ["accepted", "approved"]:
+                    self._update_scilista(package_name, scilista_items)
+                    self._update_website_files(package_name, acron, issue_id)
 
-            if xc_status in ["accepted", "approved"]:
-                self._update_scilista(package_name, scilista_items)
-                self._update_website_files(package_name, acron, issue_id)
-
-            self._mail_results(package_name, mail_info)
-            self._update_report_files(package_name, acron, issue_id)
-        finally:
-            fs_utils.delete_file_or_folder(output_path)
+                self._mail_results(package_name, mail_info)
+                self._update_report_files(package_name, acron, issue_id)
 
         encoding.display_message(_('finished'))
 
