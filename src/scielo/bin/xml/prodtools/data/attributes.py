@@ -586,15 +586,19 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
         if has_abstract is True:
             suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
         else:
-            suggestions = [item for item in DOCTOPIC_IN_USE if item not in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
+            suggestions = [item
+                           for item in DOCTOPIC_IN_USE
+                           if item not in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
     if article_type not in suggestions:
         suggestions_msg = _('Maybe {} is not a valid value for {}. ').format(
             article_type,
             '@article-type')
-        suggestions_msg += _('Suggested values: {}. ').format(_(' or ').join(suggestions))
+        suggestions_msg += _('Suggested values: {}. ').format(
+            _(' or ').join(suggestions))
         elem1 = '@article-type' + ' ({}) '.format(article_type)
         elem2 = 'subject' + ' (' + article_section + ')'
-        msg = _('Be sure that the elements {elem1} and {elem2} are properly identified. ').format(
+        msg = _('Be sure that the elements {elem1} and {elem2} '
+                'are properly identified. ').format(
                     elem1=elem1, elem2=elem2)
         results.append(('@article-type', status, msg + suggestions_msg))
     return results
