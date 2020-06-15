@@ -38,6 +38,7 @@ class Entity2Char:
         ('&#x3C;', '<REPLACEENT>lt</REPLACEENT>'),
         ('&#60;', '<REPLACEENT>lt</REPLACEENT>'),
         ('&lt;', '<REPLACEENT>lt</REPLACEENT>'),
+        ('&amp;lt;', '<REPLACEENT>lt</REPLACEENT>'),
     )
     GT = (
         ('&#x0003E;', '<REPLACEENT>gt</REPLACEENT>'),
@@ -46,6 +47,7 @@ class Entity2Char:
         ('&#x3E;', '<REPLACEENT>gt</REPLACEENT>'),
         ('&#62;', '<REPLACEENT>gt</REPLACEENT>'),
         ('&gt;', '<REPLACEENT>gt</REPLACEENT>'),
+        ('&amp;gt;', '<REPLACEENT>gt</REPLACEENT>'),
     )
 
     def __init__(self):
