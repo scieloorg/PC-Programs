@@ -77,6 +77,30 @@ class TextEntity2Char(TestCase):
         obj = xml_utils.Entity2Char()
         self.assertEqual(expected, obj.convert(text))
 
+    def test_convert_converts_amp_lt_entity(self):
+        text = "&amp;lt;"
+        expected = "&lt;"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_converts_amp_gt_entity(self):
+        text = "&amp;gt;"
+        expected = "&gt;"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_does_not_convert_lt_entity(self):
+        text = "&lt;"
+        expected = "&lt;"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
+    def test_convert_does_not_convert_gt_entity(self):
+        text = "&gt;"
+        expected = "&gt;"
+        obj = xml_utils.Entity2Char()
+        self.assertEqual(expected, obj.convert(text))
+
 
 class TestLoadXML(TestCase):
 
