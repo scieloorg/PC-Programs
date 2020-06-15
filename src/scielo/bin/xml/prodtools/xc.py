@@ -37,6 +37,12 @@ class ForbiddenOperationError(Exception):
     pass
 
 
+class ScieloPackageError(Exception):
+    """Exceção não recuperável lançada durante a criação do objeto SPPackage"""
+
+    pass
+
+
 def main():
     parser = argparse.ArgumentParser(
         description='XML Converter for Desktop cli utility')
