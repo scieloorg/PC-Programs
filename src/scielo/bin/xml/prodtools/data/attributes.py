@@ -2,6 +2,7 @@
 
 from prodtools import _
 from prodtools import TABLES_PATH
+from prodtools.utils import utils
 from prodtools.utils.fs_utils import read_file
 from prodtools.reports import validation_status
 from prodtools.reports import html_reports
@@ -462,58 +463,65 @@ def doctopic_label(code):
     return label
 
 
-def suggestions_of_article_type_by_section_title(section_title):
+def deduce_article_type_from_article_section(section_title):
+    section_title_vs_article_type = dict([
+        ('original', 'research-article'),
+        ('article', 'research-article'),
+        ('artículo', 'research-article'),
+        ('artigo', 'research-article'),
+        ('relatório técnico', 'research-article'),
+        ('informe técnico', 'research-article'),
+        ('technical report', 'research-article'),
+        ('comment', 'article-commentary'),
+        ('coment', 'article-commentary'),
+        ('updat', 'rapid-communication'),
+        ('actualiza', 'rapid-communication'),
+        ('atualiza', 'rapid-communication'),
+        ('comunica', 'rapid-communication'),
+        ('communica', 'rapid-communication'),
+        ('brief report', 'brief-report'),
+        ('nota de pesquisa', 'brief-report'),
+        ('nota de investigación', 'brief-report'),
+        ('research note', 'brief-report'),
+        ('informe de caso', 'case-report'),
+        ('relato de caso', 'case-report'),
+        ('case report', 'case-report'),
+        ('errata', 'correction'),
+        ('erratum', 'correction'),
+        ('interview', 'other'),
+        ('point-of-view', 'editorial'),
+        ('entrevista', 'other'),
+        ('punto de vista', 'editorial'),
+        ('ponto de vista', 'editorial'),
+        ('letter', 'letter'),
+        ('carta', 'letter'),
+        ('reply', 'letter'),
+        ('correspond', 'letter'),
+        ('retraction', 'retraction'),
+        ('retratación', 'retraction'),
+        ('retractación', 'retraction'),
+        ('retratação', 'retraction'),
+        ('book review', 'book-review'),
+        ('reseña', 'book-review'),
+        ('resenha', 'book-review'),
+        ('review', 'review-article'),
+        ('revisão', 'review-article'),
+        ('revisión', 'review-article'),
+        ('resum', 'abstract'),
+        ('parecer', 'aggregated-review-documents'),
+        ('peer review', 'aggregated-review-documents'),
+    ])
+
     suggestions = []
     if section_title is not None:
         lower_section_title = section_title.lower().strip()
-        if 'retra' in lower_section_title:
-            suggestions.append('retraction')
-        elif 'abstract' in lower_section_title or 'resum' in lower_section_title:
-            suggestions.append('abstract')
-        elif 'book' in lower_section_title or 'resenha' in lower_section_title or u'reseñ' in lower_section_title:
-            suggestions.append('book-review')
-        elif 'brief report' in lower_section_title or ('pesquisa' in lower_section_title and 'nota' in lower_section_title) or ('research' in lower_section_title and 'note' in lower_section_title):
-            suggestions.append('brief-report')
-        elif 'case' in lower_section_title or 'caso' in lower_section_title:
-            suggestions.append('case-report')
-        elif 'correction' in lower_section_title or 'errat' in lower_section_title:
-            suggestions.append('correction')
-        elif 'carta' in lower_section_title or 'letter' in lower_section_title or 'reply' in lower_section_title or 'correspond' in lower_section_title:
-            suggestions.append('letter')
-        elif 'editoria' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'interview' in lower_section_title:
-            suggestions.append('interview')
-        elif 'entrevista' in lower_section_title:
-            suggestions.append('interview')
-        elif 'point' in lower_section_title and 'view' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'ponto' in lower_section_title and 'vista' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'punto' in lower_section_title and 'vista' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'opini' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'communication' in lower_section_title or 'comunica' in lower_section_title:
-            suggestions.append('rapid-communication')
-        elif 'atualiza' in lower_section_title or 'actualiza' in lower_section_title or 'updat' in lower_section_title:
-            suggestions.append('rapid-communication')
-        elif 'art' in lower_section_title and 'origin' in lower_section_title:
-            suggestions.append('research-article')
-        elif 'review' in lower_section_title and 'article' in lower_section_title:
-            suggestions.append('review-article')
-        elif 'review' in lower_section_title and 'article' in lower_section_title:
-            suggestions.append('review-article')
-        elif 'revis' in lower_section_title and ('artigo' in lower_section_title or u'artículo' in lower_section_title):
-            suggestions.append('review-article')
-        elif ('tech' in lower_section_title and 'article' in lower_section_title) or (u'técnico' in lower_section_title and 'informe' in lower_section_title) or (u'técnico' in lower_section_title and u'relatório' in lower_section_title):
-            suggestions.append('research-article')
-        elif 'comment' in lower_section_title or 'coment' in lower_section_title:
-            suggestions.append('article-commentary')
-        elif 'article' in lower_section_title or u'artículo' in lower_section_title or 'artigo' in lower_section_title:
-            suggestions.append('research-article')
-        elif 'original' in lower_section_title:
-            suggestions.append('research-article')
+        most_common_titles = (INDEXABLE +
+                              list(section_title_vs_article_type.keys()))
+        similarity = utils.similarity(most_common_titles, lower_section_title)
+        highiest_rate, items = utils.most_similar(similarity)
+        if highiest_rate > 0.8:
+            suggestions = items
+        print(highiest_rate, items)
     return suggestions
 
 
@@ -559,13 +567,14 @@ def check_lang(lang):
 
 def validate_article_type_and_section(article_type, article_section, has_abstract):
     results = []
-    if article_type is None:
-        article_type = 'None'
-    if article_section is None:
-        article_section = 'None'
+
+    article_type = article_type or ''
+    article_section = article_section or ''
+    if article_type == article_section:
+        return results
 
     status = ''
-    suggestions = suggestions_of_article_type_by_section_title(article_section)
+    suggestions = deduce_article_type_from_article_section(article_section)
     if article_type not in suggestions:
         suggestions_msg = ''
         status = validation_status.STATUS_ERROR
