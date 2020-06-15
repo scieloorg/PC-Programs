@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 
 from prodtools import _
+from prodtools.utils import xml_utils
 from prodtools.utils import img_utils
 from prodtools.utils import utils
 from prodtools.utils import encoding
@@ -505,11 +506,12 @@ class ArticleContentValidation(object):
     @property
     def contrib(self):
         r = []
-        for article_type, contribs in self.article.doctype_and_contribs_items:
-            msgs = self.validate_contrib_item(article_type, contribs)
+        for doc, contribs in self.article.doc_and_contribs_items:
+            msgs = self.validate_contrib_item(doc, contribs)
             for msg in msgs or []:
                 r.append(
-                    ('contrib', validation_status.STATUS_FATAL_ERROR, msg))
+                    ('contrib', validation_status.STATUS_FATAL_ERROR, msg,
+                        xml_utils.tostring(contribs[0].getparent())))
         return r
 
     @property
@@ -521,42 +523,48 @@ class ArticleContentValidation(object):
                 ref_validations.PersonValidation(item, aff_ids).validate())
         return r
 
-    def validate_contrib_item(self, article_type, contribs):
+    def validate_contrib_item(self, doc, contribs):
+        if doc.get("id"):
+            article_info = doc.tag + "({})".format(doc.get("id"))
+        else:
+            article_info = "article"
+        article_type = doc.get("article-type") or doc.get("response-type")
         if article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
             if len(contribs) == 0:
                 return [
                     _('{requirer} requires {required}. ').format(
-                        requirer=article_type,
+                        requirer=article_info,
                         required=_('contrib names or collabs'))]
         if article_type in attributes.AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC:
             if len(contribs) > 0:
                 return [
                     _('{} must not have {}. ').format(
-                      article_type,
+                      article_info,
                       _('contrib names or collabs'))]
         if article_type in attributes.PEER_REVIEW_DOCTOPICS:
             msgs = []
             for i, contrib in enumerate(contribs):
                 if contrib.find("anonymous") is not None:
                     msgs += self.validate_peer_review_contrib_anon(
-                        article_type, i, contrib)
+                        article_info, i, contrib)
             return msgs
 
-    def validate_peer_review_contrib_anon(self, article_type, i, contrib):
+    def validate_peer_review_contrib_anon(self, article_info, i, contrib):
         msgs = []
-        expected_values = ", ".join(attributes.PEER_REVIEW_CONTRIB_ROLES_FOR_ANON)
         role = contrib.find("role")
         if role is None:
             msgs.append(_('contrib[{}] in {} must have "role"'.format(
-                i, article_type
+                i, article_info
             )))
             return msgs
         if role.get("specific-use") not in attributes.PEER_REVIEW_CONTRIB_ROLES_FOR_ANON:
+            expected_values = ", ".join(
+                attributes.PEER_REVIEW_CONTRIB_ROLES_FOR_ANON)
             msgs.append(
                 _('contrib[{}] in {} must have "role/@specific-use". '
                     'Expected values: {}. '.format(
-                        i, article_type, expected_values)))
-            return msgs
+                        i, article_info, expected_values)))
+        return msgs
 
     @property
     def contrib_collabs(self):
