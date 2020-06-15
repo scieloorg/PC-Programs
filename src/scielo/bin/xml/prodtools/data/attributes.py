@@ -598,7 +598,7 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
         elem1 = '@article-type' + ' ({}) '.format(article_type)
         elem2 = 'subject' + ' (' + article_section + ')'
         msg = _('Be sure that the elements {elem1} and {elem2} '
-                are properly identified. ').format(
+                'are properly identified. ').format(
                     elem1=elem1, elem2=elem2)
         results.append(('@article-type', status, msg + suggestions_msg))
     return results
