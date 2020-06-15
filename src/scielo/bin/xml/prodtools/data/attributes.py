@@ -573,17 +573,20 @@ def validate_article_type_and_section(article_type, article_section, has_abstrac
     if article_type == article_section:
         return results
 
-    status = ''
     suggestions = deduce_article_type_from_article_section(article_section)
-    if article_type not in suggestions:
-        suggestions_msg = ''
-        status = validation_status.STATUS_ERROR
-        if len(suggestions) == 0:
-            status = validation_status.STATUS_WARNING
-            if has_abstract is True:
-                suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
-            else:
-                suggestions = [item for item in DOCTOPIC_IN_USE if item not in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
+
+    if article_type in suggestions:
+        return results
+
+    status = ''
+    suggestions_msg = ''
+    status = validation_status.STATUS_ERROR
+    if len(suggestions) == 0:
+        status = validation_status.STATUS_WARNING
+        if has_abstract is True:
+            suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
+        else:
+            suggestions = [item for item in DOCTOPIC_IN_USE if item not in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
     if article_type not in suggestions:
         suggestions_msg = _('Maybe {} is not a valid value for {}. ').format(
             article_type,
