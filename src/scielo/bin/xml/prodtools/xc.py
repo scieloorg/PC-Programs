@@ -190,8 +190,8 @@ class Reception(object):
         if self.mailer.mailer:
             subject = subject or _("Failure during or after conversion")
             self.mailer.mail_failure(subject, package_name, msg)
-        else:
-            logger.error(msg)
+
+        logger.error(msg)
 
     def _update_scilista(self, package_name, scilista_items):
         if self.config.collection_scilista:
