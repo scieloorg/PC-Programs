@@ -252,14 +252,22 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         super().well_formed_xml_content()
 
     def _fix_styles(self):
-        # TODO: corrigir misplaced tags
         content = self._content
+        content = self._style_tags_upper_to_lower_case(content)
+        content = self._fix_mismatched_style_tags(content)
+        self._content = content
+
+    def _fix_mismatched_style_tags(self, content):
+        # TODO: corrigir misplaced tags
+        return content
+
+    def _style_tags_upper_to_lower_case(self, content):
         for style in ("BOLD", "ITALIC", "SUP", "SUB"):
             tag_open = "<{}>".format(style)
             tag_close = "</{}>".format(style)
             content = content.replace(tag_open, tag_open.lower())
             content = content.replace(tag_close, tag_close.lower())
-        self._content = content
+        return content
 
     def _fix_quotes(self):
         """
