@@ -521,7 +521,6 @@ def deduce_article_type_from_article_section(section_title):
         highiest_rate, items = utils.most_similar(similarity)
         if highiest_rate > 0.8:
             suggestions = items
-        print(highiest_rate, items)
     return suggestions
 
 

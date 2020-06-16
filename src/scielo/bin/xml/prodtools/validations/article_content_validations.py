@@ -169,7 +169,6 @@ class ArticleContentValidation(object):
             performance = []
             items = [
                 self.sps,
-                self.expiration_sps,
                 self.language,
                 self.languages,
                 self.article_type,
