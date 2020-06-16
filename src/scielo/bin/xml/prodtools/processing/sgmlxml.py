@@ -230,6 +230,7 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
     def __init__(self, src_pkgfiles, sgmlhtml):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
+        self.style_tags_fixer = StyleTagsFixer()
         super().__init__(src_pkgfiles.filename)
         if self.xml_error:
             raise Exception(self.xml_error)
@@ -270,12 +271,13 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         """
         if self._is_well_formed:
             return
-        content = self._content
-        self._content = content
+        logger.debug("_fix_mismatched_style_tags")
+        self._content = self.style_tags_fixer.fix(self._content)
 
     def _style_tags_upper_to_lower_case(self):
         if self._is_well_formed:
             return
+        logger.debug("_style_tags_upper_to_lower_case")
         content = self._content
         for style in ("BOLD", "ITALIC", "SUP", "SUB"):
             tag_open = "<{}>".format(style)
@@ -291,6 +293,7 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         """
         if self._is_well_formed:
             return
+        logger.debug("_fix_quotes")
         content = self._content
         content = content.replace("<", "FIXQUOTESBREK<")
         content = content.replace(">", ">FIXQUOTESBREK")
@@ -425,6 +428,78 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         )
         new_href = None if len(found) == 0 else found[0]
         return (new_href, no_parents_img_counter)
+
+
+class StyleTagsFixer(object):
+
+    def __init__(self):
+        self.TAGS = []
+        for style in ("bold", "italic", "sup", "sub"):
+            tag_open = "<{}>".format(style)
+            tag_close = "</{}>".format(style)
+            new_open = tag_open.replace("<", "[").replace(">", "]")
+            new_close = tag_close.replace("<", "[").replace(">", "]")
+            self.TAGS.append((tag_open, new_open))
+            self.TAGS.append((tag_close, new_close))
+
+    def fix(self, content):
+        original = content
+        content = self._disguise_style_tags(content)
+
+        xml, xml_error = xml_utils.load_xml(content)
+        if xml is None:
+            # XML já está mal formado. As tags de estilo não são a causa.
+            return original
+
+        content = self._restore_matched_style_tags_in_node_texts(xml)
+        return content
+
+    def _disguise_style_tags(self, content):
+        """
+        Disfarça as tags de estilo, mudando `<tag>` para `[tag]`
+        """
+        for tag, new_tag in self.TAGS:
+            content = content.replace(tag, new_tag)
+        return content
+
+    def _revert_disguised_style_tags(self, content):
+        """
+        Reverte o disfarce das tags de estilo, mudando `[tag]` para `<tag>`
+        """
+        for tag, new_tag in self.TAGS:
+            content = content.replace(new_tag, tag)
+        return content
+
+    def _restore_matched_style_tags_in_node_texts(self, xml):
+        for node in xml.findall(".//*"):
+            if node.text and "[" in node.text and "]" in node.text:
+                new_node = self._restore_matched_style_tags_in_node_text(node)
+                if new_node is not None:
+                    parent = node.getparent()
+                    parent.replace(node, new_node)
+        return xml_utils.tostring(xml)
+
+    def _restore_matched_style_tags_in_node_tails(self, xml):
+        for node in xml.findall(".//*"):
+            if node.tail and "[" in node.tail and "]" in node.tail:
+                self._restore_matched_style_tags_in_node_tail(node)
+        return xml_utils.tostring(xml)
+
+    def _restore_matched_style_tags_in_node_text(self, node):
+        text = node.text
+        text = self._revert_disguised_style_tags(text)
+        root = "<root><{}>{}</{}></root>".format(node.tag, text, node.tag)
+        xml, xml_error = xml_utils.load_xml(root)
+        if xml is not None:
+            return xml.find(".").getchildren()[0]
+        else:
+            # TODO: usar alguma estratégia para corrigir
+            print("\n"*10)
+            print(text)
+
+    def _restore_matched_style_tags_in_node_tail(self, node):
+        # TODO: usar alguma estratégia para corrigir
+        pass
 
 
 class PackageNamer(object):
