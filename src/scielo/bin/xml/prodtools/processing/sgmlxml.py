@@ -433,14 +433,14 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
 class StyleTagsFixer(object):
 
     def __init__(self):
-        self.TAGS = []
+        self.XML_TO_SGML = []
         for style in ("bold", "italic", "sup", "sub"):
             tag_open = "<{}>".format(style)
             tag_close = "</{}>".format(style)
             new_open = tag_open.replace("<", "[").replace(">", "]")
             new_close = tag_close.replace("<", "[").replace(">", "]")
-            self.TAGS.append((tag_open, new_open))
-            self.TAGS.append((tag_close, new_close))
+            self.XML_TO_SGML.append((tag_open, new_open))
+            self.XML_TO_SGML.append((tag_close, new_close))
 
     def fix(self, content):
         original = content
@@ -453,13 +453,14 @@ class StyleTagsFixer(object):
 
         content = self._restore_matched_style_tags_in_node_tails(xml)
         content = self._restore_matched_style_tags_in_node_texts(xml)
+
         return content
 
     def _disguise_style_tags(self, content):
         """
         Disfarça as tags de estilo, mudando `<tag>` para `[tag]`
         """
-        for tag, new_tag in self.TAGS:
+        for tag, new_tag in self.XML_TO_SGML:
             content = content.replace(tag, new_tag)
         return content
 
@@ -467,7 +468,7 @@ class StyleTagsFixer(object):
         """
         Reverte o disfarce das tags de estilo, mudando `[tag]` para `<tag>`
         """
-        for tag, new_tag in self.TAGS:
+        for tag, new_tag in self.XML_TO_SGML:
             content = content.replace(new_tag, tag)
         return content
 
@@ -492,7 +493,7 @@ class StyleTagsFixer(object):
                 self._restore_matched_style_tags_in_node_tail(node)
         return xml_utils.tostring(xml)
 
-    def _restore_matched_style_tags_in_node_text(self, node):
+    def _restore_matched_style_tags_in_node_text(self, node, retry=False):
         """
         Restaura as tags de estilo de um node.text
         """
@@ -500,14 +501,12 @@ class StyleTagsFixer(object):
         text = self._revert_disguised_style_tags(text)
         root = "<root><{}>{}</{}></root>".format(node.tag, text, node.tag)
         xml, xml_error = xml_utils.load_xml(root)
+        if xml is None and retry:
+            xml = self.retry(root, text)
         if xml is not None:
             return deepcopy(xml.find(".").getchildren()[0])
-        else:
-            # TODO: usar alguma estratégia para corrigir
-            print("\n"*10)
-            print(text)
 
-    def _restore_matched_style_tags_in_node_tail(self, node):
+    def _restore_matched_style_tags_in_node_tail(self, node, retry=False):
         """
         Restaura as tags de estilo de um node.tail
         """
@@ -515,15 +514,29 @@ class StyleTagsFixer(object):
         tail = self._revert_disguised_style_tags(tail)
         root = "<root>{}</root>".format(tail)
         xml, xml_error = xml_utils.load_xml(root)
+        if xml is None and retry:
+            xml = self.retry(root, tail)
+
         if xml is not None:
             node.tail = ""
             for n in xml.find(".").getchildren():
                 node.addnext(deepcopy(n))
             node.tail = xml.find(".").text
-        else:
-            # TODO: usar alguma estratégia para corrigir
-            print("\n"*10)
-            print(tail)
+            return
+
+    def loss(self, xml, tail):
+        _xml = xml and "".join(xml.find(".").itertext())
+        _tail = tail
+        for tag, sgml in self.XML_TO_SGML:
+            _tail = _tail.replace(tag, "")
+        return _xml != _tail
+
+    def retry(self, root, text):
+        # tenta carregar o xml, usando o parâmetro "recover=True"
+        # para tentar resolver mismatched tags ou tags não fechadas
+        xml, xml_error = xml_utils.load_xml(root, recover=True)
+        if not self.loss(xml, text):
+            return xml
 
 
 class PackageNamer(object):
