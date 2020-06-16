@@ -241,6 +241,11 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         self._insert_xhtml_tables_in_document()
         logger.debug("...")
 
+    @property
+    def _is_well_formed(self):
+        xml, xml_error = xml_utils.load_xml(self._content)
+        return xml is not None
+
     def well_formed_xml_content(self):
         self._content = xml_utils.insert_namespaces_in_root(
             "doc", self._content)
@@ -252,28 +257,40 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         super().well_formed_xml_content()
 
     def _fix_styles(self):
+        self._style_tags_upper_to_lower_case()
+        self._fix_mismatched_style_tags()
+
+    def _fix_mismatched_style_tags(self):
+        """
+        No markup as tags de estilos são geradas pela marcação de estilos do
+        próprio Word, ou seja, bold, itálico, sup e sub não são tags do Markup.
+        No entanto, o resultado é a mescla de tags do Markup + tags de estilos
+        podendo acontecer de se mesclarem de forma que o resultado não seja
+        um XML não bem formado. O propósito deste atributo é consertar isso.
+        """
+        if self._is_well_formed:
+            return
         content = self._content
-        content = self._style_tags_upper_to_lower_case(content)
-        content = self._fix_mismatched_style_tags(content)
         self._content = content
 
-    def _fix_mismatched_style_tags(self, content):
-        # TODO: corrigir misplaced tags
-        return content
-
-    def _style_tags_upper_to_lower_case(self, content):
+    def _style_tags_upper_to_lower_case(self):
+        if self._is_well_formed:
+            return
+        content = self._content
         for style in ("BOLD", "ITALIC", "SUP", "SUB"):
             tag_open = "<{}>".format(style)
             tag_close = "</{}>".format(style)
             content = content.replace(tag_open, tag_open.lower())
             content = content.replace(tag_close, tag_close.lower())
-        return content
+        self._content = content
 
     def _fix_quotes(self):
         """
         Às vezes a codificação das aspas vem diferente de ", sendo assim
         são necessários trocas antes de carregar a árvore de XML
         """
+        if self._is_well_formed:
+            return
         content = self._content
         content = content.replace("<", "FIXQUOTESBREK<")
         content = content.replace(">", ">FIXQUOTESBREK")
