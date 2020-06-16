@@ -4,10 +4,12 @@ import logging.config
 import argparse
 import os
 import shutil
-from tempfile import mkdtemp
+
+from tempfile import TemporaryDirectory
 from datetime import datetime
 
 from prodtools import _
+from packtools.utils import SPPackage
 
 try:
     from prodtools import form
@@ -34,6 +36,12 @@ os_path_join = os.path.join
 
 
 class ForbiddenOperationError(Exception):
+    pass
+
+
+class ScieloPackageError(Exception):
+    """Exceção não recuperável lançada durante a criação do objeto SPPackage"""
+
     pass
 
 
@@ -126,6 +134,16 @@ class Reception(object):
         self.convert_package(package_path)
         return 'done', 'blue'
 
+    def _create_package_instance(self, source: str, output: str) -> SPPackage:
+        """Cria instância da classe SPPackage para o pacote de entrada"""
+
+        try:
+            package_maker = PackageMaker(source, output)
+            package = package_maker.pack()
+        except Exception as exc:
+            raise ScieloPackageError(exc) from None
+        return package
+
     def convert_package(self, package_path):
         if package_path is None:
             return False
@@ -138,29 +156,33 @@ class Reception(object):
         mail_info = "subject", "message"
         result = scilista_items, xc_status, mail_info
 
-        output_path = mkdtemp()
+        with TemporaryDirectory() as output_path:
+            try:
+                package = self._create_package_instance(source=xml_path, output=output_path)
+                scilista_items, xc_status, mail_info = self.proc.convert_package(package)
+            except ScieloPackageError:
+                self.inform_failure(
+                    package_path,
+                    "Could not create package from source path '%s'." % package_path,
+                )
+            except Exception:
+                self.inform_failure(
+                    package_path, "Could not convert package '%s'." % package_path
+                )
+            else:
+                if scilista_items is None or len(scilista_items) == 0:
+                    logger.debug("The scilista is empty. Skipping website update, report step and email sending.")
+                    return None
 
-        pkg_maker = PackageMaker(xml_path, output_path)
-        pkg = pkg_maker.pack()
-        pkg_name = pkg.package_folder.name
-        try:
-            result = self.proc.convert_package(pkg)
-            scilista_items, xc_status, mail_info = result
-        except Exception as e:
-            if self.config.queue_path is not None:
-                fs_utils.delete_file_or_folder(package_path)
-            self.inform_failure(pkg_name, e)
-            raise e
-        else:
-            if len(scilista_items) > 0:
-                acron, issue_id = scilista_items[0].split(' ')
-                if xc_status in ['accepted', 'approved']:
-                    self._update_scilista(pkg_name, scilista_items)
-                    self._update_website_files(pkg_name, acron, issue_id)
-                self._mail_results(pkg_name, mail_info)
-                self._update_report_files(pkg_name, acron, issue_id)
-        finally:
-            fs_utils.delete_file_or_folder(output_path)
+                package_name = package.package_folder.name
+                acron, issue_id = scilista_items[0].split(" ")
+
+                if xc_status in ["accepted", "approved"]:
+                    self._update_scilista(package_name, scilista_items)
+                    self._update_website_files(package_name, acron, issue_id)
+
+                self._mail_results(package_name, mail_info)
+                self._update_report_files(package_name, acron, issue_id)
 
         encoding.display_message(_('finished'))
 
@@ -168,8 +190,8 @@ class Reception(object):
         if self.mailer.mailer:
             subject = subject or _("Failure during or after conversion")
             self.mailer.mail_failure(subject, package_name, msg)
-        else:
-            logger.error(msg)
+
+        logger.error(msg)
 
     def _update_scilista(self, package_name, scilista_items):
         if self.config.collection_scilista:
