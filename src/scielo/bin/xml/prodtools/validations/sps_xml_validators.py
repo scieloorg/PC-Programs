@@ -129,6 +129,13 @@ class PackToolsXMLValidator(object):
             return []
         errors = []
         dtd_public_id_items = xml_versions.SPS_VERSIONS.get(sps_version)
+        if dtd_public_id_items is None:
+            errors.append(
+                _('{value} is an invalid value for {label}. ').format(
+                    value=sps_version,
+                    label='article/@specific-use')
+                )
+            return errors
         if public_id not in dtd_public_id_items:
             errors.append(
                 _('{value} is an invalid value for {label}. ').format(
@@ -168,7 +175,7 @@ class PackToolsXMLValidator(object):
                 self.file_path, e)
             dtd_errors = [ERR_MESSAGE]
             logger.error(e)
-        except exceptions.UndefinedDTDError as e:
+        except (exceptions.UndefinedDTDError, ValueError) as e:
             dtd_errors = [str(e)]
             logger.error(e)
         else:

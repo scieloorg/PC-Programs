@@ -169,7 +169,6 @@ class ArticleContentValidation(object):
             performance = []
             items = [
                 self.sps,
-                self.expiration_sps,
                 self.language,
                 self.languages,
                 self.article_type,
@@ -252,9 +251,9 @@ class ArticleContentValidation(object):
         errors = []
         warnings = []
         if self.article.article_type in attributes.INDEXABLE:
-            if self.article.article_type not in attributes.INDEXABLE_BUT_EXCEPTION \
+            if self.article.article_type not in attributes.INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF \
                     and not self.article.is_provisional:
-                check = attributes.INDEXABLE_EXCEPTIONS.get(
+                check = attributes.INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS.get(
                     self.article.article_type,
                     ['contrib', 'aff', 'xref (bibr)', 'ref']
                 )
@@ -309,35 +308,14 @@ class ArticleContentValidation(object):
         status = validation_status.STATUS_INFO
         msg = version
 
-        if version in attributes.sps_current_versions():
+        if version in xml_versions.SPS_VERSIONS.keys():
             return [(label, status, msg)]
 
-        pub_dateiso = self.article.real_pubdate or self.article.expected_pubdate
-        if pub_dateiso is None:
-            return [(label, validation_status.STATUS_ERROR, _('Unable to validate sps version because article has no publication date. '))]
-        pub_dateiso = article_utils.format_dateiso(pub_dateiso)
-
-        expected_versions = list(set(attributes.expected_sps_versions(pub_dateiso) + attributes.sps_current_versions()))
-        expected_versions.sort()
-
-        if version in expected_versions:
-            status = validation_status.STATUS_INFO
-            msg = _('For articles published on {pubdate}, {sps_version} is valid. ').format(pubdate=utils.display_datetime(pub_dateiso, None), sps_version=version)
-        else:
-            status = validation_status.STATUS_ERROR
-            msg = _('For articles published on {pubdate}, {sps_version} is not valid. ').format(pubdate=utils.display_datetime(pub_dateiso, None), sps_version=version) + _('Expected SPS versions for this article: {sps_versions}. ').format(sps_versions=_(' or ').join(expected_versions))
+        status = validation_status.STATUS_BLOCKING_ERROR
+        msg = _("{}. Expected values: {}").format(
+            version,
+            ", ".join(list(xml_versions.SPS_VERSIONS.keys())))
         return [(label, status, msg)]
-
-    @property
-    def expiration_sps(self):
-        version = str(self.article.sps)
-        days = attributes.sps_version_expiration_days(version)
-        if days is None:
-            return [(_('sps expiration date'), validation_status.STATUS_WARNING, _('Unable to identify expiration date of SPS version={version}. ').format(version=version))]
-        if days < 0:
-            return [(_('sps expiration date'), validation_status.STATUS_INFO, _('{version} has expired {days} days ago. ').format(version=version, days=-1 * days))]
-        if days > 0:
-            return [(_('sps expiration date'), validation_status.STATUS_INFO, _('{version} expires in {days} days. ').format(version=version, days=days))]
 
     @property
     def language(self):
@@ -465,14 +443,14 @@ class ArticleContentValidation(object):
     def publisher_name(self):
         return data_validations.is_required_data('publisher name', self.article.publisher_name, validation_status.STATUS_FATAL_ERROR)
 
-    def check_for_sps_version_number(self, number):
+    def is_sps_version_greater_than(self, number):
         if self.article.sps_version_number is not None:
-            return number <= self.article.sps_version_number
+            return self.article.sps_version_number > number
         return False
 
     @property
     def journal_id_publisher_id(self):
-        if self.check_for_sps_version_number(1.3):
+        if self.is_sps_version_greater_than((1, 3)):
             return data_validations.is_required_data('journal-id (publisher-id)', self.article.journal_id_publisher_id, validation_status.STATUS_FATAL_ERROR)
 
     @property
@@ -1012,7 +990,7 @@ class ArticleContentValidation(object):
     @property
     def innerbody_elements_permissions(self):
         r = []
-        status = validation_status.STATUS_WARNING if self.check_for_sps_version_number(1.4) else validation_status.STATUS_INFO
+        status = validation_status.STATUS_WARNING if self.is_sps_version_greater_than((1, 4)) else validation_status.STATUS_INFO
         if len(self.article.permissions_required) > 0:
             l = [elem_id for elem_id, missing_children in self.article.permissions_required]
             if len(l) > 0:
@@ -1024,14 +1002,14 @@ class ArticleContentValidation(object):
         text_languages = sorted(list(set(self.article.trans_languages + [self.article.language] + ['en'])))
         r = []
 
-        if  self.check_for_sps_version_number(1.4):
+        if  self.is_sps_version_greater_than((1, 4)):
             for cp_elem in ['statement', 'year', 'holder']:
                 if self.article.article_copyright.get(cp_elem) is None:
                     r.append(('copyright-' + cp_elem, validation_status.STATUS_WARNING, _('It is highly recommended identifying {elem}. ').format(elem='copyright-' + cp_elem)))
         for lang, license in self.article.article_licenses.items():
 
             if lang is None:
-                if self.check_for_sps_version_number(1.4):
+                if self.is_sps_version_greater_than((1, 4)):
                     r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{label} is required. ').format(label='license/@xml:lang')))
             elif lang not in text_languages:
                 r.append(('license/@xml:lang', validation_status.STATUS_ERROR, _('{value} is an invalid value for {label}. ').format(value=lang, label='license/@xml:lang') + _('The license text must be written in {langs}. ').format(langs=_(' or ').join(attributes.translate_code_languages(text_languages))) + _('Expected values for {label}: {expected}. ').format(label='xml:lang', expected=_(' or ').join(text_languages)), license['xml']))
@@ -1109,7 +1087,7 @@ class ArticleContentValidation(object):
             if pub_type is not None:
                 dt.append(pub_type)
 
-        if self.article.sps_version_number > 1.8:
+        if self.is_sps_version_greater_than((1, 8)):
             for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:
                 if fmt is None:
                     r.append(
@@ -1143,7 +1121,7 @@ class ArticleContentValidation(object):
                          _('@date-type must be pub or collection. '),
                          xml)
                     )
-        elif self.article.sps_version_number == 1.8:
+        elif self.article.sps_version_number == (1, 8):
             for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:
                 if date_type:
                     r.append(
@@ -1175,14 +1153,14 @@ class ArticleContentValidation(object):
                          _('@date-type is invalid for this version of SPS. '),
                          xml)
                     )
-        if self.article.sps_version_number > 1.8:
+        if self.article.sps_version_number > (1, 8):
             if self.article.is_ahead:
                 expected = [{'pub'}]
                 expected_items = 'pub'
             else:
                 expected = [{'pub', 'collection'}]
                 expected_items = 'pub|collection'
-        elif self.article.sps_version_number == 1.8:
+        elif self.article.sps_version_number == (1, 8):
             if self.article.is_ahead:
                 expected = [{'epub'}]
                 expected_items = 'epub'

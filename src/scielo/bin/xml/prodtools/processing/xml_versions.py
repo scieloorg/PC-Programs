@@ -11,7 +11,7 @@ XPM_FILES.read(os.path.join(DTD_AND_XSL_PATH, 'versions.ini'))
 
 DEFAULT_VERSION = XPM_FILES.sections()[0]
 
-valid_dtd_items = ['3.0', '1.0', 'j1.0', 'j1.1']
+valid_dtd_items = XPM_FILES.sections()
 
 _SPS_VERSIONS = (
     ('None', [
@@ -59,10 +59,10 @@ SPS_VERSIONS = dict(_SPS_VERSIONS)
 def get_dtd_version(sps_version_number):
     if not sps_version_number:
         return '3.0'
-    elif float(sps_version_number) < 1.7:
-        return '1.0'
+    elif sps_version_number < (1, 7):
+        return 'j1.0'
     else:
-        return '1.1'
+        return 'j1.1'
 
 
 def xsl_getter(sps_version_number):

@@ -1,30 +1,12 @@
 # coding=utf-8
 
-from datetime import datetime
-
 from prodtools import _
 from prodtools import TABLES_PATH
-from prodtools.data import article_utils
+from prodtools.utils import utils
 from prodtools.utils.fs_utils import read_file
 from prodtools.reports import validation_status
 from prodtools.reports import html_reports
 
-
-SPS_expiration_dates = [
-    ('sps-1.9', ['20190301', '20210401']),
-    ('sps-1.8', ['20180301', '20200401']),
-    ('sps-1.7', ['20171001', '20181001']),
-    ('sps-1.6', ['20170401', '20180401']),
-    ('sps-1.5', ['20161001', '20171001']),
-    ('sps-1.4', ['20160401', '20170401']),
-    ('sps-1.3', ['20150901', '20160901']),
-    ('sps-1.2', ['20150301', '20160301']),
-    ('sps-1.1', ['20140901', '20150901']),
-    ('sps-1.0', ['20140301', '20150301']),
-    ('None', ['00000000', '20140901']),
-]
-
-dict_SPS_expiration_dates = dict(SPS_expiration_dates)
 
 REFTYPE_AND_TAG_ITEMS = {'aff': ['aff'], 'app': ['app'], 'author-notes': ['fn'], 'bibr': ['ref'], 'boxed-text': ['boxed-text'], 'contrib': ['fn'], 'corresp': ['corresp'], 'disp-formula': ['disp-formula'], 
             'fig': ['fig', 'fig-group'], 
@@ -90,7 +72,7 @@ PEER_REVIEW_CONTRIB_ROLES_FOR_ANON = [
     'editor',
 ]
 
-# para todos INDEXABLE validar aff, contrib, xref, ref
+# para todos INDEXABLE exigir aff, contrib, xref, ref
 INDEXABLE = [
     'research-article',
     'article-commentary',
@@ -113,30 +95,29 @@ INDEXABLE = [
     'obituary',
     'reply',
     'data-article',
+    'aggregated-review-documents',
 ]
 
-INDEXABLE_EXCEPTIONS = {
+# para todos INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS exigir aff?, contrib?, xref?, ref?
+INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS = {
     'editorial': ['aff', 'contrib'],
-    'other': [],
 }
 
-INDEXABLE_BUT_EXCEPTION = [
+INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF = [
     'correction',
     'retraction',
     'partial-retraction',
+    'other',
 ]
-
-INDEXABLE_MINUS_EXCEPTIONS = list(set(INDEXABLE)-set(INDEXABLE_BUT_EXCEPTION))
-
 
 HISTORY_REQUIRED_FOR_DOCTOPIC = [
     'case-report', 
     'research-article',    
 ]
 
-AUTHORS_REQUIRED_FOR_DOCTOPIC = INDEXABLE_MINUS_EXCEPTIONS
+AUTHORS_REQUIRED_FOR_DOCTOPIC = list(set(INDEXABLE)-set(INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF))
 
-AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC = INDEXABLE_BUT_EXCEPTION
+AUTHORS_NOT_REQUIRED_FOR_DOCTOPIC = INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF
 
 ABSTRACT_REQUIRED_FOR_DOCTOPIC = [
     'brief-report', 
@@ -152,7 +133,10 @@ ABSTRACT_UNEXPECTED_FOR_DOCTOPIC = [
     'other', 
     ]
 
-REFS_REQUIRED_FOR_DOCTOPIC = list(set(INDEXABLE_MINUS_EXCEPTIONS) - {'editorial'})
+REFS_REQUIRED_FOR_DOCTOPIC = list(
+    set(INDEXABLE) -
+    set(INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF) -
+    {'editorial'})
 
 TOC_SECTIONS = { 
     u'carta': u'letter', 
@@ -479,58 +463,64 @@ def doctopic_label(code):
     return label
 
 
-def suggestions_of_article_type_by_section_title(section_title):
+def deduce_article_type_from_article_section(section_title):
+    section_title_vs_article_type = dict([
+        ('original', 'research-article'),
+        ('article', 'research-article'),
+        ('artículo', 'research-article'),
+        ('artigo', 'research-article'),
+        ('relatório técnico', 'research-article'),
+        ('informe técnico', 'research-article'),
+        ('technical report', 'research-article'),
+        ('comment', 'article-commentary'),
+        ('coment', 'article-commentary'),
+        ('updat', 'rapid-communication'),
+        ('actualiza', 'rapid-communication'),
+        ('atualiza', 'rapid-communication'),
+        ('comunica', 'rapid-communication'),
+        ('communica', 'rapid-communication'),
+        ('brief report', 'brief-report'),
+        ('nota de pesquisa', 'brief-report'),
+        ('nota de investigación', 'brief-report'),
+        ('research note', 'brief-report'),
+        ('informe de caso', 'case-report'),
+        ('relato de caso', 'case-report'),
+        ('case report', 'case-report'),
+        ('errata', 'correction'),
+        ('erratum', 'correction'),
+        ('interview', 'other'),
+        ('point-of-view', 'editorial'),
+        ('entrevista', 'other'),
+        ('punto de vista', 'editorial'),
+        ('ponto de vista', 'editorial'),
+        ('letter', 'letter'),
+        ('carta', 'letter'),
+        ('reply', 'letter'),
+        ('correspond', 'letter'),
+        ('retraction', 'retraction'),
+        ('retratación', 'retraction'),
+        ('retractación', 'retraction'),
+        ('retratação', 'retraction'),
+        ('book review', 'book-review'),
+        ('reseña', 'book-review'),
+        ('resenha', 'book-review'),
+        ('review', 'review-article'),
+        ('revisão', 'review-article'),
+        ('revisión', 'review-article'),
+        ('resum', 'abstract'),
+        ('parecer', 'aggregated-review-documents'),
+        ('peer review', 'aggregated-review-documents'),
+    ])
+
     suggestions = []
     if section_title is not None:
         lower_section_title = section_title.lower().strip()
-        if 'retra' in lower_section_title:
-            suggestions.append('retraction')
-        elif 'abstract' in lower_section_title or 'resum' in lower_section_title:
-            suggestions.append('abstract')
-        elif 'book' in lower_section_title or 'resenha' in lower_section_title or u'reseñ' in lower_section_title:
-            suggestions.append('book-review')
-        elif 'brief report' in lower_section_title or ('pesquisa' in lower_section_title and 'nota' in lower_section_title) or ('research' in lower_section_title and 'note' in lower_section_title):
-            suggestions.append('brief-report')
-        elif 'case' in lower_section_title or 'caso' in lower_section_title:
-            suggestions.append('case-report')
-        elif 'correction' in lower_section_title or 'errat' in lower_section_title:
-            suggestions.append('correction')
-        elif 'carta' in lower_section_title or 'letter' in lower_section_title or 'reply' in lower_section_title or 'correspond' in lower_section_title:
-            suggestions.append('letter')
-        elif 'editoria' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'interview' in lower_section_title:
-            suggestions.append('interview')
-        elif 'entrevista' in lower_section_title:
-            suggestions.append('interview')
-        elif 'point' in lower_section_title and 'view' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'ponto' in lower_section_title and 'vista' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'punto' in lower_section_title and 'vista' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'opini' in lower_section_title:
-            suggestions.append('editorial')
-        elif 'communication' in lower_section_title or 'comunica' in lower_section_title:
-            suggestions.append('rapid-communication')
-        elif 'atualiza' in lower_section_title or 'actualiza' in lower_section_title or 'updat' in lower_section_title:
-            suggestions.append('rapid-communication')
-        elif 'art' in lower_section_title and 'origin' in lower_section_title:
-            suggestions.append('research-article')
-        elif 'review' in lower_section_title and 'article' in lower_section_title:
-            suggestions.append('review-article')
-        elif 'review' in lower_section_title and 'article' in lower_section_title:
-            suggestions.append('review-article')
-        elif 'revis' in lower_section_title and ('artigo' in lower_section_title or u'artículo' in lower_section_title):
-            suggestions.append('review-article')
-        elif ('tech' in lower_section_title and 'article' in lower_section_title) or (u'técnico' in lower_section_title and 'informe' in lower_section_title) or (u'técnico' in lower_section_title and u'relatório' in lower_section_title):
-            suggestions.append('research-article')
-        elif 'comment' in lower_section_title or 'coment' in lower_section_title:
-            suggestions.append('article-commentary')
-        elif 'article' in lower_section_title or u'artículo' in lower_section_title or 'artigo' in lower_section_title:
-            suggestions.append('research-article')
-        elif 'original' in lower_section_title:
-            suggestions.append('research-article')
+        most_common_titles = (INDEXABLE +
+                              list(section_title_vs_article_type.keys()))
+        similarity = utils.similarity(most_common_titles, lower_section_title)
+        highiest_rate, items = utils.most_similar(similarity)
+        if highiest_rate > 0.8:
+            suggestions = items
     return suggestions
 
 
@@ -574,59 +564,40 @@ def check_lang(lang):
         return (False, _('{value} is an invalid value for {label}. ').format(value=lang, label='@xml:lang') + _('Expected values: {expected}. ').format(expected=', '.join(sorted(LANGUAGES.keys())) + '. ' + ' | '.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()]))))
 
 
-def expected_sps_versions(article_dateiso):
-    if article_dateiso <= SPS_expiration_dates[-1][1][0]:
-        # qualquer versao
-        return [item[0] for item in SPS_expiration_dates]
-
-    valid_versions = []
-    for version, dates in SPS_expiration_dates:
-        if dates[0] <= article_dateiso <= dates[1]:
-            valid_versions.append(version)
-    return valid_versions
-
-
-def sps_current_versions():
-    return [item[0] for item in SPS_expiration_dates[:2]]
-
-
-def sps_version_expiration_days(sps_version):
-    days = None
-    sps_dates = dict_SPS_expiration_dates.get(sps_version)
-    if sps_dates is not None:
-        sps_dates = article_utils.dateiso2datetime(sps_dates[1])
-        now = datetime.now()
-        diff = sps_dates - now
-        days = diff.days
-    return days
-
-
 def validate_article_type_and_section(article_type, article_section, has_abstract):
     results = []
-    if article_type is None:
-        article_type = 'None'
-    if article_section is None:
-        article_section = 'None'
 
-    status = ''
-    suggestions = suggestions_of_article_type_by_section_title(article_section)
-    if article_type not in suggestions:
-        suggestions_msg = ''
+    article_type = article_type or ''
+    article_section = article_section or ''
+    if article_type == article_section:
+        return results
+
+    suggestions = deduce_article_type_from_article_section(article_section)
+
+    if article_type in suggestions:
+        return results
+
+    if len(suggestions) > 0:
         status = validation_status.STATUS_ERROR
-        if len(suggestions) == 0:
-            status = validation_status.STATUS_WARNING
-            if has_abstract is True:
-                suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
-            else:
-                suggestions = [item for item in DOCTOPIC_IN_USE if item not in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
+    else:
+        status = validation_status.STATUS_WARNING
+        if has_abstract is True:
+            suggestions = ABSTRACT_REQUIRED_FOR_DOCTOPIC
+        else:
+            suggestions = [item
+                           for item in DOCTOPIC_IN_USE
+                           if item not in ABSTRACT_REQUIRED_FOR_DOCTOPIC]
+
     if article_type not in suggestions:
         suggestions_msg = _('Maybe {} is not a valid value for {}. ').format(
             article_type,
             '@article-type')
-        suggestions_msg += _('Suggested values: {}. ').format(_(' or ').join(suggestions))
+        suggestions_msg += _('Suggested values: {}. ').format(
+            _(' or ').join(suggestions))
         elem1 = '@article-type' + ' ({}) '.format(article_type)
         elem2 = 'subject' + ' (' + article_section + ')'
-        msg = _('Be sure that the elements {elem1} and {elem2} are properly identified. ').format(
+        msg = _('Be sure that the elements {elem1} and {elem2} '
+                'are properly identified. ').format(
                     elem1=elem1, elem2=elem2)
         results.append(('@article-type', status, msg + suggestions_msg))
     return results
