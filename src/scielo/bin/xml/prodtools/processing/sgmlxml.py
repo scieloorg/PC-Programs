@@ -451,6 +451,7 @@ class StyleTagsFixer(object):
             # XML já está mal formado. As tags de estilo não são a causa.
             return original
 
+        content = self._restore_matched_style_tags_in_node_tails(xml)
         content = self._restore_matched_style_tags_in_node_texts(xml)
         return content
 
@@ -471,6 +472,9 @@ class StyleTagsFixer(object):
         return content
 
     def _restore_matched_style_tags_in_node_texts(self, xml):
+        """
+        Restaura as tags de estilo de todos os node.text
+        """
         for node in xml.findall(".//*"):
             if node.text and "[" in node.text and "]" in node.text:
                 new_node = self._restore_matched_style_tags_in_node_text(node)
@@ -480,26 +484,46 @@ class StyleTagsFixer(object):
         return xml_utils.tostring(xml)
 
     def _restore_matched_style_tags_in_node_tails(self, xml):
+        """
+        Restaura as tags de estilo de todos os node.tail
+        """
         for node in xml.findall(".//*"):
             if node.tail and "[" in node.tail and "]" in node.tail:
                 self._restore_matched_style_tags_in_node_tail(node)
         return xml_utils.tostring(xml)
 
     def _restore_matched_style_tags_in_node_text(self, node):
+        """
+        Restaura as tags de estilo de um node.text
+        """
         text = node.text
         text = self._revert_disguised_style_tags(text)
         root = "<root><{}>{}</{}></root>".format(node.tag, text, node.tag)
         xml, xml_error = xml_utils.load_xml(root)
         if xml is not None:
-            return xml.find(".").getchildren()[0]
+            return deepcopy(xml.find(".").getchildren()[0])
         else:
             # TODO: usar alguma estratégia para corrigir
             print("\n"*10)
             print(text)
 
     def _restore_matched_style_tags_in_node_tail(self, node):
-        # TODO: usar alguma estratégia para corrigir
-        pass
+        """
+        Restaura as tags de estilo de um node.tail
+        """
+        tail = node.tail
+        tail = self._revert_disguised_style_tags(tail)
+        root = "<root>{}</root>".format(tail)
+        xml, xml_error = xml_utils.load_xml(root)
+        if xml is not None:
+            node.tail = ""
+            for n in xml.find(".").getchildren():
+                node.addnext(deepcopy(n))
+            node.tail = xml.find(".").text
+        else:
+            # TODO: usar alguma estratégia para corrigir
+            print("\n"*10)
+            print(tail)
 
 
 class PackageNamer(object):
