@@ -505,7 +505,7 @@ class StyleTagsFixer(object):
         """
         for node in xml.findall(".//*"):
             if node.text and "[" in node.text and "]" in node.text:
-                self._restore_matched_style_tags_in_node_text(node, True)
+                self._restore_matched_style_tags_in_node_text(node)
         return xml_utils.tostring(xml)
 
     def _restore_matched_style_tags_in_node_tails(self, xml):
@@ -514,7 +514,7 @@ class StyleTagsFixer(object):
         """
         for node in xml.findall(".//*"):
             if node.tail and "[" in node.tail and "]" in node.tail:
-                self._restore_matched_style_tags_in_node_tail(node, True)
+                self._restore_matched_style_tags_in_node_tail(node)
         return xml_utils.tostring(xml)
 
     def _restore_matched_style_tags_in_node_text(self, node, fix):
@@ -522,9 +522,7 @@ class StyleTagsFixer(object):
         Restaura as tags de estilo de um node.text
         """
         text = self._mark_fixed_style_tags(node.text)
-        updated = self._update_node_text(node, text)
-        if not updated and fix:
-            self._fix(node, node.tag)
+        self._update_node_text(node, text)
 
     def _update_node_text(self, node, node_text):
         """
@@ -548,9 +546,7 @@ class StyleTagsFixer(object):
         Restaura as tags de estilo de um node.tail
         """
         tail = self._mark_fixed_style_tags(node.tail)
-        updated = self._update_node_tail(node, tail)
-        if not updated and fix:
-            self._fix(node)
+        self._update_node_tail(node, tail)
 
     def _update_node_tail(self, node, new_tail):
         """
@@ -582,7 +578,7 @@ class StyleTagsFixer(object):
             content = node.tail
         logger.debug("StyleTagsFixer._fix: %s", content)
         content = self._fix_inserting_tags_at_the_extremities(content)
-        
+
         wrapped_content = self._wrapped_content(content, node_tag)
         xml1, xml_error = xml_utils.load_xml(wrapped_content)
         xml2 = self._fix_loading_xml_with_recover_true(
