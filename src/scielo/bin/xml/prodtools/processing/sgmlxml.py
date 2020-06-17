@@ -430,17 +430,27 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         return (new_href, no_parents_img_counter)
 
 
+class StyleTag(object):
+
+    def __init__(self, name):
+        self.name = name
+        self.xml_open = "<{}>".format(name)
+        self.sgml_open = "[{}]".format(name)
+        self.xml_close = "</{}>".format(name)
+        self.sgml_close = "[/{}]".format(name)
+
+
 class StyleTagsFixer(object):
 
     def __init__(self):
         self.XML_TO_SGML = []
+        self.style_tags = {}
         for style in ("bold", "italic", "sup", "sub"):
-            tag_open = "<{}>".format(style)
-            tag_close = "</{}>".format(style)
-            new_open = tag_open.replace("<", "[").replace(">", "]")
-            new_close = tag_close.replace("<", "[").replace(">", "]")
-            self.XML_TO_SGML.append((tag_open, new_open))
-            self.XML_TO_SGML.append((tag_close, new_close))
+            self.style_tags[style] = StyleTag(style)
+            style_tag = self.style_tags[style]
+            self.XML_TO_SGML.append((style_tag.xml_open, style_tag.sgml_open))
+            self.XML_TO_SGML.append(
+                (style_tag.xml_close, style_tag.sgml_close))
 
     def fix(self, content):
         original = content
@@ -502,7 +512,7 @@ class StyleTagsFixer(object):
         root = "<root><{}>{}</{}></root>".format(node.tag, text, node.tag)
         xml, xml_error = xml_utils.load_xml(root)
         if xml is None and retry:
-            xml = self.retry(root, text)
+            xml = self._retry(text, root, node.tag)
         if xml is not None:
             return deepcopy(xml.find(".").getchildren()[0])
 
@@ -515,7 +525,7 @@ class StyleTagsFixer(object):
         root = "<root>{}</root>".format(tail)
         xml, xml_error = xml_utils.load_xml(root)
         if xml is None and retry:
-            xml = self.retry(root, tail)
+            xml = self._retry(tail, root)
 
         if xml is not None:
             node.tail = ""
@@ -524,19 +534,80 @@ class StyleTagsFixer(object):
             node.tail = xml.find(".").text
             return
 
-    def loss(self, xml, tail):
+    def _loss(self, xml, text):
+        logger.debug("StyleTagsFixer._loss: %s", text)
         _xml = xml and "".join(xml.find(".").itertext())
-        _tail = tail
+        _text = text
+        logger.debug("StyleTagsFixer._loss: _xml=%s", _xml)
+        logger.debug("StyleTagsFixer._loss: _text=%s", _text)
         for tag, sgml in self.XML_TO_SGML:
-            _tail = _tail.replace(tag, "")
-        return _xml != _tail
+            _text = _text.replace(tag, "")
+        return _xml != _text
 
-    def retry(self, root, text):
-        # tenta carregar o xml, usando o parâmetro "recover=True"
-        # para tentar resolver mismatched tags ou tags não fechadas
-        xml, xml_error = xml_utils.load_xml(root, recover=True)
-        if not self.loss(xml, text):
+    def _retry(self, text, wrapped_text, wrap_tag=None):
+        logger.debug("StyleTagsFixer._retry: %s", text)
+        # text = self._retry_inserting_tags_at_the_extremities(text)
+        xml = self._retry_loading_xml_with_recover_true(wrapped_text, text)
+        return xml
+
+    def _retry_loading_xml_with_recover_true(self, wrapped_text, text):
+        """
+        Tenta carregar o xml, usando o parâmetro "recover=True"
+        para tentar resolver mismatched tags ou tags não fechadas
+        """
+        logger.debug(
+            "StyleTagsFixer._retry_loading_xml_with_recover_true: %s", text)
+        xml, xml_error = xml_utils.load_xml(wrapped_text, recover=True)
+        if not self._loss(xml, text):
+            logger.debug(
+                "StyleTagsFixer._retry_loading_xml_with_recover_true: %s",
+                xml_utils.tostring(xml))
             return xml
+
+    def _retry_inserting_tags_at_the_extremities(self, text):
+        """
+        Tenta resolver mismatched tags inserindo tag de abre no início e
+        tag de fecha no fim, se ausentes
+        """
+        logger.debug("StyleTagsFixer.retry_checking_tags: %s", text)
+        text = self._disguise_style_tags(text)
+        found_tags = self._find_style_tags(text)
+        if len(found_tags) > 0:
+            text = self._insert_open_tag_at_the_start(found_tags[0], text)
+            text = self._insert_close_tag_at_the_end(found_tags[-1], text)
+        text = self._revert_disguised_style_tags(text)
+        return text
+
+    def _insert_open_tag_at_the_start(self, first_tag, text):
+        """
+        Se a primeira tag é "fecha", então insere tag "abre" no início
+        """
+        if first_tag.startswith("[/"):
+            style_tag = self.style_tags.get(first_tag[2:-1])
+            text = style_tag.sgml_open + text
+        return text
+
+    def _insert_close_tag_at_the_end(self, last_tag, text):
+        """
+        Se a última tag "abre", então insere tag "fecha" no fim
+        """
+        if not last_tag.startswith("[/"):
+            style_tag = self.style_tags.get(last_tag[1:-1])
+            text += style_tag.sgml_close
+        return text
+
+    def _find_style_tags(self, text):
+        """
+        Identifica as tags de estilo em text
+        """
+        items = text.replace(
+            "[", "BREAKSTYLETAGS[").replace(
+            "]", "]BREAKSTYLETAGS").split("BREAKSTYLETAGS")
+        return [
+            item
+            for item in items
+            if item.startswith("[") and item.endswith("]")
+            ]
 
 
 class PackageNamer(object):
