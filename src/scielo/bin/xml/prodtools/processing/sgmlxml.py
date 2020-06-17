@@ -505,7 +505,8 @@ class StyleTagsFixer(object):
         """
         for node in xml.findall(".//*"):
             if node.text and "[" in node.text and "]" in node.text:
-                self._restore_matched_style_tags_in_node_text(node)
+                text = self._mark_fixed_style_tags(node.text)
+                self._update_node_text(node, text)
         return xml_utils.tostring(xml)
 
     def _restore_matched_style_tags_in_node_tails(self, xml):
@@ -514,15 +515,9 @@ class StyleTagsFixer(object):
         """
         for node in xml.findall(".//*"):
             if node.tail and "[" in node.tail and "]" in node.tail:
-                self._restore_matched_style_tags_in_node_tail(node)
+                tail = self._mark_fixed_style_tags(node.tail)
+                self._update_node_tail(node, tail)
         return xml_utils.tostring(xml)
-
-    def _restore_matched_style_tags_in_node_text(self, node, fix):
-        """
-        Restaura as tags de estilo de um node.text
-        """
-        text = self._mark_fixed_style_tags(node.text)
-        self._update_node_text(node, text)
 
     def _update_node_text(self, node, node_text):
         """
@@ -540,13 +535,6 @@ class StyleTagsFixer(object):
         if not node_tag:
             return "<root>{}</root>".format(content)
         return "<root><{}>{}</{}></root>".format(node_tag, content, node_tag)
-
-    def _restore_matched_style_tags_in_node_tail(self, node, fix):
-        """
-        Restaura as tags de estilo de um node.tail
-        """
-        tail = self._mark_fixed_style_tags(node.tail)
-        self._update_node_tail(node, tail)
 
     def _update_node_tail(self, node, new_tail):
         """
