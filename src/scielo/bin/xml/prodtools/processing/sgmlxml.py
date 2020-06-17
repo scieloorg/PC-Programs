@@ -551,11 +551,10 @@ class StyleTagsFixer(object):
     def _retry(self, content, node_tag=None):
         logger.debug("StyleTagsFixer._retry: %s", content)
         content = self._retry_inserting_tags_at_the_extremities(content)
-
         wrapped_content = self._wrapped_content(content, node_tag)
-        xml = self._retry_loading_xml_with_recover_true(
+        xml, xml_error = xml_utils.load_xml(wrapped_content)
+        return xml or self._retry_loading_xml_with_recover_true(
             wrapped_content, content)
-        return xml
 
     def _retry_loading_xml_with_recover_true(self, wrapped_content, content):
         """
@@ -579,10 +578,16 @@ class StyleTagsFixer(object):
         """
         logger.debug("StyleTagsFixer.retry_checking_tags: %s", content)
         content = self._disguise_style_tags(content)
-        found = self._find_style_tags(content)
-        if len(found) > 0:
+        while True:
+            found = self._find_style_tags(content)
+            if len(found) == 0:
+                break
+            old_content = content
             content = self._insert_open_tag_at_the_start(found[0], content)
             content = self._insert_close_tag_at_the_end(found[-1], content)
+            if old_content == content:
+                # acabaram as potenciais mudanças
+                break
         content = self._revert_disguised_style_tags(content)
         return content
 
@@ -592,7 +597,8 @@ class StyleTagsFixer(object):
         """
         if first_tag.startswith("[/"):
             style_tag = self.style_tags.get(first_tag[2:-1])
-            content = style_tag.sgml_open + content
+            content = (style_tag.xml_open +
+                       content.replace(first_tag, style_tag.xml_close, 1))
         return content
 
     def _insert_close_tag_at_the_end(self, last_tag, content):
@@ -601,20 +607,24 @@ class StyleTagsFixer(object):
         """
         if not last_tag.startswith("[/"):
             style_tag = self.style_tags.get(last_tag[1:-1])
-            content += style_tag.sgml_close
+            start = content[:content.find(last_tag)]
+            end = content[content.find(last_tag):].replace(
+                last_tag, style_tag.xml_open, 1)
+            content = start + end + style_tag.xml_close
         return content
 
     def _find_style_tags(self, content):
         """
         Identifica as tags de estilo em content
         """
+        sgml_tags = dict(self.XML_TO_SGML).values()
         items = content.replace(
             "[", "BREAKSTYLETAGS[").replace(
             "]", "]BREAKSTYLETAGS").split("BREAKSTYLETAGS")
         return [
             item
             for item in items
-            if item.startswith("[") and item.endswith("]")
+            if item in sgml_tags
             ]
 
 

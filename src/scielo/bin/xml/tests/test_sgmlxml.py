@@ -122,3 +122,17 @@ class TestStyleTagsFixer(TestCase):
         result = self.style_tags_fixer._retry_inserting_tags_at_the_extremities(
             text)
         self.assertEqual(expected, result)
+
+    def test_retry_inserting_tags_at_the_extremities_insert_at_the_start_repeatly(self):
+        text = """texto 1 </sup></bold></italic></sub> texto 2"""
+        expected = """<sub><italic><bold><sup>texto 1 </sup></bold></italic></sub> texto 2"""
+        result = self.style_tags_fixer._retry_inserting_tags_at_the_extremities(
+            text)
+        self.assertEqual(expected, result)
+
+    def test_retry_inserting_tags_at_the_extremities_insert_at_the_end_repeatly(self):
+        text = """texto 1 <sub><italic><bold><sup> texto 2"""
+        expected = """texto 1 <sub><italic><bold><sup> texto 2</sup></bold></italic></sub>"""
+        result = self.style_tags_fixer._retry_inserting_tags_at_the_extremities(
+            text)
+        self.assertEqual(expected, result)
