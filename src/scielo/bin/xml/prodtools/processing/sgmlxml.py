@@ -465,38 +465,39 @@ class StyleTagsFixer(object):
 
         content = self._restore_matched_style_tags_in_node_tails(xml)
         content = self._restore_matched_style_tags_in_node_texts(xml)
-
-        # testar o xml
-        xml, xml_error = xml_utils.load_xml(content)
-        if xml is None:
-            content = self._disguise_style_tags(content)
-            content = self._restore_matched_style_tags_in_node_tails(xml)
-            content = self._restore_matched_style_tags_in_node_texts(xml)
-
+        content = self._unmark_fixed_style_tags(content)
         return content
 
     def _disguise_style_tags(self, content):
         """
         Disfarça as tags de estilo, mudando `<tag>` para `[tag]`
         """
-        for tag, new_tag in self.XML_TO_SGML:
-            content = content.replace(tag, new_tag)
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            content = content.replace(xml_tag, sgml_tag)
         return content
 
-    def _revert_disguised_style_tags(self, content):
+    def _unmark_fixed_style_tags(self, content):
         """
         Reverte o disfarce das tags de estilo, mudando `[tag]` para `<tag>`
         """
-        for tag, new_tag in self.XML_TO_SGML:
-            content = content.replace(new_tag, tag)
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            content = content.replace(xml_tag.upper(), xml_tag)
+        return content
+
+    def _delete_sgml_style_tags(self, content):
+        """
+        Apaga as tags de estilo sgml, mudando `[tag]` para `''`
+        """
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            content = content.replace(sgml_tag, "")
         return content
 
     def _mark_fixed_style_tags(self, content):
         """
         Marca as tags de estilo convertidas sem erro
         """
-        for tag, new_tag in self.XML_TO_SGML:
-            content = content.replace(new_tag, tag.upper())
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            content = content.replace(sgml_tag, xml_tag.upper())
         return content
 
     def _restore_matched_style_tags_in_node_texts(self, xml):
@@ -519,6 +520,10 @@ class StyleTagsFixer(object):
             if node.text and "[" in node.text and "]" in node.text:
                 new_xml = self._fix_loading_xml_with_recover_true(node.text)
                 self._update_node_text(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.text and "[" in node.text and "]" in node.text:
+                node.text = self._delete_sgml_style_tags(node.text)
         return xml_utils.tostring(xml)
 
     def _restore_matched_style_tags_in_node_tails(self, xml):
@@ -541,6 +546,10 @@ class StyleTagsFixer(object):
             if node.tail and "[" in node.tail and "]" in node.tail:
                 new_xml = self._fix_loading_xml_with_recover_true(node.tail)
                 self._update_node_tail(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.tail and "[" in node.tail and "]" in node.tail:
+                node.tail = self._delete_sgml_style_tags(node.tail)
         return xml_utils.tostring(xml)
 
     def _check_content(self, node, content, node_tag=None):
@@ -580,8 +589,8 @@ class StyleTagsFixer(object):
     def _loss(self, xml, content):
         _xml = xml and "".join(xml.find(".").itertext())
         _content = content
-        for tag, sgml in self.XML_TO_SGML:
-            _content = _content.replace(tag, "")
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            _content = _content.replace(xml_tag, "")
         logger.debug("StyleTagsFixer._loss: content=%s", content)
         logger.debug("StyleTagsFixer._loss: _xml=%s", _xml)
         logger.debug("StyleTagsFixer._loss: _content=%s", _content)
