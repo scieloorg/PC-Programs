@@ -110,14 +110,14 @@ class TestStyleTagsFixer(TestCase):
                 xml))
 
     def test_retry_inserting_tags_at_the_extremities_insert_at_the_start(self):
-        text = """texto 1 [/sup] texto 2"""
+        text = """texto 1 </sup> texto 2"""
         expected = """<sup>texto 1 </sup> texto 2"""
         result = self.style_tags_fixer._retry_inserting_tags_at_the_extremities(
             text)
         self.assertEqual(expected, result)
 
     def test_retry_inserting_tags_at_the_extremities_insert_at_the_end(self):
-        text = """texto 1 [sup] texto 2"""
+        text = """texto 1 <sup> texto 2"""
         expected = """texto 1 <sup> texto 2</sup>"""
         result = self.style_tags_fixer._retry_inserting_tags_at_the_extremities(
             text)

@@ -512,7 +512,7 @@ class StyleTagsFixer(object):
         wrapped_node_text = self._wrapped_content(text, node.tag)
         xml, xml_error = xml_utils.load_xml(wrapped_node_text)
         if xml is None and retry:
-            xml = self._retry(text, wrapped_node_text, node.tag)
+            xml = self._retry(text, node.tag)
         if xml is not None:
             return deepcopy(xml.find(".").getchildren()[0])
 
@@ -530,7 +530,7 @@ class StyleTagsFixer(object):
         wrapped_node_tail = self._wrapped_content(tail)
         xml, xml_error = xml_utils.load_xml(wrapped_node_tail)
         if xml is None and retry:
-            xml = self._retry(tail, wrapped_node_tail)
+            xml = self._retry(tail)
 
         if xml is not None:
             node.tail = ""
@@ -548,9 +548,11 @@ class StyleTagsFixer(object):
         logger.debug("StyleTagsFixer._loss: _content=%s", _content)
         return _xml != _content
 
-    def _retry(self, content, wrapped_content, node_tag=None):
+    def _retry(self, content, node_tag=None):
         logger.debug("StyleTagsFixer._retry: %s", content)
-        # content = self._retry_inserting_tags_at_the_extremities(content)
+        content = self._retry_inserting_tags_at_the_extremities(content)
+
+        wrapped_content = self._wrapped_content(content, node_tag)
         xml = self._retry_loading_xml_with_recover_true(
             wrapped_content, content)
         return xml
