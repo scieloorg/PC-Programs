@@ -518,7 +518,8 @@ class StyleTagsFixer(object):
 
         for node in xml.findall(".//*"):
             if node.text and "[" in node.text and "]" in node.text:
-                new_xml = self._fix_loading_xml_with_recover_true(node.text)
+                new_xml = self._fix_loading_xml_with_recover_true(
+                    node.text, node.tag)
                 self._update_node_text(node, new_xml)
 
         for node in xml.findall(".//*"):
@@ -544,7 +545,8 @@ class StyleTagsFixer(object):
 
         for node in xml.findall(".//*"):
             if node.tail and "[" in node.tail and "]" in node.tail:
-                new_xml = self._fix_loading_xml_with_recover_true(node.tail)
+                new_xml = self._fix_loading_xml_with_recover_true(
+                    node.tail, None)
                 self._update_node_tail(node, new_xml)
 
         for node in xml.findall(".//*"):
@@ -590,7 +592,7 @@ class StyleTagsFixer(object):
         _xml = xml and "".join(xml.find(".").itertext())
         _content = content
         for xml_tag, sgml_tag in self.XML_TO_SGML:
-            _content = _content.replace(xml_tag, "")
+            _content = _content.replace(xml_tag.upper(), "")
         logger.debug("StyleTagsFixer._loss: content=%s", content)
         logger.debug("StyleTagsFixer._loss: _xml=%s", _xml)
         logger.debug("StyleTagsFixer._loss: _content=%s", _content)
