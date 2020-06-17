@@ -506,7 +506,19 @@ class StyleTagsFixer(object):
         for node in xml.findall(".//*"):
             if node.text and "[" in node.text and "]" in node.text:
                 text = self._mark_fixed_style_tags(node.text)
-                self._update_node_text(node, text)
+                new_xml = self._check_content(node, text, node.tag)
+                self._update_node_text(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.text and "[" in node.text and "]" in node.text:
+                text = self._fix_inserting_tags_at_the_extremities(node.text)
+                new_xml = self._check_content(node, text, node.tag)
+                self._update_node_text(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.text and "[" in node.text and "]" in node.text:
+                new_xml = self._fix_loading_xml_with_recover_true(node.text)
+                self._update_node_text(node, new_xml)
         return xml_utils.tostring(xml)
 
     def _restore_matched_style_tags_in_node_tails(self, xml):
@@ -516,15 +528,33 @@ class StyleTagsFixer(object):
         for node in xml.findall(".//*"):
             if node.tail and "[" in node.tail and "]" in node.tail:
                 tail = self._mark_fixed_style_tags(node.tail)
-                self._update_node_tail(node, tail)
+                new_xml = self._check_content(node, tail)
+                self._update_node_tail(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.tail and "[" in node.tail and "]" in node.tail:
+                tail = self._fix_inserting_tags_at_the_extremities(node.tail)
+                new_xml = self._check_content(node, tail)
+                self._update_node_tail(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.tail and "[" in node.tail and "]" in node.tail:
+                new_xml = self._fix_loading_xml_with_recover_true(node.tail)
+                self._update_node_tail(node, new_xml)
         return xml_utils.tostring(xml)
 
-    def _update_node_text(self, node, node_text):
+    def _check_content(self, node, content, node_tag=None):
+        """
+        Atualiza node.text com o valor de content
+        """
+        wrapped_content = self._wrapped_content(content, node_tag)
+        xml, xml_error = xml_utils.load_xml(wrapped_content)
+        return xml
+
+    def _update_node_text(self, node, xml):
         """
         Atualiza node.text com o valor de node_text
         """
-        wrapped_node_text = self._wrapped_content(node_text, node.tag)
-        xml, xml_error = xml_utils.load_xml(wrapped_node_text)
         if xml is not None:
             new_node = deepcopy(xml.find(".").getchildren()[0])
             parent = node.getparent()
@@ -536,12 +566,10 @@ class StyleTagsFixer(object):
             return "<root>{}</root>".format(content)
         return "<root><{}>{}</{}></root>".format(node_tag, content, node_tag)
 
-    def _update_node_tail(self, node, new_tail):
+    def _update_node_tail(self, node, xml):
         """
         Atualiza node.tail com o valor new_tail
         """
-        wrapped_node_tail = self._wrapped_content(new_tail)
-        xml, xml_error = xml_utils.load_xml(wrapped_node_tail)
         if xml is not None:
             node.tail = ""
             for n in xml.find(".").getchildren():
@@ -559,21 +587,7 @@ class StyleTagsFixer(object):
         logger.debug("StyleTagsFixer._loss: _content=%s", _content)
         return _xml != _content
 
-    def _fix(self, node, node_tag=None):
-        if node_tag:
-            content = node.text
-        else:
-            content = node.tail
-        logger.debug("StyleTagsFixer._fix: %s", content)
-        content = self._fix_inserting_tags_at_the_extremities(content)
-
-        wrapped_content = self._wrapped_content(content, node_tag)
-        xml1, xml_error = xml_utils.load_xml(wrapped_content)
-        xml2 = self._fix_loading_xml_with_recover_true(
-            wrapped_content, content)
-        return xml2 or xml1
-
-    def _fix_loading_xml_with_recover_true(self, wrapped_content, content):
+    def _fix_loading_xml_with_recover_true(self, content, node_tag):
         """
         Tenta carregar o xml, usando o parâmetro "recover=True"
         para tentar resolver mismatched tags ou tags não fechadas
@@ -581,12 +595,10 @@ class StyleTagsFixer(object):
         """
         logger.debug(
             "StyleTagsFixer._fix_loading_xml_with_recover_true: %s", content)
-        wrapped_content = self._revert_disguised_style_tags(wrapped_content)
+        content = self._mark_fixed_style_tags(content)
+        wrapped_content = self._wrapped_content(content, node_tag)
         xml, xml_error = xml_utils.load_xml(wrapped_content, recover=True)
         if not self._loss(xml, content):
-            logger.debug(
-                "StyleTagsFixer._fix_loading_xml_with_recover_true: %s",
-                xml_utils.tostring(xml))
             return xml
 
     def _fix_inserting_tags_at_the_extremities(self, content):
