@@ -82,8 +82,8 @@ symbol
 
 
 datetype
-accepted;corrected;pub;preprint;retracted;received;rev-recd;rev-request;other
-accepted;corrected;pub;preprint;retracted;received;rev-recd;rev-request;other
+referee-report-received;accepted;corrected;pub;preprint;retracted;received;rev-recd;rev-request;other
+referee-report-received;accepted;corrected;pub;preprint;retracted;received;rev-recd;rev-request;other
 
 uri
 Conceptualization;Data curation;Formal analysis;Funding acquisition;Investigation;Methodology;Project administration;Resources;Software;Supervision;Validation;Visualization;Writing – original draft;Writing – review & editing
