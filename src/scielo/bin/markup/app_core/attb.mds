@@ -82,8 +82,8 @@ symbol
 
 
 datetype
-accepted;corrected;pub;preprint;retracted;received;rev-recd;rev-request;other
-accepted;corrected;pub;preprint;retracted;received;rev-recd;rev-request;other
+referee-report-received;accepted;corrected;pub;preprint;retracted;received;rev-recd;rev-request;other
+referee-report-received;accepted;corrected;pub;preprint;retracted;received;rev-recd;rev-request;other
 
 specuse
 reviewer;editor;not defined
