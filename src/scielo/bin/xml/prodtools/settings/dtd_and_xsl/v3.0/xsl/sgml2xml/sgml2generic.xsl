@@ -1022,7 +1022,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates mode="copy-of"  select="../..//normaff[@id=$author_rid]/role"/>
 		</contrib>
 	</xsl:template>
-	<xsl:template match="role"><role><xsl:apply-templates/></role></xsl:template>
+	<xsl:template match="role">
+		<role><xsl:apply-templates select="@*|*|text()"/></role>
+	</xsl:template>
 	<xsl:template match="corpauth" mode="front-contrib">
 		<xsl:variable name="teste">
 			<xsl:apply-templates select="./../../authgrp//text()"/>
