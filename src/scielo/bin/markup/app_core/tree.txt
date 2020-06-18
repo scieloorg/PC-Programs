@@ -155,6 +155,7 @@ onbehalf;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 
 author
+anonymous;#FALSE#;#FALSE#
 fname-surname;#FALSE#;#FALSE#
 fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
@@ -1142,4 +1143,6 @@ institid
 code
 
 histdate
+
+anonymous
 
