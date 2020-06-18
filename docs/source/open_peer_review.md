@@ -138,6 +138,59 @@ Os valores `reviewer` e `editor` são apresentados com opções do campo `specus
    [Elemento role com atributo specuse]: img/mkp-role-specuse-reviewer-revisor-marcado.png "Elemento role com atributo specuse"
    
 
+## Identificação do artigo revisado
+
+Indicar **artigo revisado** no documento do **parecer** da seguinte forma:
+
+```xml
+<related-object
+	object-type="peer-reviewed-material"
+	id="r01"
+	xlink:href="10.1590/abd1806-4841.20142998"
+	ext-link-type="doi"/>        
+```
+
+no arquivo marcado deve conter, no elemento `related` com o atributo `reltp` cujo valor é `peer-reviewed-material`
+
+```sgml
+[related reltp="peer-reviewed-material" pid-doi="10.1590/abd1806-4841.20142998"][/related]
+```
+
+Para o atributo `pid-doi`, preencher com o valor do PID ou DOI do artigo revisado.
+
+
+   [Elemento related com atributo reltp cujo valor é peer-reviewed-material]: img/mkp-related-reltp-peer-reviewed-material.png "Elemento related com atributo reltp cujo valor é peer-reviewed-material"
+
+   [Formulário para preencher related]: img/mkp-form-related.png "Formulário para preencher related"
+
+
+## Identificação do parecer externo
+
+Indicar o **parecer** que está publicado em outro site da seguinte forma:
+
+```xml
+<related-object
+	object-type="referee-report"
+	ext-link-type="uri"
+	xlink:href="https://publons.com/publon/000000/#review-2020xxx"
+	>Publons</related-object>        
+```
+
+no arquivo marcado deve conter, no elemento `related` com o atributo `reltp` cujo valor é `referee-report`
+
+```sgml
+[related reltp="referee-report" pid-doi="https://publons.com/publon/000000/#review-2020xxx"]Publons[/related]
+```
+
+Para o atributo `pid-doi`, preencher com o valor do PID ou DOI do artigo revisado.
+
+
+   [Elemento related com atributo reltp cujo valor é referee-report]: img/mkp-related-reltp-referee-report.png "Elemento related com atributo reltp cujo valor é referee-report"
+
+   [Formulário para preencher related]: img/mkp-form-related.png "Formulário para preencher related"
+
+
+
 ## Identificação da data de recebimento do parecer
 
 A representação da data de recebimento do parecer é feita por:
