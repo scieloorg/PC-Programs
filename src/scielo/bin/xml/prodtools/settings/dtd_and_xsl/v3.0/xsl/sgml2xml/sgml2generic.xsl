@@ -3629,6 +3629,38 @@ et al.</copyright-statement>
 		</related-article>
 	</xsl:template>
 	
+	<xsl:template match="related[@reltp='referee-report']" mode="front-related">
+		<!--
+		<related-object
+			object-type="referee-report"
+			ext-link-type="uri"
+			xlink:href="https://publons.com/publon/000000/#review-2020xxx"
+			>Publons</related-object>
+        -->
+		<xsl:variable name="id"><xsl:value-of select="@pid-doi"/></xsl:variable>
+		<related-object object-type="{@reltp}">
+			<xsl:apply-templates select="." mode="attributes">
+				<xsl:with-param name="id" select="$id"/>		
+			</xsl:apply-templates>
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-object>
+	</xsl:template>
+
+	<xsl:template match="related[@reltp='peer-reviewed-material']" mode="front-related">
+		<!--
+		<related-object
+			object-type="peer-reviewed-material"
+			id="r01" xlink:href="10.1590/abd1806-4841.20142998"
+			ext-link-type="doi"/>
+        -->
+		<xsl:variable name="id"><xsl:value-of select="@pid-doi"/></xsl:variable>
+		<related-object object-type="{@reltp}" id="r01">
+			<xsl:apply-templates select="." mode="attributes">
+				<xsl:with-param name="id" select="$id"/>		
+			</xsl:apply-templates>
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-object>
+	</xsl:template>
 	<xsl:template match="author">
 		<contrib><xsl:apply-templates select="*"></xsl:apply-templates></contrib>
 	</xsl:template>

@@ -51,8 +51,8 @@ norgname
 
 
 reltp
-press-release;article;commentary-article;corrected-article;letter;partial-article;retracted-article
-press-release;article;commentary-article;corrected-article;letter;partial-article;retracted-article
+peer-reviewed-material;referee-report;press-release;article;commentary-article;corrected-article;letter;partial-article;retracted-article
+peer-reviewed-material;referee-report;press-release;article;commentary-article;corrected-article;letter;partial-article;retracted-article
 
 pid-doi
 
