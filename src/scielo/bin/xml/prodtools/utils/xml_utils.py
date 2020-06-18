@@ -213,11 +213,7 @@ class SuitableXML(object):
                 xml_declaration=self.xml_declaration,
                 pretty_print=pretty_print, doctype=doctype
                 ).decode("utf-8")
-        return "\n".join([
-                self.xml_declaration,
-                self.doctype,
-                self.content,
-            ])
+        return self.original
 
     def write(self, dest_file_path, pretty_print=True,
               dtd_location_type=None):

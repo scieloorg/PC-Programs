@@ -301,6 +301,15 @@ class TestSuitableXML(TestCase):
         self.assertEqual(suitable_xml.doctype, '')
         self.assertIsNone(suitable_xml.xml_declaration)
 
+    def test_init_no_xml(self):
+        text = "Qualquer texto nao XML."
+        suitable_xml = xml_utils.SuitableXML(text)
+        self.assertEqual(suitable_xml.format(), text)
+        self.assertIsNotNone(suitable_xml.xml_error)
+        self.assertIn("it must be an XML content or XML file path", suitable_xml.xml_error)
+        self.assertIsNone(suitable_xml.doctype)
+        self.assertIsNone(suitable_xml.xml_declaration)
+
     def test_init_xml_with_no_xml_declaration(self):
         text = ('<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
                 'Publishing DTD v1.1 20151215//EN" '
@@ -318,6 +327,17 @@ class TestSuitableXML(TestCase):
             '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
             'Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/'
             'publishing/1.1/JATS-journalpublishing1.dtd">\n<article/>')
+
+    def test_init_invalid_xml_should_return_original(self):
+        text = ('<?xml version="1.0" encoding="utf-8"?>'
+                '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
+                'Publishing DTD v1.1 20151215//EN" '
+                '"https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">'
+                '\n<article>'
+                '<p><ext-link ext-link-type="uri" xlink:href="<link-invalido>">bla</ext-link></p>'
+                '</article>')
+        suitable_xml = xml_utils.SuitableXML(text)
+        self.assertEqual(suitable_xml.format(), text)
 
     def test_init_xml_with_no_doctype(self):
         text = '<?xml version="1.0" encoding="utf-8"?><doc/>'
