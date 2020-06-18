@@ -1010,6 +1010,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//authorid"/>
 			<xsl:apply-templates select="."/>
 			<xsl:apply-templates select=".//xref|role|credit"/>
+			<xsl:apply-templates select="anonymous" mode="copy-of"/>
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>
@@ -2023,6 +2024,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 	<xsl:template match="*[fname or surname]">
+		<!-- author -->
 		<xsl:variable name="f"><xsl:value-of select="normalize-space(fname)"/></xsl:variable>
 		<xsl:variable name="s"><xsl:value-of select="normalize-space(surname)"/></xsl:variable>
 		<xsl:variable name="suffix"><xsl:choose>

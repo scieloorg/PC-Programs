@@ -68,12 +68,11 @@ em
 
 ```xml
 <contrib contrib-type="author">
-        <name>
-	    <surname>Doe</surname>
-	    <given-names>Jane X</given-names>
-	</name>
-	<role specific-use="reviewer">Reviewer</role>
-        <xref ref-type="aff" rid="aff1"/>
+    <name>
+        <surname>Doe</surname>
+        <given-names>Jane X</given-names>
+    </name>
+    <role specific-use="reviewer">Reviewer</role>
 </contrib>
 ```
 
@@ -98,6 +97,45 @@ Os valores `reviewer` e `editor` são apresentados com opções do campo `specus
 
    ![Elemento oprrole com atributo specuse](./img/mkp-oprrole-specuse-reviewer-revisor-marcado.png)
 
+   
+
+## Identificação do anonimato do parecerista (revisor ou editor)
+
+Para que seja gerado
+
+```xml
+<anonymous/>
+```
+
+em 
+
+```xml
+<contrib contrib-type="author">
+    <anonymous/>
+    <role specific-use="reviewer">Reviewer</role>
+</contrib>
+```
+
+no arquivo marcado deve conter, no elemento `anonymous` e é obrigatório o uso de `role`.
+
+```sgml
+[anonymous][/anonymous]
+```
+
+```xml
+[role specuse="reviewer"]Reviewer[/role]
+```
+
+ou
+
+```xml
+[role specuse="editor"]Editor[/role]
+```
+
+Os valores `reviewer` e `editor` são apresentados com opções do campo `specuse` do formulário do elemento `role`.
+
+   [Formulário para preencher os atributos do elemento role]: img/mkp-role-specuse-reviewer-revisor-form.png "Formulário para preencher os atributos do elemento role"
+   [Elemento role com atributo specuse]: img/mkp-role-specuse-reviewer-revisor-marcado.png "Elemento role com atributo specuse"
    
 
 ## Identificação da data de recebimento do parecer

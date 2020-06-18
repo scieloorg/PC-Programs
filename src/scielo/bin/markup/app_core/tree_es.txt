@@ -9,6 +9,7 @@ afftrans;Identifica en subdoc la afiliación del autor
 aiserial;Agrupa los elementos de seriada
 amonog;Agrupa los elementos de monografía
 anonym;Identifica autoría anónima
+anonymous;Identifica autoría anónima
 apa;Agrupa los elementos de bibliografía según el estándar APA
 app;Identifica un apéndice
 article;Identifica el artículo

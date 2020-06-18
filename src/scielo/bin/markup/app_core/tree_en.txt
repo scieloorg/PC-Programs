@@ -9,6 +9,7 @@ afftrans;Identify in subdoc the organization to which the author is affiliated
 aiserial;Group the elements of a serial publication
 amonog;Group the elements of a monograph
 anonym;Identify anonymous authorship
+anonymous;Identify anonymous authorship
 apa;Group the elements of references which are according to APA
 app;Identify the appendix
 article;Identify the article
