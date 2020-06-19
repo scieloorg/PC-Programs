@@ -31,6 +31,10 @@ contract;Identifica el número del proyecto o contracto proveído por la instituci
 corpauth;Identifica autor corporativo
 country;Identifica el país
 ctreg;Identifica el número del registro del ensayo clínico
+customgrp;Identifica el custom meta group
+custom;Identifica un par de custom meta
+name;Identifica un custom meta name
+value;Identifica un custom meta value
 date;Identifica la fecha relacionada al contexto (publication, conferencia, registro de patente, etc)
 degree;Identifica el grado de una dissertación o tesis, como maestria, doctorado, etc
 deposit;Agrupa los elementos de un repositorio
