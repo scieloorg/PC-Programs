@@ -4,6 +4,7 @@ import logging.config
 import argparse
 import os
 import shutil
+import traceback
 
 from tempfile import TemporaryDirectory
 from datetime import datetime
@@ -151,8 +152,14 @@ class Reception(object):
                 package = self._create_package_instance(source=xml_path, output=output_path)
                 scilista_items, xc_status, mail_info = self.proc.convert_package(package)
             except Exception:
-                self.inform_failure(
-                    package_path, "Could not convert package '%s'." % package_path
+                logger.exception(
+                    "Could not convert the package '%s'. The following traceback was captured: ",
+                    package_path,
+                )
+                self.mailer.mail_failure(
+                    subject="Could not convert the package",
+                    text=traceback.format_exc(),
+                    package=package_path,
                 )
             else:
                 if scilista_items is None or len(scilista_items) == 0:
