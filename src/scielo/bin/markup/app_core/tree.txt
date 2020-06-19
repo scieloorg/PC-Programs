@@ -175,10 +175,13 @@ fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
 prefix;#FALSE#;#FALSE#
 suffix;#FALSE#;#FALSE#
+credit;#TRUE#;#TRUE#
 role;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 authorid;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
+
+credit
 
 authorid
 

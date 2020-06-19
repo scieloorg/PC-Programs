@@ -30,6 +30,7 @@ confname;Identifica el nombre de la conferencia
 contract;Identifica el número del proyecto o contracto proveído por la institución financiera
 corpauth;Identifica autor corporativo
 country;Identifica el país
+credit;Identifica el papel del autor de acuerdo con la taxonomía CRediT
 ctreg;Identifica el número del registro del ensayo clínico
 customgrp;Identifica el custom meta group
 custom;Identifica un par de custom meta

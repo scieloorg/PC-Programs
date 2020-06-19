@@ -30,6 +30,7 @@ confname;Identify the conference name
 contract;Identify the contract/project number given by the sponsor
 corpauth;Identify the corporative author
 country;Identify the country
+credit;Identify the author role according to CRediT taxonomy
 ctreg;Identify the clinical trial number
 customgrp;Identifiy the custom meta group
 custom;Identifiy a pair of custom meta
