@@ -179,6 +179,7 @@ class Reception(object):
         encoding.display_message(_('finished'))
 
     def _update_scilista(self, package_name, scilista_items):
+        """Atualiza a scilista da coleção no path configurado"""
         if self.config.collection_scilista:
             try:
                 content = '\n'.join(list(set(scilista_items))) + '\n'
@@ -186,9 +187,17 @@ class Reception(object):
                     self.config.collection_scilista,
                     content)
             except Exception as e:
-                msg = _("Unable to update scilista {} with {}: {}"
-                        ).format(self.config.collection_scilista, content, e)
-                self.inform_failure(package_name, msg)
+                subject = _("Unable to update scilista {} with {}").format(
+                    self.config.collection_scilista, content
+                )
+                logger.exception(
+                    "Could not update the scilista '%s' with '%s",
+                    self.config.collection_scilista,
+                    content,
+                )
+                self.mailer.mail_failure(
+                    subject=subject, text=traceback.format_exc(), package=package_name
+                )
                 raise e
 
     def _mail_results(self, pkg_name, mail_info):
