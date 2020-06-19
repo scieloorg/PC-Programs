@@ -25,4 +25,3 @@ Lembre-se de dar o máximo de informação possível já no primeiro contato:
 - Mande arquivos para que simulemos os erros
 - Versão de Windows, Word e de PC Programs
 
-
