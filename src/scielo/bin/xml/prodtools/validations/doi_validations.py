@@ -121,7 +121,7 @@ class DOIValidator(object):
     def validate_journal_title(self, article_journal_title, article_doi,
                                doi_data):
         if doi_data.journal_titles is not None:
-            status = validation_status.STATUS_ERROR
+            status = validation_status.STATUS_INFO
             if article_journal_title not in doi_data.journal_titles:
                 max_rate, items = utils.most_similar(
                     utils.similarity(
@@ -136,7 +136,7 @@ class DOIValidator(object):
 
     def validate_article_title(self, article_titles, article_doi, doi_data):
         if doi_data.article_titles is not None:
-            status = validation_status.STATUS_ERROR
+            status = validation_status.STATUS_INFO
             max_rate = 0
             for t in article_titles:
                 rate, items = utils.most_similar(
