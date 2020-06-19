@@ -29,6 +29,7 @@ confname;Identify the conference name
 contract;Identify the contract/project number given by the sponsor
 corpauth;Identify the corporative author
 country;Identify the country
+credit;Identify the author role according to CRediT taxonomy
 ctreg;Identify the clinical trial number
 date;Identify the date related to the context (publication, conference, patent registration, etc)
 degree; Identify the degree of the thesis, such as Master, Doctor etc
