@@ -88,9 +88,12 @@ class Reception(object):
                     configuration.email_text_packages_receipt +
                     '\n' + ftp.registered_actions)
         except Exception as e:
-            self.inform_failure(
-                "", str(e),
-                subject=_('Something went wrong as downloading packages'))
+            logger.exception(
+                "Could not download packages. The following traceback was captured: "
+            )
+            self.mailer.mail_failure(
+                subject="Could not download packages", text=traceback.format_exc(),
+            )
             raise e
 
     def receive_package(self, package_path=None):
