@@ -10,6 +10,7 @@ cltrial;#FALSE#;#FALSE#
 code;#FALSE#;#TRUE#
 corresp;#FALSE#;#FALSE#
 cpright;#FALSE#;#FALSE#
+customgrp;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
 *deflist;#FALSE#;#TRUE#
 *page-fn;#FALSE#;#TRUE#
@@ -33,6 +34,17 @@ tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
 versegrp;#FALSE#;#TRUE#
 xref;#FALSE#;#TRUE#
+
+customgrp
+custom;#FALSE#;#TRUE#
+
+custom
+name;#FALSE#;#FALSE#
+value;#FALSE#;#FALSE#
+
+name
+
+value
 
 *fngrp
 

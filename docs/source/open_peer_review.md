@@ -213,3 +213,35 @@ no arquivo marcado deve conter, no elemento `hist`, o elemento `histdate`, com o
    [Formulário para preencher quaisquer tipo de histdate]: img/mkp-form-histdate.png "Formulário para preencher quaisquer tipo de histdate"
 
 
+## Identificação de metadados sem _tags_ definidas
+
+**`<custom-meta>`**
+
+Elemento para identificar metadados para os quais não há _tags_ definidas.
+
+Permite uma variedade **sem limite fixo** de pares **nome e valor**, com poucas restrições no comprimento ou no conteúdo do valor.
+
+```xml
+<custom-meta-group>
+   <custom-meta>
+     <meta-name>peer-review-recommendation</meta-name>
+     <meta-value>accept</meta-value>
+   </custom-meta>
+   <custom-meta>
+     <meta-name>nome2</meta-name>
+     <meta-value>valor2</meta-value>
+   </custom-meta>
+   <custom-meta>
+     <meta-name>nome3</meta-name>
+     <meta-value>valor 3</meta-value>
+   </custom-meta>
+</custom-meta-group>
+```
+
+no arquivo marcado use:
+
+- `customgrp` para gerar `custom-meta-group`
+- `custom` para gerar `custom-meta`
+- `name` para gerar `meta-name`
+- `value` para gerar `meta-value`
+

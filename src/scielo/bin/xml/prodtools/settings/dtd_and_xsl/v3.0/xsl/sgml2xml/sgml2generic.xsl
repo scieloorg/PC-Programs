@@ -890,6 +890,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			
 			<xsl:apply-templates
 				select="confgrp | front//confgrp | back//bbibcom/confgrp | thesgrp | front//thesgrp | back//bbibcom/thesgrp"/>
+			<xsl:apply-templates select=".//customgrp"/>
 		</article-meta>
 	</xsl:template>
 	<xsl:template match="doc | subdoc | docresp" mode="title-group">
@@ -4043,4 +4044,24 @@ et al.</copyright-statement>
 		<xsl:attribute name="ref-type">fn</xsl:attribute>
 	</xsl:template>
 
+	<xsl:template match="customgrp">
+		<custom-meta-group>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</custom-meta-group>
+	</xsl:template>
+	<xsl:template match="custom">
+		<custom-meta>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</custom-meta>
+	</xsl:template>
+	<xsl:template match="custom/name">
+		<meta-name>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</meta-name>
+	</xsl:template>
+	<xsl:template match="custom/value">
+		<meta-value>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</meta-value>
+	</xsl:template>
 </xsl:stylesheet>

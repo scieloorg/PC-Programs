@@ -32,6 +32,10 @@ corpauth;Identify the corporative author
 country;Identify the country
 credit;Identify the author role according to CRediT taxonomy
 ctreg;Identify the clinical trial number
+customgrp;Identifiy the custom meta group
+custom;Identifiy a pair of custom meta
+name;Identifiy a custom meta name
+value;Identifiy a custom meta value
 date;Identify the date related to the context (publication, conference, patent registration, etc)
 degree; Identify the degree of the thesis, such as Master, Doctor etc
 deposit;Identify the date of deposit in the repository
