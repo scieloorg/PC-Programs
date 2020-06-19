@@ -232,9 +232,13 @@ class Reception(object):
             try:
                 self.transfer.transfer_report_files(acron, issue_id)
             except Exception as e:
-                msg = _("Unable to transfer report files"
-                        " of {} {}: {}").format(acron, issue_id, e)
-                self.inform_failure(package_name, msg)
+                subject = _("Unable to transfer report files of {} {}").format(
+                    acron, issue_id
+                )
+                logger.exception(subject)
+                self.mailer.mail_failure(
+                    subject=subject, text=traceback.format_exc(), package=package_name
+                )
                 raise e
 
     def _queued_packages(self):
