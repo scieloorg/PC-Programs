@@ -39,12 +39,6 @@ class ForbiddenOperationError(Exception):
     pass
 
 
-class ScieloPackageError(Exception):
-    """Exceção não recuperável lançada durante a criação do objeto SPPackage"""
-
-    pass
-
-
 def main():
     parser = argparse.ArgumentParser(
         description='XML Converter for Desktop cli utility')
@@ -137,12 +131,8 @@ class Reception(object):
     def _create_package_instance(self, source: str, output: str) -> SPPackage:
         """Cria instância da classe SPPackage para o pacote de entrada"""
 
-        try:
-            package_maker = PackageMaker(source, output)
-            package = package_maker.pack()
-        except Exception as exc:
-            raise ScieloPackageError(exc) from None
-        return package
+        package_maker = PackageMaker(source, output)
+        return package_maker.pack()
 
     def convert_package(self, package_path):
         if package_path is None:
@@ -160,11 +150,6 @@ class Reception(object):
             try:
                 package = self._create_package_instance(source=xml_path, output=output_path)
                 scilista_items, xc_status, mail_info = self.proc.convert_package(package)
-            except ScieloPackageError:
-                self.inform_failure(
-                    package_path,
-                    "Could not create package from source path '%s'." % package_path,
-                )
             except Exception:
                 self.inform_failure(
                     package_path, "Could not convert package '%s'." % package_path
