@@ -11,12 +11,11 @@ Informe o usuário e a senha
   - senha: produtos@scielo
 
 
-  [login]: img/howtoinstall_download2.png "Entre com usuário e senha"
+  ![login](./img/howtoinstall_download2.png)
 
 
 Selecione a pasta:
 
   * xpm: XML Package Maker
 
-
-  [pastas]: img/howtoinstall_download3.png "Pasta do instalador do programa"
+    ![pastas](./img/howtoinstall_download3.png)

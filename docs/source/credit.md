@@ -261,9 +261,9 @@ Selecione o botão `credit`. Será mostrada uma janela para preencher um valor p
 Pode-se marcar mais de um `credit` por `author`.
 
 
-	![Formulário da etiqueta credit para preencher uri](img/mkp-form-credit.png)
+![Formulário da etiqueta credit para preencher uri](./img/mkp-form-credit.png)
 
-	
-	![Dado marcado com a etiqueta credit](img/mkp-credit-marcado.png)
+
+![Dado marcado com a etiqueta credit](./img/mkp-credit-marcado.png)
 
 

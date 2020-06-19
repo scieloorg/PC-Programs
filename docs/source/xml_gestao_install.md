@@ -13,7 +13,7 @@
    - **Data destination folder:** localização da pasta dos dados (**serial**). Ex.: c:\\scielo
 
 
-    [Formulário de Instalação]: img/installation_setup.png "Formulário de Instalação"
+    ![Formulário de Instalação](./img/installation_setup.jpg)
 
 
 3. Selecionar:
@@ -22,5 +22,5 @@
   - **XML SciELO:** (opcional) programa para criar formato XML para a base de dados PubMed
 
 
-    [Seleção de programas]: img/howtoinstall_programs.png "Seleção de programas"
+    ![Seleção de programas](./img/howtoinstall_programs.png)
 

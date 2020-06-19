@@ -11,7 +11,7 @@
    - **Programs's destination folder:** localização da pasta dos programas (**bin**). Ex.: c:\scielo
    - **Data destination folder:** localização da pasta dos dados (**serial**). Inserir o **mesmo** valor do campo anterior
 
-    [Formulário de Instalação]: img/installation_setup.png "Formulário de Instalação"
+    ![Formulário de Instalação](./img/installation_setup.png)
 
 
 3. Selecionar:
@@ -20,7 +20,7 @@
    - **Markup - Automata files** (opcionalmente): exemplos de arquivos para marcação automática de referências bibliográficas
 
 
-    [Seleção de programas]: img/howtoinstall_programs.png "Seleção de programas"
+    ![Seleção de programas](./img/howtoinstall_programs.png)
 
 
 # XML Package Maker e XML Markup
