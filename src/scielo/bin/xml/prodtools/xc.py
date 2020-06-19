@@ -201,13 +201,17 @@ class Reception(object):
                 raise e
 
     def _mail_results(self, pkg_name, mail_info):
-        if self.mailer.mailer:
-            if mail_info and self.config.email_subject_package_evaluation:
-                mail_subject, mail_content = mail_info
-                self.mailer.mail_results(pkg_name, mail_subject, mail_content)
-            else:
-                logger.info(mail_content)
-                print(mail_content)
+        if (
+            mail_info is not None
+            and len(mail_info) == 2
+            and self.config.is_enabled_email_service
+            and self.config.email_subject_package_evaluation
+        ):
+            mail_subject, mail_content = mail_info
+            self.mailer.mail_results(pkg_name, mail_subject, mail_content)
+        else:
+            logger.info(pkg_name, mail_info)
+            print(pkg_name, mail_info)
 
     def _update_website_files(self, package_name, acron, issue_id):
         if self.transfer:
