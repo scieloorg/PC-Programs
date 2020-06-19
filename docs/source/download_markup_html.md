@@ -11,7 +11,7 @@ Informe o usuário e a senha
   - senha: produtos@scielo
 
 
-  [login]: img/howtoinstall_download2.png "Entre com usuário e senha"
+  ![login](./img/howtoinstall_download2.png)
 
 
 Selecione a pasta:
@@ -19,4 +19,4 @@ Selecione a pasta:
   * article_text_markup: Programas Markup SGML/HTML (article and text DTD)
 
 
-  [pastas]: img/howtoinstall_download3.png "Pasta do instalador do programa"
+  ![pastas](./img/howtoinstall_download3.png)

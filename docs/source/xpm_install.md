@@ -7,4 +7,4 @@
 2. Indicar a localização da aplicação
 
 
-  [Como instalar XML Package Maker]: img/howtoinstall_xpm.png "Como instalar XML Package Maker"
+  ![Como instalar XML Package Maker](./img/howtoinstall_xpm.png)

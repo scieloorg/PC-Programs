@@ -9,7 +9,7 @@ Verifique se a variável já existe.
 Em caso negativo, clique em Novo e adicione o valor.
 
 
-    [Variável BAP]: img/installation_setup_bap.png "Variável BAP"
+    ![Variável BAP](./img/installation_setup_bap.png)
 
 
 # Configurações de XML Converter

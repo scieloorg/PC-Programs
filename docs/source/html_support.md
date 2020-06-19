@@ -15,6 +15,7 @@ Caso não encontre solução para o problema enfrentado, escreva para
 
 A equipe SciELO responderá em até 72h. No entanto, a ajuda de quaisquer participantes desta lista é benvinda.
 
+
 Lembre-se de dar o máximo de informação possível já no primeiro contato:
 
 - Que tipo de usuário você é (gestor de coleção HTML ou produtor de marcação HTML)
