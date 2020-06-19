@@ -29,6 +29,7 @@ confname;Identifica o nome da conferência
 contract;Identifica o número do projeto ou contrato fornecido pela instituição financiadora
 corpauth;Identifica autor corporativo
 country;Identifica o país
+credit;Identifica o papel do autor de acordo com a taxonomia CRediT
 ctreg;Identifica o número do registro do ensaio clínico
 date;Identifica a data relacionada ao contexto (publicação, conferência, registro de patente, etc)
 degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc
