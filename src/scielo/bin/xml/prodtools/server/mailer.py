@@ -28,16 +28,12 @@ class Mailer(object):
         if self.config.is_enabled_email_service:
             self.send_message(self.config.email_to, self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
 
-    def mail_failure(self, subject, package_folder, e):
-        if self.config.is_enabled_email_service:
-            subject = ("{}: {}").format(
-                    self.config.email_subject_invalid_packages.replace(
-                        "Invalid packages", subject),
-                    package_folder)
-            self.send_message(
-                self.config.email_to,
-                subject,
-                '\n' + package_folder + '\n' + str(e))
+    def mail_failure(self, subject: str, text: str, package: str) -> None:
+        """Informa falhas gerais ocorridas durante a conversão de pacotes SPS"""
+        subject = "{} {}: {}".format(
+            self.config.email_subject_invalid_packages, subject, package
+        )
+        self.send_message(self.config.email_to, subject, text)
 
     def mail_results(self, package_folder, results, report_location):
         if self.config.is_enabled_email_service:
