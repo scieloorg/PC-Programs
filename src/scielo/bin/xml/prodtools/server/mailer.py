@@ -31,7 +31,7 @@ class Mailer(object):
     def mail_failure(self, subject: str, text: str, package: str) -> None:
         """Informa falhas gerais ocorridas durante a conversão de pacotes SPS"""
         subject = "{} {}: {}".format(
-            self.config.email_subject_invalid_packages, subject, package
+            self.config.email_subject_conversion_failure, subject, package
         )
         self.send_message(self.config.email_to, subject, text)
 
