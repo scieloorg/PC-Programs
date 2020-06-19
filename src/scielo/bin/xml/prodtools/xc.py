@@ -109,8 +109,15 @@ class Reception(object):
             try:
                 self.convert_package(package_path)
             except Exception as e:
-                self.inform_failure(
-                    package_path, str(e), "receive_package_for_desktop")
+                logger.exception(
+                    "Could not receive packages for desktop of path '%s'",
+                    package_path,
+                )
+                self.mailer.mail_failure(
+                    subject="Could not receive packages for desktop",
+                    text=traceback.format_exc(),
+                    package=package_path,
+                )
                 raise
 
     def _receive_package_for_server(self):
