@@ -186,13 +186,6 @@ class Reception(object):
 
         encoding.display_message(_('finished'))
 
-    def inform_failure(self, package_name, msg, subject=None):
-        if self.mailer.mailer:
-            subject = subject or _("Failure during or after conversion")
-            self.mailer.mail_failure(subject, package_name, msg)
-
-        logger.error(msg)
-
     def _update_scilista(self, package_name, scilista_items):
         if self.config.collection_scilista:
             try:

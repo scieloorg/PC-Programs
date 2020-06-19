@@ -1,7 +1,8 @@
-# coding=utf-8
+import logging
 
 from prodtools.utils import email_service
 
+LOGGER = logging.getLogger(__name__)
 
 class Mailer(object):
 
@@ -13,6 +14,14 @@ class Mailer(object):
                 config.email_server)
 
     def send_message(self, to, subject, text, attaches=[]):
+        if not self.config.is_enabled_email_service:
+            LOGGER.info("Could not send this email. The mailer service is disabled")
+            return None
+        elif self.mailer is None:
+            LOGGER.info(
+                "Could not send this email. The mailer service isn't configured"
+            )
+            return None
         self.mailer.send_message(to, subject, text, attaches)
 
     def mail_invalid_packages(self, invalid_pkg_files):
