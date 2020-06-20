@@ -1025,7 +1025,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="credit">
 		<role content-type="{@uri}"><xsl:value-of select="."/></role>
 	</xsl:template>
-	<xsl:template match="role"><role><xsl:apply-templates/></role></xsl:template>
+	<xsl:template match="oprrole|role">
+		<role><xsl:apply-templates select="@*|*|text()"/></role>
+	</xsl:template>
 	<xsl:template match="corpauth" mode="front-contrib">
 		<xsl:variable name="teste">
 			<xsl:apply-templates select="./../../authgrp//text()"/>

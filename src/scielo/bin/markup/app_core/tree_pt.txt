@@ -81,6 +81,7 @@ ocontrib;Agrupa os elementos de contribuição
 ocorpaut;Identifica uma autor corporativo
 oiserial;Agrupa os elementos de série
 omonog;Agrupa os elementos de monografia
+oprrole;Identifica o papel do autor de open peer review
 orgdiv;Identifica a divisão da instituição
 orgname;Identifica onde foi registrada a patente
 other;Agrupa os elementos de bibliografia que não seguem as normas adotadas

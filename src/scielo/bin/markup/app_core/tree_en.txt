@@ -81,6 +81,7 @@ ocontrib;Group the elements of a contribution
 ocorpaut;Identify a corporative author
 oiserial;Group the elements of serial
 omonog;Group the elements of monograph
+oprrole;Identify author role of open peer review
 orgdiv;Identify the division of an institution
 orgname;Identify the name of an institution
 other;Group the elements of bibliography references which are not according to any adopted standard

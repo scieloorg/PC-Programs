@@ -177,5 +177,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
             </pub-date>
         </xsl:if>        
     </xsl:template>
+    <xsl:template match="@specuse[.!='nd']">
+        <xsl:attribute name="specific-use"><xsl:value-of select="."/></xsl:attribute>
+    </xsl:template>
 
 </xsl:stylesheet>
