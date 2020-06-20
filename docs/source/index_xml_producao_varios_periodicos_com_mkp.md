@@ -1,6 +1,6 @@
 Última atualização Jun, 2020
 
-# Produtores de XML com Markup de vários periódicos
+# Produtores de XML de vários periódicos, com uso de Markup
 
 - [Pré-requisitos](requirements_python.md)
 - [Download](download_markup_xpm.md)

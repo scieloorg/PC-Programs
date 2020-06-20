@@ -1,10 +1,10 @@
 Última atualização Jun, 2020
 
-# Produtores de pacotes XML de vários periódicos
+# Produtores de XML de um periódico, com uso de Markup
 
 - [Pré-requisitos](requirements_python.md)
-- [Download](download_xpm.md)
-- [Instalação de XML Package Maker](xpm_install.md)
+- [Download](download_markup_xpm.md)
+- [Instalação de Markup](markup_install.md)
 - [Configuração de XML Package Maker](xpm_config.md)
 - [Configuração do menu](installation_configure_menu.md)
 
