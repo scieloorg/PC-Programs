@@ -19,7 +19,7 @@
 
 ## Programas Suplementares
 
-- [Automata](automata.md)
+- <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/es_automata.html>
 
 
 ## Como usar
