@@ -2,31 +2,25 @@
 
 # Gestão de Coleção HTML 
 
+
+## Instalação e Configuração
+
 - [Pré-requisitos](requirements_python_serial.md)
 - [Download](download_markup_html.md)
 - [Instalação](html_gestao_install.md)
 - [Configuração](html_gestao_config.md)
 - [Configuração do menu](installation_configure_menu.md)
 
+
+## Programas Obrigatórios
+
 - [Programa Converter](converter.md)
-
-- [Como marcar os arquivos SGML/HTML](how_to_generate_sgml.md)
-- [Como atualizar o sitio local](how_to_update_local_site.md)
-
-- [Questões sobre as ferramentas](html_support.md)
-    
-- [Automata](automata.md)
+- [Como atualizar o sitio local](how_to_update_local_site.md)    
 
 
-## Outros guias
+## Programas Suplementares
 
-- [Programa Code Manager](codemanager.md)
-- [Programa Exportar XML para PubMed](xml_exporter.md)
-
-- [Glosario](concepts.md)
-
-
-## Guia de Title Manager
+### Title Manager
 
 - [Title Manager](titlemanager.md)
 - [Title Manager - revistas](titlemanager_title.md)
@@ -34,8 +28,19 @@
 - [Title Manager - números](titlemanager_issue.md)
 - [Title Manager - números e seções](issue_and_section_databases.md)
 
+### Outros
+
+- [Programa Code Manager](codemanager.md)
+- [Programa Exportar XML para PubMed](xml_exporter.md)
+
 
 ## Anexos
 
+- [Glosario](concepts.md)
 - [Code database](code_database.md)
 - [Newcode database](newcode_database.md)
+
+
+## Apoio técnico
+
+- [Questões sobre as ferramentas](html_support.md)
