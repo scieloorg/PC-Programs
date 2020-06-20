@@ -1009,7 +1009,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select=".//authorid"/>
 			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select=".//xref|role"/>
+			<xsl:apply-templates select=".//xref|role|credit"/>
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>
@@ -1021,6 +1021,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates mode="copy-of"  select="../..//aff[@id=$author_rid]/role"/>
 			<xsl:apply-templates mode="copy-of"  select="../..//normaff[@id=$author_rid]/role"/>
 		</contrib>
+	</xsl:template>
+	<xsl:template match="credit">
+		<role content-type="{@uri}"><xsl:value-of select="."/></role>
 	</xsl:template>
 	<xsl:template match="role"><role><xsl:apply-templates/></role></xsl:template>
 	<xsl:template match="corpauth" mode="front-contrib">
