@@ -15,12 +15,9 @@
 ## Programas Obrigatórios
 
 - [Programa Converter](converter.md)
-- [Como atualizar o sitio local](how_to_update_local_site.md)    
 
 
-## Programas Suplementares
-
-### Title Manager
+## Programas Obrigatórios, se aplicável
 
 - [Title Manager](titlemanager.md)
 - [Title Manager - revistas](titlemanager_title.md)
@@ -28,9 +25,14 @@
 - [Title Manager - números](titlemanager_issue.md)
 - [Title Manager - números e seções](issue_and_section_databases.md)
 
-### Outros
 
-- [Programa Code Manager](codemanager.md)
+## Procedimentos
+
+- [Como atualizar o sitio local](how_to_update_local_site.md)    
+
+
+## Programas Suplementares
+
 - [Programa Exportar XML para PubMed](xml_exporter.md)
 
 
