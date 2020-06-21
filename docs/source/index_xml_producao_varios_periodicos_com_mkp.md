@@ -1,12 +1,17 @@
-Última atualização Jun, 2020
 
 # Produtores de XML de vários periódicos, com uso de Markup
 
 
+## Pré-requisitos
+
+Os pré-requisitos são tudo o que é necessário **ANTES** instalação de _SciELO PC Programs_.
+
+- [Python e pip](requirements_python.md)
+
+
 ## Instalação e Configuração
 
-- [Pré-requisitos](requirements_python.md)
-- [Download](download_markup_xpm.md)
+- [Download do Markup](download_markup_xpm.md)
 - [Instalação de Markup](markup_install.md)
 - [Configuração de XML Package Maker](xpm_config.md)
 - [Configuração do menu](installation_configure_menu.md)

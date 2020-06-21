@@ -3,21 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SciELO PC Programs's documentation!
-==============================================
+Documentação
+============
 
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
 
-   index_new
-   index_old 
+   index_pt
+   index_es
+   index_en
 
-    
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

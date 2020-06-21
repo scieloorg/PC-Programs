@@ -3,9 +3,15 @@
 # Gestão de Coleção HTML 
 
 
+## Pré-requisitos
+
+Os pré-requisitos são tudo o que é necessário **ANTES** instalação de _SciELO PC Programs_.
+
+- [Pasta `serial`](requirements_serial.md)
+
+
 ## Instalação e Configuração
 
-- [Pré-requisitos](requirements_python_serial.md)
 - [Download](download_markup_html.md)
 - [Instalação](html_gestao_install.md)
 - [Configuração](html_gestao_config.md)

@@ -2,13 +2,20 @@
 
 # Gestão de Coleção XML
 
+## Pré-requisitos
+
+Os pré-requisitos são tudo o que é necessário **ANTES** instalação de _SciELO PC Programs_.
+
+- [Pasta `serial`](requirements_serial.md)
+- [Python e pip](requirements_python.md)
+
+
 ## Instalação e Configuração
 
-- [Pré-requisitos](requirements_python_serial.md)
-- [Download](download_markup_xml.md)
+- [Download](download_markup_xpm.md)
 - [Instalação](xml_gestao_install.md)
 - [Configuração de Title Manager](title_manager_config.md)
-- [Configuração de XML Converter](xml_desktop_config.md)
+- [Configuração de XML Converter](xc_desktop_config.md)
 - [Configuração do menu](installation_configure_menu.md)
 
 
