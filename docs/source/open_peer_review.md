@@ -90,7 +90,7 @@ ou
 [oprrole specuse="editor"]Editor[/oprrole]
 ```
 
-Os valores `reviewer` e `editor` são apresentados com opções do campo `specuse` do formulário do elemento `role`.
+Os valores `reviewer` e `editor` são apresentados com opções do campo `specuse` do formulário do elemento `oprrole`.
 
 
    ![Formulário para preencher os atributos do elemento oprrole](./img/mkp-oprrole-specuse-reviewer-revisor-form.png)
@@ -116,27 +116,27 @@ em
 </contrib>
 ```
 
-no arquivo marcado deve conter, no elemento `anonymous` e é obrigatório o uso de `role`.
+no arquivo marcado deve conter, no elemento `anonymous` e é obrigatório o uso de `oprrole`.
 
 ```sgml
 [anonymous][/anonymous]
 ```
 
 ```xml
-[role specuse="reviewer"]Reviewer[/role]
+[oprrole specuse="reviewer"]Reviewer[/oprrole]
 ```
 
 ou
 
 ```xml
-[role specuse="editor"]Editor[/role]
+[oprrole specuse="editor"]Editor[/oprrole]
 ```
 
-Os valores `reviewer` e `editor` são apresentados com opções do campo `specuse` do formulário do elemento `role`.
+Os valores `reviewer` e `editor` são apresentados com opções do campo `specuse` do formulário do elemento `oprrole`.
 
-   ![Formulário para preencher os atributos do elemento role](./img/mkp-role-specuse-reviewer-revisor-form.png)
+   ![Formulário para preencher os atributos do elemento oprrole](./img/mkp-oprrole-specuse-reviewer-revisor-form.png)
 
-   ![Elemento role com atributo specuse](./img/mkp-role-specuse-reviewer-revisor-marcado.png)
+   ![Elemento oprrole com atributo specuse](./img/mkp-oprrole-specuse-reviewer-revisor-marcado.png)
 
    
 

@@ -1009,9 +1009,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select=".//authorid"/>
-			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select=".//xref|role|credit"/>
 			<xsl:apply-templates select="anonymous" mode="copy-of"/>
+			<xsl:if test="fname or surname">
+				<xsl:apply-templates select="."/>
+			</xsl:if>
+			<xsl:apply-templates select=".//xref|role|oprrole|credit"/>
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>
@@ -3665,9 +3667,7 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-object>
 	</xsl:template>
-	<xsl:template match="author">
-		<contrib><xsl:apply-templates select="*"></xsl:apply-templates></contrib>
-	</xsl:template>
+
 	<xsl:template match="corpauth">
 		<collab><xsl:apply-templates select="orgname|orgiv|text()"></xsl:apply-templates></collab>
 	</xsl:template>
