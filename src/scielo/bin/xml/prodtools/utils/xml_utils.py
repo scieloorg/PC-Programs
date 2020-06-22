@@ -219,8 +219,7 @@ class SuitableXML(object):
               dtd_location_type=None):
         doctype = self.get_doctype(dtd_location_type)
         if self.xml is None:
-            fs_utils.write_file(
-                dest_file_path, self.format(pretty_print, dtd_location_type))
+            fs_utils.write_file(dest_file_path, self.original)
         else:
             self.xml.write(
                 dest_file_path, encoding="utf-8", method="xml",
