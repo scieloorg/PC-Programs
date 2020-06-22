@@ -22,11 +22,7 @@ no arquivo marcado deve conter, no elemento `doc`, o atributo `doctopic` com val
 
 O valor `referee-report` é apresentado com uma das opções do campo `doctopic` do formulário do elemento principal `doc`.
 
-<<<<<<< HEAD
    ![Formulário para preencher o valor do atributo doctopic do elemento doc](./img/doc-mkp-formulario-doctopic.png)
-=======
-   ![Formulário para preencher o valor do atributo doctopic do elemento doc](./img/doc-mkp-formulario-doctopic.png)
->>>>>>> dba6a510... Inclui novas imagens e corrige a formatação das imagens
 
 
 
@@ -50,11 +46,7 @@ no arquivo marcado deve conter, no elemento `subdoc`, o atributo `subarttp` com 
 
 O valor `referee-report` é apresentado com uma das opções do campo `subarttp` do formulário do elemento `subdoc`.
 
-<<<<<<< HEAD
    ![Formulário para preencher o valor do atributo subarttp do elemento subdoc](./img/mkp-subdoc-subarttp.png)
-=======
-   ![Formulário para preencher o valor do atributo subarttp do elemento subdoc](./img/mkp-subdoc-subarttp.png)
->>>>>>> dba6a510... Inclui novas imagens e corrige a formatação das imagens
 
 
 
