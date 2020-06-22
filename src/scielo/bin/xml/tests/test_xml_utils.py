@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import sys
+import tempfile
 from unittest import TestCase
 
 
@@ -531,3 +532,89 @@ class TestSuitableXML(TestCase):
         suitable_xml = xml_utils.SuitableXML(text)
         suitable_xml.well_formed_xml_content()
         self.assertEqual(expected, suitable_xml.content)
+
+    def test_write_should_write_original_content_if_input_is_not_xml(self):
+        text = "Qualquer texto nao XML."
+        suitable_xml = xml_utils.SuitableXML(text)
+        with tempfile.TemporaryDirectory() as xml_dir_path:
+            xml_path = os.path.join(xml_dir_path, "xml_doc.xml")
+            suitable_xml.write(xml_path)
+            with open(xml_path) as xml_file:
+                self.assertEqual(xml_file.read(), text)
+        self.assertIsNotNone(suitable_xml.xml_error)
+        self.assertIn("it must be an XML content or XML file path", suitable_xml.xml_error)
+
+    def test_write_should_write_original_content_if_input_is_invalid_xml(self):
+        text = ('<?xml version="1.0" encoding="utf-8"?>'
+                '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
+                'Publishing DTD v1.1 20151215//EN" '
+                '"https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">'
+                '\n<article>'
+                '<p><ext-link ext-link-type="uri" xlink:href="<link-invalido>">bla</ext-link></p>'
+                '</article>')
+        suitable_xml = xml_utils.SuitableXML(text)
+        with tempfile.TemporaryDirectory() as xml_dir_path:
+            xml_path = os.path.join(xml_dir_path, "xml_doc.xml")
+            suitable_xml.write(xml_path)
+
+            with open(xml_path) as xml_file:
+                self.assertEqual(xml_file.read(), text)
+        self.assertIsNotNone(suitable_xml.xml_error)
+        self.assertIn("Loading XML from 'str': ", suitable_xml.xml_error)
+
+    def test_write_should_write_original_content_if_file_is_invalid_xml(self):
+        text = ('<?xml version="1.0" encoding="utf-8"?>'
+                '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
+                'Publishing DTD v1.1 20151215//EN" '
+                '"https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">'
+                '<article>'
+                '<p>Text</p>'
+                '<back>'
+                '</article>')
+
+        with tempfile.TemporaryDirectory() as xml_dir_path:
+            in_xml_path = os.path.join(xml_dir_path, "in_xml_doc.xml")
+            with open(in_xml_path, 'w') as xml_file:
+                xml_file.write(text)
+
+            suitable_xml = xml_utils.SuitableXML(in_xml_path)
+            out_xml_path = os.path.join(xml_dir_path, "out_xml_doc.xml")
+            suitable_xml.write(out_xml_path)
+
+            with open(out_xml_path) as xml_file:
+                self.assertEqual(xml_file.read(), text)
+        self.assertIsNotNone(suitable_xml.xml_error)
+        self.assertIn("Loading XML from 'str': ", suitable_xml.xml_error)
+
+    def test_write_should_write_corrected_xml_in_dest_file(self):
+        text = ('<?xml version="1.0" encoding="utf-8"?>'
+                '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
+                'Publishing DTD v1.1 20151215//EN" '
+                '"https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">'
+                '<article><p>&amp;lt;</p></article>')
+        
+        with tempfile.TemporaryDirectory() as xml_dir_path:
+            in_xml_path = os.path.join(xml_dir_path, "in_xml_doc.xml")
+            with open(in_xml_path, 'w') as xml_file:
+                xml_file.write(text)
+
+            out_xml_path = os.path.join(xml_dir_path, "out_xml_doc.xml")
+            suitable_xml = xml_utils.SuitableXML(in_xml_path)
+            suitable_xml.write(out_xml_path)
+
+            out_xml = xml_utils.etree.parse(out_xml_path)
+            self.assertIsNotNone(out_xml.docinfo)
+            self.assertEqual(out_xml.docinfo.xml_version, "1.0")
+            self.assertEqual(out_xml.docinfo.encoding, "UTF-8")
+            self.assertEqual(
+                out_xml.docinfo.doctype,
+                '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
+                'Publishing DTD v1.1 20151215//EN" '
+                '"https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">'
+            )
+            self.assertEqual(
+                xml_utils.etree.tostring(out_xml.getroot()),
+                b'<article>\n  <p>&lt;</p>\n</article>'
+            )
+            self.assertIsNone(suitable_xml.xml_error)
+
