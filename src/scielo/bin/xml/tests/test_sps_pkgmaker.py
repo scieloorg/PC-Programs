@@ -40,7 +40,7 @@ class TestSPSXMLContent(TestCase):
 
     def test_remove_styles_off_tagged_content_does_not_remove_italic(self):
         text = "<root><source><bold> <italic>texto 1</italic> sem estilo <italic>texto 2</italic> </bold></source></root>"
-        expected = "<root><source><italic>texto 1</italic> sem estilo <italic>texto 2</italic> </source></root>"
+        expected = "<root><source> <italic>texto 1</italic> sem estilo <italic>texto 2</italic> </source></root>"
         obj = sps_pkgmaker.SPSXMLContent(text)
         obj.remove_styles_off_tagged_content("source")
         self.assertEqual(obj.content, expected)
