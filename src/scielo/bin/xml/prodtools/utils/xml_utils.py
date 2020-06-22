@@ -205,16 +205,6 @@ class SuitableXML(object):
                 return self.xml.docinfo.doctype.replace(url, basename)
             return self.xml.docinfo.doctype or None
 
-    def format(self, pretty_print=False, dtd_location_type=None):
-        doctype = self.get_doctype(dtd_location_type)
-        if self.xml is not None:
-            return etree.tostring(
-                self.xml, encoding="utf-8", method="xml",
-                xml_declaration=self.xml_declaration,
-                pretty_print=pretty_print, doctype=doctype
-                ).decode("utf-8")
-        return self.original
-
     def write(self, dest_file_path, pretty_print=True,
               dtd_location_type=None):
         doctype = self.get_doctype(dtd_location_type)
