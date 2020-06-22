@@ -174,7 +174,7 @@ class SuitableXML(object):
             self.changed = True
 
         self._xml, self.xml_error = load_xml(
-            self._content, recover=self.recover)
+            self._content, remove_blank_text=False, recover=self.recover)
 
     def well_formed_xml_content(self):
         xml_content = self._content
@@ -350,11 +350,14 @@ def tostring(node, pretty_print=False, with_tail=False):
                 ))
 
 
-def load_xml(str_or_filepath, remove_blank_text=True, validate=False, recover=False):
+def load_xml(str_or_filepath, remove_blank_text=False, validate=False, recover=False):
     """
     Retorna uma árvore de XML e erros (se ocorrer ao carregá-lo)
     Pode receber o XML em str ou caminho de um arquivo
     Usado na conversao do Markup para XML
+
+    remove_blank_text:
+        remove os espaços entre dois elementos
     """
     parser = etree.XMLParser(
         remove_blank_text=remove_blank_text,
@@ -423,7 +426,7 @@ def load_html(file_path):
 
 
 def pretty_print(content):
-    xml, error = load_xml(content)
+    xml, error = load_xml(content, remove_blank_text=True)
     return tostring(xml, pretty_print=True)
 
 

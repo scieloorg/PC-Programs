@@ -104,6 +104,73 @@ class TextEntity2Char(TestCase):
 
 class TestLoadXML(TestCase):
 
+    def test_print_pretty_result_depends_on_the_param_remove_blank_text_of_load_xml(self):
+        xml_input = (
+            "<root><source><italic>texto 1</italic> <italic>texto 2</italic>"
+            "</source></root>"
+        )
+        xml_with_blank_text_as_false, errors = xml_utils.load_xml(
+            xml_input, remove_blank_text=False)
+        result_with_blank_text_as_false = xml_utils.tostring(
+            xml_with_blank_text_as_false, pretty_print=True)
+
+        xml_with_blank_text_as_true, errors = xml_utils.load_xml(
+            xml_input, remove_blank_text=True)
+        result_with_blank_text_as_true = xml_utils.tostring(
+            xml_with_blank_text_as_true, pretty_print=True)
+
+        self.assertNotEqual(
+            result_with_blank_text_as_false, result_with_blank_text_as_true)
+        self.assertEqual(
+            result_with_blank_text_as_false,
+            "<root>\n"
+            "  <source><italic>texto 1</italic> <italic>"
+            "texto 2</italic></source>\n"
+            "</root>\n"
+        )
+        self.assertEqual(
+            result_with_blank_text_as_true,
+            "<root>\n"
+            "  <source>\n"
+            "    <italic>texto 1</italic>\n"
+            "    <italic>texto 2</italic>\n"
+            "  </source>\n"
+            "</root>\n"
+        )
+
+    def test_tostring_result_depends_on_the_param_remove_blank_text_of_load_xml(self):
+        xml_input = (
+            "<root><source><italic>texto 1</italic> <italic>texto 2</italic>"
+            "</source></root>"
+        )
+        xml_with_blank_text_as_false, errors = xml_utils.load_xml(
+            xml_input, remove_blank_text=False)
+        result_with_blank_text_as_false = xml_utils.tostring(
+            xml_with_blank_text_as_false)
+
+        xml_with_blank_text_as_true, errors = xml_utils.load_xml(
+            xml_input, remove_blank_text=True)
+        result_with_blank_text_as_true = xml_utils.tostring(
+            xml_with_blank_text_as_true)
+
+        self.assertNotEqual(
+            result_with_blank_text_as_false, result_with_blank_text_as_true)
+
+        self.assertEqual(
+            result_with_blank_text_as_false,
+            "<root>"
+            "<source><italic>texto 1</italic> <italic>"
+            "texto 2</italic></source>"
+            "</root>"
+        )
+        self.assertEqual(
+            result_with_blank_text_as_true,
+            "<root>"
+            "<source><italic>texto 1</italic><italic>"
+            "texto 2</italic></source>"
+            "</root>"
+        )
+
     def test_load_xml_successfully_from_str(self):
         xml, e = xml_utils.load_xml("<root/>")
         self.assertIsNone(e)
@@ -157,6 +224,31 @@ class TestLoadXML(TestCase):
             errors,
             "Loading XML from 'str': CharRef: invalid decimal value, "
             "line 1, column 14 (<string>, line 1)")
+
+    def test_load_xml_with_remove_blank_text_as_true_remove_blanks(self):
+        xml_input = (
+            "<root><source><italic>texto 1</italic> <italic>texto 2</italic>"
+            "</source></root>"
+        )
+        expected = (
+            "<root><source><italic>texto 1</italic><italic>texto 2</italic>"
+            "</source></root>"
+        )
+        xml, errors = xml_utils.load_xml(xml_input, remove_blank_text=True)
+        result = xml_utils.tostring(xml)
+        self.assertEqual(expected, result)
+
+    def test_load_xml_with_remove_blank_text_as_false_keep_blanks(self):
+        xml_input = (
+            "<root><source><italic>texto 1</italic> <italic>texto 2</italic>"
+            "</source></root>"
+        )
+        xml, errors = xml_utils.load_xml(
+            "<root><source><italic>texto 1</italic> <italic>texto 2</italic>"
+            "</source></root>",
+            remove_blank_text=False)
+        result = xml_utils.tostring(xml)
+        self.assertEqual(xml_input, result)
 
 
 class TestRemoveStylesTags(TestCase):
@@ -374,4 +466,3 @@ class TestSuitableXML(TestCase):
         suitable_xml = xml_utils.SuitableXML(text)
         suitable_xml.well_formed_xml_content()
         self.assertEqual(expected, suitable_xml.content)
-
