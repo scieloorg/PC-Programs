@@ -33,7 +33,7 @@ class Mailer(object):
         subject = "{} {}: {}".format(
             self.config.email_subject_conversion_failure, subject, package
         )
-        self.send_message(self.config.email_to, subject, text)
+        self.send_message(self.config.email_to_adm, subject, text)
 
     def mail_results(self, package_folder, results, report_location):
         if self.config.is_enabled_email_service:
