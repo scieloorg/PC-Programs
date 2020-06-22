@@ -19,7 +19,7 @@ Os pré-requisitos são tudo o que é necessário **ANTES** instalação de _Sci
 
 ## Programas
 
-- [Programa XML Package Maker](xml_package_maker.md)
+- [Programa XML Package Maker](xpm.md)
 
 
 ## Como usar

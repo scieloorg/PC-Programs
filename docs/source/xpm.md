@@ -60,28 +60,22 @@ Após o término do processamento, os relatórios são exibidos em um navegador 
 Alterne entre as abas.
 
 
-## Relatório resumido
+## Relatório resumido: Números das validações
 
+Apresenta o total de **erros fatais**, **erros** e **avisos** encontrados no pacote.
 
-## Números das validações
+**ERROS FATAIS:** são erros relacionados aos dados que produzem indicadores bibliométricos e
+que se não forem corrigidos podem impactar negativamente para o periódico
 
-Apresenta o total de erros fatais, erros e avisos encontrados no pacote.
+**ERROS:** são outros tipos de erros
 
-ERROS FATAIS
-   são erros relacionados aos dados que produzem indicadores bibliométricos e
-   que se não forem corrigidos podem impactar negativamente para o periódico
-
-ERROS
-   são outros tipos de erros
-
-AVISOS
-   algo que precisa ser verificado, pois pode ser erro ou não
+**AVISOS:** precisa ser verificado para identificar se é erro ou não
 
    
    ![relatório xpm](./img/xpm_report.png)
 
 
-## Relatório detalhado - validações de pacotes
+## Relatório detalhado: validações de pacotes
 
 Em primeiro lugar, o XPM valida alguns dados do pacote:
 
@@ -117,7 +111,7 @@ Exemplo de erro fatal porque é necessário um valor exclusivo
 ![xml reporta o erro fatal unique](./img/xml_reports_toc_fatal_error_unique.jpg)
 
 
-## Relatório detalhado - Validações de documentos
+## Relatório detalhado: Validações de documentos
 
 Apresenta os documentos em uma tabela.
 
@@ -130,7 +124,7 @@ Cada linha apresenta um documento
 ![detalhes do relatório xpm](./img/xpm_report_detail.png)
 
 
-## Relatório detalhado - Validações
+## Relatório detalhado: Validações
 
 Clique em **Data Quality Control** para visualizar os problemas.
 

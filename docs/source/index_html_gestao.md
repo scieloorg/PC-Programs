@@ -44,7 +44,7 @@ Os pré-requisitos são tudo o que é necessário **ANTES** instalação de _Sci
 
 ## Anexos
 
-- [Glosario](concepts.md)
+- [Glossário](glossario.md)
 - [Code database](code_database.md)
 - [Newcode database](newcode_database.md)
 
