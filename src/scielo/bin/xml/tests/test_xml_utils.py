@@ -448,13 +448,13 @@ class TestSuitableXML(TestCase):
     def test_init_xml_with_junk_is_loaded_without_errors(self):
         text = "<doc/> lixo"
         suitable_xml = xml_utils.SuitableXML(text)
-        self.assertEqual(suitable_xml.format(), "<doc/>")
+        self.assertEqual(suitable_xml.content, "<doc/>")
         self.assertIsNone(suitable_xml.xml_error)
 
     def test_init_xml_is_ok(self):
         text = "<doc/>"
         suitable_xml = xml_utils.SuitableXML(text)
-        self.assertEqual(suitable_xml.format(), "<doc/>")
+        self.assertEqual(suitable_xml.content, "<doc/>")
         self.assertIsNone(suitable_xml.xml_error)
         self.assertEqual(suitable_xml.doctype, '')
         self.assertIsNone(suitable_xml.xml_declaration)
@@ -472,7 +472,7 @@ class TestSuitableXML(TestCase):
             'Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/'
             'publishing/1.1/JATS-journalpublishing1.dtd">')
         self.assertEqual(
-            suitable_xml.format(),
+            suitable_xml.content,
             '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal '
             'Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/'
             'publishing/1.1/JATS-journalpublishing1.dtd">\n<article/>')
@@ -495,7 +495,7 @@ class TestSuitableXML(TestCase):
         suitable_xml = xml_utils.SuitableXML(text)
         self.assertEqual(
             expected,
-            suitable_xml.format())
+            suitable_xml.content)
 
     def test_well_formed_xml_content_removes_junk_after_last_close_tag(self):
         text = '<doc><p></p></doc> lixo'
