@@ -890,6 +890,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			
 			<xsl:apply-templates
 				select="confgrp | front//confgrp | back//bbibcom/confgrp | thesgrp | front//thesgrp | back//bbibcom/thesgrp"/>
+			<xsl:apply-templates select=".//customgrp"/>
 		</article-meta>
 	</xsl:template>
 	<xsl:template match="doc | subdoc | docresp" mode="title-group">
@@ -1008,8 +1009,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select=".//authorid"/>
-			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select=".//xref|role|credit"/>
+			<xsl:apply-templates select="anonymous" mode="copy-of"/>
+			<xsl:if test="fname or surname">
+				<xsl:apply-templates select="."/>
+			</xsl:if>
+			<xsl:apply-templates select=".//xref|role|oprrole|credit"/>
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>
@@ -1025,7 +1029,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="credit">
 		<role content-type="{@uri}"><xsl:value-of select="."/></role>
 	</xsl:template>
-	<xsl:template match="role"><role><xsl:apply-templates/></role></xsl:template>
+	<xsl:template match="oprrole|role">
+		<role><xsl:apply-templates select="@*|*|text()"/></role>
+	</xsl:template>
 	<xsl:template match="corpauth" mode="front-contrib">
 		<xsl:variable name="teste">
 			<xsl:apply-templates select="./../../authgrp//text()"/>
@@ -2021,6 +2027,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 	<xsl:template match="*[fname or surname]">
+		<!-- author -->
 		<xsl:variable name="f"><xsl:value-of select="normalize-space(fname)"/></xsl:variable>
 		<xsl:variable name="s"><xsl:value-of select="normalize-space(surname)"/></xsl:variable>
 		<xsl:variable name="suffix"><xsl:choose>
@@ -3568,19 +3575,27 @@ et al.</copyright-statement>
 	<xsl:template match="related[@reltype]" mode="front-related">
 		<related/>
 	</xsl:template>
+
+	<xsl:template match="related[@reltp]" mode="attributes">
+		<xsl:param name="id"/>
+		<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
+		<xsl:attribute name="ext-link-type"><xsl:choose>
+			<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
+			<xsl:when test="contains($id,'doi')">doi</xsl:when>
+			<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
+			<xsl:otherwise>doi</xsl:otherwise>
+		</xsl:choose></xsl:attribute>
+	</xsl:template>
+
 	<xsl:template match="related[@reltp]" mode="front-related">
 		<!-- link de ? para ?? -->
 		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
 		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>-->
 		<xsl:variable name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/><xsl:value-of select="@pid-doi"/></xsl:variable>
 		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
-			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
-			<xsl:attribute name="ext-link-type"><xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
-				<xsl:when test="contains($id,'doi')">doi</xsl:when>
-				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
-				<xsl:otherwise>doi</xsl:otherwise>
-			</xsl:choose></xsl:attribute>
+			<xsl:apply-templates select="." mode="attributes">
+				<xsl:with-param name="id" select="$id"/>		
+			</xsl:apply-templates>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
@@ -3588,13 +3603,9 @@ et al.</copyright-statement>
 		<!-- errata -->
 		<xsl:variable name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/><xsl:value-of select="@pid-doi"/></xsl:variable>
 		<related-article related-article-type="{@reltp}" id="ra1" xmlns:xlink="http://www.w3.org/1999/xlink">
-			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
-			<xsl:attribute name="ext-link-type"><xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
-				<xsl:when test="contains($id,'doi')">doi</xsl:when>
-				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
-				<xsl:otherwise>doi</xsl:otherwise>
-			</xsl:choose></xsl:attribute>
+			<xsl:apply-templates select="." mode="attributes">
+				<xsl:with-param name="id" select="$id"/>		
+			</xsl:apply-templates>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
@@ -3604,14 +3615,9 @@ et al.</copyright-statement>
 		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>-->
 		<xsl:variable name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/><xsl:value-of select="@pid-doi"/></xsl:variable>
 		<related-article related-article-type="article-reference" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
-			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
-			<xsl:attribute name="ext-link-type"><xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
-				<xsl:when test="contains($id,'doi')">doi</xsl:when>
-				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
-				<xsl:otherwise>doi</xsl:otherwise>
-			</xsl:choose>
-			</xsl:attribute>
+			<xsl:apply-templates select="." mode="attributes">
+				<xsl:with-param name="id" select="$id"/>		
+			</xsl:apply-templates>
 			<xsl:attribute name="specific-use">processing-only</xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
@@ -3622,20 +3628,46 @@ et al.</copyright-statement>
 		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>-->
 		<xsl:variable name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/><xsl:value-of select="@pid-doi"/></xsl:variable>
 		<related-article related-article-type="commentary">
-			<xsl:attribute name="xlink:href"><xsl:value-of select="$id"/></xsl:attribute>
-			<xsl:attribute name="ext-link-type"><xsl:choose>
-				<xsl:when test="string-length($id)=23 and substring($id,1,1)='S'">scielo-pid</xsl:when>
-				<xsl:when test="contains($id,'doi')">doi</xsl:when>
-				<xsl:when test="substring($id,1,4)='http'">uri</xsl:when>
-				<xsl:otherwise>doi</xsl:otherwise>
-			</xsl:choose></xsl:attribute>
+			<xsl:apply-templates select="." mode="attributes">
+				<xsl:with-param name="id" select="$id"/>		
+			</xsl:apply-templates>
 			<xsl:attribute name="specific-use">processing-only</xsl:attribute>
 		</related-article>
 	</xsl:template>
 	
-	<xsl:template match="author">
-		<contrib><xsl:apply-templates select="*"></xsl:apply-templates></contrib>
+	<xsl:template match="related[@reltp='referee-report']" mode="front-related">
+		<!--
+		<related-object
+			object-type="referee-report"
+			ext-link-type="uri"
+			xlink:href="https://publons.com/publon/000000/#review-2020xxx"
+			>Publons</related-object>
+        -->
+		<xsl:variable name="id"><xsl:value-of select="@pid-doi"/></xsl:variable>
+		<related-object object-type="{@reltp}">
+			<xsl:apply-templates select="." mode="attributes">
+				<xsl:with-param name="id" select="$id"/>		
+			</xsl:apply-templates>
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-object>
 	</xsl:template>
+
+	<xsl:template match="related[@reltp='peer-reviewed-material']" mode="front-related">
+		<!--
+		<related-object
+			object-type="peer-reviewed-material"
+			id="r01" xlink:href="10.1590/abd1806-4841.20142998"
+			ext-link-type="doi"/>
+        -->
+		<xsl:variable name="id"><xsl:value-of select="@pid-doi"/></xsl:variable>
+		<related-object object-type="{@reltp}" id="r01">
+			<xsl:apply-templates select="." mode="attributes">
+				<xsl:with-param name="id" select="$id"/>		
+			</xsl:apply-templates>
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-object>
+	</xsl:template>
+
 	<xsl:template match="corpauth">
 		<collab><xsl:apply-templates select="orgname|orgiv|text()"></xsl:apply-templates></collab>
 	</xsl:template>
@@ -4012,4 +4044,24 @@ et al.</copyright-statement>
 		<xsl:attribute name="ref-type">fn</xsl:attribute>
 	</xsl:template>
 
+	<xsl:template match="customgrp">
+		<custom-meta-group>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</custom-meta-group>
+	</xsl:template>
+	<xsl:template match="custom">
+		<custom-meta>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</custom-meta>
+	</xsl:template>
+	<xsl:template match="custom/name">
+		<meta-name>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</meta-name>
+	</xsl:template>
+	<xsl:template match="custom/value">
+		<meta-value>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</meta-value>
+	</xsl:template>
 </xsl:stylesheet>

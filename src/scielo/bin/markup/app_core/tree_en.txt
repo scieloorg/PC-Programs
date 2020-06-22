@@ -9,6 +9,7 @@ afftrans;Identify in subdoc the organization to which the author is affiliated
 aiserial;Group the elements of a serial publication
 amonog;Group the elements of a monograph
 anonym;Identify anonymous authorship
+anonymous;Identify anonymous authorship
 apa;Group the elements of references which are according to APA
 app;Identify the appendix
 article;Identify the article
@@ -31,6 +32,10 @@ corpauth;Identify the corporative author
 country;Identify the country
 credit;Identify the author role according to CRediT taxonomy
 ctreg;Identify the clinical trial number
+customgrp;Identifiy the custom meta group
+custom;Identifiy a pair of custom meta
+name;Identifiy a custom meta name
+value;Identifiy a custom meta value
 date;Identify the date related to the context (publication, conference, patent registration, etc)
 degree; Identify the degree of the thesis, such as Master, Doctor etc
 deposit;Identify the date of deposit in the repository
@@ -81,6 +86,7 @@ ocontrib;Group the elements of a contribution
 ocorpaut;Identify a corporative author
 oiserial;Group the elements of serial
 omonog;Group the elements of monograph
+oprrole;Identify author role of open peer review
 orgdiv;Identify the division of an institution
 orgname;Identify the name of an institution
 other;Group the elements of bibliography references which are not according to any adopted standard

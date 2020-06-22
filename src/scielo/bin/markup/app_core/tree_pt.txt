@@ -9,6 +9,7 @@ afftrans;Identifica em subdoc a afiliação do autor
 aiserial;Agrupa elementos de série
 amonog;Agrupa os elementos de monografia
 anonym;Identifica autoria anônima
+anonymous;Identifica autoria anônima
 apa;Agrupa os elementos de bibliografia segundo a norma APA
 app;Identifica um apêndice
 article;Identifica o artigo
@@ -31,6 +32,10 @@ corpauth;Identifica autor corporativo
 country;Identifica o país
 credit;Identifica o papel do autor de acordo com a taxonomia CRediT
 ctreg;Identifica o número do registro do ensaio clínico
+customgrp;Identifica o custom meta group
+custom;Identifica um par de custom meta
+name;Identifica um custom meta name
+value;Identifica um custom meta value
 date;Identifica a data relacionada ao contexto (publicação, conferência, registro de patente, etc)
 degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc
 deposit;Agrupa os elementos de um repositório
@@ -81,6 +86,7 @@ ocontrib;Agrupa os elementos de contribuição
 ocorpaut;Identifica uma autor corporativo
 oiserial;Agrupa os elementos de série
 omonog;Agrupa os elementos de monografia
+oprrole;Identifica o papel do autor de open peer review
 orgdiv;Identifica a divisão da instituição
 orgname;Identifica onde foi registrada a patente
 other;Agrupa os elementos de bibliografia que não seguem as normas adotadas

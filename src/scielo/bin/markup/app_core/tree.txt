@@ -10,6 +10,7 @@ cltrial;#FALSE#;#FALSE#
 code;#FALSE#;#TRUE#
 corresp;#FALSE#;#FALSE#
 cpright;#FALSE#;#FALSE#
+customgrp;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
 *deflist;#FALSE#;#TRUE#
 *page-fn;#FALSE#;#TRUE#
@@ -33,6 +34,17 @@ tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
 versegrp;#FALSE#;#TRUE#
 xref;#FALSE#;#TRUE#
+
+customgrp
+custom;#FALSE#;#TRUE#
+
+custom
+name;#FALSE#;#FALSE#
+value;#FALSE#;#FALSE#
+
+name
+
+value
 
 *fngrp
 
@@ -155,6 +167,7 @@ onbehalf;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 
 author
+anonymous;#FALSE#;#FALSE#
 fname-surname;#FALSE#;#FALSE#
 fname-spanish-surname;#FALSE#;#FALSE#
 surname-fname;#FALSE#;#FALSE#
@@ -164,11 +177,14 @@ prefix;#FALSE#;#FALSE#
 suffix;#FALSE#;#FALSE#
 credit;#TRUE#;#TRUE#
 role;#FALSE#;#FALSE#
+oprrole;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 authorid;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 
 credit
+
+oprrole
 
 authorid
 
@@ -1145,4 +1161,6 @@ institid
 code
 
 histdate
+
+anonymous
 

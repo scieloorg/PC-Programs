@@ -57,12 +57,7 @@ DOCTOPIC = {
 DOCTOPIC_IN_USE = DOCTOPIC.keys()
 
 PEER_REVIEW_DOCTOPICS = [
-    'aggregated-review-documents',
     'referee-report',
-    'editor-report',
-    'author-comment',
-    'community-comment',
-    'recommendation',
 ]
 
 PEER_REVIEW_CONTRIB_ROLES_FOR_ANON = [
@@ -95,7 +90,7 @@ INDEXABLE = [
     'obituary',
     'reply',
     'data-article',
-    'aggregated-review-documents',
+    'referee-report',
 ]
 
 # para todos INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS exigir aff?, contrib?, xref?, ref?
@@ -508,8 +503,8 @@ def deduce_article_type_from_article_section(section_title):
         ('revisão', 'review-article'),
         ('revisión', 'review-article'),
         ('resum', 'abstract'),
-        ('parecer', 'aggregated-review-documents'),
-        ('peer review', 'aggregated-review-documents'),
+        ('parecer', 'referee-report'),
+        ('peer review', 'referee-report'),
     ])
 
     suggestions = []
