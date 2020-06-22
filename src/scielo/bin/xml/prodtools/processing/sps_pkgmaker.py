@@ -116,10 +116,10 @@ class SPSXMLContent(xml_utils.SuitableXML):
         As tags de estilo não devem ser aplicadas no conteúdo inteiro de
         certos elementos. As tags de estilo somente pode destacar partes do
         conteúdo de um dado elemento
-        <source><italic>texto texto texto</italic></source> - não aceitável
-        <source><italic>texto</italic> texto texto</source> - aceitável
+        <source><bold>texto texto texto</bold></source> - não aceitável
+        <source><bold>texto</bold> texto texto</source> - aceitável
         """
-        STYLES = ("italic", "bold")
+        STYLES = ("bold", )
         nodes = []
         for style in STYLES:
             nodes.extend(self.xml.findall(".//{}[{}]".format(tag, style)))
