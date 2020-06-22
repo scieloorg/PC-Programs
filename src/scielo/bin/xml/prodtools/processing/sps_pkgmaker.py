@@ -7,7 +7,6 @@ from urllib.request import pathname2url
 
 from packtools.utils import SPPackage
 from packtools.exceptions import SPPackageError
-from PIL.Image import DecompressionBombError
 
 from prodtools.utils import fs_utils
 from prodtools.utils import xml_utils
@@ -337,11 +336,8 @@ class PackageMaker(object):
         try:
             zip_regular = os.path.join(tmp_path, "regular.zip")
             zip_optimised = os.path.join(tmp_path, "optimised.zip")
-            extracted_package = os.path.join(tmp_path, "extracted")
-            for item in [zip_regular, zip_optimised, extracted_package]:
+            for item in [zip_regular, zip_optimised]:
                 fs_utils.delete_file_or_folder(item)
-            if not os.path.isdir(extracted_package):
-                os.makedirs(extracted_package)
 
             if os.path.isfile(zip_regular):
                 raise PackageMakerOptimiserPreReqError(
@@ -349,9 +345,6 @@ class PackageMaker(object):
             if os.path.isfile(zip_optimised):
                 raise PackageMakerOptimiserPreReqError(
                     "{} must not be a existing file")
-            if os.listdir(extracted_package):
-                raise PackageMakerOptimiserPreReqError(
-                    "{} must not be a empty directory")
 
             fs_utils.zip(zip_regular, files)
             if not os.path.isfile(zip_regular):
@@ -359,15 +352,12 @@ class PackageMaker(object):
                     "{} was not created")
 
             # packtools
-            spp = SPPackage(package_file=fs_utils.ZipFile(zip_regular),
-                            extracted_package=extracted_package)
-            spp.optimise(new_package_file_path=zip_optimised,
-                         preserve_files=False)
+            spp = SPPackage.from_file(zip_regular, extracted_package=self.destination_path)
+            spp.optimise(new_package_file_path=zip_optimised, preserve_files=True)
 
-            fs_utils.unzip(zip_optimised, self.destination_path)
             logger.debug("Optimised: %s", self.destination_path)
         except (PackageMakerOptimiserPreReqError, SPPackageError,
-                OSError, DecompressionBombError, xml_utils.etree.XMLSyntaxError):
+                xml_utils.etree.XMLSyntaxError, OSError):
             if self.destination_path != doc_pkg_path:
                 for f in files:
                     shutil.copy(f, self.destination_path)
@@ -376,7 +366,6 @@ class PackageMaker(object):
             # clean
             fs_utils.delete_file_or_folder(zip_optimised)
             fs_utils.delete_file_or_folder(zip_regular)
-            fs_utils.delete_file_or_folder(extracted_package)
 
     def pack(self, xml_list=None, dtd_location_type='remote',
              sgmxml_name=None):
