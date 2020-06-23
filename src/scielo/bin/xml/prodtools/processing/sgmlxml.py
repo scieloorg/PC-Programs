@@ -544,7 +544,7 @@ class SGMLXML2SPSXML(object):
                 )))
         sps_version = xml_obj.find(".").get("sps")
         if sps_version is None:
-            sps_version = xml_versions._SPS_VERSIONS[-1][0][4:]
+            sps_version = xml_versions.get_latest_sps_version()[4:]
             xml_obj.find(".").set("sps", sps_version)
         xsl_filepath = xml_versions.xsl_getter(sps_version)
         result = xml_utils.transform(xml_obj, xsl_filepath)

@@ -56,6 +56,10 @@ _SPS_VERSIONS = (
 SPS_VERSIONS = dict(_SPS_VERSIONS)
 
 
+def get_latest_sps_version():
+    return _SPS_VERSIONS[-1][0]
+
+
 def sps_numbers(sps: str) -> tuple:
     if sps and 'sps-' in sps:
         sps = sps[4:]
