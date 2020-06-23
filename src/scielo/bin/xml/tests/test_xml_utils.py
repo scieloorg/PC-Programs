@@ -207,6 +207,25 @@ class TestXMLinMultipleLines(TestCase):
         content = obj.break_in_lines(text)
         self.assertEqual(expected, content)
 
+    def test_numbered_lines_prefixes_each_line_with_a_number(self):
+        text = (
+            "<root>"
+            "<p>Texto 1 "
+            "<bold>bold</bold> texto 2, "
+            "<italic>texto italic</italic> "
+            "<italic>outro italic</italic></root>"
+            )
+        expected = (
+            "1: <root>\n"
+            "2: <p>Texto 1 \n"
+            "3: <bold>bold</bold> texto 2, \n"
+            "4: <italic>texto italic</italic> \n"
+            "5: <italic>outro italic</italic></root>"
+            )
+        obj = xml_utils.XMLinMultipleLines(text)
+        content = obj.numbered_lines
+        self.assertEqual(expected, content)
+
 
 class TestRemoveStylesTags(TestCase):
 

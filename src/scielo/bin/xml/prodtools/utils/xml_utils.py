@@ -261,6 +261,13 @@ class XMLinMultipleLines(object):
                 content = "".join(items).strip()
         return content
 
+    @property
+    def numbered_lines(self):
+        return "\n".join([
+            '{}: {}'.format(number, msg)
+            for number, msg in enumerate(self.content.splitlines(), 1)
+        ])
+
 
 def get_xml_object(file_path, xml_parser=None):
     """
