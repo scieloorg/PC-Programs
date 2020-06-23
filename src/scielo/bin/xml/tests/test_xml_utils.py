@@ -161,7 +161,7 @@ class TestLoadXML(TestCase):
 
 class TestXMLinMultipleLines(TestCase):
 
-    def test_xml_with_lines_break_uses_pretty_print(self):
+    def test_insert_break_lines_uses_pretty_print(self):
         text = (
             "<root>"
             "<p>Texto 1 "
@@ -180,11 +180,10 @@ class TestXMLinMultipleLines(TestCase):
             "</root>"
             "\n"
             )
-        obj = xml_utils.XMLinMultipleLines(text)
-        content = obj.break_in_lines(text)
+        content = xml_utils.insert_break_lines(text)
         self.assertEqual(expected, content)
 
-    def test_xml_with_lines_break_uses_str_replace(self):
+    def test_insert_break_lines_uses_str_replace(self):
         text = (
             "<root>"
             "<p>Texto 1 "
@@ -203,16 +202,15 @@ class TestXMLinMultipleLines(TestCase):
             "\n"
             "<italic>outro italic</italic></root>"
             )
-        obj = xml_utils.XMLinMultipleLines(text)
-        content = obj.break_in_lines(text)
+        content = xml_utils.insert_break_lines(text)
         self.assertEqual(expected, content)
 
     def test_numbered_lines_prefixes_each_line_with_a_number(self):
         text = (
-            "<root>"
-            "<p>Texto 1 "
-            "<bold>bold</bold> texto 2, "
-            "<italic>texto italic</italic> "
+            "<root>\n"
+            "<p>Texto 1 \n"
+            "<bold>bold</bold> texto 2, \n"
+            "<italic>texto italic</italic> \n"
             "<italic>outro italic</italic></root>"
             )
         expected = (
@@ -222,8 +220,7 @@ class TestXMLinMultipleLines(TestCase):
             "4: <italic>texto italic</italic> \n"
             "5: <italic>outro italic</italic></root>"
             )
-        obj = xml_utils.XMLinMultipleLines(text)
-        content = obj.numbered_lines
+        content = xml_utils.numbered_lines(text)
         self.assertEqual(expected, content)
 
 

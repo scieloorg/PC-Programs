@@ -232,41 +232,35 @@ class SuitableXML(object):
                 pretty_print=pretty_print, doctype=doctype)
 
 
-class XMLinMultipleLines(object):
+def insert_break_lines(content):
+    """
+    Modifica o conteúdo XML em várias linhas para que ao ser validado fique
+    fácil de localizar o erro pelo número da linha
+    """
+    if content:
+        xml, error = load_xml(content, remove_blank_text=True)
+        if xml:
+            content = tostring(xml, pretty_print=True)
+        else:
+            content = content.replace(">", ">BREAKLINESTAGS")
+            content = content.replace("<", "BREAKLINESTAGS<")
+            items = []
+            for item in content.split("BREAKLINESTAGS"):
+                if item.startswith("</"):
+                    items.append(item)
+                elif item.endswith(">"):
+                    items.append("\n" + item)
+                else:
+                    items.append(item)
+            content = "".join(items).strip()
+    return content
 
-    def __init__(self, content):
-        self.content = self.break_in_lines(content)
-        self.tree, self.loading_error = load_xml(self.content)
 
-    def break_in_lines(self, content):
-        """
-        Modifica o conteúdo XML em várias linhas para que ao ser validado fique
-        fácil de localizar o erro pelo número da linha
-        """
-        if content:
-            xml, error = load_xml(content, remove_blank_text=True)
-            if xml:
-                content = tostring(xml, pretty_print=True)
-            else:
-                content = content.replace(">", ">BREAKLINESTAGS")
-                content = content.replace("<", "BREAKLINESTAGS<")
-                items = []
-                for item in content.split("BREAKLINESTAGS"):
-                    if item.startswith("</"):
-                        items.append(item)
-                    elif item.endswith(">"):
-                        items.append("\n" + item)
-                    else:
-                        items.append(item)
-                content = "".join(items).strip()
-        return content
-
-    @property
-    def numbered_lines(self):
-        return "\n".join([
-            '{}: {}'.format(number, msg)
-            for number, msg in enumerate(self.content.splitlines(), 1)
-        ])
+def numbered_lines(content):
+    return "\n".join([
+        '{}: {}'.format(number, msg)
+        for number, msg in enumerate(content.splitlines(), 1)
+    ])
 
 
 def get_xml_object(file_path, xml_parser=None):

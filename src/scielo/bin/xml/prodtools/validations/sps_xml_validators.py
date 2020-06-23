@@ -123,9 +123,14 @@ class PackToolsXMLValidator(object):
 
     def load_xml(self):
         content = fs_utils.read_file(self.file_path)
-        content = xml_utils.xml_with_lines_break(content)
+        content = xml_utils.insert_break_lines(content)
         self.tree, self.loading_error = xml_utils.load_xml(content)
         if self.loading_error:
+            self.loading_error = (
+                self.file_path +
+                self.loading_error +
+                "\n" + xml_utils.numbered_lines(content)
+            )
             fs_utils.write_file(self.file_path, content)
 
     def validate_doctype(self):
@@ -173,7 +178,7 @@ class PackToolsXMLValidator(object):
         dtd_is_valid = False
         dtd_errors = []
         if self.loading_error:
-            dtd_errors += [self.loading_error]
+            dtd_errors = [self.loading_error]
             return dtd_is_valid, dtd_errors
 
         try:
