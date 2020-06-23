@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 from lxml import etree  # type: ignore
 
 from prodtools.utils import fs_utils
+from prodtools.utils import xml_utils
 from prodtools.db.pid_versions import PIDVersionsManager
 from . import scielo_id_gen
 
@@ -123,3 +124,14 @@ def add_article_id_to_xml(file_path, pid_and_specific_use_items):
             article_meta.insert(0, article_id)
         new_content = ET.tostring(xml.find(".")).decode("utf-8")
         fs_utils.write_file(file_path, new_content)
+
+
+def write_etree_to_file(tree: etree.ElementTree, path: str) -> None:
+    """Escreve uma árvore lxml em um arquivo de destino. Também
+    garante que as entidades não serão modificadas por meio da função
+    xml_utils.tostring(etree)."""
+
+    if tree is None or path is None:
+        return None
+
+    fs_utils.write_file(path, xml_utils.tostring(tree))
