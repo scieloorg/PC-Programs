@@ -3,7 +3,6 @@ import logging
 
 from typing import Optional
 
-import xml.etree.ElementTree as ET
 from lxml import etree  # type: ignore
 
 from prodtools.utils import fs_utils
@@ -72,7 +71,14 @@ def add_article_id_to_received_documents(
             article.registered_scielo_id = pid_v3
             pids_to_append_in_xml.append((pid_v3, "scielo-v3"))
 
-        add_article_id_to_xml(file_paths.get(xml_name), pids_to_append_in_xml)
+        file_path = file_paths.get(xml_name)
+        if file_path is None:
+            LOGGER.debug("Could not find XML path for '%s' xml.", xml_name)
+            return None
+
+        tree = xml_utils.get_xml_object(file_path)
+        _tree = add_article_id_to_etree(tree, pids_to_append_in_xml)
+        write_etree_to_file(_tree, file_path)
 
 
 def get_scielo_pid_v2(issn_id, year_and_order, order_in_issue):
@@ -110,20 +116,6 @@ def add_article_id_to_etree(
         article_meta.insert(0, article_id)
 
     return _tree
-
-
-def add_article_id_to_xml(file_path, pid_and_specific_use_items):
-    if pid_and_specific_use_items:
-        xml = ET.parse(file_path)
-        article_meta = xml.find(".//article-meta")
-        for id_value, specific_use in pid_and_specific_use_items:
-            article_id = ET.Element("article-id")
-            article_id.text = id_value
-            article_id.set("specific-use", specific_use)
-            article_id.set("pub-id-type", "publisher-id")
-            article_meta.insert(0, article_id)
-        new_content = ET.tostring(xml.find(".")).decode("utf-8")
-        fs_utils.write_file(file_path, new_content)
 
 
 def write_etree_to_file(tree: etree.ElementTree, path: str) -> None:
