@@ -1,4 +1,5 @@
 # coding:utf-8
+import tempfile
 import unittest
 from unittest.mock import Mock, patch
 import os
@@ -146,6 +147,24 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
             etree.tostring(_tree),
         )
 
+    def test_write_etree_to_file_should_not_update_file_if_etree_is_none(self):
+        temporary_file = tempfile.mktemp()
+        kernel_document.write_etree_to_file(None, path=temporary_file)
+        self.assertFalse(os.path.exists(temporary_file))
+
+    def test_write_etree_to_file_should_not_convert_character_to_entity(self):
+        tree = etree.fromstring(
+            """<article>
+                <article-meta>
+                    <field>São Paulo - É, ê, È, ç</field>
+                </article-meta>
+            </article>"""
+        )
+        temporary_file = tempfile.mktemp()
+        kernel_document.write_etree_to_file(tree, path=temporary_file)
+
+        with open(temporary_file, "r") as f:
+            self.assertIn("São Paulo - É, ê, È, ç", f.read())
 
 class TestKernelDocument(unittest.TestCase):
     """docstring for TestKernelDocument"""
