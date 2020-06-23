@@ -68,6 +68,7 @@ def sps_numbers(sps: str) -> tuple:
 
 
 def get_dtd_version(sps_version):
+    print("DTD version: %s" % sps_version)
     numbers = sps_numbers(sps_version)
     if numbers == (0, 0):
         return '3.0'
@@ -78,6 +79,7 @@ def get_dtd_version(sps_version):
 
 
 def xsl_getter(sps_version):
+    print("SPS version: %s" % sps_version)
     dtd_version = get_dtd_version(sps_version)
     return os.path.join(
         DTD_AND_XSL_PATH, XPM_FILES[dtd_version]["folder"],
