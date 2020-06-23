@@ -445,7 +445,7 @@ class ArticleContentValidation(object):
         return data_validations.is_required_data('publisher name', self.article.publisher_name, validation_status.STATUS_FATAL_ERROR)
 
     def is_sps_version_greater_than(self, number):
-        return self.sps_version_number and self.sps_version_number > number
+        return bool(self.sps_version_number and self.sps_version_number > number)
 
     @property
     def journal_id_publisher_id(self):
