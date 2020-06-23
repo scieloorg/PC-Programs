@@ -56,6 +56,17 @@ _SPS_VERSIONS = (
 SPS_VERSIONS = dict(_SPS_VERSIONS)
 
 
+def sps_numbers(sps: str) -> tuple:
+    if sps and 'sps-' in sps:
+        sps = sps[4:]
+    try:
+        numbers = [int(n) for n in sps.split(".")]
+    except (AttributeError, ValueError, TypeError):
+        return (0, 0)
+    else:
+        return tuple(numbers)
+
+
 def get_dtd_version(sps_version_number):
     if not sps_version_number:
         return '3.0'
