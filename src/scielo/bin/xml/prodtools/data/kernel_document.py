@@ -1,9 +1,16 @@
-# -*- coding: utf-8 -*-
+import copy
+import logging
+
+from typing import Optional
+
 import xml.etree.ElementTree as ET
+from lxml import etree  # type: ignore
 
 from prodtools.utils import fs_utils
 from prodtools.db.pid_versions import PIDVersionsManager
 from . import scielo_id_gen
+
+LOGGER = logging.getLogger(__name__)
 
 
 def add_article_id_to_received_documents(
@@ -71,6 +78,37 @@ def get_scielo_pid_v2(issn_id, year_and_order, order_in_issue):
     year = year_and_order[:4]
     order_in_year = year_and_order[4:].zfill(4)
     return "".join(("S", issn_id, year, order_in_year, order_in_issue))
+
+
+def add_article_id_to_etree(
+    tree: etree.ElementTree, pid_and_specific_use_items: list
+) -> Optional[etree.ElementTree]:
+    """Adiciona os pids v2 e v3 a árvore lxml de um documento"""
+    if (
+        tree is None
+        or pid_and_specific_use_items is None
+        or len(pid_and_specific_use_items) == 0
+    ):
+        return None
+
+    _tree = copy.deepcopy(tree)
+
+    article_meta = _tree.find(".//article-meta")
+
+    if article_meta is None:
+        LOGGER.debug(
+            "Could not insert articles ids because the article-meta isn't found"
+        )
+        return None
+
+    for id_value, specific_use in pid_and_specific_use_items:
+        article_id = etree.Element("article-id")
+        article_id.text = id_value
+        article_id.set("specific-use", specific_use)
+        article_id.set("pub-id-type", "publisher-id")
+        article_meta.insert(0, article_id)
+
+    return _tree
 
 
 def add_article_id_to_xml(file_path, pid_and_specific_use_items):

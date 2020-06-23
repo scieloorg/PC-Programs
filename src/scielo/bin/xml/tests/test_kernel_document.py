@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import Mock, patch
 import os
 
-from xml.etree import ElementTree as etree
+from lxml import etree
 from copy import deepcopy
 from prodtools.data import kernel_document
 
@@ -124,6 +124,27 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
         )
 
         mock_pid_manager.register.assert_not_called()
+
+    def test_add_pids_to_etree_should_return_none_if_etree_is_not_valid(self):
+        self.assertIsNone(kernel_document.add_article_id_to_etree(None, []))
+
+    def test_add_pids_to_etree_should_not_update_if_pid_list_is_empty(self):
+        tree = etree.fromstring("<article><article-meta></article-meta></article>")
+        self.assertIsNone(kernel_document.add_article_id_to_etree(tree, []))
+
+    def test_add_pids_to_etree_should_etree_with_pid_v3(self):
+        tree = etree.fromstring(
+            """<article>
+                <article-meta></article-meta>
+            </article>"""
+        )
+        _tree = kernel_document.add_article_id_to_etree(
+            tree, [("random-pid", "pid-v3",)]
+        )
+        self.assertIn(
+            b'<article-id specific-use="pid-v3" pub-id-type="publisher-id">random-pid</article-id>',
+            etree.tostring(_tree),
+        )
 
 
 class TestKernelDocument(unittest.TestCase):
