@@ -4,6 +4,7 @@ import logging.config
 import argparse
 import os
 import shutil
+import traceback
 
 from tempfile import TemporaryDirectory
 from datetime import datetime
@@ -36,12 +37,6 @@ os_path_join = os.path.join
 
 
 class ForbiddenOperationError(Exception):
-    pass
-
-
-class ScieloPackageError(Exception):
-    """Exceção não recuperável lançada durante a criação do objeto SPPackage"""
-
     pass
 
 
@@ -93,9 +88,12 @@ class Reception(object):
                     configuration.email_text_packages_receipt +
                     '\n' + ftp.registered_actions)
         except Exception as e:
-            self.inform_failure(
-                "", str(e),
-                subject=_('Something went wrong as downloading packages'))
+            logger.exception(
+                "Could not download packages. The following traceback was captured: "
+            )
+            self.mailer.mail_failure(
+                subject="Could not download packages", text=traceback.format_exc(),
+            )
             raise e
 
     def receive_package(self, package_path=None):
@@ -114,8 +112,15 @@ class Reception(object):
             try:
                 self.convert_package(package_path)
             except Exception as e:
-                self.inform_failure(
-                    package_path, str(e), "receive_package_for_desktop")
+                logger.exception(
+                    "Could not receive packages for desktop of path '%s'",
+                    package_path,
+                )
+                self.mailer.mail_failure(
+                    subject="Could not receive packages for desktop",
+                    text=traceback.format_exc(),
+                    package=package_path,
+                )
                 raise
 
     def _receive_package_for_server(self):
@@ -137,12 +142,8 @@ class Reception(object):
     def _create_package_instance(self, source: str, output: str) -> SPPackage:
         """Cria instância da classe SPPackage para o pacote de entrada"""
 
-        try:
-            package_maker = PackageMaker(source, output)
-            package = package_maker.pack()
-        except Exception as exc:
-            raise ScieloPackageError(exc) from None
-        return package
+        package_maker = PackageMaker(source, output)
+        return package_maker.pack()
 
     def convert_package(self, package_path):
         if package_path is None:
@@ -160,14 +161,15 @@ class Reception(object):
             try:
                 package = self._create_package_instance(source=xml_path, output=output_path)
                 scilista_items, xc_status, mail_info = self.proc.convert_package(package)
-            except ScieloPackageError:
-                self.inform_failure(
-                    package_path,
-                    "Could not create package from source path '%s'." % package_path,
-                )
             except Exception:
-                self.inform_failure(
-                    package_path, "Could not convert package '%s'." % package_path
+                logger.exception(
+                    "Could not convert the package '%s'. The following traceback was captured: ",
+                    package_path,
+                )
+                self.mailer.mail_failure(
+                    subject="Could not convert the package",
+                    text=traceback.format_exc(),
+                    package=package_path,
                 )
             else:
                 if scilista_items is None or len(scilista_items) == 0:
@@ -186,14 +188,8 @@ class Reception(object):
 
         encoding.display_message(_('finished'))
 
-    def inform_failure(self, package_name, msg, subject=None):
-        if self.mailer.mailer:
-            subject = subject or _("Failure during or after conversion")
-            self.mailer.mail_failure(subject, package_name, msg)
-
-        logger.error(msg)
-
     def _update_scilista(self, package_name, scilista_items):
+        """Atualiza a scilista da coleção no path configurado"""
         if self.config.collection_scilista:
             try:
                 content = '\n'.join(list(set(scilista_items))) + '\n'
@@ -201,28 +197,44 @@ class Reception(object):
                     self.config.collection_scilista,
                     content)
             except Exception as e:
-                msg = _("Unable to update scilista {} with {}: {}"
-                        ).format(self.config.collection_scilista, content, e)
-                self.inform_failure(package_name, msg)
+                subject = _("Unable to update scilista {} with {}").format(
+                    self.config.collection_scilista, content
+                )
+                logger.exception(
+                    "Could not update the scilista '%s' with '%s",
+                    self.config.collection_scilista,
+                    content,
+                )
+                self.mailer.mail_failure(
+                    subject=subject, text=traceback.format_exc(), package=package_name
+                )
                 raise e
 
     def _mail_results(self, pkg_name, mail_info):
-        if self.mailer.mailer:
-            if mail_info and self.config.email_subject_package_evaluation:
-                mail_subject, mail_content = mail_info
-                self.mailer.mail_results(pkg_name, mail_subject, mail_content)
-            else:
-                logger.info(mail_content)
-                print(mail_content)
+        if (
+            mail_info is not None
+            and len(mail_info) == 2
+            and self.config.is_enabled_email_service
+            and self.config.email_subject_package_evaluation
+        ):
+            mail_subject, mail_content = mail_info
+            self.mailer.mail_results(pkg_name, mail_subject, mail_content)
+        else:
+            logger.info(pkg_name, mail_info)
+            print(pkg_name, mail_info)
 
     def _update_website_files(self, package_name, acron, issue_id):
         if self.transfer:
             try:
                 self.transfer.transfer_website_files(acron, issue_id)
             except Exception as e:
-                msg = _("Unable to transfer xml, pdf, images files"
-                        " of {} {}: {}").format(acron, issue_id, e)
-                self.inform_failure(package_name, msg)
+                subject = _(
+                    "Unable to transfer xml, pdf, images files of {} {}"
+                ).format(acron, issue_id)
+                logger.exception(subject)
+                self.mailer.mail_failure(
+                    subject=subject, text=traceback.format_exc(), package=package_name
+                )
                 raise e
 
     def _update_report_files(self, package_name, acron, issue_id):
@@ -230,9 +242,13 @@ class Reception(object):
             try:
                 self.transfer.transfer_report_files(acron, issue_id)
             except Exception as e:
-                msg = _("Unable to transfer report files"
-                        " of {} {}: {}").format(acron, issue_id, e)
-                self.inform_failure(package_name, msg)
+                subject = _("Unable to transfer report files of {} {}").format(
+                    acron, issue_id
+                )
+                logger.exception(subject)
+                self.mailer.mail_failure(
+                    subject=subject, text=traceback.format_exc(), package=package_name
+                )
                 raise e
 
     def _queued_packages(self):

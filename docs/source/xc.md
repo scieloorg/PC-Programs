@@ -249,6 +249,8 @@ EMAIL_TEXT_GERAPADRAO=email_gerapadrao.txt
 
 EMAIL_SUBJECT_INVALID_PACKAGES=[XC_VERSION] [COLLECTION_NAME] Invalid packages
 EMAIL_TEXT_INVALID_PACKAGES=email_invalid_packages.txt
+
+EMAIL_SUBJECT_CONVERSION_FAILURE=[XC_VERSION] [COLLECTION_NAME] Packages conversion failure
 ```
 
 #### Recepção de pacotes por FTP

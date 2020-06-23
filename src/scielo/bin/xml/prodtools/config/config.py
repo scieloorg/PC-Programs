@@ -279,6 +279,9 @@ class Configuration(object):
     def email_to(self):
         return self._data.get('EMAIL_TO')
 
+    def email_subject_conversion_failure(self):
+        return self._data.get('EMAIL_SUBJECT_CONVERSION_FAILURE')
+
     @property
     def email_subject_packages_receipt(self):
         return self._data.get('EMAIL_SUBJECT_PACKAGES_RECEIPT')

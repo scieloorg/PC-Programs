@@ -1,7 +1,8 @@
-# coding=utf-8
+import logging
 
 from prodtools.utils import email_service
 
+LOGGER = logging.getLogger(__name__)
 
 class Mailer(object):
 
@@ -13,22 +14,26 @@ class Mailer(object):
                 config.email_server)
 
     def send_message(self, to, subject, text, attaches=[]):
+        if not self.config.is_enabled_email_service:
+            LOGGER.info("Could not send this email. The mailer service is disabled")
+            return None
+        elif self.mailer is None:
+            LOGGER.info(
+                "Could not send this email. The mailer service isn't configured"
+            )
+            return None
         self.mailer.send_message(to, subject, text, attaches)
 
     def mail_invalid_packages(self, invalid_pkg_files):
         if self.config.is_enabled_email_service:
             self.send_message(self.config.email_to, self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
 
-    def mail_failure(self, subject, package_folder, e):
-        if self.config.is_enabled_email_service:
-            subject = ("{}: {}").format(
-                    self.config.email_subject_invalid_packages.replace(
-                        "Invalid packages", subject),
-                    package_folder)
-            self.send_message(
-                self.config.email_to,
-                subject,
-                '\n' + package_folder + '\n' + str(e))
+    def mail_failure(self, subject: str, text: str, package: str) -> None:
+        """Informa falhas gerais ocorridas durante a conversão de pacotes SPS"""
+        subject = "{} {}: {}".format(
+            self.config.email_subject_conversion_failure, subject, package
+        )
+        self.send_message(self.config.email_to_adm, subject, text)
 
     def mail_results(self, package_folder, results, report_location):
         if self.config.is_enabled_email_service:
