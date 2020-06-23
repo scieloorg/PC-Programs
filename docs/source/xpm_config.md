@@ -1,7 +1,7 @@
 Última atualização Jun, 2020
 
 
-# XML Package Maker
+# Configuração de XML Package Maker
 
 Por padrão o programa funciona considerando acesso à Internet disponível, ausência de proxy para acesso à internet e uso do packtools como validador de estrutura de XML (em substituição ao style-checker).
 
