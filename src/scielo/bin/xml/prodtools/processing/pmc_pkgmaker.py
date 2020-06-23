@@ -61,9 +61,9 @@ class PMCPackageItemMaker(object):
 
     def make_package(self):
         scielo_dtd_files = xml_versions.dtd_files(
-            self.article.sps_version_number)
+            self.article.sps)
         pmc_dtd_files = xml_versions.dtd_files(
-            self.article.sps_version_number, database="pmc")
+            self.article.sps, database="pmc")
 
         if self.article.journal_id_nlm_ta is None:
             html_reports.save(

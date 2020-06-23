@@ -56,17 +56,31 @@ _SPS_VERSIONS = (
 SPS_VERSIONS = dict(_SPS_VERSIONS)
 
 
-def get_dtd_version(sps_version_number):
-    if not sps_version_number:
+def sps_numbers(sps: str) -> tuple:
+    if sps and 'sps-' in sps:
+        sps = sps[4:]
+    try:
+        numbers = [int(n) for n in sps.split(".")]
+    except (AttributeError, ValueError, TypeError):
+        return (0, 0)
+    else:
+        return tuple(numbers)
+
+
+def get_dtd_version(sps_version):
+    print("DTD version: %s" % sps_version)
+    numbers = sps_numbers(sps_version)
+    if numbers == (0, 0):
         return '3.0'
-    elif sps_version_number < (1, 7):
+    elif numbers < (1, 7):
         return 'j1.0'
     else:
         return 'j1.1'
 
 
-def xsl_getter(sps_version_number):
-    dtd_version = get_dtd_version(sps_version_number)
+def xsl_getter(sps_version):
+    print("SPS version: %s" % sps_version)
+    dtd_version = get_dtd_version(sps_version)
     return os.path.join(
         DTD_AND_XSL_PATH, XPM_FILES[dtd_version]["folder"],
         'xsl', 'sgml2xml', 'sgml2xml.xsl'
@@ -85,8 +99,8 @@ def dtd_locations():
     return locations
 
 
-def dtd_files(sps_version_number, database='scielo'):
-    dtd_version = get_dtd_version(sps_version_number)
+def dtd_files(sps_version, database='scielo'):
+    dtd_version = get_dtd_version(sps_version)
     return DTDFiles(database, dtd_version)
 
 

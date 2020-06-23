@@ -719,19 +719,6 @@ class ArticleXML(object):
                 return self.tree.find('.').attrib.get('specific-use')
 
     @property
-    def sps_version_number(self):
-        version_number = self.sps
-        if version_number is not None:
-            if 'sps-' in version_number:
-                version_number = version_number[4:]
-            try:
-                numbers = [int(n) for n in version_number.split(".")]
-            except ValueError:
-                return (0, 0)
-            else:
-                return tuple(numbers)
-
-    @property
     def article_type(self):
         if self.tree is not None:
             if self.tree.find('.') is not None:
