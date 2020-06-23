@@ -111,10 +111,10 @@ class PMCXMLValidator(object):
 
 class PackToolsXMLValidator(object):
 
-    def __init__(self, file_path, tree, sps_version):
+    def __init__(self, file_path, sps_version):
         self.file_path = file_path
         self.load_xml()
-        self.sps_version = sps_version
+        self.sps_version = sps_version or xml_versions.get_latest_sps_version()
 
         self.version = packtools.__version__
 
@@ -182,9 +182,10 @@ class PackToolsXMLValidator(object):
             return dtd_is_valid, dtd_errors
 
         try:
-            logger.info(self.sps_version)
+            logger.info("sps_version: %s", self.sps_version)
             self.xml_validator = packtools.XMLValidator.parse(
-                    self.tree, sps_version=self.sps_version)
+                self.tree, sps_version=self.sps_version
+            )
         except (packtools.etree.XMLSyntaxError, exceptions.XMLDoctypeError,
                 exceptions.XMLSPSVersionError) as e:
             ERR_MESSAGE = ("Validation error of {}: {}.").format(
