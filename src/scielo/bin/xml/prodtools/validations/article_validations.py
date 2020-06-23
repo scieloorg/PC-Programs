@@ -68,7 +68,7 @@ class XMLIssueDataValidator(object):
 class XMLStructureValidator(object):
     def __init__(self, file_path, xml, sps_version):
         self.validator = sps_xml_validators.PackToolsXMLValidator(
-            file_path, xml, sps_version)
+            file_path, sps_version)
 
     def validate(self, file_path, outputs):
         separator = '\n\n\n' + '.........\n\n\n'
