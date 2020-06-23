@@ -143,6 +143,7 @@ class ArticleContentValidation(object):
         self.ws_requester = config.app_ws_requester
         self.journal = journal
         self.article = _article
+        self.sps_version_number = xml_versions.sps_numbers(self.article.sps)
         self.is_db_generation = is_db_generation
         self.check_url = check_url
         self.pkgfiles = pkgfiles
@@ -444,9 +445,7 @@ class ArticleContentValidation(object):
         return data_validations.is_required_data('publisher name', self.article.publisher_name, validation_status.STATUS_FATAL_ERROR)
 
     def is_sps_version_greater_than(self, number):
-        if self.article.sps_version_number is not None:
-            return self.article.sps_version_number > number
-        return False
+        return self.sps_version_number and self.sps_version_number > number
 
     @property
     def journal_id_publisher_id(self):
@@ -1121,7 +1120,7 @@ class ArticleContentValidation(object):
                          _('@date-type must be pub or collection. '),
                          xml)
                     )
-        elif self.article.sps_version_number == (1, 8):
+        elif self.sps_version_number == (1, 8):
             for fmt, date_type, pub_type, xml in self.article.raw_pubdate_items:
                 if date_type:
                     r.append(
@@ -1153,14 +1152,14 @@ class ArticleContentValidation(object):
                          _('@date-type is invalid for this version of SPS. '),
                          xml)
                     )
-        if self.article.sps_version_number > (1, 8):
+        if self.sps_version_number > (1, 8):
             if self.article.is_ahead:
                 expected = [{'pub'}]
                 expected_items = 'pub'
             else:
                 expected = [{'pub', 'collection'}]
                 expected_items = 'pub|collection'
-        elif self.article.sps_version_number == (1, 8):
+        elif self.sps_version_number == (1, 8):
             if self.article.is_ahead:
                 expected = [{'epub'}]
                 expected_items = 'epub'
