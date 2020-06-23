@@ -127,9 +127,9 @@ class PackToolsXMLValidator(object):
         self.tree, self.loading_error = xml_utils.load_xml(content)
         if self.loading_error:
             self.loading_error = (
-                self.file_path +
-                self.loading_error +
-                "\n" + xml_utils.numbered_lines(content)
+                self.file_path + "\n\n" +
+                self.loading_error + "\n\n" +
+                xml_utils.numbered_lines(content)
             )
             fs_utils.write_file(self.file_path, content)
 

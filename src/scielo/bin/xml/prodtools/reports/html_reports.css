@@ -643,6 +643,8 @@ h5 {
     border: 5px solid #55C3DC;
     padding: 2px;
     display: none;
+    font-size: 12pt;
+
 }
 .report-block-datarep {
     border: 5px solid #EFBDC0;
