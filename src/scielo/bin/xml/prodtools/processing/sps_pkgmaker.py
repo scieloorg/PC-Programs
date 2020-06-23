@@ -367,7 +367,7 @@ class PackageMaker(object):
             fs_utils.unzip(zip_optimised, self.destination_path)
             logger.debug("Optimised: %s", self.destination_path)
         except (PackageMakerOptimiserPreReqError, SPPackageError,
-                OSError, DecompressionBombError):
+                OSError, DecompressionBombError, xml_utils.etree.XMLSyntaxError):
             if self.destination_path != doc_pkg_path:
                 for f in files:
                     shutil.copy(f, self.destination_path)

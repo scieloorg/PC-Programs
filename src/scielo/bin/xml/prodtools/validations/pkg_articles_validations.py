@@ -15,7 +15,6 @@ class PkgArticlesValidationsReports(object):
                  is_xml_generation, config):
         self.consistency_validations = None
         self.is_db_generation = is_db_generation
-        self.merged_articles_reports = None
         pkg_validator = PackageValidator(
             registered_issue_data, pkg, is_xml_generation, config)
         self.pkg_articles_validations = pkg_validator.validate_package()
