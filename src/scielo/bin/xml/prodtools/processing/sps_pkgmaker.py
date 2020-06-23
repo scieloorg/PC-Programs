@@ -114,15 +114,15 @@ class SPSXMLContent(xml_utils.SuitableXML):
     def remove_styles_off_tagged_content(self, tag):
         """
         As tags de estilo não devem ser aplicadas no conteúdo inteiro de
-        certos elementos. As tags de estilo somente pode destacar partes do
+        certos elementos. As tags de estilo somente podem destacar partes do
         conteúdo de um dado elemento
-        <source><italic>texto texto texto</italic></source> - não aceitável
-        <source><italic>texto</italic> texto texto</source> - aceitável
+        <source><bold>texto texto texto</bold></source> - não aceitável
+        <source><bold>texto</bold> texto texto</source> - aceitável
         """
-        STYLES = ("italic", "bold")
+        STYLES = ("bold", )
         nodes = []
         for style in STYLES:
-            nodes.extend(self.xml.findall(".//{}[{}]".format(tag, style)))
+            nodes.extend(self.xml.xpath(".//{}[.//{}]".format(tag, style)))
         for node in set(nodes):
             xml_utils.merge_siblings_style_tags_content(node, STYLES)
             xml_utils.remove_styles_off_tagged_content(node, STYLES)

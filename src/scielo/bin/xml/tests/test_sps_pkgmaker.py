@@ -11,16 +11,23 @@ python_version = sys.version_info.major
 
 class TestSPSXMLContent(TestCase):
 
-    def test_remove_styles_off_tagged_content_removes_all_italics(self):
-        text = "<root><source><italic>texto 1</italic> <italic>texto 2</italic></source></root>"
+    def test_remove_styles_off_tagged_content_removes_all_bolds(self):
+        text = "<root><source><bold>texto 1</bold> <bold>texto 2</bold></source></root>"
         expected = "<root><source>texto 1 texto 2</source></root>"
         obj = sps_pkgmaker.SPSXMLContent(text)
         obj.remove_styles_off_tagged_content("source")
         self.assertEqual(obj.content, expected)
 
-    def test_remove_styles_off_tagged_content_removes_bold_and_italics(self):
+    def test_remove_styles_off_tagged_content_removes_no_italics(self):
+        text = "<root><source><italic>texto 1</italic> <italic>texto 2</italic></source></root>"
+        expected = "<root><source><italic>texto 1</italic> <italic>texto 2</italic></source></root>"
+        obj = sps_pkgmaker.SPSXMLContent(text)
+        obj.remove_styles_off_tagged_content("source")
+        self.assertEqual(obj.content, expected)
+
+    def test_remove_styles_off_tagged_content_removes_bold_and_keep_italics(self):
         text = "<root><source><bold> <italic>texto 1</italic> <italic>texto 2</italic> </bold></source></root>"
-        expected = "<root><source>texto 1 texto 2</source></root>"
+        expected = "<root><source> <italic>texto 1</italic> <italic>texto 2</italic> </source></root>"
         obj = sps_pkgmaker.SPSXMLContent(text)
         obj.remove_styles_off_tagged_content("source")
         self.assertEqual(obj.content, expected)
@@ -33,7 +40,14 @@ class TestSPSXMLContent(TestCase):
 
     def test_remove_styles_off_tagged_content_does_not_remove_italic(self):
         text = "<root><source><bold> <italic>texto 1</italic> sem estilo <italic>texto 2</italic> </bold></source></root>"
-        expected = "<root><source><italic>texto 1</italic> sem estilo <italic>texto 2</italic> </source></root>"
+        expected = "<root><source> <italic>texto 1</italic> sem estilo <italic>texto 2</italic> </source></root>"
+        obj = sps_pkgmaker.SPSXMLContent(text)
+        obj.remove_styles_off_tagged_content("source")
+        self.assertEqual(obj.content, expected)
+
+    def test_remove_styles_off_tagged_content_removes_bold_because_it_wraps_whole_source(self):
+        text = "<root><source><italic><bold>texto 1</bold> <bold>texto 2</bold></italic></source></root>"
+        expected = "<root><source><italic>texto 1 texto 2</italic></source></root>"
         obj = sps_pkgmaker.SPSXMLContent(text)
         obj.remove_styles_off_tagged_content("source")
         self.assertEqual(obj.content, expected)
