@@ -113,13 +113,20 @@ class PackToolsXMLValidator(object):
 
     def __init__(self, file_path, tree, sps_version):
         self.file_path = file_path
-        self.tree = tree
+        self.load_xml()
         self.sps_version = sps_version
 
         self.version = packtools.__version__
 
         self.xml_validator = None
         self.locations = xml_versions.dtd_locations()
+
+    def load_xml(self):
+        content = fs_utils.read_file(self.file_path)
+        content = xml_utils.xml_with_lines_break(content)
+        self.tree, self.loading_error = xml_utils.load_xml(content)
+        if self.loading_error:
+            fs_utils.write_file(self.file_path, content)
 
     def validate_doctype(self):
         sps_version = self.sps_version
@@ -165,6 +172,10 @@ class PackToolsXMLValidator(object):
     def validate_structure(self):
         dtd_is_valid = False
         dtd_errors = []
+        if self.loading_error:
+            dtd_errors += [self.loading_error]
+            return dtd_is_valid, dtd_errors
+
         try:
             logger.info(self.sps_version)
             self.xml_validator = packtools.XMLValidator.parse(
@@ -183,6 +194,7 @@ class PackToolsXMLValidator(object):
             dtd_is_valid, dtd_errors = self.xml_validator.validate_all()
             dtd_errors = xml_utils.format_validations_msg(dtd_errors)
             logger.debug("dtd_is_valid: %s, dtd_errors: %s", dtd_is_valid, dtd_errors)
+
         return dtd_is_valid, dtd_errors
 
     def validate_style(self):
