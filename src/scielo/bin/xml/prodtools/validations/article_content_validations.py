@@ -143,7 +143,6 @@ class ArticleContentValidation(object):
         self.ws_requester = config.app_ws_requester
         self.journal = journal
         self.article = _article
-        self.sps_version_number = xml_versions.sps_numbers(self.article.sps)
         self.is_db_generation = is_db_generation
         self.check_url = check_url
         self.pkgfiles = pkgfiles
@@ -152,6 +151,10 @@ class ArticleContentValidation(object):
         self.disp_formulas_validator = article_disp_formula.ArticleDispFormulasValidator(config)
         self.tablewrap_validator = article_tablewrap.ArticleTableWrapValidator(config)
         self.orcid_validator = orcid.ORCIDValidator(config.app_ws_requester)
+
+    @property
+    def sps_version_number(self):
+        return xml_versions.sps_numbers(self.article.sps)
 
     def normalize_validations(self, validations_result_list):
         r = []
