@@ -232,28 +232,34 @@ class SuitableXML(object):
                 pretty_print=pretty_print, doctype=doctype)
 
 
-def xml_with_lines_break(content: str) -> str:
-    """
-    Retorna o conteúdo XML em várias linhas para que ao ser validado fique 
-    fácil de localizar o erro pelo número da linha
-    """
-    if content:
-        xml, error = load_xml(content, remove_blank_text=True)
-        if xml:
-            content = tostring(xml, pretty_print=True)
-        else:
-            content = content.replace(">", ">BREAKLINESTAGS")
-            content = content.replace("<", "BREAKLINESTAGS<")
-            items = []
-            for item in content.split("BREAKLINESTAGS"):
-                if item.startswith("</"):
-                    items.append(item)
-                elif item.endswith(">"):
-                    items.append("\n" + item)
-                else:
-                    items.append(item)
-            content = "".join(items).strip()
-    return content
+class XMLinMultipleLines(object):
+
+    def __init__(self, content):
+        self.content = self.break_in_lines(content)
+        self.tree, self.loading_error = load_xml(self.content)
+
+    def break_in_lines(self, content):
+        """
+        Modifica o conteúdo XML em várias linhas para que ao ser validado fique
+        fácil de localizar o erro pelo número da linha
+        """
+        if content:
+            xml, error = load_xml(content, remove_blank_text=True)
+            if xml:
+                content = tostring(xml, pretty_print=True)
+            else:
+                content = content.replace(">", ">BREAKLINESTAGS")
+                content = content.replace("<", "BREAKLINESTAGS<")
+                items = []
+                for item in content.split("BREAKLINESTAGS"):
+                    if item.startswith("</"):
+                        items.append(item)
+                    elif item.endswith(">"):
+                        items.append("\n" + item)
+                    else:
+                        items.append(item)
+                content = "".join(items).strip()
+        return content
 
 
 def get_xml_object(file_path, xml_parser=None):

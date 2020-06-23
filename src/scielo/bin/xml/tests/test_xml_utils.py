@@ -159,7 +159,7 @@ class TestLoadXML(TestCase):
             "line 1, column 14 (<string>, line 1)")
 
 
-class TestXMLInMultiplesLines(TestCase):
+class TestXMLinMultipleLines(TestCase):
 
     def test_xml_with_lines_break_uses_pretty_print(self):
         text = (
@@ -180,8 +180,9 @@ class TestXMLInMultiplesLines(TestCase):
             "</root>"
             "\n"
             )
-        text_in_multiple_lines = xml_utils.xml_with_lines_break(text)
-        self.assertEqual(expected, text_in_multiple_lines)
+        obj = xml_utils.XMLinMultipleLines(text)
+        content = obj.break_in_lines(text)
+        self.assertEqual(expected, content)
 
     def test_xml_with_lines_break_uses_str_replace(self):
         text = (
@@ -202,8 +203,9 @@ class TestXMLInMultiplesLines(TestCase):
             "\n"
             "<italic>outro italic</italic></root>"
             )
-        text_in_multiple_lines = xml_utils.xml_with_lines_break(text)
-        self.assertEqual(expected, text_in_multiple_lines)
+        obj = xml_utils.XMLinMultipleLines(text)
+        content = obj.break_in_lines(text)
+        self.assertEqual(expected, content)
 
 
 class TestRemoveStylesTags(TestCase):
