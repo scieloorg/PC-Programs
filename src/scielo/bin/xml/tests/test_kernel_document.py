@@ -84,8 +84,7 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
                     self.assertIn('specific-use="scielo-v2"', content)
                     self.assertIn(expected_scielo_id, content)
 
-    @patch("prodtools.data.kernel_document.add_article_id_to_xml")
-    def test_pid_manager_should_use_aop_pid_to_search_pid_v3_from_database(self, _):
+    def test_pid_manager_should_use_aop_pid_to_search_pid_v3_from_database(self,):
         def _update_article_with_aop_pid(article: Article):
             article.registered_aop_pid = "AOPPID"
 
@@ -107,10 +106,7 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
             "pid-v3-registrado-anteriormente-para-documento-aop",
         )
 
-    @patch("prodtools.data.kernel_document.add_article_id_to_xml")
-    def test_pid_manager_does_not_register_pids_if_pid_v3_already_exists_in_xml(
-        self, mock
-    ):
+    def test_pid_manager_does_not_register_pids_if_pid_v3_already_exists_in_xml(self):
 
         mock_pid_manager = Mock()
 
@@ -165,6 +161,21 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
 
         with open(temporary_file, "r") as f:
             self.assertIn("São Paulo - É, ê, È, ç", f.read())
+
+    @patch("prodtools.data.kernel_document.write_etree_to_file")
+    def test_should_call_the_write_etree_to_file_when_the_pid_list_isnt_empty(self, mk):
+        kernel_document.add_article_id_to_received_documents(
+            pid_manager=Mock(),
+            issn_id="9876-3456",
+            year_and_order="20173",
+            received_docs={"file1": Article("pid-v3", None)},
+            documents_in_isis={},
+            file_paths={"file1": "file1.xml"},
+            update_article_with_aop_status=lambda _: _,
+        )
+
+        mk.assert_called_once()
+
 
 class TestKernelDocument(unittest.TestCase):
     """docstring for TestKernelDocument"""
