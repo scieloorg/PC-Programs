@@ -159,6 +159,53 @@ class TestLoadXML(TestCase):
             "line 1, column 14 (<string>, line 1)")
 
 
+class TestXMLInMultiplesLines(TestCase):
+
+    def test_xml_with_lines_break_uses_pretty_print(self):
+        text = (
+            "<root>"
+            "<p>Texto 1 "
+            "<bold>bold</bold> texto 2, "
+            "<italic>texto italic</italic> "
+            "<italic>outro italic</italic></p></root>"
+            )
+        expected = (
+            "<root>"
+            "\n  "
+            "<p>Texto 1 "
+            "<bold>bold</bold> texto 2, "
+            "<italic>texto italic</italic> "
+            "<italic>outro italic</italic></p>"
+            "\n"
+            "</root>"
+            "\n"
+            )
+        text_in_multiple_lines = xml_utils.xml_with_lines_break(text)
+        self.assertEqual(expected, text_in_multiple_lines)
+
+    def test_xml_with_lines_break_uses_str_replace(self):
+        text = (
+            "<root>"
+            "<p>Texto 1 "
+            "<bold>bold</bold> texto 2, "
+            "<italic>texto italic</italic> "
+            "<italic>outro italic</italic></root>"
+            )
+        expected = (
+            "<root>"
+            "\n"
+            "<p>Texto 1 "
+            "\n"
+            "<bold>bold</bold> texto 2, "
+            "\n"
+            "<italic>texto italic</italic> "
+            "\n"
+            "<italic>outro italic</italic></root>"
+            )
+        text_in_multiple_lines = xml_utils.xml_with_lines_break(text)
+        self.assertEqual(expected, text_in_multiple_lines)
+
+
 class TestRemoveStylesTags(TestCase):
 
     def test_remove_styles_off_tagged_content_removes_italic(self):
