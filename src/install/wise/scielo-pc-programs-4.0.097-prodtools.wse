@@ -5592,7 +5592,7 @@ item: End Block
 end
 item: Execute Program
   Pathname=%PYTHON_PATH%\python
-  Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PROGDIR% %DATADIR% %MYSCIELOURL% %WEBPATH%
+  Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PYTHON_PATH% %PROGDIR% %DATADIR% %MYSCIELOURL% %WEBPATH%
   Flags=00000011
 end
 remarked item: Execute Program
