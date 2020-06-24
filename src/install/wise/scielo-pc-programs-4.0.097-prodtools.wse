@@ -1684,12 +1684,9 @@ item: Custom Dialog Set
     end
   end
 end
-
 item: Set Variable
   Variable=BACKUP
   Value=%PROGDIR%\BACKUP
-end
-item: End Block
 end
 item: End Block
 end
@@ -1856,8 +1853,23 @@ item: Check Disk Space
   Component=COMPONENTS
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\dist\SciELO_Production_Tools-4.0.97-py3-none-any.whl
+  Destination=%PROGDIR%\bin\xml\dist\SciELO_Production_Tools-4.0.97-py3-none-any.whl
+  Flags=0000000010000010
+end
+item: Execute Program
+  Pathname=pip
+  Command Line=install -U %PROGDIR%\bin\xml\dist\SciELO_Production_Tools-4.0.97-py3-none-any.whl
+  Flags=00000011
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\__init__.py
   Destination=%PROGDIR%\bin\xml\__init__.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\xml_pubmed.py
+  Destination=%PROGDIR%\bin\xml\xml_pubmed.py
   Flags=0000000010000010
 end
 item: Install File
