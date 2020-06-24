@@ -4,6 +4,8 @@ import unittest
 from unittest.mock import Mock, patch
 import os
 
+from io import StringIO
+
 from lxml import etree
 from copy import deepcopy
 from prodtools.data import kernel_document
@@ -29,6 +31,19 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
         for f in self.files:
             with open(f, "wb") as fp:
                 fp.write(b"<article><article-meta></article-meta></article>")
+
+        self.tree = etree.parse(
+            StringIO(
+                """<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">
+                    <article>
+                        <article-meta>
+                            <field>São Paulo - É, ê, È, ç</field>
+                        </article-meta>
+                    </article>
+                """
+            ),
+            etree.XMLParser(),
+        )
 
     def tearDown(self):
         for f in self.files:
@@ -140,6 +155,15 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
         )
         self.assertIn(
             b'<article-id specific-use="pid-v3" pub-id-type="publisher-id">random-pid</article-id>',
+            etree.tostring(_tree),
+        )
+
+    def test_add_pids_to_etree_should_not_modify_the_documents_doctype(self):
+        _tree = kernel_document.add_article_id_to_etree(
+            self.tree, [("random-pid", "pid-v3",)]
+        )
+        self.assertIn(
+            b"""<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">""",
             etree.tostring(_tree),
         )
 
