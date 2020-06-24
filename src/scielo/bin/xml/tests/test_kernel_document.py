@@ -186,6 +186,16 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
         with open(temporary_file, "r") as f:
             self.assertIn("São Paulo - É, ê, È, ç", f.read())
 
+    def test_write_etree_to_file_should_not_change_the_document_doctype(self):
+        temporary_file = tempfile.mktemp()
+        kernel_document.write_etree_to_file(self.tree, path=temporary_file)
+
+        with open(temporary_file, "r") as f:
+            self.assertIn(
+                """<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">""",
+                f.read(),
+            )
+
     @patch("prodtools.data.kernel_document.write_etree_to_file")
     def test_should_call_the_write_etree_to_file_when_the_pid_list_isnt_empty(self, mk):
         kernel_document.add_article_id_to_received_documents(
