@@ -1,9 +1,9 @@
 Document Type: WSE
 item: Global
   Version=7.01
-  Title=SciELO Installation
-  Title Portuguese=SciELO Installation
-  Title Spanish=SciELO Installation
+  Title=SciELO PC Programs Installation
+  Title Portuguese=SciELO PC Programs Installation
+  Title Spanish=SciELO PC Programs Installation
   Flags=00010100
   Languages=65 0 0 0 0 67 66 0 0 0 0 0 0 0 0 0
   Copy Default=1
@@ -34,7 +34,7 @@ item: Global
   Version Company=SciELO
   Distribute Path=C:\2007\scielo
   Distribute Type=1
-  Step View=Properties
+  Step View=All
   Variable Name1=_SYS_
   Variable Default1=C:\WINNT\system32
   Variable Flags1=00001000
@@ -105,8 +105,17 @@ item: Set Variable
   Value=!
 end
 item: Set Variable
+  Variable=PYTHON_PATH
+  Value=C:\python3
+  Flags=10000000
+end
+item: Set Variable
+  Variable=WEBPATH
+  Flags=10000000
+end
+item: Set Variable
   Variable=MAINDIR
-  Value=C:
+  Value=scielo
   Flags=10000000
 end
 item: Set Variable
@@ -463,6 +472,239 @@ item: Custom Dialog Set
   end
 end
 item: Custom Dialog Set
+  Name=Select python3 path
+  Display Variable=DISPLAY
+  item: Dialog
+    Title=Inform Python 3 location
+    Title French=Choisissez la localisation de destination
+    Title German=Zielpfad wählen
+    Title Portuguese=Informar Local do Python 3
+    Title Spanish=Informar Local de Python 3
+    Title Italian=Scegli Posizione di Destinazione
+    Title Danish=Vælg destinationsmappe
+    Title Dutch=Kies doellocatie
+    Title Norwegian=Velg målplassering
+    Title Swedish=Välj ställe för installationen
+    Width=280
+    Height=224
+    Font Name=Helv
+    Font Size=8
+    item: Push Button
+      Rectangle=172 185 214 199
+      Variable=DIRECTION
+      Value=N
+      Destination Dialog=1
+      Action=1
+      Create Flags=01010000000000010000000000000001
+      Text=&Next >
+      Text French=&Suivant>
+      Text German=&Weiter>
+      Text Portuguese=&Próximo>
+      Text Spanish=&Siguiente >
+      Text Italian=&Avanti >
+      Text Danish=&Næste>
+      Text Dutch=&Volgende>
+      Text Norwegian=&Neste>
+      Text Swedish=&Nästa >
+    end
+    item: Push Button
+      Rectangle=130 185 172 199
+      Variable=DIRECTION
+      Value=B
+      Create Flags=01010000000000010000000000000000
+      Flags=0000000000000001
+      Text=< &Back
+      Text French=<&Retour
+      Text German=<&Zurück
+      Text Portuguese=<&Retornar
+      Text Spanish=<&Retroceder
+      Text Italian=< &Indietro
+      Text Danish=<&Tilbage
+      Text Dutch=<&Terug
+      Text Norwegian=<&Tilbake
+      Text Swedish=< &Tillbaka
+    end
+    item: Push Button
+      Rectangle=222 185 264 199
+      Action=3
+      Create Flags=01010000000000010000000000000000
+      Text=Cancel
+      Text French=Annuler
+      Text German=Abbrechen
+      Text Portuguese=Cancelar
+      Text Spanish=Cancelar
+      Text Italian=Annulla
+      Text Danish=Annuller
+      Text Dutch=Annuleren
+      Text Norwegian=Avbryt
+      Text Swedish=Avbryt
+    end
+    item: Static
+      Rectangle=9 177 263 178
+      Action=3
+      Create Flags=01010000000000000000000000000111
+    end
+    item: Static
+      Rectangle=90 10 260 60
+      Create Flags=01010000000000000000000000000000
+      Text=Setup will install %APPTITLE% in the following folder.
+      Text=To install into a different folder, click Browse, and select another folder. 
+      Text=You can choose not to install %APPTITLE% by clicking Cancel to exit Setup.
+      Text French=%APPTITLE% va être installé dans le répertoire ci-dessous
+      Text French=
+      Text French=Pour l'installer dans un répertoire différent, cliquez sur Parcourir et sélectionnez un autre répertoire
+      Text French=
+      Text French=Vous pouvez choisir de ne pas installer %APPTITLE% en cliquant sur Annuler pour quitter l'Installation
+      Text German=Installation speichert %APPTITLE% im unten angegebenen Ordner:
+      Text German=
+      Text German=Zur Installation in einem anderen Ordner auf Blättern klicken und einen anderen Ordner wählen.
+      Text German=
+      Text German=Wenn Sie %APPTITLE% nicht installieren möchten, können Sie durch Klicken auf Abbrechen die Installation beenden.
+      Text Portuguese=Informar onde está instalado o Python. Consulte a documentação se está usando a versão recomendada de Python. 
+      Text Spanish=El programa de Configuración instalará %APPTITLE% en la siguiente carpeta. 
+      Text Spanish=Para instalar en una carpeta diferente, haga un clic en Visualizar, y seleccione otra carpeta. Puede elegir no instalar %APPTITLE% haciendo un clic en Cancelar para salir de Configuración.
+      Text Italian=Il programma di installazione installerà %APPTITLE% nella seguente cartella.
+      Text Italian=
+      Text Italian=Per effettuare l’installazione in una cartella diversa, fai clic su Sfoglia, e scegli un’altra cartella.
+      Text Italian=
+      Text Italian=Puoi scegliere di non installare %APPTITLE% facendo clic su Annulla per uscire dal programma di installazione
+      Text Danish=Installationsprogrammet installerer %APPTITLE% i denne mappe.
+      Text Danish=
+      Text Danish=Man installerer i en anden mappe ved at klikke på Browse og vælge en anden mappe.
+      Text Danish=
+      Text Danish=Man kan vælge ikke at installere %APPTITLE% ved at klikke på Slet og forlade installationsprogrammet.
+      Text Dutch=Het installatieprogramma installeert %APPTITLE% in de volgende directory.
+      Text Dutch=
+      Text Dutch=Als u het in een andere directory wilt installeren, klik dan op Bladeren en kies een andere locatie.
+      Text Dutch=
+      Text Dutch=U kunt ervoor kiezen om %APPTITLE% niet te installeren: klik op Annuleren om het installatieprogramma te verlaten.
+      Text Norwegian=Oppsett vil installere %APPTITLE% i følgende mappe.
+      Text Norwegian=
+      Text Norwegian=For å installere i en annen mappe, klikk Bla igjennom og velg en annen mappe.
+      Text Norwegian=
+      Text Norwegian=Du kan velge å ikke installere %APPTITLE% ved å velge Avbryt for å gå ut av Oppsett.
+      Text Swedish=Installationsprogrammet installerar %APPTITLE% i följande mapp.
+      Text Swedish=
+      Text Swedish=Om du vill att installationen ska göras i en annan mapp, klickar du på Bläddra och väljer en annan mapp.
+      Text Swedish=
+      Text Swedish=Du kan välja att inte installera %APPTITLE% genom att klicka på Avbryt för att lämna installationsprogrammet.
+    end
+    item: Static
+      Rectangle=90 116 260 144
+      Action=1
+      Create Flags=01010000000000000000000000000111
+      Text=Python 3 path
+      Text French=Répertoire de destination
+      Text German=Zielordner
+      Text Portuguese=python
+      Text Spanish=Ruta de Python 3
+      Text Italian=Cartella di destinazione
+      Text Danish=Destinationsmappe
+      Text Dutch=Doeldirectory
+      Text Norwegian=Målmappe
+      Text Swedish=Destinationsmapp
+    end
+    item: Static
+      Control Name=%PYTHON_PATH%
+      Rectangle=95 127 210 141
+      Destination Dialog=2
+      Create Flags=01010000000000000000000000000000
+      Text=%PYTHON_PATH%
+      Text French=%MAINDIR%
+      Text German=%MAINDIR%
+      Text Portuguese=%PYTHON_PATH%
+      Text Spanish=%PYTHON_PATH%
+      Text Italian=%MAINDIR%
+      Text Danish=%MAINDIR%
+      Text Dutch=%MAINDIR%
+      Text Norwegian=%MAINDIR%
+      Text Swedish=%MAINDIR%
+    end
+    item: Push Button
+      Control Name=%PYTHON_PATH%
+      Rectangle=215 126 257 140
+      Variable=PYTHON_SAVE
+      Destination Dialog=1
+      Action=2
+      Create Flags=01010000000000010000000000000000
+      Text=B&rowse...
+      Text French=P&arcourir
+      Text German=B&lättern...
+      Text Portuguese=P&rocurar
+      Text Spanish=V&isualizar...
+      Text Italian=Sfoglia...
+      Text Danish=&Gennemse...
+      Text Dutch=B&laderen...
+      Text Norwegian=Bla igjennom
+      Text Swedish=&Bläddra
+    end
+  end
+  item: Dialog
+    Title=Select Python 3 Directory
+    Title French=Choisissez le répertoire de destination
+    Title German=Zielverzeichnis wählen
+    Title Portuguese=Seleccionar Directório do Python 3
+    Title Spanish=Seleccione el Directorio de Python 3
+    Title Italian=Seleziona Directory di destinazione
+    Title Danish=Vælg Destinationsbibliotek
+    Title Dutch=Kies doeldirectory
+    Title Norwegian=Velg målkatalog
+    Title Swedish=Välj destinationskalatog
+    Width=221
+    Height=173
+    Font Name=Helv
+    Font Size=8
+    item: Listbox
+      Rectangle=5 2 160 149
+      Variable=PYTHON_PATH
+      Create Flags=01010000100000010000000101000001
+      Flags=0000010000001010
+      Text=%PYTHON_PATH%
+      Text French=%MAINDIR%
+      Text German=%MAINDIR%
+      Text Portuguese=%PYTHON_PATH%
+      Text Spanish=%PYTHON_PATH%
+      Text Italian=%MAINDIR%
+      Text Danish=%MAINDIR%
+      Text Dutch=%MAINDIR%
+      Text Norwegian=%MAINDIR%
+      Text Swedish=%MAINDIR%
+    end
+    item: Push Button
+      Rectangle=167 6 212 21
+      Create Flags=01010000000000010000000000000001
+      Text=OK
+      Text French=OK
+      Text German=OK
+      Text Portuguese=OK
+      Text Spanish=ACEPTAR
+      Text Italian=OK
+      Text Danish=OK
+      Text Dutch=OK
+      Text Norwegian=OK
+      Text Swedish=OK
+    end
+    item: Push Button
+      Control Name=%PYTHON_PATH%
+      Rectangle=167 25 212 40
+      Variable=PYTHON_PATH
+      Value=%PYTHONSAVE%
+      Create Flags=01010000000000010000000000000000
+      Flags=0000000000000001
+      Text=Cancel
+      Text French=Annuler
+      Text German=Abbrechen 
+      Text Portuguese=Cancelar
+      Text Spanish=Cancelar
+      Text Italian=Annulla
+      Text Danish=Slet
+      Text Dutch=Annuleren
+      Text Norwegian=Avbryt
+      Text Swedish=Avbryt
+    end
+  end
+end
+item: Custom Dialog Set
   Name=Select Destination Directory
   Display Variable=DISPLAY
   item: Dialog
@@ -484,6 +726,8 @@ item: Custom Dialog Set
       Rectangle=172 185 214 199
       Variable=DIRECTION
       Value=N
+      Destination Dialog=1
+      Action=1
       Create Flags=01010000000000010000000000000001
       Text=&Next >
       Text French=&Suivant>
@@ -580,7 +824,7 @@ item: Custom Dialog Set
     end
     item: Static
       Control Name=SciELO
-      Rectangle=90 61 260 89
+      Rectangle=90 81 260 109
       Action=1
       Create Flags=01010000000000000000000000000111
       Text=Application's folder
@@ -629,7 +873,6 @@ item: Custom Dialog Set
       Control Name=%PROGDIR%
       Rectangle=215 126 257 140
       Variable=PROGDIR_SAVE
-      Value=%PROGDIR%
       Destination Dialog=1
       Action=2
       Create Flags=01010000000000010000000000000000
@@ -644,62 +887,8 @@ item: Custom Dialog Set
       Text Norwegian=Bla igjennom
       Text Swedish=&Bläddra
     end
-    item: Static
-      Control Name=%DATADIR%
-      Rectangle=95 159 210 170
-      Destination Dialog=2
-      Enabled Color=00000000000000001111111111111111
-      Create Flags=01010000000000000000000000000000
-      Text=%DATADIR%
-      Text Portuguese=%DATADIR%
-      Text Spanish=%DATADIR%
-    end
-    item: Push Button
-      Control Name=%DATADIR%
-      Rectangle=215 156 257 171
-      Variable=DATADIR_SAVE
-      Value=%DATADIR%
-      Destination Dialog=2
-      Action=2
-      Enabled Color=00000000000000001111111111111111
-      Create Flags=01010000000000010000000000000000
-      Text=Browser
-      Text Portuguese=Procurar
-      Text Spanish=Visualizar
-    end
-    item: Static
-      Rectangle=91 146 261 174
-      Action=1
-      Create Flags=01010000000000000000000000000111
-      Text=Data destination folder
-      Text French=Répertoire de destination
-      Text German=Zielordner
-      Text Portuguese=Pasta de Destino dos Dados
-      Text Spanish=Ruta de Destino de los Datos
-      Text Italian=Cartella di destinazione
-      Text Danish=Destinationsmappe
-      Text Dutch=Doeldirectory
-      Text Norwegian=Målmappe
-      Text Swedish=Destinationsmapp
-    end
-    item: Static
-      Control Name=www.scielo.br
-      Rectangle=89 88 259 116
-      Action=1
-      Create Flags=01010000000000000000000000000111
-      Text=URL
-      Text French=Répertoire de destination
-      Text German=Zielordner
-      Text Portuguese=URL
-      Text Spanish=URL
-      Text Italian=Cartella di destinazione
-      Text Danish=Destinationsmappe
-      Text Dutch=Doeldirectory
-      Text Norwegian=Målmappe
-      Text Swedish=Destinationsmapp
-    end
     item: Editbox
-      Rectangle=95 73 212 86
+      Rectangle=95 92 212 105
       Variable=GROUP
       Help Context=16711681
       Enabled Color=00000000000000001111111111111111
@@ -707,22 +896,13 @@ item: Custom Dialog Set
       Text=%GROUP%
       Text Spanish=%GROUP%
     end
-    item: Editbox
-      Rectangle=94 98 211 111
-      Variable=MYSCIELOURL
-      Help Context=16711681
-      Enabled Color=00000000000000001111111111111111
-      Create Flags=01010000100000010000000000000000
-      Text=%MYSCIELOURL%
-      Text Spanish=%MYSCIELOURL%
-    end
   end
   item: Dialog
-    Title=Select Destination Directory
+    Title=Select Programs Destination Directory
     Title French=Choisissez le répertoire de destination
     Title German=Zielverzeichnis wählen
-    Title Portuguese=Seleccionar Directório de Destino
-    Title Spanish=Seleccione el Directorio de Destino
+    Title Portuguese=Seleccionar Directório de Destino dos Programas
+    Title Spanish=Seleccione el Directorio de Destino de los Programas
     Title Italian=Seleziona Directory di destinazione
     Title Danish=Vælg Destinationsbibliotek
     Title Dutch=Kies doeldirectory
@@ -741,7 +921,8 @@ item: Custom Dialog Set
       Text=
       Text French=%MAINDIR%
       Text German=%MAINDIR%
-      Text Portuguese=%MAINDIR%
+      Text Portuguese=%PROGDIR%
+      Text Portuguese=
       Text Spanish=%MAINDIR%
       Text Italian=%MAINDIR%
       Text Danish=%MAINDIR%
@@ -782,6 +963,288 @@ item: Custom Dialog Set
       Text Swedish=Avbryt
     end
   end
+end
+item: Custom Dialog Set
+  Name=Collection data
+  Display Variable=DISPLAY
+  item: Dialog
+    Title=Inform Collection Data
+    Title French=Choisissez la localisation de destination
+    Title German=Zielpfad wählen
+    Title Portuguese=Informar dados da Coleção
+    Title Spanish=Informar datos de la Colección
+    Title Italian=Scegli Posizione di Destinazione
+    Title Danish=Vælg destinationsmappe
+    Title Dutch=Kies doellocatie
+    Title Norwegian=Velg målplassering
+    Title Swedish=Välj ställe för installationen
+    Width=280
+    Height=224
+    Font Name=Helv
+    Font Size=8
+    item: Push Button
+      Rectangle=172 185 214 199
+      Variable=DIRECTION
+      Value=N
+      Action=1
+      Create Flags=01010000000000010000000000000001
+      Text=&Next >
+      Text French=&Suivant>
+      Text German=&Weiter>
+      Text Portuguese=&Próximo>
+      Text Spanish=&Siguiente >
+      Text Italian=&Avanti >
+      Text Danish=&Næste>
+      Text Dutch=&Volgende>
+      Text Norwegian=&Neste>
+      Text Swedish=&Nästa >
+    end
+    item: Push Button
+      Rectangle=130 185 172 199
+      Variable=DIRECTION
+      Value=B
+      Create Flags=01010000000000010000000000000000
+      Flags=0000000000000001
+      Text=< &Back
+      Text French=<&Retour
+      Text German=<&Zurück
+      Text Portuguese=<&Retornar
+      Text Spanish=<&Retroceder
+      Text Italian=< &Indietro
+      Text Danish=<&Tilbage
+      Text Dutch=<&Terug
+      Text Norwegian=<&Tilbake
+      Text Swedish=< &Tillbaka
+    end
+    item: Push Button
+      Rectangle=222 185 264 199
+      Action=3
+      Create Flags=01010000000000010000000000000000
+      Text=Cancel
+      Text French=Annuler
+      Text German=Abbrechen
+      Text Portuguese=Cancelar
+      Text Spanish=Cancelar
+      Text Italian=Annulla
+      Text Danish=Annuller
+      Text Dutch=Annuleren
+      Text Norwegian=Avbryt
+      Text Swedish=Avbryt
+    end
+    item: Static
+      Rectangle=9 177 263 178
+      Action=3
+      Create Flags=01010000000000000000000000000111
+    end
+    item: Static
+      Rectangle=90 10 260 60
+      Create Flags=01010000000000000000000000000000
+      Text=ONLY complete to use the collection management tools such as XML Converter, Title Manager and/or XML Exporter. DO NOT complete to use Markup and/or XML Package Maker
+      Text French=%APPTITLE% va être installé dans le répertoire ci-dessous
+      Text French=
+      Text French=Pour l'installer dans un répertoire différent, cliquez sur Parcourir et sélectionnez un autre répertoire
+      Text French=
+      Text French=Vous pouvez choisir de ne pas installer %APPTITLE% en cliquant sur Annuler pour quitter l'Installation
+      Text German=Installation speichert %APPTITLE% im unten angegebenen Ordner:
+      Text German=
+      Text German=Zur Installation in einem anderen Ordner auf Blättern klicken und einen anderen Ordner wählen.
+      Text German=
+      Text German=Wenn Sie %APPTITLE% nicht installieren möchten, können Sie durch Klicken auf Abbrechen die Installation beenden.
+      Text Portuguese=SOMENTE Preencher se usará as ferramentas de gestão de Coleção como XML Converter, Title Manager e/ou XML Exporter. NÃO preencher para uso de Markup e/ou XML Package Maker
+      Text Spanish=SOLAMENTE Completar si usará las herramientas de gestión de Colección como XML Converter, Title Manager y/o XML Exporter. NO completar para uso de Markup y/o XML Package Maker
+      Text Italian=Il programma di installazione installerà %APPTITLE% nella seguente cartella.
+      Text Italian=
+      Text Italian=Per effettuare l’installazione in una cartella diversa, fai clic su Sfoglia, e scegli un’altra cartella.
+      Text Italian=
+      Text Italian=Puoi scegliere di non installare %APPTITLE% facendo clic su Annulla per uscire dal programma di installazione
+      Text Danish=Installationsprogrammet installerer %APPTITLE% i denne mappe.
+      Text Danish=
+      Text Danish=Man installerer i en anden mappe ved at klikke på Browse og vælge en anden mappe.
+      Text Danish=
+      Text Danish=Man kan vælge ikke at installere %APPTITLE% ved at klikke på Slet og forlade installationsprogrammet.
+      Text Dutch=Het installatieprogramma installeert %APPTITLE% in de volgende directory.
+      Text Dutch=
+      Text Dutch=Als u het in een andere directory wilt installeren, klik dan op Bladeren en kies een andere locatie.
+      Text Dutch=
+      Text Dutch=U kunt ervoor kiezen om %APPTITLE% niet te installeren: klik op Annuleren om het installatieprogramma te verlaten.
+      Text Norwegian=Oppsett vil installere %APPTITLE% i følgende mappe.
+      Text Norwegian=
+      Text Norwegian=For å installere i en annen mappe, klikk Bla igjennom og velg en annen mappe.
+      Text Norwegian=
+      Text Norwegian=Du kan velge å ikke installere %APPTITLE% ved å velge Avbryt for å gå ut av Oppsett.
+      Text Swedish=Installationsprogrammet installerar %APPTITLE% i följande mapp.
+      Text Swedish=
+      Text Swedish=Om du vill att installationen ska göras i en annan mapp, klickar du på Bläddra och väljer en annan mapp.
+      Text Swedish=
+      Text Swedish=Du kan välja att inte installera %APPTITLE% genom att klicka på Avbryt för att lämna installationsprogrammet.
+    end
+    item: Static
+      Control Name=%DATADIR%
+      Rectangle=95 159 210 170
+      Destination Dialog=2
+      Enabled Color=00000000000000001111111111111111
+      Create Flags=01010000000000000000000000000000
+      Text=%DATADIR%
+      Text Portuguese=%DATADIR%
+      Text Spanish=%DATADIR%
+    end
+    item: Push Button
+      Control Name=%DATADIR%
+      Rectangle=215 156 257 171
+      Variable=DATADIR
+      Destination Dialog=2
+      Action=2
+      Enabled Color=00000000000000001111111111111111
+      Create Flags=01010000000000010000000000000000
+      Text=Browser
+      Text Portuguese=Procurar
+      Text Spanish=Visualizar
+    end
+    item: Static
+      Rectangle=91 146 261 174
+      Action=1
+      Create Flags=01010000000000000000000000000111
+      Text=Data destination folder
+      Text French=Répertoire de destination
+      Text German=Zielordner
+      Text Portuguese=Pasta de Destino dos Dados
+      Text Spanish=Ruta de Destino de los Datos
+      Text Italian=Cartella di destinazione
+      Text Danish=Destinationsmappe
+      Text Dutch=Doeldirectory
+      Text Norwegian=Målmappe
+      Text Swedish=Destinationsmapp
+    end
+    item: Static
+      Control Name=www.scielo.br
+      Rectangle=89 76 259 104
+      Action=1
+      Create Flags=01010000000000000000000000000111
+      Text=URL
+      Text French=Répertoire de destination
+      Text German=Zielordner
+      Text Portuguese=URL
+      Text Spanish=URL
+      Text Italian=Cartella di destinazione
+      Text Danish=Destinationsmappe
+      Text Dutch=Doeldirectory
+      Text Norwegian=Målmappe
+      Text Swedish=Destinationsmapp
+    end
+    item: Editbox
+      Rectangle=94 88 211 101
+      Variable=MYSCIELOURL
+      Help Context=16711681
+      Enabled Color=00000000000000001111111111111111
+      Create Flags=01010000100000010000000000000000
+      Text=%MYSCIELOURL%
+      Text Spanish=%MYSCIELOURL%
+    end
+    item: Static
+      Rectangle=90 110 260 138
+      Action=1
+      Create Flags=01010000000000000000000000000111
+      Text=Local Website folder
+      Text French=Répertoire de destination
+      Text German=Zielordner
+      Text Portuguese=Pasta do sítio web local
+      Text Spanish=Ruta del Sitio Web Local
+      Text Italian=Cartella di destinazione
+      Text Danish=Destinationsmappe
+      Text Dutch=Doeldirectory
+      Text Norwegian=Målmappe
+      Text Swedish=Destinationsmapp
+    end
+    item: Push Button
+      Control Name=%WEBPATH%
+      Rectangle=215 119 257 134
+      Variable=WEBPATH
+      Destination Dialog=1
+      Action=2
+      Enabled Color=00000000000000001111111111111111
+      Create Flags=01010000000000010000000000000000
+      Text=Browser
+      Text Portuguese=Procurar
+      Text Spanish=Visualizar
+    end
+    item: Static
+      Control Name=%WEBPATH%
+      Rectangle=96 122 211 133
+      Destination Dialog=2
+      Enabled Color=00000000000000001111111111111111
+      Create Flags=01010000000000000000000000000000
+      Text=%WEBPATH%
+      Text Portuguese=%WEBPATH%
+      Text Spanish=%WEBPATH%
+    end
+  end
+  item: Dialog
+    Title=Select Local Website path
+    Title French=Choisissez le répertoire de destination
+    Title German=Zielverzeichnis wählen
+    Title Portuguese=Selecionar Directório do Sítio Web Local
+    Title Spanish=Seleccione el Directorio del Sitio Web Local
+    Title Italian=Seleziona Directory di destinazione
+    Title Danish=Vælg Destinationsbibliotek
+    Title Dutch=Kies doeldirectory
+    Title Norwegian=Velg målkatalog
+    Title Swedish=Välj destinationskalatog
+    Width=221
+    Height=173
+    Font Name=Helv
+    Font Size=8
+    item: Listbox
+      Rectangle=5 2 160 149
+      Variable=WEBPATH
+      Create Flags=01010000100000010000000101000001
+      Flags=0000010000001010
+      Text=%WEBPATH%
+      Text=
+      Text French=%MAINDIR%
+      Text German=%MAINDIR%
+      Text Portuguese=%WEBPATH%
+      Text Portuguese=
+      Text Spanish=%WEBPATH%
+      Text Spanish=
+      Text Italian=%MAINDIR%
+      Text Danish=%MAINDIR%
+      Text Dutch=%MAINDIR%
+      Text Norwegian=%MAINDIR%
+      Text Swedish=%MAINDIR%
+    end
+    item: Push Button
+      Rectangle=167 6 212 21
+      Create Flags=01010000000000010000000000000001
+      Text=OK
+      Text French=OK
+      Text German=OK
+      Text Portuguese=OK
+      Text Spanish=ACEPTAR
+      Text Italian=OK
+      Text Danish=OK
+      Text Dutch=OK
+      Text Norwegian=OK
+      Text Swedish=OK
+    end
+    item: Push Button
+      Control Name=%WEBPATH%
+      Rectangle=167 25 212 40
+      Variable=WEBPATH
+      Value=%WEBPATH_SAVE%
+      Create Flags=01010000000000010000000000000000
+      Flags=0000000000000001
+      Text=Cancel
+      Text French=Annuler
+      Text German=Abbrechen 
+      Text Portuguese=Cancelar
+      Text Spanish=Cancelar
+      Text Italian=Annulla
+      Text Danish=Slet
+      Text Dutch=Annuleren
+      Text Norwegian=Avbryt
+      Text Swedish=Avbryt
+    end
+  end
   item: Dialog
     Title=Select the destination folder of the data
     Title Portuguese=Selecionar o diretório de destino dos dados
@@ -800,9 +1263,7 @@ item: Custom Dialog Set
       Text French=%MAINDIR%
       Text German=%MAINDIR%
       Text Portuguese=%DATADIR%
-      Text Portuguese=
-      Text Spanish=%MAINDIR%
-      Text Spanish=
+      Text Spanish=%DATADIR%
       Text Italian=%MAINDIR%
       Text Danish=%MAINDIR%
       Text Dutch=%MAINDIR%
@@ -981,37 +1442,37 @@ item: Custom Dialog Set
       Text=Markup
       Text=Markup - Automata files
       Text=Converter
-      Text=XML Exporter (for PubMed and ISI)
+      Text=XML Exporter
       Text=
       Text French=Title Manager
       Text French=Markup
       Text French=Markup - Automata files
       Text French=Converter
-      Text French=XML Exporter (for PubMed and ISI)
+      Text French=XML Exporter
       Text French=
       Text German=Title Manager
       Text German=Markup
       Text German=Markup - Automata files
       Text German=Converter
-      Text German=XML Exporter (for PubMed and ISI)
+      Text German=XML Exporter
       Text German=
       Text Portuguese=Title Manager
       Text Portuguese=Markup
       Text Portuguese=Markup - Automata files
       Text Portuguese=Converter
-      Text Portuguese=XML SciELO
+      Text Portuguese=XML Exporter
       Text Portuguese=
       Text Spanish=Title Manager
       Text Spanish=Markup
       Text Spanish=Markup - Automata files
       Text Spanish=Converter
-      Text Spanish=XML Exporter (for PubMed and ISI)
+      Text Spanish=XML Exporter
       Text Spanish=
       Text Italian=Title Manager
       Text Italian=Markup
       Text Italian=Markup - Automata files
       Text Italian=Converter
-      Text Italian=XML Exporter (for PubMed and ISI)
+      Text Italian=XML Exporter
       Text Italian=
       Text Danish=%1%
       Text Danish=
@@ -1108,28 +1569,8 @@ end
 item: End Block
 end
 item: If/While Statement
-  Variable=DATADIR
-  Value=c:
-end
-item: Set Variable
-  Variable=DATADIR
-  Value=c:\scielo
-end
-item: End Block
-end
-item: If/While Statement
   Variable=PROGDIR
   Value=scielo
-end
-item: Set Variable
-  Variable=PROGDIR
-  Value=c:\scielo
-end
-item: End Block
-end
-item: If/While Statement
-  Variable=PROGDIR
-  Value=c:
 end
 item: Set Variable
   Variable=PROGDIR
@@ -1243,10 +1684,7 @@ item: Custom Dialog Set
     end
   end
 end
-item: If/While Statement
-  Variable=DISPLAY
-  Value=Select Destination Directory
-end
+
 item: Set Variable
   Variable=BACKUP
   Value=%PROGDIR%\BACKUP
@@ -1418,523 +1856,8 @@ item: Check Disk Space
   Component=COMPONENTS
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\sps_xml_validators.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\sps_xml_validators.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\server\mailer.py
-  Destination=%PROGDIR%\bin\xml\prodtools\server\mailer.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\server\filestransfer.py
-  Destination=%PROGDIR%\bin\xml\prodtools\server\filestransfer.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\server\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\server\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\remote_server.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\remote_server.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\logging.conf
-  Destination=%PROGDIR%\bin\xml\logging.conf
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\xml_utils.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\xml_utils.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\exporter.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\exporter.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\ws\ws_proxy.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\ws\ws_proxy.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\ws\ws_requester.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\ws\ws_requester.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\ws\ws_doi.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\ws\ws_doi.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\ws\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\ws\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\utils.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\utils.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\system.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\system.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\svg_conversion.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\svg_conversion.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\ftp_service.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\ftp_service.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\email_service.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\email_service.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\reports\validation_status.py
-  Destination=%PROGDIR%\bin\xml\prodtools\reports\validation_status.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\reports\text_report.py
-  Destination=%PROGDIR%\bin\xml\prodtools\reports\text_report.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\reports\html_reports_collapsible.js
-  Destination=%PROGDIR%\bin\xml\prodtools\reports\html_reports_collapsible.js
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\reports\html_reports.py
-  Destination=%PROGDIR%\bin\xml\prodtools\reports\html_reports.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\reports\html_reports.css
-  Destination=%PROGDIR%\bin\xml\prodtools\reports\html_reports.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\reports\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\reports\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\java_xml_utils.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\java_xml_utils.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\img_utils.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\img_utils.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\fs_utils.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\fs_utils.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\files_extractor.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\files_extractor.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\encoding.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\encoding.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\doi_validations.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\doi_validations.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\dbm\dbm_sql.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\dbm\dbm_sql.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\dbm\dbm_isis.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\dbm\dbm_isis.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\dbm\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\dbm\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\utils\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\utils\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\xpm.py
-  Destination=%PROGDIR%\bin\xml\prodtools\xpm.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\xc.py
-  Destination=%PROGDIR%\bin\xml\prodtools\xc.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\form.py
-  Destination=%PROGDIR%\bin\xml\prodtools\form.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\db\ws_journals.py
-  Destination=%PROGDIR%\bin\xml\prodtools\db\ws_journals.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\ws\ws_institutions.py
-  Destination=%PROGDIR%\bin\xml\prodtools\ws\ws_institutions.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\ws\institutions_service.py
-  Destination=%PROGDIR%\bin\xml\prodtools\ws\institutions_service.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\ws\institutions_manager.py
-  Destination=%PROGDIR%\bin\xml\prodtools\ws\institutions_manager.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\ws\institutions_db.py
-  Destination=%PROGDIR%\bin\xml\prodtools\ws\institutions_db.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\ws\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\ws\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\validations.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\validations.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\reports_maker.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\reports_maker.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\ref_validations.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\ref_validations.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\pkg_articles_validations.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\pkg_articles_validations.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\merged_articles_validations.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\merged_articles_validations.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\data_validations.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\data_validations.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\article_validations.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\article_validations.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\orcid.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\orcid.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\article_disp_formula.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\article_disp_formula.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\article_tablewrap.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\article_tablewrap.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\article_data_reports.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\article_data_reports.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\article_content_validations.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\article_content_validations.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\article_disp_formula.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\article_disp_formula.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\validations\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\validations\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\processing\xml_versions.py
-  Destination=%PROGDIR%\bin\xml\prodtools\processing\xml_versions.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\processing\symbols.py
-  Destination=%PROGDIR%\bin\xml\prodtools\processing\symbols.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\processing\sps_pkgmaker.py
-  Destination=%PROGDIR%\bin\xml\prodtools\processing\sps_pkgmaker.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\processing\sgmlxml.py
-  Destination=%PROGDIR%\bin\xml\prodtools\processing\sgmlxml.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\processing\pmc_pkgmaker.py
-  Destination=%PROGDIR%\bin\xml\prodtools\processing\pmc_pkgmaker.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\processing\pkg_processors.py
-  Destination=%PROGDIR%\bin\xml\prodtools\processing\pkg_processors.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\processing\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\processing\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\db\pid_versions.py
-  Destination=%PROGDIR%\bin\xml\prodtools\db\pid_versions.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\db\xc_models.py
-  Destination=%PROGDIR%\bin\xml\prodtools\db\xc_models.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\db\serial.py
-  Destination=%PROGDIR%\bin\xml\prodtools\db\serial.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\db\registered.py
-  Destination=%PROGDIR%\bin\xml\prodtools\db\registered.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\db\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\db\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\workarea.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\workarea.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\scielo_id_gen.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\scielo_id_gen.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=E:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\kernel_document.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\kernel_document.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\package.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\package.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\merged.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\merged.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\attributes.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\attributes.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\article.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\article.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\aff_normalization.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\aff_normalization.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\config\config.py
-  Destination=%PROGDIR%\bin\xml\prodtools\config\config.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\config\app_texts.py
-  Destination=%PROGDIR%\bin\xml\prodtools\config\app_texts.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\config\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\config\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\data\article_utils.py
-  Destination=%PROGDIR%\bin\xml\prodtools\data\article_utils.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\__init__.py
   Destination=%PROGDIR%\bin\xml\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\pt_BR\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\pt_BR\LC_MESSAGES\xpm-xc.po
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\pt_BR\LC_MESSAGES\xpm-xc.mo
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\es_MX\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\es_MX\LC_MESSAGES\xpm-xc.po
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\es_MX\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\es_MX\LC_MESSAGES\xpm-xc.mo
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\es_ES\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\es_ES\LC_MESSAGES\xpm-xc.po
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\es_ES\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\es_ES\LC_MESSAGES\xpm-xc.mo
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\es\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\es\LC_MESSAGES\xpm-xc.po
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\es\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\es\LC_MESSAGES\xpm-xc.mo
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\pt\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\pt\LC_MESSAGES\xpm-xc.po
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\pt\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\pt\LC_MESSAGES\xpm-xc.mo
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\en\LC_MESSAGES\xpm-xc.po
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\en\LC_MESSAGES\xpm-xc.po
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\locale\en\LC_MESSAGES\xpm-xc.mo
-  Destination=%PROGDIR%\bin\xml\prodtools\locale\en\LC_MESSAGES\xpm-xc.mo
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\tables\xc.db
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\tables\xc.db
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\tables\xc.sql
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\tables\xc.sql
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\tables\entities.csv
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\tables\entities.csv
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\tables\licenses.csv
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\tables\licenses.csv
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\tables\symbols.csv
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\tables\symbols.csv
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\tables\orgname_location_country.csv
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\tables\orgname_location_country.csv
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\tables\entities.csv
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\tables\entities.csv
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\tables\entities.csv
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\tables\entities.csv
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\tools\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\tools\__init__.py
   Flags=0000000010000010
 end
 item: Install File
@@ -1943,38 +1866,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\xml_pubmed.py
-  Destination=%PROGDIR%\bin\xml\prodtools\xml_pubmed.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\xml_transform.py
-  Destination=%PROGDIR%\bin\xml\prodtools\xml_transform.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\requirements.txt
-  Destination=%PROGDIR%\bin\xml\prodtools\requirements.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\fst\articles.fst
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\fst\articles.fst
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\fst\issue.fst
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\fst\issue.fst
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\settings\fst\title.fst
-  Destination=%PROGDIR%\bin\xml\prodtools\settings\fst\title.fst
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\prodtools\__init__.py
-  Destination=%PROGDIR%\bin\xml\prodtools\__init__.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\requirements.txt
+  Destination=%PROGDIR%\bin\xml\requirements.txt
   Flags=0000000010000010
 end
 item: Install File
@@ -1992,796 +1885,6 @@ item: Install File
   Destination=%PROGDIR%\bin\xml\xml_package_maker.py
   Flags=0000000010000010
 end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\sgml2xml\pmc.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\sgml2xml\pmc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\sgml2xml\xml2pmc.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\sgml2xml\xml2pmc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\sgml2xml\sgml2xml.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\sgml2xml\sgml2xml.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\sgml2xml\sgml2generic.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\sgml2xml\sgml2generic.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\sgml2xml\sgm2win2.txt
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\sgml2xml\sgm2win2.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\sgml2xml\local_dtd.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\sgml2xml\local_dtd.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\scielo-style\stylechecker.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\scielo-style\stylechecker.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\nlm-style-5.25\stylecheck-named-tests.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\nlm-style-5.25\stylecheck-named-tests.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\nlm-style-5.25\stylecheck-match-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\nlm-style-5.25\stylecheck-match-templates.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\nlm-style-5.25\stylecheck-helper-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\nlm-style-5.25\stylecheck-helper-templates.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\nlm-style-5.25\style-reporter.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\nlm-style-5.25\style-reporter.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\xsl\nlm-style-5.25\nlm-stylechecker.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.1\xsl\nlm-style-5.25\nlm-stylechecker.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\Publishing-Readme.txt
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\Publishing-Readme.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xmlchars\isogrk4.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xmlchars\isogrk4.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xmlchars\isogrk2.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xmlchars\isogrk2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xmlchars\isogrk1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xmlchars\isogrk1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xhtml-table-1.mod
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xhtml-table-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xhtml-inlstyle-1.mod
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\xhtml-inlstyle-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\mathml2.dtd
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\mathml2.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\mathml2-qname-1.mod
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\mathml2-qname-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\mathml\mmlextra.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\mathml\mmlextra.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\mathml\mmlalias.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\mathml\mmlalias.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-xmlspecchars1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-xmlspecchars1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-XHTMLtablesetup1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-XHTMLtablesetup1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-section1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-section1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-related-object1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-related-object1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-references1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-references1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-phrase1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-phrase1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-para1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-para1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-notat1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-notat1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-nlmcitation1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-nlmcitation1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-modules1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-modules1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-mathmlsetup1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-mathmlsetup1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-math1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-math1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-list1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-list1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-link1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-link1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpublishing1.dtd
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpublishing1.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpubcustom-modules1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpubcustom-modules1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpubcustom-models1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpubcustom-models1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpubcustom-mixes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpubcustom-mixes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpubcustom-classes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalpubcustom-classes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalmeta1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-journalmeta1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-funding1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-funding1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-format1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-format1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-display1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-display1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-default-mixes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-default-mixes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-default-classes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-default-classes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-common1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-common1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-common-atts1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-common-atts1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-chars1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-chars1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-backmatter1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-backmatter1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-articlemeta1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-articlemeta1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-ali-namespace1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\JATS-ali-namespace1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isotech.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isotech.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isomscr.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isomscr.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isomopf.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isomopf.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isomfrk.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isomfrk.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isogrk3.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isogrk3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsr.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsr.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamso.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamso.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsn.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsn.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsc.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsc.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsb.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsb.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsa.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso9573-13\isoamsa.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isopub.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isopub.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isonum.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isonum.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isolat2.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isolat2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isolat1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isolat1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isodia.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isodia.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isocyr2.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isocyr2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isocyr1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isocyr1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isobox.ent
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\iso8879\isobox.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\catalog-jats-v1-1-with-base.xml
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\catalog-jats-v1-1-with-base.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\catalog-jats-v1-1-no-base.xml
-  Destination=%PROGDIR%\bin\pmc\j1.1\JATS-Publishing-1-1-MathML2-DTD\JATS-Publishing-1-1-MathML2-DTD\catalog-jats-v1-1-no-base.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\sgml2xml\xml2pmc.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\sgml2xml\xml2pmc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\sgml2xml\sgml2xml.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\sgml2xml\sgml2xml.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\sgml2xml\sgml2generic.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\sgml2xml\sgml2generic.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\sgml2xml\sgm2win2.txt
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\sgml2xml\sgm2win2.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\sgml2xml\pmc.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\sgml2xml\pmc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\sgml2xml\local_dtd.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\sgml2xml\local_dtd.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\scielo-style\stylechecker.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\scielo-style\stylechecker.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\nlm-stylechecker.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\nlm-stylechecker.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-named-tests.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-named-tests.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-match-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-match-templates.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-helper-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\stylecheck-helper-templates.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\xsl\nlm-style-5.13\style-reporter.xsl
-  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.13\style-reporter.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\xmlchars\isogrk4.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\xmlchars\isogrk4.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\xmlchars\isogrk2.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\xmlchars\isogrk2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\xmlchars\isogrk1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\xmlchars\isogrk1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\xhtml-table-1.mod
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\xhtml-table-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\xhtml-inlstyle-1.mod
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\xhtml-inlstyle-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\Smallsamples\samplesmall-pub1.xml
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\Smallsamples\samplesmall-pub1.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\Smallsamples\samplesmall-base1.xml
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\Smallsamples\samplesmall-base1.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\Smallsamples\samplepub-oasis-table1.xml
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\Smallsamples\samplepub-oasis-table1.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\Smallsamples\samplepub-oasis-and-xhtml1.xml
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\Smallsamples\samplepub-oasis-and-xhtml1.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\oasis-exchange.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\oasis-exchange.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\mathml2.dtd
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\mathml2.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\mathml2-qname-1.mod
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\mathml2-qname-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\mathml\mmlextra.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\mathml\mmlextra.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\mathml\mmlalias.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\mathml\mmlalias.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-xmlspecchars1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-xmlspecchars1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-XHTMLtablesetup1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-XHTMLtablesetup1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-section1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-section1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-related-object1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-related-object1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-references1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-references1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-phrase1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-phrase1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-para1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-para1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-oasis-tablesetup1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-oasis-tablesetup1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-oasis-namespace1a.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-oasis-namespace1a.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-oasis-namespace1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-oasis-namespace1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-notat1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-notat1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-nlmcitation1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-nlmcitation1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-modules1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-modules1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-mathmlsetup1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-mathmlsetup1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-math1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-math1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-list1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-list1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-link1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-link1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpublishing1.dtd
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpublishing1.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpublishing-oasis-article1.dtd
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpublishing-oasis-article1.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpubcustom-modules1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpubcustom-modules1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpubcustom-models1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpubcustom-models1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpubcustom-mixes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpubcustom-mixes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpubcustom-classes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpubcustom-classes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpub-oasis-custom-modules1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpub-oasis-custom-modules1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpub-oasis-custom-classes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalpub-oasis-custom-classes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-journalmeta1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-journalmeta1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-funding1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-funding1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-format1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-format1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-display1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-display1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-default-mixes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-default-mixes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-default-classes1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-default-classes1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-common1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-common1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-chars1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-chars1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-base-test1.dtd
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-base-test1.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-backmatter1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-backmatter1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\JATS-articlemeta1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\JATS-articlemeta1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isotech.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isotech.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isomscr.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isomscr.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isomopf.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isomopf.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isomfrk.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isomfrk.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsr.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsr.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isogrk3.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isogrk3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamso.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamso.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsn.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsn.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsc.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsc.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsb.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsb.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsa.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso9573-13\isoamsa.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso8879\isopub.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso8879\isopub.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso8879\isonum.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso8879\isonum.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso8879\isolat2.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso8879\isolat2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso8879\isolat1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso8879\isolat1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso8879\isodia.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso8879\isodia.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso8879\isocyr2.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso8879\isocyr2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso8879\isocyr1.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso8879\isocyr1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\iso8879\isobox.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\iso8879\isobox.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\catalog.ent
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\catalog.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\catalog-test-jats-v1.xml
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\catalog-test-jats-v1.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\j1.0\dtd\jats1.0\catalog-jats-v1.xml
-  Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\catalog-jats-v1.xml
-  Flags=0000000010000010
-end
 item: Check if File/Dir Exists
   Pathname=%PROGDIR%\BIN\MARKUP
   Flags=00000101
@@ -2795,416 +1898,6 @@ item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\FM20.DLL
   Destination=%SYS32%\Fm20.dll
   Flags=0001000010001010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\scielo-style\bicolortable.css
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\scielo-style\bicolortable.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\scielo-style\datareport.css
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\scielo-style\datareport.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\scielo-style\toc.css
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\scielo-style\toc.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\sgml2xml\xml2pmc.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\xml2pmc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\xml2pubmed\xml2pubmed.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\xml2pubmed\xml2pubmed.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\sgml2xml\sgml2xml.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\sgml2xml.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\sgml2xml\sgml2generic.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\sgml2generic.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\sgml2xml\sgm2win2.txt
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\sgm2win2.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\sgml2xml\pmc.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\pmc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\sgml2xml\local_dtd.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\local_dtd.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\scielo-style\stylechecker.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\scielo-style\stylechecker.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-named-tests.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-named-tests.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-match-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-match-templates.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-helper-templates.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-helper-templates.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\style-reporter.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\style-reporter.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\nlm-stylechecker.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\nlm-stylechecker.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\xmlspecchars3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xmlspecchars3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\xmlchars\isogrk4.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xmlchars\isogrk4.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\xmlchars\isogrk2.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xmlchars\isogrk2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\xmlchars\isogrk1.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xmlchars\isogrk1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\XHTMLtablesetup3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\XHTMLtablesetup3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\xhtml-table-1.mod
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xhtml-table-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\xhtml-inlstyle-1.mod
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xhtml-inlstyle-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\Smallsamples\samplesmall3-pub.xml
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\Smallsamples\samplesmall3-pub.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\Smallsamples\samplesmall3-base.xml
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\Smallsamples\samplesmall3-base.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\section3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\section3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\related-object3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\related-object3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\references3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\references3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\phrase3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\phrase3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\para3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\para3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\oasis-tablesetup3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\oasis-tablesetup3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\oasis-exchange.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\oasis-exchange.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\notat3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\notat3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\nlmcitation3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\nlmcitation3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\modules3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\modules3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\mathmlsetup3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathmlsetup3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\mathml2.dtd
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathml2.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\mathml2-qname-1.mod
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathml2-qname-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\mathml\mmlextra.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathml\mmlextra.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\mathml\mmlalias.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathml\mmlalias.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\math3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\math3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\list3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\list3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\link3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\link3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\journalpublishing3.dtd
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpublishing3.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\journalpubcustom-modules3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpubcustom-modules3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\journalpubcustom-models3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpubcustom-models3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\journalpubcustom-mixes3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpubcustom-mixes3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\journalpubcustom-classes3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpubcustom-classes3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\journalmeta3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalmeta3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isotech.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isotech.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isomscr.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isomscr.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isomopf.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isomopf.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isomfrk.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isomfrk.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isogrk3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isogrk3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsr.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsr.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamso.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamso.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsn.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsn.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsc.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsc.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsb.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsb.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsa.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsa.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso8879\isopub.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isopub.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso8879\isonum.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isonum.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso8879\isolat2.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isolat2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso8879\isolat1.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isolat1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso8879\isodia.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isodia.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso8879\isocyr2.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isocyr2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso8879\isocyr1.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isocyr1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\iso8879\isobox.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isobox.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\htmltable.dtd
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\htmltable.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\funding3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\funding3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\format3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\format3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\display3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\display3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\default-mixes3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\default-mixes3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\default-classes3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\default-classes3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\common3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\common3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\chars3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\chars3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\catalog.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\catalog.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\catalog-v3.xml
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\catalog-v3.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\base-test3.dtd
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\base-test3.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\backmatter3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\backmatter3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\articlemeta3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\articlemeta3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\pmc\v3.0\dtd\annotation3.ent
-  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\annotation3.ent
-  Flags=0000000010000010
 end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\jar\saxonb9-1-0-8j\saxon9-dom4j.jar
@@ -3364,11 +2057,6 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\cfg\version.txt
   Destination=%PROGDIR%\bin\cfg\version.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\cfg\xpm_version.txt
-  Destination=%PROGDIR%\bin\cfg\xpm_version.txt
   Flags=0000000010000010
 end
 remarked item: Include Script
@@ -6891,9 +5579,9 @@ end
 item: End Block
 end
 item: Execute Program
-  Pathname=python
-  Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PROGDIR% %DATADIR% %MYSCIELOURL%
-  Flags=00000110
+  Pathname=%PYTHON_PATH%\python
+  Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PROGDIR% %DATADIR% %MYSCIELOURL% %WEBPATH%
+  Flags=00000011
 end
 remarked item: Execute Program
   Pathname=python
