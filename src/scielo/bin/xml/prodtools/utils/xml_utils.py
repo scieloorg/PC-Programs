@@ -213,11 +213,7 @@ class SuitableXML(object):
                 xml_declaration=self.xml_declaration,
                 pretty_print=pretty_print, doctype=doctype
                 ).decode("utf-8")
-        return "\n".join([
-                self.xml_declaration,
-                self.doctype,
-                self.content,
-            ])
+        return self.original
 
     def write(self, dest_file_path, pretty_print=True,
               dtd_location_type=None):
@@ -230,6 +226,37 @@ class SuitableXML(object):
                 dest_file_path, encoding="utf-8", method="xml",
                 xml_declaration=self.xml_declaration,
                 pretty_print=pretty_print, doctype=doctype)
+
+
+def insert_break_lines(content):
+    """
+    Modifica o conteúdo XML em várias linhas para que ao ser validado fique
+    fácil de localizar o erro pelo número da linha
+    """
+    if content:
+        xml, error = load_xml(content, remove_blank_text=True)
+        if xml:
+            content = tostring(xml, pretty_print=True)
+        else:
+            content = content.replace(">", ">BREAKLINESTAGS")
+            content = content.replace("<", "BREAKLINESTAGS<")
+            items = []
+            for item in content.split("BREAKLINESTAGS"):
+                if item.startswith("</"):
+                    items.append(item)
+                elif item.endswith(">"):
+                    items.append("\n" + item)
+                else:
+                    items.append(item)
+            content = "".join(items).strip()
+    return content
+
+
+def numbered_lines(content):
+    return "\n".join([
+        '{}: {}'.format(number, msg)
+        for number, msg in enumerate(content.splitlines(), 1)
+    ])
 
 
 def get_xml_object(file_path, xml_parser=None):

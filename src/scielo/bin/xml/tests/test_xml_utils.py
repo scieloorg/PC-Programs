@@ -251,6 +251,71 @@ class TestLoadXML(TestCase):
         self.assertEqual(xml_input, result)
 
 
+class TestXMLinMultipleLines(TestCase):
+
+    def test_insert_break_lines_uses_pretty_print(self):
+        text = (
+            "<root>"
+            "<p>Texto 1 "
+            "<bold>bold</bold> texto 2, "
+            "<italic>texto italic</italic> "
+            "<italic>outro italic</italic></p></root>"
+            )
+        expected = (
+            "<root>"
+            "\n  "
+            "<p>Texto 1 "
+            "<bold>bold</bold> texto 2, "
+            "<italic>texto italic</italic> "
+            "<italic>outro italic</italic></p>"
+            "\n"
+            "</root>"
+            "\n"
+            )
+        content = xml_utils.insert_break_lines(text)
+        self.assertEqual(expected, content)
+
+    def test_insert_break_lines_uses_str_replace(self):
+        text = (
+            "<root>"
+            "<p>Texto 1 "
+            "<bold>bold</bold> texto 2, "
+            "<italic>texto italic</italic> "
+            "<italic>outro italic</italic></root>"
+            )
+        expected = (
+            "<root>"
+            "\n"
+            "<p>Texto 1 "
+            "\n"
+            "<bold>bold</bold> texto 2, "
+            "\n"
+            "<italic>texto italic</italic> "
+            "\n"
+            "<italic>outro italic</italic></root>"
+            )
+        content = xml_utils.insert_break_lines(text)
+        self.assertEqual(expected, content)
+
+    def test_numbered_lines_prefixes_each_line_with_a_number(self):
+        text = (
+            "<root>\n"
+            "<p>Texto 1 \n"
+            "<bold>bold</bold> texto 2, \n"
+            "<italic>texto italic</italic> \n"
+            "<italic>outro italic</italic></root>"
+            )
+        expected = (
+            "1: <root>\n"
+            "2: <p>Texto 1 \n"
+            "3: <bold>bold</bold> texto 2, \n"
+            "4: <italic>texto italic</italic> \n"
+            "5: <italic>outro italic</italic></root>"
+            )
+        content = xml_utils.numbered_lines(text)
+        self.assertEqual(expected, content)
+
+
 class TestRemoveStylesTags(TestCase):
 
     def test_remove_styles_off_tagged_content_removes_italic(self):
