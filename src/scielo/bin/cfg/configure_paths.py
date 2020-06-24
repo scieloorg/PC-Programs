@@ -3,35 +3,35 @@ import os
 import sys
 import shutil
 
+
 APPDIR = sys.argv[1]
 DATADIR = sys.argv[2] if len(sys.argv) > 2 else None
 MYSCIELOURL = sys.argv[3] if len(sys.argv) > 2 else None
 WEBPATH = sys.argv[4] if len(sys.argv) > 2 else None
 
-scielo_cfg_filename = os.path.join(APPDIR, 'bin', 'scielo_paths.ini')
-bkp_scielo_cfg_filename = os.path.join(APPDIR, 'bin', 'scielo_paths.ini.old')
-template_scielo_cfg_filename = os.path.join(APPDIR, 'bin', 'scielo_paths.example.ini')
-template_parser_settings_filename = os.path.join(APPDIR, 'bin', 'cfg', 'Settings.cfg.template')
-parser_settings_filename = os.path.join(APPDIR, 'bin', 'SGMLPars', Settings.cfg')
+SCIELO_PATHS_CONFIG = os.path.join(APPDIR, 'bin', 'scielo_paths.ini')
+SCIELO_PATHS_BKP = os.path.join(APPDIR, 'bin', 'scielo_paths.ini.old')
+SCIELO_PATHS_TEMPLATE = os.path.join(APPDIR, 'bin', 'scielo_paths.example.ini')
+PARSER_CONFIG_TEMPLATE = os.path.join(APPDIR, 'bin', 'cfg', 'Settings.cfg.template')
+PARSER_CONFIG = os.path.join(APPDIR, 'bin', 'SGMLPars', 'Settings.cfg')
 
 
-if os.path.exists(scielo_cfg_filename):    
-    shutil.copyfile(scielo_cfg_filename, bkp_scielo_cfg_filename)    
+def update_parser_config():
+    with open(PARSER_CONFIG_TEMPLATE, 'w') as fp:
+        c = fp.read()
+    with open(PARSER_CONFIG, 'w') as fp:
+        f.write(c.replace('C:\\SCIELO', APPDIR))
 
-f = open(template_scielo_cfg_filename, 'r')    
+
+if os.path.exists(SCIELO_PATHS_CONFIG):    
+    shutil.copyfile(SCIELO_PATHS_CONFIG, SCIELO_PATHS_BKP)    
+
+f = open(SCIELO_PATHS_TEMPLATE, 'r')    
 c = f.read()    
 f.close()
 
-f = open(scielo_cfg_filename, 'w')    
+f = open(SCIELO_PATHS_CONFIG, 'w')    
 f.write(c.replace('d:\dados\scielo', sys.argv[2]).replace('c:\programas\scielo', sys.argv[1]).replace('MYSCIELOURL', sys.argv[3]))    
-f.close()
-
-f = open(template_parser_settings_filename, 'r')    
-c = f.read()    
-f.close()
-
-f = open(sys.argv[1] + '/bin/SGMLPars/Settings.cfg', 'w')    
-f.write(c.replace('C:\SCIELO', sys.argv[1]))
 f.close()
 
 
