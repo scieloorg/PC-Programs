@@ -208,7 +208,7 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
             update_article_with_aop_status=lambda _: _,
         )
 
-        mk.assert_called_once()
+        self.assertTrue(mk.called)
 
 
 class TestKernelDocument(unittest.TestCase):
