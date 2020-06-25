@@ -5451,41 +5451,37 @@ item: End Block
 end
 item: Create Shortcut
   Source=%PROGDIR%\bin\xml\xml_converter.py
-  Source Portuguese=%PROGDIR%\bin\xml\xml_converter.bat
-  Destination=%GROUP%\XML Converter.lnk
+  Source Portuguese=%PROGDIR%\bin\xml\xml_converter.py
+  Destination=%DESKTOPDIR%\XML Converter.lnk
   Destination Portuguese=%GROUP%\XML Converter.lnk
-  Command Options=%PROGDIR%\bin\xml\xml_converter.bat
-  Working Directory=%PROGDIR%\bin\xml
-  Working Directory Portuguese=%PROGDIR%\bin\xml
+  Command Options=cd %PROGDIR%\bin\xml;xml_convert.py
+  Command Options Portuguese=cd %PROGDIR%\bin\xml;xml_convert.py
   Icon Number=0
   Icon Number Portuguese=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\Scielo.ico
-  Key Type Portuguese=1536
   Flags=00000001
 end
 item: Create Shortcut
   Source=%PROGDIR%\bin\xml\xml_package_maker.py
   Source Portuguese=%PROGDIR%\bin\xml\xml_package_maker.py
-  Destination=%GROUP%\XML Package Maker.lnk
+  Destination=%DESKTOPDIR%\XML Package Maker.lnk
   Destination Portuguese=%GROUP%\XML Package Maker.lnk
-  Command Options=%PROGDIR%\bin\xml\xml_package_maker.bat
-  Working Directory=%PROGDIR%\bin\xml\
-  Working Directory Portuguese=%PROGDIR%\bin\xml\
+  Command Options=cd %PROGDIR%\bin\xml\;xml_package_maker.py
+  Command Options Portuguese=cd %PROGDIR%\bin\xml\;xml_package_maker.py
   Icon Number=0
   Icon Number Portuguese=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\Scielo.ico
-  Key Type Portuguese=1536
   Flags=00000001
 end
 item: Create Shortcut
   Source=%PROGDIR%\bin\xml\download_markup_journals.bat
   Source Portuguese=%PROGDIR%\bin\xml\download_markup_journals.bat
-  Destination=%GROUP%\Markup - update journals list.lnk
+  Destination=%DESKTOPDIR%\Markup - update journals list.lnk
   Destination Portuguese=%GROUP%\Markup - update journals list.lnk
-  Working Directory=%PROGDIR%\bin\xml\
-  Working Directory Portuguese=%PROGDIR%\bin\xml\
+  Command Options=cd %PROGDIR%\bin\xml\;download_markup_journals.py
+  Command Options Portuguese=cd %PROGDIR%\bin\xml\;download_markup_journals.py
   Icon Number=0
   Icon Number Portuguese=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\scielo.ico
