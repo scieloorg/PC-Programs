@@ -106,7 +106,7 @@ item: Set Variable
 end
 item: Set Variable
   Variable=PYTHON_PATH
-  Value=C:\python3
+  Value=C:\Python3
   Flags=10000000
 end
 item: Set Variable
@@ -250,6 +250,32 @@ item: Wizard Block
   Compare=1
   Flags=00000011
 end
+item: If/While Statement
+  Variable=DISPLAY
+  Value=Select Destination Directory
+  Flags=00000100
+end
+item: Check if File/Dir Exists
+  Pathname=%PYTHON_PATH%\python.exe
+  Flags=00000101
+end
+item: Display Message
+  Title=ERROR
+  Title Portuguese=ERRO
+  Title Spanish=ERROR
+  Text=Not found: %PYTHON_PATH%\python.exe. Python 3  is not installed or its location is not correct. 
+  Text Portuguese=Não foi encontrado: %PYTHON_PATH%\python.exe. Python 3 não está instalado ou sua localização não foi corretamente informada. 
+  Text Spanish=No se encontró: %PYTHON_PATH%\python.exe. Python 3 no está instalado ou su ubicación no fue correctamente informada. 
+  Flags=00001000
+end
+item: Set Variable
+  Variable=DISPLAY
+  Value=Select python3 path
+end
+item: End Block
+end
+item: End Block
+end
 item: Custom Dialog Set
   Name=Welcome
   Display Variable=DISPLAY
@@ -272,6 +298,7 @@ item: Custom Dialog Set
       Rectangle=172 185 214 199
       Variable=DIRECTION
       Value=N
+      Action=1
       Create Flags=01010000000000010000000000000001
       Text=&Next >
       Text French=&Suivant>
@@ -434,6 +461,7 @@ item: Custom Dialog Set
       Rectangle=172 185 214 199
       Variable=DIRECTION
       Value=N
+      Action=1
       Create Flags=01010000000000010000000000000001
       Text=&Next >
       Text French=&Suivant>
@@ -490,22 +518,6 @@ item: Custom Dialog Set
       Text Swedish=< &Tillbaka
     end
   end
-end
-item: Check if File/Dir Exists
-  Pathname=%PYTHON_PATH%\python.exe
-  Message=Select Python 3 location. Ex.: c:\python3
-  Flags=00000111
-end
-item: Set Variable
-  Variable=FOUND
-  Value=FALSE
-end
-item: End Block
-end
-item: If/While Statement
-  Variable=FOUND
-  Value=FALSE
-  Flags=00010000
 end
 item: Custom Dialog Set
   Name=Select python3 path
@@ -583,9 +595,7 @@ item: Custom Dialog Set
     item: Static
       Rectangle=90 10 260 60
       Create Flags=01010000000000000000000000000000
-      Text=Setup will install %APPTITLE% in the following folder.
-      Text=To install into a different folder, click Browse, and select another folder. 
-      Text=You can choose not to install %APPTITLE% by clicking Cancel to exit Setup.
+      Text=Inform the directory where Python is installed. Consult the documentation about the recommended version.
       Text French=%APPTITLE% va être installé dans le répertoire ci-dessous
       Text French=
       Text French=Pour l'installer dans un répertoire différent, cliquez sur Parcourir et sélectionnez un autre répertoire
@@ -597,8 +607,7 @@ item: Custom Dialog Set
       Text German=
       Text German=Wenn Sie %APPTITLE% nicht installieren möchten, können Sie durch Klicken auf Abbrechen die Installation beenden.
       Text Portuguese=Informar onde está instalado o Python. Consulte a documentação se está usando a versão recomendada de Python. 
-      Text Spanish=El programa de Configuración instalará %APPTITLE% en la siguiente carpeta. 
-      Text Spanish=Para instalar en una carpeta diferente, haga un clic en Visualizar, y seleccione otra carpeta. Puede elegir no instalar %APPTITLE% haciendo un clic en Cancelar para salir de Configuración.
+      Text Spanish=Informar donde está instalado Python. Consulte a documentación acerca de la versión recomendada.
       Text Italian=Il programma di installazione installerà %APPTITLE% nella seguente cartella.
       Text Italian=
       Text Italian=Per effettuare l’installazione in una cartella diversa, fai clic su Sfoglia, e scegli un’altra cartella.
@@ -629,11 +638,11 @@ item: Custom Dialog Set
       Rectangle=90 116 260 144
       Action=1
       Create Flags=01010000000000000000000000000111
-      Text=Python 3 path
+      Text=Directory of Python 3 
       Text French=Répertoire de destination
       Text German=Zielordner
-      Text Portuguese=python
-      Text Spanish=Ruta de Python 3
+      Text Portuguese=Diretório do Python 3
+      Text Spanish=Directorio de Python 3 
       Text Italian=Cartella di destinazione
       Text Danish=Destinationsmappe
       Text Dutch=Doeldirectory
@@ -739,19 +748,6 @@ item: Custom Dialog Set
       Text Swedish=Avbryt
     end
   end
-end
-item: Check if File/Dir Exists
-  Pathname=%PYTHON_PATH%\python.exe
-  Message=Select Python 3 location. Ex.: c:\python3
-  Flags=00000111
-end
-item: Set Variable
-  Variable=FOUND
-  Value=FALSE
-end
-item: End Block
-end
-item: End Block
 end
 item: Custom Dialog Set
   Name=Select Destination Directory
@@ -965,7 +961,7 @@ item: Custom Dialog Set
       Rectangle=5 2 160 149
       Variable=PROGDIR
       Create Flags=01010000100000010000000101000001
-      Flags=0000110000000010
+      Flags=0000110000001010
       Text=%PROGDIR%
       Text=
       Text French=%MAINDIR%
@@ -973,6 +969,7 @@ item: Custom Dialog Set
       Text Portuguese=%PROGDIR%
       Text Portuguese=
       Text Spanish=%MAINDIR%
+      Text Spanish=
       Text Italian=%MAINDIR%
       Text Danish=%MAINDIR%
       Text Dutch=%MAINDIR%
@@ -1267,48 +1264,6 @@ item: Custom Dialog Set
       Create Flags=01010000000000000000000000000111
     end
     item: Static
-      Rectangle=90 10 260 60
-      Create Flags=01010000000000000000000000000000
-      Text=ONLY complete to use the collection management tools such as XML Converter, Title Manager and/or XML Exporter. DO NOT complete to use Markup and/or XML Package Maker
-      Text French=%APPTITLE% va être installé dans le répertoire ci-dessous
-      Text French=
-      Text French=Pour l'installer dans un répertoire différent, cliquez sur Parcourir et sélectionnez un autre répertoire
-      Text French=
-      Text French=Vous pouvez choisir de ne pas installer %APPTITLE% en cliquant sur Annuler pour quitter l'Installation
-      Text German=Installation speichert %APPTITLE% im unten angegebenen Ordner:
-      Text German=
-      Text German=Zur Installation in einem anderen Ordner auf Blättern klicken und einen anderen Ordner wählen.
-      Text German=
-      Text German=Wenn Sie %APPTITLE% nicht installieren möchten, können Sie durch Klicken auf Abbrechen die Installation beenden.
-      Text Portuguese=SOMENTE Preencher se usará as ferramentas de gestão de Coleção como XML Converter, Title Manager e/ou XML Exporter. NÃO preencher para uso de Markup e/ou XML Package Maker
-      Text Spanish=SOLAMENTE Completar si usará las herramientas de gestión de Colección como XML Converter, Title Manager y/o XML Exporter. NO completar para uso de Markup y/o XML Package Maker
-      Text Italian=Il programma di installazione installerà %APPTITLE% nella seguente cartella.
-      Text Italian=
-      Text Italian=Per effettuare l’installazione in una cartella diversa, fai clic su Sfoglia, e scegli un’altra cartella.
-      Text Italian=
-      Text Italian=Puoi scegliere di non installare %APPTITLE% facendo clic su Annulla per uscire dal programma di installazione
-      Text Danish=Installationsprogrammet installerer %APPTITLE% i denne mappe.
-      Text Danish=
-      Text Danish=Man installerer i en anden mappe ved at klikke på Browse og vælge en anden mappe.
-      Text Danish=
-      Text Danish=Man kan vælge ikke at installere %APPTITLE% ved at klikke på Slet og forlade installationsprogrammet.
-      Text Dutch=Het installatieprogramma installeert %APPTITLE% in de volgende directory.
-      Text Dutch=
-      Text Dutch=Als u het in een andere directory wilt installeren, klik dan op Bladeren en kies een andere locatie.
-      Text Dutch=
-      Text Dutch=U kunt ervoor kiezen om %APPTITLE% niet te installeren: klik op Annuleren om het installatieprogramma te verlaten.
-      Text Norwegian=Oppsett vil installere %APPTITLE% i følgende mappe.
-      Text Norwegian=
-      Text Norwegian=For å installere i en annen mappe, klikk Bla igjennom og velg en annen mappe.
-      Text Norwegian=
-      Text Norwegian=Du kan velge å ikke installere %APPTITLE% ved å velge Avbryt for å gå ut av Oppsett.
-      Text Swedish=Installationsprogrammet installerar %APPTITLE% i följande mapp.
-      Text Swedish=
-      Text Swedish=Om du vill att installationen ska göras i en annan mapp, klickar du på Bläddra och väljer en annan mapp.
-      Text Swedish=
-      Text Swedish=Du kan välja att inte installera %APPTITLE% genom att klicka på Avbryt för att lämna installationsprogrammet.
-    end
-    item: Static
       Control Name=%DATADIR%
       Rectangle=95 159 210 170
       Destination Dialog=2
@@ -1350,11 +1305,11 @@ item: Custom Dialog Set
       Rectangle=89 76 259 104
       Action=1
       Create Flags=01010000000000000000000000000111
-      Text=URL
+      Text=Collection URL (e.g.: www.scielo.br)
       Text French=Répertoire de destination
       Text German=Zielordner
-      Text Portuguese=URL
-      Text Spanish=URL
+      Text Portuguese=URL da coleção (ex.: www.scielo.br)
+      Text Spanish=URL de la colección (ej.: www.scielo.br)
       Text Italian=Cartella di destinazione
       Text Danish=Destinationsmappe
       Text Dutch=Doeldirectory
@@ -1406,6 +1361,27 @@ item: Custom Dialog Set
       Text=%WEBPATH%
       Text Portuguese=%WEBPATH%
       Text Spanish=%WEBPATH%
+    end
+    item: Listbox
+      Rectangle=91 31 259 69
+      Enabled Color=00000000000000001111111111111111
+      Create Flags=01010000100000010000000101000001
+      Flags=0000010000000000
+      Text=Title Manager
+      Text=Converter
+      Text=XML Converter
+      Text=XML Exporter
+      Text=
+    end
+    item: Static
+      Rectangle=90 10 261 30
+      Enabled Color=00000000000000001111111111111111
+      Create Flags=01010000000000000000000000000000
+      Text=MANDATORY to complete only if it will be used at least one of the applications 
+      Text Portuguese=OBRIGATORIAMENTE completar se usará pelo menos uma das aplicações:
+      Text Portuguese=
+      Text Portuguese=
+      Text Spanish=OBLIGATORIAMENTE completar si usará por lo menos una de las aplicaciones:
     end
   end
   item: Dialog
@@ -1487,7 +1463,7 @@ item: Custom Dialog Set
       Rectangle=5 5 160 152
       Variable=DATADIR
       Create Flags=01010000100000010000000101000001
-      Flags=0000110000001010
+      Flags=0000010000001010
       Text=%DATADIR%
       Text=
       Text French=%MAINDIR%
@@ -1533,6 +1509,8 @@ item: Custom Dialog Set
       Text Swedish=Avbryt
     end
   end
+end
+item: End Block
 end
 remarked item: If/While Statement
   Variable=COMPONENTS
@@ -1717,8 +1695,6 @@ item: Set Variable
   Variable=BACKUP
   Value=%PROGDIR%\BACKUP
 end
-item: End Block
-end
 item: If/While Statement
   Variable=DOBACKUP
   Value=A
@@ -1889,7 +1865,7 @@ end
 item: Execute Program
   Pathname=pip
   Command Line=install -U %PROGDIR%\bin\xml\dist\SciELO_Production_Tools-4.0.97-py3-none-any.whl
-  Flags=00000011
+  Flags=00000110
 end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\__init__.py
@@ -2132,362 +2108,362 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\transl3_1.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\transl3_1.dtd
   Destination=%PROGDIR%\bin\SGMLPars\transl3_1.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\cfg\Mx.exe
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\cfg\Mx.exe
   Destination=%PROGDIR%\bin\cfg\Mx.exe
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\cfg\configure_paths.py
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\cfg\configure_paths.py
   Destination=%PROGDIR%\bin\cfg\configure_paths.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Wsock32.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Wsock32.dll
   Destination=%PROGDIR%\bin\SGMLPars\Wsock32.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Ws2help.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Ws2help.dll
   Destination=%PROGDIR%\bin\SGMLPars\Ws2help.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\User32.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\User32.dll
   Destination=%PROGDIR%\bin\SGMLPars\User32.dll
   Flags=0000000010000011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\text3_1.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\text3_1.dtd
   Destination=%PROGDIR%\bin\SGMLPars\text3_1.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\text3_0.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\text3_0.dtd
   Destination=%PROGDIR%\bin\SGMLPars\text3_0.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\text1_0.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\text1_0.dtd
   Destination=%PROGDIR%\bin\SGMLPars\text1_0.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Tabctl32.ocx
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Tabctl32.ocx
   Destination=%PROGDIR%\bin\SGMLPars\Tabctl32.ocx
   Flags=0001011010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Sysinfo.ocx
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Sysinfo.ocx
   Destination=%PROGDIR%\bin\SGMLPars\Sysinfo.ocx
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Stdole2.tlb
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Stdole2.tlb
   Destination=%PROGDIR%\bin\SGMLPars\Stdole2.tlb
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\St5unst.log
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\St5unst.log
   Destination=%PROGDIR%\bin\SGMLPars\St5unst.log
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\sp120.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\sp120.dll
   Destination=%PROGDIR%\bin\SGMLPars\sp120.dll
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\SGMLPars.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\SGMLPars.dll
   Destination=%PROGDIR%\bin\SGMLPars\SGMLPars.dll
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Settings.cfg
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Settings.cfg
   Destination=%PROGDIR%\bin\SGMLPars\Settings.cfg
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ser3_0.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ser3_0.dtd
   Destination=%PROGDIR%\bin\SGMLPars\ser3_0.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ser2_0.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ser2_0.dtd
   Destination=%PROGDIR%\bin\SGMLPars\ser2_0.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ser1_0.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ser1_0.dtd
   Destination=%PROGDIR%\bin\SGMLPars\ser1_0.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Scielo.ico
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Scielo.ico
   Destination=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Richtx32.ocx
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Richtx32.ocx
   Destination=%PROGDIR%\bin\SGMLPars\Richtx32.ocx
   Flags=0001000010000011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Riched32.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Riched32.dll
   Destination=%PROGDIR%\bin\SGMLPars\Riched32.dll
   Flags=0000000010000011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\parser.exe
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\parser.exe
   Destination=%PROGDIR%\bin\SGMLPars\parser.exe
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Olepro32.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Olepro32.dll
   Destination=%PROGDIR%\bin\SGMLPars\Olepro32.dll
   Flags=0000000010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Oledlg.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Oledlg.dll
   Destination=%PROGDIR%\bin\SGMLPars\Oledlg.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Oleaut32.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Oleaut32.dll
   Destination=%PROGDIR%\bin\SGMLPars\Oleaut32.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Msvcrt40.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Msvcrt40.dll
   Destination=%PROGDIR%\bin\SGMLPars\Msvcrt40.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Msvcrt20.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Msvcrt20.dll
   Destination=%PROGDIR%\bin\SGMLPars\Msvcrt20.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Msvcrt.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Msvcrt.dll
   Destination=%PROGDIR%\bin\SGMLPars\Msvcrt.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Msvcirt.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Msvcirt.dll
   Destination=%PROGDIR%\bin\SGMLPars\Msvcirt.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Msvbvm50.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Msvbvm50.dll
   Destination=%PROGDIR%\bin\SGMLPars\Msvbvm50.dll
   Flags=0000000010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Mfc42.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Mfc42.dll
   Destination=%PROGDIR%\bin\SGMLPars\Mfc42.dll
   Flags=0000000010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Mfc40.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Mfc40.dll
   Destination=%PROGDIR%\bin\SGMLPars\Mfc40.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\log.cfg
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\log.cfg
   Destination=%PROGDIR%\bin\SGMLPars\log.cfg
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOtech.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOtech.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOtech.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOpub.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOpub.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOpub.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOnum.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOnum.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOnum.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOlat2.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOlat2.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOlat2.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOlat1.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOlat1.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOlat1.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOgrk4.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOgrk4.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOgrk4.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOgrk3.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOgrk3.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOgrk3.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOgrk2.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOgrk2.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOgrk2.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOgrk1.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOgrk1.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOgrk1.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOdia.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOdia.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOdia.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOcyr2.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOcyr2.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOcyr2.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOcyr1.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOcyr1.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOcyr1.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISObox.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISObox.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISObox.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOamsr.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOamsr.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOamsr.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOamso.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOamso.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOamso.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOamsn.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOamsn.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOamsn.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOamsc.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOamsc.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOamsc.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOamsb.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOamsb.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOamsb.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\ISOamsa.sgm
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\ISOamsa.sgm
   Destination=%PROGDIR%\bin\SGMLPars\ISOamsa.sgm
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Ctl3d32.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Ctl3d32.dll
   Destination=%PROGDIR%\bin\SGMLPars\Ctl3d32.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\common31.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\common31.dtd
   Destination=%PROGDIR%\bin\SGMLPars\common31.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\common3.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\common3.dtd
   Destination=%PROGDIR%\bin\SGMLPars\common3.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\common2.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\common2.dtd
   Destination=%PROGDIR%\bin\SGMLPars\common2.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Comdlg32.ocx
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Comdlg32.ocx
   Destination=%PROGDIR%\bin\SGMLPars\Comdlg32.ocx
   Flags=0001000010010010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Comctl32.ocx
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Comctl32.ocx
   Destination=%PROGDIR%\bin\SGMLPars\Comctl32.ocx
   Flags=0000000010010010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Comcat.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Comcat.dll
   Destination=%PROGDIR%\bin\SGMLPars\Comcat.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Co2c40en.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Co2c40en.dll
   Destination=%PROGDIR%\bin\SGMLPars\Co2c40en.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\citation31.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\citation31.dtd
   Destination=%PROGDIR%\bin\SGMLPars\citation31.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\Asycfilt.dll
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\Asycfilt.dll
   Destination=%PROGDIR%\bin\SGMLPars\Asycfilt.dll
   Flags=0000010010010011
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\art3_1.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\art3_1.dtd
   Destination=%PROGDIR%\bin\SGMLPars\art3_1.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\art3_0.pts
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\art3_0.pts
   Destination=%PROGDIR%\bin\SGMLPars\art3_0.pts
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\art3_0.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\art3_0.dtd
   Destination=%PROGDIR%\bin\SGMLPars\art3_0.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\art2_0.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\art2_0.dtd
   Destination=%PROGDIR%\bin\SGMLPars\art2_0.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\art1_1.dtd
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\art1_1.dtd
   Destination=%PROGDIR%\bin\SGMLPars\art1_1.dtd
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\SGMLPars\art.dcl
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\SGMLPars\art.dcl
   Destination=%PROGDIR%\bin\SGMLPars\art.dcl
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\scielo_paths.example.ini
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_paths.example.ini
   Destination=%PROGDIR%\bin\scielo_paths.example.ini
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\scielo_collection.ini.example
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_collection.ini.example
   Destination=%PROGDIR%\bin\scielo_collection.ini.example
   Flags=0000000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\scielo_env.ini.example
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\scielo_env.ini.example
   Destination=%PROGDIR%\bin\scielo_env.ini.example
   Flags=0000000010000010
 end
@@ -4735,7 +4711,7 @@ item: Install File
   Flags=0001000010000010
 end
 item: Install File
-  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\Bin\codes\importClinicalTrialDataFromLilacs.bat
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\codes\importClinicalTrialDataFromLilacs.bat
   Destination=%PROGDIR%\bin\codes\importClinicalTrialDataFromLilacs.bat
   Flags=0000000010000010
 end
@@ -5618,7 +5594,7 @@ end
 item: Execute Program
   Pathname=%PYTHON_PATH%\python
   Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PYTHON_PATH% %PROGDIR% %DATADIR% %MYSCIELOURL% %WEBPATH%
-  Flags=00000011
+  Flags=00000110
 end
 remarked item: Execute Program
   Pathname=python
