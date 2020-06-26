@@ -12,7 +12,7 @@ Os pré-requisitos são tudo o que é necessário **ANTES** instalação de _Sci
 ## Instalação e Configuração
 
 - [Download do Markup](download_markup_xpm.md)
-- [Instalação de Markup](markup_install.md)
+- [Instalação de Markup](xml_markup_install.md)
 - [Configuração de XML Package Maker](xpm_config.md)
 - [Configuração do menu](installation_configure_menu.md)
 

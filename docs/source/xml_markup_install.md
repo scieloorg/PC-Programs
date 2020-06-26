@@ -1,8 +1,9 @@
+
 Última atualização Jun, 2020
 
-## Como instalar os programas de Gestão Coleção XML
+## Como instalar Markup
 
-Executar o [instalador](download_markup_html) e completar com as informações solicitadas.
+Executar o [instalador](download_markup_xml) e completar com as informações solicitadas.
 
 
 ### Informar Localização de Python 3
@@ -17,7 +18,7 @@ O instalador não permitirá prosseguir sem a indicação da localização (dire
     ![Python 3 não encontrado](./img/install_python_not_found.png)
 
 
-### Informar os dados dos programas
+### Informar os Dados dos Programas
 
 - **Nome da aplicação:** nome que aparecerá no Menu de Programas. Ex.: SciELO Brasil, SciELO 4.0.097
 - **Pasta de Destino dos Programas:** onde os programas serão instalados. Ex.: c:\\scielo, e:\\var\\www\\scielo 
@@ -27,19 +28,17 @@ O instalador não permitirá prosseguir sem a indicação da localização (dire
 
 ### Selecionar as aplicações
 
-Para gerir uma coleção XML, será necessário obrigatoriamente:
+Para trabalhar com o Markup XML, será necessário obrigatoriamente:
 
-- **Title Manager:** (obrigatório, exceto se está adotando **SciELO Manager**) para gestão da coleção de periódicos
-- **XML Exporter:** (opcional) para criação de arquivos para serem exportados para o PubMed, se a coleção possuir periódicos que são indexados nesta base de dados.
+- **Markup:** programa para identificar elementos de um artigo/texto
+- **Markup - Automata files** (opcionalmente): exemplos de arquivos para marcação automática de referências bibliográficas
 
     ![Seleção dos componentes](./img/install_components.png)
 
 
 ### Informar Dados da Coleção
 
-- **URL da coleção:** endereço do site público da coleção. Ex.: www.scielo.br
-- **Pasta do Sítio Web Local:** pasta onde está localizado o sítio web local. Ex.: e:\\var\\www\\scielo
-- **Pasta de Destino dos Dados:** onde fica/ficará a pasta **serial**. Ex.: v:\\scielo
+**Desnecessário alterar ou preencher os campos**
 
     ![Dados da Coleção](./img/install_collection_data.png)
 
