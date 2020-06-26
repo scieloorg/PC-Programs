@@ -10,10 +10,10 @@ def now():
         " ", "-").replace(".", "-").replace(":", "-")
 
 PYTHON3 = sys.argv[1]
-APPDIR = sys.argv[2]
-DATADIR = sys.argv[3] if len(sys.argv) > 2 else None
-MYSCIELOURL = sys.argv[4] if len(sys.argv) > 2 else None
-WEBPATH = sys.argv[5] if len(sys.argv) > 2 else None
+APPDIR = sys.argv[2] if len(sys.argv) > 2 else None
+DATADIR = sys.argv[3] if len(sys.argv) > 3 else None
+MYSCIELOURL = sys.argv[4] if len(sys.argv) > 4 else None
+WEBPATH = sys.argv[5] if len(sys.argv) > 5 else None
 
 SCIELO_PATHS_CONFIG = os.path.join(APPDIR, 'bin', 'scielo_paths.ini')
 SCIELO_PATHS_TEMPLATE = os.path.join(APPDIR, 'bin', 'scielo_paths.example.ini')
@@ -25,6 +25,8 @@ mainGenerateXMLfilename = os.path.join(
 
 
 def fix_python_path_in_mainGenerateXML():
+    if not os.path.isfile(mainGenerateXMLfilename):
+        return
     with open(mainGenerateXMLfilename, 'r') as fp:
         c = fp.read()
     with open(mainGenerateXMLfilename, 'w') as fp:
@@ -67,6 +69,8 @@ def update_scielo_paths():
 def create_newcode_db():
     NEW_CODE_DB = os.path.join(DATADIR, "serial", "code", "newcode")
     CODE_DB = os.path.join(DATADIR, "serial", "code", "code")
+    if not os.path.exists(CODE_DB + ".mst"):
+        return
     mx = os.path.join(APPDIR, "bin", "cfg", "mx")
 
     for ext in (".fst", ".mst", ".xrf"):
@@ -83,4 +87,3 @@ if __name__ == "__main__":
     update_scielo_paths()
     create_newcode_db()
     fix_python_path_in_mainGenerateXML()
-
