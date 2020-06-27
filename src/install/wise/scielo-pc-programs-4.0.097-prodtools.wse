@@ -23,7 +23,7 @@ item: Global
   Patch Flags=0000000000000001
   Patch Threshold=85
   Patch Memory=4000
-  EXE Filename=scielo-pc-programs_4.0.097-prodtools-x-x.exe
+  EXE Filename=prodtools-teste-x.exe
   Language INI Filename=c:\src\install\wise\languages.ini
   FTP Cluster Size=20
   Per-User Version ID=1
@@ -273,6 +273,17 @@ item: Set Variable
   Value=Select python3 path
 end
 item: End Block
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=DISPLAY
+  Value=Collection data
+  Flags=00000100
+end
+item: Set Variable
+  Variable=DATADIR
+  Value=%PROGDIR%
 end
 item: End Block
 end
@@ -1888,13 +1899,28 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\download_markup_journals.bat
+  Destination=%PROGDIR%\bin\xml\download_markup_journals.bat
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\download_markup_journals.py
   Destination=%PROGDIR%\bin\xml\download_markup_journals.py
   Flags=0000000010000010
 end
 item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\xml_converter.bat
+  Destination=%PROGDIR%\bin\xml\xml_converter.bat
+  Flags=0000000010000010
+end
+item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\xml_converter.py
   Destination=%PROGDIR%\bin\xml\xml_converter.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\xml_package_maker.bat
+  Destination=%PROGDIR%\bin\xml\xml_package_maker.bat
   Flags=0000000010000010
 end
 item: Install File
@@ -5455,45 +5481,75 @@ end
 item: End Block
 end
 item: Create Shortcut
-  Source=%PROGDIR%\bin\xml\xml_converter.py
-  Source Portuguese=%PROGDIR%\bin\xml\xml_converter.py
+  Source=%PROGDIR%\bin\xml\xml_converter.bat
+  Source Portuguese=%PROGDIR%\bin\xml\xml_converter.bat
+  Source Spanish=%PROGDIR%\bin\xml\xml_converter.bat
   Destination=%DESKTOPDIR%\XML Converter.lnk
-  Destination Portuguese=%GROUP%\XML Converter.lnk
-  Command Options=cd %PROGDIR%\bin\xml;xml_convert.py
-  Command Options Portuguese=cd %PROGDIR%\bin\xml;xml_convert.py
+  Destination Portuguese=%DESKTOPDIR%\XML Converter.lnk
+  Destination Spanish=%DESKTOPDIR%\XML Converter.lnk
+  Command Options=%PROGDIR%
+  Command Options Portuguese=%PROGDIR%
+  Command Options Spanish=%PROGDIR%
   Icon Number=0
   Icon Number Portuguese=0
+  Icon Number Spanish=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Icon Pathname Spanish=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Flags=00000001
 end
 item: Create Shortcut
-  Source=%PROGDIR%\bin\xml\xml_package_maker.py
-  Source Portuguese=%PROGDIR%\bin\xml\xml_package_maker.py
+  Source=%PROGDIR%\bin\xml\xml_package_maker.bat
+  Source Portuguese=%PROGDIR%\bin\xml\xml_package_maker.bat
+  Source Spanish=%PROGDIR%\bin\xml\xml_package_maker.bat
   Destination=%DESKTOPDIR%\XML Package Maker.lnk
-  Destination Portuguese=%GROUP%\XML Package Maker.lnk
-  Command Options=cd %PROGDIR%\bin\xml\;xml_package_maker.py
-  Command Options Portuguese=cd %PROGDIR%\bin\xml\;xml_package_maker.py
+  Destination Portuguese=%DESKTOPDIR%\XML Package Maker.lnk
+  Destination Spanish=%DESKTOPDIR%\XML Package Maker.lnk
+  Command Options=%PROGDIR%
+  Command Options Portuguese=%PROGDIR%
+  Command Options Spanish=%PROGDIR%
   Icon Number=0
   Icon Number Portuguese=0
+  Icon Number Spanish=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Icon Pathname Spanish=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Flags=00000001
 end
 item: Create Shortcut
   Source=%PROGDIR%\bin\xml\download_markup_journals.bat
   Source Portuguese=%PROGDIR%\bin\xml\download_markup_journals.bat
+  Source Spanish=%PROGDIR%\bin\xml\download_markup_journals.bat
   Destination=%DESKTOPDIR%\Markup - update journals list.lnk
-  Destination Portuguese=%GROUP%\Markup - update journals list.lnk
-  Command Options=cd %PROGDIR%\bin\xml\;download_markup_journals.py
-  Command Options Portuguese=cd %PROGDIR%\bin\xml\;download_markup_journals.py
+  Destination Portuguese=%DESKTOPDIR%\Markup - update journals list.lnk
+  Destination Spanish=%DESKTOPDIR%\Markup - update journals list.lnk
+  Command Options=%PROGDIR%
+  Command Options Portuguese=%PROGDIR%
+  Command Options Spanish=%PROGDIR%
   Icon Number=0
   Icon Number Portuguese=0
+  Icon Number Spanish=0
   Icon Pathname=%PROGDIR%\bin\SGMLPars\scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\scielo.ico
+  Icon Pathname Spanish=%PROGDIR%\bin\SGMLPars\scielo.ico
   Flags=00000001
 end
+item: Create Shortcut
+  Source Spanish=%PROGDIR%\Bin\SGMLPars\parser.exe
+  Destination Spanish=%GROUP%\SGML Parser.lnk
+  Working Directory Spanish=%PROGDIR%\Bin\SGMLPars
+  Icon Number Spanish=0
+  Icon Pathname Spanish=%PROGDIR%\Bin\SGMLPars\PARSER.EXE
+end
 item: Else Statement
+end
+item: Add ProgMan Icon
+  Group=%GROUP%
+  Icon Name Spanish=Uninstall
+  Command Line=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
+  Icon Pathname=%PATH_SGMLPARS%\Bin\SGMLPars\Parser.ico
+  Default Directory=%PATH_SGMLPARS%\Bin\SGMLPars
+  Flags=01000000
 end
 item: Add ProgMan Icon
   Group=%GROUP%

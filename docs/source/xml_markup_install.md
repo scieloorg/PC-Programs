@@ -31,7 +31,6 @@ O instalador não permitirá prosseguir sem a indicação da localização (dire
 Para trabalhar com o Markup XML, será necessário obrigatoriamente:
 
 - **Markup:** programa para identificar elementos de um artigo/texto
-- **Markup - Automata files** (opcionalmente): exemplos de arquivos para marcação automática de referências bibliográficas
 
     ![Seleção dos componentes](./img/install_components.png)
 
