@@ -20,6 +20,10 @@ from prodtools.processing.sps_pkgmaker import PackageMaker
 logger = logging.getLogger()
 
 
+class SGMLXMLError(Exception):
+    pass
+
+
 class SGMLXML2SPSXMLError(Exception):
     pass
 
@@ -234,14 +238,17 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         self.src_pkgfiles = src_pkgfiles
         super().__init__(src_pkgfiles.filename)
         if self.xml_error:
-            raise Exception(self.xml_error)
-        logger.debug("_convert_font_symbols_to_entities")
-        self._convert_font_symbols_to_entities()
-        logger.debug("_set_graphic_href_values")
-        self._set_graphic_href_values()
-        logger.debug("_insert_xhtml_tables_in_document")
-        self._insert_xhtml_tables_in_document()
-        logger.debug("...")
+            return
+        try:
+            logger.debug("_convert_font_symbols_to_entities")
+            self._convert_font_symbols_to_entities()
+            logger.debug("_set_graphic_href_values")
+            self._set_graphic_href_values()
+            logger.debug("_insert_xhtml_tables_in_document")
+            self._insert_xhtml_tables_in_document()
+            logger.debug("...")
+        except Exception as e:
+            raise SGMLXMLError(e)
 
     def well_formed_xml_content(self):
         self._content = xml_utils.insert_namespaces_in_root(
@@ -528,22 +535,29 @@ class SGMLXML2SPSXML(object):
         self.acron = acron
         self.FILES = SGMLXMLWorkarea(sgmxml_filepath)
 
+    def _sgmxml(self):
+        logger.info(
+            "Enhance SGMLXML %s" % self.FILES.src_pkgfiles.filename)
+        try:
+            self.enhancer = SGMLXMLContentEnhancer(
+                self.FILES.src_pkgfiles,
+                SGMLHTML(self.FILES.sgmxml_fname, self.FILES.html_filename)
+            )
+        except SGMLXMLError as e:
+            logger.exception("%s %s", self.FILES.src_pkgfiles.filename, e)
+        else:
+            fs_utils.write(
+                self.FILES.src_pkgfiles.filename, self.enhancer.content)
+
     def _sgmxml2xml(self):
         """
         convert o arquivo sgmlxml para xml
         """
+        logger.info("Convert sgml to xml")
         xml_obj, xml_error = xml_utils.load_xml(
             self.FILES.src_pkgfiles.filename)
         if xml_error:
-            html_reports.webbrowser.open(
-                'file://' + self.FILES.src_pkgfiles.filename
-            )
-            raise SGMLXML2SPSXMLError(
-                _("{}: Error as loading {}: {}. ".format(
-                    validation_status.STATUS_BLOCKING_ERROR,
-                    self.FILES.src_pkgfiles.filename,
-                    xml_error
-                )))
+            return
         sps_version = xml_obj.find(".").get("sps")
         if sps_version is None:
             sps_version = xml_versions.get_latest_sps_version()[4:]
@@ -559,6 +573,7 @@ class SGMLXML2SPSXML(object):
         individual scielo_package
         markup_xml/work/sgmxml_name/scielo_package_tmp
         """
+        logger.info("Rename and make the package")
         self.pkg_namer = PackageNamer(self.FILES.src_pkgfiles, self.acron,
                                       self.FILES.tmp_doc_pkg_path)
         self.pkg_namer.rename()
@@ -594,18 +609,8 @@ class SGMLXML2SPSXML(object):
             faz ajustes no arquivo gerado pelo markup .sgm.xml
             antes de gerar o XML do SPS
             """
-            logger.info(
-                "Enhance SGMLXML %s" % self.FILES.src_pkgfiles.filename)
-            self.enhancer = SGMLXMLContentEnhancer(
-                self.FILES.src_pkgfiles,
-                SGMLHTML(self.FILES.sgmxml_fname, self.FILES.html_filename)
-            )
-            self.enhancer.write(self.FILES.src_pkgfiles.filename)
-
-            logger.info("Convert sgml to xml")
+            self._sgmxml()
             self._sgmxml2xml()
-
-            logger.info("Rename and make the package")
             pkg = self._make_package()
         except Exception as e:
             blocking_error = str(e)
