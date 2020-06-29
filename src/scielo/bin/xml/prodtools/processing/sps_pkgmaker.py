@@ -220,15 +220,19 @@ class BrokenRef(object):
         label = self.tree.find(".//label")
         if label is None:
             return
-        if mixed_citation.text.startswith(label.text):
-            return
         label_text = label.text
-        if label.text[-1] == mixed_citation.text[0]:
-            label_text = label_text[:-1]
         sep = " "
-        if not mixed_citation.text[0].isalnum():
-            sep = ""
-        mixed_citation.text = label_text + sep + mixed_citation.text
+        if mixed_citation.text:
+            _mixed_citation_text = mixed_citation.text
+            if _mixed_citation_text.startswith(label.text):
+                return
+            if label.text[-1] == _mixed_citation_text[0]:
+                label_text = label_text[:-1]
+            if not _mixed_citation_text[0].isalnum():
+                sep = ""
+            mixed_citation.text = label_text + sep + _mixed_citation_text
+        else:
+            mixed_citation.text = label_text + sep
 
     def fix_source(self):
         """
