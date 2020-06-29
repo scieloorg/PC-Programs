@@ -578,7 +578,7 @@ class SGMLXML2SPSXML(object):
         content = xml_utils.insert_namespaces_in_root("article", str(result))
         fs_utils.write_file(self.FILES.src_pkgfiles.filename, content)
 
-    def _make_package(self):
+    def _name_package(self):
         """
         Copia os arquivos da pasta src e o da pasta temporária do pacote
         individual scielo_package
@@ -588,6 +588,8 @@ class SGMLXML2SPSXML(object):
         self.pkg_namer = PackageNamer(self.FILES.src_pkgfiles, self.acron,
                                       self.FILES.tmp_doc_pkg_path)
         self.pkg_namer.rename()
+
+    def _make_package(self):
         """
         cria o pacote otimizado na pasta individual
         markup_xml/work/sgmxml_name/scielo_package
@@ -622,14 +624,12 @@ class SGMLXML2SPSXML(object):
             """
             self._sgmxml()
             self._sgmxml2xml()
+            self._name_package()
             pkg = self._make_package()
         except Exception as e:
             blocking_error = str(e)
             logger.exception(e)
-            raise e
-
         finally:
-            logger.info("Create Images Report")
             self._report(blocking_error, pkg)
         return pkg
 
@@ -642,6 +642,7 @@ class ImagesOriginReport(object):
         self.images_origin = images_origin
 
     def report(self):
+        logger.info("Create Images Report")
         rows = []
         if len(self.href_replacements) == 0:
             rows.append(html_reports.tag('h4', _('Article has no image')))
