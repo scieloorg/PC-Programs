@@ -71,6 +71,8 @@ class SGMLXMLWorkarea(workarea.MultiDocsPackageOuputs):
 
         # self.src_path = markup_xml/src
         self.src_path = os.path.join(self.output_path, 'src')
+        if not os.path.isdir(self.src_path):
+            os.makedirs(self.src_path)
         # src_file_path = markup_xml/src/sgmxml_name.xml
         src_file_path = os.path.join(self.src_path, self.sgmxml_basename)
         shutil.copyfile(sgmxml_filepath, src_file_path)

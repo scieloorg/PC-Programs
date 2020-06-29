@@ -13,7 +13,7 @@ Os pré-requisitos são tudo o que é necessário **ANTES** instalação de _Sci
 ## Instalação e Configuração
 
 - [Download](download_markup_html.md)
-- [Instalação](markup_install.md)
+- [Instalação](html_markup_install.md)
 - [Configuração do menu](installation_configure_menu.md)
 
 

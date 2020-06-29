@@ -1,43 +1,89 @@
-import os, sys, shutil
-
-scielo_cfg_filename = sys.argv[1] + '/bin/scielo_paths.ini'
-bkp_scielo_cfg_filename = sys.argv[1] + '/bin/scielo_paths.ini.old'
-template_scielo_cfg_filename = sys.argv[1] + '/bin/scielo_paths.example.ini'
-template_parser_settings_filename = sys.argv[1] + '/bin/cfg/Settings.cfg.template'
-parser_settings_filename = sys.argv[1] + '/bin/SGMLPars/Settings.cfg'
+# coding=utf-8
+import os
+import sys
+import shutil
+from datetime import datetime
 
 
-if os.path.exists(scielo_cfg_filename):    
-    shutil.copyfile(scielo_cfg_filename, bkp_scielo_cfg_filename)    
+def now():
+    return datetime.now().isoformat().replace(
+        " ", "-").replace(".", "-").replace(":", "-")
 
-f = open(template_scielo_cfg_filename, 'r')    
-c = f.read()    
-f.close()
+PYTHON3 = sys.argv[1]
+APPDIR = sys.argv[2] if len(sys.argv) > 2 else None
+DATADIR = sys.argv[3] if len(sys.argv) > 3 else None
+MYSCIELOURL = sys.argv[4] if len(sys.argv) > 4 else None
+WEBPATH = sys.argv[5] if len(sys.argv) > 5 else None
 
-f = open(scielo_cfg_filename, 'w')    
-f.write(c.replace('d:\dados\scielo', sys.argv[2]).replace('c:\programas\scielo', sys.argv[1]).replace('MYSCIELOURL', sys.argv[3]))    
-f.close()
-
-f = open(template_parser_settings_filename, 'r')    
-c = f.read()    
-f.close()
-
-f = open(sys.argv[1] + '/bin/SGMLPars/Settings.cfg', 'w')    
-f.write(c.replace('C:\SCIELO', sys.argv[1]))
-f.close()
+SCIELO_PATHS_CONFIG = os.path.join(APPDIR, 'bin', 'scielo_paths.ini')
+SCIELO_PATHS_TEMPLATE = os.path.join(APPDIR, 'bin', 'scielo_paths.example.ini')
+PARSER_CONFIG_TEMPLATE = os.path.join(
+    APPDIR, 'bin', 'cfg', 'Settings.cfg.template')
+PARSER_CONFIG = os.path.join(APPDIR, 'bin', 'SGMLPars', 'Settings.cfg')
+mainGenerateXMLfilename = os.path.join(
+    APPDIR, 'xml_scielo', 'proc', 'general', 'mainGenerateXMLfilename.bat')
 
 
-if os.path.exists(sys.argv[2] + '/serial/issue/issue.mst'):    
-    os.system(sys.argv[1] + '/bin/cfg/mx ' + sys.argv[2] + '/serial/issue/issue fst=@ fullinv=' + sys.argv[2] + '/serial/issue/issue')
+def fix_python_path_in_mainGenerateXML():
+    if not os.path.isfile(mainGenerateXMLfilename):
+        return
+    with open(mainGenerateXMLfilename, 'r') as fp:
+        c = fp.read()
+    with open(mainGenerateXMLfilename, 'w') as fp:
+        c = c.replace(
+            ",'python xml_pubmed.py ",
+            ",'{}\\python xml_pubmed.py ".format(PYTHON3))
+        fp.write(c)
 
-if not os.path.exists(sys.argv[2] + '/serial/code/newcode.fst'):    
-    shutil.copyfile(sys.argv[2] + '/serial/code/code.fst', sys.argv[2] + '/serial/code/newcode.fst')    
 
-if not os.path.exists(sys.argv[2] + '/serial/code/newcode.mst'):
-    shutil.copyfile(sys.argv[2] + '/serial/code/code.mst', sys.argv[2] + '/serial/code/newcode.mst')
-    shutil.copyfile(sys.argv[2] + '/serial/code/code.xrf', sys.argv[2] + '/serial/code/newcode.xrf')
+def update_parser_config():
+    with open(PARSER_CONFIG_TEMPLATE, 'r') as fp:
+        c = fp.read()
+    with open(PARSER_CONFIG, 'w') as fp:
+        c = c.replace('C:\\SCIELO', APPDIR)
+        fp.write(c)
 
-os.system(sys.argv[1] + '/bin/cfg/mx ' + sys.argv[2] + '/serial/code/code fst=@ fullinv=' + sys.argv[2] + '/serial/code/code')    
-os.system(sys.argv[1] + '/bin/cfg/mx ' + sys.argv[2] + '/serial/code/newcode fst=@ fullinv=' + sys.argv[2] + '/serial/code/newcode')
 
-os.system('SET BAP=OS23470a')
+def update_scielo_paths():
+    items = [
+        ('d:\\dados\\scielo', DATADIR),
+        ('c:\\programas\\scielo', APPDIR),
+        ('MYSCIELOURL', MYSCIELOURL),
+        ('SCI_LISTA_SITE=c:\\var\\www\\scielo',
+            'SCI_LISTA_SITE={}'.format(WEBPATH)),
+    ]
+
+    if os.path.exists(SCIELO_PATHS_CONFIG):
+        SCIELO_PATHS_BKP = SCIELO_PATHS_CONFIG + "." + now() + ".old"
+        shutil.copyfile(SCIELO_PATHS_CONFIG, SCIELO_PATHS_BKP)
+
+    with open(SCIELO_PATHS_TEMPLATE, 'r') as fp:
+        c = fp.read()
+    with open(SCIELO_PATHS_CONFIG, 'w') as fp:
+        for old, new in items:
+            if new:
+                c = c.replace(old, new)
+        fp.write(c)
+
+
+def create_newcode_db():
+    NEW_CODE_DB = os.path.join(DATADIR, "serial", "code", "newcode")
+    CODE_DB = os.path.join(DATADIR, "serial", "code", "code")
+    if not os.path.exists(CODE_DB + ".mst"):
+        return
+    mx = os.path.join(APPDIR, "bin", "cfg", "mx")
+
+    for ext in (".fst", ".mst", ".xrf"):
+        if not os.path.exists(NEW_CODE_DB + ext):
+            shutil.copyfile(CODE_DB + ext, NEW_CODE_DB + ext)
+
+    for db in (CODE_DB, NEW_CODE_DB):
+        cmd = "{} {} fst=@ fullinv={}".format(mx, db, db)
+        os.system(cmd)
+
+
+if __name__ == "__main__":
+    update_parser_config()
+    update_scielo_paths()
+    create_newcode_db()
+    fix_python_path_in_mainGenerateXML()
