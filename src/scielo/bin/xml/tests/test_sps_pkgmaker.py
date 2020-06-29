@@ -180,6 +180,32 @@ class TestBrokenRef(TestCase):
         )
         self.assertEqual(obj.tree.find(".//label").text, "1")
 
+    def test_insert_label_text_in_mixed_citation_text_inserts_1_with_extlink_ref(self):
+        text = (
+            '<ref id="B1">'
+            '<label>1</label>'
+            '<mixed-citation'
+            ' xmlns:mml="http://www.w3.org/1998/Math/MathML"'
+            ' xmlns:xlink="http://www.w3.org/1999/xlink">'
+            '<ext-link ext-link-type="uri" xlink:href="https://linkdainternet.net/texto.pdf">'
+            'https://linkdainternet.net/texto.pdf</ext-link>'
+            ', acessada em Abril 2020. <italic>Nome do Site</italic></mixed-citation>'
+            '</ref>'
+            )
+        xml = xml_utils.etree.fromstring(text)
+        obj = sps_pkgmaker.BrokenRef(xml)
+        obj.insert_label_text_in_mixed_citation_text()
+        self.assertEqual(
+            xml_utils.etree.tostring(obj.tree.find(".//mixed-citation")),
+            b'<mixed-citation'
+            b' xmlns:mml="http://www.w3.org/1998/Math/MathML"'
+            b' xmlns:xlink="http://www.w3.org/1999/xlink">'
+            b'1 <ext-link ext-link-type="uri" xlink:href="https://linkdainternet.net/texto.pdf">'
+            b'https://linkdainternet.net/texto.pdf</ext-link>'
+            b', acessada em Abril 2020. <italic>Nome do Site</italic></mixed-citation>'
+        )
+        self.assertEqual(obj.tree.find(".//label").text, "1")
+
 
 class TestBrokenRefFixBookData(TestCase):
     def test_fix_book_data_does_not_convert_article_title_into_chapter_title(self):
