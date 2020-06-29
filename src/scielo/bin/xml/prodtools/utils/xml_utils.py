@@ -238,6 +238,10 @@ def insert_break_lines(content):
                 else:
                     items.append(item)
             content = "".join(items).strip()
+
+            if not content.startswith("<") and ord(content[0]) == 65279:
+                # unexpected whitespace character unicode 65279 (utf-8 bom)
+                content = content[1:].strip()
     return content
 
 
