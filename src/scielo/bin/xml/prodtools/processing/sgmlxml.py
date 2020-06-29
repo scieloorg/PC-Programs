@@ -9,7 +9,6 @@ from prodtools.utils import fs_utils
 from prodtools.utils import xml_utils
 from prodtools.reports import text_report
 from prodtools.reports import html_reports
-from prodtools.reports import validation_status
 from prodtools.data import article
 from prodtools.data import workarea
 from prodtools.processing import symbols
@@ -236,6 +235,7 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
     def __init__(self, src_pkgfiles, sgmlhtml):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
+        self.images_origin = []
         super().__init__(src_pkgfiles.filename)
         if self.xml_error:
             return
@@ -334,7 +334,6 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
             for node in self.xml.findall(".//graphic[@href]")
             if node.get("href").startswith(html_filename)
         ]
-        self.images_origin = []
         html_images = self.sgmlhtml.images
         logger.info("markup: graphic[@href]: %i" % len(nodes))
         logger.info("html: img[@src]: %i" % len(html_images))
@@ -415,17 +414,32 @@ class PackageNamer(object):
 
     def __init__(self, src_pkgfiles, acron, dest_path):
         self.src_pkgfiles = src_pkgfiles
+        self.acron = acron
+        self.dest_path = dest_path
+
         self.xml = xml_utils.SuitableXML(self.src_pkgfiles.filename)
-        if self.xml.xml_error:
-            raise SGMLXML2SPSXMLError(
-                _("{}: PackageNamer: {}: {}").format(
-                    validation_status.STATUS_BLOCKING_ERROR,
-                    self.src_pkgfiles.filename,
-                    self.xml.xml_error
-                ))
-        self.doc = article.Article(self.xml.xml, self.src_pkgfiles.name)
-        self.new_name = PackageName(self.doc).generate(acron)
-        dest_filepath = os.path.join(dest_path, self.new_name + ".xml")
+        self.new_name = self.xml.xml
+
+        self.related_files_copy = []
+        self.href_replacements = []
+        self.href_files_copy = []
+        self.href_names = []
+        self.missing_href_files = []
+
+    @property
+    def new_name(self):
+        return self._new_name
+
+    @new_name.setter
+    def new_name(self, tree):
+        self._new_name = None
+        if tree is not None:
+            doc = article.Article(tree, self.src_pkgfiles.name)
+            self._new_name = PackageName(doc).generate(self.acron)
+
+    def _create_dest_pkgfiles(self):
+        new_name = self.new_name or self.src_pkgfiles.name
+        dest_filepath = os.path.join(self.dest_path, new_name + ".xml")
         self.dest_pkgfiles = workarea.DocumentPackageFiles(dest_filepath)
         self.dest_pkgfiles.clean()
         shutil.copyfile(
@@ -434,18 +448,19 @@ class PackageNamer(object):
                      (self.src_pkgfiles.filename, self.dest_pkgfiles.filename))
 
     def rename(self):
-        logger.debug("PackageNamer._fix_href_values")
-        self._fix_href_values()
-        logger.debug("PackageNamer._rename_href_files")
-        self._rename_href_files()
-        logger.debug("PackageNamer._rename_other_files")
-        self._rename_other_files()
-        logger.debug("PackageNamer.xml.write")
-        self.xml.write(self.dest_pkgfiles.filename)
+        self._create_dest_pkgfiles()
+        if self.new_name:
+            logger.debug("PackageNamer._fix_href_values")
+            self._fix_href_values()
+            logger.debug("PackageNamer._rename_href_files")
+            self._rename_href_files()
+            logger.debug("PackageNamer._rename_other_files")
+            self._rename_other_files()
+            logger.debug("PackageNamer.write_file")
+            fs_utils.write_file(self.dest_pkgfiles.filename, self.xml.content)
 
     def _fix_href_values(self):
-        self.href_replacements = []
-        for element in article.nodes_which_have_xlink_href(self.doc.tree):
+        for element in article.nodes_which_have_xlink_href(self.xml.xml):
             value = element.attrib['{http://www.w3.org/1999/xlink}href']
             parent = element.getparent()
             new_value = self.new_href_value(parent, value)
@@ -469,9 +484,6 @@ class PackageNamer(object):
         return self.new_name + '-' + elem_type + elem_id
 
     def _rename_href_files(self):
-        self.href_files_copy = []
-        self.href_names = []
-        self.missing_href_files = []
         for f, new in self.href_replacements:
             name, _ = os.path.splitext(f)
             new_name, _ = os.path.splitext(new)
@@ -487,7 +499,6 @@ class PackageNamer(object):
                 self.missing_href_files.append(new)
 
     def _rename_other_files(self):
-        self.related_files_copy = []
         for name, exts in self.src_pkgfiles.related_files_by_name.items():
             if name in self.href_names:
                 continue
@@ -509,7 +520,7 @@ class PackageNamer(object):
         log.append(_('Source path') + ':   ' + self.src_pkgfiles.path)
         log.append(_('Package path') + ':  ' + self.dest_pkgfiles.path)
         log.append(_('Source XML name') + ': ' + self.src_pkgfiles.name)
-        log.append(_('Package XML name') + ': ' + self.new_name)
+        log.append(_('Package XML name') + ': ' + self.dest_pkgfiles.name)
         log.append(
             text_report.display_labeled_list(
                 _('Total of related files'),
@@ -545,8 +556,8 @@ class SGMLXML2SPSXML(object):
             )
         except SGMLXMLError as e:
             logger.exception("%s %s", self.FILES.src_pkgfiles.filename, e)
-        else:
-            fs_utils.write(
+        finally:
+            fs_utils.write_file(
                 self.FILES.src_pkgfiles.filename, self.enhancer.content)
 
     def _sgmxml2xml(self):
