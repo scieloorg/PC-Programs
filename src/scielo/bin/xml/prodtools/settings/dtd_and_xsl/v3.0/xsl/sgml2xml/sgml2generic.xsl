@@ -1529,6 +1529,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
+		<xsl:if test="$dtype!=''">
 		<date date-type="{$dtype}">
 			<xsl:call-template name="display_date">
 				<xsl:with-param name="dateiso">
@@ -1536,6 +1537,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:with-param>
 			</xsl:call-template>
 		</date>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="abstract|xmlabstr">
