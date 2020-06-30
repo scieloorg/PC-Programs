@@ -232,6 +232,7 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
     def __init__(self, src_pkgfiles, sgmlhtml):
         self.sgmlhtml = sgmlhtml
         self.src_pkgfiles = src_pkgfiles
+        self.style_tags_fixer = StyleTagsFixer()
         super().__init__(src_pkgfiles.filename)
         if self.xml_error:
             raise Exception(self.xml_error)
@@ -242,6 +243,11 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         logger.debug("_insert_xhtml_tables_in_document")
         self._insert_xhtml_tables_in_document()
         logger.debug("...")
+
+    @property
+    def _is_well_formed(self):
+        xml, xml_error = xml_utils.load_xml(self._content)
+        return xml is not None
 
     def well_formed_xml_content(self):
         self._content = xml_utils.insert_namespaces_in_root(
@@ -254,7 +260,26 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         super().well_formed_xml_content()
 
     def _fix_styles(self):
-        # TODO: corrigir misplaced tags
+        self._style_tags_upper_to_lower_case()
+        self._fix_mismatched_style_tags()
+
+    def _fix_mismatched_style_tags(self):
+        """
+        No markup as tags de estilos são geradas pela marcação de estilos do
+        próprio Word, ou seja, bold, itálico, sup e sub não são tags do Markup.
+        No entanto, o resultado é a mescla de tags do Markup + tags de estilos
+        podendo acontecer de se mesclarem de forma que o resultado não seja
+        um XML não bem formado. O propósito deste atributo é consertar isso.
+        """
+        if self._is_well_formed:
+            return
+        logger.debug("_fix_mismatched_style_tags")
+        self._content = self.style_tags_fixer.fix(self._content)
+
+    def _style_tags_upper_to_lower_case(self):
+        if self._is_well_formed:
+            return
+        logger.debug("_style_tags_upper_to_lower_case")
         content = self._content
         for style in ("BOLD", "ITALIC", "SUP", "SUB"):
             tag_open = "<{}>".format(style)
@@ -268,6 +293,9 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         Às vezes a codificação das aspas vem diferente de ", sendo assim
         são necessários trocas antes de carregar a árvore de XML
         """
+        if self._is_well_formed:
+            return
+        logger.debug("_fix_quotes")
         content = self._content
         content = content.replace("<", "FIXQUOTESBREK<")
         content = content.replace(">", ">FIXQUOTESBREK")
@@ -402,6 +430,244 @@ class SGMLXMLContentEnhancer(xml_utils.SuitableXML):
         )
         new_href = None if len(found) == 0 else found[0]
         return (new_href, no_parents_img_counter)
+
+
+class StyleTag(object):
+
+    def __init__(self, name):
+        self.name = name
+        self.xml_open = "<{}>".format(name)
+        self.xml_close = "</{}>".format(name)
+        self.fixed_xml_open = "<{}>".format(name.upper())
+        self.fixed_xml_close = "</{}>".format(name.upper())
+        self.sgml_open = "[{}]".format(name)
+        self.sgml_close = "[/{}]".format(name)
+
+
+class StyleTagsFixer(object):
+
+    def __init__(self):
+        self.XML_TO_SGML = []
+        self.style_tags = {}
+        for style in ("bold", "italic", "sup", "sub"):
+            self.style_tags[style] = StyleTag(style)
+            style_tag = self.style_tags[style]
+            self.XML_TO_SGML.append((style_tag.xml_open, style_tag.sgml_open))
+            self.XML_TO_SGML.append(
+                (style_tag.xml_close, style_tag.sgml_close))
+
+    def fix(self, content):
+        original = content
+        content = self._disguise_style_tags(content)
+
+        xml, xml_error = xml_utils.load_xml(content)
+        if xml is None:
+            # XML já está mal formado. As tags de estilo não são a causa.
+            return original
+
+        content = self._restore_matched_style_tags_in_node_tails(xml)
+        content = self._restore_matched_style_tags_in_node_texts(xml)
+        content = self._unmark_fixed_style_tags(content)
+        return content
+
+    def _disguise_style_tags(self, content):
+        """
+        Disfarça as tags de estilo, mudando `<tag>` para `[tag]`
+        """
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            content = content.replace(xml_tag, sgml_tag)
+        return content
+
+    def _unmark_fixed_style_tags(self, content):
+        """
+        Reverte o disfarce das tags de estilo, mudando `[tag]` para `<tag>`
+        """
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            content = content.replace(xml_tag.upper(), xml_tag)
+        return content
+
+    def _delete_sgml_style_tags(self, content):
+        """
+        Apaga as tags de estilo sgml, mudando `[tag]` para `''`
+        """
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            content = content.replace(sgml_tag, "")
+        return content
+
+    def _mark_fixed_style_tags(self, content):
+        """
+        Marca as tags de estilo convertidas sem erro
+        """
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            content = content.replace(sgml_tag, xml_tag.upper())
+        return content
+
+    def _restore_matched_style_tags_in_node_texts(self, xml):
+        """
+        Restaura as tags de estilo de todos os node.text
+        """
+        for node in xml.findall(".//*"):
+            if node.text and "[" in node.text and "]" in node.text:
+                text = self._mark_fixed_style_tags(node.text)
+                new_xml = self._check_content(node, text, node.tag)
+                self._update_node_text(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.text and "[" in node.text and "]" in node.text:
+                text = self._fix_inserting_tags_at_the_extremities(node.text)
+                new_xml = self._check_content(node, text, node.tag)
+                self._update_node_text(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.text and "[" in node.text and "]" in node.text:
+                new_xml = self._fix_loading_xml_with_recover_true(
+                    node.text, node.tag)
+                self._update_node_text(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.text and "[" in node.text and "]" in node.text:
+                node.text = self._delete_sgml_style_tags(node.text)
+        return xml_utils.tostring(xml)
+
+    def _restore_matched_style_tags_in_node_tails(self, xml):
+        """
+        Restaura as tags de estilo de todos os node.tail
+        """
+        for node in xml.findall(".//*"):
+            if node.tail and "[" in node.tail and "]" in node.tail:
+                tail = self._mark_fixed_style_tags(node.tail)
+                new_xml = self._check_content(node, tail)
+                self._update_node_tail(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.tail and "[" in node.tail and "]" in node.tail:
+                tail = self._fix_inserting_tags_at_the_extremities(node.tail)
+                new_xml = self._check_content(node, tail)
+                self._update_node_tail(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.tail and "[" in node.tail and "]" in node.tail:
+                new_xml = self._fix_loading_xml_with_recover_true(
+                    node.tail, None)
+                self._update_node_tail(node, new_xml)
+
+        for node in xml.findall(".//*"):
+            if node.tail and "[" in node.tail and "]" in node.tail:
+                node.tail = self._delete_sgml_style_tags(node.tail)
+        return xml_utils.tostring(xml)
+
+    def _check_content(self, node, content, node_tag=None):
+        """
+        Atualiza node.text com o valor de content
+        """
+        wrapped_content = self._wrapped_content(content, node_tag)
+        xml, xml_error = xml_utils.load_xml(wrapped_content)
+        return xml
+
+    def _update_node_text(self, node, xml):
+        """
+        Atualiza node.text com o valor de node_text
+        """
+        if xml is not None:
+            new_node = deepcopy(xml.find(".").getchildren()[0])
+            parent = node.getparent()
+            parent.replace(node, new_node)
+            return True
+
+    def _wrapped_content(self, content, node_tag=None):
+        if not node_tag:
+            return "<root>{}</root>".format(content)
+        return "<root><{}>{}</{}></root>".format(node_tag, content, node_tag)
+
+    def _update_node_tail(self, node, xml):
+        """
+        Atualiza node.tail com o valor new_tail
+        """
+        if xml is not None:
+            node.tail = ""
+            for n in xml.find(".").getchildren():
+                node.addnext(deepcopy(n))
+            node.tail = xml.find(".").text
+            return True
+
+    def _loss(self, xml, content):
+        _xml = xml and "".join(xml.find(".").itertext())
+        _content = content
+        for xml_tag, sgml_tag in self.XML_TO_SGML:
+            _content = _content.replace(xml_tag.upper(), "")
+        logger.debug("StyleTagsFixer._loss: content=%s", content)
+        logger.debug("StyleTagsFixer._loss: _xml=%s", _xml)
+        logger.debug("StyleTagsFixer._loss: _content=%s", _content)
+        return _xml != _content
+
+    def _fix_loading_xml_with_recover_true(self, content, node_tag):
+        """
+        Tenta carregar o xml, usando o parâmetro "recover=True"
+        para tentar resolver mismatched tags ou tags não fechadas
+        Esta estratégia não é excelente pois não é previsível
+        """
+        logger.debug(
+            "StyleTagsFixer._fix_loading_xml_with_recover_true: %s", content)
+        content = self._mark_fixed_style_tags(content)
+        wrapped_content = self._wrapped_content(content, node_tag)
+        xml, xml_error = xml_utils.load_xml(wrapped_content, recover=True)
+        if not self._loss(xml, content):
+            return xml
+
+    def _fix_inserting_tags_at_the_extremities(self, content):
+        """
+        Tenta resolver mismatched tags inserindo tag de abre no início e
+        tag de fecha no fim, se ausentes
+        """
+        logger.debug("StyleTagsFixer.fix_checking_tags: %s", content)
+        while True:
+            found = self._find_style_tags(content)
+            if len(found) == 0:
+                break
+            old_content = content
+            content = self._insert_open_tag_at_the_start(found[0], content)
+            content = self._insert_close_tag_at_the_end(found[-1], content)
+            if old_content == content:
+                # acabaram as potenciais mudanças
+                break
+        return content
+
+    def _insert_open_tag_at_the_start(self, first_tag, content):
+        """
+        Se a primeira tag é "fecha", então insere tag "abre" no início
+        """
+        if first_tag.startswith("[/"):
+            style_tag = self.style_tags.get(first_tag[2:-1])
+            content = (style_tag.fixed_xml_open +
+                       content.replace(
+                        first_tag, style_tag.fixed_xml_close, 1))
+        return content
+
+    def _insert_close_tag_at_the_end(self, last_tag, content):
+        """
+        Se a última tag "abre", então insere tag "fecha" no fim
+        """
+        if not last_tag.startswith("[/"):
+            style_tag = self.style_tags.get(last_tag[1:-1])
+            start = content[:content.find(last_tag)]
+            end = content[content.find(last_tag):].replace(
+                last_tag, style_tag.fixed_xml_open, 1)
+            content = start + end + style_tag.fixed_xml_close
+        return content
+
+    def _find_style_tags(self, content):
+        """
+        Identifica as tags de estilo em content
+        """
+        sgml_tags = dict(self.XML_TO_SGML).values()
+        items = content.replace(
+            "[", "BREAKSTYLETAGS[").replace(
+            "]", "]BREAKSTYLETAGS").split("BREAKSTYLETAGS")
+        return [
+            item
+            for item in items
+            if item in sgml_tags
+            ]
 
 
 class PackageNamer(object):
