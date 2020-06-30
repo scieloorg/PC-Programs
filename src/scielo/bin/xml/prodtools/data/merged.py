@@ -140,6 +140,7 @@ class DocumentsMerger(object):
         self.name_order_conflicts = {}
         self.name_changes = {}
         self.order_changes = {}
+        self.excluded_items = {}
         self.excluded_orders = []
         self.accepted_articles = {}
         self.rejected_articles = []
