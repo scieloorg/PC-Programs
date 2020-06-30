@@ -86,27 +86,27 @@ class ArticleDisplayReport(object):
     def article_front(self):
         r = _('{xml_name} is an invalid XML file').format(xml_name=self.article_identification)
         if self.article.tree is not None:
-            r = ''
-            r += self.sps
-            r += self.language
-            r += self.toc_section
-            r += self.article_type
-            r += self.display_titles()
-            r += self.article_id
-            r += self.article_id_other
-            r += self.previous_article_pid
-            r += self.order
-            r += self.fpage
-            r += self.fpage_seq
-            r += self.elocation_id
-            r += self.article_dates
-            r += self.contrib_names
-            r += self.contrib_collabs
-            r += self.affiliations
-            r += self.abstracts
-            r += self.keywords
-            r += self.graphical_abstracts
-
+            r = "".join((
+                self.sps,
+                self.language,
+                self.toc_section,
+                self.article_type,
+                self.display_titles(),
+                self.article_id,
+                self.article_id_other,
+                self.previous_article_pid,
+                self.order,
+                self.fpage,
+                self.fpage_seq,
+                self.elocation_id,
+                self.article_dates,
+                self.contrib_names,
+                self.contrib_collabs,
+                self.affiliations,
+                self.abstracts,
+                self.keywords,
+                self.graphical_abstracts,
+            ))
         return html_reports.tag('h2', 'article/front') + html_reports.tag('div', r, 'article-data')
 
     @property
@@ -203,6 +203,7 @@ class ArticleDisplayReport(object):
             return self.display_labeled_value('doi', self.article.doi, 'doi')
         if self.article.publisher_article_id is not None:
             return self.display_labeled_value('article-id (publisher)', self.article.publisher_article_id, 'doi')
+        return self.display_labeled_value('article-id', _('Not found'), 'doi')
 
     @property
     def fpage(self):
