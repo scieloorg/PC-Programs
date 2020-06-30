@@ -1518,6 +1518,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</history>
 	</xsl:template>
 	<xsl:template match="hist/*">
+		<xsl:if test="@datetype or @dateiso">
 		<xsl:variable name="dtype">
 			<xsl:choose>
 				<xsl:when test="name()='revised'">rev-recd</xsl:when>
@@ -1529,7 +1530,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:if test="$dtype!=''">
+		
 		<date date-type="{$dtype}">
 			<xsl:call-template name="display_date">
 				<xsl:with-param name="dateiso">
