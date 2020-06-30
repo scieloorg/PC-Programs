@@ -489,9 +489,19 @@ class ArticleContentValidation(object):
         for doc, contribs in self.article.doc_and_contribs_items:
             msgs = self.validate_contrib_item(doc, contribs)
             for msg in msgs or []:
-                r.append(
-                    ('contrib', validation_status.STATUS_FATAL_ERROR, msg,
-                        xml_utils.tostring(contribs[0].getparent())))
+                if contribs is not None and len(contribs) > 0:
+                    r.append(
+                        (
+                            "contrib",
+                            validation_status.STATUS_FATAL_ERROR,
+                            msg,
+                            xml_utils.tostring(contribs[0].getparent()),
+                        )
+                    )
+                else:
+                    r.append(
+                        ("contrib", validation_status.STATUS_FATAL_ERROR, msg, "",)
+                    )
         return r
 
     @property
