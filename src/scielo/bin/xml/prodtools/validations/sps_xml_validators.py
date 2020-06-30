@@ -126,10 +126,13 @@ class PackToolsXMLValidator(object):
         content = xml_utils.insert_break_lines(content)
         self.tree, self.loading_error = xml_utils.load_xml(content)
         if self.loading_error:
+            content = xml_utils.numbered_lines(content)
+            if content.startswith("1: <?xml"):
+                content = content[content.find("?>")+2:].strip()
             self.loading_error = (
                 self.file_path + "\n\n" +
                 self.loading_error + "\n\n" +
-                xml_utils.numbered_lines(content)
+                content
             )
             fs_utils.write_file(self.file_path, content)
 
