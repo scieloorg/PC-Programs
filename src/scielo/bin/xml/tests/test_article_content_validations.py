@@ -1,9 +1,5 @@
-from unittest import (
-    TestCase,
-)
-from unittest.mock import (
-    Mock,
-)
+from unittest import TestCase
+from unittest.mock import Mock, PropertyMock
 from lxml import etree
 
 
@@ -91,3 +87,39 @@ class TestArticleContentValidation(TestCase):
         self.assertEqual(
             result,
             ['contrib[2] in DUMMY must have "role"'])
+
+    def test_contrib_validation_should_not_display_the_element_tree_when_parent_element_is_empty(
+        self,
+    ):
+        text = """<article 
+            xmlns:mml="http://www.w3.org/1998/Math/MathML" 
+            xmlns:xlink="http://www.w3.org/1999/xlink" 
+            article-type="addendum" dtd-version="1.1" 
+            specific-use="sps-1.9" xml:lang="en">
+        </article>"""
+
+        xml = etree.fromstring(text)
+        mk_article = Mock()
+        type(mk_article).doc_and_contribs_items = PropertyMock(
+            return_value=[(xml, xml.findall(".//contrib"),)]
+        )
+
+        content_validation = ArticleContentValidation(
+            journal=Mock(),
+            _article=mk_article,
+            pkgfiles=Mock(),
+            is_db_generation=Mock(),
+            check_url=Mock(),
+            doi_validator=Mock(),
+            config=Mock(),
+        )
+
+        expected = [
+            (
+                "contrib",
+                "[FATAL ERROR]",
+                "article requires contrib names or collabs. ",
+                "",
+            )
+        ]
+        self.assertEqual(content_validation.contrib, expected)
