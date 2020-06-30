@@ -203,6 +203,7 @@ class ArticleDisplayReport(object):
             return self.display_labeled_value('doi', self.article.doi, 'doi')
         if self.article.publisher_article_id is not None:
             return self.display_labeled_value('article-id (publisher)', self.article.publisher_article_id, 'doi')
+        return self.display_labeled_value('article-id', _('Not found'), 'doi')
 
     @property
     def fpage(self):
