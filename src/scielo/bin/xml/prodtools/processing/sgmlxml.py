@@ -109,8 +109,11 @@ class PackageName(object):
         parts = [self.issn, acron, self.doc.volume, self.issueno, self.suppl, self.last, self.doc.compl]
         return '-'.join([part for part in parts if part])
 
-    def zero(self, value):
-        return value and value.isdigit() and int(value) == 0
+    def zero(self, value: str) -> bool:
+        """
+        Retorna True se value representa 0 ou 00 ou 000...
+        """
+        return bool(value) and value.isdigit() and int(value) == 0
 
     @property
     def issueno(self):
@@ -138,7 +141,7 @@ class PackageName(object):
 
     @property
     def last(self):
-        if not self.zero(self.doc.fpage):
+        if self.doc.fpage and not self.zero(self.doc.fpage):
             return self.doc.fpage + (self.doc.fpage_seq or "")
         if self.doc.elocation_id:
             return self.doc.elocation_id
