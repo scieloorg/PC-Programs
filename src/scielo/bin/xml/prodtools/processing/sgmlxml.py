@@ -135,7 +135,7 @@ class PackageName(object):
 
     @property
     def last(self):
-        if not self.zero(self.doc.fpage):
+        if self.doc.fpage and not self.zero(self.doc.fpage):
             return self.doc.fpage + (self.doc.fpage_seq or "")
         if self.doc.elocation_id:
             return self.doc.elocation_id
