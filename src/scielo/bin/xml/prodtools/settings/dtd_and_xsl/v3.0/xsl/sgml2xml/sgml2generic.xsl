@@ -1524,9 +1524,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test="@datetype!=''">
 					<xsl:value-of select="@datetype"/>
 				</xsl:when>
-				<xsl:otherwise>
+				<xsl:when test="@dateiso">
 					<xsl:value-of select="name()"/>
-				</xsl:otherwise>
+				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 		<date date-type="{$dtype}">
