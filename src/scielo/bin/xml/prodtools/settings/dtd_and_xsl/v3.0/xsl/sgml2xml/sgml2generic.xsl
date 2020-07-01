@@ -1518,24 +1518,26 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</history>
 	</xsl:template>
 	<xsl:template match="hist/*">
-		<xsl:variable name="dtype">
-			<xsl:choose>
-				<xsl:when test="name()='revised'">rev-recd</xsl:when>
-				<xsl:when test="@datetype!=''">
-					<xsl:value-of select="@datetype"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="name()"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<date date-type="{$dtype}">
-			<xsl:call-template name="display_date">
-				<xsl:with-param name="dateiso">
-					<xsl:value-of select="@dateiso"/>
-				</xsl:with-param>
-			</xsl:call-template>
-		</date>
+		<xsl:if test="@datetype or @dateiso">
+			<date>
+				<xsl:attribute name="date-type">
+					<xsl:choose>
+						<xsl:when test="name()='revised'">rev-recd</xsl:when>
+						<xsl:when test="@datetype!=''">
+							<xsl:value-of select="@datetype"/>
+						</xsl:when>
+						<xsl:when test="@dateiso">
+							<xsl:value-of select="name()"/>
+						</xsl:when>
+					</xsl:choose>
+				</xsl:attribute>
+				<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso">
+						<xsl:value-of select="@dateiso"/>
+					</xsl:with-param>
+				</xsl:call-template>
+			</date>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="abstract|xmlabstr">
