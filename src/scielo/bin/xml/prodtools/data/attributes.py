@@ -270,6 +270,7 @@ COUNTRY_CODES = [
 PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']
 
 related_articles_type = [
+    'addendum',
     'corrected-article',
     'commentary-article',
     'press-release',
