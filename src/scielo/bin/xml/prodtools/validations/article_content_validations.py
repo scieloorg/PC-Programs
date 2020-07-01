@@ -217,6 +217,7 @@ class ArticleContentValidation(object):
                     self.history,
                     self.titles_abstracts_keywords,
                     self.related_articles,
+                    self.related_objects,
                 ])
 
             items.extend([
