@@ -2,7 +2,7 @@
 name: Solicitar correção/alteração em documentação
 about: Reporte um erro ou problema e nos ajude a melhorar nossa documentação
 title: ''
-labels: BUG, docs
+labels: BUG, bug, docs
 assignees: ''
 
 ---
