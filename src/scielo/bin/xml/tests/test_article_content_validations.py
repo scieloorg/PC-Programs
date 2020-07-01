@@ -88,7 +88,7 @@ class TestArticleContentValidation(TestCase):
             result,
             ['contrib[2] in DUMMY must have "role"'])
 
-    def test_contrib_validation_should_not_display_the_element_tree_when_parent_element_is_empty(
+    def test_contrib_validation_returns_empty_list_because_it_is_not_required_contrib_for_addendum(
         self,
     ):
         text = """<article 
@@ -114,12 +114,4 @@ class TestArticleContentValidation(TestCase):
             config=Mock(),
         )
 
-        expected = [
-            (
-                "contrib",
-                "[FATAL ERROR]",
-                "article requires contrib names or collabs. ",
-                "",
-            )
-        ]
-        self.assertEqual(content_validation.contrib, expected)
+        self.assertEqual(content_validation.contrib, [])
