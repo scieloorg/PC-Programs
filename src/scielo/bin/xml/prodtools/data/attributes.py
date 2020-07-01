@@ -99,6 +99,7 @@ INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS = {
 }
 
 INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF = [
+    'addendum',
     'correction',
     'retraction',
     'partial-retraction',
