@@ -404,6 +404,32 @@ class ArticleContentValidation(object):
         return r
 
     @property
+    def related_objects(self):
+        """
+        @id k
+        @xlink:href i
+        @ext-link-type n
+        . t article
+        @related-object-type
+        @id k
+        . t pr
+        """
+        r = []
+        for related in self.article.related_objects:
+            value = related.get('related-object-type')
+            expected_values = attributes.related_objects_type
+            msg = data_validations.is_expected_value('related-object/@related-object-type', value, expected_values, validation_status.STATUS_FATAL_ERROR)
+            r.append(msg)
+            if related.get('ext-link-type', '') == 'doi':
+                _doi = related.get('href', '')
+                if _doi != '':
+                    valid = self.doi_validator.validate_format(_doi)
+                    if not valid:
+                        msg = data_validations.invalid_value_message('related-object/@xlink:href', related.get('href'))
+                        r.append(('related-object/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-object/@xlink:href')))
+        return r
+
+    @property
     def refstats(self):
         r = []
         non_scholar_types = [k for k in self.article.refstats.keys() if k not in attributes.BIBLIOMETRICS_USE]

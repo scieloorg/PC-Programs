@@ -279,6 +279,11 @@ related_articles_type = [
     'retracted-article',
 ]
 
+related_objects_type = [
+    'referee-report',
+    'peer-reviewed-material',
+]
+
 CONTRIB_ID_URLS = {
     'lattes': 'https://lattes.cnpq.br/',
     'orcid': 'https://orcid.org/',
