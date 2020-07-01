@@ -273,7 +273,9 @@ related_articles_type = [
     'addendum',
     'corrected-article',
     'commentary-article',
-    'press-release',
+    'retracted-article',
+    'letter',
+    'partial-retraction',
     'retracted-article',
 ]
 
