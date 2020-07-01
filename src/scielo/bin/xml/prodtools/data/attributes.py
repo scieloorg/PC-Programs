@@ -269,7 +269,12 @@ COUNTRY_CODES = [
 
 PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']
 
-related_articles_type = ['corrected-article', 'commentary-article', 'press-release', 'retracted-article']
+related_articles_type = [
+    'corrected-article',
+    'commentary-article',
+    'press-release',
+    'retracted-article',
+]
 
 CONTRIB_ID_URLS = {
     'lattes': 'https://lattes.cnpq.br/',
