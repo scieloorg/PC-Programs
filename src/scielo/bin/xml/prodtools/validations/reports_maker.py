@@ -169,7 +169,6 @@ class ReportsMaker(object):
                   self.files_location.result_path,
                   self.files_location.report_path]
         for o, r in zip(origin, replac):
-            print(o, r)
             content = content.replace(o, r)
         return content + self.footnote
 

@@ -73,7 +73,7 @@ class PIDVersionsDB:
         try:
             self.cursor.execute(sql, parameters)
         except sqlite3.IntegrityError as e:
-            logging.error("this item already exists in database")
+            logging.debug("this item already exists in database")
             return False
         else:
             self.conn.commit()
