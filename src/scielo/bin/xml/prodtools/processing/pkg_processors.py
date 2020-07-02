@@ -202,7 +202,7 @@ class ArticlesConversion(object):
         db_articles = self.registered_articles or {}
         for xml_name in sorted(self.pkg_eval_result.history_items.keys()):
             pkg = self.pkg.articles.get(xml_name)
-            registered = self.registered_issue_data.registered_articles.get(xml_name)
+            registered = self.pkg_eval_result.registered_articles.get(xml_name)
             merged = db_articles.get(xml_name)
 
             diff = ''
