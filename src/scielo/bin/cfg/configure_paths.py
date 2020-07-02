@@ -49,21 +49,26 @@ def update_scielo_paths():
         ('d:\\dados\\scielo', DATADIR),
         ('c:\\programas\\scielo', APPDIR),
         ('MYSCIELOURL', MYSCIELOURL),
-        ('SCI_LISTA_SITE=c:\\var\\www\\scielo',
-            'SCI_LISTA_SITE={}'.format(WEBPATH)),
     ]
+    if WEBPATH and WEBPATH != 'c:\\var\\www\\scielo':
+        items.append(
+            ('SCI_LISTA_SITE=c:\\var\\www\\scielo',
+             'SCI_LISTA_SITE={}'.format(WEBPATH)),
+        )
 
     if os.path.exists(SCIELO_PATHS_CONFIG):
         SCIELO_PATHS_BKP = SCIELO_PATHS_CONFIG + "." + now() + ".old"
         shutil.copyfile(SCIELO_PATHS_CONFIG, SCIELO_PATHS_BKP)
 
+    c = ''
     with open(SCIELO_PATHS_TEMPLATE, 'r') as fp:
         c = fp.read()
-    with open(SCIELO_PATHS_CONFIG, 'w') as fp:
+    if c:
         for old, new in items:
             if new:
                 c = c.replace(old, new)
-        fp.write(c)
+        with open(SCIELO_PATHS_CONFIG, 'w') as fp:
+            fp.write(c)
 
 
 def create_newcode_db():
