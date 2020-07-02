@@ -490,8 +490,8 @@ class AssetsDestinations(object):
 
     @property
     def img_path(self):
-        if self.web_bases_path:
-            return os.path.join(self.web_bases_path, self._img_revistas_subdir)
+        if self.web_app_path:
+            return os.path.join(self.web_app_path, self._img_revistas_subdir)
         return self.pkg_path
 
     @property
