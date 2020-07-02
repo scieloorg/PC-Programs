@@ -787,8 +787,6 @@ class ArticleXML(object):
                 if item['ext-link-type'] == 'scielo-pid':
                     item['ext-link-type'] = 'pid'
                 item['id'] = rel.attrib.get('id')
-                if item['related-object-type'] not in attributes.related_objects_type:
-                    item['id'] = ''.join([c for c in item['id'] if c.isdigit()])
                 item['xml'] = tostring(rel)
                 r.append(item)
         return r

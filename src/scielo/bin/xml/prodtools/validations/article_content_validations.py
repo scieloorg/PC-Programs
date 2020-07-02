@@ -421,13 +421,14 @@ class ArticleContentValidation(object):
             expected_values = attributes.related_objects_type
             msg = data_validations.is_expected_value('related-object/@related-object-type', value, expected_values, validation_status.STATUS_FATAL_ERROR)
             r.append(msg)
-            if related.get('ext-link-type', '') == 'doi':
-                _doi = related.get('href', '')
-                if _doi != '':
+            if related.get('ext-link-type') == 'doi':
+                valid = False
+                _doi = related.get('href')
+                if _doi:
                     valid = self.doi_validator.validate_format(_doi)
-                    if not valid:
-                        msg = data_validations.invalid_value_message('related-object/@xlink:href', related.get('href'))
-                        r.append(('related-object/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-object/@xlink:href')))
+                if not valid:
+                    msg = data_validations.invalid_value_message('related-object/@xlink:href', related.get('href'))
+                    r.append(('related-object/@xlink:href', validation_status.STATUS_FATAL_ERROR, msg + ('The content of {label} must be a DOI number. ').format(label='related-object/@xlink:href')))
         return r
 
     @property
