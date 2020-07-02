@@ -92,6 +92,7 @@ class PackageEvaluationResult(object):
         self.accepted_articles = docs_merger.accepted_articles
         self.history_items = docs_merger.history_items
         self.merged_articles = docs_merger.merged_articles
+        self.registered_articles = docs_merger.registered_articles
 
 
 class DocsMergingReports(object):
