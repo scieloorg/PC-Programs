@@ -775,6 +775,23 @@ class ArticleXML(object):
         return r
 
     @property
+    def related_objects(self):
+        r = []
+        if self.article_meta is not None:
+            related = self.article_meta.findall('related-object')
+            for rel in related:
+                item = {}
+                item['href'] = rel.attrib.get('{http://www.w3.org/1999/xlink}href')
+                item['related-object-type'] = rel.attrib.get('related-object-type')
+                item['ext-link-type'] = rel.attrib.get('ext-link-type')
+                if item['ext-link-type'] == 'scielo-pid':
+                    item['ext-link-type'] = 'pid'
+                item['id'] = rel.attrib.get('id')
+                item['xml'] = tostring(rel)
+                r.append(item)
+        return r
+
+    @property
     def journal_title(self):
         if self.journal_meta is not None:
             return self.journal_meta.findtext('.//journal-title')

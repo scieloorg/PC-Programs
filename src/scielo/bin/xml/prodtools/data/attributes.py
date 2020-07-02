@@ -99,6 +99,7 @@ INDEXABLE_WITH_FLEXIBLE_REQUIREMENTS = {
 }
 
 INDEXABLE_AND_DONT_REQUIRE_CONTRIB_AFF_XREF_REF = [
+    'addendum',
     'correction',
     'retraction',
     'partial-retraction',
@@ -269,7 +270,20 @@ COUNTRY_CODES = [
 
 PERMISSION_ELEMENTS = ['license', 'copyright-holder', 'copyright-year', 'copyright-statement']
 
-related_articles_type = ['corrected-article', 'commentary-article', 'press-release', 'retracted-article']
+related_articles_type = [
+    'addendum',
+    'corrected-article',
+    'commentary-article',
+    'retracted-article',
+    'letter',
+    'partial-retraction',
+    'retracted-article',
+]
+
+related_objects_type = [
+    'referee-report',
+    'peer-reviewed-material',
+]
 
 CONTRIB_ID_URLS = {
     'lattes': 'https://lattes.cnpq.br/',
