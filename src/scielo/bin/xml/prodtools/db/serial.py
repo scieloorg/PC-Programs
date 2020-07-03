@@ -44,55 +44,20 @@ class ArticleFiles(object):
             self.issue_files.relative_issue_path, self.filename)
 
 
-class IssueFiles(object):
+class IssuePathsInSerial(object):
 
-    def __init__(self, journal_files, issue_folder):
-        self.journal_files = journal_files
+    def __init__(self, serial_path, acron, issue_folder):
+        self.serial_path = serial_path
+        self.acron = acron
         self.issue_folder = issue_folder
-        self.create_folders()
-        self.move_old_id_folder()
-        self._articles_files = None
-        self.is_aop = issue_folder.endswith('ahead') and not issue_folder.startswith('ex-')
-        self.is_ex_aop = issue_folder.endswith('ahead') and issue_folder.startswith('ex-')
-        self.is_pr = issue_folder.endswith('pr') and not issue_folder.startswith('ex-')
-        self.is_regular = not self.is_aop and not self.is_ex_aop and not self.is_pr
-
-    @property
-    def articles_files(self):
-        if self._articles_files is None:
-            self._articles_files = {}
-            for item in os.listdir(self.id_path):
-                if os.path.isfile(os.path.join(self.id_path, item)) and item.endswith('.id'):
-                    order = item.replace('.id', '')
-                    self._articles_files[order] = ArticlesFiles(self, order, None)
-        return self._articles_files
-
-    def create_folders(self):
-        for path in [self.id_path, self.base_path, self.base_reports_path, self.base_source_path]:
-            if not os.path.isdir(path):
-                os.makedirs(path)
-
-    def move_old_id_folder(self):
-        if os.path.isdir(self.old_id_path):
-            if not os.path.isdir(self.id_path):
-                os.makedirs(self.id_path)
-            for item in os.listdir(self.old_id_path):
-                id_file_path = os.path.join(self.id_path, item)
-                if not os.path.isfile(id_file_path):
-                    shutil.copyfile(
-                        os.path.join(self.old_id_path, item), id_file_path)
-            try:
-                fs_utils.delete_file_or_folder(self.old_id_path)
-            except:
-                pass
 
     @property
     def issue_path(self):
-        return os.path.join(self.journal_files.journal_path, self.issue_folder)
+        return os.path.join(self.serial_path, self.acron, self.issue_folder)
 
     @property
     def relative_issue_path(self):
-        return os.path.join(self.journal_files.acron, self.issue_folder)
+        return os.path.join(self.acron, self.issue_folder)
 
     @property
     def old_id_path(self):
@@ -135,18 +100,6 @@ class IssueFiles(object):
         return os.path.join(self.base_xml_path, 'base_source')
 
     @property
-    def base_source_xml_files(self):
-        return [os.path.join(self.base_source_path, item)
-                for item in os.listdir(self.base_source_path)
-                if item.endswith('.xml')]
-
-    @property
-    def xml_files(self):
-        return {item: os.path.join(self.base_source_path, item)
-                for item in os.listdir(self.base_source_path)
-                if item.endswith('.xml')}
-
-    @property
     def base(self):
         return os.path.join(self.base_path, self.issue_folder)
 
@@ -157,6 +110,63 @@ class IssueFiles(object):
     @property
     def windows_base(self):
         return os.path.join(self.windows_base_path, self.issue_folder)
+
+
+class IssueFiles(IssuePathsInSerial):
+
+    def __init__(self, journal_files, issue_folder):
+        self.journal_files = journal_files
+        self.issue_folder = issue_folder
+        super().__init__(
+            journal_files.serial_path, journal_files.acron, issue_folder)
+        self.create_folders()
+        self.move_old_id_folder()
+        self._articles_files = None
+        self.is_aop = issue_folder.endswith('ahead') and not issue_folder.startswith('ex-')
+        self.is_ex_aop = issue_folder.endswith('ahead') and issue_folder.startswith('ex-')
+        self.is_pr = issue_folder.endswith('pr') and not issue_folder.startswith('ex-')
+        self.is_regular = not self.is_aop and not self.is_ex_aop and not self.is_pr
+
+    @property
+    def articles_files(self):
+        if self._articles_files is None:
+            self._articles_files = {}
+            for item in os.listdir(self.id_path):
+                if os.path.isfile(os.path.join(self.id_path, item)) and item.endswith('.id'):
+                    order = item.replace('.id', '')
+                    self._articles_files[order] = ArticlesFiles(self, order, None)
+        return self._articles_files
+
+    def create_folders(self):
+        for path in [self.id_path, self.base_path, self.base_reports_path, self.base_source_path]:
+            if not os.path.isdir(path):
+                os.makedirs(path)
+
+    def move_old_id_folder(self):
+        if os.path.isdir(self.old_id_path):
+            if not os.path.isdir(self.id_path):
+                os.makedirs(self.id_path)
+            for item in os.listdir(self.old_id_path):
+                id_file_path = os.path.join(self.id_path, item)
+                if not os.path.isfile(id_file_path):
+                    shutil.copyfile(
+                        os.path.join(self.old_id_path, item), id_file_path)
+            try:
+                fs_utils.delete_file_or_folder(self.old_id_path)
+            except:
+                pass
+
+    @property
+    def base_source_xml_files(self):
+        return [os.path.join(self.base_source_path, item)
+                for item in os.listdir(self.base_source_path)
+                if item.endswith('.xml')]
+
+    @property
+    def xml_files(self):
+        return {item: os.path.join(self.base_source_path, item)
+                for item in os.listdir(self.base_source_path)
+                if item.endswith('.xml')}
 
     def save_reports(self, report_path):
         if not self.base_reports_path == report_path:
@@ -377,71 +387,3 @@ class IssuePathsInWebsite(object):
             web_path, 'htdocs', 'img', 'revistas', acron, issue)
         self.web_htdocs_img_html = os.path.join(
             web_path, 'htdocs', 'img', 'revistas', acron, issue, 'html')
-
-
-class IssuePathsInSerial(object):
-
-    def __init__(self, serial_path, acron, issue_folder):
-        self.serial_path = serial_path
-        self.acron = acron
-        self.issue_folder = issue_folder
-
-    @property
-    def issue_path(self):
-        return os.path.join(self.serial_path, self.acron, self.issue_folder)
-
-    @property
-    def relative_issue_path(self):
-        return os.path.join(self.acron, self.issue_folder)
-
-    @property
-    def old_id_path(self):
-        return os.path.join(self.issue_path, 'id')
-
-    @property
-    def id_path(self):
-        return os.path.join(self.base_xml_path, 'id')
-
-    @property
-    def id_filename(self):
-        return os.path.join(self.id_path, 'i.id')
-
-    @property
-    def base_path(self):
-        return os.path.join(self.issue_path, 'base')
-
-    @property
-    def markup_path(self):
-        return os.path.join(self.issue_path, 'markup')
-
-    @property
-    def body_path(self):
-        return os.path.join(self.issue_path, 'body')
-
-    @property
-    def windows_base_path(self):
-        return os.path.join(self.issue_path, 'windows')
-
-    @property
-    def base_xml_path(self):
-        return os.path.join(self.issue_path, 'base_xml')
-
-    @property
-    def base_reports_path(self):
-        return os.path.join(self.base_xml_path, 'base_reports')
-
-    @property
-    def base_source_path(self):
-        return os.path.join(self.base_xml_path, 'base_source')
-
-    @property
-    def base(self):
-        return os.path.join(self.base_path, self.issue_folder)
-
-    @property
-    def base_filename(self):
-        return self.base + '.mst'
-
-    @property
-    def windows_base(self):
-        return os.path.join(self.windows_base_path, self.issue_folder)
