@@ -453,19 +453,22 @@ class DocumentOutputFiles(object):
             fs_utils.delete_file_or_folder(f)
 
 
-class AssetsDestinations(object):
+def AssetsDestinations(pkg_path, acron, issue_label, serial_path, web_app_path,
+                       web_url=None):
+    if serial_path:
+        return CollectionAssetsDestinations(
+                    pkg_path, acron, issue_label,
+                    serial_path, web_app_path, web_url)
+    return BasicAssetsDestinations(pkg_path, acron, issue_label)
 
-    def __init__(self, pkg_path, acron, issue_label,
-                 serial_path=None, web_app_path=None, web_url=None):
+
+class BasicAssetsDestinations(object):
+
+    def __init__(self, pkg_path, acron, issue_label):
         self.pkg_path = pkg_path
         self.acron = acron
         self.issue_label = issue_label
-        self.serial_path = serial_path
-        self.web_app_path = web_app_path
-        self.web_url = web_url
-
         self.issue_path = os.path.join(acron, issue_label)
-
         self._img_revistas_subdir = os.path.join(
             'img', 'revistas', self.issue_path)
         self._pdf_subdir = os.path.join('pdf', self.issue_path)
@@ -473,48 +476,72 @@ class AssetsDestinations(object):
         self._reports_subdir = os.path.join('reports', self.issue_path)
 
     @property
-    def serial_issue_path(self):
-        if self.serial_path:
-            return os.path.join(self.serial_path, self.issue_path)
-
-    @property
     def result_path(self):
-        if self.serial_issue_path:
-            return self.serial_issue_path
         return os.path.dirname(self.pkg_path)
 
     @property
-    def web_bases_path(self):
-        if self.web_app_path:
-            return os.path.join(self.web_app_path, "bases")
-
-    @property
     def img_path(self):
-        if self.web_app_path:
-            return os.path.join(self.web_app_path, self._img_revistas_subdir)
         return self.pkg_path
 
     @property
     def pdf_path(self):
-        if self.web_bases_path:
-            return os.path.join(self.web_bases_path, self._pdf_subdir)
         return self.pkg_path
 
     @property
     def xml_path(self):
-        if self.web_bases_path:
-            return os.path.join(self.web_bases_path, self._xml_subdir)
-        elif self.serial_issue_path:
-            return os.path.join(
-                self.serial_issue_path, 'base_xml', 'base_source')
         return self.pkg_path
 
     @property
     def report_path(self):
-        if self.web_app_path:
-            return os.path.join(
-                self.web_app_path, 'htdocs', self._reports_subdir)
         return os.path.join(self.result_path, 'errors')
+
+    @property
+    def report_link(self):
+        return os.path.join('file://', self.result_path, 'errors')
+
+    @property
+    def img_link(self):
+        return os.path.join('file://', self.img_path)
+
+    @property
+    def pdf_link(self):
+        return os.path.join('file://', self.pdf_path)
+
+    @property
+    def xml_link(self):
+        return os.path.join('file://', self.xml_path)
+
+
+class CollectionAssetsDestinations(BasicAssetsDestinations):
+
+    def __init__(self, pkg_path, acron, issue_label,
+                 serial_path, web_app_path, web_url):
+        super().__init__(pkg_path, acron, issue_label)
+        self.serial_path = serial_path
+        self.web_app_path = web_app_path
+        self.web_url = web_url
+
+    @property
+    def result_path(self):
+        return os.path.join(self.serial_path, self.issue_path)
+
+    @property
+    def img_path(self):
+        return os.path.join(self.web_app_path, self._img_revistas_subdir)
+
+    @property
+    def pdf_path(self):
+        return os.path.join(self.web_app_path, "bases", self._pdf_subdir)
+
+    @property
+    def xml_path(self):
+        if self.web_app_path:
+            return os.path.join(self.web_app_path, "bases", self._xml_subdir)
+        return os.path.join(self.serial_issue_path, 'base_xml', 'base_source')
+
+    @property
+    def report_path(self):
+        return os.path.join(self.web_app_path, 'htdocs', self._reports_subdir)
 
     @property
     def report_link(self):
@@ -524,9 +551,7 @@ class AssetsDestinations(object):
 
     @property
     def base_report_path(self):
-        if self.serial_path:
-            return os.path.join(
-                self.serial_issue_path, 'base_xml', 'base_reports')
+        return os.path.join(self.serial_issue_path, 'base_xml', 'base_reports')
 
     @property
     def img_link(self):
