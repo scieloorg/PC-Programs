@@ -1,11 +1,10 @@
 from unittest import TestCase
 
-from prodtools.data.workarea import (
+from prodtools.validations.reports_maker import (
     AssetsInReport,
     BasicAssetsInReport,
     CollectionAssetsInReport,
 )
-
 
 
 class TestAssetsInReportReturnsCollectionAssetsInReportForRemoteWebsite(TestCase):
