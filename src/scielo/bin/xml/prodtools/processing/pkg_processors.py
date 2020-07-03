@@ -437,15 +437,25 @@ class PkgProcessor(object):
 
     def report_result(self, pkg, pkg_eval_result, conversion=None):
         logger.info("Generate reports")
-        files_location = reports_maker.AssetsInReport(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label)
+        files_location = reports_maker.AssetsInReport(
+            pkg.wk.scielo_package_path)
         if conversion is not None:
-            files_location = reports_maker.AssetsInReport(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
-        reports = reports_maker.ReportsMaker(pkg, pkg_eval_result, files_location, self.stage, self.xpm_version, conversion)
+            files_location = reports_maker.AssetsInReport(
+                pkg.wk.scielo_package_path,
+                pkg.issue_data.acron,
+                pkg.issue_data.issue_label,
+                self.config.serial_path,
+                self.config.local_web_app_path,
+                self.config.web_app_site)
+        reports = reports_maker.ReportsMaker(
+            pkg, pkg_eval_result, files_location, self.stage,
+            self.xpm_version, conversion)
         if not self.is_xml_generation:
             reports.save_report(self.INTERATIVE)
         if conversion is not None:
             if conversion.registered_issue_data.issue_files is not None:
-                conversion.registered_issue_data.issue_files.save_reports(files_location.report_path)
+                conversion.registered_issue_data.issue_files.save_reports(
+                    files_location.report_path)
         if self.config.web_app_site is not None:
             for article_files in pkg.package_folder.pkgfiles_items.values():
                 # copia os xml para report path
