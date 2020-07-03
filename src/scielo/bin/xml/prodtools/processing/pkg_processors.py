@@ -83,25 +83,27 @@ class ArticlesConversion(object):
         self.pkg_eval_result = pkg_eval_result
         self.error_messages = []
         self.conversion_status = {}
+        self.updated_scilista_items = None
 
     def convert(self):
+        self.updated_scilista_items = None
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.pkg_eval_result.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.pkg_eval_result.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.pkg_eval_result.excluded_orders)
 
-            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.pkg_eval_result.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
-            scilista_items.extend(_scilista_items)
+            self.updated_scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.pkg_eval_result.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
+            scilista_items.extend(self.updated_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
             for name, message in self.db.articles_conversion_messages.items():
                 self.articles_conversion_validations[name] = validations_module.ValidationsResult()
                 self.articles_conversion_validations[name].message = message
 
-            if len(_scilista_items) > 0:
+            if len(self.updated_scilista_items) > 0:
                 # IMPROVEME
                 if self.local_web_app_path:
-                    # se há o sítio local, copia os arquivos do pacote para ele
+                    # copia os arquivos do pacote para o sítio local
                     website_files = WebsiteFiles(
                         self.local_web_app_path,
                         self.pkg.issue_data.acron,
@@ -140,6 +142,8 @@ class ArticlesConversion(object):
 
     def export_package_to_spf_directory(self, exporter: callable, package_name: str):
         """Exporta o pacote SPS de acordo com a estratégia utilizada"""
+        if self.updated_scilista_items is None:
+            return
         if exporter is None:
             logger.debug(
                 "Could not export this package because the none exporter was used."
@@ -167,6 +171,8 @@ class ArticlesConversion(object):
         substitui o pdf do aop pelo conteúdo do pdf do issue, mantendo o
         nome do arquivo aop
         """
+        if self.updated_scilista_items is None:
+            return
         encoding.debugging(
             'replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
 
