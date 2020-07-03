@@ -179,7 +179,7 @@ class ReportsMaker(object):
         result_path = self.assets_in_report.result_path
         return (
             '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' +
-            html_reports.link(os.path.join('file:///', result_path), result_path) + '</p>')
+            html_reports.link(result_path, result_path) + '</p>')
 
 
 def error_msg_subtitle():
