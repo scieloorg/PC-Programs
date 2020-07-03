@@ -101,12 +101,20 @@ class ArticlesConversion(object):
             if len(_scilista_items) > 0:
                 # IMPROVEME
                 if self.local_web_app_path:
+                    # se há o sítio local, copia os arquivos do pacote para ele
                     website_files = WebsiteFiles(
                         self.local_web_app_path,
                         self.pkg.issue_data.acron,
                         self.pkg.issue_data.issue_label)
                     website_files.get_files(self.pkg.package_folder.path)
-                self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
+                # guarda os arquivos XML em
+                # /scielo/serial/acron/issue/base_xml/base_source
+                # para serem usado na consulta para atualizações da base
+                self.registered_issue_data.issue_files.save_source_files(
+                    self.pkg.package_folder.path)
+
+                # no sítio local substitui o pdf de ex aop com o conteúdo do
+                # documento do fascículo regular
                 self.replace_ex_aop_pdf_files()
 
         return scilista_items
@@ -155,6 +163,7 @@ class ArticlesConversion(object):
     def replace_ex_aop_pdf_files(self):
         # IMPROVEME
         """
+        No sítio local,
         substitui o pdf do aop pelo conteúdo do pdf do issue, mantendo o
         nome do arquivo aop
         """
@@ -448,15 +457,22 @@ class PkgProcessor(object):
                 self.config.serial_path,
                 self.config.local_web_app_path,
                 self.config.web_app_site)
+
         reports = reports_maker.ReportsMaker(
             pkg, pkg_eval_result, assets_in_report, self.stage,
             self.xpm_version, conversion)
+
         if not self.is_xml_generation:
+            # gera o relatório, exceto quando está gerando XML a partir do Mkp
             reports.save_report(self.INTERATIVE)
+
         if conversion is not None:
+            # faz uma cópia dos relatórios recém gerados na pasta `serial`
+            # /scielo/serial/<acron>/<issue>/base_xml/base_reports
             if conversion.registered_issue_data.issue_files is not None:
                 conversion.registered_issue_data.issue_files.save_reports(
                     assets_in_report.report_path)
+
         if self.config.web_app_site is not None:
             # se há o site remoto, os xml não estão acessíveis mesmo
             # existindo em bases/xml, por isso,
