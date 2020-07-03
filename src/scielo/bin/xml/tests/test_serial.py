@@ -37,6 +37,11 @@ class TestIssuePathsInWebsite(TestCase):
             "/app/web/htdocs/img/revistas/acron/issue/html",
             self.data.web_htdocs_img_html)
 
+    def test_web_htdocs_reports(self):
+        self.assertEqual(
+            "/app/web/htdocs/reports/acron/issue",
+            self.data.web_htdocs_reports)
+
 
 class TestIssuePathsInSerial(TestCase):
 

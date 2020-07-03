@@ -7,6 +7,7 @@ from prodtools.utils import utils
 from prodtools.utils import encoding
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
+from prodtools.db.serial import IssuePathsInSerial, IssuePathsInWebsite
 from . import article_data_reports
 from . import pkg_articles_validations
 from . import validations as validations_module
@@ -169,6 +170,8 @@ class ReportsMaker(object):
 
     @property
     def processing_result_location(self):
+        if not self.assets_in_report.result_path:
+            return
         result_path = self.assets_in_report.result_path
         return (
             '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' +
@@ -235,18 +238,23 @@ def toc_extended_report(articles):
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)
 
 
-def AssetsInReport(pkg_path,
-                       acron=None, issue_label=None,
-                       serial_path=None, web_app_path=None,
-                       web_url=None):
-    if serial_path:
-        return CollectionAssetsInReport(
-                    pkg_path, acron, issue_label,
-                    serial_path, web_app_path, web_url)
+def AssetsInReport(pkg_path, acron=None, issue_label=None, serial_path=None,
+                   web_app_path=None, web_url=None):
+    """
+    Instancia `CollectionAssetsInReport` ou `BasicAssetsInReport`
+    dependendo dos dados disponíveis para instanciar
+    """
+    if acron and issue_label and serial_path and web_app_path:
+        return CollectionAssetsInReport(acron, issue_label, serial_path,
+                                        web_app_path, web_url)
     return BasicAssetsInReport(pkg_path)
 
 
 class BasicAssetsInReport(object):
+    """
+    Entrega links e caminhos de pastas dos documentos de um pacote,
+    tais como: pastas de pdf, img, xml etc
+    """
 
     def __init__(self, pkg_path):
         self.pkg_path = pkg_path
@@ -288,74 +296,81 @@ class BasicAssetsInReport(object):
         return self.xml_path
 
 
-class CollectionAssetsInReport(BasicAssetsInReport):
+class CollectionAssetsInReport(object):
+    """
+    Entrega links e caminhos de pastas dos documentos de um _fasciculo_,
+    tais como: pastas de pdf, img, xml etc
+    Exemplo: /scielo/web/bases/xml/acron/issue
+    """
 
-    def __init__(self, pkg_path, acron, issue_label,
+    def __init__(self, acron, issue_label,
                  serial_path, web_app_path, web_url):
-        super().__init__(pkg_path)
-        self.acron = acron
-        self.issue_path = os.path.join(acron, issue_label)
-        self._img_revistas_subdir = os.path.join(
-            'img', 'revistas', self.issue_path)
-        self._pdf_subdir = os.path.join('pdf', self.issue_path)
-        self._xml_subdir = os.path.join('xml', self.issue_path)
-        self._reports_subdir = os.path.join('reports', self.issue_path)
-        self.serial_path = serial_path
-        self.web_app_path = web_app_path
         self.web_url = web_url
+        self.issue_in_serial = IssuePathsInSerial(
+            serial_path, acron, issue_label)
+        self.issue_in_website = IssuePathsInWebsite(
+            web_app_path, acron, issue_label)
+
+    def link(self, path):
+        path = path.replace(self.issue_in_website.web_path, "")
+        for dirname in ("/bases/", "/htdocs/revistas/", "/htdocs/"):
+            if dirname in path:
+                path = path.replace(dirname, "")
+                break
+        return os.path.join(self.web_url, path)
 
     @property
     def result_path(self):
-        return os.path.join(self.serial_path, self.issue_path)
+        if self.web_url:
+            return
+        return self.issue_in_serial.issue_path
 
     @property
     def img_path(self):
-        return os.path.join(
-            self.web_app_path, "htdocs", self._img_revistas_subdir)
+        return self.issue_in_website.web_htdocs_img
 
     @property
     def pdf_path(self):
-        return os.path.join(self.web_app_path, "bases", self._pdf_subdir)
+        return self.issue_in_website.web_bases_pdf
 
     @property
     def xml_path(self):
-        return os.path.join(self.web_app_path, "bases", self._xml_subdir)
+        return self.issue_in_website.web_bases_xml
 
     @property
     def report_path(self):
         if self.web_url:
-            return os.path.join(
-                self.web_app_path, 'htdocs', self._reports_subdir)
+            return self.issue_in_website.web_htdocs_reports
         return self.serial_report_path
 
     @property
     def report_link(self):
         if self.web_url:
-            return self.web_url + "/" + self._reports_subdir
+            return self.link(self.report_path)
         return self.serial_report_path
 
     @property
     def serial_report_path(self):
-        return os.path.join(self.result_path, 'base_xml', 'base_reports')
+        return self.issue_in_serial.base_reports_path
 
     @property
     def serial_base_xml_path(self):
-        return os.path.join(self.result_path, 'base_xml', 'base_source')
+        return self.issue_in_serial.base_source_path
 
     @property
     def img_link(self):
         if self.web_url:
-            return self.web_url + "/" + self._img_revistas_subdir
+            return self.link(self.img_path)
         return self.img_path
 
     @property
     def pdf_link(self):
         if self.web_url:
-            return self.web_url + "/" + self._pdf_subdir
+            return self.link(self.pdf_path)
         return self.pdf_path
 
     @property
     def xml_link(self):
         if self.web_url:
-            return self.web_url + "/" + self._reports_subdir
+            return self.report_link
         return self.xml_path

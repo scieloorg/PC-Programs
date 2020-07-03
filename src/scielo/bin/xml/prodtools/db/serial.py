@@ -387,3 +387,5 @@ class IssuePathsInWebsite(object):
             web_path, 'htdocs', 'img', 'revistas', acron, issue)
         self.web_htdocs_img_html = os.path.join(
             web_path, 'htdocs', 'img', 'revistas', acron, issue, 'html')
+        self.web_htdocs_reports = os.path.join(
+            web_path, 'htdocs', 'reports', acron, issue)

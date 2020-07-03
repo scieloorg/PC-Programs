@@ -19,9 +19,7 @@ class TestAssetsInReportReturnsCollectionAssetsInReportForRemoteWebsite(TestCase
         )
 
     def test_result_path(self):
-        self.assertEqual(
-            '/scielo/serial_path/acron/issue_label',
-            self.data.result_path)
+        self.assertIsNone(self.data.result_path)
 
     def test_img_path(self):
         self.assertEqual(
@@ -203,7 +201,6 @@ class TestCollectionAssetsInReportForNoRemoteWebsite(TestCase):
 
     def setUp(self):
         self.data = CollectionAssetsInReport(
-            "/root/package_path",
             "acron", "issue_label",
             "/scielo/serial_path",
             "/scielo/web",
@@ -260,7 +257,6 @@ class TestCollectionAssetsInReportForRemoteWebsite(TestCase):
 
     def setUp(self):
         self.data = CollectionAssetsInReport(
-            "/root/package_path",
             "acron", "issue_label",
             "/scielo/serial_path",
             "/scielo/web",
@@ -268,9 +264,7 @@ class TestCollectionAssetsInReportForRemoteWebsite(TestCase):
         )
 
     def test_result_path(self):
-        self.assertEqual(
-            '/scielo/serial_path/acron/issue_label',
-            self.data.result_path)
+        self.assertIsNone(self.data.result_path)
 
     def test_img_path(self):
         self.assertEqual(
