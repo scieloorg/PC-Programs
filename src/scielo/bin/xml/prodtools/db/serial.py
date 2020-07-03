@@ -299,7 +299,7 @@ class JournalFiles(object):
 class WebsiteFiles(object):
 
     def __init__(self, web_path, acron, issue):
-        self.paths = WebsiteAssetsLocations(web_path, acron, issue)
+        self.paths = IssuePathsInWebsite(web_path, acron, issue)
 
     def get_files(self, package_files_path):
         msg = ['\n']
@@ -365,7 +365,7 @@ class WebsiteFiles(object):
                 return xml_content
 
 
-class WebsiteAssetsLocations(object):
+class IssuePathsInWebsite(object):
 
     def __init__(self, web_path, acron, issue):
         self.web_path = web_path
@@ -377,3 +377,71 @@ class WebsiteAssetsLocations(object):
             web_path, 'htdocs', 'img', 'revistas', acron, issue)
         self.web_htdocs_img_html = os.path.join(
             web_path, 'htdocs', 'img', 'revistas', acron, issue, 'html')
+
+
+class IssuePathsInSerial(object):
+
+    def __init__(self, serial_path, acron, issue_folder):
+        self.serial_path = serial_path
+        self.acron = acron
+        self.issue_folder = issue_folder
+
+    @property
+    def issue_path(self):
+        return os.path.join(self.serial_path, self.acron, self.issue_folder)
+
+    @property
+    def relative_issue_path(self):
+        return os.path.join(self.acron, self.issue_folder)
+
+    @property
+    def old_id_path(self):
+        return os.path.join(self.issue_path, 'id')
+
+    @property
+    def id_path(self):
+        return os.path.join(self.base_xml_path, 'id')
+
+    @property
+    def id_filename(self):
+        return os.path.join(self.id_path, 'i.id')
+
+    @property
+    def base_path(self):
+        return os.path.join(self.issue_path, 'base')
+
+    @property
+    def markup_path(self):
+        return os.path.join(self.issue_path, 'markup')
+
+    @property
+    def body_path(self):
+        return os.path.join(self.issue_path, 'body')
+
+    @property
+    def windows_base_path(self):
+        return os.path.join(self.issue_path, 'windows')
+
+    @property
+    def base_xml_path(self):
+        return os.path.join(self.issue_path, 'base_xml')
+
+    @property
+    def base_reports_path(self):
+        return os.path.join(self.base_xml_path, 'base_reports')
+
+    @property
+    def base_source_path(self):
+        return os.path.join(self.base_xml_path, 'base_source')
+
+    @property
+    def base(self):
+        return os.path.join(self.base_path, self.issue_folder)
+
+    @property
+    def base_filename(self):
+        return self.base + '.mst'
+
+    @property
+    def windows_base(self):
+        return os.path.join(self.windows_base_path, self.issue_folder)
