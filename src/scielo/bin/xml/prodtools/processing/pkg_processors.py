@@ -458,8 +458,10 @@ class PkgProcessor(object):
                 conversion.registered_issue_data.issue_files.save_reports(
                     assets_in_report.report_path)
         if self.config.web_app_site is not None:
+            # se há o site remoto, os xml não estão acessíveis mesmo
+            # existindo em bases/xml, por isso,
+            # copia os xml para htdocs/reports/<acron>/<issue>/
             for article_files in pkg.package_folder.pkgfiles_items.values():
-                # copia os xml para report path
                 article_files.copy_xml(assets_in_report.report_path)
         return reports
 

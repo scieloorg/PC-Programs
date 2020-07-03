@@ -299,25 +299,17 @@ class JournalFiles(object):
 class WebsiteFiles(object):
 
     def __init__(self, web_path, acron, issue):
-        self.web_path = web_path
-        self.web_bases_pdf = os.path.join(
-            web_path, 'bases', 'pdf', acron, issue)
-        self.web_bases_xml = os.path.join(
-            web_path, 'bases', 'xml', acron, issue)
-        self.web_htdocs_img = os.path.join(
-            web_path, 'htdocs', 'img', 'revistas', acron, issue)
-        self.web_htdocs_img_html = os.path.join(
-            web_path, 'htdocs', 'img', 'revistas', acron, issue, 'html')
+        self.paths = WebsiteAssetsLocations(web_path, acron, issue)
 
     def get_files(self, package_files_path):
         msg = ['\n']
         msg.append('copying files from ' + package_files_path)
 
         path = {}
-        path['.pdf'] = self.web_bases_pdf
-        path['.xml'] = self.web_bases_xml
-        path['.html'] = self.web_htdocs_img_html
-        path['.img'] = self.web_htdocs_img
+        path['.pdf'] = self.paths.web_bases_pdf
+        path['.xml'] = self.paths.web_bases_xml
+        path['.html'] = self.paths.web_htdocs_img_html
+        path['.img'] = self.paths.web_htdocs_img
 
         for p in path.values():
             if not os.path.isdir(p):
@@ -371,3 +363,17 @@ class WebsiteFiles(object):
                     )
                 )
                 return xml_content
+
+
+class WebsiteAssetsLocations(object):
+
+    def __init__(self, web_path, acron, issue):
+        self.web_path = web_path
+        self.web_bases_pdf = os.path.join(
+            web_path, 'bases', 'pdf', acron, issue)
+        self.web_bases_xml = os.path.join(
+            web_path, 'bases', 'xml', acron, issue)
+        self.web_htdocs_img = os.path.join(
+            web_path, 'htdocs', 'img', 'revistas', acron, issue)
+        self.web_htdocs_img_html = os.path.join(
+            web_path, 'htdocs', 'img', 'revistas', acron, issue, 'html')
