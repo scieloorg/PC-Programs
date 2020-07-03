@@ -52,7 +52,7 @@ class ReportsMaker(object):
     @property
     def report_components(self):
         components = {}
-        components['pkg-files'] = self.full_xpm_version + self.pkg_files
+        components['pkg-files'] = self.full_xpm_version + self.pkg_reports.xml_list + self.processing_result_location
         components['summary-report'] = self.summary_report
         components['group-validations-report'] = self.group_validations_report
         components['individual-validations-report'] = self.individual_validations_report
@@ -71,13 +71,6 @@ class ReportsMaker(object):
 
         components = {k: label_errors(v) for k, v in components.items() if v is not None}
         return components
-
-    @property
-    def pkg_files(self):
-        r = self.pkg_reports.xml_list
-        if self.assets_in_report.result_path is not None:
-            r += self.processing_result_location
-        return r
 
     @property
     def summary_report(self):
