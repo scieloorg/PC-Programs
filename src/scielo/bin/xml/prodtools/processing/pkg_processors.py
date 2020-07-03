@@ -437,9 +437,10 @@ class PkgProcessor(object):
 
     def report_result(self, pkg, pkg_eval_result, conversion=None):
         logger.info("Generate reports")
-        files_location = reports_maker.AssetsInReport(
-            pkg.wk.scielo_package_path)
-        if conversion is not None:
+        if conversion is None:
+            files_location = reports_maker.AssetsInReport(
+                pkg.wk.scielo_package_path)
+        else:
             files_location = reports_maker.AssetsInReport(
                 pkg.wk.scielo_package_path,
                 pkg.issue_data.acron,
