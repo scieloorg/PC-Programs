@@ -1,17 +1,17 @@
 from unittest import TestCase
 
 from prodtools.data.workarea import (
-    AssetsDestinations,
-    BasicAssetsDestinations,
-    CollectionAssetsDestinations,
+    AssetsInReport,
+    BasicAssetsInReport,
+    CollectionAssetsInReport,
 )
 
 
 
-class TestAssetsDestinationsReturnsCollectionAssetsDestinationsForRemoteWebsite(TestCase):
+class TestAssetsInReportReturnsCollectionAssetsInReportForRemoteWebsite(TestCase):
 
     def setUp(self):
-        self.data = AssetsDestinations(
+        self.data = AssetsInReport(
             "/root/package_path",
             "acron", "issue_label",
             "/scielo/serial_path",
@@ -75,10 +75,10 @@ class TestAssetsDestinationsReturnsCollectionAssetsDestinationsForRemoteWebsite(
             self.data.serial_base_xml_path)
 
 
-class TestAssetsDestinationsReturnsBasicAssetsDestinations(TestCase):
+class TestAssetsInReportReturnsBasicAssetsInReport(TestCase):
 
     def setUp(self):
-        self.data = AssetsDestinations("/root/package_path", "acron", "label")
+        self.data = AssetsInReport("/root/package_path", "acron", "label")
 
     def test_result_path(self):
         self.assertEqual('/root', self.data.result_path)
@@ -109,10 +109,10 @@ class TestAssetsDestinationsReturnsBasicAssetsDestinations(TestCase):
             '/root/errors', self.data.report_link)
 
 
-class TestAssetsDestinationsReturnsCollectionAssetsDestinationsForNoRemoteWebsite(TestCase):
+class TestAssetsInReportReturnsCollectionAssetsInReportForNoRemoteWebsite(TestCase):
 
     def setUp(self):
-        self.data = AssetsDestinations(
+        self.data = AssetsInReport(
             "/root/package_path",
             "acron", "issue_label",
             "/scielo/serial_path",
@@ -166,10 +166,10 @@ class TestAssetsDestinationsReturnsCollectionAssetsDestinationsForNoRemoteWebsit
             self.data.report_link)
 
 
-class TestBasicAssetsDestinations(TestCase):
+class TestBasicAssetsInReport(TestCase):
 
     def setUp(self):
-        self.data = BasicAssetsDestinations("/root/package_path")
+        self.data = BasicAssetsInReport("/root/package_path")
 
     def test_result_path(self):
         self.assertEqual('/root', self.data.result_path)
@@ -200,10 +200,10 @@ class TestBasicAssetsDestinations(TestCase):
             '/root/errors', self.data.report_link)
 
 
-class TestCollectionAssetsDestinationsForNoRemoteWebsite(TestCase):
+class TestCollectionAssetsInReportForNoRemoteWebsite(TestCase):
 
     def setUp(self):
-        self.data = CollectionAssetsDestinations(
+        self.data = CollectionAssetsInReport(
             "/root/package_path",
             "acron", "issue_label",
             "/scielo/serial_path",
@@ -257,10 +257,10 @@ class TestCollectionAssetsDestinationsForNoRemoteWebsite(TestCase):
             self.data.report_link)
 
 
-class TestCollectionAssetsDestinationsForRemoteWebsite(TestCase):
+class TestCollectionAssetsInReportForRemoteWebsite(TestCase):
 
     def setUp(self):
-        self.data = CollectionAssetsDestinations(
+        self.data = CollectionAssetsInReport(
             "/root/package_path",
             "acron", "issue_label",
             "/scielo/serial_path",

@@ -453,18 +453,18 @@ class DocumentOutputFiles(object):
             fs_utils.delete_file_or_folder(f)
 
 
-def AssetsDestinations(pkg_path,
+def AssetsInReport(pkg_path,
                        acron=None, issue_label=None,
                        serial_path=None, web_app_path=None,
                        web_url=None):
     if serial_path:
-        return CollectionAssetsDestinations(
+        return CollectionAssetsInReport(
                     pkg_path, acron, issue_label,
                     serial_path, web_app_path, web_url)
-    return BasicAssetsDestinations(pkg_path)
+    return BasicAssetsInReport(pkg_path)
 
 
-class BasicAssetsDestinations(object):
+class BasicAssetsInReport(object):
 
     def __init__(self, pkg_path):
         self.pkg_path = pkg_path
@@ -506,7 +506,7 @@ class BasicAssetsDestinations(object):
         return self.xml_path
 
 
-class CollectionAssetsDestinations(BasicAssetsDestinations):
+class CollectionAssetsInReport(BasicAssetsInReport):
 
     def __init__(self, pkg_path, acron, issue_label,
                  serial_path, web_app_path, web_url):

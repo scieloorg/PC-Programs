@@ -438,9 +438,9 @@ class PkgProcessor(object):
 
     def report_result(self, pkg, pkg_eval_result, conversion=None):
         logger.info("Generate reports")
-        files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label)
+        files_location = workarea.AssetsInReport(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label)
         if conversion is not None:
-            files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
+            files_location = workarea.AssetsInReport(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
         reports = reports_maker.ReportsMaker(pkg, pkg_eval_result, files_location, self.stage, self.xpm_version, conversion)
         if not self.is_xml_generation:
             reports.save_report(self.INTERATIVE)
