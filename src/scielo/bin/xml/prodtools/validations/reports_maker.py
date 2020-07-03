@@ -14,7 +14,7 @@ from . import validations as validations_module
 
 class ReportsMaker(object):
 
-    def __init__(self, pkg, pkg_eval_result, files_location, stage, xpm_version=None, conversion=None):
+    def __init__(self, pkg, pkg_eval_result, assets_in_report, stage, xpm_version=None, conversion=None):
         self.pkg_eval_result = pkg_eval_result
         self.conversion = conversion
         self.xpm_version = xpm_version
@@ -23,7 +23,7 @@ class ReportsMaker(object):
         self.report_version = ''
         if self.stage == 'xc':
             self.report_version = '_' + datetime.now().isoformat()[0:19].replace(':', '').replace('T', '_')
-        self.files_location = files_location
+        self.assets_in_report = assets_in_report
         self.pkg = pkg
         self.pkg_reports = pkg_articles_validations.PackageReports(pkg.package_folder)
         self.pkg_articles_data_report = pkg_articles_validations.PkgArticlesDataReports(pkg.articles)
@@ -75,7 +75,7 @@ class ReportsMaker(object):
     @property
     def pkg_files(self):
         r = self.pkg_reports.xml_list
-        if self.files_location.result_path is not None:
+        if self.assets_in_report.result_path is not None:
             r += self.processing_result_location
         return r
 
@@ -143,13 +143,13 @@ class ReportsMaker(object):
     @property
     def report_location(self):
         return os.path.join(
-            self.files_location.report_path,
+            self.assets_in_report.report_path,
             self.stage + self.report_version + '.html')
 
     @property
     def report_link(self):
         return os.path.join(
-            self.files_location.report_link,
+            self.assets_in_report.report_link,
             os.path.basename(self.report_location))
 
     def save_report(self, display=True):
@@ -165,17 +165,18 @@ class ReportsMaker(object):
         tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, self.tab)
         content = tabbed_report.report_content
         origin = ['{IMG_PATH}', '{PDF_PATH}', '{XML_PATH}', '{RES_PATH}', '{REP_PATH}']
-        replac = [self.files_location.img_link, self.files_location.pdf_link,
-                  self.files_location.xml_link,
-                  self.files_location.result_path,
-                  self.files_location.report_path]
+        replac = [self.assets_in_report.img_link,
+                  self.assets_in_report.pdf_link,
+                  self.assets_in_report.xml_link,
+                  self.assets_in_report.result_path,
+                  self.assets_in_report.report_path]
         for o, r in zip(origin, replac):
             content = content.replace(o, r)
         return content + self.footnote
 
     @property
     def processing_result_location(self):
-        result_path = self.files_location.result_path
+        result_path = self.assets_in_report.result_path
         return (
             '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' +
             html_reports.link(os.path.join('file:///', result_path), result_path) + '</p>')

@@ -438,10 +438,10 @@ class PkgProcessor(object):
     def report_result(self, pkg, pkg_eval_result, conversion=None):
         logger.info("Generate reports")
         if conversion is None:
-            files_location = reports_maker.AssetsInReport(
+            assets_in_report = reports_maker.AssetsInReport(
                 pkg.wk.scielo_package_path)
         else:
-            files_location = reports_maker.AssetsInReport(
+            assets_in_report = reports_maker.AssetsInReport(
                 pkg.wk.scielo_package_path,
                 pkg.issue_data.acron,
                 pkg.issue_data.issue_label,
@@ -449,18 +449,18 @@ class PkgProcessor(object):
                 self.config.local_web_app_path,
                 self.config.web_app_site)
         reports = reports_maker.ReportsMaker(
-            pkg, pkg_eval_result, files_location, self.stage,
+            pkg, pkg_eval_result, assets_in_report, self.stage,
             self.xpm_version, conversion)
         if not self.is_xml_generation:
             reports.save_report(self.INTERATIVE)
         if conversion is not None:
             if conversion.registered_issue_data.issue_files is not None:
                 conversion.registered_issue_data.issue_files.save_reports(
-                    files_location.report_path)
+                    assets_in_report.report_path)
         if self.config.web_app_site is not None:
             for article_files in pkg.package_folder.pkgfiles_items.values():
                 # copia os xml para report path
-                article_files.copy_xml(reports.files_location.report_path)
+                article_files.copy_xml(assets_in_report.report_path)
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):
