@@ -361,33 +361,32 @@ class WebsiteFiles(object):
                 )
                 return xml_content
 
-    def replace_ex_aop_pdf_files(self, aop_pdf_replacements):
+    def identify_ex_aop_pdf_files_to_update(self, aop_pdf_replacements):
+        """
+        Identifica quais são os arquivos a serem atualizados
+        """
+        pdf_dir = os.path.join(self.paths.web_path, "bases", "pdf")
+        pdf_file_and_aop_folder_items = []
+        for fname in os.listdir(self.paths.web_bases_pdf):
+            name, ext = os.path.splitext(fname)
+            if name[2] == "_":
+                name = name[3:]
+            if name in aop_pdf_replacements.keys():
+                pdf_file_and_aop_folder_items.append(
+                    (os.path.join(self.paths.web_bases_pdf, fname),
+                     os.path.join(pdf_dir, aop_pdf_replacements[name][0])))
+        return pdf_file_and_aop_folder_items
+
+    def update_ex_aop_pdf_files(self, src_file_and_dest_folder_items):
         """
         No sítio local,
         substitui os pdf do aop pelo conteúdo dos pdfs do issue,
         mantendo o nome do arquivo aop
         """
-        pdf_dir = os.path.join(self.paths.web_path, "bases", "pdf")
-        issue_pdf_path = self.paths.web_bases_pdf
-
-        for xml_name, aop_location_data in aop_pdf_replacements.items():
-            aop_folder, aop_name = aop_location_data
-
-            aop_pdf_path = os.path.join(pdf_dir, aop_folder)
+        for pdf_file, aop_pdf_path in src_file_and_dest_folder_items:
             if not os.path.isdir(aop_pdf_path):
                 os.makedirs(aop_pdf_path)
-
-            issue_pdf_files = [f
-                               for f in os.listdir(issue_pdf_path)
-                               if (
-                                f.startswith(xml_name) or
-                                f[2:].startswith('_'+xml_name))]
-
-            for pdf in issue_pdf_files:
-                aop_pdf = pdf.replace(xml_name, aop_name)
-                src = os.path.join(issue_pdf_path, pdf)
-                dest = os.path.join(aop_pdf_path, aop_pdf)
-                shutil.copyfile(src, dest)
+            shutil.copy(pdf_file, aop_pdf_path)
 
 
 class IssuePathsInWebsite(object):

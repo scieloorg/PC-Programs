@@ -158,7 +158,9 @@ class ArticlesConversion(object):
             website_files.get_files(self.pkg.package_folder.path)
             # no sítio local substitui o pdf de ex aop com o conteúdo do
             # documento do fascículo regular
-            website_files.replace_ex_aop_pdf_files(self.db.aop_pdf_replacements)
+            website_files.update_ex_aop_pdf_files(
+                website_files.identify_ex_aop_pdf_files_to_update(
+                    self.db.aop_pdf_replacements))
 
     @property
     def conversion_report(self):
