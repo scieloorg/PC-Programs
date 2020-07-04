@@ -103,8 +103,6 @@ class ArticlesConversion(object):
                 self.articles_conversion_validations[name] = validations_module.ValidationsResult()
                 self.articles_conversion_validations[name].message = message
 
-            self.update_local_website_with_asset_files()
-
         return scilista_items
 
     def register_pids_and_update_xmls(self, pid_manager: PIDVersionsManager) -> None:
@@ -151,14 +149,13 @@ class ArticlesConversion(object):
         return {}
 
     def update_local_website_with_asset_files(self):
-        if self.updated_scilista_items:
-            if self.local_web_app_path:
-                # copia os arquivos do pacote para o sítio local
-                website_files = WebsiteFiles(
-                    self.local_web_app_path,
-                    self.pkg.issue_data.acron,
-                    self.pkg.issue_data.issue_label)
-                website_files.get_files(self.pkg.package_folder.path)
+        if self.updated_scilista_items and self.local_web_app_path:
+            # copia os arquivos do pacote para o sítio local
+            website_files = WebsiteFiles(
+                self.local_web_app_path,
+                self.pkg.issue_data.acron,
+                self.pkg.issue_data.issue_label)
+            website_files.get_files(self.pkg.package_folder.path)
             # no sítio local substitui o pdf de ex aop com o conteúdo do
             # documento do fascículo regular
             self.replace_ex_aop_pdf_files()
@@ -440,6 +437,7 @@ class PkgProcessor(object):
             conversion.export_package_to_spf_directory(
                 self.export_documents_package, package_name=scilista_items[0]
             )
+            conversion.update_local_website_with_asset_files()
 
         reports = self.report_result(pkg, pkg_eval_result, conversion)
         statistics_display = reports.validations.statistics_display(html_format=False)
