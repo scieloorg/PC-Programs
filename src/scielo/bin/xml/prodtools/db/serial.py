@@ -168,15 +168,6 @@ class IssueFiles(IssuePathsInSerial):
                 for item in os.listdir(self.base_source_path)
                 if item.endswith('.xml')}
 
-    def save_reports(self, report_path):
-        if not self.base_reports_path == report_path:
-            if not os.path.isdir(self.base_reports_path):
-                os.makedirs(self.base_reports_path)
-            for report_file in os.listdir(report_path):
-                shutil.copy(
-                    os.path.join(report_path, report_file),
-                    self.base_reports_path)
-
     def save_source_files(self, xml_path):
         if not self.base_source_path == xml_path:
             if not os.path.isdir(self.base_source_path):

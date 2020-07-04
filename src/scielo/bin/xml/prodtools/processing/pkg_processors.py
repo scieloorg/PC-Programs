@@ -472,14 +472,11 @@ class PkgProcessor(object):
             # gera o relatório, exceto quando está gerando XML a partir do Mkp
             reports.save_report(self.INTERATIVE)
 
-        if conversion is not None:
+        if self.config.web_app_site is not None:
             # faz uma cópia dos relatórios recém gerados na pasta `serial`
             # /scielo/serial/<acron>/<issue>/base_xml/base_reports
-            if conversion.registered_issue_data.issue_files is not None:
-                conversion.registered_issue_data.issue_files.save_reports(
-                    assets_in_report.report_path)
+            assets_in_report.save_report(reports.report_location)
 
-        if self.config.web_app_site is not None:
             # se há o site remoto, os xml não estão acessíveis mesmo
             # existindo em bases/xml, por isso,
             # copia os xml para htdocs/reports/<acron>/<issue>/

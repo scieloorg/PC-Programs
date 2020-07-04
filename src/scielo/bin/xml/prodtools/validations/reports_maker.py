@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import shutil
 from datetime import datetime
 
 from prodtools import _
@@ -318,6 +319,13 @@ class CollectionAssetsInReport(object):
                 path = path.replace(dirname, "")
                 break
         return os.path.join(self.web_url, path)
+
+    def save_report(self, report_file_path):
+        if self.serial_report_path == self.report_path:
+            return
+        if not os.path.isdir(self.serial_report_path):
+            os.makedirs(self.serial_report_path)
+        shutil.copy(report_file_path, self.serial_report_path)
 
     @property
     def result_path(self):

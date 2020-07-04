@@ -192,5 +192,3 @@ def splitpath(path):
                 break
             basenames.insert(0, basename)
     return basenames
-
-
