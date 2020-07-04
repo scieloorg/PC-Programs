@@ -158,43 +158,7 @@ class ArticlesConversion(object):
             website_files.get_files(self.pkg.package_folder.path)
             # no sítio local substitui o pdf de ex aop com o conteúdo do
             # documento do fascículo regular
-            self.replace_ex_aop_pdf_files()
-
-    def replace_ex_aop_pdf_files(self):
-        # IMPROVEME
-        """
-        No sítio local,
-        substitui o pdf do aop pelo conteúdo do pdf do issue, mantendo o
-        nome do arquivo aop
-        """
-        if self.updated_scilista_items is None:
-            return
-        encoding.debugging(
-            'replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
-
-        bases_dir = os.path.join(self.local_web_app_path, "bases")
-        pdf_dir = os.path.join(bases_dir, "pdf")
-        acron, issue = self.pkg.issue_data.acron_issue_label.split(" ")
-        issue_pdf_path = os.path.join(pdf_dir, acron, issue)
-
-        for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
-            folder, aop_name = aop_location_data
-
-            aop_pdf_path = os.path.join(pdf_dir, folder)
-            if not os.path.isdir(aop_pdf_path):
-                os.makedirs(aop_pdf_path)
-
-            issue_pdf_files = [f
-                               for f in os.listdir(issue_pdf_path)
-                               if (
-                                f.startswith(xml_name) or
-                                f[2:].startswith('_'+xml_name))]
-
-            for pdf in issue_pdf_files:
-                aop_pdf = pdf.replace(xml_name, aop_name)
-                src = os.path.join(issue_pdf_path, pdf)
-                dest = os.path.join(aop_pdf_path, aop_pdf)
-                shutil.copyfile(src, dest)
+            website_files.replace_ex_aop_pdf_files(self.db.aop_pdf_replacements)
 
     @property
     def conversion_report(self):

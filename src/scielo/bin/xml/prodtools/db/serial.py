@@ -361,6 +361,34 @@ class WebsiteFiles(object):
                 )
                 return xml_content
 
+    def replace_ex_aop_pdf_files(self, aop_pdf_replacements):
+        """
+        No sítio local,
+        substitui os pdf do aop pelo conteúdo dos pdfs do issue,
+        mantendo o nome do arquivo aop
+        """
+        pdf_dir = os.path.join(self.paths.web_path, "bases", "pdf")
+        issue_pdf_path = self.paths.web_bases_pdf
+
+        for xml_name, aop_location_data in aop_pdf_replacements.items():
+            aop_folder, aop_name = aop_location_data
+
+            aop_pdf_path = os.path.join(pdf_dir, aop_folder)
+            if not os.path.isdir(aop_pdf_path):
+                os.makedirs(aop_pdf_path)
+
+            issue_pdf_files = [f
+                               for f in os.listdir(issue_pdf_path)
+                               if (
+                                f.startswith(xml_name) or
+                                f[2:].startswith('_'+xml_name))]
+
+            for pdf in issue_pdf_files:
+                aop_pdf = pdf.replace(xml_name, aop_name)
+                src = os.path.join(issue_pdf_path, pdf)
+                dest = os.path.join(aop_pdf_path, aop_pdf)
+                shutil.copyfile(src, dest)
+
 
 class IssuePathsInWebsite(object):
 
