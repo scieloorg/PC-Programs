@@ -14,6 +14,7 @@ class PackageEvaluator(object):
 
     def __init__(self, pkg, registered_issue_data, is_db_generation,
                  is_xml_generation, config):
+        self.xml_file_paths = pkg.file_paths
         self.registered_issue_data = registered_issue_data
         self.is_xml_generation = is_xml_generation
         self.is_db_generation = is_db_generation
@@ -73,6 +74,7 @@ class PackageEvaluator(object):
         return PackageEvaluationResult(
             group_validations_report=self.group_validations_report,
             individual_validations_report=self.pkg_validations_reports.detailed_report,
+            xml_file_paths=self.xml_file_paths,
             blocking_errors=self.blocking_errors,
             merging_result_reports=self.merging_reports.errors_reports,
             docs_merger=self.merging_reports.docs_merger
@@ -82,6 +84,7 @@ class PackageEvaluator(object):
 class PackageEvaluationResult(object):
 
     def __init__(self, group_validations_report, individual_validations_report,
+                 xml_file_paths,
                  blocking_errors, merging_result_reports, docs_merger
                  ):
         self.group_validations_report = group_validations_report
@@ -93,6 +96,8 @@ class PackageEvaluationResult(object):
         self.history_items = docs_merger.history_items
         self.merged_articles = docs_merger.merged_articles
         self.registered_articles = docs_merger.registered_articles
+        self.accepted_xml_files = [xml_file_paths[k]
+                                   for k in self.accepted_articles.keys()]
 
 
 class DocsMergingReports(object):

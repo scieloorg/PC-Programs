@@ -117,6 +117,7 @@ class IssueFiles(IssuePathsInSerial):
     def __init__(self, journal_files, issue_folder):
         self.journal_files = journal_files
         self.issue_folder = issue_folder
+        self.acron_issue_label = " ".join(journal_files.acron, issue_folder)
         super().__init__(
             journal_files.serial_path, journal_files.acron, issue_folder)
         self.create_folders()
@@ -168,19 +169,14 @@ class IssueFiles(IssuePathsInSerial):
                 for item in os.listdir(self.base_source_path)
                 if item.endswith('.xml')}
 
-    def save_source_files(self, xml_path):
-        if not self.base_source_path == xml_path:
-            if not os.path.isdir(self.base_source_path):
-                os.makedirs(self.base_source_path)
-            for f in os.listdir(xml_path):
-                if f.endswith('.rep.xml'):
-                    pass
-                elif f.endswith('.xml'):
-                    try:
-                        shutil.copy(
-                            os.path.join(xml_path, f), self.base_source_path)
-                    except:
-                        pass
+    def save_xml_files(self, xml_files):
+        if not os.path.isdir(self.base_source_path):
+            os.makedirs(self.base_source_path)
+        for file_path in xml_files:
+            try:
+                shutil.copy(file_path, self.base_source_path)
+            except shutil.SameFileError:
+                continue
 
     def delete_id_files(self, delete_id_items):
         errors = []

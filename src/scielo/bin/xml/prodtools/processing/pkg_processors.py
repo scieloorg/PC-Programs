@@ -91,8 +91,11 @@ class ArticlesConversion(object):
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.pkg_eval_result.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.pkg_eval_result.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.pkg_eval_result.excluded_orders)
-
-            self.updated_scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.pkg_eval_result.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
+            self.updated_scilista_items = self.db.convert_articles(
+                self.pkg_eval_result.accepted_xml_files,
+                self.pkg_eval_result.accepted_articles,
+                self.registered_issue_data.issue_models.record,
+                self.create_windows_base)
             scilista_items.extend(self.updated_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
@@ -109,12 +112,6 @@ class ArticlesConversion(object):
                         self.pkg.issue_data.acron,
                         self.pkg.issue_data.issue_label)
                     website_files.get_files(self.pkg.package_folder.path)
-                # guarda os arquivos XML em
-                # /scielo/serial/acron/issue/base_xml/base_source
-                # para serem usado na consulta para atualizações da base
-                self.registered_issue_data.issue_files.save_source_files(
-                    self.pkg.package_folder.path)
-
                 # no sítio local substitui o pdf de ex aop com o conteúdo do
                 # documento do fascículo regular
                 self.replace_ex_aop_pdf_files()
