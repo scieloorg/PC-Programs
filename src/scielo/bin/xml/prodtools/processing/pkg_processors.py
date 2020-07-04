@@ -474,11 +474,6 @@ class PkgProcessor(object):
             # /scielo/serial/<acron>/<issue>/base_xml/base_reports
             assets_in_report.save_report(reports.report_location)
 
-            # se há o site remoto, os xml não estão acessíveis mesmo
-            # existindo em bases/xml, por isso,
-            # copia os xml para htdocs/reports/<acron>/<issue>/
-            for article_files in pkg.package_folder.pkgfiles_items.values():
-                article_files.copy_xml(assets_in_report.report_path)
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):

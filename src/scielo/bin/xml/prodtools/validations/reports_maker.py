@@ -327,6 +327,14 @@ class CollectionAssetsInReport(object):
             os.makedirs(self.serial_report_path)
         shutil.copy(report_file_path, self.serial_report_path)
 
+        if self.web_url:
+            # se há o site remoto, os xml não estão acessíveis mesmo
+            # existindo em bases/xml, por isso,
+            # copia os xml para htdocs/reports/<acron>/<issue>/
+            for fname in os.listdir(self.xml_path):
+                file_path = os.path.join(self.xml_path, fname)
+                shutil.copy(file_path, self.report_path)
+
     @property
     def result_path(self):
         if self.web_url:
