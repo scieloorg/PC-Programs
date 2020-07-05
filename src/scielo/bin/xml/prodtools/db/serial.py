@@ -117,7 +117,7 @@ class IssueFiles(IssuePathsInSerial):
     def __init__(self, journal_files, issue_folder):
         self.journal_files = journal_files
         self.issue_folder = issue_folder
-        self.acron_issue_label = " ".join(journal_files.acron, issue_folder)
+        self.acron_issue_label = " ".join([journal_files.acron, issue_folder])
         super().__init__(
             journal_files.serial_path, journal_files.acron, issue_folder)
         self.create_folders()
