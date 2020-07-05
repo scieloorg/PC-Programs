@@ -318,9 +318,8 @@ class WebsiteFiles(object):
             name, ext = os.path.splitext(file_path)
             destination_path = path.get(ext)
             if destination_path is None:
-                if not ext.startswith(".tif"):
-                    shutil.copy(file_path, path['.img'])
-                    msg.append('  {} => {}'.format(f, path['.img']))
+                shutil.copy(file_path, path['.img'])
+                msg.append('  {} => {}'.format(f, path['.img']))
             elif ext == '.pdf':
                 pdf_filenames = [f]
                 new_pdf_filename = new_name_for_pdf_filename(f)
