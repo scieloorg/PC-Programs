@@ -81,7 +81,7 @@ class TestIssueAndTitleManager(TestCase):
         result = self.manager.get_registered_issue_data(
             issue_label, p_issn, e_issn)
         res_acron_issue_label, res_issue_models, res_msg = result
-        self.assertEqual('not_registered issue', res_acron_issue_label)
+        self.assertEqual('not_registered v1n1', res_acron_issue_label)
         self.assertEqual(None, res_issue_models)
         self.assertIn(p_issn, res_msg)
         self.assertIn(e_issn, res_msg)

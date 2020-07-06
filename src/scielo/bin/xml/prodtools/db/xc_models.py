@@ -1477,6 +1477,8 @@ class IssueAndTitleManager(object):
             msg += html_reports.p_message(
                 validation_status.STATUS_BLOCKING_ERROR + ': ' +
                 journal_error_msg, False)
+        if msg == '':
+            msg = None
         return (acron_issue_label, issue_models, msg, journal, j_data)
 
     def get_registered_issue_data(self, issue_label, p_issn, e_issn):
@@ -1489,7 +1491,7 @@ class IssueAndTitleManager(object):
         else:
             i_record = self.find_i_record(issue_label, p_issn, e_issn)
             if i_record is None:
-                acron_issue_label = 'not_registered issue'
+                acron_issue_label = 'not_registered ' + issue_label
                 msg = (_('Issue ') + issue_label +
                        _(' is not registered in ') + self.issue_db_filename +
                        _(' using ISSN: ') +
