@@ -1454,16 +1454,9 @@ class DBManager(object):
         acron_issue_label = 'unidentified issue'
         journal = None
         j_data = None
-        if issue_label is None:
-            msg = _('Unable to identify the article\'s issue')
-        else:
-            i_record = self.find_i_record(issue_label, p_issn, e_issn)
-            if i_record is None:
-                acron_issue_label = 'not_registered issue'
-                msg = _('Issue ') + issue_label + _(' is not registered in ') + self.issue_db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.'
-            else:
-                issue_models = IssueModels(i_record)
-                acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
+
+        result = self.get_registered_issue_data(issue_label, p_issn, e_issn)
+        acron_issue_label, issue_models, msg = result
 
         registered_title, msg = self.get_registered_journal_data(
             journal_title, p_issn, e_issn)
@@ -1505,9 +1498,6 @@ class DBManager(object):
                     issue_models.issue.acron + ' ' +
                     issue_models.issue.issue_label
                     )
-        if msg is not None:
-            msg = html_reports.p_message(
-                validation_status.STATUS_BLOCKING_ERROR + ': ' + msg, False)
         return (acron_issue_label, issue_models, msg)
 
     def get_registered_journal_data(self, journal_title, p_issn, e_issn):
