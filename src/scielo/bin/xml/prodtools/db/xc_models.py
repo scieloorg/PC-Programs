@@ -1454,6 +1454,70 @@ class DBManager(object):
             msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + msg, False)
         return (acron_issue_label, issue_models, msg, j, j_data)
 
+    def get_registered_issue_data(self, issue_label, p_issn, e_issn):
+        issue_models = None
+        msg = None
+        acron_issue_label = 'unidentified issue'
+
+        if issue_label is None:
+            msg = _('Unable to identify the article\'s issue')
+        else:
+            i_record = self.find_i_record(issue_label, p_issn, e_issn)
+            if i_record is None:
+                acron_issue_label = 'not_registered issue'
+                msg = (_('Issue ') + issue_label +
+                       _(' is not registered in ') + self.issue_db_filename +
+                       _(' using ISSN: ') +
+                       _(' or ').join(
+                        [i for i in [p_issn, e_issn] if i is not None]
+                        ) + '.'
+                       )
+            else:
+                issue_models = IssueModels(i_record)
+                acron_issue_label = (
+                    issue_models.issue.acron + ' ' +
+                    issue_models.issue.issue_label
+                    )
+        if msg is not None:
+            msg = html_reports.p_message(
+                validation_status.STATUS_BLOCKING_ERROR + ': ' + msg, False)
+        return (acron_issue_label, issue_models, msg)
+
+    def get_registered_journal_data(self, journal_title, p_issn, e_issn):
+        j_record = self.find_journal_record(journal_title, p_issn, e_issn)
+        if j_record is None:
+            msg = _('Unable to get journal data') + ' ' + journal_title
+        else:
+            t = RegisteredTitle(j_record)
+            j = Journal()
+            j.frequency = t.frequency
+            j.acron = t.acron
+            j.p_issn = t.print_issn
+            j.e_issn = t.e_issn
+            j.abbrev_title = t.abbrev_title
+            j.nlm_title = t.journal_id_nlm_ta
+            j.publisher_name = t.publisher_name
+            j.license = t.license
+            j.collection_acron = None
+            j.journal_title = journal_title
+            j.issn_id = t.issn_id
+            j_data = Journal()
+            j_data.acron = [t.acron]
+            j_data.frequency = [t.frequency]
+            j_data.p_issn = [t.print_issn]
+            j_data.e_issn = [t.e_issn]
+            j_data.abbrev_title = [t.abbrev_title]
+            j_data.nlm_title = [t.journal_id_nlm_ta]
+            j_data.publisher_name = [t.publisher_name]
+            if isinstance(t.publisher_name, list):
+                j_data.publisher_name = t.publisher_name
+            j_data.license = [t.license]
+            j_data.collection_acron = [None]
+            j_data.journal_title = [journal_title]
+            j_data.issn_id = [t.issn_id]
+            msg = None
+        return (j, j_data, msg)
+
     def get_issue_files(self, issue_models):
         if issue_models is not None:
             journal_files = serial.JournalFiles(self.serial_path, issue_models.issue.acron)
