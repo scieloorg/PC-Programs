@@ -1464,11 +1464,9 @@ class DBManager(object):
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
-                j_record = self.find_journal_record(journal_title, p_issn, e_issn)
-                if j_record is None:
-                    msg = _('Unable to get journal data') + ' ' + journal_title
-                else:
-                    registered_title = RegisteredTitle(j_record)
+                registered_title, msg = self.get_registered_journal_data(
+                    journal_title, p_issn, e_issn)
+                if registered_title:
                     journal = get_journal_from_registered_title(
                         registered_title)
                     j_data = get_journal_data_from_registered_title(
@@ -1511,6 +1509,7 @@ class DBManager(object):
     def get_registered_journal_data(self, journal_title, p_issn, e_issn):
         j_record = self.find_journal_record(journal_title, p_issn, e_issn)
         if j_record is None:
+            registered_title = None
             msg = _('Unable to get journal data') + ' ' + journal_title
         else:
             registered_title = RegisteredTitle(j_record)
