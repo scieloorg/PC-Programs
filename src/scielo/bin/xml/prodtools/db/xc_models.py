@@ -51,6 +51,48 @@ FREQ = dict([
 ])
 
 
+def get_journal_from_registered_title(registered_title):
+    """
+    Retorna os dados do periódico no objeto Journal a partir dos dados
+    obtidos da base de dados isis
+    """
+    journal = Journal()
+    journal.frequency = registered_title.frequency
+    journal.acron = registered_title.acron
+    journal.p_issn = registered_title.print_issn
+    journal.e_issn = registered_title.e_issn
+    journal.abbrev_title = registered_title.abbrev_title
+    journal.nlm_title = registered_title.journal_id_nlm_ta
+    journal.publisher_name = registered_title.publisher_name
+    journal.license = registered_title.license
+    journal.collection_acron = None
+    journal.journal_title = registered_title.journal_title
+    journal.issn_id = registered_title.issn_id
+    return journal
+
+
+def get_journal_data_from_registered_title(registered_title):
+    """
+    Retorna os dados do periódico no formato para fazer comparação com
+    os dados do documento XML
+    """
+    j_data = Journal()
+    j_data.acron = [registered_title.acron]
+    j_data.frequency = [registered_title.frequency]
+    j_data.p_issn = [registered_title.print_issn]
+    j_data.e_issn = [registered_title.e_issn]
+    j_data.abbrev_title = [registered_title.abbrev_title]
+    j_data.nlm_title = [registered_title.journal_id_nlm_ta]
+    j_data.publisher_name = [registered_title.publisher_name]
+    if isinstance(registered_title.publisher_name, list):
+        j_data.publisher_name = registered_title.publisher_name
+    j_data.license = [registered_title.license]
+    j_data.collection_acron = [None]
+    j_data.journal_title = [registered_title.journal_title]
+    j_data.issn_id = [registered_title.issn_id]
+    return j_data
+
+
 def author_tag(is_person, is_analytic_author):
     r = {}
     r[True] = {True: '10', False: '16'}
@@ -507,6 +549,11 @@ class RegisteredTitle(object):
     def __init__(self, record):
         self.record = record
         self._issns = title_issns(record)
+
+    @property
+    def journal_title(self):
+        if self.record is not None:
+            return self.record.get('100', '')
 
     @property
     def acron(self):
@@ -1488,35 +1535,9 @@ class DBManager(object):
         if j_record is None:
             msg = _('Unable to get journal data') + ' ' + journal_title
         else:
-            t = RegisteredTitle(j_record)
-            j = Journal()
-            j.frequency = t.frequency
-            j.acron = t.acron
-            j.p_issn = t.print_issn
-            j.e_issn = t.e_issn
-            j.abbrev_title = t.abbrev_title
-            j.nlm_title = t.journal_id_nlm_ta
-            j.publisher_name = t.publisher_name
-            j.license = t.license
-            j.collection_acron = None
-            j.journal_title = journal_title
-            j.issn_id = t.issn_id
-            j_data = Journal()
-            j_data.acron = [t.acron]
-            j_data.frequency = [t.frequency]
-            j_data.p_issn = [t.print_issn]
-            j_data.e_issn = [t.e_issn]
-            j_data.abbrev_title = [t.abbrev_title]
-            j_data.nlm_title = [t.journal_id_nlm_ta]
-            j_data.publisher_name = [t.publisher_name]
-            if isinstance(t.publisher_name, list):
-                j_data.publisher_name = t.publisher_name
-            j_data.license = [t.license]
-            j_data.collection_acron = [None]
-            j_data.journal_title = [journal_title]
-            j_data.issn_id = [t.issn_id]
+            registered_title = RegisteredTitle(j_record)
             msg = None
-        return (j, j_data, msg)
+        return (registered_title, msg)
 
     def get_issue_files(self, issue_models):
         if issue_models is not None:
