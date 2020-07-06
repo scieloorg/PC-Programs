@@ -1459,19 +1459,24 @@ class DBManager(object):
         registered_title, journal_error_msg = self.get_registered_journal_data(
             journal_title, p_issn, e_issn)
         if registered_title:
-            journal = get_journal_from_registered_title(
-                registered_title)
-            j_data = get_journal_data_from_registered_title(
-                registered_title)
+            journal = get_journal_from_registered_title(registered_title)
+            j_data = get_journal_data_from_registered_title(registered_title)
 
         if issue_models and registered_title:
-            if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
+            if ((issue_models.issue.print_issn is None and
+                    issue_models.issue.e_issn is None) or
+                    issue_models.issue.license is None or
+                    issue_models.issue.journal_id_nlm_ta is None):
                 issue_models.complete_issue_info(registered_title)
 
         if issue_error_msg is not None:
-            msg += html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + issue_error_msg, False)
+            msg += html_reports.p_message(
+                validation_status.STATUS_BLOCKING_ERROR + ': ' +
+                issue_error_msg, False)
         if journal_error_msg is not None:
-            msg += html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + journal_error_msg, False)
+            msg += html_reports.p_message(
+                validation_status.STATUS_BLOCKING_ERROR + ': ' +
+                journal_error_msg, False)
         return (acron_issue_label, issue_models, msg, journal, j_data)
 
     def get_registered_issue_data(self, issue_label, p_issn, e_issn):
