@@ -114,9 +114,10 @@ class ReportsMaker(object):
     @property
     def xc_validations(self):
         r = []
-        r.append(html_reports.tag('h3', _('Frequency')))
-        r.append(
-            html_reports.tag('h4', _(self.pkg.issue_data.journal.frequency)))
+        if self.pkg.issue_data.journal:
+            r.append(html_reports.tag('h3', _('Frequency')))
+            r.append(
+                html_reports.tag('h4', _(self.pkg.issue_data.journal.frequency)))
 
         r.append(html_reports.tag('h3', _('Conversion Result')))
         r.append(self.conversion.conclusion_message)
