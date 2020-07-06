@@ -257,7 +257,7 @@ class BrokenRef(object):
 
 class PackageMaker(object):
 
-    def __init__(self, pkg_path, output_path, optimise=True):
+    def __init__(self, pkg_path, output_path, optimise=True, package_name=None):
         """
         Reempacota os arquivos de pacote SP,
         padronizando-os e/ou otimizando-os.
@@ -280,7 +280,9 @@ class PackageMaker(object):
         self.source_folder = workarea.MultiDocsPackageFolder(pkg_path)
 
         # outputs
-        self.output_folder = workarea.MultiDocsPackageOuputs(output_path)
+        self.output_folder = workarea.MultiDocsPackageOuputs(
+            output_path, package_name=package_name
+        )
 
         # destination
         self.destination_path = self.output_folder.scielo_package_path

@@ -142,7 +142,12 @@ class Reception(object):
     def _create_package_instance(self, source: str, output: str) -> SPPackage:
         """Cria instância da classe SPPackage para o pacote de entrada"""
 
-        package_maker = PackageMaker(source, output)
+        try:
+            package_name = os.path.splitext(os.path.basename(source))[0]
+        except (IndexError, TypeError):
+            package_name = None
+
+        package_maker = PackageMaker(source, output, package_name=package_name)
         return package_maker.pack()
 
     def convert_package(self, package_path):
