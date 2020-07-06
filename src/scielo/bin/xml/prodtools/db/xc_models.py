@@ -1464,15 +1464,19 @@ class DBManager(object):
             else:
                 issue_models = IssueModels(i_record)
                 acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
-                registered_title, msg = self.get_registered_journal_data(
-                    journal_title, p_issn, e_issn)
-                if registered_title:
-                    journal = get_journal_from_registered_title(
-                        registered_title)
-                    j_data = get_journal_data_from_registered_title(
-                        registered_title)
-                    if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
-                        issue_models.complete_issue_info(registered_title)
+
+        registered_title, msg = self.get_registered_journal_data(
+            journal_title, p_issn, e_issn)
+        if registered_title:
+            journal = get_journal_from_registered_title(
+                registered_title)
+            j_data = get_journal_data_from_registered_title(
+                registered_title)
+
+        if issue_models and registered_title:
+            if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
+                issue_models.complete_issue_info(registered_title)
+
         if msg is not None:
             msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + msg, False)
         return (acron_issue_label, issue_models, msg, journal, j_data)
