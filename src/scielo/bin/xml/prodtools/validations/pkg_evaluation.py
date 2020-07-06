@@ -248,12 +248,12 @@ class GroupCoherenceReports(object):
                 self.report_missing_required_issue_data,
                 self.report_issue_data_conflicting_values,
                 self.report_issue_data_duplicated_values,
-                self.report_issue_page_values,
             )
             self._errors_reports = (
                 html_reports.tag('h2', _('Checking issue data consistency')) +
-                html_reports.tag('div', ''.join(reports), 'issue-messages'))
-        return self._errors_reports
+                html_reports.tag('div', ''.join(reports), 'issue-messages')
+            )
+        return self._errors_reports + self.report_issue_page_values
 
     @property
     def report_missing_required_issue_data(self):
