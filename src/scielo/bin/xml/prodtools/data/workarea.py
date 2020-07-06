@@ -28,8 +28,9 @@ class File(object):
 
 class MultiDocsPackageOuputs(object):
 
-    def __init__(self, output_path):
+    def __init__(self, output_path, package_name=None):
         self.output_path = output_path
+        self.package_name = package_name or "scielo_package"
         for p in [self.reports_path, self.tmp_path,
                   self.scielo_package_path, self.pmc_package_path]:
             if not os.path.isdir(p):
@@ -46,7 +47,7 @@ class MultiDocsPackageOuputs(object):
 
     @property
     def scielo_package_path(self):
-        return os.path.join(self.output_path, 'scielo_package')
+        return os.path.join(self.output_path, self.package_name)
 
     @property
     def pmc_package_path(self):
