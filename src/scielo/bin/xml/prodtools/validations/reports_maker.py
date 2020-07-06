@@ -166,13 +166,13 @@ class ReportsMaker(object):
                   self.assets_in_report.result_path,
                   self.assets_in_report.report_path]
         for o, r in zip(origin, replac):
-            content = content.replace(o, r)
+            content = content.replace(o, r or '')
         return content + self.footnote
 
     @property
     def processing_result_location(self):
         if not self.assets_in_report.result_path:
-            return
+            return ''
         result_path = self.assets_in_report.result_path
         return (
             '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' +
@@ -313,12 +313,15 @@ class CollectionAssetsInReport(object):
             web_app_path, acron, issue_label)
 
     def link(self, path):
-        path = path.replace(self.issue_in_website.web_path, "")
+        if not self.web_url:
+            return path
+        url = path.replace(self.issue_in_website.web_path, self.web_url)
+        url = url.replace("\\", "/")
         for dirname in ("/bases/", "/htdocs/revistas/", "/htdocs/"):
-            if dirname in path:
-                path = path.replace(dirname, "")
+            if dirname in url:
+                url = url.replace(dirname, "/")
                 break
-        return os.path.join(self.web_url, path)
+        return url
 
     def save_report(self, report_file_path):
         if self.serial_report_path == self.report_path:
