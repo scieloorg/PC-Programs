@@ -1386,7 +1386,7 @@ def format_normalized_affiliations(affiliations):
     return affs
 
 
-class DBManager(object):
+class IssueAndTitleManager(object):
 
     def __init__(self, db_isis, title_db_filenames, issue_db_filenames, serial_path):
         self.src_title_db_filename = title_db_filenames[0]
@@ -1660,7 +1660,7 @@ class RegisteredIssuesManager(object):
                           os.path.join(FST_PATH, 'title.fst')]
                 issues = [self.config.issue_db, self.config.issue_db_copy,
                           os.path.join(FST_PATH, 'issue.fst')]
-                self._db_manager = DBManager(
+                self._db_manager = IssueAndTitleManager(
                     db_isis,
                     titles,
                     issues,
