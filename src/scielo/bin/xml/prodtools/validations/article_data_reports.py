@@ -600,7 +600,7 @@ class ArticleDisplayReport(object):
             location = '{PDF_PATH}' if item.endswith('.pdf') else '{XML_PATH}'
             items.append(html_reports.tag('p', html_reports.link(
                 os.path.join(location, item),
-                item, window=('1000', '400'))))
+                item)))
         return ''.join(items)
 
 
