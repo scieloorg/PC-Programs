@@ -1452,7 +1452,7 @@ class DBManager(object):
         issue_models = None
         msg = None
         acron_issue_label = 'unidentified issue'
-        j = None
+        journal = None
         j_data = None
         if issue_label is None:
             msg = _('Unable to identify the article\'s issue')
@@ -1468,38 +1468,16 @@ class DBManager(object):
                 if j_record is None:
                     msg = _('Unable to get journal data') + ' ' + journal_title
                 else:
-                    t = RegisteredTitle(j_record)
-                    j = Journal()
-                    j.frequency = t.frequency
-                    j.acron = t.acron
-                    j.p_issn = t.print_issn
-                    j.e_issn = t.e_issn
-                    j.abbrev_title = t.abbrev_title
-                    j.nlm_title = t.journal_id_nlm_ta
-                    j.publisher_name = t.publisher_name
-                    j.license = t.license
-                    j.collection_acron = None
-                    j.journal_title = journal_title
-                    j.issn_id = t.issn_id
-                    j_data = Journal()
-                    j_data.acron = [t.acron]
-                    j_data.frequency = [t.frequency]
-                    j_data.p_issn = [t.print_issn]
-                    j_data.e_issn = [t.e_issn]
-                    j_data.abbrev_title = [t.abbrev_title]
-                    j_data.nlm_title = [t.journal_id_nlm_ta]
-                    j_data.publisher_name = [t.publisher_name]
-                    if isinstance(t.publisher_name, list):
-                        j_data.publisher_name = t.publisher_name
-                    j_data.license = [t.license]
-                    j_data.collection_acron = [None]
-                    j_data.journal_title = [journal_title]
-                    j_data.issn_id = [t.issn_id]
+                    registered_title = RegisteredTitle(j_record)
+                    journal = get_journal_from_registered_title(
+                        registered_title)
+                    j_data = get_journal_data_from_registered_title(
+                        registered_title)
                     if (issue_models.issue.print_issn is None and issue_models.issue.e_issn is None) or issue_models.issue.license is None or issue_models.issue.journal_id_nlm_ta is None:
-                        issue_models.complete_issue_info(t)
+                        issue_models.complete_issue_info(registered_title)
         if msg is not None:
             msg = html_reports.p_message(validation_status.STATUS_BLOCKING_ERROR + ': ' + msg, False)
-        return (acron_issue_label, issue_models, msg, j, j_data)
+        return (acron_issue_label, issue_models, msg, journal, j_data)
 
     def get_registered_issue_data(self, issue_label, p_issn, e_issn):
         issue_models = None
