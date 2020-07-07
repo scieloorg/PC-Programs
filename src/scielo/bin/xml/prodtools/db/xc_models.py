@@ -83,9 +83,10 @@ def get_journal_data_from_registered_title(registered_title):
     j_data.e_issn = [registered_title.e_issn]
     j_data.abbrev_title = [registered_title.abbrev_title]
     j_data.nlm_title = [registered_title.journal_id_nlm_ta]
-    j_data.publisher_name = [registered_title.publisher_name]
     if isinstance(registered_title.publisher_name, list):
         j_data.publisher_name = registered_title.publisher_name
+    else:
+        j_data.publisher_name = [registered_title.publisher_name]
     j_data.license = [registered_title.license]
     j_data.collection_acron = [None]
     j_data.journal_title = [registered_title.journal_title]
