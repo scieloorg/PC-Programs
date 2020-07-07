@@ -51,7 +51,6 @@ class PIDVersionsDB:
         if self.conn is not None:
             self.conn.commit()
             self.conn.close()
-            self.cursor.close()
 
     def __enter__(self):
         return self
