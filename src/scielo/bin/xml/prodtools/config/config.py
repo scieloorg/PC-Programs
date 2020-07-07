@@ -40,8 +40,8 @@ class Configuration(object):
         content_files = ''
         for item in ['scielo_env.ini', 'scielo_collection.ini']:
             if os.path.isfile(os.path.join(BIN_PATH, item)):
-                content_files += "\n" + fs_utils.read_file(
-                    os.path.join(BIN_PATH, item))
+                content_files += fs_utils.read_file(
+                    os.path.join(BIN_PATH, item)) + "\n"
 
         if self.filename is not None:
             coding = 'utf-8'
