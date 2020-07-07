@@ -381,13 +381,6 @@ class PkgProcessor(object):
             self.config, self.is_db_generation)
         self._pid_manager = None
 
-    @property
-    def pid_manager(self):
-        if self._pid_manager is None and self.config.pid_manager_info:
-            self._pid_manager = PIDVersionsManager(
-                PIDVersionsDB(
-                    self.config.pid_manager_info))
-        return self._pid_manager
 
     @property
     def export_documents_package(self):
@@ -420,8 +413,10 @@ class PkgProcessor(object):
         registered_issue_data, pkg_eval_result = self.evaluate_package(pkg)
 
         conversion = ArticlesConversion(registered_issue_data, pkg, pkg_eval_result, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)
-        if self.pid_manager is not None:
-            conversion.register_pids_and_update_xmls(self.pid_manager)
+
+        if self.config.pid_manager_info:
+            with PIDVersionsDB(self.config.pid_manager_info) as db:
+                conversion.register_pids_and_update_xmls(PIDVersionsManager(db))
 
         scilista_items = conversion.convert()
 

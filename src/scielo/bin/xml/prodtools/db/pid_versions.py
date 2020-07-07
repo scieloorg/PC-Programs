@@ -34,14 +34,9 @@ class PIDVersionsManager:
 
 
 class PIDVersionsDB:
-    def __init__(self, name):
-        self.conn = None
-        self.cursor = None
-        self.open(name)
-
-    def open(self, name):
+    def __init__(self, name, timeout=60):
         try:
-            self.conn = sqlite3.connect(name)
+            self.conn = sqlite3.connect(name, timeout=timeout)
             self.cursor = self.conn.cursor()
         except sqlite3.OperationalError as e:
             logging.exception(e)
@@ -51,7 +46,6 @@ class PIDVersionsDB:
         if self.conn is not None:
             self.conn.commit()
             self.conn.close()
-            self.cursor.close()
 
     def __enter__(self):
         return self
