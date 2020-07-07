@@ -76,9 +76,13 @@ def add_article_id_to_received_documents(
             LOGGER.debug("Could not find XML path for '%s' xml.", xml_name)
             return None
 
-        tree = xml_utils.get_xml_object(file_path)
-        _tree = add_article_id_to_etree(tree, pids_to_append_in_xml)
-        write_etree_to_file(_tree, file_path)
+        try:
+            tree = xml_utils.get_xml_object(file_path)
+        except xml_utils.etree.XMLSyntaxError:
+            LOGGER.info("%s is not a valid XML", file_path)
+        else:
+            _tree = add_article_id_to_etree(tree, pids_to_append_in_xml)
+            write_etree_to_file(_tree, file_path)
 
 
 def get_scielo_pid_v2(issn_id, year_and_order, order_in_issue):
