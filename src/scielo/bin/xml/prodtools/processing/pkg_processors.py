@@ -117,6 +117,9 @@ class ArticlesConversion(object):
         os PIDs nos documentos XMLs presentes no pacote."""
         issue_models = self.registered_issue_data.issue_models
 
+        if not issue_models:
+            return
+
         kernel_document.add_article_id_to_received_documents(
             pid_manager=pid_manager,
             issn_id=issue_models.issue.issn_id,
