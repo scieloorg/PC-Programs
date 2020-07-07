@@ -8,11 +8,12 @@ class TestConfiguration(TestCase):
     def setUp(self):
         pass
 
+    @patch("prodtools.config.config.Configuration.load")
     @patch("prodtools.config.config.os.path.isfile")
     @patch("prodtools.config.config.fs_utils.read_file")
     @patch("prodtools.config.config.os.path.join")
     def test_read_files_returns_valid_value_for_last_variable_of_a_config_file(
-            self, mock_join, mock_read_file, mock_is_file):
+            self, mock_join, mock_read_file, mock_is_file, mock_load):
         mock_is_file.return_value = True
         mock_join.side_effect = ['path1', 'path2']
         mock_read_file.side_effect = [

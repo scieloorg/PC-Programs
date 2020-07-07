@@ -35,19 +35,22 @@ class Configuration(object):
             self.filename = None
         self.load()
 
-    def load(self):
-        self._data = {}
+    def read_files(self):
         content_files = ''
         for item in ['scielo_env.ini', 'scielo_collection.ini']:
-            if os.path.isfile(os.path.join(BIN_PATH, item)):
-                content_files += fs_utils.read_file(
-                    os.path.join(BIN_PATH, item)) + "\n"
+            file_path = os.path.join(BIN_PATH, item)
+            content_files += (fs_utils.read_file(file_path) or '') + "\n"
 
         if self.filename is not None:
             coding = 'utf-8'
             if self.filename.endswith('scielo_paths.ini'):
                 coding = 'iso-8859-1'
             content_files += fs_utils.read_file(self.filename, coding)
+        return content_files
+
+    def load(self):
+        content_files = self.read_files()
+        self._data = {}
         for item in content_files.splitlines():
             if '=' in item:
                 if ',' in item and '@' not in item:
