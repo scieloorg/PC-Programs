@@ -2,7 +2,7 @@
 import os
 import shutil
 
-from prodtools.utils import fs_utils
+from prodtools.utils import fs_utils, xml_utils, encoding
 
 
 def filename_language_suffix(filename):
@@ -341,7 +341,33 @@ class WebsiteFiles(object):
                     shutil.copy(file_path, destination_path)
                     msg.append('  {} => {}'.format(
                         f, os.path.join(destination_path, pdf_filename)))
+            elif ext == '.xml':
+                xml_content = self._remove_dtd_url_schema(file_path)
+                if xml_content:
+                    fs_utils.write_file(os.path.join(destination_path, f), xml_content)
+                else:
+                    shutil.copy(file_path, destination_path)
+                msg.append('  {} => {}'.format(f, path[ext]))
             else:
                 shutil.copy(file_path, destination_path)
                 msg.append('  {} => {}'.format(f, path[ext]))
         return '\n'.join(['<p>{}</p>'.format(item) for item in msg])
+
+    def _remove_dtd_url_schema(self, xml_file_path):
+        try:
+            xml_tree = xml_utils.get_xml_object(xml_file_path)
+        except xml_utils.etree.XMLSyntaxError:
+            pass
+        else:
+            if xml_tree.docinfo:
+                url = xml_tree.docinfo.system_url
+                dtd_file_name = os.path.basename(url)
+                xml_tree.docinfo.system_url = dtd_file_name
+                xml_content = encoding.decode(
+                    xml_utils.etree.tostring(
+                        xml_tree,
+                        pretty_print=False,
+                        doctype=xml_tree.docinfo.doctype,
+                    )
+                )
+                return xml_content
