@@ -35,11 +35,6 @@ class PIDVersionsManager:
 
 class PIDVersionsDB:
     def __init__(self, name):
-        self.conn = None
-        self.cursor = None
-        self.open(name)
-
-    def open(self, name):
         try:
             self.conn = sqlite3.connect(name)
             self.cursor = self.conn.cursor()
