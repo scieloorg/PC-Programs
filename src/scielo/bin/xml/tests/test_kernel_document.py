@@ -121,7 +121,9 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
             "pid-v3-registrado-anteriormente-para-documento-aop",
         )
 
-    def test_pid_manager_does_not_register_pids_if_pid_v3_already_exists_in_xml(self):
+    def test_pid_manager_should_try_to_register_pids_even_it_already_exists_in_xml(
+        self,
+    ):
 
         mock_pid_manager = Mock()
 
@@ -135,7 +137,7 @@ class TestKernelDocumentAddArticleIdToReceivedDocuments(unittest.TestCase):
             update_article_with_aop_status=lambda _: _,
         )
 
-        mock_pid_manager.register.assert_not_called()
+        self.assertTrue(mock_pid_manager.register.called)
 
     def test_add_pids_to_etree_should_return_none_if_etree_is_not_valid(self):
         self.assertIsNone(kernel_document.add_article_id_to_etree(None, []))

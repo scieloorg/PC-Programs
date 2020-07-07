@@ -1,5 +1,6 @@
 import copy
 import logging
+import sqlite3
 
 from typing import Optional
 
@@ -67,9 +68,16 @@ def add_article_id_to_received_documents(
                 or pid_manager.get_pid_v3(pid_v2)
                 or scielo_id_gen.generate_scielo_pid()
             )
-            pid_manager.register(pid_v2, pid_v3)
             article.registered_scielo_id = pid_v3
             pids_to_append_in_xml.append((pid_v3, "scielo-v3"))
+
+        try:
+            pid_manager.register(pid_v2, pid_v3)
+        except sqlite3.OperationalError:
+            LOGGER.exception(
+                "Could not update sql database with pid v2 and v3."
+                " The following exception was captured."
+            )
 
         file_path = file_paths.get(xml_name)
         if file_path is None:
