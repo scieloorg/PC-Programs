@@ -87,3 +87,7 @@ def finish(ctrl_filepath, err_filepath, result_filepath, err_msg):
         fp.write("")
     with open(ctrl_filepath, "w") as fp:
         fp.write("done")
+
+
+if __name__ == "__main__":
+    main()
