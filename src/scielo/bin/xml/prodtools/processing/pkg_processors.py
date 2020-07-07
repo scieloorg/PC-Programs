@@ -378,13 +378,6 @@ class PkgProcessor(object):
             self.config, self.is_db_generation)
         self._pid_manager = None
 
-    @property
-    def pid_manager(self):
-        if self._pid_manager is None and self.config.pid_manager_info:
-            self._pid_manager = PIDVersionsManager(
-                PIDVersionsDB(
-                    self.config.pid_manager_info))
-        return self._pid_manager
 
     @property
     def export_documents_package(self):
