@@ -13,14 +13,12 @@ from prodtools import EMAIL_TEMPLATE_MESSAGES_PATH
 
 def get_configuration_filename(collection_acron=None):
     filename = None
-    if collection_acron is None:
-        f = os.path.join(BIN_PATH, 'scielo_paths.ini')
-        if os.path.isfile(f):
-            filename = f
+    if collection_acron:
+        f = os.path.join(XC_SERVER_CONFIG_PATH, collection_acron + '.xc.ini')
     else:
-        filename = os.path.join(
-            XC_SERVER_CONFIG_PATH, collection_acron + '.xc.ini')
-
+        f = os.path.join(BIN_PATH, 'scielo_paths.ini')
+    if os.path.isfile(f):
+        filename = f
     return filename
 
 
