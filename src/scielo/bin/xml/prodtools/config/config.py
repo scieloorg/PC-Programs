@@ -38,20 +38,21 @@ def _clean_item(pair):
 class Configuration(object):
 
     def __init__(self, filename=None):
-        filename = filename or get_configuration_filename()
-
         self._data = {}
         content_files = ''
+
+        filename = filename or get_configuration_filename()
+        if filename:
+            coding = 'utf-8'
+            if filename.endswith('scielo_paths.ini'):
+                coding = 'iso-8859-1'
+            content_files += fs_utils.read_file(filename, coding)
+
         for item in ['scielo_env.ini', 'scielo_collection.ini']:
             if os.path.isfile(os.path.join(BIN_PATH, item)):
                 content_files += "\n" + fs_utils.read_file(
                     os.path.join(BIN_PATH, item))
 
-        if filename is not None:
-            coding = 'utf-8'
-            if filename.endswith('scielo_paths.ini'):
-                coding = 'iso-8859-1'
-            content_files += fs_utils.read_file(filename, coding)
         for item in content_files.splitlines():
             if '=' in item:
                 if ',' in item and '@' not in item:
