@@ -28,9 +28,7 @@ class Configuration(object):
 
     def __init__(self, filename=None):
         self.filename = filename or get_configuration_filename()
-        self.load()
 
-    def load(self):
         self._data = {}
         content_files = ''
         for item in ['scielo_env.ini', 'scielo_collection.ini']:
