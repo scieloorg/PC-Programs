@@ -37,6 +37,8 @@ def _clean_item(pair):
 
 
 def get_data(content: str) -> dict:
+    if not content:
+        return {}
     cp = configparser.ConfigParser()
     # evita de converter nomes das variaveis para lowercase
     cp.optionxform = lambda option: option
@@ -48,29 +50,18 @@ class Configuration(object):
 
     def __init__(self, filename=None):
         self._data = {}
-        content_files = ''
 
         filename = filename or get_configuration_filename()
         if filename:
             coding = 'utf-8'
             if filename.endswith('scielo_paths.ini'):
                 coding = 'iso-8859-1'
-            content_files += fs_utils.read_file(filename, coding)
+            self._data.update(get_data(fs_utils.read_file(filename, coding)))
 
         for item in ['scielo_env.ini', 'scielo_collection.ini']:
-            if os.path.isfile(os.path.join(BIN_PATH, item)):
-                content_files += "\n" + fs_utils.read_file(
-                    os.path.join(BIN_PATH, item))
+            file_path = os.path.join(BIN_PATH, item)
+            self._data.update(get_data(fs_utils.read_file(file_path)))
 
-        for item in content_files.splitlines():
-            if '=' in item:
-                if ',' in item and '@' not in item:
-                    item = item[0:item.rfind(',')]
-                key, value = item.split('=')
-                if value == '':
-                    self._data[key] = None
-                else:
-                    self._data[key] = value
         self.interative_mode = self._data.get('Serial Directory') is not None
         self.is_windows = self.interative_mode
 
