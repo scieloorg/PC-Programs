@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import shutil
+import configparser
 
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
@@ -13,50 +14,54 @@ from prodtools import EMAIL_TEMPLATE_MESSAGES_PATH
 
 def get_configuration_filename(collection_acron=None):
     filename = None
-    if collection_acron is None:
-        f = os.path.join(BIN_PATH, 'scielo_paths.ini')
-        if os.path.isfile(f):
-            filename = f
+    if collection_acron:
+        f = os.path.join(XC_SERVER_CONFIG_PATH, collection_acron + '.xc.ini')
     else:
-        filename = os.path.join(
-            XC_SERVER_CONFIG_PATH, collection_acron + '.xc.ini')
-
+        f = os.path.join(BIN_PATH, 'scielo_paths.ini')
+    if os.path.isfile(f):
+        filename = f
     return filename
+
+
+def _clean_item(pair):
+    """
+    Trata valores provenientes do arquivos scielo_paths.ini usado para atender
+    Title Manager, Converter entre outras aplicações
+    """
+    k, v = pair
+    if "," in v and "@" not in v:
+        v = v[0:v.rfind(",")]
+    if v == "":
+        v = None
+    return k, v
+
+
+def get_data(content: str) -> dict:
+    if not content:
+        return {}
+    cp = configparser.ConfigParser()
+    # evita de converter nomes das variaveis para lowercase
+    cp.optionxform = lambda option: option
+    cp.read_string("[DUMMYSECTION]\n" + content)
+    return dict([_clean_item(i) for i in cp.items("DUMMYSECTION")])
 
 
 class Configuration(object):
 
     def __init__(self, filename=None):
-        self.filename = filename
-        if filename is None:
-            self.filename = get_configuration_filename()
-        if self.filename is not None and not os.path.isfile(self.filename):
-            encoding.display_message('Not found {}'.format(self.filename))
-            self.filename = None
-        self.load()
-
-    def load(self):
         self._data = {}
-        content_files = ''
-        for item in ['scielo_env.ini', 'scielo_collection.ini']:
-            if os.path.isfile(os.path.join(BIN_PATH, item)):
-                content_files += "\n" + fs_utils.read_file(
-                    os.path.join(BIN_PATH, item))
 
-        if self.filename is not None:
+        filename = filename or get_configuration_filename()
+        if filename:
             coding = 'utf-8'
-            if self.filename.endswith('scielo_paths.ini'):
+            if filename.endswith('scielo_paths.ini'):
                 coding = 'iso-8859-1'
-            content_files += fs_utils.read_file(self.filename, coding)
-        for item in content_files.splitlines():
-            if '=' in item:
-                if ',' in item and '@' not in item:
-                    item = item[0:item.rfind(',')]
-                key, value = item.split('=')
-                if value == '':
-                    self._data[key] = None
-                else:
-                    self._data[key] = value
+            self._data.update(get_data(fs_utils.read_file(filename, coding)))
+
+        for item in ['scielo_env.ini', 'scielo_collection.ini']:
+            file_path = os.path.join(BIN_PATH, item)
+            self._data.update(get_data(fs_utils.read_file(file_path)))
+
         self.interative_mode = self._data.get('Serial Directory') is not None
         self.is_windows = self.interative_mode
 
