@@ -110,8 +110,78 @@ class TestArticle(TestCase):
             "bibr":
                 [[1, 2, xml.find(".//xref[1]"), xml.find(".//xref[2]")],
                  [5, 8, xml.find(".//xref[3]"), xml.find(".//xref[4]")],
-                ],
+                 ],
             "fig":
                 [[1, 2, xml.find(".//xref[5]"), xml.find(".//xref[6]")]]
         }
         self.assertEqual(expected, result)
+
+    def test_any_xref_parent_nodes_returns_one_parent_and_one_xref(self):
+        text = (
+            '<article>'
+            '<body><p>'
+            '<xref ref-type="bibr" rid="B01">(a1)</xref>'
+            '</p></body>'
+            '</article>'
+        )
+        xml, error = xml_utils.load_xml(text)
+        a = Article(xml, "nome")
+        result = a.any_xref_parent_nodes
+        expected = {"bibr": []}
+
+        self.assertEqual(expected, result)
+
+    def test_any_xref_parent_nodes_returns_one_parent_and_two_xref(self):
+        text = (
+            '<article>'
+            '<body><p>'
+            '<xref ref-type="bibr" rid="B01">(a1)</xref>'
+            '-<xref ref-type="bibr" rid="B01">(a1)</xref>'
+            '</p></body>'
+            '</article>'
+        )
+        xml, error = xml_utils.load_xml(text)
+        a = Article(xml, "nome")
+        result = a.any_xref_parent_nodes
+        expected = {
+            "bibr":
+                [(xml.find(".//p[1]"),
+                    [xml.find(".//xref[1]"),
+                     xml.find(".//xref[2]")]),
+                 ],
+        }
+        self.assertEqual(expected, result)
+
+    def test_any_xref_parent_nodes_returns_two_parents_and_six_children(self):
+        text = (
+            '<article>'
+            '<body><p>'
+            '<xref ref-type="bibr" rid="B01">1</xref>'
+            '-<xref ref-type="bibr" rid="B02">2</xref>'
+            '<xref ref-type="bibr" rid="B05">5</xref>'
+            '-<xref ref-type="bibr" rid="B08">8</xref>'
+            '<xref ref-type="fig" rid="f01">1</xref>'
+            '-<xref ref-type="fig" rid="f02">2</xref>'
+            '</p></body>'
+            '</article>'
+        )
+        xml, error = xml_utils.load_xml(text)
+        a = Article(xml, "nome")
+        result = a.any_xref_parent_nodes
+        expected = {
+            "bibr":
+                [(xml.find(".//p[1]"),
+                    [xml.find(".//xref[1]"),
+                     xml.find(".//xref[2]"),
+                     xml.find(".//xref[3]"),
+                     xml.find(".//xref[4]"),
+                     ]),
+                 ],
+            "fig":
+                [(xml.find(".//p[1]"),
+                    [xml.find(".//xref[5]"),
+                     xml.find(".//xref[6]")]),
+                 ],
+        }
+        self.assertEqual(expected, result)
+
