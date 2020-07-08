@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import shutil
+import configparser
 
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
@@ -33,6 +34,14 @@ def _clean_item(pair):
     if v == "":
         v = None
     return k, v
+
+
+def get_data(content: str) -> dict:
+    cp = configparser.ConfigParser()
+    # evita de converter nomes das variaveis para lowercase
+    cp.optionxform = lambda option: option
+    cp.read_string("[DUMMYSECTION]\n" + content)
+    return dict([_clean_item(i) for i in cp.items("DUMMYSECTION")])
 
 
 class Configuration(object):
