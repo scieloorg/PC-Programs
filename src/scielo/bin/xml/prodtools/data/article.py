@@ -668,16 +668,16 @@ class ArticleXML(object):
 
     @property
     def is_bibr_xref_number(self):
-        _is_bibr_xref_number = False
-        if self.bibr_xref_nodes is not None:
-            for bibr_xref in self.bibr_xref_nodes:
-                if bibr_xref.text is not None:
-                    if bibr_xref.text.replace('(', '')[0].isdigit():
-                        _is_bibr_xref_number = True
-                    else:
-                        _is_bibr_xref_number = False
-                    break
-        return _is_bibr_xref_number
+        """
+        Se encontrar pelo menos um caracter alfabético,
+        considerar que NÃO é o padrão numérico.
+        """
+        for node in self.tree.findall('.//xref[@ref-type="bibr"]'):
+            for words in node.itertext():
+                for c in words:
+                    if c.isalpha():
+                        return False
+        return True
 
     @property
     def bibr_xref_parent_nodes(self):
