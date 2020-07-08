@@ -123,10 +123,6 @@ item: Set Variable
   Value=c:\scielo
 end
 item: Set Variable
-  Variable=DATADIR
-  Value=%PROGDIR%
-end
-item: Set Variable
   Variable=MYSCIELOURL
   Value=www.scielo.br
   Flags=10000000
@@ -137,16 +133,6 @@ item: Set Variable
   Flags=10000000
 end
 item: If/While Statement
-  Variable=DATADIR
-  Value=scielo
-end
-item: Set Variable
-  Variable=DATADIR
-  Value=c:\scielo
-end
-item: End Block
-end
-item: If/While Statement
   Variable=PROGDIR
   Value=scielo
 end
@@ -155,6 +141,10 @@ item: Set Variable
   Value=c:\scielo
 end
 item: End Block
+end
+item: Set Variable
+  Variable=DATADIR
+  Value=%PROGDIR%
 end
 item: Check Configuration
   Flags=10111011
@@ -252,6 +242,50 @@ item: Wizard Block
 end
 item: If/While Statement
   Variable=DISPLAY
+  Value=Select Components
+  Flags=00000100
+end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\bin\scielo_paths.ini
+  Flags=01000100
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\cfg\configure_paths.py
+  Destination=%PROGDIR%\bin\cfg\configure_paths.py
+  Flags=0000000010000010
+end
+item: Execute Program
+  Pathname=%PYTHON_PATH%\python
+  Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PYTHON_PATH% %PROGDIR%
+  Flags=00000110
+end
+item: Read INI Value
+  Variable=WEBPATH
+  Pathname=%PROGDIR%\bin\scielo_paths_installed.ini
+  Section=INSTALLED
+  Item=WEBPATH
+  Default=%WEBPATH%
+end
+item: Read INI Value
+  Variable=DATADIR
+  Pathname=%PROGDIR%\bin\scielo_paths_installed.ini
+  Section=INSTALLED
+  Item=DATADIR
+  Default=%DATADIR%
+end
+item: Read INI Value
+  Variable=MYSCIELOURL
+  Pathname=%PROGDIR%\bin\scielo_paths_installed.ini
+  Section=INSTALLED
+  Item=WEBURL
+  Default=%MYSCIELOURL%
+end
+item: End Block
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=DISPLAY
   Value=Select Destination Directory
   Flags=00000100
 end
@@ -273,17 +307,6 @@ item: Set Variable
   Value=Select python3 path
 end
 item: End Block
-end
-item: End Block
-end
-item: If/While Statement
-  Variable=DISPLAY
-  Value=Collection data
-  Flags=00000100
-end
-item: Set Variable
-  Variable=DATADIR
-  Value=%PROGDIR%
 end
 item: End Block
 end
@@ -1874,7 +1897,7 @@ item: Install File
   Flags=0000000010000010
 end
 item: Execute Program
-  Pathname=pip
+  Pathname=%PYTHON_PATH%\Scripts\pip
   Command Line=install -U %PROGDIR%\bin\xml\dist\SciELO_Production_Tools-4.0.97-py3-none-any.whl
   Flags=00000110
 end
@@ -5488,7 +5511,7 @@ item: Create Shortcut
   Destination Portuguese=%DESKTOPDIR%\XML Converter.lnk
   Destination Spanish=%DESKTOPDIR%\XML Converter.lnk
   Command Options=%PROGDIR%
-  Command Options Portuguese=%PROGDIR%
+  Command Options Portuguese=%PROGDIR% %PYTHON_PATH%\python
   Command Options Spanish=%PROGDIR%
   Icon Number=0
   Icon Number Portuguese=0
@@ -5496,6 +5519,7 @@ item: Create Shortcut
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Spanish=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Key Type Portuguese=1536
   Flags=00000001
 end
 item: Create Shortcut
@@ -5506,7 +5530,7 @@ item: Create Shortcut
   Destination Portuguese=%DESKTOPDIR%\XML Package Maker.lnk
   Destination Spanish=%DESKTOPDIR%\XML Package Maker.lnk
   Command Options=%PROGDIR%
-  Command Options Portuguese=%PROGDIR%
+  Command Options Portuguese=%PROGDIR% %PYTHON_PATH%\python
   Command Options Spanish=%PROGDIR%
   Icon Number=0
   Icon Number Portuguese=0
@@ -5514,6 +5538,7 @@ item: Create Shortcut
   Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\Scielo.ico
   Icon Pathname Spanish=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Key Type Portuguese=1536
   Flags=00000001
 end
 item: Create Shortcut
@@ -5524,7 +5549,7 @@ item: Create Shortcut
   Destination Portuguese=%DESKTOPDIR%\Markup - update journals list.lnk
   Destination Spanish=%DESKTOPDIR%\Markup - update journals list.lnk
   Command Options=%PROGDIR%
-  Command Options Portuguese=%PROGDIR%
+  Command Options Portuguese=%PROGDIR% %PYTHON_PATH%\python
   Command Options Spanish=%PROGDIR%
   Icon Number=0
   Icon Number Portuguese=0
@@ -5532,6 +5557,7 @@ item: Create Shortcut
   Icon Pathname=%PROGDIR%\bin\SGMLPars\scielo.ico
   Icon Pathname Portuguese=%PROGDIR%\bin\SGMLPars\scielo.ico
   Icon Pathname Spanish=%PROGDIR%\bin\SGMLPars\scielo.ico
+  Key Type Portuguese=1536
   Flags=00000001
 end
 item: Create Shortcut

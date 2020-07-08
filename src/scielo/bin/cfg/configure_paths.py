@@ -9,12 +9,13 @@ def now():
     return datetime.now().isoformat().replace(
         " ", "-").replace(".", "-").replace(":", "-")
 
-PYTHON3 = sys.argv[1]
+PYTHON3 = sys.argv[1] if len(sys.argv) > 1 else None
 APPDIR = sys.argv[2] if len(sys.argv) > 2 else None
 DATADIR = sys.argv[3] if len(sys.argv) > 3 else None
 MYSCIELOURL = sys.argv[4] if len(sys.argv) > 4 else None
 WEBPATH = sys.argv[5] if len(sys.argv) > 5 else None
 
+SCIELO_PATHS_INSTALLED = os.path.join(APPDIR, 'bin', 'scielo_paths_installed.ini')
 SCIELO_PATHS_CONFIG = os.path.join(APPDIR, 'bin', 'scielo_paths.ini')
 SCIELO_PATHS_TEMPLATE = os.path.join(APPDIR, 'bin', 'scielo_paths.example.ini')
 PARSER_CONFIG_TEMPLATE = os.path.join(
@@ -87,8 +88,33 @@ def create_newcode_db():
         os.system(cmd)
 
 
+def create_scielo_paths_installed():
+    new_names_and_values = []
+    if os.path.isfile(SCIELO_PATHS_CONFIG):
+        with open(SCIELO_PATHS_CONFIG, 'r') as fp:
+            for row in fp.readlines():
+                if "=" in row:
+                    name, value = row.split("=")
+                    v = value.lower()
+                    if name == "Serial Directory":
+                        new_names_and_values += [
+                            "DATADIR=" + value[:v.find("\\serial\\")]]
+                    elif name == "SCI_LISTA_SITE":
+                        new_names_and_values += [
+                            "WEBPATH=" + value[:v.find("\\proc\\")]]
+                    elif name == "SciELO WEB URL":
+                        new_names_and_values += ["WEBURL=" + value]
+                        break
+    if new_names_and_values:
+        with open(SCIELO_PATHS_INSTALLED, "w") as fp:
+            fp.write("[INSTALLED]\n" + "\n".join(new_names_and_values))
+
+
 if __name__ == "__main__":
-    update_parser_config()
-    update_scielo_paths()
-    create_newcode_db()
-    fix_python_path_in_mainGenerateXML()
+    if len(sys.argv) == 3:
+        create_scielo_paths_installed()
+    else:
+        update_parser_config()
+        update_scielo_paths()
+        create_newcode_db()
+        fix_python_path_in_mainGenerateXML()
