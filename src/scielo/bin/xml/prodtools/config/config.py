@@ -27,12 +27,7 @@ def get_configuration_filename(collection_acron=None):
 class Configuration(object):
 
     def __init__(self, filename=None):
-        self.filename = filename
-        if filename is None:
-            self.filename = get_configuration_filename()
-        if self.filename is not None and not os.path.isfile(self.filename):
-            encoding.display_message('Not found {}'.format(self.filename))
-            self.filename = None
+        self.filename = filename or get_configuration_filename()
         self.load()
 
     def load(self):
