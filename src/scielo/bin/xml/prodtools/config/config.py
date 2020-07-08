@@ -22,6 +22,19 @@ def get_configuration_filename(collection_acron=None):
     return filename
 
 
+def _clean_item(pair):
+    """
+    Trata valores provenientes do arquivos scielo_paths.ini usado para atender
+    Title Manager, Converter entre outras aplicações
+    """
+    k, v = pair
+    if "," in v and "@" not in v:
+        v = v[0:v.rfind(",")]
+    if v == "":
+        v = None
+    return k, v
+
+
 class Configuration(object):
 
     def __init__(self, filename=None):
