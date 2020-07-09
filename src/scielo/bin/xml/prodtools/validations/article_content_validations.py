@@ -1299,7 +1299,9 @@ class ArticleContentValidation(object):
                         _('{label} is required. ').format(
                             label='@ref-type'), xref_xml))
             if xref_rid and xref_type:
-                elements = attributes.REFTYPE_AND_TAG_ITEMS.get(xref_type)
+                # para `xref_type`, retorna os nomes de elementos deste tipo
+                # por exemplo, para ref-type='table', retorna ['table-wrap']
+                element_names = attributes.REFTYPE_AND_TAG_ITEMS.get(xref_type)
                 tag = id_and_elem_name.get(xref_rid)
                 if tag is None:
                     message.append(
@@ -1309,22 +1311,22 @@ class ArticleContentValidation(object):
                                 label=xref_type + '[@id=' +
                                 xref_rid + ']'),
                             xref_xml))
-                elif elements is None:
+                elif element_names is None:
                     # no need to validate
                     valid = True
-                elif tag in elements:
+                elif tag in element_names:
                     valid = True
-                elif tag not in elements:
+                elif tag not in element_names:
                     reftypes = [
                         reftype
-                        for reftype, _elements in attributes.REFTYPE_AND_TAG_ITEMS.items()
-                        if tag in _elements]
+                        for reftype, _element_names in attributes.REFTYPE_AND_TAG_ITEMS.items()
+                        if tag in _element_names]
 
                     _msg = _('Unmatched {value} and {label}: {value1} is valid for {label1}, and {value2} is valid for {label2}').format(
                         value='@ref-type (' + xref_type + ')',
                         label=tag,
                         value1='xref[@ref-type="' + xref_type + '"]',
-                        label1=' | '.join(elements),
+                        label1=' | '.join(element_names),
                         value2='|'.join(reftypes),
                         label2=tag + '/@ref-type'
                         )
