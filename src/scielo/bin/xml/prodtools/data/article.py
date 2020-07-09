@@ -335,7 +335,7 @@ class ContribXML(object):
 
     @property
     def anonymous_author(self):
-        if self.node.tag == 'anonymous':
+        if self.node.tag == 'anonymous' or self.node.find(".//anonymous") is not None:
             return AnonymousAuthor('anonymous')
 
     @property
@@ -365,14 +365,14 @@ class ContribXML(object):
             return c
 
     def contrib(self, role=None):
-        if self._contrib is None:
-            self._contrib = self.person_author
-            if self._contrib is None:
-                self._contrib = self.corp_author
-            if self._contrib is None:
-                self._contrib = self.anonymous_author
-            if self._contrib is not None and role is not None:
-                self._contrib.role = role
+        self._contrib = (
+            self._contrib or
+            self.person_author or
+            self.corp_author or
+            self.anonymous_author
+        )
+        if self._contrib and role:
+            self._contrib.role = role
         return self._contrib
 
 
