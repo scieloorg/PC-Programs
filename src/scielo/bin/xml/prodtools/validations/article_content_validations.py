@@ -1281,31 +1281,34 @@ class ArticleContentValidation(object):
             for node in self.article.elements_which_has_id_attribute
             if node.attrib.get('id')}
 
-        for xref in self.article.xref_nodes:
-            if xref['rid'] is None:
+        for xref in self.article.tree.findall(".//xref"):
+            xref_rid = xref.get("rid")
+            xref_type = xref.get("ref-type")
+            xref_xml = xml_utils.tostring(xref)
+
+            if not xref_rid:
                 message.append(
                     ('xref/@rid',
                         validation_status.STATUS_FATAL_ERROR,
                         _('{label} is required. ').format(
-                            label='@rid'), xref['xml']))
-            if xref['ref-type'] is None:
+                            label='@rid'), xref_xml))
+            if not xref_type:
                 message.append(
                     ('xref/@ref-type',
                         validation_status.STATUS_ERROR,
                         _('{label} is required. ').format(
-                            label='@ref-type'), xref['xml']))
-            if xref['rid'] is not None and xref['ref-type'] is not None:
-                elements = attributes.REFTYPE_AND_TAG_ITEMS.get(
-                    xref['ref-type'])
-                tag = id_and_elem_name.get(xref['rid'])
+                            label='@ref-type'), xref_xml))
+            if xref_rid and xref_type:
+                elements = attributes.REFTYPE_AND_TAG_ITEMS.get(xref_type)
+                tag = id_and_elem_name.get(xref_rid)
                 if tag is None:
                     message.append(
                         ('xref/@rid',
                             validation_status.STATUS_FATAL_ERROR,
                             _('{label} is required. ').format(
-                                label=xref['ref-type'] + '[@id=' +
-                                xref['rid'] + ']'),
-                            xref['xml']))
+                                label=xref_type + '[@id=' +
+                                xref_rid + ']'),
+                            xref_xml))
                 elif elements is None:
                     # no need to validate
                     valid = True
@@ -1318,17 +1321,17 @@ class ArticleContentValidation(object):
                         if tag in _elements]
 
                     _msg = _('Unmatched {value} and {label}: {value1} is valid for {label1}, and {value2} is valid for {label2}').format(
-                        value='@ref-type (' + xref['ref-type'] + ')',
+                        value='@ref-type (' + xref_type + ')',
                         label=tag,
-                        value1='xref[@ref-type="' + xref['ref-type'] + '"]',
+                        value1='xref[@ref-type="' + xref_type + '"]',
                         label1=' | '.join(elements),
                         value2='|'.join(reftypes),
                         label2=tag + '/@ref-type'
                         )
                     #_msg = _('Unmatched')
-                    #_msg += ' @ref-type (' + xref['ref-type'] + ')'
+                    #_msg += ' @ref-type (' + xref_type + ')'
                     #_msg += _(' and ') + tag + ': '
-                    #_msg += 'xref[@ref-type="' + xref['ref-type'] + '"] '
+                    #_msg += 'xref[@ref-type="' + xref_type + '"] '
                     #_msg += _('is for') + ' ' + ' | '.join(elements)
                     #_msg += _(' and ') + _('valid values of') + ' @ref-type ' + _('of') + ' '
                     #_msg += tag + ' ' + _('are') + ' '
