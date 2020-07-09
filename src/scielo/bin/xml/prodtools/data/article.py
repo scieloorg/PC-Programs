@@ -567,42 +567,43 @@ class ArticleXML(object):
     def any_xref_ranges(self):
         _any_xref_ranges = {}
         for xref_type, xref_type_nodes in self.any_xref_parent_nodes.items():
-            if xref_type is not None:
-                if xref_type not in _any_xref_ranges.keys():
-                    _any_xref_ranges[xref_type] = []
-                for xref_parent_node, xref_node_items in xref_type_nodes:
-                    # nodes de um tipo de xref
-                    xref_parent_xml = tostring(xref_parent_node)
-                    parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
-                    parts = [item for item in parts if ' ref-type="' + xref_type + '"' in item]
-                    k = 0
-                    for item in parts:
-                        text = ''
-                        delimiter = ''
-                        if '</xref>' in item:
-                            delimiter = '</xref>'
-                        elif '/>' in item:
-                            delimiter = '/>'
-                        if len(delimiter) > 0:
-                            if delimiter in item:
-                                text = item[item.find(delimiter)+len(delimiter):]
-                        if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
-                            start = None
-                            end = None
-                            n = xref_node_items[k].attrib.get('rid')
+            if xref_type is None:
+                continue
+            if xref_type not in _any_xref_ranges.keys():
+                _any_xref_ranges[xref_type] = []
+            for xref_parent_node, xref_node_items in xref_type_nodes:
+                # nodes de um tipo de xref
+                xref_parent_xml = tostring(xref_parent_node)
+                parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
+                parts = [item for item in parts if ' ref-type="' + xref_type + '"' in item]
+                k = 0
+                for item in parts:
+                    text = ''
+                    delimiter = ''
+                    if '</xref>' in item:
+                        delimiter = '</xref>'
+                    elif '/>' in item:
+                        delimiter = '/>'
+                    if len(delimiter) > 0:
+                        if delimiter in item:
+                            text = item[item.find(delimiter)+len(delimiter):]
+                    if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
+                        start = None
+                        end = None
+                        n = xref_node_items[k].attrib.get('rid')
+                        if n is not None:
+                            n = n[1:]
+                            if n.isdigit():
+                                start = int(n)
+                        if k + 1 < len(xref_node_items):
+                            n = xref_node_items[k+1].attrib.get('rid')
                             if n is not None:
                                 n = n[1:]
                                 if n.isdigit():
-                                    start = int(n)
-                            if k + 1 < len(xref_node_items):
-                                n = xref_node_items[k+1].attrib.get('rid')
-                                if n is not None:
-                                    n = n[1:]
-                                    if n.isdigit():
-                                        end = int(n)
-                                if all([start, end]):
-                                    _any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
-                        k += 1
+                                    end = int(n)
+                            if all([start, end]):
+                                _any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
+                    k += 1
         return _any_xref_ranges
 
     @property
