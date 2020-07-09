@@ -252,4 +252,88 @@ class TestArticleContentValidationRelatedObjects(TestCase):
             ('related-object/@related-object-type', '[OK]', 'referee-report'),
         ]
         self.assertEqual(expected, result)
-        
+
+
+class TestArticleContentValidationXref(TestCase):
+
+    def get_article_content_validations(self, text):
+        xml = etree.fromstring(text)
+        return ArticleContentValidation(
+            journal=Mock(),
+            _article=Article(xml, 'xml_name'),
+            pkgfiles=Mock(),
+            is_db_generation=Mock(),
+            check_url=Mock(),
+            doi_validator=Mock(),
+            config=Mock()
+        )
+
+    def test_missing_xref_returns_empty_list(self):
+        text = (
+            '<article>'
+            '<body><p>'
+            '<xref ref-type="bibr" rid="B01">1</xref>'
+            '-<xref ref-type="bibr" rid="B02">2</xref>'
+            '</p></body>'
+            '<back>'
+            '<ref-list>'
+            '</ref-list>'
+            '</back>'
+            '</article>'
+        )
+        acv = self.get_article_content_validations(text)
+        result = acv.missing_xref_list
+        expected = []
+        self.assertEqual(expected, result)
+
+    def test_missing_xref_returns_error(self):
+        text = (
+            '<article>'
+            '<body><p>'
+            '<xref ref-type="bibr" rid="B03">3</xref>'
+            '-<xref ref-type="bibr" rid="B02">2</xref>'
+            '</p></body>'
+            '<back>'
+            '<ref-list>'
+            '</ref-list>'
+            '</back>'
+            '</article>'
+        )
+        acv = self.get_article_content_validations(text)
+        result = acv.missing_xref_list
+        self.assertEqual("[ERROR]", result[0][1])
+        self.assertIn("3-2 (B03-B02)", result[0][2])
+
+    def test_missing_xref_returns_empty_list_because_there_is_not_range(self):
+        text = """<article><body>
+        <p>Los estudios históricos sobre ... 
+        me refiero a las listas de A. 
+        <xref ref-type="bibr" rid="B61">Thurm (1883</xref>) o de Th. 
+        <xref ref-type="bibr" rid="B9">Botten-Wobst (1876</xref>); 
+        además, este último se ocupa solo de las misiones en Roma. 
+        Hay un trabajo más reciente, el de P. 
+        <xref ref-type="bibr" rid="B43">Knibbe (1958</xref>), 
+        ... por E. <xref ref-type="bibr" rid="B44">Krug (1916</xref>);
+        y el segundo es el realizado por B.
+        <xref ref-type="bibr" rid="B54">Schleussner (1978</xref>), 
+        a los escritos de C. 
+        <xref ref-type="bibr" rid="B48">Phillipson (1911</xref>), 
+        de P. <xref ref-type="bibr" rid="B68">Willems (1878</xref>-1885), 
+        de P. <xref ref-type="bibr" rid="B39">Frezza (1938</xref>), 
+        pero sobre todo, a los de P. Catalano (1974) y F. de Martino (1972-1975).</p>
+
+        <p>Entre los análisis más recientes están el de B. E. Thomason (1991), 
+        ...; F. <xref ref-type="bibr" rid="B15">Canali de Rossi (1997</xref>) 
+        ... de ocho volúmenes (2005, 2007, 2013, 2014, 2016, 2017 (dos) 
+        y 2018). Destacan también las obras de C. 
+        <xref ref-type="bibr" rid="B2">Aulliard (2006</xref>) y 
+        de E. <xref ref-type="bibr" rid="B58">Torregaray (2005</xref>-2014): 
+        la primera es una valiosa síntesis de una ... 
+        dirigidas por Ed. 
+        <xref ref-type="bibr" rid="B40">Frézouls y A. Jacquemin (1995</xref>) 
+        y de Claude <xref ref-type="bibr" rid="B36">Eilers (2009</xref>).</p>
+        </body></article>"""
+        acv = self.get_article_content_validations(text)
+        result = acv.missing_xref_list
+        expected = []
+        self.assertEqual(expected, result)
