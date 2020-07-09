@@ -1302,14 +1302,14 @@ class ArticleContentValidation(object):
                 # para `xref_type`, retorna os nomes de elementos deste tipo
                 # por exemplo, para ref-type='table', retorna ['table-wrap']
                 element_names = attributes.REFTYPE_AND_TAG_ITEMS.get(xref_type)
+                # encontra o nome do elemento cujo `@id` é igual a `@rid`
                 tag = id_and_elem_name.get(xref_rid)
                 if tag is None:
+                    # não há elemento cujo `@id` é igual a `@rid`
                     message.append(
                         ('xref/@rid',
                             validation_status.STATUS_FATAL_ERROR,
-                            _('{label} is required. ').format(
-                                label=xref_type + '[@id=' +
-                                xref_rid + ']'),
+                            _('Element related to `xref[@rid="{}"]` is required. ').format(xref_rid),
                             xref_xml))
                 elif element_names is None:
                     # no need to validate
