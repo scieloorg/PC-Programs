@@ -351,11 +351,9 @@ class ContribXML(object):
             for contrib_id in self.contrib_id_items:
                 c.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.value
             c.role = self.node.get('contrib-type')
-            for xref in self.xref_items:
-                if xref is not None:
-                    text, attribs = xref
-                    if attribs.get('ref-type') == 'aff':
-                        c.xref.append(attribs.get('rid'))
+            for text, attribs in self.xref_items:
+                if attribs.get('ref-type') == 'aff' and attribs.get('rid'):
+                    c.xref.append(attribs.get('rid'))
             return c
 
     @property
