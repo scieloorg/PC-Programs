@@ -618,3 +618,25 @@ class TestSuitableXML(TestCase):
             )
             self.assertIsNone(suitable_xml.xml_error)
 
+
+class TestNodeText(TestCase):
+
+    def test_node_text_returns_bold_wrapped_by_parentheses(self):
+        text = """<root>
+            <p>Texto <xref><sup>(<bold>bold</bold>)</sup></xref></p>
+            </root>"""
+        expected = "(bold)"
+        xml = xml_utils.etree.fromstring(text)
+        result = xml_utils.node_text(xml.find(".//xref"))
+        self.assertEqual(expected, result)
+
+    def test_node_text_returns_all_inner_texts_of_a_given_tag_as_str(self):
+        text = """<root>
+            <p>Texto <kmjmkl><italic><bold>bold</bold></italic> 
+            anady <k>adla</k> fuem lad</kmjmkl> fladjfajf;adjf;f</p>
+            </root>"""
+        expected = """Texto bold 
+            anady adla fuem lad fladjfajf;adjf;f"""
+        xml = xml_utils.etree.fromstring(text)
+        result = xml_utils.node_text(xml.find(".//p"))
+        self.assertEqual(expected, result)

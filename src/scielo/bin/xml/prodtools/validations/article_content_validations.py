@@ -1387,13 +1387,13 @@ class ArticleContentValidation(object):
                 for start, end, start_node, end_node in self.article.any_xref_ranges.get(xref_type):
                     if start > end:
                         message.append(
-                                (
+                            (
                                 _('xref range'),
                                 validation_status.STATUS_ERROR,
-                                _('Invalid range ')+
+                                _('Invalid range ') +
                                 '{}-{} ({}-{})'.format(
-                                    start_node.text,
-                                    end_node.text,
+                                    xml_utils.node_text(start_node),
+                                    xml_utils.node_text(end_node),
                                     start_node.attrib.get('rid'),
                                     end_node.attrib.get('rid'))
                                 )

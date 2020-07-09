@@ -599,3 +599,11 @@ def strip_all_tags_except(root, keep_tags):
             continue
         node.tag = "REMOVE"
     etree.strip_tags(root, "REMOVE")
+
+
+def node_text(node):
+    """
+    Retorna todos os textos encontrados dentro de um elemento e de seus
+    sub-elementos de forma concatenada
+    """
+    return "".join(node.itertext())
