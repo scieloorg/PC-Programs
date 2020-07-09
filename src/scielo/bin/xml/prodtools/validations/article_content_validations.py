@@ -1444,19 +1444,6 @@ class ArticleContentValidation(object):
         return message
 
     @property
-    def xref_rid_and_text(self):
-        message = []
-        for xref_node in self.article.xref_nodes:
-            rid = xref_node['rid']
-            if rid is not None and xref_node['xml'] is not None:
-                if rid[1:] not in xref_node['xml']:
-                    items = []
-                    items.append(('@rid', rid))
-                    items.append(('xref', xref_node['xml']))
-                    message.append(('xref', validation_status.STATUS_WARNING, data_validations.invalid_labels_and_values(items)))
-        return message
-
-    @property
     def svg(self):
         messages = []
         for href in self.article.hrefs:
