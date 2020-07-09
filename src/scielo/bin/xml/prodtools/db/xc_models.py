@@ -931,7 +931,7 @@ class ArticlesManager(object):
         status_items['aop'] = self.aop_db_manager.still_aop_items()
         return status_items
 
-    def convert_articles(self, acron_issue_label, articles, i_record, create_windows_base):
+    def convert_articles(self, xml_files, articles, i_record, create_windows_base):
         self.articles_conversion_status = {}
         self.articles_aop_status = {}
         self.articles_aop_exclusion_status = {}
@@ -955,9 +955,9 @@ class ArticlesManager(object):
             if converted:
                 if create_windows_base:
                     self.base_manager.generate_windows_version()
-
+                self.issue_files.save_xml_files(xml_files)
                 scilista_items.extend(self.aop_db_manager.scilista_items)
-                scilista_items.append(acron_issue_label)
+                scilista_items.append(self.issue_files.acron_issue_label)
         return scilista_items
 
     def finish_conversion(self, i_record):

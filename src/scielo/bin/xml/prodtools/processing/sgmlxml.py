@@ -713,7 +713,6 @@ class ImagesOriginReport(object):
                 'h4', _('Image from {} {} {}').format(origin, icon, text)))
         rows.append(
             html_reports.tag('p', img_filename))
-        img_filename = os.path.join('file://', img_filename)
         basename = os.path.basename(img_filename)
         name, ext = os.path.splitext(img_filename)
         if ext.startswith(".tif"):

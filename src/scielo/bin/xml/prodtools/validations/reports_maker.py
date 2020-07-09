@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import shutil
 from datetime import datetime
 
 from prodtools import _
@@ -7,6 +8,7 @@ from prodtools.utils import utils
 from prodtools.utils import encoding
 from prodtools.reports import html_reports
 from prodtools.reports import validation_status
+from prodtools.db.serial import IssuePathsInSerial, IssuePathsInWebsite
 from . import article_data_reports
 from . import pkg_articles_validations
 from . import validations as validations_module
@@ -14,7 +16,7 @@ from . import validations as validations_module
 
 class ReportsMaker(object):
 
-    def __init__(self, pkg, pkg_eval_result, files_location, stage, xpm_version=None, conversion=None):
+    def __init__(self, pkg, pkg_eval_result, assets_in_report, stage, xpm_version=None, conversion=None):
         self.pkg_eval_result = pkg_eval_result
         self.conversion = conversion
         self.xpm_version = xpm_version
@@ -23,7 +25,7 @@ class ReportsMaker(object):
         self.report_version = ''
         if self.stage == 'xc':
             self.report_version = '_' + datetime.now().isoformat()[0:19].replace(':', '').replace('T', '_')
-        self.files_location = files_location
+        self.assets_in_report = assets_in_report
         self.pkg = pkg
         self.pkg_reports = pkg_articles_validations.PackageReports(pkg.package_folder)
         self.pkg_articles_data_report = pkg_articles_validations.PkgArticlesDataReports(pkg.articles)
@@ -52,7 +54,7 @@ class ReportsMaker(object):
     @property
     def report_components(self):
         components = {}
-        components['pkg-files'] = self.full_xpm_version + self.pkg_files
+        components['pkg-files'] = self.full_xpm_version + self.pkg_reports.xml_list + self.processing_result_location
         components['summary-report'] = self.summary_report
         components['group-validations-report'] = self.group_validations_report
         components['individual-validations-report'] = self.individual_validations_report
@@ -71,13 +73,6 @@ class ReportsMaker(object):
 
         components = {k: label_errors(v) for k, v in components.items() if v is not None}
         return components
-
-    @property
-    def pkg_files(self):
-        r = self.pkg_reports.xml_list
-        if self.files_location.result_path is not None:
-            r += self.processing_result_location
-        return r
 
     @property
     def summary_report(self):
@@ -143,13 +138,13 @@ class ReportsMaker(object):
     @property
     def report_location(self):
         return os.path.join(
-            self.files_location.report_path,
+            self.assets_in_report.report_path,
             self.stage + self.report_version + '.html')
 
     @property
     def report_link(self):
         return os.path.join(
-            self.files_location.report_link,
+            self.assets_in_report.report_link,
             os.path.basename(self.report_location))
 
     def save_report(self, display=True):
@@ -165,20 +160,23 @@ class ReportsMaker(object):
         tabbed_report = html_reports.TabbedReport(self.labels, self.tabs, self.report_components, self.tab)
         content = tabbed_report.report_content
         origin = ['{IMG_PATH}', '{PDF_PATH}', '{XML_PATH}', '{RES_PATH}', '{REP_PATH}']
-        replac = [self.files_location.img_link, self.files_location.pdf_link,
-                  self.files_location.xml_link,
-                  self.files_location.result_path,
-                  self.files_location.report_path]
+        replac = [self.assets_in_report.img_link,
+                  self.assets_in_report.pdf_link,
+                  self.assets_in_report.xml_link,
+                  self.assets_in_report.result_path,
+                  self.assets_in_report.report_path]
         for o, r in zip(origin, replac):
-            content = content.replace(o, r)
+            content = content.replace(o, r or '')
         return content + self.footnote
 
     @property
     def processing_result_location(self):
-        result_path = self.files_location.result_path
+        if not self.assets_in_report.result_path:
+            return ''
+        result_path = self.assets_in_report.result_path
         return (
             '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' +
-            html_reports.link(os.path.join('file:///', result_path), result_path) + '</p>')
+            html_reports.link(result_path, result_path) + '</p>')
 
 
 def error_msg_subtitle():
@@ -239,3 +237,159 @@ def toc_extended_report(articles):
                 values.append(article_data_reports.display_article_data_in_toc(article))
                 items.append(html_reports.label_values(labels, values))
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=[_('article'), _('last update')], widths=widths)
+
+
+def AssetsInReport(pkg_path, acron=None, issue_label=None, serial_path=None,
+                   web_app_path=None, web_url=None):
+    """
+    Instancia `CollectionAssetsInReport` ou `BasicAssetsInReport`
+    dependendo dos dados disponíveis para instanciar
+    """
+    if acron and issue_label and serial_path and web_app_path:
+        return CollectionAssetsInReport(acron, issue_label, serial_path,
+                                        web_app_path, web_url)
+    return BasicAssetsInReport(pkg_path)
+
+
+class BasicAssetsInReport(object):
+    """
+    Entrega links e caminhos de pastas dos documentos de um pacote,
+    tais como: pastas de pdf, img, xml etc
+    """
+
+    def __init__(self, pkg_path):
+        self.pkg_path = pkg_path
+
+    @property
+    def result_path(self):
+        return os.path.dirname(self.pkg_path)
+
+    @property
+    def img_path(self):
+        return self.pkg_path
+
+    @property
+    def pdf_path(self):
+        return self.pkg_path
+
+    @property
+    def xml_path(self):
+        return self.pkg_path
+
+    @property
+    def report_path(self):
+        return os.path.join(self.result_path, 'errors')
+
+    @property
+    def report_link(self):
+        return self.report_path
+
+    @property
+    def img_link(self):
+        return self.img_path
+
+    @property
+    def pdf_link(self):
+        return self.pdf_path
+
+    @property
+    def xml_link(self):
+        return self.xml_path
+
+
+class CollectionAssetsInReport(object):
+    """
+    Entrega links e caminhos de pastas dos documentos de um _fasciculo_,
+    tais como: pastas de pdf, img, xml etc
+    Exemplo: /scielo/web/bases/xml/acron/issue
+    """
+
+    def __init__(self, acron, issue_label,
+                 serial_path, web_app_path, web_url):
+        self.web_url = web_url
+        self.issue_in_serial = IssuePathsInSerial(
+            serial_path, acron, issue_label)
+        self.issue_in_website = IssuePathsInWebsite(
+            web_app_path, acron, issue_label)
+
+    def link(self, path):
+        if not self.web_url:
+            return path
+        url = path.replace(self.issue_in_website.web_path, self.web_url)
+        url = url.replace("\\", "/")
+        for dirname in ("/bases/", "/htdocs/revistas/", "/htdocs/"):
+            if dirname in url:
+                url = url.replace(dirname, "/")
+                break
+        return url
+
+    def save_report(self, report_file_path):
+        if self.serial_report_path == self.report_path:
+            return
+        if not os.path.isdir(self.serial_report_path):
+            os.makedirs(self.serial_report_path)
+        shutil.copy(report_file_path, self.serial_report_path)
+
+        if self.web_url:
+            # se há o site remoto, os xml não estão acessíveis mesmo
+            # existindo em bases/xml, por isso,
+            # copia os xml para htdocs/reports/<acron>/<issue>/
+            for fname in os.listdir(self.xml_path):
+                file_path = os.path.join(self.xml_path, fname)
+                shutil.copy(file_path, self.report_path)
+
+    @property
+    def result_path(self):
+        if self.web_url:
+            return
+        return self.issue_in_serial.issue_path
+
+    @property
+    def img_path(self):
+        return self.issue_in_website.web_htdocs_img
+
+    @property
+    def pdf_path(self):
+        return self.issue_in_website.web_bases_pdf
+
+    @property
+    def xml_path(self):
+        return self.issue_in_website.web_bases_xml
+
+    @property
+    def report_path(self):
+        if self.web_url:
+            return self.issue_in_website.web_htdocs_reports
+        return self.serial_report_path
+
+    @property
+    def report_link(self):
+        if self.web_url:
+            return self.link(self.report_path)
+        return self.serial_report_path
+
+    @property
+    def serial_report_path(self):
+        return self.issue_in_serial.base_reports_path
+
+    @property
+    def serial_base_xml_path(self):
+        return self.issue_in_serial.base_source_path
+
+    @property
+    def img_link(self):
+        if self.web_url:
+            return self.link(self.img_path)
+        return self.img_path
+
+    @property
+    def pdf_link(self):
+        if self.web_url:
+            return self.link(self.pdf_path)
+        return self.pdf_path
+
+    @property
+    def xml_link(self):
+        if self.web_url:
+            return self.report_link
+        return self.xml_path

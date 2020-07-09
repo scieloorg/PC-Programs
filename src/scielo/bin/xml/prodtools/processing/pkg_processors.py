@@ -16,7 +16,6 @@ from prodtools.validations import reports_maker
 from prodtools.validations.pkg_evaluation import (
     PackageEvaluator,
 )
-from prodtools.data import workarea
 from prodtools.data import kernel_document
 from prodtools.db import xc_models
 from prodtools.db.serial import WebsiteFiles
@@ -84,31 +83,25 @@ class ArticlesConversion(object):
         self.pkg_eval_result = pkg_eval_result
         self.error_messages = []
         self.conversion_status = {}
+        self.updated_scilista_items = None
 
     def convert(self):
+        self.updated_scilista_items = None
         self.articles_conversion_validations = validations_module.ValidationsResultItems()
         scilista_items = [self.pkg.issue_data.acron_issue_label]
         if self.pkg_eval_result.blocking_errors == 0 and (self.accepted_articles == len(self.pkg.articles) or len(self.pkg_eval_result.excluded_orders) > 0):
             self.error_messages = self.db.exclude_articles(self.pkg_eval_result.excluded_orders)
-
-            _scilista_items = self.db.convert_articles(self.pkg.issue_data.acron_issue_label, self.pkg_eval_result.accepted_articles, self.registered_issue_data.issue_models.record, self.create_windows_base)
-            scilista_items.extend(_scilista_items)
+            self.updated_scilista_items = self.db.convert_articles(
+                self.pkg_eval_result.accepted_xml_files,
+                self.pkg_eval_result.accepted_articles,
+                self.registered_issue_data.issue_models.record,
+                self.create_windows_base)
+            scilista_items.extend(self.updated_scilista_items)
             self.conversion_status.update(self.db.db_conversion_status)
 
             for name, message in self.db.articles_conversion_messages.items():
                 self.articles_conversion_validations[name] = validations_module.ValidationsResult()
                 self.articles_conversion_validations[name].message = message
-
-            if len(_scilista_items) > 0:
-                # IMPROVEME
-                if self.local_web_app_path:
-                    website_files = WebsiteFiles(
-                        self.local_web_app_path,
-                        self.pkg.issue_data.acron,
-                        self.pkg.issue_data.issue_label)
-                    website_files.get_files(self.pkg.package_folder.path)
-                self.registered_issue_data.issue_files.save_source_files(self.pkg.package_folder.path)
-                self.replace_ex_aop_pdf_files()
 
         return scilista_items
 
@@ -133,6 +126,8 @@ class ArticlesConversion(object):
 
     def export_package_to_spf_directory(self, exporter: callable, package_name: str):
         """Exporta o pacote SPS de acordo com a estratégia utilizada"""
+        if self.updated_scilista_items is None:
+            return
         if exporter is None:
             logger.debug(
                 "Could not export this package because the none exporter was used."
@@ -153,38 +148,19 @@ class ArticlesConversion(object):
             return self.db.db_aop_status
         return {}
 
-    def replace_ex_aop_pdf_files(self):
-        # IMPROVEME
-        """
-        substitui o pdf do aop pelo conteúdo do pdf do issue, mantendo o
-        nome do arquivo aop
-        """
-        encoding.debugging(
-            'replace_ex_aop_pdf_files()', self.db.aop_pdf_replacements)
-
-        bases_dir = os.path.join(self.local_web_app_path, "bases")
-        pdf_dir = os.path.join(bases_dir, "pdf")
-        acron, issue = self.pkg.issue_data.acron_issue_label.split(" ")
-        issue_pdf_path = os.path.join(pdf_dir, acron, issue)
-
-        for xml_name, aop_location_data in self.db.aop_pdf_replacements.items():
-            folder, aop_name = aop_location_data
-
-            aop_pdf_path = os.path.join(pdf_dir, folder)
-            if not os.path.isdir(aop_pdf_path):
-                os.makedirs(aop_pdf_path)
-
-            issue_pdf_files = [f
-                               for f in os.listdir(issue_pdf_path)
-                               if (
-                                f.startswith(xml_name) or
-                                f[2:].startswith('_'+xml_name))]
-
-            for pdf in issue_pdf_files:
-                aop_pdf = pdf.replace(xml_name, aop_name)
-                src = os.path.join(issue_pdf_path, pdf)
-                dest = os.path.join(aop_pdf_path, aop_pdf)
-                shutil.copyfile(src, dest)
+    def update_local_website_with_asset_files(self):
+        if self.updated_scilista_items and self.local_web_app_path:
+            # copia os arquivos do pacote para o sítio local
+            website_files = WebsiteFiles(
+                self.local_web_app_path,
+                self.pkg.issue_data.acron,
+                self.pkg.issue_data.issue_label)
+            website_files.get_files(self.pkg.package_folder.path)
+            # no sítio local substitui o pdf de ex aop com o conteúdo do
+            # documento do fascículo regular
+            website_files.update_ex_aop_pdf_files(
+                website_files.identify_ex_aop_pdf_files_to_update(
+                    self.db.aop_pdf_replacements))
 
     @property
     def conversion_report(self):
@@ -427,6 +403,7 @@ class PkgProcessor(object):
             conversion.export_package_to_spf_directory(
                 self.export_documents_package, package_name=scilista_items[0]
             )
+            conversion.update_local_website_with_asset_files()
 
         reports = self.report_result(pkg, pkg_eval_result, conversion)
         statistics_display = reports.validations.statistics_display(html_format=False)
@@ -438,19 +415,31 @@ class PkgProcessor(object):
 
     def report_result(self, pkg, pkg_eval_result, conversion=None):
         logger.info("Generate reports")
-        files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label)
-        if conversion is not None:
-            files_location = workarea.AssetsDestinations(pkg.wk.scielo_package_path, pkg.issue_data.acron, pkg.issue_data.issue_label, self.config.serial_path, self.config.local_web_app_path, self.config.web_app_site)
-        reports = reports_maker.ReportsMaker(pkg, pkg_eval_result, files_location, self.stage, self.xpm_version, conversion)
+        if conversion is None:
+            assets_in_report = reports_maker.AssetsInReport(
+                pkg.wk.scielo_package_path)
+        else:
+            assets_in_report = reports_maker.AssetsInReport(
+                pkg.wk.scielo_package_path,
+                pkg.issue_data.acron,
+                pkg.issue_data.issue_label,
+                self.config.serial_path,
+                self.config.local_web_app_path,
+                self.config.web_app_site)
+
+        reports = reports_maker.ReportsMaker(
+            pkg, pkg_eval_result, assets_in_report, self.stage,
+            self.xpm_version, conversion)
+
         if not self.is_xml_generation:
+            # gera o relatório, exceto quando está gerando XML a partir do Mkp
             reports.save_report(self.INTERATIVE)
-        if conversion is not None:
-            if conversion.registered_issue_data.issue_files is not None:
-                conversion.registered_issue_data.issue_files.save_reports(files_location.report_path)
+
         if self.config.web_app_site is not None:
-            for article_files in pkg.package_folder.pkgfiles_items.values():
-                # copia os xml para report path
-                article_files.copy_xml(reports.files_location.report_path)
+            # faz uma cópia dos relatórios recém gerados na pasta `serial`
+            # /scielo/serial/<acron>/<issue>/base_xml/base_reports
+            assets_in_report.save_report(reports.report_location)
+
         return reports
 
     def make_pmc_package(self, pkg, GENERATE_PMC):

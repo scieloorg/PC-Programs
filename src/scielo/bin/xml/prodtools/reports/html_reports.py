@@ -158,13 +158,7 @@ def collapsible_block(section_id, section_title, content, status='ok'):
 
 
 def link(href, label, window=None):
-    href = href.replace('\\', '/')
-    if window is not None:
-        width, height = window
-        r = u'<a href="{href}" onclick="w = window.open(\'{href}\', \'newwindow\', \'resizeable=yes, width={width}, height={height}\'); w.focus(); return false;">{label}</a>'.format(href=href, label=label, width=width, height=height)
-    else:
-        r = u'<a href="' + href + '" target="_blank">' + label + '</a>'
-    return r
+    return u'<a href="' + href + '" target="_blank">' + label + '</a>'
 
 
 def display_embedded_object(href, label, element_id, width='400px', height='400px'):

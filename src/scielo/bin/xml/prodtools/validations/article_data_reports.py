@@ -278,7 +278,6 @@ class ArticleDisplayReport(object):
             r = html_reports.tag('p', 'Tables:', 'label')
 
             for t in self.article.tables:
-                #print(t)
                 header = html_reports.tag('h3', t.id)
                 table_data = []
                 table_data.append(html_reports.display_labeled_value('label', t.label, 'label'))
@@ -289,7 +288,6 @@ class ArticleDisplayReport(object):
                     table_data.append(html_reports.tag('p', 'table-wrap/table', 'label'))
                     table_data.append(html_reports.tag('div', _table[1], 'element-table'))
                 for _graphic in t.graphics:
-                    #table_data.append(html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value'))
                     table_data.append(
                         html_reports.display_labeled_value(
                             'table-wrap/graphic',
@@ -602,7 +600,7 @@ class ArticleDisplayReport(object):
             location = '{PDF_PATH}' if item.endswith('.pdf') else '{XML_PATH}'
             items.append(html_reports.tag('p', html_reports.link(
                 os.path.join(location, item),
-                item, window=('1000', '400'))))
+                item)))
         return ''.join(items)
 
 
