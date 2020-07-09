@@ -1276,25 +1276,46 @@ class ArticleContentValidation(object):
     def validate_xref_reftype(self):
         message = []
 
-        id_and_elem_name = {node.attrib.get('id'): node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
+        id_and_elem_name = {
+            node.attrib.get('id'): node.tag
+            for node in self.article.elements_which_has_id_attribute
+            if node.attrib.get('id')}
 
         for xref in self.article.xref_nodes:
             if xref['rid'] is None:
-                message.append(('xref/@rid', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='@rid'), xref['xml']))
+                message.append(
+                    ('xref/@rid',
+                        validation_status.STATUS_FATAL_ERROR,
+                        _('{label} is required. ').format(
+                            label='@rid'), xref['xml']))
             if xref['ref-type'] is None:
-                message.append(('xref/@ref-type', validation_status.STATUS_ERROR, _('{label} is required. ').format(label='@ref-type'), xref['xml']))
+                message.append(
+                    ('xref/@ref-type',
+                        validation_status.STATUS_ERROR,
+                        _('{label} is required. ').format(
+                            label='@ref-type'), xref['xml']))
             if xref['rid'] is not None and xref['ref-type'] is not None:
-                elements = attributes.REFTYPE_AND_TAG_ITEMS.get(xref['ref-type'])
+                elements = attributes.REFTYPE_AND_TAG_ITEMS.get(
+                    xref['ref-type'])
                 tag = id_and_elem_name.get(xref['rid'])
                 if tag is None:
-                    message.append(('xref/@rid', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label=xref['ref-type'] + '[@id=' + xref['rid'] + ']'), xref['xml']))
+                    message.append(
+                        ('xref/@rid',
+                            validation_status.STATUS_FATAL_ERROR,
+                            _('{label} is required. ').format(
+                                label=xref['ref-type'] + '[@id=' +
+                                xref['rid'] + ']'),
+                            xref['xml']))
                 elif elements is None:
                     # no need to validate
                     valid = True
                 elif tag in elements:
                     valid = True
                 elif tag not in elements:
-                    reftypes = [reftype for reftype, _elements in attributes.REFTYPE_AND_TAG_ITEMS.items() if tag in _elements]
+                    reftypes = [
+                        reftype
+                        for reftype, _elements in attributes.REFTYPE_AND_TAG_ITEMS.items()
+                        if tag in _elements]
 
                     _msg = _('Unmatched {value} and {label}: {value1} is valid for {label1}, and {value2} is valid for {label2}').format(
                         value='@ref-type (' + xref['ref-type'] + ')',
@@ -1313,7 +1334,9 @@ class ArticleContentValidation(object):
                     #_msg += tag + ' ' + _('are') + ' '
                     #_msg += '|'.join(reftypes)
 
-                    message.append(('xref/@rid', validation_status.STATUS_FATAL_ERROR, _msg))
+                    message.append(
+                        ('xref/@rid',
+                            validation_status.STATUS_FATAL_ERROR, _msg))
         return message
 
     @property
