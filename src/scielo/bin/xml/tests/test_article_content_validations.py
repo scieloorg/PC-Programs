@@ -303,6 +303,10 @@ class TestArticleContentValidationXref(TestCase):
         result = acv.missing_xref_list
         self.assertEqual("[ERROR]", result[0][1])
         self.assertIn("3-2 (B03-B02)", result[0][2])
+        self.assertEqual(
+            '<xref ref-type="bibr" rid="B03">3</xref>-'
+            '<xref ref-type="bibr" rid="B02">2</xref>',
+            result[0][3])
 
     def test_missing_xref_returns_empty_list_because_there_is_not_range(self):
         text = """<article><body>

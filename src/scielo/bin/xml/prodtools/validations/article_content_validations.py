@@ -1404,7 +1404,9 @@ class ArticleContentValidation(object):
                                 xml_utils.node_text(start_node),
                                 xml_utils.node_text(end_node),
                                 start_node.attrib.get('rid'),
-                                end_node.attrib.get('rid'))
+                                end_node.attrib.get('rid')),
+                            xml_utils.tostring(start_node) + "-" +
+                            xml_utils.tostring(end_node)
                             )
                         )
         return message
