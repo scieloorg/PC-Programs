@@ -2,6 +2,7 @@
 import os
 from datetime import datetime
 import itertools
+from copy import deepcopy
 
 from prodtools.utils.xml_utils import (
     tostring,
@@ -10,11 +11,16 @@ from prodtools.utils.xml_utils import (
     nodes_xml_content_and_attributes,
     find_nodes,
     node_xml_content,
+    strip_all_tags_except,
 )
 
 from prodtools.utils import img_utils
 from prodtools.data import article_utils
 from prodtools.data import attributes
+
+
+def get_number_from_rid(rid):
+    return int(''.join([c for c in rid if c.isdigit()]))
 
 
 def date_element(date_node):
@@ -569,41 +575,29 @@ class ArticleXML(object):
         for xref_type, xref_type_nodes in self.any_xref_parent_nodes.items():
             if xref_type is None:
                 continue
+
             if xref_type not in _any_xref_ranges.keys():
                 _any_xref_ranges[xref_type] = []
             for xref_parent_node, xref_node_items in xref_type_nodes:
-                # nodes de um tipo de xref
-                xref_parent_xml = tostring(xref_parent_node)
-                parts = xref_parent_xml.replace('<xref', '~BREAK~<xref').split('~BREAK~')
-                parts = [item for item in parts if ' ref-type="' + xref_type + '"' in item]
-                k = 0
-                for item in parts:
-                    text = ''
-                    delimiter = ''
-                    if '</xref>' in item:
-                        delimiter = '</xref>'
-                    elif '/>' in item:
-                        delimiter = '/>'
-                    if len(delimiter) > 0:
-                        if delimiter in item:
-                            text = item[item.find(delimiter)+len(delimiter):]
-                    if text.replace('</sup>', '').replace('<sup>', '').startswith('-'):
-                        start = None
-                        end = None
-                        n = xref_node_items[k].attrib.get('rid')
-                        if n is not None:
-                            n = n[1:]
-                            if n.isdigit():
-                                start = int(n)
-                        if k + 1 < len(xref_node_items):
-                            n = xref_node_items[k+1].attrib.get('rid')
-                            if n is not None:
-                                n = n[1:]
-                                if n.isdigit():
-                                    end = int(n)
-                            if all([start, end]):
-                                _any_xref_ranges[xref_type].append([start, end, xref_node_items[k], xref_node_items[k+1]])
-                    k += 1
+                
+                # remove todas as tags exceto xref para conseguir identificar
+                # o texto entre as tags xref, se há o padrão de "intervalo",
+                # ou seja, hífen entre tags xref
+                parent_node_copy = deepcopy(xref_parent_node)
+                strip_all_tags_except(parent_node_copy, ["xref"])
+
+                pattern = "xref[@ref-type='{}']".format(xref_type)
+                for i, xref in enumerate(parent_node_copy.xpath(pattern)):
+                    if xref.tail and xref.tail.strip() == "-":
+                        next_xref = xref.getnext()
+                        if next_xref is None:
+                            continue
+                        start = get_number_from_rid(xref.get("rid"))
+                        end = get_number_from_rid(next_xref.get("rid"))
+                        _any_xref_ranges[xref_type].append(
+                            [start, end,
+                             xref_node_items[i], xref_node_items[i+1]])
+
         return _any_xref_ranges
 
     @property

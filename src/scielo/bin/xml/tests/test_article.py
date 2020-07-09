@@ -70,7 +70,9 @@ class TestArticle(TestCase):
         xml, error = xml_utils.load_xml(text)
         a = Article(xml, "nome")
         result = a.any_xref_ranges
-        expected = {"bibr": []}
+        expected = {
+            "bibr":
+            [[1, 1, xml.find(".//xref[1]"), xml.find(".//xref[2]")]]}
         self.assertEqual(expected, result)
 
     def test_any_xref_ranges_returns_dict_bibr_as_key_and_one_item_list(self):
