@@ -1289,13 +1289,13 @@ class ArticleContentValidation(object):
             if not xref_rid:
                 message.append(
                     ('xref/@rid',
-                        validation_status.STATUS_FATAL_ERROR,
+                        validation_status.STATUS_BLOCKING_ERROR,
                         _('{label} is required. ').format(
                             label='@rid'), xref_xml))
             if not xref_type:
                 message.append(
                     ('xref/@ref-type',
-                        validation_status.STATUS_ERROR,
+                        validation_status.STATUS_FATAL_ERROR,
                         _('{label} is required. ').format(
                             label='@ref-type'), xref_xml))
             if xref_rid and xref_type:
@@ -1308,7 +1308,7 @@ class ArticleContentValidation(object):
                     # não há elemento cujo `@id` é igual a `@rid`
                     message.append(
                         ('xref/@rid',
-                            validation_status.STATUS_FATAL_ERROR,
+                            validation_status.STATUS_BLOCKING_ERROR,
                             _('Element related to `xref[@rid="{}"]` is required. ').format(xref_rid),
                             xref_xml))
                 if tag and element_names and tag not in element_names:
