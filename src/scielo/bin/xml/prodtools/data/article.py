@@ -607,11 +607,18 @@ class ArticleXML(object):
 
     @property
     def any_xref_parent_nodes(self):
+        """
+        Retorna os filhos de `body` que contém xref e os respectivos `xref`s
+        dentro de um dicionário cuja chave é o tipo do xref (`xref/@ref-type`)
+        e os valores são uma tupla de (`body child node`, lista de `xref nodes`)
+        """
         _any_xref_parent_nodes = {}
         if self.tree is not None:
-            for xref_parent_node in self.tree.findall('.//*[xref]'):
+            total = len(self.tree.findall('.//xref'))
+            for xref_parent_node in self.tree.xpath(".//body/*"):
                 xref_nodes = {}
                 for xref_node in xref_parent_node.findall('.//xref'):
+                    total -= 1
                     xref_type = xref_node.attrib.get('ref-type')
                     if xref_type not in xref_nodes.keys():
                         xref_nodes[xref_type] = []
@@ -625,6 +632,8 @@ class ArticleXML(object):
                         # considerar apenas quando há mais de 1 xref[@ref-type='<any>']
                         # pois range somente éh possível a partir de 2
                         _any_xref_parent_nodes[xref_type].append((xref_parent_node, xref_type_nodes))
+                if total == 0:
+                    break
         return _any_xref_parent_nodes
 
     @property
