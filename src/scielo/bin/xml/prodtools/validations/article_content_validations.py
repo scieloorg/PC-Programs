@@ -1311,18 +1311,15 @@ class ArticleContentValidation(object):
                             validation_status.STATUS_FATAL_ERROR,
                             _('Element related to `xref[@rid="{}"]` is required. ').format(xref_rid),
                             xref_xml))
-                if element_names is None:
-                    # no need to validate
-                    valid = True
-                if tag in element_names:
-                    valid = True
-                if tag not in element_names:
+                if tag and element_names and tag not in element_names:
                     reftypes = [
                         reftype
                         for reftype, _element_names in attributes.REFTYPE_AND_TAG_ITEMS.items()
                         if tag in _element_names]
 
-                    _msg = _('Unmatched {value} and {label}: {value1} is valid for {label1}, and {value2} is valid for {label2}').format(
+                    _msg = _('Unmatched {value} and {label}: '
+                             '{value1} is valid for {label1}, '
+                             'and {value2} is valid for {label2}').format(
                         value='@ref-type (' + xref_type + ')',
                         label=tag,
                         value1='xref[@ref-type="' + xref_type + '"]',
@@ -1330,15 +1327,6 @@ class ArticleContentValidation(object):
                         value2='|'.join(reftypes),
                         label2=tag + '/@ref-type'
                         )
-                    #_msg = _('Unmatched')
-                    #_msg += ' @ref-type (' + xref_type + ')'
-                    #_msg += _(' and ') + tag + ': '
-                    #_msg += 'xref[@ref-type="' + xref_type + '"] '
-                    #_msg += _('is for') + ' ' + ' | '.join(elements)
-                    #_msg += _(' and ') + _('valid values of') + ' @ref-type ' + _('of') + ' '
-                    #_msg += tag + ' ' + _('are') + ' '
-                    #_msg += '|'.join(reftypes)
-
                     message.append(
                         ('xref/@rid',
                             validation_status.STATUS_FATAL_ERROR, _msg))
