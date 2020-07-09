@@ -1311,12 +1311,12 @@ class ArticleContentValidation(object):
                             validation_status.STATUS_FATAL_ERROR,
                             _('Element related to `xref[@rid="{}"]` is required. ').format(xref_rid),
                             xref_xml))
-                elif element_names is None:
+                if element_names is None:
                     # no need to validate
                     valid = True
-                elif tag in element_names:
+                if tag in element_names:
                     valid = True
-                elif tag not in element_names:
+                if tag not in element_names:
                     reftypes = [
                         reftype
                         for reftype, _element_names in attributes.REFTYPE_AND_TAG_ITEMS.items()
