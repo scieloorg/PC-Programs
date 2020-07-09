@@ -82,14 +82,11 @@ class EmailService(object):
                 part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(f))
                 msg.attach(part)
 
-            try:
-                smtp = smtplib.SMTP(self.server)
-                smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-                smtp.quit()
-            except ConnectionRefusedError as e:
-                logging.exception("Error: %s. \n\nSubject: %s. \nText: %s." % (e, subject, text))
-            except Exception as e:
+        try:
+            with smtplib.SMTP(self.server) as smtp:
                 try:
+                    smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
+                except Exception:
                     msg = MIMEMultipart()
                     msg['From'] = self.mail_from
                     msg['To'] = ', '.join(to)
@@ -97,7 +94,10 @@ class EmailService(object):
                     msg['BCC'] = ', '.join(bcc)
                     msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
                     smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-                except Exception as e:
-                    logging.exception("Tried again. \nError: %s. \n\nSubject: %s. \nText: %s." % (e, subject, text))
-                finally:
-                    smtp.quit()
+        except Exception:
+            logging.exception(
+                "Something went wrong during the sent of the message. "
+                "The email information was: \nSubject: '%s' \nText: '%s'",
+                subject,
+                text,
+            )
