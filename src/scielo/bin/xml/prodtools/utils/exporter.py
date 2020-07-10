@@ -71,15 +71,12 @@ class Exporter(object):
             if destination_path:
                 if not os.path.isdir(destination_path):
                     os.makedirs(destination_path)
-                if ftp_configuration:
-                    shutil.copy(zip_file_path, destination_path)
-                else:
-                    final_file_path = self._preppend_time_to_destination_filename(
-                        destination_path, zip_file_path
-                    )
-                    shutil.move(zip_file_path, final_file_path)
+                final_file_path = self._preppend_time_to_destination_filename(
+                    destination_path, zip_file_path
+                )
+                shutil.move(zip_file_path, final_file_path)
 
-            if ftp_configuration:
+            elif ftp_configuration:
                 server, user, password, remote_path = ftp_configuration
                 self.export_by_ftp(zip_file_path, server, user, password, remote_path)
 
