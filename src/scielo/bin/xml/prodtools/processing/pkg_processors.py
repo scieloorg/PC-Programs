@@ -369,6 +369,20 @@ class ArticlesConversion(object):
         return (html_reports.p_message(converted, False) +
                 html_reports.p_message(text, False))
 
+    @property
+    def spf_message(self):
+        if not self.sps_pkg_info:
+            return ""
+        ftp = ""
+        if self.sps_pkg_info.get("server"):
+            ftp = _("(FTP: {} | User: {})").format(
+                    self.sps_pkg_info.get("server"),
+                    self.sps_pkg_info.get("user", ''))
+        return html_reports.p_message(
+                _("[INFO] {} is available to SPF {}").format(
+                    self.sps_pkg_info.get("file"), ftp)
+            )
+
 
 class PkgProcessor(object):
 
