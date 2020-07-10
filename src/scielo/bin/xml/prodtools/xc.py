@@ -225,7 +225,7 @@ class Reception(object):
             mail_subject, mail_content = mail_info
             self.mailer.mail_results(pkg_name, mail_subject, mail_content)
         else:
-            logger.info(pkg_name, mail_info)
+            logger.info('Package "%s" mail - "%s"', pkg_name, mail_info)
 
     def _update_website_files(self, package_name, acron, issue_id):
         if self.transfer:
