@@ -364,8 +364,13 @@ class ArticlesConversion(object):
         action = _('will be') if update else _('will not be')
         action += " " + result
 
-        text = u'{status}: {issueid} {action} {reason}'.format(status=status, issueid=self.acron_issue_label, action=action, reason=reason)
-        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.accepted_articles), False) + html_reports.p_message(text, False)
+        text = u'{status}: {issueid} {action} {reason}'.format(
+            status=status, issueid=self.acron_issue_label,
+            action=action, reason=reason)
+        text = html_reports.p_message(
+                _('converted') + ': ' +
+                str(self.total_converted) + '/' + str(self.accepted_articles),
+                False) + html_reports.p_message(text, False)
         return text
 
 
