@@ -357,21 +357,17 @@ class ArticlesConversion(object):
         result = _('updated/published on {app_site}').format(app_site=app_site)
 
         conclusion = self.conclusion
-        status = conclusion.get("status")
-        reason = conclusion.get("reason")
-        update = conclusion.get("update")
 
-        action = _('will be') if update else _('will not be')
-        action += " " + result
+        action = _('will be') if conclusion.get("update") else _('will not be')
 
         text = u'{status}: {issueid} {action} {reason}'.format(
-            status=status, issueid=self.acron_issue_label,
-            action=action, reason=reason)
-        text = html_reports.p_message(
-                _('converted') + ': ' +
-                str(self.total_converted) + '/' + str(self.accepted_articles),
-                False) + html_reports.p_message(text, False)
-        return text
+            issueid=self.acron_issue_label, action=action + " " + result,
+            **conclusion)
+
+        converted = "{}: {}/{}".format(_('converted'), self.total_converted,
+                                       self.accepted_articles)
+        return (html_reports.p_message(converted, False) +
+                html_reports.p_message(text, False))
 
 
 class PkgProcessor(object):
