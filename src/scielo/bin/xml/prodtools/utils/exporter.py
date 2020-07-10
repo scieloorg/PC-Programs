@@ -69,16 +69,20 @@ class Exporter(object):
             return
 
         zip_file_path = self.zip(source_path, zip_filename)
-        if zip_file_path:
-            if destination_path:
-                final_file_path = self._preppend_time_to_destination_filename(
-                    destination_path, zip_file_path
-                )
-                shutil.move(zip_file_path, final_file_path)
 
+        if zip_file_path:
+            dest_path = destination_path or os.path.dirname(zip_file_path)
+
+            final_file_path = self._preppend_time_to_destination_filename(
+                dest_path, zip_file_path
+            )
+            shutil.move(zip_file_path, final_file_path)
+
+            if destination_path:
+                pass
             elif ftp_configuration:
                 server, user, password, remote_path = ftp_configuration
-                self.export_by_ftp(zip_file_path, server, user, password, remote_path)
+                self.export_by_ftp(final_file_path, server, user, password, remote_path)
 
     def zip(self, source_path, zip_filename):
         try:
