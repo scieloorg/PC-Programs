@@ -361,10 +361,10 @@ class ArticlesConversion(object):
         reason = conclusion.get("reason")
         update = conclusion.get("update")
 
-        action = _('will not be')
-        if update:
-            action = _('will be')
-        text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
+        action = _('will be') if update else _('will not be')
+        action += " " + result
+
+        text = u'{status}: {issueid} {action} {reason}'.format(status=status, issueid=self.acron_issue_label, action=action, reason=reason)
         text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.accepted_articles), False) + html_reports.p_message(text, False)
         return text
 
