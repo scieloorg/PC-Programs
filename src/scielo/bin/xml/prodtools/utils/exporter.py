@@ -32,6 +32,8 @@ class Exporter(object):
     def copy_configuration(self):
         try:
             destination_path = self._data["destination_path"]
+            if not os.path.isdir(destination_path):
+                os.makedirs(destination_path)
         except KeyError:
             exp_logger.info("Exporter: Missing Destination Configuration")
         else:
@@ -69,8 +71,6 @@ class Exporter(object):
         zip_file_path = self.zip(files_path, zip_filename)
         if zip_file_path:
             if destination_path:
-                if not os.path.isdir(destination_path):
-                    os.makedirs(destination_path)
                 final_file_path = self._preppend_time_to_destination_filename(
                     destination_path, zip_file_path
                 )
