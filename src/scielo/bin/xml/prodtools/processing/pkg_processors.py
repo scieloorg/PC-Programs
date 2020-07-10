@@ -354,31 +354,13 @@ class ArticlesConversion(object):
     def conclusion_message(self):
         text = ''.join(self.error_messages)
         app_site = self.web_app_site or _('scielo web site')
-        status = ''
         result = _('updated/published on {app_site}').format(app_site=app_site)
-        reason = ''
-        update = True
-        if self.xc_status == 'rejected':
-            if self.accepted_articles > 0:
-                if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
-                else:
-                    reason = _('because there are blocking errors in the package. ')
-            else:
-                reason = _('because there are blocking errors in the package. ')
-        elif self.xc_status == 'ignored':
-            update = False
-            reason = _('because there is no document allowed to convert. ')
-            status = validation_status.STATUS_BLOCKING_ERROR
-        elif self.xc_status == 'accepted':
-            status = validation_status.STATUS_WARNING
-            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services. ')
-        elif self.xc_status == 'approved':
-            status = validation_status.STATUS_OK
-            reason = ''
-        else:
-            status = validation_status.STATUS_FATAL_ERROR
-            reason = _('because there are blocking errors in the package. ')
+
+        conclusion = self.conclusion
+        status = conclusion.get("status")
+        reason = conclusion.get("reason")
+        update = conclusion.get("update")
+
         action = _('will not be')
         if update:
             action = _('will be')
