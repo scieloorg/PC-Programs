@@ -675,18 +675,25 @@ def validations_table(results):
 
 
 def display_article_metadata(_article, sep='<br/>'):
+    r = "".join((
+        html_reports.tag(
+            'p', _article.doi or _article.publisher_article_id, 'doi'),
+        html_reports.tag(
+            'p',
+            html_reports.tag(
+                'strong', "PID (AOP): {}".format(str(_article.previous_pid)))),
+        html_reports.tag(
+            'p', html_reports.tag('strong', _article.pages), 'fpage'),
+        display_article_dates(_article, 'p'),
+        html_reports.tag(
+            'p', html_reports.tag('strong', _article.title), 'article-title'),
+        html_reports.tag(
+            'p', display_authors(_article.article_contrib_items, sep)),
+    ))
 
-    r = ''
-    r += html_reports.tag('p', _article.doi or _article.publisher_article_id, 'doi')
-    r += html_reports.tag(
-        'p',
-        html_reports.tag('strong', "PID (AOP): {}".format(str(_article.previous_pid))))
-    r += html_reports.tag('p', html_reports.tag('strong', _article.pages), 'fpage')
-    r += display_article_dates(_article, 'p')
-    r += html_reports.tag('p', html_reports.tag('strong', _article.title), 'article-title')
-    r += html_reports.tag('p', display_authors(_article.article_contrib_items, sep))
     if _article.marked_to_delete:
-        r = html_reports.tag('p', _('MARKED TO DELETE'), 'warning') + html_reports.tag('div', r, 'delete')
+        r = (html_reports.tag('p', _('MARKED TO DELETE'), 'warning') +
+             html_reports.tag('div', r, 'delete'))
     return r
 
 
