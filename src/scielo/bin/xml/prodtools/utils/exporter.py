@@ -60,7 +60,7 @@ class Exporter(object):
         _, file_name = os.path.split(file_path)
         return os.path.join(destination_dir, "%s_%s" % (data, file_name))
 
-    def export(self, files_path, zip_filename):
+    def export(self, source_path, zip_filename):
         destination_path = self.copy_configuration
         ftp_configuration = self.ftp_configuration
 
@@ -68,7 +68,7 @@ class Exporter(object):
             exp_logger.info("Exporter: Missing Configuration")
             return
 
-        zip_file_path = self.zip(files_path, zip_filename)
+        zip_file_path = self.zip(source_path, zip_filename)
         if zip_file_path:
             if destination_path:
                 final_file_path = self._preppend_time_to_destination_filename(
@@ -80,7 +80,7 @@ class Exporter(object):
                 server, user, password, remote_path = ftp_configuration
                 self.export_by_ftp(zip_file_path, server, user, password, remote_path)
 
-    def zip(self, files_path, zip_filename):
+    def zip(self, source_path, zip_filename):
         try:
             dest_path = tempfile.mkdtemp()
         except IOError:
@@ -90,9 +90,9 @@ class Exporter(object):
             try:
                 with zipfile.ZipFile(zip_file_path, 'w') as zipf:
                     exp_logger.info(
-                        "Create %s from %s" % (zip_file_path, files_path))
-                    for item in os.listdir(files_path):
-                        file_path = os.path.join(files_path, item)
+                        "Create %s from %s" % (zip_file_path, source_path))
+                    for item in os.listdir(source_path):
+                        file_path = os.path.join(source_path, item)
                         zipf.write(file_path, arcname=item)
             except IOError:
                 exp_logger.info(
