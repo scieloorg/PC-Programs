@@ -81,6 +81,12 @@ class Exporter(object):
             if not destination_path and ftp_configuration:
                 server, user, password, remote_path = ftp_configuration
                 self.export_by_ftp(final_file_path, server, user, password, remote_path)
+                return {
+                    "file": os.path.join(
+                        remote_path, os.path.basename(final_file_path)),
+                    "ftp": server, "user": user,
+                }
+            return {"file": final_file_path}
 
     def zip(self, source_path, zip_filename):
         try:
