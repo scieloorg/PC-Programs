@@ -78,9 +78,7 @@ class Exporter(object):
             )
             shutil.move(zip_file_path, final_file_path)
 
-            if destination_path:
-                pass
-            elif ftp_configuration:
+            if not destination_path and ftp_configuration:
                 server, user, password, remote_path = ftp_configuration
                 self.export_by_ftp(final_file_path, server, user, password, remote_path)
 
