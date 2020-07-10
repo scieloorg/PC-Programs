@@ -84,6 +84,7 @@ class ArticlesConversion(object):
         self.error_messages = []
         self.conversion_status = {}
         self.updated_scilista_items = None
+        self.sps_pkg_info = None
 
     def convert(self):
         self.updated_scilista_items = None
@@ -140,7 +141,8 @@ class ArticlesConversion(object):
             return None
 
         package_zip_name = "{}.zip".format(package_name.replace(" ", "_"))
-        exporter(self.pkg.package_folder.path, package_zip_name)
+        self.sps_pkg_info = exporter(
+            self.pkg.package_folder.path, package_zip_name)
 
     @property
     def aop_status(self):
@@ -356,7 +358,6 @@ class PkgProcessor(object):
         self.registered_issues_manager = xc_models.RegisteredIssuesManager(
             self.config, self.is_db_generation)
         self._pid_manager = None
-
 
     @property
     def export_documents_package(self):
