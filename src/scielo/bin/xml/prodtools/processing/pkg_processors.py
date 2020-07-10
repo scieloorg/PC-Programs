@@ -72,6 +72,35 @@ def xpm_version():
 
 
 class ArticlesConversion(object):
+    CONCLUSION = {
+        "rejected": {
+            "update": False,
+            "status": validation_status.STATUS_BLOCKING_ERROR,
+            "reason": "...",
+        },
+        "ignored": {
+            "update": False,
+            "status": validation_status.STATUS_BLOCKING_ERROR,
+            "reason": _('because there is no document allowed to convert. '),
+        },
+        "accepted": {
+            "update": True,
+            "status": validation_status.STATUS_WARNING,
+            "reason": _(' even though there are some fatal errors. '
+                        'Note: These errors must be fixed in order to have '
+                        'good quality of bibliometric indicators and '
+                        'services. '),
+        },
+        "approved": {
+            "update": True,
+            "status": validation_status.STATUS_OK,
+        },
+        "otherwise": {
+            "update": True,
+            "status": validation_status.STATUS_FATAL_ERROR,
+            "reason": _('because there are blocking errors in the package. ')
+        }
+    }
 
     def __init__(self, registered_issue_data, pkg, pkg_eval_result, create_windows_base, web_app_path, web_app_site):
         self.create_windows_base = create_windows_base
@@ -310,14 +339,12 @@ class ArticlesConversion(object):
     @property
     def conclusion_message(self):
         text = ''.join(self.error_messages)
-        app_site = self.web_app_site if self.web_app_site is not None else _('scielo web site')
+        app_site = self.web_app_site or _('scielo web site')
         status = ''
         result = _('updated/published on {app_site}').format(app_site=app_site)
         reason = ''
         update = True
         if self.xc_status == 'rejected':
-            update = False
-            status = validation_status.STATUS_BLOCKING_ERROR
             if self.accepted_articles > 0:
                 if self.total_not_converted > 0:
                     reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
