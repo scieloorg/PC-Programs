@@ -337,6 +337,20 @@ class ArticlesConversion(object):
         return r
 
     @property
+    def conclusion(self):
+        _conclusion = self.CONCLUSION.get(self.xc_status, "otherwise")
+        if self.xc_status == 'rejected':
+            if self.accepted_articles > 0:
+                if self.total_not_converted > 0:
+                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
+                else:
+                    reason = _('because there are blocking errors in the package. ')
+            else:
+                reason = _('because there are blocking errors in the package. ')
+            _conclusion["reason"] = reason
+        return _conclusion
+
+    @property
     def conclusion_message(self):
         text = ''.join(self.error_messages)
         app_site = self.web_app_site or _('scielo web site')
