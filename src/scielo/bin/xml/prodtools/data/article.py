@@ -341,7 +341,7 @@ class ContribXML(object):
 
     @property
     def anonymous_author(self):
-        if self.node.tag == 'anonymous':
+        if self.node.tag == 'anonymous' or self.node.find(".//anonymous") is not None:
             return AnonymousAuthor('anonymous')
 
     @property
@@ -357,11 +357,9 @@ class ContribXML(object):
             for contrib_id in self.contrib_id_items:
                 c.contrib_id[contrib_id.attrib.get('contrib-id-type')] = contrib_id.value
             c.role = self.node.get('contrib-type')
-            for xref in self.xref_items:
-                if xref is not None:
-                    text, attribs = xref
-                    if attribs.get('ref-type') == 'aff':
-                        c.xref.append(attribs.get('rid'))
+            for text, attribs in self.xref_items:
+                if attribs.get('ref-type') == 'aff' and attribs.get('rid'):
+                    c.xref.append(attribs.get('rid'))
             return c
 
     @property
@@ -373,14 +371,14 @@ class ContribXML(object):
             return c
 
     def contrib(self, role=None):
-        if self._contrib is None:
-            self._contrib = self.person_author
-            if self._contrib is None:
-                self._contrib = self.corp_author
-            if self._contrib is None:
-                self._contrib = self.anonymous_author
-            if self._contrib is not None and role is not None:
-                self._contrib.role = role
+        self._contrib = (
+            self._contrib or
+            self.person_author or
+            self.corp_author or
+            self.anonymous_author
+        )
+        if self._contrib and role:
+            self._contrib.role = role
         return self._contrib
 
 

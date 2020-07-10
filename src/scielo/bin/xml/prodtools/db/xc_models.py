@@ -306,7 +306,7 @@ class ArticleRecords(object):
             new['s'] = surname_and_suffix
             new['p'] = item.prefix
             new['r'] = attributes.normalize_role(item.role)
-            new['1'] = ' '.join(item.xref)
+            new['1'] = ' '.join([item_valor for item_valor in item.xref if item_valor])
             new['k'] = item.contrib_id.get('orcid')
             new['l'] = item.contrib_id.get('lattes')
             self._metadata['10'].append(new)

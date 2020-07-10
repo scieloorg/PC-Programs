@@ -1276,44 +1276,89 @@ class ArticleContentValidation(object):
     def validate_xref_reftype(self):
         message = []
 
-        id_and_elem_name = {node.attrib.get('id'): node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
+        id_and_elem_name = {
+            node.attrib.get('id'): node.tag
+            for node in self.article.elements_which_has_id_attribute
+            if node.attrib.get('id')}
 
-        for xref in self.article.xref_nodes:
-            if xref['rid'] is None:
-                message.append(('xref/@rid', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label='@rid'), xref['xml']))
-            if xref['ref-type'] is None:
-                message.append(('xref/@ref-type', validation_status.STATUS_ERROR, _('{label} is required. ').format(label='@ref-type'), xref['xml']))
-            if xref['rid'] is not None and xref['ref-type'] is not None:
-                elements = attributes.REFTYPE_AND_TAG_ITEMS.get(xref['ref-type'])
-                tag = id_and_elem_name.get(xref['rid'])
+        for xref in self.article.tree.findall(".//xref"):
+            xref_rid = xref.get("rid")
+            xref_type = xref.get("ref-type")
+            xref_xml = xml_utils.tostring(xref)
+
+            if not xref_rid:
+                message.append(
+                    ('xref/@rid',
+                        validation_status.STATUS_BLOCKING_ERROR,
+                        _('{label} is required. ').format(
+                            label='@rid'), xref_xml))
+            if not xref_type:
+                message.append(
+                    ('xref/@ref-type',
+                        validation_status.STATUS_FATAL_ERROR,
+                        _('{label} is required. ').format(
+                            label='@ref-type'), xref_xml))
+
+            if xref_rid and xref_type:
+                # para `xref_type`, retorna os nomes de elementos deste tipo
+                # por exemplo, para ref-type='table', retorna ['table-wrap']
+                element_names = attributes.REFTYPE_AND_TAG_ITEMS.get(xref_type)
+                # encontra o nome do elemento cujo `@id` é igual a `@rid`
+                tag = id_and_elem_name.get(xref_rid)
                 if tag is None:
-                    message.append(('xref/@rid', validation_status.STATUS_FATAL_ERROR, _('{label} is required. ').format(label=xref['ref-type'] + '[@id=' + xref['rid'] + ']'), xref['xml']))
-                elif elements is None:
-                    # no need to validate
-                    valid = True
-                elif tag in elements:
-                    valid = True
-                elif tag not in elements:
-                    reftypes = [reftype for reftype, _elements in attributes.REFTYPE_AND_TAG_ITEMS.items() if tag in _elements]
+                    # não há elemento cujo `@id` é igual a `@rid`
+                    message.append(
+                        ('xref/@rid',
+                            validation_status.STATUS_BLOCKING_ERROR,
+                            _('Element related to `xref[@rid="{}"]` is required. ').format(xref_rid),
+                            xref_xml))
+                    continue
+                reftypes = [
+                    reftype
+                    for reftype, _element_names in attributes.REFTYPE_AND_TAG_ITEMS.items()
+                    if tag in _element_names]
+                if not element_names:
+                    # nao encontrou elemento correspondente a `@ref-type`
+                    _msg = _(
+                        '{value} is an unexpected value for {label}. '.format(
+                             value=xref_type, label='xref/@ref-type'))
+                    if reftypes:
+                        _msg += _("Expected values: {expected}. ").format(
+                                  expected=_(" or ").join(reftypes))
+                    message.append(
+                        ('xref/@ref-type',
+                            validation_status.STATUS_FATAL_ERROR,
+                            _msg, xref_xml))
 
-                    _msg = _('Unmatched {value} and {label}: {value1} is valid for {label1}, and {value2} is valid for {label2}').format(
-                        value='@ref-type (' + xref['ref-type'] + ')',
-                        label=tag,
-                        value1='xref[@ref-type="' + xref['ref-type'] + '"]',
-                        label1=' | '.join(elements),
-                        value2='|'.join(reftypes),
-                        label2=tag + '/@ref-type'
+                if element_names and tag not in element_names:
+                    # há conflito entre `@ref-type` e o elemento relacionado
+                    # por exemplo, se `@ref-type="fn"` mas o elemento
+                    # relacionado não é "<fn/>"
+                    elements_options = _(" or ").join(
+                        ["<{}/>".format(x) for x in element_names])
+                    xref_reftype_rid_repr = (
+                        '<xref rid="{}" ref-type="{}"/>').format(
+                        xref_type, xref_rid)
+                    xref_reftype_repr = '<xref ref-type="{}"/>'.format(
+                        xref_type)
+                    elem_id_repr = '<{} id="{}"/>'.format(tag, xref_rid)
+                    elem_repr = '<{}/>'.format(tag)
+                    reftype_options = _(" or ").join(
+                        ['<xref ref-type="{}"/>'.format(x) for x in reftypes])
+
+                    _msg = (
+                        _('{} and {} are linked by @id and @rid. ').format(
+                            xref_reftype_rid_repr, elem_id_repr),
+                        _('{} is to be linked to {}. ').format(
+                            xref_reftype_repr, elements_options),
+                        _('{} is to be linked to {}. ').format(
+                            elem_repr, reftype_options),
+                        _('Check the values of xref/@rid, '
+                            'xref/@ref-type and {}/@id. ').format(tag),
                         )
-                    #_msg = _('Unmatched')
-                    #_msg += ' @ref-type (' + xref['ref-type'] + ')'
-                    #_msg += _(' and ') + tag + ': '
-                    #_msg += 'xref[@ref-type="' + xref['ref-type'] + '"] '
-                    #_msg += _('is for') + ' ' + ' | '.join(elements)
-                    #_msg += _(' and ') + _('valid values of') + ' @ref-type ' + _('of') + ' '
-                    #_msg += tag + ' ' + _('are') + ' '
-                    #_msg += '|'.join(reftypes)
-
-                    message.append(('xref/@rid', validation_status.STATUS_FATAL_ERROR, _msg))
+                    message.append(
+                        ('xref', validation_status.STATUS_FATAL_ERROR,
+                            "".join(_msg), xref_xml))
         return message
 
     @property
@@ -1452,19 +1497,6 @@ class ArticleContentValidation(object):
                         items.append(('@rid', rid))
                         items.append(('xref', bibr_xref.text))
                         message.append(('xref', validation_status.STATUS_ERROR, data_validations.invalid_labels_and_values(items)))
-        return message
-
-    @property
-    def xref_rid_and_text(self):
-        message = []
-        for xref_node in self.article.xref_nodes:
-            rid = xref_node['rid']
-            if rid is not None and xref_node['xml'] is not None:
-                if rid[1:] not in xref_node['xml']:
-                    items = []
-                    items.append(('@rid', rid))
-                    items.append(('xref', xref_node['xml']))
-                    message.append(('xref', validation_status.STATUS_WARNING, data_validations.invalid_labels_and_values(items)))
         return message
 
     @property
