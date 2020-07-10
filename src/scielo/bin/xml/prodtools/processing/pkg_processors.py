@@ -76,7 +76,7 @@ class ArticlesConversion(object):
         "rejected": {
             "update": False,
             "status": validation_status.STATUS_BLOCKING_ERROR,
-            "reason": "...",
+            "reason": _('because there are blocking errors in the package. '),
         },
         "ignored": {
             "update": False,
@@ -94,12 +94,8 @@ class ArticlesConversion(object):
         "approved": {
             "update": True,
             "status": validation_status.STATUS_OK,
+            "reason": "",
         },
-        "otherwise": {
-            "update": True,
-            "status": validation_status.STATUS_FATAL_ERROR,
-            "reason": _('because there are blocking errors in the package. ')
-        }
     }
 
     def __init__(self, registered_issue_data, pkg, pkg_eval_result, create_windows_base, web_app_path, web_app_site):
@@ -338,20 +334,17 @@ class ArticlesConversion(object):
 
     @property
     def conclusion(self):
-        _conclusion = self.CONCLUSION.get(self.xc_status, "otherwise")
+        _conclusion = self.CONCLUSION.get(self.xc_status, "rejected")
         if self.xc_status == 'rejected':
-            if self.accepted_articles > 0:
-                if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
-                else:
-                    reason = _('because there are blocking errors in the package. ')
-            else:
-                reason = _('because there are blocking errors in the package. ')
-            _conclusion["reason"] = reason
+            if self.accepted_articles > 0 and self.total_not_converted > 0:
+                _conclusion["reason"] = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
         return _conclusion
 
     @property
     def conclusion_message(self):
+        if hasattr(self, _conclusion_message):
+            return self._conclusion_message
+
         text = ''.join(self.error_messages)
         app_site = self.web_app_site or _('scielo web site')
         result = _('updated/published on {app_site}').format(app_site=app_site)
@@ -366,8 +359,10 @@ class ArticlesConversion(object):
 
         converted = "{}: {}/{}".format(_('converted'), self.total_converted,
                                        self.accepted_articles)
-        return (html_reports.p_message(converted, False) +
-                html_reports.p_message(text, False))
+        self._conclusion_message = (
+                html_reports.p_message(converted, False) +
+                html_reports.p_message(text, False) + self.sps_pkg_info)
+        return self._conclusion_message
 
     @property
     def spf_message(self):
