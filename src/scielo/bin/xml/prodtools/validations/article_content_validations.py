@@ -1350,6 +1350,11 @@ class ArticleContentValidation(object):
 
     @property
     def missing_xref_list(self):
+        """
+        Verifica para todos os elementos que possuem `@id` se está ausente a
+        sua referência `xref[@rid]`
+        Também indica erro para intervalos inválidos
+        """
         tag_and_xref_types = {
             'fig-group': 'fig',
             'table-wrap-group': 'table',
@@ -1373,31 +1378,37 @@ class ArticleContentValidation(object):
                     for item in xref_nodes:
                         msg = data_validations.is_expected_value('xref[@rid="' + str(item['rid']) + '"]/@ref-type', str(item['ref-type']), [str(xref_type)],validation_status.STATUS_FATAL_ERROR)
                         message.append(msg)
-        for xref_type, missing_xref_type_items in missing.items():
-            if self.article.any_xref_ranges.get(xref_type) is None:
-                encoding.debugging('missing_xref_list()', xref_type + ' has no xref ranges')
-            else:
-                missing_xref_type_items = confirm_missing_xref_items(missing_xref_type_items, self.article.any_xref_ranges.get(xref_type))
 
-            if len(missing_xref_type_items) > 0:
-                for xref in missing_xref_type_items:
-                    message.append(('xref[@ref-type=' + xref_type + ']', validation_status.STATUS_ERROR, 
-                        _('Not found: {label}. ').format(label='xref[@ref-type="{xreftype}" and rid="{rid}"]'.format(xreftype=xref_type, rid=xref))))
-            if self.article.any_xref_ranges.get(xref_type) is not None:
-                for start, end, start_node, end_node in self.article.any_xref_ranges.get(xref_type):
-                    if start > end:
-                        message.append(
-                                (
-                                _('xref range'),
-                                validation_status.STATUS_ERROR,
-                                _('Invalid range ')+
-                                '{}-{} ({}-{})'.format(
-                                    start_node.text,
-                                    end_node.text,
-                                    start_node.attrib.get('rid'),
-                                    end_node.attrib.get('rid'))
-                                )
+        any_xref_ranges = self.article.any_xref_ranges
+
+        for xref_type, missing_xref_type_items in missing.items():
+            xref_ranges = any_xref_ranges.get(xref_type)
+            if xref_ranges:
+                missing_xref_type_items = confirm_missing_xref_items(missing_xref_type_items, xref_ranges)
+            else:
+                encoding.debugging('missing_xref_list()', xref_type + ' has no xref ranges')
+
+            for xref in missing_xref_type_items:
+                message.append(('xref[@ref-type=' + xref_type + ']', validation_status.STATUS_ERROR, 
+                    _('Not found: {label}. ').format(label='xref[@ref-type="{xreftype}" and rid="{rid}"]'.format(xreftype=xref_type, rid=xref))))
+
+        for xref_type, xref_ranges in any_xref_ranges.items():
+            for start, end, start_node, end_node in xref_ranges:
+                if start > end:
+                    message.append(
+                        (
+                            _('xref range'),
+                            validation_status.STATUS_ERROR,
+                            _('Invalid range ') +
+                            '{}-{} ({}-{})'.format(
+                                xml_utils.node_text(start_node),
+                                xml_utils.node_text(end_node),
+                                start_node.attrib.get('rid'),
+                                end_node.attrib.get('rid')),
+                            xml_utils.tostring(start_node) + "-" +
+                            xml_utils.tostring(end_node)
                             )
+                        )
         return message
 
     @property

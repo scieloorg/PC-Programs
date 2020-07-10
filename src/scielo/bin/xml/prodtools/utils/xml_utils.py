@@ -591,3 +591,19 @@ def nodes_tostring(root, node_xpaths):
     que combinam com uma lista de xpaths
     """
     return [tostring(node) for node in find_nodes(root, node_xpaths)]
+
+
+def strip_all_tags_except(root, keep_tags):
+    for node in root.findall(".//*"):
+        if node.tag in keep_tags:
+            continue
+        node.tag = "REMOVE"
+    etree.strip_tags(root, "REMOVE")
+
+
+def node_text(node):
+    """
+    Retorna todos os textos encontrados dentro de um elemento e de seus
+    sub-elementos de forma concatenada
+    """
+    return "".join(node.itertext())
