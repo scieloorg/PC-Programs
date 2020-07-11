@@ -342,7 +342,7 @@ class ArticlesConversion(object):
 
     @property
     def conclusion_message(self):
-        if hasattr(self, _conclusion_message):
+        if hasattr(self, '_conclusion_message'):
             return self._conclusion_message
 
         text = ''.join(self.error_messages)
@@ -361,7 +361,7 @@ class ArticlesConversion(object):
                                        self.accepted_articles)
         self._conclusion_message = (
                 html_reports.p_message(converted, False) +
-                html_reports.p_message(text, False) + self.sps_pkg_info)
+                html_reports.p_message(text, False) + self.spf_message)
         return self._conclusion_message
 
     @property
@@ -374,7 +374,7 @@ class ArticlesConversion(object):
                     self.sps_pkg_info.get("server"),
                     self.sps_pkg_info.get("user", ''))
         return html_reports.p_message(
-                _("[INFO] {} is available to SPF {}").format(
+                _("[INFO] {} is available for SPF {}").format(
                     self.sps_pkg_info.get("file"), ftp)
             )
 
