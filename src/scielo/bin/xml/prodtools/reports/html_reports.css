@@ -48,7 +48,7 @@ td {
 }
 .subtitle {
   margin: 5px;
-  font-size: 8pt;
+  font-size: 10pt;
   font-family: Verdana;
   color: #3D3832;
   background-color: #F0CEC2;
@@ -61,21 +61,21 @@ td {
 .element-table table {
    border: 1px solid gray;
    font-family: Courier;
-   font-size: 10;
+   font-size: 10pt;
    color: black;
    background-color: white;
 } 
 .element-table td {
    border: 1px solid gray;
    font-family: Courier;
-   font-size: 10;
+   font-size: 10pt;
    color: black;
    background-color: white;
 } 
 .element-table th {
    border: 1px solid gray;
    font-family: Courier;
-   font-size: 10;
+   font-size: 10pt;
    color: black;
    background-color: white;
 }
@@ -110,7 +110,7 @@ h5 {
 }
 .td_xml {
     color: #113F8C;
-    font-size: 7pt;
+    font-size: 9pt;
     font-family: Courier;
     word-wrap:break-word;
     width: 20%;
@@ -118,7 +118,7 @@ h5 {
 .validation_sheet {
    border: 1px dotted #8B85AB;
    font-family: "Verdana";
-   font-size: 8pt;
+   font-size: 10pt;
    color: black; 
    width: 100%;
    max-width: 1200px;
@@ -195,7 +195,7 @@ h5 {
 .sheet {
   border: 1px solid gray;
   font-family: "Verdana";
-  font-size: 10;
+  font-size: 10pt;
   color: black; 
   width: 100%;
   max-width: 1200px;
@@ -203,7 +203,7 @@ h5 {
 .sheet td {
   border: 1px solid gray;
    font-family: Courier;
-   font-size: 8pt;
+   font-size: 10pt;
    color: black;
    vertical-align: top;
    word-wrap:break-word;
@@ -272,7 +272,7 @@ h5 {
 .discret {
     font-family: Courier;
     color: gray;
-    font-size: 8pt;
+    font-size: 10pt;
 }
 .article-type {
     color: #ED146F;
@@ -408,7 +408,7 @@ h5 {
   word-wrap:break-word;
   margin: 5px;
   font-family: Verdana;
-  font-size: 8pt;
+  font-size: 10pt;
 } 
 .dbstatus td {
   border: 1px solid gray;
@@ -449,8 +449,9 @@ h5 {
 .report-section {
   margin-top: 50px;
 }
+/* fundo azulado */
 .pid {
-  color: #B38295;
+  color: white;
   background-color: #295876;
 }
 .aop-block {
@@ -460,6 +461,7 @@ h5 {
   margin-bottom: 35px;
   padding: 10px;
 }
+/* fundo avermelhado */
 .aop {
   color: white;
   background-color: #ED146F;
