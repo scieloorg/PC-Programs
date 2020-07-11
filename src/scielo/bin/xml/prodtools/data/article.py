@@ -1086,13 +1086,13 @@ class ArticleXML(object):
                 return _doi.lower()
 
     @property
-    def doi_and_lang(self):
+    def doi_by_lang(self):
         r = []
         if self.doi:
             r = [(self.language, self.doi)]
         for translation in self.translations or []:
             doi = translation.findtext('.//article-id[@pub-id-type="doi"]') or ''
-            r.append((element_lang(translation), doi.lower()))
+            r.append((element_lang(translation), doi))
         return r
 
     @property

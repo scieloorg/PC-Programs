@@ -675,11 +675,16 @@ def validations_table(results):
 
 
 def display_article_metadata(_article, sep='<br/>'):
+    doi_by_lang_items = " | ".join((
+        "{}: {}".format(lang, doi or '-')
+        for lang, doi in _article.doi_by_lang
+    ))
     r = "".join((
         html_reports.tag(
             'p', _article.scielo_id, 'pid'),
         html_reports.tag(
             'p', _article.doi or _article.publisher_article_id, 'doi'),
+        html_reports.tag('p', doi_by_lang_items, 'doi'),
         html_reports.tag(
             'p',
             "PID (AOP): {}".format(str(_article.previous_pid)), 'aop'),
