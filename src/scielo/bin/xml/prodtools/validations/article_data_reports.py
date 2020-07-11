@@ -679,7 +679,12 @@ def display_article_metadata(_article, sep='<br/>'):
         "{}: {}".format(lang, doi or '-')
         for lang, doi in _article.doi_by_lang
     ))
+    article_types = " | ".join((
+        "{}: {}".format(lang, article_type or '-')
+        for lang, article_type in _article.article_types
+    ))
     r = "".join((
+        html_reports.tag('p', article_types),
         html_reports.tag(
             'p', _article.scielo_id, 'pid'),
         html_reports.tag(
