@@ -304,9 +304,19 @@ class Reception(object):
             if not os.path.isdir(queued_pkg_path):
                 os.makedirs(queued_pkg_path)
 
-            if fs_utils.extract_package(tmp_pkg_path, queued_pkg_path):
-                if archive_path and os.path.isdir(archive_path):
-                    shutil.copy(tmp_pkg_path, archive_path)
+            if archive_path:
+                if not os.path.isdir(archive_path):
+                    os.makedirs(archive_path)
+                shutil.copy(tmp_pkg_path, archive_path)
+
+            extracted = fs_utils.extract_package(tmp_pkg_path, queued_pkg_path)
+            if extracted:
+                xml_items = [item
+                             for item in os.listdir(queued_pkg_path)
+                             if item.endswith(".xml")]
+                extracted = len(xml_items)
+
+            if extracted:
                 pkg_paths.append(queued_pkg_path)
             else:
                 invalid_pkg_files.append(pkg_name)
