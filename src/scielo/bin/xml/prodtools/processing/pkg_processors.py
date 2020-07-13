@@ -16,6 +16,7 @@ from prodtools.validations import reports_maker
 from prodtools.validations.pkg_evaluation import (
     PackageEvaluator,
 )
+from prodtools.data.package import PackageHasNoXMLFilesError
 from prodtools.data import kernel_document
 from prodtools.db import xc_models
 from prodtools.db.serial import WebsiteFiles
@@ -353,10 +354,8 @@ class PkgProcessor(object):
         self.is_xml_generation = stage == 'xml'
         self.is_db_generation = stage == 'xc'
         self.xpm_version = xpm_version() if stage == 'xpm' else None
-        self.registered_issues_manager = xc_models.RegisteredIssuesManager(
-            self.config, self.is_db_generation)
+        self.registered_issues_manager = None
         self._pid_manager = None
-
 
     @property
     def export_documents_package(self):
@@ -365,6 +364,11 @@ class PkgProcessor(object):
 
     def evaluate_package(self, pkg):
         logger.info("Analize package")
+        self.registered_issues_manager = (
+            self.registered_issues_manager or
+            xc_models.RegisteredIssuesManager(
+                self.config, self.is_db_generation))
+
         registered_issue_data = self.registered_issues_manager.get_registered_issue_data(pkg.issue_data)
 
         if len(registered_issue_data.registered_articles) > 0:
@@ -386,6 +390,12 @@ class PkgProcessor(object):
             pkg.zip()
 
     def convert_package(self, pkg):
+        if len(pkg.package_folder.xml_list) == 0:
+            raise PackageHasNoXMLFilesError(
+                _("Unable to convert package {}, "
+                    "because it has no XML files").format(
+                    pkg.package_folder.path))
+
         registered_issue_data, pkg_eval_result = self.evaluate_package(pkg)
 
         conversion = ArticlesConversion(registered_issue_data, pkg, pkg_eval_result, not self.config.interative_mode, self.config.local_web_app_path, self.config.web_app_site)

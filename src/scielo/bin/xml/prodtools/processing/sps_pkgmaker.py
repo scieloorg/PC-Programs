@@ -21,10 +21,6 @@ mime = MimeTypes()
 logger = logging.getLogger()
 
 
-class PackageHasNoXMLFilesError(Exception):
-    pass
-
-
 class PackageMakerOptimiserPreReqError(Exception):
     pass
 
@@ -414,7 +410,7 @@ class PackageMaker(object):
                     ", ".join(xml_list)
                 )
             logger.exception(error_msg)
-            raise PackageHasNoXMLFilesError(error_msg)
+            raise package.PackageHasNoXMLFilesError(error_msg)
 
         optimise_individually = (percent < 1)
 

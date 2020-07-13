@@ -9,6 +9,10 @@ from prodtools.data import workarea
 logger = logging.getLogger()
 
 
+class PackageHasNoXMLFilesError(Exception):
+    pass
+
+
 class SPPackage(object):
     """
     Contém dados (files + xml + article) de um conjunto de documentos

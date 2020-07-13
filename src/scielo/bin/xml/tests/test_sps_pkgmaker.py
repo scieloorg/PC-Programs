@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from prodtools.utils import xml_utils
 from prodtools.processing import sps_pkgmaker
+from prodtools.data.package import PackageHasNoXMLFilesError
 
 
 python_version = sys.version_info.major
@@ -331,7 +332,7 @@ class TestPackageMaker(TestCase):
         mock_listdir.return_value = ["a.pdf", "a.jpg"]
         pm = sps_pkgmaker.PackageMaker(
             "/path", "/tmp", optimise=False, package_name=None)
-        with self.assertRaises(sps_pkgmaker.PackageHasNoXMLFilesError):
+        with self.assertRaises(PackageHasNoXMLFilesError):
             pm.pack()
 
     @patch("prodtools.processing.sps_pkgmaker.package.SPPackage")
