@@ -28,13 +28,17 @@ class Mailer(object):
         icon = u"\u274C"
         subject = "{}: {} ".format(
             self.config.email_subject_invalid_packages, icon)
+        body = "{}{}\n\nPackages are not .zip file or has no XML file"
 
         for invalid_pkg in invalid_pkg_files:
             self.send_message(
                 self.config.email_to,
                 subject + invalid_pkg,
-                self.config.email_text_invalid_packages +
-                invalid_pkg)
+                body.format(
+                    self.config.email_text_invalid_packages,
+                    invalid_pkg
+                )
+            )
 
     def mail_failure(self, subject: str, text: str, package: str) -> None:
         """Informa falhas gerais ocorridas durante a conversão de pacotes SPS"""
