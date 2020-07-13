@@ -1,6 +1,7 @@
 # coding=utf-8
 import sys
 from unittest import TestCase
+from unittest.mock import patch
 
 from prodtools.utils import xml_utils
 from prodtools.processing import sps_pkgmaker
@@ -322,3 +323,26 @@ class TestBrokenRefSource(TestCase):
             "futuro do pensamento na era da informática"),
             obj.tree.find(".//source").text)
 
+
+class TestPackageMaker(TestCase):
+
+    @patch("prodtools.processing.sps_pkgmaker.os.listdir")
+    def test_pack_raises_PackageHasNoXMLFilesError(self, mock_listdir):
+        mock_listdir.return_value = ["a.pdf", "a.jpg"]
+        pm = sps_pkgmaker.PackageMaker(
+            "/path", "/tmp", optimise=False, package_name=None)
+        with self.assertRaises(sps_pkgmaker.PackageHasNoXMLFilesError):
+            pm.pack()
+
+    @patch("prodtools.processing.sps_pkgmaker.package.SPPackage")
+    @patch("prodtools.processing.sps_pkgmaker.os.path.isdir")
+    @patch("prodtools.processing.sps_pkgmaker.os.listdir")
+    def test_pack_does_not_raise_PackageHasNoXMLFilesError(self, mock_listdir,
+            mock_isdir, mock_sppackage):
+        mock_listdir.return_value = ["a.xml", "a.jpg"]
+        mock_isdir.return_value = True
+        pm = sps_pkgmaker.PackageMaker(
+            "/path", "/tmp", optimise=False, package_name=None)
+        pm.pack()
+        mock_sppackage.assert_called_once_with(
+            "/tmp/scielo_package", "/tmp", ["a.xml"], None, optimised=False)

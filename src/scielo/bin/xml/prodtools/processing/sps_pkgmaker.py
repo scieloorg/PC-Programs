@@ -5,9 +5,9 @@ import shutil
 from mimetypes import MimeTypes
 from urllib.request import pathname2url
 
+from prodtools import _
 from packtools.utils import SPPackage
 from packtools.exceptions import SPPackageError
-
 from prodtools.utils import fs_utils
 from prodtools.utils import xml_utils
 from prodtools.data import attributes
@@ -19,6 +19,10 @@ messages = []
 mime = MimeTypes()
 
 logger = logging.getLogger()
+
+
+class PackageHasNoXMLFilesError(Exception):
+    pass
 
 
 class PackageMakerOptimiserPreReqError(Exception):
@@ -395,12 +399,23 @@ class PackageMaker(object):
             os.path.basename(item)
             for item in xml_list or []
         ]
-        logger.info(
-            "Package have %d document(s)", len(self.source_folder.pkgfiles_items)
-        )
-        logger.info("Selected to pack %d document(s)", len(_xml_names))
+        q_total = len(self.source_folder.pkgfiles_items)
+        q_selected = len(_xml_names)
 
-        percent = len(_xml_names) / len(self.source_folder.pkgfiles_items)
+        logger.info("Package have %d document(s)", q_total)
+        logger.info("Selected to pack %d document(s)", q_selected)
+
+        try:
+            percent = q_selected / q_total
+        except ZeroDivisionError:
+            percent = 0
+            error_msg = _("No XML file was found at {} as packing {}").format(
+                    self.source_folder.path,
+                    ", ".join(xml_list)
+                )
+            logger.exception(error_msg)
+            raise PackageHasNoXMLFilesError(error_msg)
+
         optimise_individually = (percent < 1)
 
         for item in self.source_folder.pkgfiles_items.values():
