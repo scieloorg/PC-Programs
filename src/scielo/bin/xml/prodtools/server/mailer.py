@@ -25,7 +25,7 @@ class Mailer(object):
         self.mailer.send_message(to, subject, text, attaches)
 
     def mail_invalid_packages(self, invalid_pkg_files):
-        if self.config.is_enabled_email_service:
+        if invalid_pkg_files:
             self.send_message(self.config.email_to, self.config.email_subject_invalid_packages, self.config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
 
     def mail_failure(self, subject: str, text: str, package: str) -> None:

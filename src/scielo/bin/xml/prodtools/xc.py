@@ -9,7 +9,6 @@ import traceback
 from tempfile import TemporaryDirectory
 from datetime import datetime
 
-from prodtools import _
 from packtools.utils import SPPackage
 
 try:
@@ -17,7 +16,8 @@ try:
 except ImportError as e:
     print(e)
     print("It is ok if running on a server without GUI")
-
+from prodtools import _
+from prodtools.data.package import PackageHasNoXMLFilesError
 from prodtools.utils import fs_utils
 from prodtools.utils import encoding
 from prodtools.processing import pkg_processors
@@ -166,6 +166,12 @@ class Reception(object):
             try:
                 package = self._create_package_instance(source=xml_path, output=output_path)
                 scilista_items, xc_status, mail_info = self.proc.convert_package(package)
+            except PackageHasNoXMLFilesError:
+                logger.exception(
+                    "Invalid package '%s'. There is no XML file",
+                    package_path,
+                )
+                self.mailer.mail_invalid_packages([package_path])
             except Exception:
                 logger.exception(
                     "Could not convert the package '%s'. The following traceback was captured: ",
