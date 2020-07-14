@@ -1,9 +1,14 @@
 # coding=utf-8
 import sys
+import os
+import tempfile
 from unittest import TestCase
+from unittest.mock import patch
 
+from prodtools.utils import fs_utils
 from prodtools.utils import xml_utils
 from prodtools.processing import sps_pkgmaker
+from prodtools.data.package import PackageHasNoXMLFilesError
 
 
 python_version = sys.version_info.major
@@ -322,3 +327,41 @@ class TestBrokenRefSource(TestCase):
             "futuro do pensamento na era da informática"),
             obj.tree.find(".//source").text)
 
+
+class TestPackageMaker(TestCase):
+
+    def setUp(self):
+        os.makedirs("./fixtures/tmp")
+        os.makedirs("./fixtures/package")
+
+    def tearDown(self):
+        fs_utils.delete_file_or_folder("./fixtures/tmp")
+        fs_utils.delete_file_or_folder("./fixtures/package")
+
+    @patch("prodtools.processing.sps_pkgmaker.os.listdir")
+    def test_pack_raises_PackageHasNoXMLFilesError(self, mock_listdir):
+        mock_listdir.return_value = ["a.pdf", "a.jpg"]
+        pm = sps_pkgmaker.PackageMaker(
+            "./fixtures/package", "./fixtures/tmp", optimise=False, package_name=None)
+        with self.assertRaises(PackageHasNoXMLFilesError):
+            pm.pack()
+
+    @patch("prodtools.processing.sps_pkgmaker.package.SPPackage")
+    @patch("prodtools.processing.sps_pkgmaker.os.path.isdir")
+    @patch("prodtools.processing.sps_pkgmaker.os.listdir")
+    def test_pack_does_not_raise_PackageHasNoXMLFilesError(self, mock_listdir,
+            mock_isdir, mock_sppackage):
+        mock_listdir.return_value = ["a.xml", "a.jpg"]
+        mock_isdir.return_value = True
+        pm = sps_pkgmaker.PackageMaker(
+            "./fixtures/package", "./fixtures/tmp",
+            optimise=False, package_name=None)
+        try:
+            pm.pack()
+        except PackageHasNoXMLFilesError:
+            assert False
+        except:
+            assert True
+        finally:
+            assert True
+                
