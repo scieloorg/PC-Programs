@@ -25,7 +25,7 @@ class DOIValidator(object):
         year = (
             article.real_pubdate or article.expected_pubdate or {}).get('year')
         journal_prefixes = self.journal_prefixes(journal_issns, year)
-        for lang, doi in article.doi_and_lang:
+        for lang, doi in article.doi_by_lang:
             if not doi:
                 continue
             self.validate_issn_in_doi(journal_issns, doi)

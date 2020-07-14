@@ -193,7 +193,7 @@ class ArticleContentValidation(object):
                     self.article_date_types,
                     self.toc_section,
                     self.doi,
-                    self.doi_and_lang,
+                    self.doi_by_lang,
                     self.article_id,
                     self.pagination,
                 ])
@@ -617,16 +617,16 @@ class ArticleContentValidation(object):
         return r
 
     @property
-    def doi_and_lang(self):
+    def doi_by_lang(self):
         r = []
         if not self.article.doi:
             return r
-        doi_items = [doi for lang, doi in self.article.doi_and_lang
+        doi_items = [doi for lang, doi in self.article.doi_by_lang
                      if doi != '']
         unique = set(doi_items)
         if len(unique) < len(doi_items):
             msg = '; '.join(['{}:&#160;{}'.format(lang, doi)
-                            for lang, doi in self.article.doi_and_lang])
+                            for lang, doi in self.article.doi_by_lang])
             r.append(
                 ('doi',
                  validation_status.STATUS_FATAL_ERROR,

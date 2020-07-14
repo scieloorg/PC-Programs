@@ -327,7 +327,7 @@ class ArticleRecords(object):
         self._metadata['237'] = self.article.doi
         self._metadata['337'] = [
             {'l': lang, 'd': doi}
-            for lang, doi in self.article.doi_and_lang
+            for lang, doi in self.article.doi_by_lang
             if doi and lang
             ]
 

@@ -73,6 +73,31 @@ def xpm_version():
 
 
 class ArticlesConversion(object):
+    CONCLUSION = {
+        "rejected": {
+            "update": False,
+            "status": validation_status.STATUS_BLOCKING_ERROR,
+            "reason": _('because there are blocking errors in the package. '),
+        },
+        "ignored": {
+            "update": False,
+            "status": validation_status.STATUS_BLOCKING_ERROR,
+            "reason": _('because there is no document allowed to convert. '),
+        },
+        "accepted": {
+            "update": True,
+            "status": validation_status.STATUS_WARNING,
+            "reason": _(' even though there are some fatal errors. '
+                        'Note: These errors must be fixed in order to have '
+                        'good quality of bibliometric indicators and '
+                        'services. '),
+        },
+        "approved": {
+            "update": True,
+            "status": validation_status.STATUS_OK,
+            "reason": "",
+        },
+    }
 
     def __init__(self, registered_issue_data, pkg, pkg_eval_result, create_windows_base, web_app_path, web_app_site):
         self.create_windows_base = create_windows_base
@@ -85,6 +110,7 @@ class ArticlesConversion(object):
         self.error_messages = []
         self.conversion_status = {}
         self.updated_scilista_items = None
+        self.sps_pkg_info = None
 
     def convert(self):
         self.updated_scilista_items = None
@@ -141,7 +167,8 @@ class ArticlesConversion(object):
             return None
 
         package_zip_name = "{}.zip".format(package_name.replace(" ", "_"))
-        exporter(self.pkg.package_folder.path, package_zip_name)
+        self.sps_pkg_info = exporter(
+            self.pkg.package_folder.path, package_zip_name)
 
     @property
     def aop_status(self):
@@ -307,42 +334,50 @@ class ArticlesConversion(object):
         return r
 
     @property
-    def conclusion_message(self):
-        text = ''.join(self.error_messages)
-        app_site = self.web_app_site if self.web_app_site is not None else _('scielo web site')
-        status = ''
-        result = _('updated/published on {app_site}').format(app_site=app_site)
-        reason = ''
-        update = True
+    def conclusion(self):
+        _conclusion = self.CONCLUSION.get(self.xc_status, "rejected")
         if self.xc_status == 'rejected':
-            update = False
-            status = validation_status.STATUS_BLOCKING_ERROR
-            if self.accepted_articles > 0:
-                if self.total_not_converted > 0:
-                    reason = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
-                else:
-                    reason = _('because there are blocking errors in the package. ')
-            else:
-                reason = _('because there are blocking errors in the package. ')
-        elif self.xc_status == 'ignored':
-            update = False
-            reason = _('because there is no document allowed to convert. ')
-            status = validation_status.STATUS_BLOCKING_ERROR
-        elif self.xc_status == 'accepted':
-            status = validation_status.STATUS_WARNING
-            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services. ')
-        elif self.xc_status == 'approved':
-            status = validation_status.STATUS_OK
-            reason = ''
-        else:
-            status = validation_status.STATUS_FATAL_ERROR
-            reason = _('because there are blocking errors in the package. ')
-        action = _('will not be')
-        if update:
-            action = _('will be')
-        text = u'{status}: {issueid} {action} {result} {reason}'.format(status=status, issueid=self.acron_issue_label, result=result, reason=reason, action=action)
-        text = html_reports.p_message(_('converted') + ': ' + str(self.total_converted) + '/' + str(self.accepted_articles), False) + html_reports.p_message(text, False)
-        return text
+            if self.accepted_articles > 0 and self.total_not_converted > 0:
+                _conclusion["reason"] = _('because it is not complete ({value} were not converted). ').format(value=str(self.total_not_converted) + '/' + str(self.accepted_articles))
+        return _conclusion
+
+    @property
+    def conclusion_message(self):
+        if hasattr(self, '_conclusion_message'):
+            return self._conclusion_message
+
+        text = ''.join(self.error_messages)
+        app_site = self.web_app_site or _('scielo web site')
+        result = _('updated/published on {app_site}').format(app_site=app_site)
+
+        conclusion = self.conclusion
+
+        action = _('will be') if conclusion.get("update") else _('will not be')
+
+        text = u'{status}: {issueid} {action} {reason}'.format(
+            issueid=self.acron_issue_label, action=action + " " + result,
+            **conclusion)
+
+        converted = "{}: {}/{}".format(_('converted'), self.total_converted,
+                                       self.accepted_articles)
+        self._conclusion_message = (
+                html_reports.p_message(converted, False) +
+                html_reports.p_message(text, False) + self.spf_message)
+        return self._conclusion_message
+
+    @property
+    def spf_message(self):
+        if not self.sps_pkg_info:
+            return ""
+        ftp = ""
+        if self.sps_pkg_info.get("server"):
+            ftp = _("(FTP: {} | User: {})").format(
+                    self.sps_pkg_info.get("server"),
+                    self.sps_pkg_info.get("user", ''))
+        return html_reports.p_message(
+                _("[INFO] {} is available for SPF {}").format(
+                    self.sps_pkg_info.get("file"), ftp)
+            )
 
 
 class PkgProcessor(object):

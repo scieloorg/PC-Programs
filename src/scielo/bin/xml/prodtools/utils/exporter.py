@@ -32,6 +32,8 @@ class Exporter(object):
     def copy_configuration(self):
         try:
             destination_path = self._data["destination_path"]
+            if not os.path.isdir(destination_path):
+                os.makedirs(destination_path)
         except KeyError:
             exp_logger.info("Exporter: Missing Destination Configuration")
         else:
@@ -58,7 +60,7 @@ class Exporter(object):
         _, file_name = os.path.split(file_path)
         return os.path.join(destination_dir, "%s_%s" % (data, file_name))
 
-    def export(self, files_path, zip_filename):
+    def export(self, source_path, zip_filename):
         destination_path = self.copy_configuration
         ftp_configuration = self.ftp_configuration
 
@@ -66,24 +68,27 @@ class Exporter(object):
             exp_logger.info("Exporter: Missing Configuration")
             return
 
-        zip_file_path = self.zip(files_path, zip_filename)
+        zip_file_path = self.zip(source_path, zip_filename)
+
         if zip_file_path:
-            if destination_path:
-                if not os.path.isdir(destination_path):
-                    os.makedirs(destination_path)
-                if ftp_configuration:
-                    shutil.copy(zip_file_path, destination_path)
-                else:
-                    final_file_path = self._preppend_time_to_destination_filename(
-                        destination_path, zip_file_path
-                    )
-                    shutil.move(zip_file_path, final_file_path)
+            dest_path = destination_path or os.path.dirname(zip_file_path)
 
-            if ftp_configuration:
+            final_file_path = self._preppend_time_to_destination_filename(
+                dest_path, zip_file_path
+            )
+            shutil.move(zip_file_path, final_file_path)
+
+            if not destination_path and ftp_configuration:
                 server, user, password, remote_path = ftp_configuration
-                self.export_by_ftp(zip_file_path, server, user, password, remote_path)
+                self.export_by_ftp(final_file_path, server, user, password, remote_path)
+                return {
+                    "file": os.path.join(
+                        remote_path, os.path.basename(final_file_path)),
+                    "ftp": server, "user": user,
+                }
+            return {"file": final_file_path}
 
-    def zip(self, files_path, zip_filename):
+    def zip(self, source_path, zip_filename):
         try:
             dest_path = tempfile.mkdtemp()
         except IOError:
@@ -93,9 +98,9 @@ class Exporter(object):
             try:
                 with zipfile.ZipFile(zip_file_path, 'w') as zipf:
                     exp_logger.info(
-                        "Create %s from %s" % (zip_file_path, files_path))
-                    for item in os.listdir(files_path):
-                        file_path = os.path.join(files_path, item)
+                        "Create %s from %s" % (zip_file_path, source_path))
+                    for item in os.listdir(source_path):
+                        file_path = os.path.join(source_path, item)
                         zipf.write(file_path, arcname=item)
             except IOError:
                 exp_logger.info(

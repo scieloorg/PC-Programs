@@ -713,20 +713,26 @@ class ArticleXML(object):
     @property
     def dtd_version(self):
         if self.tree is not None:
-            if self.tree.find('.') is not None:
-                return self.tree.find('.').attrib.get('dtd-version')
+            return self.tree.find('.').attrib.get('dtd-version')
 
     @property
     def sps(self):
         if self.tree is not None:
-            if self.tree.find('.') is not None:
-                return self.tree.find('.').attrib.get('specific-use')
+            return self.tree.find('.').attrib.get('specific-use')
 
     @property
     def article_type(self):
         if self.tree is not None:
-            if self.tree.find('.') is not None:
-                return self.tree.find('.').attrib.get('article-type')
+            return self.tree.find('.').attrib.get('article-type')
+
+    @property
+    def article_types(self):
+        if self.tree is not None:
+            return (
+                (element_lang(node), node.get("article-type"))
+                for node in [self.tree.find('.')] + self.tree.xpath(
+                             ".//*[@article-type]")
+            )
 
     @property
     def body_words(self):
@@ -1090,13 +1096,13 @@ class ArticleXML(object):
                 return _doi.lower()
 
     @property
-    def doi_and_lang(self):
+    def doi_by_lang(self):
         r = []
         if self.doi:
             r = [(self.language, self.doi)]
         for translation in self.translations or []:
             doi = translation.findtext('.//article-id[@pub-id-type="doi"]') or ''
-            r.append((element_lang(translation), doi.lower()))
+            r.append((element_lang(translation), doi))
         return r
 
     @property
