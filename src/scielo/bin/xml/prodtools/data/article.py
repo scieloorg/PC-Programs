@@ -582,7 +582,9 @@ class ArticleXML(object):
                 # o texto entre as tags xref, se há o padrão de "intervalo",
                 # ou seja, hífen entre tags xref
                 parent_node_copy = deepcopy(xref_parent_node)
-                strip_all_tags_except(parent_node_copy, ["xref"])
+                strip_all_tags_except(
+                    parent_node_copy,
+                    ["xref[@ref-type='{}']".format(xref_type)])
 
                 pattern = "xref[@ref-type='{}']".format(xref_type)
                 for i, xref in enumerate(parent_node_copy.xpath(pattern)):
