@@ -640,3 +640,44 @@ class TestNodeText(TestCase):
         xml = xml_utils.etree.fromstring(text)
         result = xml_utils.node_text(xml.find(".//p"))
         self.assertEqual(expected, result)
+
+
+class TestStripAllTagsExcept(TestCase):
+
+    def test_strip_all_tags_except_removes_all_a_except_a_with_href(self):
+        text = """<root><p>
+            <a>Texto 1</a>
+            <a href="x">Ciência</a>
+            <a href="y">Arte</a>
+            <a>Texto 2</a>
+            </p></root>"""
+        expected = """<p>
+            Texto 1
+            <a href="x">Ciência</a>
+            <a href="y">Arte</a>
+            Texto 2
+            </p>"""
+        xml = xml_utils.etree.fromstring(text)
+        node = xml.find(".//p")
+        xml_utils.strip_all_tags_except(node, [".//a[@href]"])
+        result = xml_utils.tostring(node)
+        self.assertEqual(expected, result)
+
+    def test_strip_all_tags_except_removes_all_a_except_a_with_href_equal_to_x(self):
+        text = """<root><p>
+            <a>Texto 1</a>
+            <a href="x">Ciência</a>
+            <a href="y">Arte</a>
+            <a>Texto 2</a>
+            </p></root>"""
+        expected = """<p>
+            Texto 1
+            <a href="x">Ciência</a>
+            Arte
+            Texto 2
+            </p>"""
+        xml = xml_utils.etree.fromstring(text)
+        node = xml.find(".//p")
+        xml_utils.strip_all_tags_except(node, [".//a[@href='x']"])
+        result = xml_utils.tostring(node)
+        self.assertEqual(expected, result)

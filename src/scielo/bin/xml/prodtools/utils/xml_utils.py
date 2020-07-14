@@ -593,12 +593,17 @@ def nodes_tostring(root, node_xpaths):
     return [tostring(node) for node in find_nodes(root, node_xpaths)]
 
 
-def strip_all_tags_except(root, keep_tags):
+def strip_all_tags_except(root, keep_xpaths):
+    for xpath in keep_xpaths:
+        for node in root.findall(xpath):
+            node.set("KEEP", "true")
     for node in root.findall(".//*"):
-        if node.tag in keep_tags:
+        if node.get("KEEP"):
             continue
         node.tag = "REMOVE"
     etree.strip_tags(root, "REMOVE")
+    for node in root.findall(".//*"):
+        node.attrib.pop("KEEP")
 
 
 def node_text(node):

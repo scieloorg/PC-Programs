@@ -577,14 +577,14 @@ class ArticleXML(object):
             if xref_type not in _any_xref_ranges.keys():
                 _any_xref_ranges[xref_type] = []
             for xref_parent_node, xref_node_items in xref_type_nodes:
-                
+
                 # remove todas as tags exceto xref para conseguir identificar
                 # o texto entre as tags xref, se há o padrão de "intervalo",
                 # ou seja, hífen entre tags xref
                 parent_node_copy = deepcopy(xref_parent_node)
                 strip_all_tags_except(
                     parent_node_copy,
-                    ["xref[@ref-type='{}']".format(xref_type)])
+                    [".//xref[@ref-type='{}']".format(xref_type)])
 
                 pattern = "xref[@ref-type='{}']".format(xref_type)
                 for i, xref in enumerate(parent_node_copy.xpath(pattern)):
