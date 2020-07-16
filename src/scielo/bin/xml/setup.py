@@ -15,8 +15,8 @@ with codecs.open('README.md', mode='r', encoding='utf-8') as fp:
 
 
 INSTALL_REQUIRES = [
-    'packtools>=2.6.2',
-    'Pillow~=6.2',
+    'packtools>=2.6.4',
+    'Pillow~=6.2.2',
 ]
 
 
@@ -40,7 +40,7 @@ if sys.version_info[0:2] == (2, 7):
 
 setup(
     name="SciELO Production Tools",
-    version="4.0.097",
+    version="1.0",
     description="Produces XML packages and databases to publish",
     long_description=README,
     long_description_content_type="text/markdown",
