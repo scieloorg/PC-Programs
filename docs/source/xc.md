@@ -358,27 +358,27 @@ Para executar a função principal do _XC_, ou seja, a geração de dados para o
 
 Para executar primeiro o download dos pacotes e depois a geração de dados para o sítio web clássico.
 
-`cd <raíz>/xml;xc_server <collection_acron> [--download]`
+`cd <raíz>/xml;xc_server <collection_acron> --download`
 
 
 Para executar primeiro o download dos pacotes, a geração de dados para o sítio web clássico e, por fim, aciona a execução do _GeraPadrao_ do sítio web de controle de qualidade.
 
-`cd <raíz>/xml;xc_server <collection_acron> [--download] [--gerapadrao]`
+`cd <raíz>/xml;xc_server <collection_acron> --download --gerapadrao`
 
 
 Para executar a geração de dados para o sítio web clássico e, por fim, aciona a execução do _GeraPadrao_ do sítio web de controle de qualidade.
 
-`cd <raíz>/xml;xc_server <collection_acron> [--gerapadrao]`
+`cd <raíz>/xml;xc_server <collection_acron> --gerapadrao`
 
 
 Pode-se deixar agendado a execução dos comandos conforme a necessidade.
 Por exemplo, colocar com mais frequência:
 
-`cd <raíz>/xml;xc_server <collection_acron> [--download]`
+`cd <raíz>/xml;xc_server <collection_acron> --download`
 
 e menor frequência:
 
-`cd <raíz>/xml;xc_server <collection_acron> [--download] [--gerapadrao]`
+`cd <raíz>/xml;xc_server <collection_acron> --download --gerapadrao`
 
 
 Pode-se deixar agendado a execução de _XC_ a cada 5 minutos, dentro de um período, por exemplo, de 7h às 19h.
