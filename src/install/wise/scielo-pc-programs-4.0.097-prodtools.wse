@@ -34,7 +34,7 @@ item: Global
   Version Company=SciELO
   Distribute Path=C:\2007\scielo
   Distribute Type=1
-  Step View=All
+  Step View=Properties
   Variable Name1=_SYS_
   Variable Default1=C:\WINNT\system32
   Variable Flags1=00001000
@@ -255,9 +255,9 @@ item: Install File
   Flags=0000000010000010
 end
 item: Execute Program
-  Pathname=%PYTHON_PATH%\python
-  Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PYTHON_PATH% %PROGDIR%
-  Flags=00000110
+  Pathname="%PYTHON_PATH%\python"
+  Command Line= %PROGDIR%\bin\cfg\configure_paths.py "%PYTHON_PATH%" "%PROGDIR%"
+  Flags=00000011
 end
 item: Read INI Value
   Variable=WEBPATH
@@ -1897,9 +1897,9 @@ item: Install File
   Flags=0000000010000010
 end
 item: Execute Program
-  Pathname=%PYTHON_PATH%\Scripts\pip
-  Command Line=install -U %PROGDIR%\bin\xml\dist\SciELO_Production_Tools-4.0.97-py3-none-any.whl
-  Flags=00000110
+  Pathname="%PYTHON_PATH%\Scripts\pip"
+  Command Line=install -U "%PROGDIR%\bin\xml\dist\SciELO_Production_Tools-4.0.97-py3-none-any.whl"
+  Flags=00000011
 end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\xml\__init__.py
@@ -2113,6 +2113,11 @@ end
 item: Install File
   Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\cfg\Settings.cfg.template
   Destination=%PROGDIR%\bin\cfg\Settings.cfg.template
+  Flags=0000000010000010
+end
+item: Install File
+  Source=e:\github.com\scieloorg\PC-Programs\src\scielo\bin\cfg\Scielo.ico
+  Destination=%PROGDIR%\bin\xml\prodtools\settings\Scielo.ico
   Flags=0000000010000010
 end
 item: Install File
@@ -5510,9 +5515,9 @@ item: Create Shortcut
   Destination=%DESKTOPDIR%\XML Converter.lnk
   Destination Portuguese=%DESKTOPDIR%\XML Converter.lnk
   Destination Spanish=%DESKTOPDIR%\XML Converter.lnk
-  Command Options=%PROGDIR%
-  Command Options Portuguese=%PROGDIR% %PYTHON_PATH%\python
-  Command Options Spanish=%PROGDIR%
+  Command Options=%PROGDIR% "%PYTHON_PATH%\python"
+  Command Options Portuguese=%PROGDIR% "%PYTHON_PATH%\python"
+  Command Options Spanish=%PROGDIR% "%PYTHON_PATH%\python"
   Icon Number=0
   Icon Number Portuguese=0
   Icon Number Spanish=0
@@ -5529,9 +5534,9 @@ item: Create Shortcut
   Destination=%DESKTOPDIR%\XML Package Maker.lnk
   Destination Portuguese=%DESKTOPDIR%\XML Package Maker.lnk
   Destination Spanish=%DESKTOPDIR%\XML Package Maker.lnk
-  Command Options=%PROGDIR%
-  Command Options Portuguese=%PROGDIR% %PYTHON_PATH%\python
-  Command Options Spanish=%PROGDIR%
+  Command Options=%PROGDIR% "%PYTHON_PATH%\python"
+  Command Options Portuguese=%PROGDIR% "%PYTHON_PATH%\python"
+  Command Options Spanish=%PROGDIR% "%PYTHON_PATH%\python"
   Icon Number=0
   Icon Number Portuguese=0
   Icon Number Spanish=0
@@ -5548,9 +5553,9 @@ item: Create Shortcut
   Destination=%DESKTOPDIR%\Markup - update journals list.lnk
   Destination Portuguese=%DESKTOPDIR%\Markup - update journals list.lnk
   Destination Spanish=%DESKTOPDIR%\Markup - update journals list.lnk
-  Command Options=%PROGDIR%
-  Command Options Portuguese=%PROGDIR% %PYTHON_PATH%\python
-  Command Options Spanish=%PROGDIR%
+  Command Options=%PROGDIR% "%PYTHON_PATH%\python"
+  Command Options Portuguese=%PROGDIR% "%PYTHON_PATH%\python"
+  Command Options Spanish=%PROGDIR% "%PYTHON_PATH%\python"
   Icon Number=0
   Icon Number Portuguese=0
   Icon Number Spanish=0
@@ -5675,8 +5680,8 @@ item: End Block
 end
 item: Execute Program
   Pathname=%PYTHON_PATH%\python
-  Command Line= %PROGDIR%\bin\cfg\configure_paths.py %PYTHON_PATH% %PROGDIR% %DATADIR% %MYSCIELOURL% %WEBPATH%
-  Flags=00000110
+  Command Line= %PROGDIR%\bin\cfg\configure_paths.py "%PYTHON_PATH%" "%PROGDIR%" "%DATADIR%" "%MYSCIELOURL%" "%WEBPATH%"
+  Flags=00000011
 end
 remarked item: Execute Program
   Pathname=python
