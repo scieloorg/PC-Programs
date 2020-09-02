@@ -25,7 +25,7 @@ if exist %mydbahead1%.mst call batch\GeraInvertido.bat %mydbahead1% %FST% %mydba
 if not exist %mydb%.mst goto END_GENERATE_XML
 call batch\GeraInvertido.bat %mydbinv% %FST% %mydbinv%
 
-echo > temp\xml_scielo_xsl.seq
+echo. > temp\xml_scielo_xsl.seq
 
 echo Getting XSL list >> %LOG%
 %WXIS% IsisScript=xis\xml_scielo_getXSL.xis acron=%acron% issueid=%issueid% generate_linkout=%generate_linkout% ahpdate=%ahpdate% cipar=%CIPAR_FILE% xslList=temp\xml_scielo_xsl.seq debug=%debug% destination=%EXPORT_TO% maxdate=%maxdate% >> %LOG%
