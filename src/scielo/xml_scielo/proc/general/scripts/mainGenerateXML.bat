@@ -109,7 +109,8 @@ call temp\generateXML4scilista.bat
 
 if not "%1"=="PUBMED" goto END
 if not exist ..\..\..\bin\xml\xml_pubmed.py goto END
-%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'cd ..\..\..\bin\xml'/,'python xml_pubmed.py %Serial_Directory%\',v1,'\',v2,' ',v4,' ',v5/ fi" now> temp\xml_pubmed.bat
+%MX% null count=1 "pft='cd ..\..\..\bin\xml'/" now> temp\xml_pubmed.bat
+%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'python xml_pubmed.py %Serial_Directory%\',v1,'\',v2,' ',v4,' ',v5/ fi" now>> temp\xml_pubmed.bat
 call temp\xml_pubmed.bat
 goto END
 
