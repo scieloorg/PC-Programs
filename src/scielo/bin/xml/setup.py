@@ -16,7 +16,7 @@ with codecs.open('README.md', mode='r', encoding='utf-8') as fp:
 
 INSTALL_REQUIRES = [
     'packtools>=2.6.4',
-    'Pillow~=6.2.2',
+    'Pillow>=6.2.2,<8.3.0',
 ]
 
 
