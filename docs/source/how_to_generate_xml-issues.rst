@@ -12,7 +12,6 @@ Este documento apresenta os principais problemas e soluções ao gerar o XML.
 
 
 .. image:: img/GeneratingReport.png
-   :height: 400px
    :align: center
 
 
@@ -24,16 +23,16 @@ Para descartar se este é o problema
 
 No terminal do DOS, digite:
 
-```
-python
-```
+.. code-block::
+   python
+
 
 Se obtiver uma mensagem:
 
-```
-'python' não é reconhecido como um comando interno
-ou externo, um programa operável ou um arquivo em lotes.
-```
+.. code-block::
+   'python' não é reconhecido como um comando interno
+   ou externo, um programa operável ou um arquivo em lotes.
+
 
 Ou Python não está instalado ou não está no PATH. 
 Estar no PATH, significa que está registrado no computador a localização do Python, de forma que de dentro de qualquer diretório (pasta) o comando python pode ser executado.
@@ -51,7 +50,6 @@ Reinstale o Python com atenção a:
 Senão, entrará no terminal do Python.
 
 .. image:: img/GeneratingXML_32bits.png
-   :height: 400px
    :align: center
 
 
@@ -70,21 +68,21 @@ Reinstale o Python com atenção a:
 Ainda no terminal do Python, execute os comandos:
 
 
-```
-import PIL
-
-```
+.. code-block::
+   import PIL
 
 
-```
-import packtools
-
-```
 
 
-```
-exit()
-```
+.. code-block::
+   import packtools
+
+
+
+
+.. code-block::
+   exit()
+
 
 Execute o comando `exit()` para sair do terminal do python.
 
@@ -94,13 +92,13 @@ Se não obtiver nenhuma mensagem é porque estão instalados.
 Se para algum deles obtiver a mensagem:
 
 
-```
-ImportError: No module named 'PIL'
-```
+.. code-block::
+   ImportError: No module named 'PIL'
 
-```
-ImportError: No module named 'packtools'
-```
+
+.. code-block::
+   ImportError: No module named 'packtools'
+
 
 é porque não estão instalados. 
 
@@ -108,23 +106,23 @@ ImportError: No module named 'packtools'
 
 No terminal do DOS, execute:
 
-```
-pip install pillow==6.2.2
-```
+.. code-block::
+   pip install pillow==6.2.2
 
-```
-pip install packtools==2.5.1
-```
+
+.. code-block::
+   pip install packtools==2.5.1
+
 
 Se apresentar qualquer mensagem de **WARNING**, pode **ignorar**. E **teste a geração de XML**.
 
 
 Mas se obtiver a mensagem:
 
-```
-'pip' não é reconhecido como um comando interno
-ou externo, um programa operável ou um arquivo em lotes.
-```
+.. code-block::
+   'pip' não é reconhecido como um comando interno
+   ou externo, um programa operável ou um arquivo em lotes.
+
 
 
 Reinstale o Python com atenção a:
@@ -144,7 +142,6 @@ Se obtiver um erro similar a este significa que a marcação contém erro nas et
 
 
 .. image:: img/GeneratingXML_erro_apresentado_no_navegador0.png
-   :height: 400px
    :align: center
 
 
@@ -153,23 +150,23 @@ No arquivo XML é esperado que contenha etiquetas ou *tags* de abertura e fecham
 
 Por exemplo, as etiquetas de parágrafo indicam que determinado conteúdo é parágrafo:
 
-```
-[p]Isto é um parágrafo no artigo[/p]
-```
+.. code-block::
+   [p]Isto é um parágrafo no artigo[/p]
+
 
 
 Etiquetas podem agrupar um conjunto de conteúdos etiquetados (*tagueados*):
 
 
-```
-[section]
-[p]Isto é um parágrafo no artigo[/p]
-[p]Isto é um parágrafo no artigo[/p]
-[p]Isto é um parágrafo no artigo[/p]
-[p]Isto é um parágrafo no artigo[/p]
-[p]Isto é um parágrafo no artigo[/p]
-[/section]
-```
+.. code-block::
+   [section]
+   [p]Isto é um parágrafo no artigo[/p]
+   [p]Isto é um parágrafo no artigo[/p]
+   [p]Isto é um parágrafo no artigo[/p]
+   [p]Isto é um parágrafo no artigo[/p]
+   [p]Isto é um parágrafo no artigo[/p]
+   [/section]
+
 
 O erro é provocado quando há falta de pareamento: abertura e fechamento.
 
@@ -177,16 +174,15 @@ Atributos são dados identificados dentro da etiqueta de abertura, por exemplo n
 
 
 .. image:: img/doc-mkp-language-doctitle.jpg
-   :height: 400px
    :align: center
 
 
 
 A sintaxe dos atributos é:
 
-```
-nome="dado"
-```
+.. code-block::
+   nome="dado"
+
 
 observe que as aspas são "retas".
 
@@ -195,7 +191,6 @@ observe que as aspas são "retas".
 Siga as instruções da mensagem:
 
 .. image:: img/GeneratingXML_erro_apresentado_no_navegador0.jpg
-   :height: 400px
    :align: center
 
 
@@ -205,19 +200,16 @@ O exemplo ilustra no navegador Web Chrome.
 
 
 .. image:: img/GeneratingXML_erro_apresentado_no_navegador1.png
-   :height: 400px
    :align: center
 
 
 Observe o erro e a linha onde ocorre. O erro que obtiver não necessariamente é o mesmo, mas terá a ver com aquilo que foi explicado sobre as aspas e/ou as etiquetas.
 
 .. image:: img/GeneratingXML_erro_apresentado_no_navegador2.png
-   :height: 400px
    :align: center
 
 
 .. image:: img/GeneratingXML_erro_apresentado_no_navegador3.png
-   :height: 400px
    :align: center
 
 
@@ -225,21 +217,18 @@ Clique com o botão direito do *mouse* sobre a página no navegador Web e seleci
 
 
 .. image:: img/GeneratingXML_erro_apresentado_no_navegador4.png
-   :height: 400px
    :align: center
 
 
 Vá até a linha em que ocorreu o erro e observe como está a marcação, considerando o que foi dito sobre as etiquetas e as aspas dos atributos.
 
 .. image:: img/GeneratingXML_erro_apresentado_no_navegador5.png
-   :height: 400px
    :align: center
 
 
 Volte à marcação e faça as devidas correções.
 
 .. image:: img/GeneratingXML_erro_apresentado_no_navegador6.png
-   :height: 400px
    :align: center
 
 
@@ -248,9 +237,9 @@ Problema 3: Bug no programa
 
 Logo após tentar gerar o XML, antes de fechar o programa, acesse pelo Windows Explorer a pasta do programa Markup, por exemplo:
 
-```
-c:\scielo\bin\markup\tmp
-```
+.. code-block::
+   c:\scielo\bin\markup\tmp
+
 
 Dentro você localizará um arquivo chamado cmd.log
 
@@ -264,7 +253,6 @@ Observe a mensagem obtida.
 Um possível problema está ilustrado nesta figura.
 
 .. image:: img/GeneratingXML_erro_cmd.png
-   :height: 400px
    :align: center
 
 
