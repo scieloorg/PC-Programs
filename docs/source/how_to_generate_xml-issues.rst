@@ -11,7 +11,7 @@ Introdução
 Este documento apresenta os principais problemas e soluções ao gerar o XML.
 
 
-.. image:: img/GeneratingReport.png
+.. image:: img/GeneratingReport.jpg
    :align: center
 
 
@@ -24,12 +24,14 @@ Para descartar se este é o problema
 No terminal do DOS, digite:
 
 .. code-block::
+
    python
 
 
 Se obtiver uma mensagem:
 
 .. code-block::
+
    'python' não é reconhecido como um comando interno
    ou externo, um programa operável ou um arquivo em lotes.
 
@@ -69,18 +71,18 @@ Ainda no terminal do Python, execute os comandos:
 
 
 .. code-block::
+
    import PIL
 
 
 
-
 .. code-block::
+
    import packtools
 
 
-
-
 .. code-block::
+
    exit()
 
 
@@ -93,10 +95,12 @@ Se para algum deles obtiver a mensagem:
 
 
 .. code-block::
+
    ImportError: No module named 'PIL'
 
 
 .. code-block::
+
    ImportError: No module named 'packtools'
 
 
@@ -107,10 +111,12 @@ Se para algum deles obtiver a mensagem:
 No terminal do DOS, execute:
 
 .. code-block::
+
    pip install pillow==6.2.2
 
 
 .. code-block::
+
    pip install packtools==2.5.1
 
 
@@ -120,6 +126,7 @@ Se apresentar qualquer mensagem de **WARNING**, pode **ignorar**. E **teste a ge
 Mas se obtiver a mensagem:
 
 .. code-block::
+
    'pip' não é reconhecido como um comando interno
    ou externo, um programa operável ou um arquivo em lotes.
 
@@ -151,6 +158,7 @@ No arquivo XML é esperado que contenha etiquetas ou *tags* de abertura e fecham
 Por exemplo, as etiquetas de parágrafo indicam que determinado conteúdo é parágrafo:
 
 .. code-block::
+
    [p]Isto é um parágrafo no artigo[/p]
 
 
@@ -159,6 +167,7 @@ Etiquetas podem agrupar um conjunto de conteúdos etiquetados (*tagueados*):
 
 
 .. code-block::
+
    [section]
    [p]Isto é um parágrafo no artigo[/p]
    [p]Isto é um parágrafo no artigo[/p]
@@ -181,6 +190,7 @@ Atributos são dados identificados dentro da etiqueta de abertura, por exemplo n
 A sintaxe dos atributos é:
 
 .. code-block::
+
    nome="dado"
 
 
@@ -190,7 +200,7 @@ observe que as aspas são "retas".
 
 Siga as instruções da mensagem:
 
-.. image:: img/GeneratingXML_erro_apresentado_no_navegador0.jpg
+.. image:: img/GeneratingXML_erro_apresentado_no_navegador0.png
    :align: center
 
 
@@ -238,6 +248,7 @@ Problema 3: Bug no programa
 Logo após tentar gerar o XML, antes de fechar o programa, acesse pelo Windows Explorer a pasta do programa Markup, por exemplo:
 
 .. code-block::
+
    c:\scielo\bin\markup\tmp
 
 
@@ -257,7 +268,9 @@ Um possível problema está ilustrado nesta figura.
 
 
 **Solução**:
+
 Revise, nesta página, a seção: 
+
 "Problema 1: Pré-requisitos não instalados adequadamente"
 
 
@@ -267,14 +280,23 @@ PEDINDO AJUDA
 =============
 
 Antes de pedir ajuda, revise esta página e tente usar os programas novamente.
-Persistindo o problema, refaça todos os passos capturando cada tela até ocorrer o erro. Apenas a última captura pode não ser o suficiente.
+
+Persistindo o problema, refaça todos os passos capturando cada tela até ocorrer o erro. 
+
+Apenas a última captura pode não ser o suficiente.
 
 Ao pedir ajuda:
+
 1. descreva as tentativas de solucionar os problemas
+
 2. envie todas as capturas de tela até apresentar o erro
+
 3. envie o arquivo .doc
+
 4. envie o arquivo .xml indicado nas mensagens de erro
 
 Isso agilizará a identificação do problema e a solução.
+
 Vale lembrar que os membros da lista também podem dar apoio.
+
 Vale lembrar que soluções podem ser encontradas fazendo pesquisa na própria lista de discussão.
