@@ -52,7 +52,7 @@
 	<xsl:template match="@dtd-version"></xsl:template>
 	<xsl:template match="sub-article[@article-type='translation']">
 	</xsl:template>
-	
+
 	<!-- KWD-GROUP - begin -->
 	<xsl:template match="article//article-meta/kwd-group">
 	</xsl:template>
@@ -82,6 +82,19 @@
 	</xsl:template>
 	
 	<!-- KWD-GROUP - end -->
+
+
+    <xsl:template match="article/front/article-meta/article-id[@pub-id-type='doi']">
+        <xsl:choose>
+            <xsl:when test="$translations[@xml:lang=='en']//article-id[@pub-id-type='doi']">
+                <xsl:apply-templates select="$translations[@xml:lang=='en']//article-id[@pub-id-type='doi']" mode="copy"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="." mode="copy"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
 	
 	<!-- TITLE-GROUP - begin -->
 	<xsl:template match="article[@xml:lang='en']//article-meta/title-group">
