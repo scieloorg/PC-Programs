@@ -86,8 +86,19 @@
 
     <xsl:template match="article/front/article-meta/article-id[@pub-id-type='doi']">
         <xsl:choose>
-            <xsl:when test="$translations[@xml:lang=='en']//article-id[@pub-id-type='doi']">
-                <xsl:apply-templates select="$translations[@xml:lang=='en']//article-id[@pub-id-type='doi']" mode="copy"/>
+            <xsl:when test="$translations[@xml:lang='en']//article-id[@pub-id-type='doi']">
+                <xsl:apply-templates select="$translations[@xml:lang='en']//article-id[@pub-id-type='doi']" mode="copy"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="." mode="copy"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <xsl:template match="article/front/article-meta/article-categories/subj-group[@subj-group-type='heading']">
+        <xsl:choose>
+            <xsl:when test="$translations[@xml:lang='en']//subj-group[@subj-group-type='heading']">
+                <xsl:apply-templates select="$translations[@xml:lang='en']//subj-group[@subj-group-type='heading']" mode="copy"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:apply-templates select="." mode="copy"/>
