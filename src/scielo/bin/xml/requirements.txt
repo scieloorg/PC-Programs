@@ -1,2 +1,2 @@
-Pillow==6.2.2
+Pillow==9.3.0
 packtools==2.6.4
